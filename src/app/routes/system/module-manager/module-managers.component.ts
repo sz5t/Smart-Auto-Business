@@ -41,7 +41,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                     'pageSize': 5, // 默认每页数据条数
                     'pageSizeOptions': [5, 18, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      'url': 'common/ComProjectModule',
+                      'url': 'common/ProjectModuleAdd',
                       'ajaxType': 'get',
                       'params': [
                         {

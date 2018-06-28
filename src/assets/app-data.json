@@ -42,6 +42,12 @@
                             "link": "/system/base-manager",
                             "hide":false,
                             "i18n": ""
+                        },
+                        {
+                            "text": "JAVA数据建模",
+                            "link": "/system/dataModeling-manager",
+                            "i18n": "",
+                            "icon": "icon-user"
                         }
                     ]
                 },
