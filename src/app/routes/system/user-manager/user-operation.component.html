@@ -1,0 +1,105 @@
+
+<form nz-form [formGroup]="userOperForm" (ngSubmit)="_submitForm()">
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="Name">名称</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+            <input nz-input  formControlName="Name" id="Name">
+            <nz-form-explain *ngIf="getFormControl('Name').dirty&&getFormControl('Name').hasError('Name')">表名称不能为空!</nz-form-explain>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >性别</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+            <nz-select formControlName="Gender">
+                <nz-option [nzLabel]="'未知'" [nzValue]="'Unknown'" ></nz-option>
+                <nz-option [nzLabel]="'男'" [nzValue]="'Male'"></nz-option>
+                <nz-option [nzLabel]="'女'" [nzValue]="'Female'"></nz-option>
+            </nz-select>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="IdCardNumber">身份标识</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <input nz-input  formControlName="IdCardNumber" id="IdCardNumber">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >编码</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <input nz-input  formControlName="Code" id="Code">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >Email</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <input nz-input  formControlName="MailAddress" id="MailAddress">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="MobileNumber">移动电话</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <input nz-input  formControlName="MobileNumber" id="MobileNumber">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >昵称</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <input nz-input  formControlName="NickName" id="NickName">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >真实姓名</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <input nz-input  formControlName="RealName" id="RealName">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >备注</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <input nz-input  formControlName="Remark" id="Remark">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >用户类型</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <nz-select formControlName="UserType">
+                <nz-option [nzLabel]="'未注册'" [nzValue]="'Unknown'" ></nz-option>
+                <nz-option [nzLabel]="'访客'" [nzValue]="'Guest'"></nz-option>
+                <nz-option [nzLabel]="'注册用户'" [nzValue]="'Normal'"></nz-option>
+                <nz-option [nzLabel]="'管理员'" [nzValue]="'Admin'" ></nz-option>
+            </nz-select>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >状态</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <nz-select formControlName="Status">
+                <nz-option [nzLabel]="'尚未激活'" [nzValue]="'Inactive'" ></nz-option>
+                <nz-option [nzLabel]="'激活'" [nzValue]="'Normal'"></nz-option>
+                <nz-option [nzLabel]="'已锁定'" [nzValue]="'Locked'"></nz-option>
+                <nz-option [nzLabel]="'已吊销'" [nzValue]="'Disabled'" ></nz-option>
+            </nz-select>
+        </nz-form-control>
+    </nz-form-item>
+
+    <div class="customize-footer">
+        <button nz-button [nzType]="'primary'" [nzSize]="'large'" (click)="emitDataOutside()">
+            保存
+        </button>
+        <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="handleCancel($event)">
+            返 回
+        </button>
+    </div>
+</form>
+
+
+<style>
+    :host ::ng-deep .customize-footer {
+        border-top: 1px solid #e9e9e9;
+        padding: 10px 18px 0 10px;
+        text-align: right;
+        border-radius: 0 0 0px 0px;
+        margin: 15px -16px -5px -16px;
+    }
+</style>

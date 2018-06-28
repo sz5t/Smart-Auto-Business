@@ -1,0 +1,1412 @@
+{
+  "rows": [
+    {
+      "row": {
+        "cols": [
+          {
+            "id": "area1",
+            "title": "组织机构",
+            "span": 4,
+            "size": {
+              "nzXs": 4,
+              "nzSm": 4,
+              "nzMd": 4,
+              "nzLg": 4,
+              "ngXl": 4
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "viewId": "tree_and_table_tree1",
+                  "component": "bsnTree",
+                  "asyncData": true,
+                  "expandAll": true,
+                  "checkable": false,
+                  "showLine": false,
+                  "columns": [
+                    {
+                      "title": "主键",
+                      "field": "key",
+                      "valueName": "Id"
+                    },
+                    {
+                      "title": "父节点",
+                      "field": "ParentId",
+                      "valueName": "ParentId"
+                    },
+                    {
+                      "title": "标题",
+                      "field": "title",
+                      "valueName": "Name"
+                    }
+                  ],
+                  "componentType": {
+                    "parent": true,
+                    "child": false,
+                    "own": false
+                  },
+                  "parent": [
+                    {
+                      "name": "ParentId",
+                      "type": "value",
+                      "valueName": "取值参数名称",
+                      "value": "null"
+                    }
+                  ],
+                  "ajaxConfig": {
+                    "url": "SinoForce.User.OrgNode",
+                    "ajaxType": "get",
+                    "params": []
+                  },
+                  "relations": [
+                    {
+                      "relationViewId": "tree_and_table_tree1",
+                      "relationSendContent": [
+                        {
+                          "name": "clickNode",
+                          "sender": "tree_and_table_tree1",
+                          "aop": "after",
+                          "receiver": "tree_and_table_table1",
+                          "relationData": {
+                            "name": "refreshAsChild",
+                            "params": [
+                              {
+                                "pid": "key",
+                                "cid": "_parentId"
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "relationReceiveContent": []
+                    }
+                  ]
+                },
+                "dataList": []
+              }
+            ]
+          },
+          {
+            "id": "area2",
+            "title": "人员信息",
+            "span": 20,
+            "size": {
+              "nzXs": 20,
+              "nzSm": 20,
+              "nzMd": 20,
+              "nzLg": 20,
+              "ngXl": 20
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "viewId": "tree_and_table_table1",
+                  "component": "bsnTable",
+                  "keyId": "Id",
+                  "pagination": true,
+                  "showTotal": true,
+                  "pageSize": 5,
+                  "pageSizeOptions": [
+                    5,
+                    10,
+                    20,
+                    30,
+                    40,
+                    50
+                  ],
+                  "ajaxConfig": {
+                    "url": "SinoForce.AppData.PersonInfo",
+                    "ajaxType": "get",
+                    "params": [
+                      {
+                        "name": "OrgId",
+                        "type": "tempValue",
+                        "valueName": "_parentId",
+                        "value": ""
+                      }
+                    ]
+                  },
+                  "componentType": {
+                    "parent": false,
+                    "child": true,
+                    "own": false
+                  },
+                  "relations": [
+                    {
+                      "relationViewId": "tree_and_table_table1",
+                      "relationSendContent": [],
+                      "relationReceiveContent": []
+                    }
+                  ],
+                  "columns": [
+                    {
+                      "title": "Id",
+                      "field": "Id",
+                      "width": 80,
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "Id",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "编号",
+                      "field": "Code",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Code",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "姓名",
+                      "field": "Name",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Name",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "所属部门",
+                      "field": "OrgId",
+                      "width": 80,
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "OrgId",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "出生日期",
+                      "field": "Birthday",
+                      "width": 80,
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "Birthday",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "性别",
+                      "field": "Gender",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "select",
+                        "field": "Gender",
+                        "options": {
+                          "type": "select",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "submit",
+                          "name": "Gender",
+                          "label": "性别",
+                          "notFoundContent": "",
+                          "selectModel": false,
+                          "showSearch": true,
+                          "placeholder": "-请选择-",
+                          "disabled": false,
+                          "size": "default",
+                          "clear": true,
+                          "width": "130px",
+                          "options": [
+                            {
+                              "label": "男",
+                              "value": "1",
+                              "disabled": false
+                            },
+                            {
+                              "label": "女",
+                              "value": "2",
+                              "disabled": false
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "title": "手机号",
+                      "field": "MobileNumber",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "MobileNumber",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "身份证号",
+                      "field": "IdCardNumber",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "IdCardNumber",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "邮箱地址",
+                      "field": "MailAddress",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "MailAddress",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "家庭地址",
+                      "field": "Address",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Address",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "状态",
+                      "field": "Status",
+                      "width": 80,
+                      "hidden": false,
+                      "formatter": [
+                        {
+                          "value": 1,
+                          "bgcolor": "",
+                          "fontcolor": "text-green",
+                          "valueas": "在职"
+                        },
+                        {
+                          "value": 2,
+                          "bgcolor": "",
+                          "fontcolor": "text-red",
+                          "valueas": "离职"
+                        }
+                      ],
+                      "editor": {
+                        "type": "select",
+                        "field": "Status",
+                        "options": {
+                          "type": "select",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "submit",
+                          "name": "Status",
+                          "label": "状态",
+                          "notFoundContent": "",
+                          "selectModel": false,
+                          "showSearch": true,
+                          "placeholder": "-请选择-",
+                          "disabled": false,
+                          "size": "default",
+                          "clear": true,
+                          "width": "130px",
+                          "options": [
+                            {
+                              "label": "在职",
+                              "value": "1",
+                              "disabled": false
+                            },
+                            {
+                              "label": "离职",
+                              "value": "2",
+                              "disabled": false
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "title": "备注",
+                      "field": "Remark",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Remark",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    }
+                  ],
+                  "toolbar": [
+                    {
+                      "name": "refresh",
+                      "class": "editable-add-btn",
+                      "text": "刷新"
+                    },
+                    {
+                      "name": "addRow",
+                      "class": "editable-add-btn",
+                      "text": "新增"
+                    },
+                    {
+                      "name": "updateRow",
+                      "class": "editable-add-btn",
+                      "text": "修改"
+                    },
+                    {
+                      "name": "deleteRow",
+                      "class": "editable-add-btn",
+                      "text": "删除",
+                      "ajaxConfig": {
+                        "delete": [
+                          {
+                            "actionName": "delete",
+                            "url": "SinoForce.User.PersonInfo",
+                            "ajaxType": "delete"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "saveRow",
+                      "class": "editable-add-btn",
+                      "text": "保存",
+                      "type": "method/action",
+                      "ajaxConfig": {
+                        "post": [
+                          {
+                            "actionName": "add",
+                            "url": "SinoForce.User.PersonInfo",
+                            "ajaxType": "post",
+                            "params": [
+                              {
+                                "name": "Code",
+                                "type": "componentValue",
+                                "valueName": "Code",
+                                "value": ""
+                              },
+                              {
+                                "name": "Name",
+                                "type": "componentValue",
+                                "valueName": "Name",
+                                "value": ""
+                              },
+                              {
+                                "name": "Gender",
+                                "type": "componentValue",
+                                "valueName": "Gender",
+                                "value": ""
+                              },
+                              {
+                                "name": "Birthday",
+                                "type": "componentValue",
+                                "valueName": "Birthday",
+                                "value": ""
+                              },
+                              {
+                                "name": "MobileNumber",
+                                "type": "componentValue",
+                                "valueName": "MobileNumber",
+                                "value": ""
+                              },
+                              {
+                                "name": "IdCardNumber",
+                                "type": "componentValue",
+                                "valueName": "IdCardNumber",
+                                "value": ""
+                              },
+                              {
+                                "name": "MailAddress",
+                                "type": "componentValue",
+                                "valueName": "MailAddress",
+                                "value": ""
+                              },
+                              {
+                                "name": "Address",
+                                "type": "componentValue",
+                                "valueName": "Address",
+                                "value": ""
+                              },
+                              {
+                                "name": "Remark",
+                                "type": "componentValue",
+                                "valueName": "Remark",
+                                "value": ""
+                              },
+                              {
+                                "name": "Status",
+                                "type": "componentValue",
+                                "valueName": "Status",
+                                "value": ""
+                              },
+                              {
+                                "name": "OrgId",
+                                "type": "tempValue",
+                                "valueName": "_parentId",
+                                "value": ""
+                              },
+                              {
+                                "name": "ProjId",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "002905c7bf57c54c9e5e65ec0e5fafe8"
+                              }
+                            ],
+                            "output": [
+                              {
+                                "name": "_id",
+                                "type": "",
+                                "dataName": "Id"
+                              }
+                            ]
+                          }
+                        ],
+                        "put": [
+                          {
+                            "url": "SinoForce.User.PersonInfo",
+                            "ajaxType": "put",
+                            "params": [
+                              {
+                                "name": "Id",
+                                "type": "componentValue",
+                                "valueName": "Id",
+                                "value": ""
+                              },
+                              {
+                                "name": "Code",
+                                "type": "componentValue",
+                                "valueName": "Code",
+                                "value": ""
+                              },
+                              {
+                                "name": "Name",
+                                "type": "componentValue",
+                                "valueName": "Name",
+                                "value": ""
+                              },
+                              {
+                                "name": "Gender",
+                                "type": "componentValue",
+                                "valueName": "Gender",
+                                "value": ""
+                              },
+                              {
+                                "name": "Birthday",
+                                "type": "componentValue",
+                                "valueName": "Birthday",
+                                "value": ""
+                              },
+                              {
+                                "name": "MobileNumber",
+                                "type": "componentValue",
+                                "valueName": "MobileNumber",
+                                "value": ""
+                              },
+                              {
+                                "name": "IdCardNumber",
+                                "type": "componentValue",
+                                "valueName": "IdCardNumber",
+                                "value": ""
+                              },
+                              {
+                                "name": "MailAddress",
+                                "type": "componentValue",
+                                "valueName": "MailAddress",
+                                "value": ""
+                              },
+                              {
+                                "name": "Address",
+                                "type": "componentValue",
+                                "valueName": "Address",
+                                "value": ""
+                              },
+                              {
+                                "name": "Remark",
+                                "type": "componentValue",
+                                "valueName": "Remark",
+                                "value": ""
+                              },
+                              {
+                                "name": "Status",
+                                "type": "componentValue",
+                                "valueName": "Status",
+                                "value": ""
+                              },
+                              {
+                                "name": "OrgId",
+                                "type": "tempValue",
+                                "valueName": "_parentId",
+                                "value": ""
+                              },
+                              {
+                                "name": "ProjId",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "002905c7bf57c54c9e5e65ec0e5fafe8"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "cancelRow",
+                      "class": "editable-add-btn",
+                      "text": "取消"
+                    },
+                    {
+                      "name": "addForm",
+                      "class": "editable-add-btn",
+                      "text": "弹出新增表单",
+                      "type": "showForm",
+                      "dialogConfig": {
+                        "keyId": "Id",
+                        "layout": "horizontal",
+                        "title": "新增数据",
+                        "width": "600",
+                        "isCard": true,
+                        "componentType": {
+                          "parent": false,
+                          "child": false,
+                          "own": true
+                        },
+                        "forms": [
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "Code",
+                                "label": "编号",
+                                "isRequired": true,
+                                "placeholder": "请输入人员编号",
+                                "perfix": "anticon anticon-edit",
+                                "suffix": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24",
+                                "validations": [
+                                  {
+                                    "validator": "required",
+                                    "errorMessage": "请输入人员编号"
+                                  },
+                                  {
+                                    "validator": "minLength",
+                                    "length": "3",
+                                    "errorMessage": "请输入最少三个字符"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "Name",
+                                "label": "姓名",
+                                "isRequired": true,
+                                "placeholder": "请输入人员姓名",
+                                "perfix": "anticon anticon-edit",
+                                "suffix": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24",
+                                "validations": [
+                                  {
+                                    "validator": "required",
+                                    "errorMessage": "请输入人员姓名"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "select",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "submit",
+                                "name": "Gender",
+                                "label": "性别",
+                                "notFoundContent": "",
+                                "selectModel": false,
+                                "showSearch": true,
+                                "placeholder": "--请选择--",
+                                "disabled": false,
+                                "size": "default",
+                                "options": [
+                                  {
+                                    "label": "男",
+                                    "value": 1,
+                                    "disabled": false
+                                  },
+                                  {
+                                    "label": "女",
+                                    "value": 2,
+                                    "disabled": false
+                                  }
+                                ],
+                                "layout": "column",
+                                "span": "24"
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "MobileNumber",
+                                "label": "手机号",
+                                "isRequired": true,
+                                "placeholder": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24",
+                                "validations": [
+                                  {
+                                    "validator": "required",
+                                    "errorMessage": "请输入手机号"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "IdCardNumber",
+                                "label": "身份证号",
+                                "isRequired": true,
+                                "placeholder": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24",
+                                "validations": [
+                                  {
+                                    "validator": "required",
+                                    "errorMessage": "请输入身份证号"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "MailAddress",
+                                "label": "邮箱地址",
+                                "isRequired": true,
+                                "placeholder": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24",
+                                "validations": [
+                                  {
+                                    "validator": "required",
+                                    "errorMessage": "请输入邮箱地址"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "Address",
+                                "label": "家庭地址",
+                                "isRequired": true,
+                                "placeholder": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24",
+                                "validations": [
+                                  {
+                                    "validator": "required",
+                                    "errorMessage": "请输入家庭地址"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "select",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "submit",
+                                "name": "Status",
+                                "label": "状态",
+                                "notFoundContent": "",
+                                "selectModel": false,
+                                "showSearch": true,
+                                "placeholder": "--请选择--",
+                                "disabled": false,
+                                "size": "default",
+                                "options": [
+                                  {
+                                    "label": "在职",
+                                    "value": 1,
+                                    "disabled": false
+                                  },
+                                  {
+                                    "label": "离职",
+                                    "value": 2,
+                                    "disabled": false
+                                  }
+                                ],
+                                "layout": "column",
+                                "span": "24"
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "Remark",
+                                "label": "备注",
+                                "placeholder": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24"
+                              }
+                            ]
+                          }
+                        ],
+                        "buttons": [
+                          {
+                            "name": "save",
+                            "text": "保存",
+                            "type": "primary",
+                            "ajaxConfig": {
+                              "post": [
+                                {
+                                  "url": "SinoForce.User.PersonInfo",
+                                  "params": [
+                                    {
+                                      "name": "Code",
+                                      "type": "componentValue",
+                                      "valueName": "Code",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Name",
+                                      "type": "componentValue",
+                                      "valueName": "Name",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Gender",
+                                      "type": "componentValue",
+                                      "valueName": "Gender",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Birthday",
+                                      "type": "componentValue",
+                                      "valueName": "Birthday",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "MobileNumber",
+                                      "type": "componentValue",
+                                      "valueName": "MobileNumber",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "MobileNumber",
+                                      "type": "componentValue",
+                                      "valueName": "MobileNumber",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "IdCardNumber",
+                                      "type": "componentValue",
+                                      "valueName": "IdCardNumber",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "MailAddress",
+                                      "type": "componentValue",
+                                      "valueName": "MailAddress",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Address",
+                                      "type": "componentValue",
+                                      "valueName": "Address",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Remark",
+                                      "type": "componentValue",
+                                      "valueName": "Remark",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "OrgId",
+                                      "type": "tempValue",
+                                      "valueName": "_parentId",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Status",
+                                      "type": "componentValue",
+                                      "valueName": "Status",
+                                      "value": ""
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "saveAndKeep",
+                            "text": "保存并继续",
+                            "type": "primary",
+                            "ajaxConfig": {
+                              "post": [
+                                {
+                                  "url": "SinoForce.User.PersonInfo",
+                                  "params": [
+                                    {
+                                      "name": "Code",
+                                      "type": "componentValue",
+                                      "valueName": "Code",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Name",
+                                      "type": "componentValue",
+                                      "valueName": "Name",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Gender",
+                                      "type": "componentValue",
+                                      "valueName": "Gender",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Birthday",
+                                      "type": "componentValue",
+                                      "valueName": "Birthday",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "MobileNumber",
+                                      "type": "componentValue",
+                                      "valueName": "MobileNumber",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "MobileNumber",
+                                      "type": "componentValue",
+                                      "valueName": "MobileNumber",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "IdCardNumber",
+                                      "type": "componentValue",
+                                      "valueName": "IdCardNumber",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "MailAddress",
+                                      "type": "componentValue",
+                                      "valueName": "MailAddress",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Address",
+                                      "type": "componentValue",
+                                      "valueName": "Address",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Remark",
+                                      "type": "componentValue",
+                                      "valueName": "Remark",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "OrgId",
+                                      "type": "tempValue",
+                                      "valueName": "_parentId",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Status",
+                                      "type": "componentValue",
+                                      "valueName": "Status",
+                                      "value": ""
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "reset",
+                            "text": "重置"
+                          },
+                          {
+                            "name": "close",
+                            "text": "关闭"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "editForm",
+                      "class": "editable-add-btn",
+                      "text": "弹出编辑表单",
+                      "type": "showForm",
+                      "dialogConfig": {
+                        "keyId": "Id",
+                        "title": "编辑",
+                        "width": "600",
+                        "ajaxConfig": {
+                          "url": "SinoForce.User.PersonInfo",
+                          "ajaxType": "get",
+                          "params": [
+                            {
+                              "name": "Id",
+                              "type": "tempValue",
+                              "valueName": "_id",
+                              "value": ""
+                            }
+                          ]
+                        },
+                        "componentType": {
+                          "parent": false,
+                          "child": false,
+                          "own": true
+                        },
+                        "forms": [
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "Code",
+                                "label": "编号",
+                                "isRequired": true,
+                                "placeholder": "请输入人员编号",
+                                "perfix": "anticon anticon-edit",
+                                "suffix": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24",
+                                "validations": [
+                                  {
+                                    "validator": "minLength",
+                                    "length": "3",
+                                    "errorMessage": "请输入最少三个字符"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "Name",
+                                "label": "姓名",
+                                "isRequired": true,
+                                "placeholder": "请输入人员姓名",
+                                "perfix": "anticon anticon-edit",
+                                "suffix": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24"
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "select",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "submit",
+                                "name": "Gender",
+                                "label": "性别",
+                                "notFoundContent": "",
+                                "selectModel": false,
+                                "showSearch": true,
+                                "placeholder": "--请选择--",
+                                "disabled": false,
+                                "size": "default",
+                                "options": [
+                                  {
+                                    "label": "男",
+                                    "value": 1,
+                                    "disabled": false
+                                  },
+                                  {
+                                    "label": "女",
+                                    "value": 2,
+                                    "disabled": false
+                                  }
+                                ],
+                                "layout": "column",
+                                "span": "24"
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "MobileNumber",
+                                "label": "手机号",
+                                "isRequired": true,
+                                "placeholder": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24",
+                                "validations": [
+                                  {
+                                    "validator": "pattern",
+                                    "pattern": {},
+                                    "errorMessage": "请填写数字"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "IdCardNumber",
+                                "label": "身份证号",
+                                "isRequired": true,
+                                "placeholder": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24"
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "MailAddress",
+                                "label": "邮箱地址",
+                                "isRequired": true,
+                                "placeholder": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24"
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "Address",
+                                "label": "家庭地址",
+                                "isRequired": true,
+                                "placeholder": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24"
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "select",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "submit",
+                                "name": "Status",
+                                "label": "状态",
+                                "notFoundContent": "",
+                                "selectModel": false,
+                                "showSearch": true,
+                                "placeholder": "--请选择--",
+                                "disabled": false,
+                                "size": "default",
+                                "options": [
+                                  {
+                                    "label": "在职",
+                                    "value": 1,
+                                    "disabled": false
+                                  },
+                                  {
+                                    "label": "离职",
+                                    "value": 2,
+                                    "disabled": false
+                                  }
+                                ],
+                                "layout": "column",
+                                "span": "24"
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "Remark",
+                                "label": "备注",
+                                "placeholder": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24"
+                              }
+                            ]
+                          }
+                        ],
+                        "buttons": [
+                          {
+                            "name": "save",
+                            "text": "保存",
+                            "type": "primary",
+                            "ajaxConfig": {
+                              "put": [
+                                {
+                                  "url": "SinoForce.User.PersonInfo",
+                                  "params": [
+                                    {
+                                      "name": "Id",
+                                      "type": "tempValue",
+                                      "valueName": "_id",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Code",
+                                      "type": "componentValue",
+                                      "valueName": "Code",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Name",
+                                      "type": "componentValue",
+                                      "valueName": "Name",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Gender",
+                                      "type": "componentValue",
+                                      "valueName": "Gender",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Birthday",
+                                      "type": "componentValue",
+                                      "valueName": "Birthday",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "MobileNumber",
+                                      "type": "componentValue",
+                                      "valueName": "MobileNumber",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "MobileNumber",
+                                      "type": "componentValue",
+                                      "valueName": "MobileNumber",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "IdCardNumber",
+                                      "type": "componentValue",
+                                      "valueName": "IdCardNumber",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "MailAddress",
+                                      "type": "componentValue",
+                                      "valueName": "MailAddress",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Address",
+                                      "type": "componentValue",
+                                      "valueName": "Address",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Remark",
+                                      "type": "componentValue",
+                                      "valueName": "Remark",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "OrgId",
+                                      "type": "tempValue",
+                                      "valueName": "_parentId",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Status",
+                                      "type": "componentValue",
+                                      "valueName": "Status",
+                                      "value": ""
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "close",
+                            "class": "editable-add-btn",
+                            "text": "关闭"
+                          },
+                          {
+                            "name": "reset",
+                            "class": "editable-add-btn",
+                            "text": "重置"
+                          }
+                        ],
+                        "dataList": []
+                      }
+                    }
+                  ]
+                },
+                "dataList": []
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

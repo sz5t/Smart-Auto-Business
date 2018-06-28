@@ -1,0 +1,44 @@
+<page-header [title]=""></page-header>
+<nz-card>
+    <div class = "table-operations">
+        <button  nz-button (click)="refresh()">刷新 </button>
+        <button nz-button (click)="showRoleForComponent('Add')">新增</button>
+        <button nz-button (click)="showRoleForComponent('Edit')">修改</button>
+        <button  nz-button (click)="delete()">删除</button>
+    </div>
+  <nz-table #nzTable
+            [nzData]="_dataSet"
+            [nzFrontPagination]="false"
+            [nzShowSizeChanger]="true"
+            [nzLoading]="_loading"
+            [nzTotal]="_total"
+            [(nzPageIndex)]="_current"
+            (nzPageIndexChange)="refreshData()"
+            [(nzPageSize)]="_pageSize"
+            (nzPageSizeChange)="refreshData(true)"
+            [nzBordered] = "true"
+            [nzShowTotal]="totalTemplate"
+            nzSize = "small">
+    <thead >
+    <tr>
+      <th nzShowCheckbox  [(nzChecked)]="_allChecked" [nzIndeterminate]="_indeterminate" (nzCheckedChange)="_checkAll()"></th>
+      <th>角色名称</th>
+      <th >备注 </th>
+      <th >创建时间</th>
+    </tr>
+    </thead>
+    <tbody >
+    <tr *ngFor="let data of nzTable.data" (click)="selectRow(data)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
+      <td nzShowCheckbox  [(nzChecked)]="data.checked"> </td>
+      <td >{{data.Name}}</td>
+      <td >{{data.Remark}}</td>
+      <td >{{data.CreateTime | date}}</td>
+    </tr>
+    </tbody>
+  </nz-table>
+    <ng-template #totalTemplate let-total let-range="range">
+        {{range[0]}}-{{range[1]}} 共 {{total}} 条
+    </ng-template>
+</nz-card>
+
+

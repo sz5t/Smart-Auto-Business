@@ -1,0 +1,15 @@
+<div class="table-operations">
+    <ng-container *ngFor="let btn of toolbarConfig">
+        <button nz-button *ngIf="btn.type!=='group'" (click)="toolbarAction(btn)" [attr.disabled]="btn.disabled" class="editable-add-btn">
+            <i class="{{btn.icon}}"></i>{{btn.text}}</button>
+        <nz-dropdown-button *ngIf="btn.type==='group'">
+            <i class="{{btn.icon}}"></i>{{btn.text}}
+            <ul nz-menu>
+                <li nz-menu-item *ngFor="let b of btn.group">
+                    <a (click)="toolbarAction(b)" [attr.disabled]="b.disabled">
+                        <i class="{{b.icon}}"></i>{{b.text}}</a>
+                </li>
+            </ul>
+        </nz-dropdown-button>
+    </ng-container>
+</div>

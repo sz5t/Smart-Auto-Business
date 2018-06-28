@@ -1,0 +1,573 @@
+{
+  "rows": [
+    {
+      "row": {
+        "cols": [
+          {
+            "id": "area1",
+            "span": 24,
+            "icon": "",
+            "size": {
+              "nzXs": 24,
+              "nzSm": 24,
+              "nzMd": 24,
+              "nzLg": 24,
+              "ngXl": 24
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "viewId": "singleTable",
+                  "component": "bsnTable",
+                  "info": true,
+                  "keyId": "Id",
+                  "pagination": true,
+                  "showTotal": true,
+                  "pageSize": 5,
+                  "pageSizeOptions": [
+                    5,
+                    18,
+                    20,
+                    30,
+                    40,
+                    50
+                  ],
+                  "ajaxConfig": {
+                    "url": "SinoForce.User.PrivRole",
+                    "ajaxType": "get",
+                    "params": [],
+                    "filter": [
+                      {
+                        "name": "Name",
+                        "valueName": "_Name",
+                        "type": "",
+                        "value": ""
+                      }
+                    ]
+                  },
+                  "columns": [
+                    {
+                      "title": "Id",
+                      "field": "Id",
+                      "width": 80,
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "Id",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "18",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "角色名称",
+                      "field": "Name",
+                      "width": 80,
+                      "showFilter": false,
+                      "showSort": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Name",
+                        "options": {
+                          "type": "input",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "备注",
+                      "field": "Remark",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Remark",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "18",
+                          "inputType": "text"
+                        }
+                      }
+                    }
+                  ],
+                  "componentType": {
+                    "parent": true,
+                    "child": false,
+                    "own": true
+                  },
+                  "relations": [
+                    {
+                      "relationViewId": "singleTable",
+                      "relationSendContent": [],
+                      "relationReceiveContent": []
+                    }
+                  ],
+                  "toolbar": [
+                    {
+                      "name": "refresh",
+                      "class": "editable-add-btn",
+                      "text": "刷新"
+                    },
+                    {
+                      "name": "addRow",
+                      "class": "editable-add-btn",
+                      "text": "新增"
+                    },
+                    {
+                      "name": "updateRow",
+                      "class": "editable-add-btn",
+                      "text": "修改"
+                    },
+                    {
+                      "name": "deleteRow",
+                      "class": "editable-add-btn",
+                      "text": "删除",
+                      "ajaxConfig": {
+                        "delete": [
+                          {
+                            "actionName": "delete",
+                            "url": "SinoForce.User.PrivRole",
+                            "ajaxType": "delete"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "saveRow",
+                      "class": "editable-add-btn",
+                      "text": "保存",
+                      "type": "method/action",
+                      "ajaxConfig": {
+                        "post": [
+                          {
+                            "actionName": "add",
+                            "url": "SinoForce.User.PrivRole",
+                            "ajaxType": "post",
+                            "params": [
+                              {
+                                "name": "Name",
+                                "type": "componentValue",
+                                "valueName": "Name",
+                                "value": ""
+                              },
+                              {
+                                "name": "Remark",
+                                "type": "componentValue",
+                                "valueName": "Remark",
+                                "value": ""
+                              },
+                              {
+                                "name": "ProjId",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "002905c7bf57c54c9e5e65ec0e5fafe8"
+                              },
+                              {
+                                "name": "ShareScope",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "1"
+                              }
+                            ],
+                            "output": [
+                              {
+                                "name": "_id",
+                                "type": "",
+                                "dataName": "Id"
+                              }
+                            ]
+                          }
+                        ],
+                        "put": [
+                          {
+                            "url": "SinoForce.User.PrivRole",
+                            "ajaxType": "put",
+                            "params": [
+                              {
+                                "name": "Id",
+                                "type": "componentValue",
+                                "valueName": "Id",
+                                "value": ""
+                              },
+                              {
+                                "name": "Name",
+                                "type": "componentValue",
+                                "valueName": "Name",
+                                "value": ""
+                              },
+                              {
+                                "name": "Remark",
+                                "type": "componentValue",
+                                "valueName": "Remark",
+                                "value": ""
+                              },
+                              {
+                                "name": "ProjId",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "002905c7bf57c54c9e5e65ec0e5fafe8"
+                              },
+                              {
+                                "name": "ShareScope",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "1"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "cancelRow",
+                      "class": "editable-add-btn",
+                      "text": "取消"
+                    },
+                    {
+                      "name": "addForm",
+                      "class": "editable-add-btn-role",
+                      "text": "弹出新增表单",
+                      "type": "showForm",
+                      "dialogConfig": {
+                        "keyId": "Id",
+                        "layout": "horizontal",
+                        "title": "新增数据",
+                        "width": "600",
+                        "isCard": true,
+                        "componentType": {
+                          "parent": false,
+                          "child": false,
+                          "own": true
+                        },
+                        "forms": [
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "Name",
+                                "label": "角色名称",
+                                "isRequired": true,
+                                "placeholder": "请输入角色名称",
+                                "perfix": "anticon anticon-edit",
+                                "suffix": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24",
+                                "validations": [
+                                  {
+                                    "validator": "required",
+                                    "errorMessage": "请输入角色名称"
+                                  },
+                                  {
+                                    "validator": "minLength",
+                                    "length": "3",
+                                    "errorMessage": "请输入最少三个字符"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "Remark",
+                                "label": "备注",
+                                "isRequired": true,
+                                "placeholder": "",
+                                "perfix": "anticon anticon-edit",
+                                "suffix": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24"
+                              }
+                            ]
+                          }
+                        ],
+                        "buttons": [
+                          {
+                            "name": "save",
+                            "text": "保存",
+                            "type": "primary",
+                            "ajaxConfig": {
+                              "post": [
+                                {
+                                  "url": "SinoForce.User.PersonInfo",
+                                  "params": [
+                                    {
+                                      "name": "Code",
+                                      "type": "componentValue",
+                                      "valueName": "Code",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Name",
+                                      "type": "componentValue",
+                                      "valueName": "Name",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Gender",
+                                      "type": "componentValue",
+                                      "valueName": "Gender",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Birthday",
+                                      "type": "componentValue",
+                                      "valueName": "Birthday",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "MobileNumber",
+                                      "type": "componentValue",
+                                      "valueName": "MobileNumber",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "MobileNumber",
+                                      "type": "componentValue",
+                                      "valueName": "MobileNumber",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "IdCardNumber",
+                                      "type": "componentValue",
+                                      "valueName": "IdCardNumber",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "MailAddress",
+                                      "type": "componentValue",
+                                      "valueName": "MailAddress",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Address",
+                                      "type": "componentValue",
+                                      "valueName": "Address",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Remark",
+                                      "type": "componentValue",
+                                      "valueName": "Remark",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "OrgId",
+                                      "type": "tempValue",
+                                      "valueName": "_parentId",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Status",
+                                      "type": "componentValue",
+                                      "valueName": "Status",
+                                      "value": ""
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "saveAndKeep",
+                            "text": "保存并继续",
+                            "type": "primary",
+                            "ajaxConfig": {
+                              "post": [
+                                {
+                                  "url": "SinoForce.User.PersonInfo",
+                                  "params": [
+                                    {
+                                      "name": "Name",
+                                      "type": "componentValue",
+                                      "valueName": "Name",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Remark",
+                                      "type": "componentValue",
+                                      "valueName": "Remark",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "ProjId",
+                                      "type": "value",
+                                      "valueName": "",
+                                      "value": "002905c7bf57c54c9e5e65ec0e5fafe8"
+                                    },
+                                    {
+                                      "name": "ShareScope",
+                                      "type": "value",
+                                      "valueName": "",
+                                      "value": "1"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "reset",
+                            "text": "重置"
+                          },
+                          {
+                            "name": "close",
+                            "text": "关闭"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "editForm",
+                      "class": "editable-add-btn",
+                      "text": "弹出编辑表单",
+                      "type": "showForm",
+                      "dialogConfig": {
+                        "keyId": "Id",
+                        "title": "编辑",
+                        "width": "600",
+                        "ajaxConfig": {
+                          "url": "SinoForce.User.PersonInfo",
+                          "ajaxType": "get",
+                          "params": [
+                            {
+                              "name": "Id",
+                              "type": "tempValue",
+                              "valueName": "_id",
+                              "value": ""
+                            }
+                          ]
+                        },
+                        "componentType": {
+                          "parent": false,
+                          "child": false,
+                          "own": true
+                        },
+                        "forms": [
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "Name",
+                                "label": "角色名称",
+                                "isRequired": true,
+                                "placeholder": "请输入角色名称",
+                                "perfix": "anticon anticon-edit",
+                                "suffix": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24"
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "input",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "text",
+                                "name": "Remark",
+                                "label": "备注",
+                                "placeholder": "",
+                                "disabled": false,
+                                "readonly": false,
+                                "size": "default",
+                                "layout": "column",
+                                "span": "24"
+                              }
+                            ]
+                          }
+                        ],
+                        "buttons": [
+                          {
+                            "name": "save",
+                            "text": "保存",
+                            "type": "primary",
+                            "ajaxConfig": {
+                              "put": [
+                                {
+                                  "url": "SinoForce.User.PersonInfo",
+                                  "params": [
+                                    {
+                                      "name": "Id",
+                                      "type": "tempValue",
+                                      "valueName": "_id",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Name",
+                                      "type": "componentValue",
+                                      "valueName": "Name",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Remark",
+                                      "type": "componentValue",
+                                      "valueName": "Remark",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "ProjId",
+                                      "type": "value",
+                                      "valueName": "",
+                                      "value": "002905c7bf57c54c9e5e65ec0e5fafe8"
+                                    },
+                                    {
+                                      "name": "ShareScope",
+                                      "type": "value",
+                                      "valueName": "",
+                                      "value": "1"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "close",
+                            "class": "editable-add-btn",
+                            "text": "关闭"
+                          },
+                          {
+                            "name": "reset",
+                            "class": "editable-add-btn",
+                            "text": "重置"
+                          }
+                        ],
+                        "dataList": []
+                      }
+                    }
+                  ]
+                },
+                "dataList": []
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

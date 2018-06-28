@@ -1,0 +1,177 @@
+<nz-card *ngIf="!_showGuide" [nzBordered]="false" [nzTitle]="layoutModule" [nzExtra]="extraTplModule">
+    <form nz-form>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="2" nzFor="module">选择模块</nz-form-label>
+            <nz-form-control [nzSpan]="6" [nzSm]="6" [nzXs]="6">
+                <nz-cascader [ngModelOptions]="{standalone: true}" [class.class123]="true" [nzOptions]="_funcOptions" [(ngModel)]="_funcValue"
+                    (nzChange)="_changeModuleValue($event)" (nzSelectionChange)="_onSelectionChange($event)" [nzPlaceHolder]="'--请选择--'"
+                    [nzExpandTrigger]="'hover'">
+                </nz-cascader>
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</nz-card>
+
+<nz-card *ngIf="!_showGuide" [nzBordered]="false" [nzTitle]="layoutTitle">
+    <!-- <nz-table #sqlTable [nzData]="_tableDataSource" [nzSize]="'small'" [nzLoading]="loading" [nzTotal]="total" [(nzPageIndex)]="pageIndex"
+        [(nzPageSize)]="pageSize">
+        <thead>
+            <tr>
+                <th nzShowExpand></th>
+                <th>布局名称</th>
+                <th>模版名称</th>
+                <th>是否启用</th>
+                <th>创建时间</th>
+                <th> </th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-template ngFor let-data [ngForOf]="_tableDataSource">
+                <tr (click)="selectRow(data)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
+                    <td nzShowExpand [(nzExpand)]="data.expand"></td>
+                    <td>{{data.Name}}</td>
+                    <td>{{data.Template}}</td>
+                    <td>{{data.Enabled}}</td>
+                    <td>{{data.CreateTime}}</td>
+                    <td>
+                        <nz-popconfirm [nzTitle]="'确认删除当前记录?'" (nzOnConfirm)="delete(data.Id)" (nzOnCancel)="cancel()" [nzPlacement]="'top'">
+                            <button nz-popconfirm nz-button [nzType]="'danger'" [nzSize]="'small'">
+                                <i class="anticon anticon-delete"></i> 删除</button>
+                        </nz-popconfirm>
+                    </td>
+                </tr>
+                <tr [nzExpand]="data.expand">
+                    <td></td>
+                    <td colspan="7">
+                        <nz-table #innerTable [nzData]="data.BlockList" nzSize="middle" [nzShowPagination]="false">
+                            <thead>
+                                <tr>
+                                    <th>区域标题</th>
+                                    <th>区域图标</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let data of innerTable.data">
+                                    <td>{{data.Title}}</td>
+                                    <td>{{data.Icon}}</td>
+                                </tr>
+                            </tbody>
+                        </nz-table>
+                    </td>
+                </tr>
+            </ng-template>
+        </tbody>
+    </nz-table> -->
+    <nz-list
+    class="demo-loadmore-list"
+    [nzDataSource]="_tableDataSource"
+    [nzItemLayout]="'horizontal'"
+    [nzLoading]="loading"
+    [nzRenderItem]="item"
+    [nzLoadMore]="loadMore">
+    <ng-template #item let-item>
+      <nz-list-item [nzContent]="'创建时间：' + item.CreateTime" [nzActions]="[editAction,moreAction]">
+        <ng-template #editAction><a (click)="delete(item)">删除</a></ng-template>
+        <ng-template #moreAction><a (click)="enabledLayout(item)">启用</a></ng-template>
+        <nz-list-item-meta
+            [nzTitle]="nzTitle"
+            [nzAvatar]="listImg"
+            nzDescription="{{item.Description}}">
+            <ng-template #nzTitle>
+                {{item.Name}}
+            </ng-template>
+            <ng-template #listImg>
+                <nz-avatar [nzShape]="'square'" [nzSrc]="item.TemplateImg"></nz-avatar>
+            </ng-template>
+        </nz-list-item-meta>
+      </nz-list-item>
+    </ng-template>
+    <ng-template #loadMore>
+      <div *ngIf="showLoadingMore" class="loadmore">
+        <button nz-button *ngIf="!loadingMore" (click)="onLoadMore()">loading more</button>
+        <nz-spin *ngIf="loadingMore" [nzSpinning]="loadingMore"></nz-spin>
+      </div>
+    </ng-template>
+    </nz-list>
+</nz-card>
+
+<nz-card *ngIf="_showGuide" [nzBordered]="false" [nzTitle]="layoutNav" [nzExtra]="extraTpl">
+    <nz-steps [(nzCurrent)]="current">
+        <nz-step nzTitle="创建布局" nzDescription="{{_selectedModuleText}}"></nz-step>
+        <nz-step nzTitle="区域编辑" nzDescription="{{_configName}}"></nz-step>
+        <nz-step nzTitle="完成" nzDescription="{{_configSuccess}}"></nz-step>
+    </nz-steps>
+    <div class="steps-content" *ngIf="current == 0">
+        <form nz-form [formGroup]="_formGroup" (ngSubmit)="_submitForm($event)">
+            <nz-form-item>
+                <nz-form-label [nzSpan]="2" nzFor="module">布局类型</nz-form-label>
+                <nz-form-control>
+                    <nz-select [(ngModel)]="_layoutValue" (ngModelChange)="_changeLayout($event)" [nzPlaceHolder]="'--请选择--'" [ngModelOptions]="{standalone: true}">
+                        <nz-option nzCustomContent [nzLabel]="option.label" *ngFor="let option of _layoutOptions" [nzValue]="option">
+                            <img src="{{option.value.img}}" /> {{option.label}}
+                        </nz-option>
+                    </nz-select>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="2" nzFor="module">布局名称</nz-form-label>
+                <nz-form-control>
+                    <input nz-input [(ngModel)]="_configName" placeholder="请输入配置名称" [ngModelOptions]="{standalone: true}" />
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSpan]="2" nzFor="module">布局描述</nz-form-label>
+                <nz-form-control>
+                    <input nz-input [(ngModel)]="_configDesc" [ngModelOptions]="{standalone: true}" />
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </div>
+    <div class="steps-content2" *ngIf="current == 1">
+        <nz-card nzTitle="布局预览">
+            <nz-spin [nzSpinning]="isShowPreview">
+                    <cn-setting-layout *ngIf="previewLayoutData" [layoutId]="_selectedLayoutId" [config]="previewLayoutData"></cn-setting-layout>
+            </nz-spin>
+        </nz-card>
+
+    </div>
+    <div class="steps-content2" *ngIf="current == 2">
+        <cn-setting-layout *ngIf="previewLayoutData" [layoutId]="_selectedLayoutId" [config]="previewLayoutData"></cn-setting-layout>
+    </div>
+    <div class="steps-action">
+        <button nz-button nzType="primary" (click)="done()" *ngIf="current === 1">
+            <span><i class="anticon anticon-check"></i> 完成</span>
+        </button>
+        <button nz-button nzType="default" (click)="next()" *ngIf="current < 1">
+            <span>下一步 <i class="anticon anticon-right"></i></span>
+        </button>
+        <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0 && current < 2">
+            <span><i class="anticon anticon-left"></i> 上一步</span>
+        </button>
+
+        <button nz-button nzType="default" (click)="extend()" *ngIf="current === 1 && _isShowExtend">
+            <span>扩展布局</span>
+        </button>
+    </div>
+</nz-card>
+
+<ng-template #extraTplModule>
+    <button nz-button *ngIf="!_showGuide" (click)="showGuide()" nzType="primary">
+        <i class="anticon anticon-plus"></i>创建布局</button>
+</ng-template>
+<ng-template #extraTpl>
+    <button (click)="showGuide()" nz-button nzType="primary">
+        <i class="anticon anticon-rollback"></i> 返回</button>
+</ng-template>
+<ng-template #layoutModule>
+    <span>
+        <i class="anticon anticon-appstore"></i> 功能模块</span>
+</ng-template>
+<ng-template #layoutTitle>
+    <span>
+        <i class="anticon anticon-table"></i> 布局列表</span>
+</ng-template>
+<ng-template #layoutNav>
+    <span>
+     布局向导 <i class="anticon anticon-arrow-right"></i></span>
+</ng-template>

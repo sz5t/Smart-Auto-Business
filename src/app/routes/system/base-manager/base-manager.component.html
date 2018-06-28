@@ -1,0 +1,88 @@
+<page-header [title]=""></page-header>
+
+<nz-card>
+  <div class = "table-operations">
+    <button nz-button  (click)="refresh($event)">刷新</button>
+    <button nz-button  (click)="showModalForComponent('Add')">新增</button><!--//add($event)-->
+    <button nz-button  (click)="add1($event)">行内新增(远程)</button>
+    <button nz-button  (click)="add2($event)">行内新增(本地)</button>
+    <button nz-button  (click)="showModalForComponent('Edit')">修改</button><!--update($event)-->
+    <button nz-button  (click)="delete($event)">删除</button>
+
+    <nz-popconfirm [nzTitle]="'确定要删除这个任务吗？'" (nzOnConfirm)="delete($event)" (nzOnCancel)="cancel()">
+      <button nz-popconfirm>删除1</button>
+    </nz-popconfirm>
+  </div>
+  <nz-table #nzTable
+            [nzData]="_dataSet"
+            [nzShowSizeChanger]="true"
+            [nzFrontPagination]="false"
+            [nzLoading]="_loading"
+            [nzTotal]="_total"
+            [(nzPageIndex)]="_current"
+            (nzPageIndexChange)="refreshData()"
+            [(nzPageSize)]="_pageSize"
+            (nzPageSizeChange)="refreshData(true)"
+            [nzBordered] = "true"
+            [nzShowTotal]="totalTemplate"
+            nzSize = "small">
+    <thead (nzSortChange)="sort($event)" nzSingleSort>
+    <tr>
+        <th nzShowCheckbox  [(nzChecked)]="_allChecked" [nzIndeterminate]="_indeterminate" (nzCheckedChange)="_checkAll()"></th>
+        <th nzShowSort nzSortKey="Name">模块名称</th>
+        <th nzShowSort nzSortKey="Remark">备注</th>
+        <th nzShowSort nzSortKey="Order">排序</th>
+        <th >操作</th>
+    </tr>
+    </thead>
+    <tbody >
+    <tr  *ngFor="let data of nzTable.data" (click)="selectRow(data)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
+      <td nzShowCheckbox  [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
+      </td>
+      <td >
+        <span *ngIf="editRow !== data.Id"><a>{{data.Name}}</a></span>
+        <span *ngIf="editRow===data.Id">
+              <input type="text" nz-input [(ngModel)]="tempEditObject[data.Id].Name">
+        </span>
+      </td>
+      <td >
+        <span *ngIf="editRow !== data.Id">{{data.Remark}}</span>
+        <span *ngIf="editRow===data.Id">
+              <input type="text" nz-input [(ngModel)]="tempEditObject[data.Id].Remark">
+        </span>
+      </td>
+      <td >
+        <span *ngIf="editRow !== data.Id">{{data.Order}}</span>
+        <span *ngIf="editRow===data.Id">
+              <input type="text" nz-input [(ngModel)]="tempEditObject[data.Id].Order">
+        </span>
+      </td>
+      <td >
+            <span *ngIf="editRow!==data.Id">
+              <a (click)="edit(data)">编辑 </a>
+            </span>
+            <span *ngIf="editRow===data.Id">
+              <a (click)="save(data)">保存</a>
+              <nz-divider nzType="vertical"></nz-divider>
+                <nz-popconfirm [nzTitle]="'确定要取消该操作吗?'" (nzOnConfirm)="cancel(data)">
+                  <a nz-popconfirm>取消</a>
+                </nz-popconfirm>
+            </span>
+
+          <span *ngIf="editRow!==data.Id">
+              <nz-divider nzType="vertical"></nz-divider>
+               <nz-popconfirm [nzTitle]="'确定要删除该条数据吗?'" (nzOnConfirm)="delete1(data)">
+                  <a nz-popconfirm>删除</a>
+                </nz-popconfirm>
+            </span>
+      </td>
+    </tr>
+    </tbody>
+  </nz-table>
+    <ng-template #totalTemplate let-total let-range="range">
+        {{range[0]}}-{{range[1]}} /共 {{total}} 条
+    </ng-template>
+</nz-card>
+
+<button nz-button  (click)="appPerMerge()">测试访问许可</button>
+

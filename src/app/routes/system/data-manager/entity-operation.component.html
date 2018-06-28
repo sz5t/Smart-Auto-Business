@@ -1,0 +1,94 @@
+
+<form nz-form [formGroup]="entityOperForm" (ngSubmit)="_submitForm()">
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="Name">名称</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+            <input nz-input  formControlName="Name" id="Name">
+            <nz-form-explain *ngIf="getFormControl('Name').dirty&&getFormControl('Name').hasError('Name')">模块名称不能为空!</nz-form-explain>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24">描述</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+            <input nz-input  formControlName="Caption">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24">字段类型</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <nz-select formControlName="PropertyType">
+                <nz-option [nzLabel]="'Boolean'" [nzValue]="'Boolean'" ></nz-option>
+                <nz-option [nzLabel]="'Byte'" [nzValue]="'Byte'"></nz-option>
+                <nz-option [nzLabel]="'Date'" [nzValue]="'Date'"></nz-option>
+                <nz-option [nzLabel]="'DateTime'" [nzValue]="'DateTime'"></nz-option>
+                <nz-option [nzLabel]="'Double'" [nzValue]="'Double'"></nz-option>
+                <nz-option [nzLabel]="'Int32'" [nzValue]="'Int32'"></nz-option>
+                <nz-option [nzLabel]="'Object'" [nzValue]="'Object'"></nz-option>
+                <nz-option [nzLabel]="'String'" [nzValue]="'String'"></nz-option>
+                <nz-option [nzLabel]="'Time'" [nzValue]="'Time'"></nz-option>
+            </nz-select>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >最小长度</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <input nz-input  formControlName="MinLength" id="MinLength">
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >最大长度</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <input nz-input  formControlName="MaxLength" id="MaxLength">
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item >
+    <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >精度</nz-form-label>
+    <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+        <input nz-input  formControlName="Precision" id="Precision">
+    </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >是否可空</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <label nz-checkbox formControlName = "Nullable"></label>
+        </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item >
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="SortCode">排序</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <nz-input-number [nzSize]="'small'" formControlName="SortCode" ></nz-input-number>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >备注</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <input nz-input  formControlName="Remark" id="Remark">
+        </nz-form-control>
+    </nz-form-item>
+
+    <div class="customize-footer">
+        <button nz-button [nzType]="'primary'" [nzSize]="'large'" (click)="emitDataOutside()">
+            保存
+        </button>
+        <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="handleCancel($event)">
+            返 回
+        </button>
+    </div>
+</form>
+
+
+<style>
+    :host ::ng-deep .customize-footer {
+        border-top: 1px solid #e9e9e9;
+        padding: 10px 8px 0 10px;
+        text-align: right;
+        border-radius: 0 0 0px 0px;
+        margin: 5px -6px -5px -6px;
+    }
+</style>
+

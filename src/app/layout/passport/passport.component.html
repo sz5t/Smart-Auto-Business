@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="wrap">
+        <div class="top">
+            <div class="head">
+                <a [routerLink]="['/']">
+                    <img class="logo" src="./assets/img/logo-color.svg">
+                    <span class="title">SinoForce</span>
+                </a>
+            </div>
+            <div class="desc">SinoForce 自动化业务装配系统</div>
+        </div>
+        <router-outlet></router-outlet>
+        <global-footer [links]="links">
+            Copyright <i class="anticon anticon-copyright"></i> 2017 <a href="#" target="_blank">SinoForce</a>出品
+        </global-footer>
+    </div>
+</div>

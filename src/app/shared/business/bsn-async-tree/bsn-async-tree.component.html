@@ -1,0 +1,9 @@
+<nz-tree 
+    [(ngModel)]="treeData" 
+    [nzAsyncData]="config.asyncData" 
+    [nzDefaultExpandAll]="config.expandAll"
+    [nzCheckable]="config.checkable" 
+    [nzShowLine]="config.showLine"
+    (nzExpandChange)="onMouseAction('expandNode', $event)"
+    (nzClick)="onMouseAction('clickNode', $event)">
+</nz-tree>

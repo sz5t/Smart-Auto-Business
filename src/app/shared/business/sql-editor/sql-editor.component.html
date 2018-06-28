@@ -1,0 +1,110 @@
+
+<nz-card>
+    <nz-card>
+        <nz-row nzGutter="8">
+            <nz-col nzSpan="24" class="example-input">
+                脚本名称: <input nz-input type="text" [(ngModel)]="scriptName" nzSize="default"/>
+                脚本模式: 
+                <nz-select style="width: 120px" [nzSize]="'default'" [(ngModel)]="scriptModel" nzPlaceHolder="请选择脚本模式">
+                    <nz-option *ngFor="let item of scriptModelList" [nzValue]="item.Value" [nzLabel]="item.Name"></nz-option>
+                    <nz-option *ngIf="isModelloading" nzDisabled nzCustomContent>
+                        <i class="anticon anticon-loading anticon-spin loading-icon"></i>   加载数据...
+                      </nz-option>
+                </nz-select>
+                <nz-divider></nz-divider>
+                <cn-code-edit #editor></cn-code-edit>
+            </nz-col>
+        </nz-row>
+    </nz-card>
+    <nz-card>
+        <nz-row nzGutter="8">
+            <nz-col nzSpan="24" class="table-operations">
+                <button nz-button nzType="primary" (click)="add()" [nzSize]="'default'">新增</button>
+                <button nz-button nzType="default" (click)="save()" [nzSize]="'default'">保存</button>
+            </nz-col>
+        </nz-row>
+    </nz-card>
+    <nz-row [nzGutter]="8">
+        <nz-col nzSpan="24">
+            <nz-table #sqlTable 
+            [nzData]="tableData" 
+            [nzSize]="'small'" 
+            [nzLoading]="loading" 
+            [nzTotal]="total" 
+            [(nzPageIndex)]="pageIndex"
+            [(nzPageSize)]="pageSize">
+                <thead>
+                    <tr>
+                        <th nzShowExpand></th>
+                        <th>名称</th>
+                        <th>类别</th>
+                        <th>脚本内容</th>
+                        <th>引用类型</th>
+                        <th>发布状态</th>
+                        <th>作用域</th>
+                        <th>是否启用</th>
+                        <th> </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-template ngFor let-data [ngForOf]="tableData">
+                        <tr (click)="selectRow(data)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
+                            <td nzShowExpand [(nzExpand)]="data.expand"></td>
+                            <td>{{data.Name}}</td>
+                            <td>{{data.DbObjType}}</td>
+                            <td>{{data.ScriptText}}</td>
+                            <td>{{data.References}}</td>
+                            <td>{{data.IssueFlag}}</td>
+                            <td>{{data.ShareScope}}</td>
+                            <td>{{data.Enabled}}</td>
+                            <td>
+                                    <nz-popconfirm [nzTitle]="'确认删除当前记录?'" (nzOnConfirm)="delete(data.Id)" (nzOnCancel)="cancel()" [nzPlacement]="'top'">
+                                            <button nz-popconfirm nz-button [nzType]="'danger'" [nzSize]="'small'">
+                                                    <i class="anticon anticon-delete"></i> 删除</button>
+                                    </nz-popconfirm>
+                               
+                            
+                            </td>
+                        </tr>
+                        <tr [nzExpand]="data.expand">
+                            <td></td>
+                            <td colspan="7">
+                                <nz-table #innerTable [nzData]="data.ParameterList" nzSize="middle" [nzShowPagination]="false">
+                                    <thead>
+                                        <tr>
+                                            <th>参数名称</th>
+                                            <th>数据类型</th>
+                                            <th>长度</th>
+                                            <th>默认值</th>
+                                            <th>参数类型</th>
+                                            <th>赋值来源</th>
+                                            <th>赋值参数</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let data of innerTable.data">
+                                            <td>{{data.ParameterName}}</td>
+                                            <td>{{data.DbType}}</td>
+                                            <td>{{data.Length}}</td>
+                                            <td>{{data.DefaultValue}}</td>
+                                            <td>{{data.Direction}}</td>
+                                            <td>{{data.ValueSourece}}</td>
+                                            <td>{{data.ValueParam}}</td>
+                                            <td>
+                                                <nz-popconfirm [nzTitle]="'确认删除当前记录?'" (nzOnConfirm)="deleteParam(data.Id)" (nzOnCancel)="cancel()" [nzPlacement]="'top'">
+                                                    <button nz-popconfirm nz-button [nzType]="'danger'" [nzSize]="'small'">
+                                                            <i class="anticon anticon-delete"></i> 删除</button>
+                                            </nz-popconfirm>
+                                            </td>      
+                                        </tr>
+                                    </tbody>
+                                </nz-table>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </tbody>
+            </nz-table>
+        </nz-col>
+    </nz-row>
+</nz-card>

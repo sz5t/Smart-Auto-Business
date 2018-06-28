@@ -1,0 +1,55 @@
+
+<page-header [title]=""></page-header>
+<nz-card>
+  <div class = "table-operations">
+    <button nz-button (click)="refresh()">刷新 </button>
+    <button nz-button (click)="showUserForComponent('Add')">新增</button>
+    <button nz-button (click)="showUserForComponent('Edit')">修改</button>
+    <button nz-button (click)="delete()">删除</button>
+      <button nz-button (click)="settingRole()">角色设置</button>
+  </div>
+  <nz-table #nzTable
+            [nzData]="_dataSet"
+            [nzFrontPagination]="false"
+            nzShowSizeChanger
+            [nzLoading]="_loading"
+            [nzTotal]="_total"
+            [(nzPageIndex)]="_current"
+            (nzPageIndexChange)="refreshData()"
+            [(nzPageSize)]="_pageSize"
+            (nzPageSizeChange)="refreshData(true)"
+            [nzBordered] = "true"
+            [nzShowTotal]="totalTemplate"
+            nzSize = "small">
+    <thead (nzSortChange)="sort($event)" nzSingleSort>
+    <tr>
+        <th nzShowCheckbox  [(nzChecked)]="_allChecked" [nzIndeterminate]="_indeterminate" (nzCheckedChange)="_checkAll()"></th>
+        <th nzShowSort nzSortKey="Name">用户名</th>
+        <th nzShowSort nzSortKey="Code">编码</th>
+        <th nzShowSort nzSortKey="IdCardNumber">身份标识</th>
+        <th nzShowSort nzSortKey="MailAddress">Email</th>
+        <th nzShowSort nzSortKey="NickName">昵称</th>
+        <th nzShowSort nzSortKey="UserType">用户类型</th>
+        <th nzShowSort nzSortKey="Status">状态</th>
+        <th nzShowSort nzSortKey="CreateTime">创建时间</th>
+    </tr>
+    </thead>
+    <tbody nz-tbody>
+    <tr nz-tbody-tr *ngFor="let data of nzTable.data" (click)="selectRow(data)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
+      <td nzShowCheckbox  [(nzChecked)]="data.checked"> </td>
+      <td nz-td>{{data.Name}} </td>
+      <td nz-td>{{data.Code}}</td>
+      <td nz-td>{{data.IdCardNumber}}</td>
+      <td nz-td>{{data.MailAddress}}</td>
+      <td nz-td>{{data.NickName}}</td>
+      <td nz-td>{{data.UserType}}</td>
+      <td nz-td>{{data.Status}}</td>
+      <td nz-td>{{data.CreateTime | date}}</td>
+    </tr>
+    </tbody>
+  </nz-table>
+    <ng-template #totalTemplate let-total let-range="range">
+        {{range[0]}}-{{range[1]}} / {{total}} 条
+    </ng-template>
+</nz-card>
+

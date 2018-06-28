@@ -1,0 +1,47 @@
+<!--<div class="content__title">-->
+    <!--<h1>Page Name</h1>-->
+<!--</div>-->
+<page-header [title]=""></page-header>
+<div nz-row [nzGutter]="8">
+  <div nz-col [nzSpan]="24">
+    <nz-card>
+        <form nz-form [nzLayout]="'inline'">
+            <nz-form-item>
+              <nz-form-label>
+                <label [attr.for]="'功能模块'">功能模块</label>
+              </nz-form-label>
+              <nz-form-control>
+                <nz-cascader
+                  [ngModelOptions]="{standalone: true}"
+                  [class.class123]="true"
+                  [nzOptions]="_funcOptions"
+                  [(ngModel)]="_funcValue"
+                  (nzChange)="_changeModuleValue($event)"
+                  [nzPlaceHolder]="'请选择功能模块'"
+                  [nzExpandTrigger]="'hover'">
+                </nz-cascader>
+              </nz-form-control>
+            </nz-form-item>
+           <!-- <div nz-form-item nz-row>
+              <div nz-col nz-form-control>
+                <button nz-button [nzType]="'primary'" [nzSize]="'default'">保存</button>
+                <button nz-button [nzSize]="'default'" (click)="resetForm($event)">取消</button>
+              </div>
+            </div>-->
+          </form>
+    </nz-card>
+  </div>
+</div>
+<!--
+<div nz-row [nzGutter]="8">
+  <div nz-col [nzSpan]="24">
+    <nz-card nzTitle="SQL 语句设置">
+      <cn-bsn-table [config]="_sqlDataConfig" [dataList]=""></cn-bsn-table>
+    </nz-card>
+    <nz-card nzTitle="SQL 参数设置">
+        <bsn-data-table [config]="_paramDataConfig" [dataList]=""></bsn-data-table>
+    </nz-card>
+  </div>
+</div>
+-->
+<cn-sql-editor [config]="_sqlEditorConfig"></cn-sql-editor>

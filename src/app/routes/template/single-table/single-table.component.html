@@ -1,0 +1,1335 @@
+<page-header [title]=""></page-header>
+<nz-tabset [nzTabPosition]="'top'" [nzType]="'card'">
+    <nz-tab nzTitle="示例">
+        <cn-layout-resolver [config]="config" ></cn-layout-resolver>
+    </nz-tab>
+    <nz-tab nzTitle="代码">
+        <button nz-button nzType="primary" (click)="create()">生成</button>
+        <nz-card>
+            <textarea #CodeMirror name="code">
+                                        {
+                                            "rows": [
+                                                {
+                                                    "row": {
+                                                        "cols": [
+                                                            {
+                                                                "id": "area1",
+                                                                "title": "单表",
+                                                                "span": 24,
+                                                                "size": {
+                                                                    "nzXs": 24,
+                                                                    "nzSm": 24,
+                                                                    "nzMd": 24,
+                                                                    "nzLg": 24,
+                                                                    "ngXl": 24
+                                                                },
+                                                                "viewCfg": [
+                                                                    {
+                                                                        "config": {
+                                                                            "viewId": "parentTable",
+                                                                            "component": "bsnTable",
+                                                                            "keyId": "Id",
+                                                                            "pagination": true,
+                                                                            "showTotal": true,
+                                                                            "pageSize": 5,
+                                                                            "pageSizeOptions": [
+                                                                                5,
+                                                                                10,
+                                                                                20,
+                                                                                30,
+                                                                                40,
+                                                                                50
+                                                                            ],
+                                                                            "ajaxConfig": {
+                                                                                "url": "SinoForce.AppData.ShowCase",
+                                                                                "ajaxType": "get",
+                                                                                "params": [
+                                                                                    {
+                                                                                        "name": "ParentId",
+                                                                                        "type": "value",
+                                                                                        "valueName": "",
+                                                                                        "value": "null"
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            "componentType": {
+                                                                                "parent": true,
+                                                                                "child": false,
+                                                                                "own": true
+                                                                            },
+                                                                            "relations": [
+                                                                                {
+                                                                                    "relationViewId": "parentTable",
+                                                                                    "relationSendContent": [
+                                                                                        {
+                                                                                            "name": "selectRow",
+                                                                                            "sender": "parentTable",
+                                                                                            "aop": "after",
+                                                                                            "receiver": "childTable",
+                                                                                            "relationData": {
+                                                                                                "name": "refreshAsChild",
+                                                                                                "params": [
+                                                                                                    {
+                                                                                                        "pid": "Id",
+                                                                                                        "cid": "_parentId"
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        }
+                                                                                    ],
+                                                                                    "relationReceiveContent": []
+                                                                                }
+                                                                            ],
+                                                                            "columns": [
+                                                                                {
+                                                                                    "title": "Id",
+                                                                                    "field": "Id",
+                                                                                    "width": 80,
+                                                                                    "hidden": true,
+                                                                                    "editor": {
+                                                                                        "type": "input",
+                                                                                        "field": "Id",
+                                                                                        "options": {
+                                                                                            "type": "input",
+                                                                                            "labelSize": "6",
+                                                                                            "controlSize": "10",
+                                                                                            "inputType": "text"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "title": "名称",
+                                                                                    "field": "CaseName",
+                                                                                    "width": 80,
+                                                                                    "editor": {
+                                                                                        "type": "input",
+                                                                                        "field": "CaseName",
+                                                                                        "options": {
+                                                                                            "type": "input",
+                                                                                            "labelSize": "6",
+                                                                                            "controlSize": "10",
+                                                                                            "inputType": "text"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "title": "类别Id",
+                                                                                    "field": "Type",
+                                                                                    "width": 80,
+                                                                                    "hidden": false,
+                                                                                    "editor": {
+                                                                                        "type": "select",
+                                                                                        "field": "Type",
+                                                                                        "options": {
+                                                                                            "type": "select",
+                                                                                            "labelSize": "6",
+                                                                                            "controlSize": "10",
+                                                                                            "inputType": "submit",
+                                                                                            "name": "sex",
+                                                                                            "label": "性别",
+                                                                                            "notFoundContent": "",
+                                                                                            "selectModel": false,
+                                                                                            "showSearch": true,
+                                                                                            "placeholder": "-请选择-",
+                                                                                            "disabled": false,
+                                                                                            "size": "default",
+                                                                                            "clear": true,
+                                                                                            "width": "130px",
+                                                                                            "options": [
+                                                                                                {
+                                                                                                    "label": "表",
+                                                                                                    "value": "1",
+                                                                                                    "disabled": false
+                                                                                                },
+                                                                                                {
+                                                                                                    "label": "树",
+                                                                                                    "value": "2",
+                                                                                                    "disabled": false
+                                                                                                },
+                                                                                                {
+                                                                                                    "label": "树表",
+                                                                                                    "value": "3",
+                                                                                                    "disabled": false
+                                                                                                },
+                                                                                                {
+                                                                                                    "label": "表单",
+                                                                                                    "value": "4",
+                                                                                                    "disabled": false
+                                                                                                },
+                                                                                                {
+                                                                                                    "label": "标签页",
+                                                                                                    "value": "5",
+                                                                                                    "disabled": false
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "title": "数量",
+                                                                                    "field": "CaseCount",
+                                                                                    "width": 80,
+                                                                                    "hidden": false,
+                                                                                    "editor": {
+                                                                                        "type": "input",
+                                                                                        "field": "CaseCount",
+                                                                                        "options": {
+                                                                                            "type": "input",
+                                                                                            "labelSize": "6",
+                                                                                            "controlSize": "10",
+                                                                                            "inputType": "text"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "title": "级别",
+                                                                                    "field": "Level",
+                                                                                    "width": 80,
+                                                                                    "hidden": false,
+                                                                                    "editor": {
+                                                                                        "type": "input",
+                                                                                        "field": "Level",
+                                                                                        "options": {
+                                                                                            "type": "input",
+                                                                                            "labelSize": "6",
+                                                                                            "controlSize": "10",
+                                                                                            "inputType": "text"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "title": "创建时间",
+                                                                                    "field": "CreateTime",
+                                                                                    "width": 80,
+                                                                                    "hidden": false,
+                                                                                    "editor": {
+                                                                                        "type": "input",
+                                                                                        "field": "CreateTime",
+                                                                                        "options": {
+                                                                                            "type": "input",
+                                                                                            "labelSize": "6",
+                                                                                            "controlSize": "10",
+                                                                                            "inputType": "text"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "title": "备注",
+                                                                                    "field": "Remark",
+                                                                                    "width": 80,
+                                                                                    "hidden": false,
+                                                                                    "editor": {
+                                                                                        "type": "input",
+                                                                                        "field": "Remark",
+                                                                                        "options": {
+                                                                                            "type": "input",
+                                                                                            "labelSize": "6",
+                                                                                            "controlSize": "10",
+                                                                                            "inputType": "text"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "title": "状态",
+                                                                                    "field": "Enable",
+                                                                                    "width": 80,
+                                                                                    "hidden": false,
+                                                                                    "editor": {
+                                                                                        "type": "select",
+                                                                                        "field": "Enable",
+                                                                                        "options": {
+                                                                                            "type": "select",
+                                                                                            "labelSize": "6",
+                                                                                            "controlSize": "10",
+                                                                                            "inputType": "submit",
+                                                                                            "name": "sex",
+                                                                                            "notFoundContent": "",
+                                                                                            "selectModel": false,
+                                                                                            "showSearch": true,
+                                                                                            "placeholder": "-请选择-",
+                                                                                            "disabled": false,
+                                                                                            "size": "default",
+                                                                                            "clear": true,
+                                                                                            "width": "80px",
+                                                                                            "options": [
+                                                                                                {
+                                                                                                    "label": "启用",
+                                                                                                    "value": 1,
+                                                                                                    "disabled": false
+                                                                                                },
+                                                                                                {
+                                                                                                    "label": "禁用",
+                                                                                                    "value": 0,
+                                                                                                    "disabled": false
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            ],
+                                                                            "toolbar": [
+                                                                                {
+                                                                                    "name": "refresh",
+                                                                                    "class": "editable-add-btn",
+                                                                                    "text": "刷新"
+                                                                                },
+                                                                                {
+                                                                                    "name": "addRow",
+                                                                                    "class": "editable-add-btn",
+                                                                                    "text": "新增"
+                                                                                },
+                                                                                {
+                                                                                    "name": "updateRow",
+                                                                                    "class": "editable-add-btn",
+                                                                                    "text": "修改"
+                                                                                },
+                                                                                {
+                                                                                    "name": "deleteRow",
+                                                                                    "class": "editable-add-btn",
+                                                                                    "text": "删除",
+                                                                                    "ajaxConfig": {
+                                                                                        "delete": [
+                                                                                            {
+                                                                                                "actionName": "delete",
+                                                                                                "url": "SinoForce.AppData.ShowCase",
+                                                                                                "ajaxType": "delete"
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "name": "saveRow",
+                                                                                    "class": "editable-add-btn",
+                                                                                    "text": "保存",
+                                                                                    "type": "method/action",
+                                                                                    "ajaxConfig": {
+                                                                                        "post": [
+                                                                                            {
+                                                                                                "actionName": "add",
+                                                                                                "url": "SinoForce.AppData.ShowCase",
+                                                                                                "ajaxType": "post",
+                                                                                                "params": [
+                                                                                                    {
+                                                                                                        "name": "CaseName",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "CaseName",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "CaseCount",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "CaseCount",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "CreateTime",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "CreateTime",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "Enable",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "Enable",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "Level",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "Level",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "ParentId",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "ParentId",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "Remark",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "Remark",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "Type",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "Type",
+                                                                                                        "value": ""
+                                                                                                    }
+                                                                                                ],
+                                                                                                "output": [
+                                                                                                    {
+                                                                                                        "name": "_id",
+                                                                                                        "type": "",
+                                                                                                        "dataName": "Id"
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        ],
+                                                                                        "put": [
+                                                                                            {
+                                                                                                "url": "SinoForce.AppData.ShowCase",
+                                                                                                "ajaxType": "put",
+                                                                                                "params": [
+                                                                                                    {
+                                                                                                        "name": "Id",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "Id",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "CaseName",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "CaseCount",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "CreateTime",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "Enable",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "Level",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "ParentId",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "Remark",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "Type",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "",
+                                                                                                        "value": ""
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "name": "cancelRow",
+                                                                                    "class": "editable-add-btn",
+                                                                                    "text": "取消"
+                                                                                },
+                                                                                {
+                                                                                    "name": "injectRow",
+                                                                                    "class": "editable-add-btn",
+                                                                                    "text": "测试方法注入",
+                                                                                    "enables": {
+                                                                                        "addRow": true,
+                                                                                        "updateRow": true,
+                                                                                        "deleteRow": true,
+                                                                                        "saveRow": false,
+                                                                                        "cancelRow": false,
+                                                                                        "showDialog": true
+                                                                                    },
+                                                                                    "type": "method/action",
+                                                                                    "ajaxConfig": {
+                                                                                        "add": {
+                                                                                            "url": "AppConfigPack_test",
+                                                                                            "ajaxType": "post",
+                                                                                            "params": [
+                                                                                                {
+                                                                                                    "name": "ParentId",
+                                                                                                    "type": "value",
+                                                                                                    "valueName": "取值参数名称",
+                                                                                                    "value": "liutest11"
+                                                                                                },
+                                                                                                {
+                                                                                                    "name": "Name",
+                                                                                                    "type": "value",
+                                                                                                    "valueName": "取值参数名称",
+                                                                                                    "value": "liutest11"
+                                                                                                },
+                                                                                                {
+                                                                                                    "name": "TagA",
+                                                                                                    "type": "value",
+                                                                                                    "valueName": "取值参数名称",
+                                                                                                    "value": "liutest11"
+                                                                                                },
+                                                                                                {
+                                                                                                    "name": "TagB",
+                                                                                                    "type": "value",
+                                                                                                    "valueName": "取值参数名称",
+                                                                                                    "value": "liutest11"
+                                                                                                },
+                                                                                                {
+                                                                                                    "name": "Metadata",
+                                                                                                    "type": "tempValue",
+                                                                                                    "valueName": "dataList",
+                                                                                                    "value": "liutest11"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        "update": {
+                                                                                            "url": "AppConfigPack_test",
+                                                                                            "ajaxType": "put",
+                                                                                            "params": [
+                                                                                                {
+                                                                                                    "name": "Id",
+                                                                                                    "type": "tempValue",
+                                                                                                    "valueName": "_id",
+                                                                                                    "value": ""
+                                                                                                },
+                                                                                                {
+                                                                                                    "name": "Metadata",
+                                                                                                    "type": "tempValue",
+                                                                                                    "valueName": "dataList",
+                                                                                                    "value": ""
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "name": "showDialog",
+                                                                                    "class": "editable-add-btn",
+                                                                                    "text": "弹出框"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        "dataList": []
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "row": {
+                                                        "cols": [
+                                                            {
+                                                                "id": "area1",
+                                                                "title": "单表",
+                                                                "span": 24,
+                                                                "size": {
+                                                                    "nzXs": 24,
+                                                                    "nzSm": 24,
+                                                                    "nzMd": 24,
+                                                                    "nzLg": 24,
+                                                                    "ngXl": 24
+                                                                },
+                                                                "viewCfg": [
+                                                                    {
+                                                                        "config": {
+                                                                            "viewId": "childTable",
+                                                                            "component": "bsnTable",
+                                                                            "keyId": "Id",
+                                                                            "nzIsPagination": true,
+                                                                            "nzShowTotal": true,
+                                                                            "pageSize": 5,
+                                                                            "pageSizeOptions": [
+                                                                                5,
+                                                                                10,
+                                                                                20,
+                                                                                30,
+                                                                                40,
+                                                                                50
+                                                                            ],
+                                                                            "ajaxConfig": {
+                                                                                "url": "SinoForce.AppData.ShowCase",
+                                                                                "ajaxType": "get",
+                                                                                "params": [
+                                                                                    {
+                                                                                        "name": "ParentId",
+                                                                                        "type": "tempValue",
+                                                                                        "valueName": "_parentId",
+                                                                                        "value": ""
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            "componentType": {
+                                                                                "parent": false,
+                                                                                "child": true,
+                                                                                "own": false
+                                                                            },
+                                                                            "relations": [
+                                                                                {
+                                                                                    "relationViewId": "childTable",
+                                                                                    "relationSendContent": [],
+                                                                                    "relationReceiveContent": []
+                                                                                }
+                                                                            ],
+                                                                            "columns": [
+                                                                                {
+                                                                                    "title": "Id",
+                                                                                    "field": "Id",
+                                                                                    "width": 80,
+                                                                                    "hidden": true,
+                                                                                    "editor": {
+                                                                                        "type": "input",
+                                                                                        "field": "Id",
+                                                                                        "options": {
+                                                                                            "type": "input",
+                                                                                            "labelSize": "6",
+                                                                                            "controlSize": "10",
+                                                                                            "inputType": "text"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "title": "名称",
+                                                                                    "field": "CaseName",
+                                                                                    "width": 80,
+                                                                                    "editor": {
+                                                                                        "type": "input",
+                                                                                        "field": "CaseName",
+                                                                                        "options": {
+                                                                                            "type": "input",
+                                                                                            "labelSize": "6",
+                                                                                            "controlSize": "10",
+                                                                                            "inputType": "text"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "title": "类别Id",
+                                                                                    "field": "Type",
+                                                                                    "width": 80,
+                                                                                    "hidden": false,
+                                                                                    "editor": {
+                                                                                        "type": "select",
+                                                                                        "field": "Type",
+                                                                                        "options": {
+                                                                                            "type": "select",
+                                                                                            "labelSize": "6",
+                                                                                            "controlSize": "10",
+                                                                                            "inputType": "submit",
+                                                                                            "name": "sex",
+                                                                                            "label": "性别",
+                                                                                            "notFoundContent": "",
+                                                                                            "selectModel": false,
+                                                                                            "showSearch": true,
+                                                                                            "placeholder": "-请选择-",
+                                                                                            "disabled": false,
+                                                                                            "size": "default",
+                                                                                            "clear": true,
+                                                                                            "width": "130px",
+                                                                                            "options": [
+                                                                                                {
+                                                                                                    "label": "表",
+                                                                                                    "value": "1",
+                                                                                                    "disabled": false
+                                                                                                },
+                                                                                                {
+                                                                                                    "label": "树",
+                                                                                                    "value": "2",
+                                                                                                    "disabled": false
+                                                                                                },
+                                                                                                {
+                                                                                                    "label": "树表",
+                                                                                                    "value": "3",
+                                                                                                    "disabled": false
+                                                                                                },
+                                                                                                {
+                                                                                                    "label": "表单",
+                                                                                                    "value": "4",
+                                                                                                    "disabled": false
+                                                                                                },
+                                                                                                {
+                                                                                                    "label": "标签页",
+                                                                                                    "value": "5",
+                                                                                                    "disabled": false
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "title": "数量",
+                                                                                    "field": "CaseCount",
+                                                                                    "width": 80,
+                                                                                    "hidden": false,
+                                                                                    "editor": {
+                                                                                        "type": "input",
+                                                                                        "field": "CaseCount",
+                                                                                        "options": {
+                                                                                            "type": "input",
+                                                                                            "labelSize": "6",
+                                                                                            "controlSize": "10",
+                                                                                            "inputType": "text"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "title": "级别",
+                                                                                    "field": "Level",
+                                                                                    "width": 80,
+                                                                                    "hidden": false,
+                                                                                    "editor": {
+                                                                                        "type": "input",
+                                                                                        "field": "Level",
+                                                                                        "options": {
+                                                                                            "type": "input",
+                                                                                            "labelSize": "6",
+                                                                                            "controlSize": "10",
+                                                                                            "inputType": "text"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "title": "创建时间",
+                                                                                    "field": "CreateTime",
+                                                                                    "width": 80,
+                                                                                    "hidden": false,
+                                                                                    "editor": {
+                                                                                        "type": "input",
+                                                                                        "field": "CreateTime",
+                                                                                        "options": {
+                                                                                            "type": "input",
+                                                                                            "labelSize": "6",
+                                                                                            "controlSize": "10",
+                                                                                            "inputType": "text"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "title": "备注",
+                                                                                    "field": "Remark",
+                                                                                    "width": 80,
+                                                                                    "hidden": false,
+                                                                                    "editor": {
+                                                                                        "type": "input",
+                                                                                        "field": "Remark",
+                                                                                        "options": {
+                                                                                            "type": "input",
+                                                                                            "labelSize": "6",
+                                                                                            "controlSize": "10",
+                                                                                            "inputType": "text"
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "title": "状态",
+                                                                                    "field": "Enable",
+                                                                                    "width": 80,
+                                                                                    "hidden": false,
+                                                                                    "editor": {
+                                                                                        "type": "select",
+                                                                                        "field": "Enable",
+                                                                                        "options": {
+                                                                                            "type": "select",
+                                                                                            "labelSize": "6",
+                                                                                            "controlSize": "10",
+                                                                                            "inputType": "submit",
+                                                                                            "name": "sex",
+                                                                                            "notFoundContent": "",
+                                                                                            "selectModel": false,
+                                                                                            "showSearch": true,
+                                                                                            "placeholder": "-请选择-",
+                                                                                            "disabled": false,
+                                                                                            "size": "default",
+                                                                                            "clear": true,
+                                                                                            "width": "80px",
+                                                                                            "options": [
+                                                                                                {
+                                                                                                    "label": "启用",
+                                                                                                    "value": 1,
+                                                                                                    "disabled": false
+                                                                                                },
+                                                                                                {
+                                                                                                    "label": "禁用",
+                                                                                                    "value": 0,
+                                                                                                    "disabled": false
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            ],
+                                                                            "toolbar": [
+                                                                                {
+                                                                                    "name": "refresh",
+                                                                                    "class": "editable-add-btn",
+                                                                                    "text": "刷新"
+                                                                                },
+                                                                                {
+                                                                                    "name": "addRow",
+                                                                                    "class": "editable-add-btn",
+                                                                                    "text": "新增"
+                                                                                },
+                                                                                {
+                                                                                    "name": "updateRow",
+                                                                                    "class": "editable-add-btn",
+                                                                                    "text": "修改"
+                                                                                },
+                                                                                {
+                                                                                    "name": "deleteRow",
+                                                                                    "class": "editable-add-btn",
+                                                                                    "text": "删除",
+                                                                                    "ajaxConfig": {
+                                                                                        "delete": [
+                                                                                            {
+                                                                                                "actionName": "delete",
+                                                                                                "url": "SinoForce.AppData.ShowCase",
+                                                                                                "ajaxType": "delete"
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "name": "saveRow",
+                                                                                    "class": "editable-add-btn",
+                                                                                    "text": "保存",
+                                                                                    "type": "method/action",
+                                                                                    "ajaxConfig": {
+                                                                                        "post": [
+                                                                                            {
+                                                                                                "actionName": "add",
+                                                                                                "url": "SinoForce.AppData.ShowCase",
+                                                                                                "ajaxType": "post",
+                                                                                                "params": [
+                                                                                                    {
+                                                                                                        "name": "CaseName",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "CaseName",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "CaseCount",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "CaseCount",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "CreateTime",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "CreateTime",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "Enable",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "Enable",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "Level",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "Level",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "ParentId",
+                                                                                                        "type": "tempValue",
+                                                                                                        "valueName": "_parentId",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "Remark",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "Remark",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "Type",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "Type",
+                                                                                                        "value": ""
+                                                                                                    }
+                                                                                                ],
+                                                                                                "output": [
+                                                                                                    {
+                                                                                                        "name": "_id",
+                                                                                                        "type": "",
+                                                                                                        "dataName": "Id"
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        ],
+                                                                                        "put": [
+                                                                                            {
+                                                                                                "url": "SinoForce.AppData.ShowCase",
+                                                                                                "ajaxType": "put",
+                                                                                                "params": [
+                                                                                                    {
+                                                                                                        "name": "Id",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "Id",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "CaseName",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "CaseCount",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "CreateTime",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "Enable",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "Level",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "ParentId",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "Remark",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "",
+                                                                                                        "value": ""
+                                                                                                    },
+                                                                                                    {
+                                                                                                        "name": "Type",
+                                                                                                        "type": "componentValue",
+                                                                                                        "valueName": "",
+                                                                                                        "value": ""
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "name": "cancelRow",
+                                                                                    "class": "editable-add-btn",
+                                                                                    "text": "取消"
+                                                                                },
+                                                                                {
+                                                                                    "name": "injectRow",
+                                                                                    "class": "editable-add-btn",
+                                                                                    "text": "测试方法注入",
+                                                                                    "enables": {
+                                                                                        "addRow": true,
+                                                                                        "updateRow": true,
+                                                                                        "deleteRow": true,
+                                                                                        "saveRow": false,
+                                                                                        "cancelRow": false,
+                                                                                        "showDialog": true
+                                                                                    },
+                                                                                    "type": "method/action",
+                                                                                    "ajaxConfig": {
+                                                                                        "add": {
+                                                                                            "url": "AppConfigPack_test",
+                                                                                            "ajaxType": "post",
+                                                                                            "params": [
+                                                                                                {
+                                                                                                    "name": "ParentId",
+                                                                                                    "type": "value",
+                                                                                                    "valueName": "取值参数名称",
+                                                                                                    "value": "liutest11"
+                                                                                                },
+                                                                                                {
+                                                                                                    "name": "Name",
+                                                                                                    "type": "value",
+                                                                                                    "valueName": "取值参数名称",
+                                                                                                    "value": "liutest11"
+                                                                                                },
+                                                                                                {
+                                                                                                    "name": "TagA",
+                                                                                                    "type": "value",
+                                                                                                    "valueName": "取值参数名称",
+                                                                                                    "value": "liutest11"
+                                                                                                },
+                                                                                                {
+                                                                                                    "name": "TagB",
+                                                                                                    "type": "value",
+                                                                                                    "valueName": "取值参数名称",
+                                                                                                    "value": "liutest11"
+                                                                                                },
+                                                                                                {
+                                                                                                    "name": "Metadata",
+                                                                                                    "type": "tempValue",
+                                                                                                    "valueName": "dataList",
+                                                                                                    "value": "liutest11"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        "update": {
+                                                                                            "url": "AppConfigPack_test",
+                                                                                            "ajaxType": "put",
+                                                                                            "params": [
+                                                                                                {
+                                                                                                    "name": "Id",
+                                                                                                    "type": "tempValue",
+                                                                                                    "valueName": "_id",
+                                                                                                    "value": ""
+                                                                                                },
+                                                                                                {
+                                                                                                    "name": "Metadata",
+                                                                                                    "type": "tempValue",
+                                                                                                    "valueName": "dataList",
+                                                                                                    "value": ""
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    }
+                                                                                },
+                                                                                {
+                                                                                    "name": "showDialog",
+                                                                                    "class": "editable-add-btn",
+                                                                                    "text": "弹出框"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        "dataList": []
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                </textarea>
+        </nz-card>
+    </nz-tab>
+    <nz-tab nzTitle="组件解析">
+        <nz-row [nzGutter]="8">
+            <nz-col [nzSpan]="4">
+                <nz-card nzTitle="组件列表">
+
+                </nz-card>
+            </nz-col>
+            <nz-col [nzSpan]="14">
+                <nz-row [nzGutter]="4">
+                    <nz-col [nzSpan]="24">
+                        <nz-card nzTitle="组件Demo">
+                            <cn-component-resolver [config]="componentConfig"></cn-component-resolver>
+                        </nz-card>
+                    </nz-col>
+                </nz-row>
+                <nz-row [nzGutter]="6">
+                    <nz-col [nzSpan]="24">
+                        <nz-card nzTitle="配置代码">
+                            <nz-row>
+                                <nz-col>
+                                    <button nz-button nzType="primary" (click)="resolveComponent()">解析</button>
+                                </nz-col>
+                            </nz-row>
+                            <nz-row>
+                                <nz-col [nzSpan]="24">
+                                    <textarea #ComponentEditor>
+                                                {
+                                                    "config": {
+                                                        "viewId": "search_form",
+                                                        "component": "search_view",
+                                                        "keyId": "Id",
+                                                        "layout": "horizontal",
+                                                        "componentType": {
+                                                            "parent": true,
+                                                            "child": false,
+                                                            "own": true
+                                                        },
+                                                        "forms": [
+                                                            {
+                                                                "title": "分类条件",
+                                                                "layout": "grid",
+                                                                "controls": [
+                                                                    {
+                                                                        "type": "select",
+                                                                        "labelSize": "6",
+                                                                        "controlSize": "16",
+                                                                        "inputType": "submit",
+                                                                        "name": "Enable",
+                                                                        "label": "状态",
+                                                                        "notFoundContent": "",
+                                                                        "selectModel": false,
+                                                                        "showSearch": true,
+                                                                        "placeholder": "--请选择--",
+                                                                        "disabled": false,
+                                                                        "size": "default",
+                                                                        "options": [
+                                                                            {
+                                                                                "label": "启用",
+                                                                                "value": 1,
+                                                                                "disabled": false
+                                                                            },
+                                                                            {
+                                                                                "label": "禁用",
+                                                                                "value": 0,
+                                                                                "disabled": false
+                                                                            }
+                                                                        ],
+                                                                        "layout": "column",
+                                                                        "span": "6"
+                                                                    },
+                                                                    {
+                                                                        "type": "select",
+                                                                        "labelSize": "6",
+                                                                        "controlSize": "16",
+                                                                        "inputType": "submit",
+                                                                        "name": "Type",
+                                                                        "label": "类别",
+                                                                        "notFoundContent": "",
+                                                                        "selectModel": false,
+                                                                        "showSearch": true,
+                                                                        "placeholder": "--请选择--",
+                                                                        "disabled": false,
+                                                                        "size": "default",
+                                                                        "options": [
+                                                                            {
+                                                                                "label": "表",
+                                                                                "value": "1",
+                                                                                "disabled": false
+                                                                            },
+                                                                            {
+                                                                                "label": "树",
+                                                                                "value": "2",
+                                                                                "disabled": false
+                                                                            },
+                                                                            {
+                                                                                "label": "树表",
+                                                                                "value": "3",
+                                                                                "disabled": false
+                                                                            },
+                                                                            {
+                                                                                "label": "表单",
+                                                                                "value": "4",
+                                                                                "disabled": false
+                                                                            },
+                                                                            {
+                                                                                "label": "标签页",
+                                                                                "value": "5",
+                                                                                "disabled": false
+                                                                            }
+                                                                        ],
+                                                                        "layout": "column",
+                                                                        "span": "6"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                "title": "扩展条件",
+                                                                "layout": "grid last",
+                                                                "controls": [
+                                                                    {
+                                                                        "type": "input",
+                                                                        "labelSize": "6",
+                                                                        "controlSize": "16",
+                                                                        "inputType": "text",
+                                                                        "name": "CaseName",
+                                                                        "label": "名称",
+                                                                        "placeholder": "",
+                                                                        "disabled": false,
+                                                                        "readonly": false,
+                                                                        "size": "default",
+                                                                        "layout": "column",
+                                                                        "span": "6"
+                                                                    },
+                                                                    {
+                                                                        "type": "input",
+                                                                        "labelSize": "6",
+                                                                        "controlSize": "16",
+                                                                        "inputType": "text",
+                                                                        "name": "Level",
+                                                                        "label": "级别",
+                                                                        "placeholder": "",
+                                                                        "disabled": false,
+                                                                        "readonly": false,
+                                                                        "size": "default",
+                                                                        "layout": "column",
+                                                                        "span": "6"
+                                                                    },
+                                                                    {
+                                                                        "type": "input",
+                                                                        "labelSize": "6",
+                                                                        "controlSize": "16",
+                                                                        "inputType": "text",
+                                                                        "name": "CaseCount",
+                                                                        "label": "数量",
+                                                                        "placeholder": "",
+                                                                        "disabled": false,
+                                                                        "readonly": false,
+                                                                        "size": "default",
+                                                                        "layout": "column",
+                                                                        "span": "6"
+                                                                    },
+                                                                    {
+                                                                        "type": "search",
+                                                                        "labelSize": "6",
+                                                                        "controlSize": "16",
+                                                                        "inputType": "button",
+                                                                        "name": "Type",
+                                                                        "label": "",
+                                                                        "disabled": false,
+                                                                        "size": "default",
+                                                                        "layout": "column",
+                                                                        "span": "6"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ],
+                                                        "dataList": [],
+                                                        "relations": [
+                                                            {
+                                                                "relationViewId": "search_form",
+                                                                "relationSendContent": [
+                                                                    {
+                                                                        "name": "searchFormByValue",
+                                                                        "sender": "search_form",
+                                                                        "aop": "after",
+                                                                        "receiver": "singleTable",
+                                                                        "relationData": {
+                                                                            "name": "refreshAsChild",
+                                                                            "params": [
+                                                                                {
+                                                                                    "pid": "CaseName",
+                                                                                    "cid": "_caseName"
+                                                                                },
+                                                                                {
+                                                                                    "pid": "Type",
+                                                                                    "cid": "_type"
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ],
+                                                                "relationReceiveContent": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    "dataList": []
+                                                }
+                                            </textarea>
+                                </nz-col>
+                            </nz-row>
+
+                        </nz-card>
+                    </nz-col>
+                </nz-row>
+
+            </nz-col>
+            <nz-col [nzSpan]="4">
+                <nz-card nzTitle="属性说明">
+
+                </nz-card>
+            </nz-col>
+        </nz-row>
+    </nz-tab>
+    <nz-tab nzTitle="表单解析">
+        <nz-row [nzGutter]="4">
+            <nz-col [nzSpan]="4">
+                <nz-card nzTitle="表单组件">
+
+                </nz-card>
+            </nz-col>
+            <nz-col [nzSpan]="14">
+                <nz-row [nzGutter]="4">
+                    <nz-col [nzSpan]="24">
+                        <nz-card nzTitle="表单元素Demo">
+                            <cn-form-resolver [config]="formConfig">
+
+                            </cn-form-resolver>
+                        </nz-card>
+                    </nz-col>
+                </nz-row>
+                <nz-row [nzGutter]="4">
+                    <nz-col [nzSpan]="24">
+                        <nz-card nzTitle="配置代码">
+                            <button nz-button nzType="primary" (click)="resolveForm()">生成</button>
+                            <textarea #formEditor>
+                                { 
+                                    "forms": [
+                                      {
+                                          "title": "分类条件",
+                                          "layout": "grid",
+                                          "controls": [
+                                              {
+                                                  "type": "select",
+                                                  "labelSize": "6",
+                                                  "controlSize": "16",
+                                                  "inputType": "submit",
+                                                  "name": "Enable",
+                                                  "label": "状态",
+                                                  "notFoundContent": "",
+                                                  "selectModel": false,
+                                                  "showSearch": true,
+                                                  "placeholder": "--请选择--",
+                                                  "disabled": false,
+                                                  "size": "default",
+                                                  "options": [
+                                                      {
+                                                          "label": "启用",
+                                                          "value": 1,
+                                                          "disabled": false
+                                                      },
+                                                      {
+                                                          "label": "禁用",
+                                                          "value": 0,
+                                                          "disabled": false
+                                                      }
+                                                  ],
+                                                  "layout": "column",
+                                                  "span": "6"
+                                              }
+                                          ]
+                                      }
+                                  ]
+                                  }
+                                </textarea>
+                        </nz-card>
+
+                    </nz-col>
+                </nz-row>
+            </nz-col>
+            <nz-col [nzSpan]="6">
+                <nz-card nzTitle="属性说明">
+
+                </nz-card>
+            </nz-col>
+        </nz-row>
+
+    </nz-tab>
+</nz-tabset>
+<div nz-row [nzGutter]="8">
+        <div nz-col [nzSpan]="12">
+            <nz-card>
+                    <line-chart></line-chart>
+            </nz-card>
+                
+            
+        </div>
+        <div nz-col [nzSpan]="12">
+                <nz-card>
+                        <line-chart></line-chart>
+                </nz-card>
+                
+            </div>
+    </div>

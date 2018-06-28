@@ -1,0 +1,36 @@
+<nz-spin [nzSpinning]="isSpinning" [nzDelay]="300" nzTip='加载中...'>
+  <form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form" (ngSubmit)="save($event)">
+
+    <ng-container *ngFor="let formItem of config.forms">
+        <div nz-row [nzGutter]="24">
+            <ng-container *ngFor="let control of formItem.controls">
+            <ng-container *ngIf="!control.hidden">  
+                <!-- 垂直表单布局-->
+                <nz-form-item *ngIf="control.layout==='row'">
+                  <ng-container cnFormResolverDirective [formGroup]="form" [config]="control" [changeConfig]="changeConfig"  (updateValue)="valueChange($event)" >
+        
+                  </ng-container>
+                </nz-form-item>
+        
+                <!-- 水平表单布局-->
+                <div nz-col [nzSpan]="control.span">
+                    <nz-form-item>
+                      <ng-container cnFormResolverDirective [formGroup]="form" [config]="control" [changeConfig]="changeConfig" (updateValue)="valueChange($event)" >
+        
+                      </ng-container>
+                    </nz-form-item>
+                  </div>
+              </ng-container> 
+            </ng-container>
+        </div>
+    </ng-container>
+
+    <div nz-row [nzGutter]="24" *ngIf="config.toolbar">
+        <nz-form-control nzOffset="20" nzSpan="4">
+            <ng-container *ngFor="let bar of config.toolbar">
+                <input nz-button type="button" (click)="buttonAction(bar)" class="editable-add-btn" value="{{bar.text}}" />
+            </ng-container>
+        </nz-form-control>
+    </div>
+  </form>
+</nz-spin>

@@ -1,0 +1,16 @@
+<ng-template #template>
+    <ul nz-menu nzInDropDown >
+        <li nz-submenu *ngFor="let menu of menuConfig">
+          <span title> {{menu.label}}</span>
+          <ul *ngFor="let item of menu.children">
+            <li nz-menu-item (click)="createBsnComponent(item.value)"> {{item.label}}</li>
+          </ul>
+        </li>
+      </ul>
+  <!-- <button nz-button (click)="_saveComponent()">保存</button> -->
+</ng-template>
+<div style="height:200px; overflow:scroll" (contextmenu)="contextMenu($event,template)">
+    <div #dynamicComponent></div>
+</div>
+
+

@@ -1,0 +1,58 @@
+<page-header [title]=""></page-header>
+
+    <nz-card>
+      <div class = "table-operations">
+        <button nz-button  (click)="refresh()">刷新</button>
+        <button nz-button  (click)="showModalForComponent('Add')">新增</button>
+        <button nz-button  (click)="showModalForComponent('Edit')">修改</button>
+        <button nz-button  (click)="delete()">删除</button>
+          <!--<nz-popconfirm [nzTitle]="'确定要删除这个任务吗？'" (nzOnConfirm)="delete($event)">-->
+              <!--<button nz-popconfirm>删除</button>-->
+          <!--</nz-popconfirm>-->
+      </div>
+      <nz-table #nzTable
+                [nzPageSizeOptions]="[1, 2, 3, 5, 10]"
+                [nzFrontPagination]="false"
+                [nzData]="_dataSet"
+                [nzLoading]="_loading"
+                [nzTotal]="_total"
+                [(nzPageIndex)]="_current"
+                (nzPageIndexChange)="loadData(false,$event)"
+                [nzPageSize]="_pageSize"
+                (nzPageSizeChange)="loadData(true,$event)"
+                [nzBordered] = "true"
+                [nzShowTotal]="totalTemplate">
+        <thead>
+        <tr>
+          <th>选择</th>
+          <th>名称</th>
+          <th>地址</th>
+          <th>有效</th>
+          <th>排序</th>
+          <th>备注</th >
+          <th>创建时间</th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-template ngFor let-data [ngForOf]="nzTable.data">
+          <ng-template ngFor let-item [ngForOf]="expandDataCache[data.id]">
+            <tr *ngIf="(item.parent&&item.parent.expand)||!(item.parent)">
+              <td   nzShowCheckbox  [nzChecked]="false" (nzCheckedChange)="refChecked($event,item)"> <!--[nzDisabled]="!!!item.children"-->
+              <td [nzIndentSize]="item.level*20" [(nzExpand)]="item.expand" (nzExpandChange)="collapse(expandDataCache[data.id],item,$event)"  [nzShowExpand]="!!item.children">
+                {{item.text}}
+              </td>
+              <td >{{item.link}}</td>
+              <td >{{getText(item.hide)}}</td>
+              <td >{{item.order}}</td>
+              <td >{{item.remark}}</td>
+              <td >{{item.createtime | date}}</td>
+            </tr>
+          </ng-template>
+        </ng-template>
+        </tbody>
+          <ng-template #totalTemplate let-total let-range="range">
+              {{range[0]}}-{{range[1]}} / {{total}} 条
+          </ng-template>
+      </nz-table>
+    </nz-card>
+

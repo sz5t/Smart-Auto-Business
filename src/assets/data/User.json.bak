@@ -1,0 +1,649 @@
+{
+  "rows": [
+    {
+      "row": {
+        "cols": [
+          {
+            "id": "area2",
+            "title": "人员信息",
+            "span": 24,
+            "size": {
+              "nzXs": 24,
+              "nzSm": 24,
+              "nzMd": 24,
+              "nzLg": 24,
+              "ngXl": 24
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "viewId": "tree_and_table_table",
+                  "component": "bsnTable",
+                  "keyId": "Id",
+                  "pagination": true,
+                  "showTotal": true,
+                  "pageSize": 5,
+                  "pageSizeOptions": [
+                    5,
+                    10,
+                    20,
+                    30,
+                    40,
+                    50
+                  ],
+                  "ajaxConfig": {
+                    "url": "SinoForce.User.AppUser",
+                    "ajaxType": "get",
+                    "params": [
+                      {
+                        "name": "ParentId",
+                        "type": "tempValue",
+                        "valueName": "_parentId",
+                        "value": ""
+                      }
+                    ]
+                  },
+                  "componentType": {
+                    "parent": true,
+                    "child": false,
+                    "own": true
+                  },
+                  "relations": [
+                    {
+                      "relationViewId": "tree_and_table_table",
+                      "relationSendContent": [],
+                      "relationReceiveContent": []
+                    }
+                  ],
+                  "columns": [
+                    {
+                      "title": "Id",
+                      "field": "Id",
+                      "width": 80,
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "Id",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "用户代码",
+                      "field": "Code",
+                      "width": 50,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Code",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "用户名",
+                      "field": "Name",
+                      "width": 100,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Name",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "10",
+                          "controlSize": "5",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "密码",
+                      "field": "Password",
+                      "width": 40,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Password",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "4",
+                          "controlSize": "4",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "姓名",
+                      "field": "RealName",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "RealName",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "所属部门",
+                      "field": "OrgId",
+                      "width": 80,
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "OrgId",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "出生日期",
+                      "field": "Birthday",
+                      "width": 80,
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "Birthday",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "性别",
+                      "field": "Gender",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "select",
+                        "field": "Gender",
+                        "options": {
+                          "type": "select",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "submit",
+                          "name": "Gender",
+                          "label": "性别",
+                          "notFoundContent": "",
+                          "selectModel": false,
+                          "showSearch": true,
+                          "placeholder": "-请选择-",
+                          "disabled": false,
+                          "size": "default",
+                          "clear": true,
+                          "width": "130px",
+                          "options": [
+                            {
+                              "label": "男",
+                              "value": "1",
+                              "disabled": false
+                            },
+                            {
+                              "label": "女",
+                              "value": "2",
+                              "disabled": false
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "title": "手机号",
+                      "field": "MobileNumber",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "MobileNumber",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "身份证号",
+                      "field": "IdCardNumber",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "IdCardNumber",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "邮箱地址",
+                      "field": "MailAddress",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "MailAddress",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "登录限制总类",
+                      "field": "LoginLimitKind",
+                      "width": 80,
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "LoginLimitKind",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "人员标识",
+                      "field": "PlatCustomerId",
+                      "width": 80,
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "PlatCustomerId",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "用户状态",
+                      "field": "Status",
+                      "width": 80,
+                      "hidden": false,
+                      "formatter": [
+                        {
+                          "value": 1,
+                          "bgcolor": "",
+                          "fontcolor": "text-green",
+                          "valueas": "启用"
+                        },
+                        {
+                          "value": 2,
+                          "bgcolor": "",
+                          "fontcolor": "text-red",
+                          "valueas": "禁用"
+                        }
+                      ],
+                      "editor": {
+                        "type": "select",
+                        "field": "Status",
+                        "options": {
+                          "type": "select",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "submit",
+                          "name": "Status",
+                          "label": "状态",
+                          "notFoundContent": "",
+                          "selectModel": false,
+                          "showSearch": true,
+                          "placeholder": "-请选择-",
+                          "disabled": false,
+                          "size": "default",
+                          "clear": true,
+                          "width": "130px",
+                          "options": [
+                            {
+                              "label": "启用",
+                              "value": "1",
+                              "disabled": false
+                            },
+                            {
+                              "label": "禁用",
+                              "value": "2",
+                              "disabled": false
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "title": "备注",
+                      "field": "Remark",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Remark",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "所属客户标识",
+                      "field": "PlatCustomerId",
+                      "width": 80,
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "PlatCustomerId",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    }
+                  ],
+                  "toolbar": [
+                    {
+                      "name": "refresh",
+                      "class": "editable-add-btn",
+                      "text": "刷新"
+                    },
+                    {
+                      "name": "addRow",
+                      "class": "editable-add-btn",
+                      "text": "新增"
+                    },
+                    {
+                      "name": "updateRow",
+                      "class": "editable-add-btn",
+                      "text": "修改"
+                    },
+                    {
+                      "name": "deleteRow",
+                      "class": "editable-add-btn",
+                      "text": "删除",
+                      "ajaxConfig": {
+                        "delete": [
+                          {
+                            "actionName": "delete",
+                            "url": "SinoForce.User.AppUser",
+                            "ajaxType": "delete"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "saveRow",
+                      "class": "editable-add-btn",
+                      "text": "保存",
+                      "type": "method/action",
+                      "ajaxConfig": {
+                        "post": [
+                          {
+                            "actionName": "add",
+                            "url": "SinoForce.User.AppUser",
+                            "ajaxType": "post",
+                            "params": [
+                              {
+                                "name": "PersonId",
+                                "type": "componentValue",
+                                "valueName": "PersonId",
+                                "value": ""
+                              },
+                              {
+                                "name": "PlatCustomerId",
+                                "type": "Value",
+                                "valueName": "",
+                                "value": "eb4332bbb4d01a4289457a891b6a0333"
+                              },
+                              {
+                                "name": "OrgId",
+                                "type": "componentValue",
+                                "valueName": "OrgId",
+                                "value": ""
+                              },
+                              {
+                                "name": "UserType",
+                                "type": "componentValue",
+                                "valueName": "UserType",
+                                "value": ""
+                              },
+                              {
+                                "name": "Name",
+                                "type": "componentValue",
+                                "valueName": "Name",
+                                "value": ""
+                              },
+                              {
+                                "name": "Code",
+                                "type": "componentValue",
+                                "valueName": "Code",
+                                "value": ""
+                              },
+                              {
+                                "name": "Password",
+                                "type": "componentValue",
+                                "valueName": "Password",
+                                "value": ""
+                              },
+                              {
+                                "name": "RealName",
+                                "type": "componentValue",
+                                "valueName": "RealName",
+                                "value": ""
+                              },
+                              {
+                                "name": "Gender",
+                                "type": "componentValue",
+                                "valueName": "Gender",
+                                "value": ""
+                              },
+                              {
+                                "name": "Birthday",
+                                "type": "componentValue",
+                                "valueName": "Birthday",
+                                "value": ""
+                              },
+                              {
+                                "name": "MobileNumber",
+                                "type": "componentValue",
+                                "valueName": "MobileNumber",
+                                "value": ""
+                              },
+                              {
+                                "name": "IdCardNumber",
+                                "type": "componentValue",
+                                "valueName": "IdCardNumber",
+                                "value": ""
+                              },
+                              {
+                                "name": "MailAddress",
+                                "type": "componentValue",
+                                "valueName": "MailAddress",
+                                "value": ""
+                              },
+                              {
+                                "name": "LoginLimitKind",
+                                "type": "componentValue",
+                                "valueName": "",
+                                "value": "0"
+                              },
+                              {
+                                "name": "Remark",
+                                "type": "componentValue",
+                                "valueName": "Remark",
+                                "value": ""
+                              },
+                              {
+                                "name": "Status",
+                                "type": "componentValue",
+                                "valueName": "Status",
+                                "value": ""
+                              }
+                            ],
+                            "output": [
+                              {
+                                "name": "_id",
+                                "type": "",
+                                "dataName": "Id"
+                              }
+                            ]
+                          }
+                        ],
+                        "put": [
+                          {
+                            "url": "SinoForce.User.AppUser",
+                            "ajaxType": "put",
+                            "params": [
+                              {
+                                "name": "Id",
+                                "type": "componentValue",
+                                "valueName": "Id",
+                                "value": ""
+                              },
+                              {
+                                "name": "PersonId",
+                                "type": "componentValue",
+                                "valueName": "PersonId",
+                                "value": ""
+                              },
+                              {
+                                "name": "PlatCustomerId",
+                                "type": "Value",
+                                "valueName": "",
+                                "value": "eb4332bbb4d01a4289457a891b6a0333"
+                              },
+                              {
+                                "name": "OrgId",
+                                "type": "componentValue",
+                                "valueName": "OrgId",
+                                "value": ""
+                              },
+                              {
+                                "name": "UserType",
+                                "type": "componentValue",
+                                "valueName": "UserType",
+                                "value": ""
+                              },
+                              {
+                                "name": "Name",
+                                "type": "componentValue",
+                                "valueName": "Name",
+                                "value": ""
+                              },
+                              {
+                                "name": "Code",
+                                "type": "componentValue",
+                                "valueName": "Code",
+                                "value": ""
+                              },
+                              {
+                                "name": "Password",
+                                "type": "componentValue",
+                                "valueName": "Password",
+                                "value": ""
+                              },
+                              {
+                                "name": "RealName",
+                                "type": "componentValue",
+                                "valueName": "RealName",
+                                "value": ""
+                              },
+                              {
+                                "name": "Gender",
+                                "type": "componentValue",
+                                "valueName": "Gender",
+                                "value": ""
+                              },
+                              {
+                                "name": "Birthday",
+                                "type": "componentValue",
+                                "valueName": "Birthday",
+                                "value": ""
+                              },
+                              {
+                                "name": "MobileNumber",
+                                "type": "componentValue",
+                                "valueName": "MobileNumber",
+                                "value": ""
+                              },
+                              {
+                                "name": "IdCardNumber",
+                                "type": "componentValue",
+                                "valueName": "IdCardNumber",
+                                "value": ""
+                              },
+                              {
+                                "name": "MailAddress",
+                                "type": "componentValue",
+                                "valueName": "MailAddress",
+                                "value": ""
+                              },
+                              {
+                                "name": "LoginLimitKind",
+                                "type": "componentValue",
+                                "valueName": "",
+                                "value": "0"
+                              },
+                              {
+                                "name": "Remark",
+                                "type": "componentValue",
+                                "valueName": "Remark",
+                                "value": ""
+                              },
+                              {
+                                "name": "Status",
+                                "type": "componentValue",
+                                "valueName": "Status",
+                                "value": ""
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "cancelRow",
+                      "class": "editable-add-btn",
+                      "text": "取消"
+                    }
+                  ]
+                },
+                "dataList": []
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

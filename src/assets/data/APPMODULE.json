@@ -1,0 +1,435 @@
+{
+  "rows": [
+    {
+      "row": {
+        "cols": [
+          {
+            "id": "area1",
+            "title": "模块(菜单)",
+            "span": 6,
+            "size": {
+              "nzXs": 6,
+              "nzSm": 6,
+              "nzMd": 6,
+              "nzLg": 6,
+              "ngXl": 6
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "viewId": "tree_and_table_tree",
+                  "component": "bsnTree",
+                  "asyncData": true,
+                  "expandAll": true,
+                  "checkable": false,
+                  "showLine": false,
+                  "columns": [
+                    {
+                      "title": "主键",
+                      "field": "key",
+                      "valueName": "Id"
+                    },
+                    {
+                      "title": "父节点",
+                      "field": "ParentId",
+                      "valueName": "ParentId"
+                    },
+                    {
+                      "title": "标题",
+                      "field": "title",
+                      "valueName": "Name"
+                    }
+                  ],
+                  "componentType": {
+                    "parent": true,
+                    "child": false,
+                    "own": false
+                  },
+                  "parent": [
+                    {
+                      "name": "ParentId",
+                      "type": "value",
+                      "valueName": "取值参数名称",
+                      "value": "null"
+                    }
+                  ],
+                  "ajaxConfig": {
+                    "url": "SinoForce.SysData.AppModuleConfig",
+                    "ajaxType": "get",
+                    "params": []
+                  },
+                  "relations": [
+                    {
+                      "relationViewId": "tree_and_table_tree",
+                      "relationSendContent": [
+                        {
+                          "name": "clickNode",
+                          "sender": "tree_and_table_tree",
+                          "aop": "after",
+                          "receiver": "tree_and_table_table",
+                          "relationData": {
+                            "name": "refreshAsChild",
+                            "params": [
+                              {
+                                "pid": "key",
+                                "cid": "_parentId"
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "relationReceiveContent": []
+                    }
+                  ]
+                },
+                "dataList": []
+              }
+            ]
+          },
+          {
+            "id": "area2",
+            "title": "模块菜单列表",
+            "span": 18,
+            "size": {
+              "nzXs": 18,
+              "nzSm": 18,
+              "nzMd": 18,
+              "nzLg": 18,
+              "ngXl": 18
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "viewId": "tree_and_table_table",
+                  "component": "bsnTable",
+                  "keyId": "Id",
+                  "pagination": true,
+                  "showTotal": true,
+                  "pageSize": 5,
+                  "pageSizeOptions": [
+                    5,
+                    10,
+                    20,
+                    30,
+                    40,
+                    50
+                  ],
+                  "ajaxConfig": {
+                    "url": "SinoForce.SysData.AppModuleConfig",
+                    "ajaxType": "get",
+                    "params": [
+                      {
+                        "name": "ParentId",
+                        "type": "tempValue",
+                        "valueName": "_parentId",
+                        "value": ""
+                      }
+                    ]
+                  },
+                  "componentType": {
+                    "parent": false,
+                    "child": true,
+                    "own": false
+                  },
+                  "relations": [
+                    {
+                      "relationViewId": "tree_and_table_table",
+                      "relationSendContent": [],
+                      "relationReceiveContent": []
+                    }
+                  ],
+                  "columns": [
+                    {
+                      "title": "Id",
+                      "field": "Id",
+                      "width": 80,
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "Id",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "模块名称",
+                      "field": "Name",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Name",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    
+                    {
+                      "title": "排序编号",
+                      "field": "Order",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Order",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+
+                    {
+                      "title": "应用标识",
+                      "field": "ApplyId",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "ApplyId",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "模块配置信息",
+                      "field": "ConfigData",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "ConfigData",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    
+                    {
+                      "title": "备注",
+                      "field": "Remark",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Remark",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    }
+                  ],
+                  "toolbar": [
+                    {
+                      "name": "refresh",
+                      "class": "editable-add-btn",
+                      "text": "刷新"
+                    },
+                    {
+                      "name": "addRow",
+                      "class": "editable-add-btn",
+                      "text": "新增"
+                    },
+                    {
+                      "name": "updateRow",
+                      "class": "editable-add-btn",
+                      "text": "修改"
+                    },
+                    {
+                      "name": "deleteRow",
+                      "class": "editable-add-btn",
+                      "text": "删除",
+                      "ajaxConfig": {
+                        "delete": [
+                          {
+                            "actionName": "delete",
+                            "url": "SinoForce.SysData.AppModuleConfig",
+                            "ajaxType": "delete"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "saveRow",
+                      "class": "editable-add-btn",
+                      "text": "保存",
+                      "type": "method/action",
+                      "ajaxConfig": {
+                        "post": [
+                          {
+                            "actionName": "add",
+                            "url": "SinoForce.SysData.AppModuleConfig",
+                            "ajaxType": "post",
+                            "params": [
+                              {
+                                "name": "Order",
+                                "type": "componentValue",
+                                "valueName": "Order",
+                                "value": ""
+                              },
+                              {
+                                "name": "Name",
+                                "type": "componentValue",
+                                "valueName": "Name",
+                                "value": ""
+                              },
+                               {
+                                "name": "ConfigData",
+                                "type": "componentValue",
+                                "valueName": "ConfigData",
+                                "value": ""
+                              },
+                              {
+                                "name": "CategoryId",
+                                "type": "componentValue",
+                                "valueName": "CategoryId",
+                                "value": ""
+                              },
+                              
+                              {
+                                "name": "ApplyId",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "3935eb43532d435398d5189d5ece0f5d"
+                              },
+                              {
+                                "name": "ShareScope",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "Project"
+                              },
+                              {
+                                "name": "Remark",
+                                "type": "componentValue",
+                                "valueName": "Remark",
+                                "value": ""
+                              },
+                              {
+                                "name": "ParentId",
+                                "type": "tempValue",
+                                "valueName": "_parentId",
+                                "value": ""
+                              },
+                              {
+                                "name": "ProjId",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "002905c7bf57c54c9e5e65ec0e5fafe8"
+                              }
+                            ],
+                            "output": [
+                              {
+                                "name": "_id",
+                                "type": "",
+                                "dataName": "Id"
+                              }
+                            ]
+                          }
+                        ],
+                        "put": [
+                          {
+                            "url": "SinoForce.SysData.AppModuleConfig",
+                            "ajaxType": "put",
+                            "params": [
+                              {
+                                "name": "Id",
+                                "type": "componentValue",
+                                "valueName": "Id",
+                                "value": ""
+                              },
+                                                            {
+                                "name": "Order",
+                                "type": "componentValue",
+                                "valueName": "Order",
+                                "value": ""
+                              },
+                              {
+                                "name": "Name",
+                                "type": "componentValue",
+                                "valueName": "Name",
+                                "value": ""
+                              },
+                               {
+                                "name": "ConfigData",
+                                "type": "componentValue",
+                                "valueName": "ConfigData",
+                                "value": ""
+                              },
+                              {
+                                "name": "CategoryId",
+                                "type": "componentValue",
+                                "valueName": "CategoryId",
+                                "value": ""
+                              },
+                              
+                              {
+                                "name": "ApplyId",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "3935eb43532d435398d5189d5ece0f5d"
+                              },
+                              {
+                                "name": "ShareScope",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "Project"
+                              },
+                              {
+                                "name": "Remark",
+                                "type": "componentValue",
+                                "valueName": "Remark",
+                                "value": ""
+                              },
+                              {
+                                "name": "ParentId",
+                                "type": "componentValue",
+                                "valueName": "",
+                                "value": ""
+                              },
+                              {
+                                "name": "ProjId",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "002905c7bf57c54c9e5e65ec0e5fafe8"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "cancelRow",
+                      "class": "editable-add-btn",
+                      "text": "取消"
+                    }
+                  ]
+                },
+                "dataList": []
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

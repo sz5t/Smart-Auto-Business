@@ -1,0 +1,107 @@
+
+<page-header [title]=""></page-header>
+<nz-card>
+    <div class = "table-operations">
+        <button nz-button (click)="trefresh()">刷新 </button>
+        <button nz-button (click)="showTypeForComponent('Add')">新增</button>
+        <button nz-button (click)="showTypeForComponent('Edit')">修改</button>
+        <button nz-button (click)="tdelete()">删除</button>
+    </div>
+    <nz-table #nzTable
+              [nzData]="_tdataSet"
+              [nzFrontPagination]="false"
+              nzShowSizeChanger
+              [nzLoading]="_tloading"
+              [nzTotal]="_ttotal"
+              [(nzPageIndex)]="_tcurrent"
+              (nzPageIndexChange)="refreshResourceType()"
+              [(nzPageSize)]="_tpageSize"
+              (nzPageSizeChange)="refreshResourceType(true)"
+              [nzBordered] = "true"
+              [nzShowTotal]="totalTemplate"
+              nzTitle='数据表名称'
+              nzSize = "small">
+        <thead (nzSortChange)="sortType($event)" nzSingleSort>
+        <tr>
+            <th nzShowCheckbox  [(nzChecked)]="_tallChecked" [nzIndeterminate]="_tindeterminate" (nzCheckedChange)="_tcheckAll()"></th>
+            <th nzShowSort nzSortKey="Name">名称</th>
+            <th nzShowSort nzSortKey="Caption">标签</th>
+            <th nzShowSort nzSortKey="ShareScope">共享范围</th>
+            <th nzShowSort nzSortKey="BuildMode">生成模式</th>
+            <th nzShowSort nzSortKey="Enabled">是否有效</th>
+            <th nzShowSort nzSortKey="BuildState">生成状态</th>
+            <th nzShowSort nzSortKey="DbObjState">数据库状态</th>
+            <th nzShowSort nzSortKey="CreateTime">创建时间</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of nzTable.data" (click)="tselectRow(data)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
+            <td nzShowCheckbox  [(nzChecked)]="data.checked"> </td>
+            <td>{{data.Name}}</td>
+            <td>{{data.Caption}}</td>
+            <td>{{getShared(data.ShareScope)}}</td>
+            <td>{{data.BuildMode}}</td>
+            <td>{{getText(data.Enabled)}}</td>
+            <td>{{data.BuildState}}</td>
+            <td>{{data.BuildState}}</td>
+            <td>{{data.CreateTime | date}}</td>
+        </tr>
+        </tbody>
+    </nz-table>
+    <ng-template #totalTemplate let-total let-range="range">
+        {{range[0]}}-{{range[1]}} / {{total}} 条
+    </ng-template>
+    <nz-card nzType="inner" style="margin-top:16px">
+
+    <div class = "table-operations">
+        <button nz-button (click)="erefresh()">刷新 </button>
+        <button nz-button (click)="showEntityForComponent('Add')">新增</button>
+        <button nz-button (click)="showEntityForComponent('Edit')">修改</button>
+        <button nz-button (click)="edelete()">删除</button>
+    </div>
+    <nz-table #nzTable1
+              [nzData]="_edataSet"
+              [nzFrontPagination]="false"
+              nzShowSizeChanger
+              [nzLoading]="_eloading"
+              [nzTotal]="_etotal"
+              [(nzPageIndex)]="_ecurrent"
+              (nzPageIndexChange)="refreshEntityProDef()"
+              [(nzPageSize)]="_epageSize"
+              (nzPageSizeChange)="refreshEntityProDef('',true)"
+              [nzBordered] = "true"
+              [nzShowTotal]="childrenTotalTemplate"
+              nzTitle='所属字段列表'
+              nzSize = "small">
+        <thead (nzSortChange)="sortEntity($event)" nzSingleSort>
+        <tr>
+            <th nzShowCheckbox  [(nzChecked)]="_eallChecked" [nzIndeterminate]="_eindeterminate" (nzCheckedChange)="_echeckAll()"></th>
+            <th nzShowSort nzSortKey="Name">属性名称</th>
+            <th nzShowSort nzSortKey="Caption">属性标签</th>
+            <th nzShowSort nzSortKey="PropertyType">类型</th>
+            <th nzShowSort nzSortKey="IsKey">是否主键</th>
+            <th nzShowSort nzSortKey="MaxLength">最大长度</th>
+            <th nzShowSort nzSortKey="Precision">精度</th>
+            <th nzShowSort nzSortKey="SortCode">排序</th>
+            <th nzShowSort nzSortKey="CreateTime">创建时间</th>
+        </tr>
+        </thead>
+        <tbody nz-tbody>
+        <tr nz-tbody-tr *ngFor="let data of nzTable1.data" (click)="eselectRow(data,_eeditCache[data.id]?.dataItem)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
+            <td nzShowCheckbox  [(nzChecked)]="data.checked"> </td>
+            <td>{{data.Name}}</td>
+            <td>{{data.Caption}}</td>
+            <td>{{data.PropertyType}}</td>
+            <td>{{getText(data.IsKey)}}</td>
+            <td>{{data.MaxLength}}</td>
+            <td>{{data.Precision}}</td>
+            <td>{{data.SortCode}}</td>
+            <td>{{data.CreateTime | date}}</td>
+        </tr>
+        </tbody>
+    </nz-table>
+    <ng-template #childrenTotalTemplate let-total let-range="range">
+        {{range[0]}}-{{range[1]}} / {{total}} 条
+    </ng-template>
+    </nz-card>
+</nz-card>

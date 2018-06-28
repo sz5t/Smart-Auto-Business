@@ -1,0 +1,93 @@
+{
+    "rows": [    
+        {
+            "row": {
+                "cols": [
+                    {
+                        "id": "area1",
+                        "title": "单表1231",
+                        "span": 6,
+                        "size": {
+                            "nzXs": 6,
+                            "nzSm": 6,
+                            "nzMd": 6,
+                            "nzLg": 6,
+                            "ngXl": 6
+                        },
+                        "viewCfg": [
+                            {
+                                "config": {
+                                },
+                                "dataList": []
+                            }
+                        ]
+                    },
+					 {
+                        "id": "area1-1",
+                        "title": "单表1-1",
+                        "span": 18,
+                        "size": {
+                            "nzXs": 18,
+                            "nzSm": 18,
+                            "nzMd": 18,
+                            "nzLg": 18,
+                            "ngXl": 18
+                        },
+                        "rows":[
+							{
+								"row":{
+									"cols":[
+									  {
+									      "id": "area22222222",
+										  "title": "单表222222222",
+										  "span": 24,
+										  "size": {
+											  "nzXs": 24,
+											  "nzSm": 24,
+											  "nzMd": 24,
+											  "nzLg": 24,
+											  "ngXl": 24
+										  },
+										  "viewCfg": [
+											  {
+												  "config": {
+												  },
+												  "dataList": []
+											  }
+                        				]
+									  }
+									]
+								}
+							},
+							{
+								"row":{
+									"cols":[
+									  {
+									     "id": "area33333333",
+										  "title": "单表333333333",
+										  "span": 24,
+										  "size": {
+											  "nzXs": 24,
+											  "nzSm": 24,
+											  "nzMd": 24,
+											  "nzLg": 24,
+											  "ngXl": 24
+										  },
+										  "viewCfg": [
+											  {
+												  "config": {
+												  },
+												  "dataList": []
+											  }
+										  ]
+									  }
+									]
+								}
+							}
+						]
+                    }
+                ]
+            }
+        }
+    ]
+}

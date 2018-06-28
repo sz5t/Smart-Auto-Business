@@ -1,0 +1,102 @@
+<div class="table-operations" *ngIf="config.toolbar">
+    <ng-container *ngFor="let btn of config.toolbar">
+        <button nz-button (click)="toolbarAction(btn)" [attr.disabled]="btn.disabled" class="editable-add-btn">{{btn.text}}</button>
+    </ng-container>
+</div>
+<nz-table #nzTable 
+    [nzData]="dataList" 
+    [nzSize]="'small'" 
+    [nzFrontPagination]="false" 
+    [nzShowSizeChanger]="true" 
+    [nzTotal]="total"
+    [(nzPageIndex)]="pageIndex" 
+    [(nzPageSize)]="pageSize" 
+    [nzShowTotal]="totals" 
+    [nzPageSizeOptions]="this.config.pageSizeOptions"
+    [nzLoading]="loading" 
+    (nzPageIndexChange)="searchData()" 
+    (nzPageSizeChange)="searchData(true)" 
+    [nzTitle]="this.config.title?this.config.title:null"
+    [nzFooter]="footer"
+    nzBordered>
+ <ng-template #totalTemplate let-total>
+        共 {{total}} 条
+ </ng-template>
+ <thead (nzSortChange)="sort($event)" nzSingleSort>
+    <tr>
+        <th nzShowCheckbox 
+        [(nzChecked)]="allChecked" 
+        [nzIndeterminate]="indeterminate" 
+        (nzCheckedChange)="checkAll($event)"
+
+        >
+        </th>
+        <ng-template ngFor let-col [ngForOf]="config.columns">
+            <th 
+                [nzShowSort]="col.showSort" 
+                [nzShowFilter]="col.showFilter" 
+                [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" 
+                *ngIf="!col.hidden" 
+                [nzSortKey]="col.field"
+                (nzFilterChange)="columnFilter(col.editor.field, $event)">
+                <span>{{col.title}}</span>
+            </th>
+        </ng-template>
+    </tr>
+</thead>
+    <tbody>
+        <ng-template ngFor let-data [ngForOf]="nzTable.data">
+            <ng-template ngFor let-item [ngForOf]="expandDataCache[data.key]">
+                    <tr *ngIf="(item.parent && item.parent.expand)||!(item.parent)" (click)="selectRow(item, $event)" [ngStyle]="{'background-color':item.selected?'rgb(236, 246, 253)':''}">
+                            <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refChecked()">
+                            </td>
+                            <ng-template ngFor let-col [ngForOf]="config.columns">
+                                    <td *ngIf="col.expand && !col.hidden"
+                                    [nzIndentSize]="item.level*20"
+                                    [nzShowExpand]="!!item.Children && item.Children.length>0"
+                                    [(nzExpand)]="item.expand"
+                                    (nzExpandChange)="expandChange(expandDataCache[data.key], item, $event)"
+                                    >
+                                
+                                            <ng-container *ngIf="col.editor">
+                                                <span *ngIf="!editCache[item.key].edit">
+                                                    {{!col.dataType?item[col.field]:item[col.field] | date}}
+                                                </span>
+                                                
+                                                <ng-container [bsnData]="tempParameters" [rowData]="item" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                                                    CnGridEditorDirective *ngIf="editCache[item.key].edit" [config]="col.editor.options" [value]="{key:item.key,name:col.editor.field,data:editCache[item.key].data[col.editor.field]}"
+                                                    (updateValue)="valueChange($event)">
+                                                </ng-container>
+
+                                            </ng-container>
+                                            <ng-container *ngIf="!col.editor">
+                                                <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'']">{{data[col.field]}}</span>
+                                            </ng-container>
+                                        </td>
+                                <td *ngIf="!col.expand && !col.hidden">
+                                    <ng-container *ngIf="col.editor">
+                                        <div *ngIf="!editCache[item.key].edit">
+                                            <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'']">{{!col.dataType?data[col.field]:data[col.field] | date}}</span>
+                                        </div>
+                                        <ng-container [bsnData]="tempParameters" [rowData]="item" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                                            CnGridEditorDirective *ngIf="editCache[item.key].edit" [config]="col.editor.options" [value]="{key:item.key,name:col.editor.field,data:editCache[item.key].data[col.editor.field]}"
+                                            (updateValue)="valueChange($event)">
+                                        </ng-container>
+                                    </ng-container>
+                                    <ng-container *ngIf="!col.editor">
+                                        <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'']">{{data[col.field]}}</span>
+                                    </ng-container>
+                                </td>
+                            </ng-template>
+                    </tr>
+            </ng-template>
+        </ng-template>
+    </tbody>
+    <ng-template #footer>
+        已选择
+           <strong class="text-primary">{{checkedCount}}</strong> 项&nbsp;&nbsp;
+   </ng-template>
+   <ng-template #totals let-total>
+           共 {{total}} 条
+   </ng-template>
+</nz-table>

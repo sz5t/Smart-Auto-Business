@@ -1,0 +1,12 @@
+<nz-tree 
+    [(ngModel)]="treeData" 
+    [nzAsyncData]="config.asyncData" 
+    [nzDefaultExpandAll]="config.expandAll"
+    [nzCheckable]="config.checkable" 
+    [nzShowLine]="config.showLine" 
+    [nzDefaultCheckedKeys]="checkedKeys"
+    [nzDefaultSelectedKeys]="selectedKeys"
+    [nzMultiple]="false"
+    (nzCheckBoxChange)="checkboxChange($event)"
+    (nzClick)="onMouseAction('clickNode', $event)">
+</nz-tree>

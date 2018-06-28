@@ -1,0 +1,60 @@
+<!--<div class="content__title">
+    <h1>Page Name</h1>
+</div>-->
+<!-- <page-header [title]=""></page-header> -->
+<div nz-row [nzGutter]="8">
+  <div nz-col [nzSpan]="24">
+    <nz-card>
+      <form nz-form [nzLayout]="'inline'">
+          <nz-form-item>
+            <nz-form-label>
+             功能模块
+            </nz-form-label>
+            <nz-form-control>
+              <nz-cascader
+                [ngModelOptions]="{standalone: true}"
+                [class.class123]="true"
+                [nzOptions]="_funcOptions"
+                [(ngModel)]="_funcValue"
+                (nzChange)="_changeModuleValue($event)"
+                (nzSelectionChange)="_onSelectionChange($event)"
+                [nzPlaceHolder]="'请选择功能模块'"
+                [nzExpandTrigger]="'hover'">
+              </nz-cascader>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control>
+              <nz-form-label>
+                模块布局列表
+              </nz-form-label>
+              <nz-select style="width:120px;"
+                [(ngModel)]="_layoutNameValue"
+                (ngModelChange)="_changeLayoutName($event)"
+                [nzPlaceHolder]="'选择布局名称'"
+                [ngModelOptions]="{standalone: true}">
+                <nz-option
+                  *ngFor="let option of _layoutList"
+                  [nzLabel]="option.label"
+                  [nzValue]="option.value">
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control>
+              <button nz-button [nzType]="'primary'" [nzSize]="'default'">保存</button>
+              <button nz-button [nzSize]="'default'" (click)="resetForm($event)">取消</button>
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+    </nz-card>
+  </div>
+</div>
+<div nz-row [nzGutter]="8">
+  <div nz-col [nzSpan]="24">
+    <nz-card nzTitle="设置组件">
+        <cn-layout-setting-resolver *ngIf="_layoutConfig" [layoutId]="_layoutId"  [config]="_layoutConfig"></cn-layout-setting-resolver>
+    </nz-card>
+  </div>
+</div>

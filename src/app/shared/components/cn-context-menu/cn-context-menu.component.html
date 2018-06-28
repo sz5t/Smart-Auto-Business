@@ -1,0 +1,10 @@
+<ul nz-menu [nzMode]="'vertical'" style="width: 200px;">
+  <li nz-submenu *ngFor="let menu of menuConfig">
+    <span title><i class="anticon anticon-mail"></i> {{menu.label}}</span>
+    <ul class="bg-grey-lighter" *ngIf="menu.children">
+      <li nz-menu-item *ngFor="let m of menu.children" (click)="getSelectedData(m.value)">
+        <span title>{{m.label}}</span>
+      </li>
+    </ul>
+  </li>
+</ul>

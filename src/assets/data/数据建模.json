@@ -1,0 +1,1111 @@
+{
+  "rows": [
+    {
+      "row": {
+        "cols": [
+          {
+            "id": "data_builder",
+            "title": "表信息",
+            "span": 24,
+            "size": {
+              "nzXs": 24,
+              "nzSm": 24,
+              "nzMd": 24,
+              "nzLg": 24,
+              "ngXl": 24
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "title": "表信息",
+                  "viewId": "data_builder_1",
+                  "component": "bsnTable",
+                  "info": true,
+                  "keyId": "Id",
+                  "pagination": true,
+                  "showTotal": true,
+                  "pageSize": 10,
+                  "pageSizeOptions": [
+                    5,
+                    18,
+                    20,
+                    30,
+                    40,
+                    50
+                  ],
+                  "ajaxConfig": {
+                    "url": "SinoForce.SysData.ResourceType",
+                    "ajaxType": "get",
+                    "params": []
+                  },
+                  "componentType": {
+                    "parent": true,
+                    "child": false,
+                    "own": true
+                  },
+                  "columns": [
+                    {
+                      "title": "Id",
+                      "field": "Id",
+                      "width": 80,
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "Id",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "18",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "名称",
+                      "field": "Name",
+                      "width": 80,
+                      "editor": {
+                        "type": "input",
+                        "field": "Name",
+                        "options": {
+                          "type": "input",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "标签",
+                      "field": "Caption",
+                      "width": 80,
+                      "editor": {
+                        "type": "input",
+                        "field": "Caption",
+                        "options": {
+                          "type": "input",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "共享范围",
+                      "field": "ShareScope",
+                      "width": 80,
+                      "editor": {
+                        "type": "input",
+                        "field": "ShareScope",
+                        "options": {
+                          "type": "input",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "生成模式",
+                      "field": "BuildMode",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "select",
+                        "field": "BuildMode",
+                        "options": {
+                          "type": "select",
+                          "labelSize": "6",
+                          "controlSize": "18",
+                          "inputType": "submit",
+                          "name": "BuildMode",
+                          "label": "Type",
+                          "notFoundContent": "",
+                          "selectModel": false,
+                          "showSearch": true,
+                          "placeholder": "-请选择-",
+                          "disabled": false,
+                          "size": "default",
+                          "clear": true,
+                          "width": "100px",
+                          "options": [
+                            {
+                              "label": "手动",
+                              "value": "手动",
+                              "disabled": false
+                            },
+                            {
+                              "label": "自动",
+                              "value": "自动",
+                              "disabled": false
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "title": "是否有效",
+                      "field": "Enabled",
+                      "width": 80,
+                      "editor": {
+                        "type": "input",
+                        "field": "Enabled",
+                        "options": {
+                          "type": "input",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "生成状态",
+                      "field": "BuildState",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "select",
+                        "field": "BuildState",
+                        "options": {
+                          "type": "select",
+                          "name": "BuildState",
+                          "notFoundContent": "",
+                          "selectModel": false,
+                          "showSearch": true,
+                          "placeholder": "-请选择-",
+                          "disabled": false,
+                          "size": "default",
+                          "clear": true,
+                          "width": "100px",
+                          "options": [
+                            {
+                              "label": "正在定义",
+                              "value": "正在定义",
+                              "disabled": false
+                            },
+                            {
+                              "label": "完成定义",
+                              "value": "完成定义",
+                              "disabled": false
+                            },
+                            {
+                              "label": "动态生成",
+                              "value": "动态生成",
+                              "disabled": false
+                            },
+                            {
+                              "label": "编译成功",
+                              "value": "编译成功",
+                              "disabled": false
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "title": "数据库状态",
+                      "field": "DbObjState",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "select",
+                        "field": "DbObjState",
+                        "options": {
+                          "type": "select",
+                          "name": "DbObjState",
+                          "notFoundContent": "",
+                          "selectModel": false,
+                          "showSearch": true,
+                          "placeholder": "-请选择-",
+                          "disabled": false,
+                          "size": "default",
+                          "clear": true,
+                          "width": "100px",
+                          "options": [
+                            {
+                              "label": "未创建",
+                              "value": "未创建",
+                              "disabled": false
+                            },
+                            {
+                              "label": "已过时",
+                              "value": "已过时",
+                              "disabled": false
+                            },
+                            {
+                              "label": "尝试创建",
+                              "value": "尝试创建",
+                              "disabled": false
+                            },
+                            {
+                              "label": "创建成功",
+                              "value": "创建成功",
+                              "disabled": false
+                            },
+                            {
+                              "label": "创建失败",
+                              "value": "创建失败",
+                              "disabled": false
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "toolbar": [
+                    {
+                      "name": "refresh",
+                      "class": "editable-add-btn",
+                      "text": "刷新"
+                    },
+                    {
+                      "name": "addRow",
+                      "class": "editable-add-btn",
+                      "text": "新增"
+                    },
+                    {
+                      "name": "updateRow",
+                      "class": "editable-add-btn",
+                      "text": "修改"
+                    },
+                    {
+                      "name": "deleteRow",
+                      "class": "editable-add-btn",
+                      "text": "删除",
+                      "ajaxConfig": {
+                        "delete": [
+                          {
+                            "actionName": "delete",
+                            "url": "SinoForce.SysData.ResourceType",
+                            "ajaxType": "delete"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "saveRow",
+                      "class": "editable-add-btn",
+                      "text": "保存",
+                      "type": "method/action",
+                      "ajaxConfig": {
+                        "post": [
+                          {
+                            "actionName": "add",
+                            "url": "SinoForce.SysData.ResourceType",
+                            "ajaxType": "post",
+                            "params": [
+                              {
+                                "name": "Name",
+                                "type": "componentValue",
+                                "valueName": "Name",
+                                "value": ""
+                              },
+                              {
+                                "name": "Caption",
+                                "type": "componentValue",
+                                "valueName": "Caption",
+                                "value": ""
+                              },
+                              {
+                                "name": "ShareScope",
+                                "type": "componentValue",
+                                "valueName": "ShareScope",
+                                "value": ""
+                              },
+                              {
+                                "name": "BuildMode",
+                                "type": "componentValue",
+                                "valueName": "BuildMode",
+                                "value": ""
+                              },
+                              {
+                                "name": "BuildState",
+                                "type": "componentValue",
+                                "valueName": "BuildState",
+                                "value": ""
+                              },
+                              {
+                                "name": "Enabled",
+                                "type": "componentValue",
+                                "valueName": "Enabled",
+                                "value": ""
+                              },
+                              {
+                                "name": "DbObjState",
+                                "type": "componentValue",
+                                "valueName": "DbObjState",
+                                "value": ""
+                              },
+                              {
+                                "name": "OwnerAssembly",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "SinoForce.AppDate"
+                              },
+                              {
+                                "name": "OwnerNameSpace",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "SinoForce.AppDate"
+                              },
+                              {
+                                "name": "DrmId",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "57e76ec4a882334c85532f3a5f561a12"
+                              },
+                              {
+                                "name": "ProjId",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "002905c7bf57c54c9e5e65ec0e5fafe8"
+                              }
+                            ]
+                          }
+                        ],
+                        "put": [
+                          {
+                            "url": "SinoForce.SysData.ResourceType",
+                            "ajaxType": "put",
+                            "params": [
+                              {
+                                "name": "Id",
+                                "type": "componentValue",
+                                "valueName": "Id",
+                                "value": ""
+                              },
+                              {
+                                "name": "Name",
+                                "type": "componentValue",
+                                "valueName": "Name",
+                                "value": ""
+                              },
+                              {
+                                "name": "Caption",
+                                "type": "componentValue",
+                                "valueName": "Caption",
+                                "value": ""
+                              },
+                              {
+                                "name": "ShareScope",
+                                "type": "componentValue",
+                                "valueName": "ShareScope",
+                                "value": ""
+                              },
+                              {
+                                "name": "BuildMode",
+                                "type": "componentValue",
+                                "valueName": "BuildMode",
+                                "value": ""
+                              },
+                              {
+                                "name": "BuildState",
+                                "type": "componentValue",
+                                "valueName": "BuildState",
+                                "value": ""
+                              },
+                              {
+                                "name": "Enabled",
+                                "type": "componentValue",
+                                "valueName": "Enabled",
+                                "value": ""
+                              },
+                              {
+                                "name": "DbObjState",
+                                "type": "componentValue",
+                                "valueName": "DbObjState",
+                                "value": ""
+                              },
+                              {
+                                "name": "OwnerAssembly",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "SinoForce.AppDate"
+                              },
+                              {
+                                "name": "OwnerNameSpace",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "SinoForce.AppDate"
+                              },
+                              {
+                                "name": "DrmId",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "57e76ec4a882334c85532f3a5f561a12"
+                              },
+                              {
+                                "name": "ProjId",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "002905c7bf57c54c9e5e65ec0e5fafe8"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "cancelRow",
+                      "class": "editable-add-btn",
+                      "text": "取消"
+                    },
+                    {
+                      "name": "batchEditForm",
+                      "class": "editable-add-btn",
+                      "text": "批量建模",
+                      "type": "showBatchForm",
+                      "dialogConfig": {
+                        "keyId": "Id",
+                        "title": "批量建模",
+                        "width": "600",
+                        "componentType": {
+                          "parent": false,
+                          "child": false,
+                          "own": true
+                        },
+                        "forms": [
+                          {
+                            "controls": [
+                              {
+                                "type": "select",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "inputType": "",
+                                "name": "DbObjState",
+                                "label": "数据库状态",
+                                "notFoundContent": "",
+                                "selectModel": false,
+                                "showSearch": true,
+                                "placeholder": "--请选择--",
+                                "disabled": false,
+                                "size": "default",
+                                "options": [
+                                  {
+                                    "label": "未创建",
+                                    "value": "未创建",
+                                    "disabled": false
+                                  },
+                                  {
+                                    "label": "已过时",
+                                    "value": "已过时",
+                                    "disabled": false
+                                  },
+                                  {
+                                    "label": "尝试创建",
+                                    "value": "尝试创建",
+                                    "disabled": false
+                                  },
+                                  {
+                                    "label": "创建成功",
+                                    "value": "创建成功",
+                                    "disabled": false
+                                  },
+                                  {
+                                    "label": "创建失败",
+                                    "value": "创建失败",
+                                    "disabled": false
+                                  }
+                                ],
+                                "layout": "column",
+                                "span": "24"
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "select",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "label": "生成状态",
+                                "name": "BuildState",
+                                "notFoundContent": "",
+                                "selectModel": false,
+                                "showSearch": true,
+                                "placeholder": "-请选择-",
+                                "disabled": false,
+                                "size": "default",
+                                "clear": true,
+                                "width": "100px",
+                                "options": [
+                                  {
+                                    "label": "正在定义",
+                                    "value": "正在定义",
+                                    "disabled": false
+                                  },
+                                  {
+                                    "label": "完成定义",
+                                    "value": "完成定义",
+                                    "disabled": false
+                                  },
+                                  {
+                                    "label": "动态生成",
+                                    "value": "动态生成",
+                                    "disabled": false
+                                  },
+                                  {
+                                    "label": "编译成功",
+                                    "value": "编译成功",
+                                    "disabled": false
+                                  }
+                                ],
+                                "layout": "column",
+                                "span": "24"
+                              }
+                            ]
+                          },
+                          {
+                            "controls": [
+                              {
+                                "type": "select",
+                                "labelSize": "6",
+                                "controlSize": "16",
+                                "label": "是否有效",
+                                "name": "Enabled",
+                                "notFoundContent": "",
+                                "selectModel": false,
+                                "showSearch": true,
+                                "placeholder": "-请选择-",
+                                "disabled": false,
+                                "size": "default",
+                                "clear": true,
+                                "width": "100px",
+                                "options": [
+                                  {
+                                    "label": "是",
+                                    "value": true,
+                                    "disabled": false
+                                  },
+                                  {
+                                    "label": "否",
+                                    "value": false,
+                                    "disabled": false
+                                  }
+                                ],
+                                "layout": "column",
+                                "span": "24"
+                              }
+                            ]
+                          }
+                        ],
+                        "buttons": [
+                          {
+                            "name": "save",
+                            "text": "保存",
+                            "type": "primary",
+                            "ajaxConfig": {
+                              "put": [
+                                {
+                                  "url": "SinoForce.SysData.ResourceType",
+                                  "batch": true,
+                                  "params": [
+                                    {
+                                      "name": "Id",
+                                      "type": "checkedItems",
+                                      "valueName": "Id",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Name",
+                                      "type": "checkedItems",
+                                      "valueName": "Name",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "DbObjState",
+                                      "type": "componentValue",
+                                      "valueName": "DbObjState",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "BuildState",
+                                      "type": "componentValue",
+                                      "valueName": "BuildState",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "Enabled",
+                                      "type": "componentValue",
+                                      "valueName": "Enabled",
+                                      "value": ""
+                                    },
+                                    {
+                                      "name": "OwnerAssembly",
+                                      "type": "value",
+                                      "valueName": "",
+                                      "value": "SinoForce.AppDate"
+                                    },
+                                    {
+                                      "name": "OwnerNameSpace",
+                                      "type": "value",
+                                      "valueName": "",
+                                      "value": "SinoForce.AppDate"
+                                    },
+                                    {
+                                      "name": "BuildMode",
+                                      "type": "value",
+                                      "valueName": "",
+                                      "value": "手动"
+                                    },
+                                    {
+                                      "name": "DrmId",
+                                      "type": "value",
+                                      "valueName": "",
+                                      "value": "57e76ec4a882334c85532f3a5f561a12"
+                                    },
+                                    {
+                                      "name": "ProjId",
+                                      "type": "value",
+                                      "valueName": "",
+                                      "value": "002905c7bf57c54c9e5e65ec0e5fafe8"
+                                    },
+                                    {
+                                      "name": "ShareScope",
+                                      "type": "value",
+                                      "valueName": "",
+                                      "value": "Project"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "close",
+                            "class": "editable-add-btn",
+                            "text": "关闭"
+                          },
+                          {
+                            "name": "reset",
+                            "class": "editable-add-btn",
+                            "text": "重置"
+                          }
+                        ],
+                        "dataList": []
+                      }
+                    }
+                  ],
+                  "relations": [
+                    {
+                      "relationViewId": "data_builder_1",
+                      "relationSendContent": [
+                        {
+                          "name": "selectRow",
+                          "sender": "data_builder_1",
+                          "aop": "after",
+                          "receiver": "data_builder_2",
+                          "relationData": {
+                            "name": "refreshAsChild",
+                            "params": [
+                              {
+                                "pid": "Id",
+                                "cid": "_parentId"
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "relationReceiveContent": []
+                    }
+                  ]
+                },
+                "dataList": []
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "row": {
+        "cols": [
+          {
+            "id": "data_builder_2",
+            "title": "属性（字段）",
+            "span": 24,
+            "size": {
+              "nzXs": 24,
+              "nzSm": 24,
+              "nzMd": 24,
+              "nzLg": 24,
+              "ngXl": 24
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "title": "属性信息",
+                  "viewId": "data_builder_2",
+                  "component": "bsnTable",
+                  "info": true,
+                  "keyId": "Id",
+                  "pagination": true,
+                  "showTotal": true,
+                  "pageSize": 10,
+                  "pageSizeOptions": [
+                    5,
+                    18,
+                    20,
+                    30,
+                    40,
+                    50
+                  ],
+                  "ajaxConfig": {
+                    "url": "SinoForce.SysData.EntityPropertyDefine",
+                    "ajaxType": "get",
+                    "params": [
+                      {
+                        "name": "OwnerId",
+                        "type": "tempValue",
+                        "valueName": "_parentId",
+                        "value": ""
+                      }
+                    ]
+                  },
+                  "componentType": {
+                    "parent": false,
+                    "child": true,
+                    "own": false
+                  },
+                  "columns": [
+                    {
+                      "title": "Id",
+                      "field": "Id",
+                      "width": 80,
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "Id",
+                        "options": {
+                          "type": "input",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "名称",
+                      "field": "Name",
+                      "width": 80,
+                      "editor": {
+                        "type": "input",
+                        "field": "Name",
+                        "options": {
+                          "type": "input",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "描述",
+                      "field": "Caption",
+                      "width": 80,
+                      "editor": {
+                        "type": "input",
+                        "field": "Caption",
+                        "options": {
+                          "type": "input",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "类型",
+                      "field": "PropertyType",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "select",
+                        "field": "PropertyType",
+                        "options": {
+                          "type": "select",
+                          "inputType": "",
+                          "name": "PropertyType",
+                          "notFoundContent": "",
+                          "selectModel": false,
+                          "showSearch": true,
+                          "placeholder": "-请选择-",
+                          "disabled": false,
+                          "size": "default",
+                          "clear": true,
+                          "width": "100px",
+                          "options": [
+                            {
+                              "label": "String",
+                              "value": "String",
+                              "disabled": false
+                            },
+                            {
+                              "label": "Int32",
+                              "value": "Int32",
+                              "disabled": false
+                            },
+                            {
+                              "label": "Boolean",
+                              "value": "Boolean",
+                              "disabled": false
+                            },
+                            {
+                              "label": "Double",
+                              "value": "Double",
+                              "disabled": false
+                            },
+                            {
+                              "label": "Date",
+                              "value": "Date",
+                              "disabled": false
+                            },
+                            {
+                              "label": "DateTime",
+                              "value": "DateTime",
+                              "disabled": false
+                            },
+                            {
+                              "label": "Object",
+                              "value": "Object",
+                              "disabled": false
+                            },
+                            {
+                              "label": "Byte",
+                              "value": "Byte",
+                              "disabled": false
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "title": "是否可空",
+                      "field": "Nullable",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "select",
+                        "field": "Nullable",
+                        "options": {
+                          "type": "select",
+                          "inputType": "",
+                          "name": "Nullable",
+                          "notFoundContent": "",
+                          "selectModel": false,
+                          "showSearch": true,
+                          "placeholder": "-请选择-",
+                          "disabled": false,
+                          "size": "default",
+                          "clear": true,
+                          "width": "80px",
+                          "options": [
+                            {
+                              "label": "是",
+                              "value": "true",
+                              "disabled": false
+                            },
+                            {
+                              "label": "否",
+                              "value": "false",
+                              "disabled": false
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "title": "最大长度",
+                      "field": "MaxLength",
+                      "width": 80,
+                      "editor": {
+                        "type": "input",
+                        "field": "MaxLength",
+                        "options": {
+                          "type": "input",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "最小长度",
+                      "field": "MinLength",
+                      "width": 80,
+                      "editor": {
+                        "type": "input",
+                        "field": "MinLength",
+                        "options": {
+                          "type": "input",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "精度",
+                      "field": "Precision",
+                      "width": 80,
+                      "editor": {
+                        "type": "input",
+                        "field": "Precision",
+                        "options": {
+                          "type": "input",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "排序",
+                      "field": "SortCode",
+                      "width": 80,
+                      "editor": {
+                        "type": "input",
+                        "field": "SortCode",
+                        "options": {
+                          "type": "input",
+                          "inputType": "text"
+                        }
+                      }
+                    }
+                  ],
+                  "toolbar": [
+                    {
+                      "name": "refresh",
+                      "class": "editable-add-btn",
+                      "text": "刷新"
+                    },
+                    {
+                      "name": "addRow",
+                      "class": "editable-add-btn",
+                      "text": "新增"
+                    },
+                    {
+                      "name": "updateRow",
+                      "class": "editable-add-btn",
+                      "text": "修改"
+                    },
+                    {
+                      "name": "deleteRow",
+                      "class": "editable-add-btn",
+                      "text": "删除",
+                      "ajaxConfig": {
+                        "delete": [
+                          {
+                            "actionName": "delete",
+                            "url": "SinoForce.SysData.EntityPropertyDefine",
+                            "ajaxType": "delete"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "saveRow",
+                      "class": "editable-add-btn",
+                      "text": "保存",
+                      "type": "method/action",
+                      "ajaxConfig": {
+                        "post": [
+                          {
+                            "actionName": "add",
+                            "url": "SinoForce.SysData.EntityPropertyDefine",
+                            "ajaxType": "post",
+                            "params": [
+                              {
+                                "name": "OwnerId",
+                                "type": "tempValue",
+                                "valueName": "_parentId",
+                                "value": ""
+                              },
+                              {
+                                "name": "Name",
+                                "type": "componentValue",
+                                "valueName": "Name",
+                                "value": ""
+                              },
+                              {
+                                "name": "Caption",
+                                "type": "componentValue",
+                                "valueName": "Caption",
+                                "value": ""
+                              },
+                              {
+                                "name": "PropertyType",
+                                "type": "componentValue",
+                                "valueName": "PropertyType",
+                                "value": ""
+                              },
+                              {
+                                "name": "MaxLength",
+                                "type": "componentValue",
+                                "valueName": "MaxLength",
+                                "value": ""
+                              },
+                              {
+                                "name": "MinLength",
+                                "type": "componentValue",
+                                "valueName": "MinLength",
+                                "value": ""
+                              },
+                              {
+                                "name": "Precision",
+                                "type": "componentValue",
+                                "valueName": "Precision",
+                                "value": ""
+                              }
+                            ]
+                          }
+                        ],
+                        "put": [
+                          {
+                            "url": "SinoForce.SysData.EntityPropertyDefine",
+                            "ajaxType": "put",
+                            "params": [
+                              {
+                                "name": "Name",
+                                "type": "componentValue",
+                                "valueName": "Name",
+                                "value": ""
+                              },
+                              {
+                                "name": "Caption",
+                                "type": "componentValue",
+                                "valueName": "Caption",
+                                "value": ""
+                              },
+                              {
+                                "name": "PropertyType",
+                                "type": "componentValue",
+                                "valueName": "PropertyType",
+                                "value": ""
+                              },
+                              {
+                                "name": "MaxLength",
+                                "type": "componentValue",
+                                "valueName": "MaxLength",
+                                "value": ""
+                              },
+                              {
+                                "name": "MinLength",
+                                "type": "componentValue",
+                                "valueName": "MinLength",
+                                "value": ""
+                              },
+                              {
+                                "name": "Precision",
+                                "type": "componentValue",
+                                "valueName": "Precision",
+                                "value": ""
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "cancelRow",
+                      "class": "editable-add-btn",
+                      "text": "取消"
+                    }
+                  ],
+                  "relations": [
+                    {
+                      "relationViewId": "data_builder_2",
+                      "relationSendContent": [],
+                      "relationReceiveContent": []
+                    }
+                  ]
+                },
+                "dataList": []
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

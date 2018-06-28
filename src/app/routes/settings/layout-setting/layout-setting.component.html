@@ -1,0 +1,110 @@
+<!--<div class="content__title">
+  <h1>布局设置</h1>
+</div>-->
+
+<div nz-row [nzGutter]="24">
+  <nz-card nzTitle="模版选择">
+    <form nz-form [formGroup]="_formGroup" (ngSubmit)="_submitForm($event)">
+      <nz-form-item>
+        <nz-form-control [nzSm]="24" [nzXs]="24">
+          <nz-cascader [ngModelOptions]="{standalone: true}" [class.class123]="true" [nzOptions]="_funcOptions" [(ngModel)]="_funcValue"
+            (nzChange)="_changeModuleValue($event)" (nzSelectionChange)="_onSelectionChange($event)" [nzPlaceHolder]="'请选择功能模块'"
+            [nzExpandTrigger]="'hover'">
+          </nz-cascader>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control [nzSm]="24" [nzXs]="24">
+          <nz-select [(ngModel)]="_layoutValue" (ngModelChange)="_changeLayout($event)" [nzPlaceHolder]="'请选择布局类型'" [ngModelOptions]="{standalone: true}">
+            <nz-option nzCustomContent *ngFor="let option of _layoutOptions" [nzValue]="option">
+              <img src="{{option.value.img}}"/> {{option.label}}{{option.value.img}}
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control [nzSm]="24" [nzXs]="24">
+          <input nz-input [(ngModel)]="_configName" placeholder="请输入配置名称" [ngModelOptions]="{standalone: true}" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control [nzSm]="24" [nzXs]="24">
+          <nz-tabset *ngIf="_editorConfig" [nzTabPosition]="'left'" [nzType]="'line'">
+            <nz-tab *ngFor="let tab of _editorConfig" [nzTitle]="tab.title">
+              <ng-container *ngFor="let field of tab.data" cnFormResolverDirective [config]="field" [formGroup]="_formGroup"></ng-container>
+            </nz-tab>
+          </nz-tabset>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item [formGroup]="_formGroup">
+        <nz-form-control [nzOffset]="6" [nzSpan]="14">
+          <button nz-button [nzType]="'primary'" [nzSize]="'default'">保存</button>
+          <button nz-button [nzSize]="'default'" (click)="resetForm($event)">取消</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-card>
+</div>
+
+
+<div nz-row [nzGutter]="24">
+  <nz-card nzTitle="模版预览">
+    <cn-setting-layout *ngIf="_layoutValue" [config]="_layoutValue.value"></cn-setting-layout>
+  </nz-card>
+</div>
+
+<div nz-row [nzGutter]="24">
+  <nz-card nzTitle="{{_selectedModuleText}}布局列表">
+    <nz-table #sqlTable [nzData]="_tableDataSource" [nzSize]="'small'" [nzLoading]="loading" [nzTotal]="total" [(nzPageIndex)]="pageIndex"
+      [(nzPageSize)]="pageSize">
+      <thead>
+        <tr>
+          <th nzShowExpand></th>
+          <th>布局名称</th>
+          <th>模版名称</th>
+          <th>是否启用</th>
+          <th>创建时间</th>
+          <th> </th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-data [ngForOf]="_tableDataSource">
+          <tr>
+            <td nzShowExpand [(nzExpand)]="data.expand"></td>
+            <td>{{data.Name}}</td>
+            <td>{{data.Template}}</td>
+            <td>{{data.Enabled}}</td>
+            <td>{{data.CreateTime}}</td>
+            <td>
+              <nz-popconfirm [nzTitle]="'确认删除当前记录?'" (nzOnConfirm)="delete(data.Id)" (nzOnCancel)="cancel()" [nzPlacement]="'top'">
+                <button nz-popconfirm nz-button [nzType]="'danger'" [nzSize]="'small'">
+                  <i class="anticon anticon-delete"></i> 删除</button>
+              </nz-popconfirm>
+            </td>
+          </tr>
+          <tr [nzExpand]="data.expand">
+            <td></td>
+            <td colspan="7">
+              <nz-table #innerTable [nzData]="data.BlockList" nzSize="middle" [nzShowPagination]="false">
+                <thead>
+                  <tr>
+                    <th>区域标题</th>
+                    <th>区域图标</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let data of innerTable.data">
+                    <td>{{data.Title}}</td>
+                    <td>{{data.Icon}}</td>
+                  </tr>
+                </tbody>
+              </nz-table>
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </nz-table>
+
+  </nz-card>
+</div>
+<!-- <bsn-data-table [config]="_tableHeader" [dataList]="_tableDataSource"></bsn-data-table> -->

@@ -1,0 +1,83 @@
+<ng-container *ngIf="config.rows">
+    <div nz-row [nzGutter]="8" *ngFor="let row of config.rows">
+      <div nz-col *ngFor="let c of row.row.cols" [nzSpan]="c.span" [nzSm]="c.size.nzSm" [nzXs]="c.size.nzXs" [nzMd]="c.size.nzMd"
+        [nzLg]="c.size.nzLg" [nzXl]="c.size.nzXl">
+        <cn-setting-layout [layoutId]="layoutId" [config]="c"></cn-setting-layout>
+      </div>
+    </div>
+  </ng-container>
+  
+  <nz-card *ngIf="config.tabs">
+      <nz-tabset [nzType]="'line'">
+          <nz-tab *ngFor="let tab of config.tabs">
+            <ng-template #nzTabHeading>
+              <i [ngClass]="tab.icon"></i>
+              {{tab.title}}
+            </ng-template>
+            <ng-container *ngFor="let cfg of tab.viewCfg">
+              <cn-setting-layout
+                [layoutId]="layoutId"
+                *ngIf="cfg.tabs" [config]="cfg"></cn-setting-layout>
+              <cn-setting-layout-editor
+                [blockId]="cfg.id"
+                [layoutId]="layoutId"
+                *ngIf="!cfg.tabs" [config]="cfg"></cn-setting-layout-editor>
+            </ng-container>
+            <!-- <cn-layout-resolver [config]="tab.viewCfg"></cn-layout-resolver>-->
+          </nz-tab>
+        </nz-tabset>
+        <!-- <cn-tabs-resolver></cn-tabs-resolver> -->
+  </nz-card>
+  
+  
+  
+  <nz-card *ngIf="!config.rows && !config.tabs" nzTitle="{{config.title}}" [nzExtra]="extraTemplate">
+      <cn-setting-layout-editor 
+      [layoutId]="layoutId" 
+      [blockId]="config.id" 
+      [area]="config.area"
+      [config]="config"></cn-setting-layout-editor>
+      <ng-template #extraTemplate>
+        <nz-dropdown>
+          <a nz-dropdown>
+            编辑区域 <i class="anticon anticon-down"></i>
+          </a>
+          <ul nz-menu nzSelectable>
+            <li nz-menu-item>
+              <a (click)="edit()">编辑</a>
+            </li>
+          </ul>
+        </nz-dropdown>
+      </ng-template>
+  </nz-card>
+
+  <nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()">
+    <ng-template #modalTitle>编辑区域</ng-template>
+
+    <ng-template #modalContent>
+      <form nz-form>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="6" nzFor="module">标题</nz-form-label>
+            <nz-form-control [nzSm]="18" [nzXs]="18">
+              <input nz-input [(ngModel)]="title" placeholder="选择图标" [ngModelOptions]="{standalone: true}" />
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+            <nz-form-label [nzSpan]="6" nzFor="module">图标</nz-form-label>
+            <nz-form-control [nzSm]="18" [nzXs]="18">
+                <input nz-input [(ngModel)]="icon" placeholder="选择图标" [ngModelOptions]="{standalone: true}" />
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+    </ng-template>
+
+    <ng-template #modalFooter>
+      <span> </span>
+      <button nz-button nzType="default" (click)="handleCancel()">取消</button>
+      <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">保存</button>
+    </ng-template>
+  </nz-modal>  
+  
+  
+  
+  

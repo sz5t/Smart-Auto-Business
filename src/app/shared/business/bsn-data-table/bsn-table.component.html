@@ -1,0 +1,91 @@
+<!-- <div class="table-operations" *ngIf="config.toolbar">
+    <ng-container *ngFor="let btn of config.toolbar">
+        <button nz-button *ngIf="btn.type!=='group'" (click)="toolbarAction(btn)" [attr.disabled]="btn.disabled" class="editable-add-btn">
+            <i class="{{btn.icon}}"></i>{{btn.text}}</button>
+        <nz-dropdown-button *ngIf="btn.type==='group'">
+            <i class="{{btn.icon}}"></i>{{btn.text}}
+            <ul nz-menu>
+                <li nz-menu-item *ngFor="let b of btn.group">
+                    <a (click)="toolbarAction(b)">
+                        <i class="{{b.icon}}"></i>{{b.text}}</a>
+                </li>
+            </ul>
+        </nz-dropdown-button>
+    </ng-container>
+</div> -->
+<!-- [nzDataSource]="dataList"nzAjaxData -->
+<bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId" [permissions]="permissions.toolbar?permissions.toolbar:[]"></bsn-toolbar>
+<nz-table #nzTable 
+    [nzData]="dataList" 
+    [nzSize]="'small'" 
+    [nzFrontPagination]="false" 
+    [nzShowSizeChanger]="true" 
+    [nzTotal]="total"
+    [(nzPageIndex)]="pageIndex" 
+    [(nzPageSize)]="pageSize" 
+    [nzShowTotal]="totals" 
+    [nzPageSizeOptions]="this.config.pageSizeOptions"
+    [nzLoading]="loading" 
+    (nzPageIndexChange)="searchData()" 
+    (nzPageSizeChange)="searchData(true)" 
+    [nzTitle]="this.config.title?this.config.title:null"
+    [nzFooter]="footer"
+    nzBordered>
+    <thead (nzSortChange)="sort($event)" nzSingleSort>
+        <tr>
+            <th nzShowCheckbox 
+            [(nzChecked)]="allChecked" 
+            [nzIndeterminate]="indeterminate" 
+            (nzCheckedChange)="checkAll($event)"
+            >
+            </th>
+            <ng-template ngFor let-col [ngForOf]="config.columns">
+                <th 
+                    [nzWidth]="col.width"
+                    [nzShowSort]="col.showSort" 
+                    [nzShowFilter]="col.showFilter" 
+                    [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" 
+                    *ngIf="!col.hidden" 
+                    [nzSortKey]="col.field"
+                    (nzFilterChange)="columnFilter(col.editor.field, $event)"
+                >
+                    <span>{{col.title}}</span>
+                </th>
+            </ng-template>
+        </tr>
+    </thead>
+    <tbody>
+        <ng-template ngFor let-data [ngForOf]="nzTable.data">
+            <tr (click)="selectRow(data, $event)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
+                <td nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked()">
+                </td>
+                <ng-template ngFor let-col [ngForOf]="config.columns">
+                    <td *ngIf="!col.hidden">
+                        <ng-container *ngIf="col.editor">
+                            <div *ngIf="!editCache[data.key]['edit']">
+                                <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'']">{{!col.dataType?data[col.field]:data[col.field] | date}}</span>
+                            </div>
+                            <ng-container [bsnData]="tempParameters" [rowData]="data" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                                CnGridEditorDirective *ngIf="editCache[data.key].edit" [config]="col.editor.options" [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field]}"
+                                (updateValue)="valueChange($event)">
+                            </ng-container>
+                        </ng-container>
+                        <ng-container *ngIf="!col.editor">
+                            <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'']">{{data[col.field]}}</span>
+                        </ng-container>
+
+                    </td>
+                </ng-template>
+            </tr>
+        </ng-template>
+
+    </tbody>
+    <ng-template #footer>
+         已选择
+            <strong class="text-primary">{{checkedCount}}</strong> 项&nbsp;&nbsp;
+    </ng-template>
+    <ng-template #totals let-total>
+            共 {{total}} 条
+    </ng-template>
+</nz-table>
+

@@ -1,0 +1,52 @@
+<ng-template #template>
+    <ul nz-menu nzInDropDown >
+        <li nz-submenu *ngFor="let menu of menuConfig">
+          <span title> {{menu.label}}</span>
+          <ul *ngFor="let item of menu.children">
+            <li nz-menu-item (click)="addComponent(item.value)"> {{item.label}}</li>
+          </ul>
+        </li>
+      </ul>
+  <!-- <button nz-button (click)="_saveComponent()">保存</button> -->
+</ng-template>
+<div style="height:200px; overflow:scroll" (contextmenu)="contextMenu($event,template)">
+    <div #dynamicComponent></div>
+</div>
+
+<nz-row nzGutter="8">
+  <nz-col nzSpan="8">
+    <nz-input-group [nzSuffix]="suffixIcon">
+        <input type="text" nz-input placeholder="搜索" [(ngModel)]="searchValue">
+      </nz-input-group>
+      <ng-template #suffixIcon>
+        <i class="anticon anticon-search"></i>
+      </ng-template>
+    <nz-tree 
+      [(ngModel)]="nodes"
+      [nzShowLine]="true"
+      (nzExpandChange)="mouseAction('expand', $event)"
+      (nzContextMenu)="mouseAction('contextmenu', $event)"
+      (nzClick)="mouseAction('click',$event)"
+    >
+      <ng-template #nzTreeTemplate let-node>
+        <span *ngIf="!node.isLeaf" (contextmenu)="editorContextMenu($event,contextTemplate, node)" click="nodeClick()">
+            <i class=""></i> <span>{{node.title}}</span>
+        </span>
+        <span *ngIf="node.isLeaf" (contextmenu)="editorContextMenu($event,contextTemplate, node)" click="nodeClick()">
+            <i class=""></i> <span>{{node.title}}</span>
+        </span>
+      </ng-template>
+    </nz-tree>
+
+    <!-- 动态菜单 开始 -->
+      <ng-template #contextTemplate>
+        <ul nz-menu nzInDropDown>
+          <li nz-menu-item (click)="selectItem()">新建</li>
+        </ul>
+      </ng-template>
+    <!-- 动态菜单 结束-->
+  </nz-col>
+  <nz-col nzSpan="16">
+    
+  </nz-col>
+</nz-row>

@@ -1,0 +1,13 @@
+<nz-spin [nzSpinning]="isSpinning" [nzDelay]="300" nzTip='加载中...'>
+    <form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form" (ngSubmit)="searchForm()">
+        <standard-form-row [title]="formItem.title" [ngClass]="formItem.layout" *ngFor="let formItem of config.forms">
+            <div nz-col [nzSpan]="control.span" *ngFor="let control of formItem.controls">
+                <nz-form-item style="margin-bottom:0px">
+                    <ng-container cnFormResolverDirective [formGroup]="form" [config]="control">
+
+                    </ng-container>
+                </nz-form-item>
+            </div>
+        </standard-form-row>
+    </form>
+</nz-spin>

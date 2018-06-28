@@ -1,0 +1,510 @@
+{
+  "rows": [
+    {
+      "row": {
+        "cols": [
+          {
+            "id": "area1",
+            "title": "组织机构",
+            "span": 6,
+            "size": {
+              "nzXs": 6,
+              "nzSm": 6,
+              "nzMd": 6,
+              "nzLg": 6,
+              "ngXl": 6
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "viewId": "tree_and_table_tree",
+                  "component": "bsnTree",
+                  "asyncData": true,
+                  "expandAll": true,
+                  "checkable": false,
+                  "showLine": false,
+                  "columns": [
+                    {
+                      "title": "主键",
+                      "field": "key",
+                      "valueName": "Id"
+                    },
+                    {
+                      "title": "父节点",
+                      "field": "ParentId",
+                      "valueName": "ParentId"
+                    },
+                    {
+                      "title": "标题",
+                      "field": "title",
+                      "valueName": "Name"
+                    }
+                  ],
+                  "componentType": {
+                    "parent": true,
+                    "child": false,
+                    "own": false
+                  },
+                  "parent": [
+                    {
+                      "name": "ParentId",
+                      "type": "value",
+                      "valueName": "取值参数名称",
+                      "value": "null"
+                    }
+                  ],
+                  "ajaxConfig": {
+                    "url": "SinoForce.User.OrgNode",
+                    "ajaxType": "get",
+                    "params": []
+                  },
+                  "relations": [
+                    {
+                      "relationViewId": "tree_and_table_tree",
+                      "relationSendContent": [
+                        {
+                          "name": "clickNode",
+                          "sender": "tree_and_table_tree",
+                          "aop": "after",
+                          "receiver": "tree_and_table_table",
+                          "relationData": {
+                            "name": "refreshAsChild",
+                            "params": [
+                              {
+                                "pid": "key",
+                                "cid": "_parentId"
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "relationReceiveContent": []
+                    }
+                  ]
+                },
+                "dataList": []
+              }
+            ]
+          },
+          {
+            "id": "area2",
+            "title": "详细信息",
+            "span": 18,
+            "size": {
+              "nzXs": 18,
+              "nzSm": 18,
+              "nzMd": 18,
+              "nzLg": 18,
+              "ngXl": 18
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "viewId": "tree_and_table_table",
+                  "component": "bsnTable",
+                  "keyId": "Id",
+                  "pagination": true,
+                  "showTotal": true,
+                  "pageSize": 5,
+                  "pageSizeOptions": [
+                    5,
+                    10,
+                    20,
+                    30,
+                    40,
+                    50
+                  ],
+                  "ajaxConfig": {
+                    "url": "SinoForce.User.OrgNode",
+                    "ajaxType": "get",
+                    "params": [
+                      {
+                        "name": "ParentId",
+                        "type": "tempValue",
+                        "valueName": "_parentId",
+                        "value": ""
+                      }
+                    ]
+                  },
+                  "componentType": {
+                    "parent": false,
+                    "child": true,
+                    "own": false
+                  },
+                  "relations": [
+                    {
+                      "relationViewId": "tree_and_table_table",
+                      "relationSendContent": [],
+                      "relationReceiveContent": []
+                    }
+                  ],
+                  "columns": [
+                    {
+                      "title": "Id",
+                      "field": "Id",
+                      "width": 80,
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "Id",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "部门编号",
+                      "field": "Order",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Order",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "部门名称",
+                      "field": "Name",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Name",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "部门简称",
+                      "field": "ShortName",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "ShortName",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "部门代号",
+                      "field": "Code",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Code",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "部门级别",
+                      "field": "Level",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "select",
+                        "field": "Level",
+                        "options": {
+                          "type": "select",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "submit",
+                          "name": "Level",
+                          "label": "部门级别",
+                          "notFoundContent": "",
+                          "selectModel": false,
+                          "showSearch": true,
+                          "placeholder": "-请选择-",
+                          "disabled": false,
+                          "size": "default",
+                          "clear": true,
+                          "width": "130px",
+                          "options": [
+                            {
+                              "label": "集团",
+                              "value": "1",
+                              "disabled": false
+                            },
+                            {
+                              "label": "公司",
+                              "value": "2",
+                              "disabled": false
+                            },
+                            {
+                              "label": "部门",
+                              "value": "3",
+                              "disabled": false
+                            },
+                            {
+                              "label": "小组",
+                              "value": "4",
+                              "disabled": false
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "title": "部门性质",
+                      "field": "Kind",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Kind",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "备注",
+                      "field": "Comment",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Comment",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "创建时间",
+                      "field": "CreateTime",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "CreateTime",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "10",
+                          "inputType": "text"
+                        }
+                      }
+                    }
+                  ],
+                  "toolbar": [
+                    {
+                      "name": "refresh",
+                      "class": "editable-add-btn",
+                      "text": "刷新"
+                    },
+                    {
+                      "name": "addRow",
+                      "class": "editable-add-btn",
+                      "text": "新增"
+                    },
+                    {
+                      "name": "updateRow",
+                      "class": "editable-add-btn",
+                      "text": "修改"
+                    },
+                    {
+                      "name": "deleteRow",
+                      "class": "editable-add-btn",
+                      "text": "删除",
+                      "ajaxConfig": {
+                        "delete": [
+                          {
+                            "actionName": "delete",
+                            "url": "SinoForce.User.OrgNode",
+                            "ajaxType": "delete"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "saveRow",
+                      "class": "editable-add-btn",
+                      "text": "保存",
+                      "type": "method/action",
+                      "ajaxConfig": {
+                        "post": [
+                          {
+                            "actionName": "add",
+                            "url": "SinoForce.User.OrgNode",
+                            "ajaxType": "post",
+                            "params": [
+                              {
+                                "name": "Order",
+                                "type": "componentValue",
+                                "valueName": "Order",
+                                "value": ""
+                              },
+                              {
+                                "name": "Name",
+                                "type": "componentValue",
+                                "valueName": "Name",
+                                "value": ""
+                              },
+                              {
+                                "name": "ShortName",
+                                "type": "componentValue",
+                                "valueName": "ShortName",
+                                "value": ""
+                              },
+                              {
+                                "name": "Code",
+                                "type": "componentValue",
+                                "valueName": "Code",
+                                "value": ""
+                              },
+                              {
+                                "name": "Level",
+                                "type": "componentValue",
+                                "valueName": "Level",
+                                "value": ""
+                              },
+                              {
+                                "name": "Kind",
+                                "type": "componentValue",
+                                "valueName": "Kind",
+                                "value": ""
+                              },
+                              {
+                                "name": "Comment",
+                                "type": "componentValue",
+                                "valueName": "Comment",
+                                "value": ""
+                              },
+                              {
+                                "name": "ParentId",
+                                "type": "tempValue",
+                                "valueName": "_parentId",
+                                "value": ""
+                              },
+                              {
+                                "name": "ProjId",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "002905c7bf57c54c9e5e65ec0e5fafe8"
+                              }
+                            ],
+                            "output": [
+                              {
+                                "name": "_id",
+                                "type": "",
+                                "dataName": "Id"
+                              }
+                            ]
+                          }
+                        ],
+                        "put": [
+                          {
+                            "url": "SinoForce.User.OrgNode",
+                            "ajaxType": "put",
+                            "params": [
+                              {
+                                "name": "Id",
+                                "type": "componentValue",
+                                "valueName": "Id",
+                                "value": ""
+                              },
+                              {
+                                "name": "Order",
+                                "type": "componentValue",
+                                "valueName": "Order",
+                                "value": ""
+                              },
+                              {
+                                "name": "Name",
+                                "type": "componentValue",
+                                "valueName": "Name",
+                                "value": ""
+                              },
+                              {
+                                "name": "ShortName",
+                                "type": "componentValue",
+                                "valueName": "ShortName",
+                                "value": ""
+                              },
+                              {
+                                "name": "Code",
+                                "type": "componentValue",
+                                "valueName": "Code",
+                                "value": ""
+                              },
+                              {
+                                "name": "Level",
+                                "type": "componentValue",
+                                "valueName": "Level",
+                                "value": ""
+                              },
+                              {
+                                "name": "Kind",
+                                "type": "componentValue",
+                                "valueName": "Kind",
+                                "value": ""
+                              },
+                              {
+                                "name": "Comment",
+                                "type": "componentValue",
+                                "valueName": "Comment",
+                                "value": ""
+                              },
+                              {
+                                "name": "ParentId",
+                                "type": "componentValue",
+                                "valueName": "",
+                                "value": ""
+                              },
+                              {
+                                "name": "ProjId",
+                                "type": "value",
+                                "valueName": "",
+                                "value": "002905c7bf57c54c9e5e65ec0e5fafe8"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "cancelRow",
+                      "class": "editable-add-btn",
+                      "text": "取消"
+                    }
+                  ]
+                },
+                "dataList": []
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

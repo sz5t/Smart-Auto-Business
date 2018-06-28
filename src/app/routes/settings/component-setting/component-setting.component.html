@@ -1,0 +1,108 @@
+<page-header [title]=""></page-header>
+<nz-row [nzGutter]="8">
+    <nz-col [nzSpan]="24">
+        <nz-card>
+
+            <form nz-form [nzLayout]="'inline'">
+                <nz-form-item>
+                    <nz-form-label>
+                        <label [attr.for]="'功能模块'">功能模块</label>
+                    </nz-form-label>
+                    <nz-form-control>
+                        <nz-cascader [ngModelOptions]="{standalone: true}" [class.class123]="true" [nzOptions]="_funcOptions" [(ngModel)]="_funcValue"
+                            (nzChange)="_changeModuleValue($event)" (nzSelectionChange)="_onSelectionChange($event)" [nzPlaceHolder]="'请选择功能模块'"
+                            (nzLoad)="_loadLayoutData($event)" [nzExpandTrigger]="'hover'">
+                        </nz-cascader>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label>
+                        <label [attr.for]="'模块布局列表'">模块布局列表</label>
+                    </nz-form-label>
+                    <nz-form-control>
+                        <nz-select style="width:120px;" [(ngModel)]="_layoutNameValue" (ngModelChange)="_changeLayoutName($event)" [nzPlaceHolder]="'选择布局名称'"
+                            [ngModelOptions]="{standalone: true}">
+                            <nz-option *ngFor="let option of _layoutList" [nzLabel]="option.label" [nzValue]="option.value">
+                            </nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+
+        </nz-card>
+    </nz-col>
+
+</nz-row>
+<nz-row [nzGutter]="8">
+    <nz-col [nzSpan]="8">
+        <nz-card>
+            <!--  <nz-tree [nzNodes]="nodes" [nzOptions]="options" (nzActivate)="onActivate($event)" [nzAllowChildLinkage]="treeconfig.nzAllowChildLinkage"
+                [nzAllowParentLinkage]="treeconfig.nzAllowParentLinkage" [nzCheckable]="treeconfig.nzCheckable" [nzShowLine]="treeconfig.nzShowLine">
+            </nz-tree> -->
+            <nz-tree [(ngModel)]="treeData" [nzAsyncData]="treeconfig.asyncData" [nzDefaultExpandAll]="treeconfig.expandAll" [nzCheckable]="treeconfig.checkable"
+                [nzShowLine]="treeconfig.showLine" (nzClick)="onMouseAction('clickNode', $event)">
+            </nz-tree>
+            <!--   <cn-bsn-tree [config]="tree_Config"></cn-bsn-tree> -->
+        </nz-card>
+
+    </nz-col>
+    <nz-col [nzSpan]="16">
+        <nz-row [nzGutter]="8">
+            <nz-col [nzSpan]="24">
+                <nz-card>
+
+                    <nz-tabset [nzType]="'line'">
+
+                        <nz-tab nzTitle="数据集设置">
+                            <div>
+                                <div nz-row [nzGutter]="8">
+                                    <div nz-col [nzSpan]="24">
+                                        <cn-code-edit #editor></cn-code-edit>
+                                    </div>
+                                    <div nz-col [nzSpan]="24">
+                                        <br>
+                                        <button nz-button [nzType]="'primary'" [nzSize]="'default'" (click)="saveSql($event)">保存</button>
+                                    </div>
+
+                                </div>
+                                <div nz-row [nzGutter]="8">
+                                    <div nz-col [nzSpan]="24">
+                                        <nz-tabset [nzType]="'line'">
+                                            <nz-tab nzTitle="字段">
+                                                <div>
+                                                    <div bsn-data-table [config]="fildConfig" [dataList]="dataList"></div>
+
+                                                </div>
+                                            </nz-tab>
+                                            <nz-tab nzTitle="参数">
+                                                <div>
+                                                    <div bsn-data-table [config]="parameterConfig" [dataList]="dataList"></div>
+                                                </div>
+                                            </nz-tab>
+                                        </nz-tabset>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </nz-tab>
+                        <nz-tab nzTitle="属性设置">
+                            <div>
+                                <cn-form-resolver [config]="attributeConfig" [dataList]="dataList"></cn-form-resolver>
+                            </div>
+                        </nz-tab>
+                        <nz-tab nzTitle="业务对象">
+                            <div>
+                                <div nz-row [nzGutter]="8">
+                                    <div nz-col [nzSpan]="24">
+                                        <div bsn-data-table [config]="tempConfig" [dataList]="tempdataList"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </nz-tab>
+                    </nz-tabset>
+
+                </nz-card>
+            </nz-col>
+        </nz-row>
+    </nz-col>
+</nz-row>

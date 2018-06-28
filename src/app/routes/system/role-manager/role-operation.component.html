@@ -1,0 +1,92 @@
+
+<form nz-form [formGroup]="roleOperForm" (ngSubmit)="_submitForm()">
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="Name">名称</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+            <input nz-input  formControlName="Name" id="Name">
+            <nz-form-explain *ngIf="getFormControl('Name').dirty&&getFormControl('Name').hasError('Name')">表名称不能为空!</nz-form-explain>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired mzFor="ShareScope">共享范围</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+            <nz-select formControlName="ShareScope">
+                <nz-option [nzLabel]="'当前客户'" [nzValue]="'Customer'" ></nz-option>
+                <nz-option [nzLabel]="'项目授权客户'" [nzValue]="'Project'"></nz-option>
+                <nz-option [nzLabel]="'所有客户'" [nzValue]="'All'"></nz-option>
+            </nz-select>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >备注</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" >
+            <input nz-input  formControlName="Remark" id="Remark">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item style="vertical-align: center">
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" >配置内容</nz-form-label>
+        <nz-form-control nz-col [nzSm]="7" [nzXs]="12" >
+            <div style="padding-left: 7px;border:1px solid #000; margin-right:10px;">资源列表<br>
+            <nz-tree
+                formControlName = "AppPermission"
+                [nzShowLine]="true"
+                [(ngModel)]="nodes"
+                [nzCheckable]="true"
+                [nzMultiple]="false"
+                [nzDefaultCheckedKeys]="checkedKeys"
+                [nzDefaultExpandAll]="expandDefault"
+                (nzClick)="mouseAction('click',$event)"
+                (nzCheckBoxChange) = "mouseAction('click',$event)">
+            </nz-tree>
+            </div>
+        </nz-form-control>
+        <nz-form-control nz-col [nzSm]="7" [nzXs]="12" >
+            <!--<div style="border:1px solid #000;padding-left: 7px;" *ngFor="let item of checkOptionsOne">{{item.key}}<br>-->
+                <!--<nz-checkbox-group  formControlName="{{'Operations'+item.key}}" [ngModel]="item.Oper" (ngModelChange)="modelChange($event)" ></nz-checkbox-group>-->
+                <!--<nz-checkbox-wrapper style="width: 100%;"   (nzOnChange)="onChange($event)" >-->
+                    <!--<div nz-row>-->
+                        <!--<div *ngFor="let item of checkOptionsOne" nz-col nzSpan="24" >-->
+                            <!--<label nz-checkbox nzValue='{{item.value}}' [ngModel]='item.checked' formControlName="Operations">{{item.label}}</label>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</nz-checkbox-wrapper>-->
+            <!--</div>-->
+            <div style="padding-left: 7px;border:1px solid #000; margin-right:10px;">操作列表<br>
+                <nz-tree
+                    formControlName = "Operations"
+                    [nzShowLine]="true"
+                    [(ngModel)]="checkOptionsOne"
+                    [nzCheckable]="true"
+                    [nzMultiple]="false"
+                    [nzDefaultCheckedKeys]="checkedoperKeys"
+                    [nzDefaultExpandAll]="true"
+                    (nzClick)="mouseAction1('click',$event)"
+                    (nzCheckBoxChange) = "mouseAction1('click',$event)"
+                    (nzExpandChange) = "expand1($event)">
+                </nz-tree>
+            </div>
+        </nz-form-control>
+    </nz-form-item>
+
+
+    <div class="customize-footer">
+        <button nz-button [nzType]="'primary'" [nzSize]="'large'" (click)="emitDataOutside()">
+            保存
+        </button>
+        <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="handleCancel($event)">
+            返 回
+        </button>
+    </div>
+</form>
+
+
+<style>
+    :host ::ng-deep .customize-footer {
+        border-top: 1px solid #e9e9e9;
+        padding: 10px 18px 0 10px;
+        text-align: right;
+        border-radius: 0 0 0px 0px;
+        margin: 15px -16px -5px -16px;
+    }
+</style>
+

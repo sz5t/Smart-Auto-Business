@@ -1,0 +1,191 @@
+<!-- <cn-code-edit></cn-code-edit> -->
+<cn-form-resolver [config]="configFormNew"></cn-form-resolver>
+<!-- <nz-card>
+  <bsn-tree-table></bsn-tree-table>
+   <nz-table #nzTable [nzData]="data">
+    <thead>
+      <tr>
+        <th nzWidth="40%">Name</th>
+        <th nzWidth="30%">Age</th>
+        <th>Address</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template ngFor let-data [ngForOf]="nzTable.data">
+        <ng-template ngFor let-item [ngForOf]="expandDataCache[data.key]">
+          <tr *ngIf="(item.parent&&item.parent.expand)||!(item.parent)">
+            <td [nzIndentSize]="item.level*20" [nzShowExpand]="!!item.children" [(nzExpand)]="item.expand" (nzExpandChange)="collapse(expandDataCache[data.key],item,$event)">
+              {{item.name}}
+            </td>
+            <td>{{item.age}}</td>
+            <td>{{item.address}}</td>
+          </tr>
+        </ng-template>
+      </ng-template>
+    </tbody>
+  </nz-table> 
+
+
+  <div>
+    <nz-tree [(ngModel)]="nodesnewtree" [nzCheckable]="true" [nzMultiple]="true" [nzDefaultExpandedKeys]="expandKeys" [nzDefaultCheckedKeys]="checkedKeys"
+      [nzDefaultSelectedKeys]="selectedKeys" [nzDefaultExpandAll]="expandDefault" (nzClick)="mouseAction('click',$event)" (nzDblClick)="mouseAction('dblclick', $event)">
+    </nz-tree>`
+  </div>
+  <nz-popover [nzTitle]="'标题'" [(nzVisible)]="visible" [nzTrigger]="'click'" [nzPlacement]="'rightTop'">
+
+    <ng-template #nzTemplate>
+      <a>点击关闭</a>
+      <p>内容</p>
+      <p>内容</p>
+    </ng-template>
+  </nz-popover>
+</nz-card> -->
+
+
+<div nz-row [nzGutter]="16">
+  <div nz-col [nzMd]="24">
+    <nz-card>
+      <div class="table-operations" *ngIf="config.toolbar">
+        <ng-container *ngFor="let bar of config.toolbar">
+
+          <button nz-button nzType="default" (click)="execFun(bar.name)" class="editable-add-btn">{{bar.text}}</button>
+        </ng-container>
+      </div>
+      <nz-table #nzTable [nzData]="list" [nzShowSizeChanger]="true" [nzTotal]="total" [(nzPageIndex)]="pi" [nzShowTotal]="totalTemplate"
+        nzBordered>
+        <ng-template #totalTemplate let-total>
+          共 {{total}} 条
+        </ng-template>
+        <!--  
+                              (nzCurrentPageDataChange)="load($event)"
+            (nzPageIndexChange)="load()"
+            (nzPageSizeChange)="load()"   
+                            [nzTotal]="total" [(nzPageIndex)]="pi" (nzPageIndexChange)="load()"
+                [(nzPageSize)]="ps" (nzPageSizeChange)="load()" [nzShowTotal]="config.nzShowTotal" -->
+        <thead>
+          <tr>
+            <th nzShowCheckbox [(nzChecked)]="_allChecked" [nzIndeterminate]="_indeterminate" (nzCheckedChange)="_checkAll($event)">
+              <!-- <label nzShowCheckbox   [(ngModel)]="_allChecked" [nzIndeterminate]="_indeterminate" (ngModelChange)="_checkAll()">
+                            </label> -->
+            </th>
+            <ng-container *ngFor="let col of config.columns">
+              <th nzShowSort *ngIf="!col.hidden" nzShowSort nzSortKey="sortMap[col.field]">
+                <span>{{col.title}}</span>
+                <!-- <nz-table-sort [(nzValue)]="sortMap[col.field]" (nzValueChange)="sort(col.field,$event)"></nz-table-sort> -->
+              </th>
+            </ng-container>
+
+          </tr>
+        </thead>
+        <tbody nz-tbody>
+          <ng-container *ngFor="let data of nzTable.data">
+            <tr nz-tbody-tr (click)="selectRow(data,editCache[data.key].data)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
+              <td nz-td nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
+              </td>
+              <ng-container *ngFor="let col of config.columns">
+                <td nz-td *ngIf="!col.hidden">
+                  <ng-container *ngIf="col.editor">
+                    <div *ngIf="!editCache[data.key].edit">
+                      {{data[col.field]}}
+                    </div>
+                    <ng-container CnGridEditorDirective *ngIf="editCache[data.key].edit" [config]="col.editor.options" [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field]}"
+                      (updateValue)="userNameChange($event)">
+                    </ng-container>
+                  </ng-container>
+                  <ng-container *ngIf="!col.editor">
+                    {{data[col.field]}}
+                  </ng-container>
+
+                </td>
+              </ng-container>
+            </tr>
+          </ng-container>
+
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </div>
+</div>
+<!-- <div bsn-data-table [config]="config" [dataList]="dataList"></div> -->
+<!--<div bsn-data-table [config]="config1" [dataList]="dataList1"></div>
+
+<div bsn-table [config]="config2" [dataList]="dataList1"></div> -->
+<!-- <cn-form-resolver [config]="configForm"></cn-form-resolver> -->
+
+
+<!-- <nz-table #nestedTable [nzData]="nestedTableData" [nzPageSize]="10" nzBordered>
+  <thead>
+    <tr>
+      <th nzShowExpand></th>
+      <th>Name</th>
+      <th>Platform</th>
+      <th>Version</th>
+      <th>Upgraded</th>
+      <th>Creator</th>
+      <th>Date</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-template ngFor let-data [ngForOf]="nestedTable.data">
+      <tr>
+        <td nzShowExpand [(nzExpand)]="data.expand"></td>
+        <td>{{data.name}}</td>
+        <td>{{data.platform}}</td>
+        <td>{{data.version}}</td>
+        <td>{{data.upgradeNum}}</td>
+        <td>{{data.creator}}</td>
+        <td>{{data.createdAt}}</td>
+        <td>
+          <a>Publish</a>
+        </td>
+      </tr>
+      <tr [nzExpand]="data.expand">
+        <td></td>
+        <td colspan="7">
+          <nz-table #innerTable [nzData]="data.pp" nzSize="middle" [nzShowPagination]="false" nzBordered>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Upgrade Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of innerTable.data">
+                <td>{{data.date}}</td>
+                <td>{{data.name}}</td>
+                <td>
+                  <nz-badge [nzStatus]="'success'" [nzText]="'Finished'"></nz-badge>
+                </td>
+                <td>{{data.upgradeNum}}</td>
+                <td>
+                  <span class="table-operation">
+                    <nz-dropdown>
+                      <a nz-dropdown class="operation">
+                        Pause
+                        <i class="anticon anticon-down"></i>
+                      </a>
+                      <ul nz-menu>
+                        <li nz-menu-item>
+                          <a>Action 1</a>
+                        </li>
+                        <li nz-menu-item>
+                          <a>Action 2</a>
+                        </li>
+                      </ul>
+                    </nz-dropdown>
+                    <a class="operation">Stop</a>
+                    <a>More</a>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </td>
+      </tr>
+    </ng-template>
+  </tbody>
+</nz-table> -->

@@ -1,0 +1,15 @@
+<nz-form-label [nzSpan]="config.labelSize">
+    {{config.label}}
+   </nz-form-label>
+   <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+     <nz-select
+       formControlName="{{config.name}}"
+       (ngModelChange)="valueChange($event)"
+       [nzSize]="config.size"
+       [nzPlaceHolder]="config.placeholder">
+       <nz-option *ngFor="let option of _options"
+                  nzLabel="{{option.label}}"
+                  nzValue="{{option.value}}"
+       ></nz-option>
+     </nz-select>
+   </nz-form-control>

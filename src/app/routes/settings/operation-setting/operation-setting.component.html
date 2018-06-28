@@ -1,0 +1,85 @@
+<page-header [title]=""></page-header>
+<div nz-row [nzGutter]="8">
+  <div nz-col [nzSpan]="24">
+    <nz-card>
+      <form nz-form [nzLayout]="'inline'">
+        <nz-form-item>
+          <nz-form-label>
+            功能模块
+          </nz-form-label>
+          <nz-form-control>
+            <nz-cascader [ngModelOptions]="{standalone: true}" [class.class123]="true" [nzOptions]="_funcOptions" [(ngModel)]="_funcValue"
+              (nzChange)="_changeModuleValue($event)" (nzSelectionChange)="_onSelectionChange($event)" [nzPlaceHolder]="'请选择功能模块'"
+              (nzLoad)="_loadLayoutData($event)" [nzExpandTrigger]="'hover'">
+            </nz-cascader>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>
+            模块布局列表
+          </nz-form-label>
+          <nz-form-control>
+            <nz-select style="width:120px;" [(ngModel)]="_layoutNameValue" (ngModelChange)="_changeLayoutName($event)" [nzPlaceHolder]="'选择布局名称'"
+              [ngModelOptions]="{standalone: true}">
+              <nz-option *ngFor="let option of _layoutList" [nzLabel]="option.label" [nzValue]="option.value">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-card>
+  </div>
+
+</div>
+<div nz-row [nzGutter]="8">
+  <div nz-col [nzSpan]="6">
+    <nz-card>
+      <!-- <nz-tree #tree (nzContextMenu)="mouseAction('contextmenu', $event)" [nzTreeData]="nodes" (nzClick)="onActivate($event)" [nzDefaultExpandAll]="treeconfig.nzAutoExpandParent"
+        [nzCheckable]="treeconfig.nzCheckable" [nzShowLine]="treeconfig.nzShowLine">
+      </nz-tree> -->
+      <cn-bsn-tree 
+        [config]="tree_Config"
+      ></cn-bsn-tree>
+    </nz-card>
+  </div>
+  <div nz-col [nzSpan]="18">
+    <cn-layout-resolver [config]="_editorConfig"></cn-layout-resolver>
+  </div>
+</div>
+
+<ng-template #addTemplate>
+  <ul nz-menu nzInDropDown (nzClick)="closeOperationMenu($event)">
+    <li nz-menu-item (click)="addOperation()"> 添加操作</li>
+  </ul>
+</ng-template>
+
+<ng-template #editTemplate>
+  <ul nz-menu nzInDropDown (nzClick)="closeOperationMenu($event)">
+    <li nz-menu-item (click)="deleteOperation()"> 删除操作</li>
+  </ul>
+</ng-template>
+
+
+<!-- <nz-card nz-col [nzSpan]="12">
+  <nz-tree 
+  [nzTreeData]="_demoTreeData" 
+  [nzAsyncData]="config.asyncData" 
+  [nzDefaultExpandAll]="config.expandAll"
+  [nzCheckable]="config.checkable" 
+  [nzShowLine]="config.showLine" 
+  (nzClick)="onMouseAction('click', $event)">
+  </nz-tree>
+</nz-card> -->
+
+<!-- <nz-card nz-col [nzSpan]="12">
+  <nz-tree 
+    [nzTreeData]="_demoAsyncTreeData" 
+    [nzAsyncData]="config.asyncData" 
+    [nzDefaultExpandAll]="false"
+    [nzCheckable]="config.checkable" 
+    [nzShowLine]="config.showLine"
+    (nzClick)="onMouseAction('clickNode', $event)" 
+    (nzExpandChange)="onMouseAction('expandNode', $event)"
+  >
+  </nz-tree>
+</nz-card> -->

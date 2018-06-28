@@ -1,0 +1,10 @@
+<nz-form-item>
+  <nz-form-label [nzSm]="config.labelSize" [nzXs]="24">
+    <label [attr.for]="config.name" nz-form-item-required>{{config.label}}</label>
+  </nz-form-label>
+  <nz-form-control [formGroup]="formGroup"  [nzSm]="config.controlSize" [nzXs]="24">
+    <nz-checkbox-group formControlName="{{config.name}}"  [(ngModel)]="config.options" [nzDisabled]="config.disabled">
+      <span>{{config.label}}</span>
+    </nz-checkbox-group>
+  </nz-form-control>
+</nz-form-item>

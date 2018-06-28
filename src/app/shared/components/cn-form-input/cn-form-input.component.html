@@ -1,0 +1,27 @@
+<nz-form-label [nzSpan]="config.labelSize" [nzRequired]="config.isRequired">
+  {{config.label}}
+</nz-form-label>
+<nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+  <nz-input-group 
+    [nzCompact]="false" 
+    [nzSize]="'default'" 
+    nzAddOnBefore="{{config.addonBefore}}" 
+    nzAddOnAfter="{{config.addonAfter}}"
+    [nzSuffix]="suffixTemplate" 
+    nzPrefixIcon="{{config.perfix}}">
+    <input nz-input 
+      type="{{config.inputType}}" 
+      formControlName="{{config.name}}" 
+      [nzSize]="config.size" 
+      placeholder="{{config.placeholder}}"
+      [(ngModel)]="model" />
+  </nz-input-group>
+  <nz-form-explain *ngIf="formGroup.get(config.name).dirty && formGroup.get(config.name).errors || formGroup.get(config.name).pending ">
+      <ng-container *ngFor="let valid of config.validations">
+            <span style="margin-top:3px" *ngIf="formGroup.get(config.name).hasError(valid.validator.toLowerCase())">{{valid.errorMessage}}</span>
+        </ng-container>
+    </nz-form-explain>
+</nz-form-control>
+<ng-template #suffixTemplate>
+  <i class="anticon anticon-close-circle" (click)="model=null" *ngIf="model"></i>
+</ng-template>

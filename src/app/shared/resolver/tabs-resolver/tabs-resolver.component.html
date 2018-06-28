@@ -1,0 +1,24 @@
+<nz-tabset [nzType]="'card'" [nzTabPosition]="'top'" [nzAnimated]="true" [nzSelectedIndex]="_index" [nzTabBarExtraContent]="extraContent">
+  <nz-tab *ngFor="let tab of config" (nzSelect)="selectedTab(tab)" [nzTitle]="titleTemplate">
+    <ng-template #titleTemplate>
+        <div>
+            {{ tab.name }}
+            <i class="anticon anticon-close" (click)="closeTab(tab)"></i>
+          </div>
+    </ng-template>
+    <cn-component-setting-resolver [layoutId]="layoutId" [blockId]="tab.id" [config]="tab.config"></cn-component-setting-resolver>
+  </nz-tab>
+  <ng-template #extraContent>
+    <i class="ant-tabs-new-tab anticon anticon-plus" (click)="showModal('new')"></i>
+    <i class="ant-tabs-new-tab anticon anticon-edit" (click)="showModal('edit')"></i>
+  </ng-template>
+</nz-tabset>
+<nz-modal [nzVisible]="isVisible"
+          [nzTitle]="'标签页名称'"
+          [nzContent]="modalContent"
+          (nzOnCancel)="handleCancel($event)"
+          (nzOnOk)="handleOk($event)">
+  <ng-template #modalContent>
+    <input nz-input [(ngModel)]="_tabName"/>
+  </ng-template>
+</nz-modal>
