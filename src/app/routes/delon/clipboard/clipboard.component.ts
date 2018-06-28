@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd';
-import { copy } from '@delon/abc';
+import { copy } from '@delon/util';
 
 @Component({
   selector: 'app-clipboard',
