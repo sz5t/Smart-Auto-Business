@@ -37,7 +37,7 @@ export class ModuleManagersComponent implements OnInit {
                     'pageSize': 5, // 默认每页数据条数
                     'pageSizeOptions': [5, 18, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      'url': 'common/ComProjectModule',
+                      'url': 'common/ProjectModuleAdd',
                       'ajaxType': 'get',
                       'params': [],
                       'filter': []
@@ -57,7 +57,7 @@ export class ModuleManagersComponent implements OnInit {
                         }
                       },
                       {
-                        title: '模块名称', field: 'CaseName', width: '90px', expand: true,
+                        title: '名称', field: 'CaseName', width: '90px', expand: true,
                         showFilter: false, showSort: false,
                         editor: {
                           type: 'input',
