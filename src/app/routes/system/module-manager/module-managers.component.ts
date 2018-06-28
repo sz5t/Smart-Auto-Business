@@ -1,12 +1,16 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { CnComponentBase } from './../../../shared/components/cn-component-base';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
+import { ApiService } from '@core/utility/api-service';
+import { BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
+import { Observer } from 'rxjs';
 
 @Component({
   selector: 'cn-module-managers',
   templateUrl: './module-managers.component.html',
 })
-export class ModuleManagersComponent implements OnInit {
+export class ModuleManagersComponent extends CnComponentBase implements OnInit {
   config = {
     rows: [
       {
@@ -39,7 +43,11 @@ export class ModuleManagersComponent implements OnInit {
                     'ajaxConfig': {
                       'url': 'common/ComProjectModule',
                       'ajaxType': 'get',
-                      'params': [],
+                      'params': [
+                        {
+                          name: 'refProjectId', type: 'tempValue', valueName: '_parentId'
+                        }
+                      ],
                       'filter': []
                     },
                     'columns': [
@@ -57,7 +65,7 @@ export class ModuleManagersComponent implements OnInit {
                         }
                       },
                       {
-                        title: '模块名称', field: 'CaseName', width: '90px', expand: true,
+                        title: '名称', field: 'CaseName', width: '90px', expand: true,
                         showFilter: false, showSort: false,
                         editor: {
                           type: 'input',
@@ -215,13 +223,16 @@ export class ModuleManagersComponent implements OnInit {
                       }
                     ],
                     'componentType': {
-                      'parent': true,
-                      'child': false,
+                      'parent': false,
+                      'child': true,
                       'own': true
                     },
                     'relations': [{
-                      'relationViewId': 'singleTable',
-                      'relationSendContent': [],
+                      'relationViewId': 'projectId_module',
+                      'cascadeMode': 'REFRESH_AS_CHILD',
+                      'params': [
+                        { pid: 'Id', cid: '_parentId' }
+                      ],
                       'relationReceiveContent': []
                     }],
                     'toolbar': [
@@ -915,32 +926,6 @@ export class ModuleManagersComponent implements OnInit {
                       },
                     ],
                     'dataSet': [
-                      {
-                        'name': 'TypeName',
-                        'ajaxConfig': {
-                          'url': 'SinoForce.User.AppUser',
-                          'ajaxType': 'get',
-                          'params': []
-                        },
-                        'params': [],
-                        'fields': [
-                          {
-                            'label': 'ID',
-                            'field': 'Id',
-                            'name': 'value'
-                          },
-                          {
-                            'label': '',
-                            'field': 'Name',
-                            'name': 'label'
-                          },
-                          {
-                            'label': '',
-                            'field': 'Name',
-                            'name': 'text'
-                          }
-                        ]
-                      }
                     ]
                   },
                   permissions: {
@@ -1181,8 +1166,53 @@ export class ModuleManagersComponent implements OnInit {
       */
     ]
   };
-  constructor(private http: _HttpClient) { }
 
-  ngOnInit() { }
+  _projOptions: any[] = [];
+  _projValue;
+  _selectedModuleText;
+  loading = false;
+  _tableDataSource;
+  constructor(
+    private apiService: ApiService,
+    @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
+  ) { 
+    super();
+  }
+
+  async ngOnInit() {
+    const moduleData = await this.getProjectData();
+    this._projOptions = this.arrayToTree(moduleData.data);
+  }
+
+  _changeModuleValue($event) {
+    this._loadModules();
+  }
+
+  _onSelectionChange(selectedOptions: any[]) {
+    this._selectedModuleText = `${selectedOptions.map(o => o.label).join(' / ')}`;
+  }
+
+  _loadModules() {
+    if (this._projValue.length > 0) {
+      console.log(this._projValue[this._projValue.length - 1]);
+      this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, 'projectId_module', {
+        data: {Id: this._projValue[this._projValue.length - 1]}
+    }));
+    }
+  }
+
+  private async getProjectData() {
+    const params = { _select: 'Id,projName' };
+    return this.apiService.get('common/ComProject', params).toPromise();
+  }
+
+  private arrayToTree(data) {
+    const result = [];
+    for (let i = 0; i < data.length; i++) {
+      const obj = { 'label': data[i].projName, 'value': data[i].Id, isLeaf: true };
+      result.push(obj);
+    }
+    return result;
+  }
 
 }

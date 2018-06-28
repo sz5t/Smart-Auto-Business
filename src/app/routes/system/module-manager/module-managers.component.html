@@ -1,2 +1,19 @@
 <page-header [title]=""></page-header>
+<nz-row nzGutter="8">
+  <nz-col nzSpan="24">
+      <nz-card nzTitle="">
+            <form nz-form>
+                    <nz-form-item>
+                        <nz-form-label [nzSpan]="2" nzFor="module">选择项目</nz-form-label>
+                        <nz-form-control [nzSpan]="6" [nzSm]="6" [nzXs]="6">
+                            <nz-cascader [ngModelOptions]="{standalone: true}" [class.class123]="true" [nzOptions]="_projOptions" [(ngModel)]="_projValue"
+                                (nzChange)="_changeModuleValue($event)" (nzSelectionChange)="_onSelectionChange($event)" [nzPlaceHolder]="'--请选择--'"
+                                [nzExpandTrigger]="'hover'">
+                            </nz-cascader>
+                        </nz-form-control>
+                    </nz-form-item>
+                </form>
+      </nz-card>
+  </nz-col>
+</nz-row>
 <cn-layout-resolver [config]="config"></cn-layout-resolver>
