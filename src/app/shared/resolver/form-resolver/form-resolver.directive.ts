@@ -14,6 +14,7 @@ import {CnFormCheckboxComponent} from '@shared/components/cn-form-checkbox/cn-fo
 import {CnFormCheckboxGroupComponent} from '@shared/components/cn-form-checkbox-group/cn-form-checkbox-group.component';
 import {CnFormRadioGroupComponent} from '@shared/components/cn-form-radio-group/cn-form-radio-group.component';
 import {CnFormSearchComponent} from '@shared/components/cn-form-search/cn-form-search.component';
+import { CnFormSelectTreeComponent } from '@shared/components/cn-form-select-tree/cn-form-select-tree.component';
 const components: {[type: string]: Type<any>} = {
   input: CnFormInputComponent,
   submit: CnFormSubmitComponent,
@@ -24,7 +25,8 @@ const components: {[type: string]: Type<any>} = {
   checkbox: CnFormCheckboxComponent,
   checkboxGroup: CnFormCheckboxGroupComponent,
   radioGroup: CnFormRadioGroupComponent,
-  search: CnFormSearchComponent
+  search: CnFormSearchComponent,
+  selectTree: CnFormSelectTreeComponent
 };
 @Directive({
   selector: '[cnFormResolverDirective]'

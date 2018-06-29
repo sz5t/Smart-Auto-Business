@@ -24,7 +24,6 @@ export class ApiService {
       // const userToken = JSON.parse(this.tokenService.get().token);
       return new HttpHeaders()
         .set('_token', token ? token : '')
-        .set('_projId', SystemResource.settingSystem.ProjId)
         .set('X-Requested-With', 'XMLHttpRequest');
     }
   }

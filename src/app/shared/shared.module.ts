@@ -58,6 +58,7 @@ import { CnGridCheckboxComponent } from './components/cn-grid-checkbox/cn-grid-c
 import { CnGridRangePickerComponent } from './components/cn-grid-range-picker/cn-grid-range-picker.component';
 import { BsnToolbarComponent } from './business/bsn-toolbar/bsn-toolbar.component';
 import { BsnStepComponent } from './business/bsn-step/bsn-step.component';
+import { CnFormSelectTreeComponent } from './components/cn-form-select-tree/cn-form-select-tree.component';
 // import { NzSchemaFormModule } from 'nz-schema-form';
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -113,7 +114,9 @@ const COMPONENTS = [
     BsnTreeTableComponent,
     TableChartComponent,
     LineChartComponent,
-    BarChartComponent
+    BarChartComponent,
+    CnFormSelectTreeComponent
+    
 ];
 const DIRECTIVES = [
     FormResolverDirective,

@@ -1,0 +1,13 @@
+<nz-form-label [nzSpan]="config.labelSize">
+    {{config.label}}
+   </nz-form-label>
+   <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+     <nz-tree-select
+     formControlName="{{config.name}}"
+     style="width: 200px"
+     [nzNodes]="treeData"
+     nzPlaceHolder="{{config.placeholder}}"
+     [(ngModel)]="value"
+     (ngModelChange)="onChange($event)">
+   </nz-tree-select>
+   </nz-form-control>

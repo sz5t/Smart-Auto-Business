@@ -610,6 +610,50 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                               {
                                 controls: [
                                   {
+                                    'type': 'selectTree',
+                                    'labelSize': '6',
+                                    'controlSize': '16',
+                                    'name': 'ParentId',
+                                    'label': '父类别',
+                                    'notFoundContent': '',
+                                    'selectModel': false,
+                                    'showSearch': true,
+                                    'placeholder': '--请选择--',
+                                    'disabled': false,
+                                    'size': 'default',
+                                    'columns': [ // 字段映射，映射成树结构所需
+                                      { title: '主键', field: 'key', valueName: 'Id' },
+                                      { title: '父节点', field: 'parentId', valueName: 'ParentId' },
+                                      { title: '标题', field: 'title', valueName: 'CaseName' },
+                                    ],
+                                    'ajaxConfig': {
+                                      'url': 'SinoForce.AppData.ShowCase',
+                                      'ajaxType': 'get',
+                                      'params': [
+                                        // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
+                                      ]
+                                    },
+                                    'cascader': [
+                                      {
+                                        'name': 'appUser',
+                                        'type': 'sender',
+                                        'cascaderData': {
+                                          'params': [
+                                            {
+                                              'pid': 'Id', 'cid': '_typeId'
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    'layout': 'column',
+                                    'span': '24'
+                                  }
+                                ]
+                              },
+                              {
+                                controls: [
+                                  {
                                     'type': 'input',
                                     'labelSize': '6',
                                     'controlSize': '16',
