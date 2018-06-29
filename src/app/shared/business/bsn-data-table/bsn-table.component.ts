@@ -1,3 +1,4 @@
+import { BSN_COMPONENT_MODES } from '@core/relative-Service/BsnTableStatus';
 
 import { Observable } from 'rxjs';
 import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE } from './../../../core/relative-Service/BsnTableStatus';
@@ -173,6 +174,12 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         break;
                     case BSN_COMPONENT_MODES.DIALOG:
                         this.dialog(option);
+                        break;
+                    case BSN_COMPONENT_MODES.EXECUTE_SELECTED:
+                        this.executeSelectedRow(option);
+                        break;
+                    case BSN_COMPONENT_MODES.EXECUTE_CHECKED:
+                        this.executeCheckedRow(option);
                         break;
                     case BSN_COMPONENT_MODES.WINDOW:
                         this.windowDialog(option);
@@ -558,6 +565,83 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         return isSuccess;
     }
 
+    async executeSelectedAction(selectedRow, option) {
+        let isSuccess = false;
+        if (selectedRow) {
+            const execButtons = this.config.toolbar.filter(item => item.action = 'EXECUTE_SELECTED');
+            const index = execButtons.findIndex(item => item.actionName = option.name);
+            const cfg = execButtons[index].ajaxConfig[option.type];
+            if (cfg) {
+                for (let i = 0, len = cfg.length; i < len; i++) {
+                    const newParam = {};
+                    cfg[i].params.forEach(param => {
+                        newParam[param['name']] = selectedRow[param['valueName']]; 
+                    });
+                    const response = await this[option.type](cfg[i].url, newParam);
+                    if (response && response.Status === 200) {
+                        this.message.create('success', '执行成功');
+                        isSuccess = true;
+                    } else {
+                        this.message.create('error', response.Message);
+                    }
+                }
+                if (isSuccess) {
+                    this.load();
+                }
+            }
+        }
+        if (isSuccess === true) {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                    this.config.viewId
+                )
+            );
+        }
+    }
+
+    async executeCheckedAction(items, option) {
+        let isSuccess = false;
+        if (items && items.length > 0) {
+            const execButtons = this.config.toolbar.filter(item => item.action = 'EXECUTE_SELECTED');
+            const index = execButtons.findIndex(item => item.actionName = option.name);
+            const cfg = execButtons[index].ajaxConfig[option.type];
+            if (cfg) {
+                for (let i = 0, len = cfg.length; i < len; i++) {
+                    // 构建参数
+                    const params = [];
+                    if (cfg[i].params) {
+                        items.forEach(item => {
+                            const newParam = {};
+                            cfg[i].params.forEach(param => {
+                                newParam[param['name']] = item[param['valueName']]; 
+                            });
+                            params.push(newParam);
+                        });
+                    }
+                    const response = await this[option.type](cfg[i].url, params);
+                    if (response && response.Status === 200) {
+                        this.message.create('success', '执行成功');
+                        isSuccess = true;
+                    } else {
+                        this.message.create('error', response.Message);
+                    }
+                }
+                if (isSuccess) {
+                    this.load();
+                }
+            }
+        }
+        if (isSuccess === true) {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                    this.config.viewId
+                )
+            );
+        }
+    }
+
     async executeDelete(ids) {
         let isSuccess = false;
         if (ids && ids.length > 0) {
@@ -692,6 +776,62 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             }
         });
         return true;
+    }
+
+    executeSelectedRow(option) {
+        if (!this._selectRow) {
+            this.message.create('info', '请选选择要执行的数据');
+            return false;
+        }
+        this.modalService.confirm({
+            nzTitle: '是否将选中的数据执行当前操作？',
+            nzContent: '',
+            nzOnOk: () => {
+                if (this._selectRow['row_status'] === 'adding') {
+                    this.message.create('info', '当前数据未保存无法进行处理');
+                    return false;
+                }
+                
+                this.executeSelectedAction(this._selectRow, option);
+            },
+            nzOnCancel() {
+            }
+        });
+    }
+
+    executeCheckedRow(option) {
+        if (this.dataList.filter(item => item.checked === true).length <= 0) {
+            this.message.create('info', '请选选择要执行的数据');
+            return false;
+        }
+        this.modalService.confirm({
+            nzTitle: '是否将选中的数据执行当前操作？',
+            nzContent: '',
+            nzOnOk: () => {
+                const newData = [];
+                const serverData = [];
+                this.dataList.forEach(item => {
+                    // if (item.checked === true && item['row_status'] === 'adding') {
+                    //     // 删除新增临时数据
+                    //     newData.push(item.key);
+                    // }
+                    if (item.checked === true && item['row_status'] !== 'adding') {
+                        // 删除服务端数据
+                        serverData.push(item);
+                    }
+                });
+                // if (newData.length > 0) {
+                //     newData.forEach(d => {
+                //         this.dataList.splice(this.dataList.indexOf(d), 1);
+                //     });
+                // }
+                if (serverData.length > 0) {
+                    this.executeAction(serverData, option);
+                }
+            },
+            nzOnCancel() {
+            }
+        });
     }
 
     deleteRow() {

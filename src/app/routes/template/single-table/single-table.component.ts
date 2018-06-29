@@ -468,7 +468,44 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                           delete: [{
                             'actionName': 'delete',
                             'url': 'SinoForce.AppData.ShowCase',
-                            'ajaxType': 'delete'
+                            'ajaxType': 'delete',
+                            'params' : [
+                              {
+                                name: 'Id', valueName: 'Id', type: 'checkedRow'
+                              }
+                            ]
+                          }]
+                        }
+                      },
+                      {
+                        'name': 'executeCheckedRow', 'class': 'editable-add-btn', 'text': '删除', 'action': 'EXECUTE_CHECKED',
+                        'actionType': 'post', 'actionName': 'execChecked',
+                        'ajaxConfig': {
+                          post: [{
+                            'actionName': 'post',
+                            'url': 'SinoForce.AppData.ShowCase',
+                            'ajaxType': 'post',
+                            'params' : [
+                              {
+                                name: 'Id', valueName: 'Id', type: 'checkedRow'
+                              }
+                            ]
+                          }]
+                        }
+                      },
+                      {
+                        'name': 'executeSelectedRow', 'class': 'editable-add-btn', 'text': '删除', 'action': 'EXECUTE_SELECTED',
+                        'actionType': 'post', 'actionName': 'execSelected',
+                        'ajaxConfig': {
+                          post: [{
+                            'actionName': 'post',
+                            'url': 'SinoForce.AppData.ShowCase',
+                            'ajaxType': 'post',
+                            'params' : [
+                              {
+                                name: 'Id', valueName: 'Id', type: 'checkedRow'
+                              }
+                            ]
                           }]
                         }
                       },

@@ -41,7 +41,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                     'pageSize': 5, // 默认每页数据条数
                     'pageSizeOptions': [5, 18, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      'url': 'common/ProjectModuleAdd',
+                      'url': 'common/ComProjectModule',
                       'ajaxType': 'get',
                       'params': [
                         {
@@ -65,11 +65,11 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                         }
                       },
                       {
-                        title: '名称', field: 'CaseName', width: '90px', expand: true,
+                        title: '模块名称', field: 'name', width: '90px', expand: true,
                         showFilter: false, showSort: false,
                         editor: {
                           type: 'input',
-                          field: 'CaseName',
+                          field: 'name',
                           options: {
                             'type': 'input',
                             'inputType': 'text',
@@ -78,62 +78,36 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                         }
                       },
                       {
-                        title: '类别', field: 'TypeName', width: '100px', hidden: false,
-                        showFilter: true, showSort: true,
+                        title: '排序编号', field: 'orderCode', width: '90px', expand: true,
+                        showFilter: false, showSort: false,
                         editor: {
-                          type: 'select',
-                          field: 'Type',
+                          type: 'input',
+                          field: 'orderCode',
                           options: {
-                            'type': 'select',
-                            'labelSize': '6',
-                            'controlSize': '18',
-                            'inputType': 'submit',
-                            'name': 'Type',
-                            'label': 'Type',
-                            'notFoundContent': '',
-                            'selectModel': false,
-                            'showSearch': true,
-                            'placeholder': '-请选择数据-',
-                            'disabled': false,
-                            'size': 'default',
-                            'clear': true,
-                            'width': '200px',
-                            'dataSet': 'TypeName',
-                            'options': [
-                              {
-                                'label': '表格',
-                                'value': '1',
-                                'disabled': false
-                              },
-                              {
-                                'label': '树组件',
-                                'value': '2',
-                                'disabled': false
-                              },
-                              {
-                                'label': '树表',
-                                'value': '3',
-                                'disabled': false
-                              },
-                              {
-                                'label': '表单',
-                                'value': '4',
-                                'disabled': false
-                              },
-                              {
-                                'label': '标签页',
-                                'value': '5',
-                                'disabled': false
-                              }
-                            ]
+                            'type': 'input',
+                            'inputType': 'text',
+                            'width': '100px'
                           }
                         }
                       },
                       {
-                        title: '数量', field: 'CaseCount', width: 80, hidden: false,
+                        title: '模块编码', field: 'code', width: '100px', hidden: false,
+                        showFilter: false, showSort: false,
                         editor: {
                           type: 'input',
-                          field: 'CaseCount',
+                          field: 'code',
+                          options: {
+                            'type': 'input',
+                            'inputType': 'text',
+                            'width': '100px'
+                          }
+                        }
+                      },
+                      {
+                        title: 'URL', field: 'url', width: 100, hidden: false,
+                        editor: {
+                          type: 'input',
+                          field: 'url',
                           options: {
                             'type': 'input',
                             'labelSize': '6',
@@ -143,7 +117,20 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                         }
                       },
                       {
-                        title: '级别', field: 'Level', width: 80, hidden: false,
+                        title: '图标', field: 'icon', width: 100, hidden: false,
+                        editor: {
+                          type: 'input',
+                          field: 'icon',
+                          options: {
+                            'type': 'input',
+                            'labelSize': '6',
+                            'controlSize': '18',
+                            'inputType': 'text',
+                          }
+                        }
+                      },
+                      {
+                        title: '配置文本', field: 'moduleBody', width: 80, hidden: false,
                         showFilter: false, showSort: false,
                         editor: {
                           type: 'input',
@@ -153,20 +140,6 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                             'labelSize': '6',
                             'controlSize': '18',
                             'inputType': 'text',
-                          }
-                        }
-                      },
-                      {
-                        title: '创建时间', field: 'CreateTime', width: 80, hidden: false, dataType: 'date',
-                        editor: {
-                          type: 'input',
-                          pipe: 'datetime',
-                          field: 'CreateTime',
-                          options: {
-                            'type': 'input',
-                            'labelSize': '6',
-                            'controlSize': '18',
-                            'inputType': 'datetime',
                           }
                         }
                       },
@@ -184,20 +157,20 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                         }
                       },
                       {
-                        title: '状态', field: 'EnableText', width: 80, hidden: false,
+                        title: '是否有效', field: 'isEnabled', width: 80, hidden: false,
                         formatter: [
-                          { 'value': '启用', 'bgcolor': '', 'fontcolor': 'text-blue', 'valueas': '启用' },
-                          { 'value': '禁用', 'bgcolor': '', 'fontcolor': 'text-red', 'valueas': '禁用' }
+                          { 'value': '1', 'bgcolor': '', 'fontcolor': 'text-blue', 'valueas': '有效' },
+                          { 'value': '0', 'bgcolor': '', 'fontcolor': 'text-red', 'valueas': '无效' }
                         ],
                         editor: {
                           type: 'select',
-                          field: 'Enable',
+                          field: 'isEnabled',
                           options: {
                             'type': 'select',
                             'labelSize': '6',
                             'controlSize': '18',
                             'inputType': 'submit',
-                            'name': 'Enable',
+                            'name': 'isEnabled',
                             'notFoundContent': '',
                             'selectModel': false,
                             'showSearch': true,
@@ -215,6 +188,88 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                               {
                                 'label': '禁用',
                                 'value': false,
+                                'disabled': false
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        title: '是否发布', field: 'isNeedDeploy', width: 80, hidden: false,
+                        formatter: [
+                          { 'value': '1', 'bgcolor': '', 'fontcolor': 'text-blue', 'valueas': '发布' },
+                          { 'value': '0', 'bgcolor': '', 'fontcolor': 'text-red', 'valueas': '未发布' }
+                        ],
+                        editor: {
+                          type: 'select',
+                          field: 'isNeedDeploy',
+                          options: {
+                            'type': 'select',
+                            'labelSize': '6',
+                            'controlSize': '18',
+                            'inputType': 'submit',
+                            'name': 'isNeedDeploy',
+                            'notFoundContent': '',
+                            'selectModel': false,
+                            'showSearch': true,
+                            'placeholder': '-请选择-',
+                            'disabled': false,
+                            'size': 'default',
+                            'clear': true,
+                            'width': '80px',
+                            'options': [
+                              {
+                                'label': '启用',
+                                'value': true,
+                                'disabled': false
+                              },
+                              {
+                                'label': '禁用',
+                                'value': false,
+                                'disabled': false
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        title: '所属平台', field: 'belongPlatformType', width: 80, hidden: false,
+                        formatter: [
+                          { 'value': '1', 'bgcolor': '', 'fontcolor': 'text-blue', 'valueas': '配置平台' },
+                          { 'value': '2', 'bgcolor': '', 'fontcolor': 'text-red', 'valueas': '运行平台' },
+                          { 'value': '3', 'bgcolor': '', 'fontcolor': 'text-green', 'valueas': '通用' }
+                        ],
+                        editor: {
+                          type: 'select',
+                          field: 'belongPlatformType',
+                          options: {
+                            'type': 'select',
+                            'labelSize': '6',
+                            'controlSize': '18',
+                            'inputType': 'submit',
+                            'name': 'belongPlatformType',
+                            'notFoundContent': '',
+                            'selectModel': false,
+                            'showSearch': true,
+                            'placeholder': '-请选择-',
+                            'disabled': false,
+                            'size': 'default',
+                            'clear': true,
+                            'width': '80px',
+                            'options': [
+                              {
+                                'label': '配置平台',
+                                'value': '1',
+                                'disabled': false
+                              },
+                              {
+                                'label': '运行平台',
+                                'value': '2',
+                                'disabled': false
+                              },
+                              {
+                                'label': '通用',
+                                'value': '3',
                                 'disabled': false
                               }
                             ]
@@ -319,45 +374,12 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                               {
                                 controls: [
                                   {
-                                    'type': 'select',
+                                    'type': 'selectTree',
                                     'labelSize': '6',
                                     'controlSize': '16',
-                                    'inputType': 'submit',
-                                    'name': 'Enable',
-                                    'label': '状态',
-                                    'notFoundContent': '',
-                                    'selectModel': false,
-                                    'showSearch': true,
-                                    'placeholder': '--请选择--',
-                                    'disabled': false,
-                                    'size': 'default',
-                                    'options': [
-                                      {
-                                        'label': '启用',
-                                        'value': true,
-                                        'disabled': false
-                                      },
-                                      {
-                                        'label': '禁用',
-                                        'value': false,
-                                        'disabled': false
-                                      }
-                                    ],
-                                    'layout': 'column',
-                                    'span': '24'
-                                  },
-                                ]
-                              },
-                              {
-                                controls: [
-                                  {
-                                    'type': 'select',
-                                    'labelSize': '6',
-                                    'controlSize': '16',
-                                    'inputType': 'submit',
                                     'name': 'Type',
-                                    'label': '类别',
-                                    'labelName': 'Name',
+                                    'label': '模块',
+                                    'labelName': 'name',
                                     'valueName': 'Id',
                                     'notFoundContent': '',
                                     'selectModel': false,
@@ -365,61 +387,14 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                     'placeholder': '--请选择--',
                                     'disabled': false,
                                     'size': 'default',
-                                    'ajaxConfig': {
-                                      'url': 'SinoForce.User.AppUser',
-                                      'ajaxType': 'get',
-                                      'params': []
-                                    },
-                                    'cascader': [
-                                      {
-                                        'name': 'appUser',
-                                        'type': 'sender',
-                                        'cascaderData': {
-                                          'params': [
-                                            {
-                                              'pid': 'Id', 'cid': '_typeId'
-                                            }
-                                          ]
-                                        }
-                                      }
-                                    ],
-                                    'layout': 'column',
-                                    'span': '24'
-                                  }
-                                ]
-                              },
-                              {
-                                controls: [
-                                  {
-                                    'type': 'select',
-                                    'labelSize': '6',
-                                    'controlSize': '16',
-                                    'inputType': 'submit',
-                                    'name': 'Type',
-                                    'label': '用例',
-                                    'labelName': 'CaseName',
-                                    'valueName': 'Id',
-                                    'notFoundContent': '',
-                                    'selectModel': false,
-                                    'showSearch': true,
-                                    'placeholder': '--请选择--',
-                                    'disabled': false,
-                                    'size': 'default',
-                                    'cascader': [
-                                      {
-                                        'sender': 'appUser',
-                                        'type': 'receiver'
-                                      }
+                                    'columns': [ // 字段映射，映射成树结构所需
+                                      { title: '主键', field: 'key', valueName: 'Id' },
+                                      { title: '父节点', field: 'parentId', valueName: 'parentId' },
+                                      { title: '标题', field: 'title', valueName: 'name' },
                                     ],
                                     'ajaxConfig': {
-                                      'url': 'SinoForce.AppData.GetCase',
-                                      'ajaxType': 'get',
-                                      'cascader': true,
-                                      'params': [
-                                        {
-                                          'name': 'Type', 'type': 'tempValue', 'valueName': '_typeId', 'value': ''
-                                        }
-                                      ]
+                                      'url': 'common/ProjectModule',
+                                      'ajaxType': 'get'
                                     },
                                     'layout': 'column',
                                     'span': '24'
@@ -433,10 +408,10 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                     'labelSize': '6',
                                     'controlSize': '16',
                                     'inputType': 'text',
-                                    'name': 'CaseName',
-                                    'label': '名称',
+                                    'name': 'name',
+                                    'label': '模块名称',
                                     'isRequired': true,
-                                    'placeholder': '请输入Case名称',
+                                    'placeholder': '请输入模块名称',
                                     'perfix': 'anticon anticon-edit',
                                     'suffix': '',
                                     'disabled': false,
@@ -447,17 +422,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                     'validations': [
                                       {
                                         'validator': 'required',
-                                        'errorMessage': '请输入Case名称!!!!'
-                                      },
-                                      {
-                                        'validator': 'minLength',
-                                        'length': '3',
-                                        'errorMessage': '请输入最少三个字符'
-                                      },
-                                      {
-                                        'validator': 'maxLength',
-                                        'length': '5',
-                                        'errorMessage': '请输入最5个字符'
+                                        'errorMessage': '请输入模块名称!!!!'
                                       }
                                     ]
                                   },
@@ -470,8 +435,8 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                     'labelSize': '6',
                                     'controlSize': '16',
                                     'inputType': 'text',
-                                    'name': 'Level',
-                                    'label': '级别',
+                                    'name': 'code',
+                                    'label': '模块编码',
                                     'isRequired': true,
                                     'placeholder': '',
                                     'disabled': false,
@@ -482,7 +447,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                     'validations': [
                                       {
                                         'validator': 'required',
-                                        'errorMessage': '请输入级别'
+                                        'errorMessage': '请输编码'
                                       }
                                     ]
                                   },
@@ -495,8 +460,8 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                     'labelSize': '6',
                                     'controlSize': '16',
                                     'inputType': 'text',
-                                    'name': 'CaseCount',
-                                    'label': '数量',
+                                    'name': 'url',
+                                    'label': 'URL',
                                     'isRequired': true,
                                     'placeholder': '',
                                     'disabled': false,
@@ -508,11 +473,6 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                       {
                                         'validator': 'required',
                                         'errorMessage': '请输入数量'
-                                      },
-                                      {
-                                        'validator': 'pattern',
-                                        'pattern': /^\d+$/,
-                                        'errorMessage': '请填写数字'
                                       }
                                     ]
                                   },
@@ -522,12 +482,12 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                               {
                                 controls: [
                                   {
-                                    'type': 'datePicker',
+                                    'type': 'input',
                                     'labelSize': '6',
                                     'controlSize': '16',
                                     'inputType': 'text',
-                                    'name': 'CreateTime',
-                                    'label': '创建时间',
+                                    'name': 'icon',
+                                    'label': '图标',
                                     'placeholder': '',
                                     'disabled': false,
                                     'readonly': false,
@@ -543,13 +503,130 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                     'type': 'input',
                                     'labelSize': '6',
                                     'controlSize': '16',
-                                    'inputType': 'time',
-                                    'name': 'Remark',
-                                    'label': '备注',
+                                    'inputType': 'text',
+                                    'name': 'codeOrder',
+                                    'label': '排序',
                                     'placeholder': '',
                                     'disabled': false,
                                     'readonly': false,
                                     'size': 'default',
+                                    'layout': 'column',
+                                    'span': '24'
+                                  }
+                                ]
+                              },
+                              {
+                                controls: [
+                                  {
+                                    'type': 'input',
+                                    'labelSize': '6',
+                                    'controlSize': '16',
+                                    'inputType': 'text',
+                                    'name': 'codeOrder',
+                                    'label': '排序',
+                                    'placeholder': '',
+                                    'disabled': false,
+                                    'readonly': false,
+                                    'size': 'default',
+                                    'layout': 'column',
+                                    'span': '24'
+                                  }
+                                ]
+                              },
+                              {
+                                controls: [
+                                  {
+                                    'type': 'select',
+                                    'labelSize': '6',
+                                    'controlSize': '16',
+                                    'name': 'isNeedDeploy',
+                                    'label': '是否有效',
+                                    'notFoundContent': '',
+                                    'selectModel': false,
+                                    'showSearch': true,
+                                    'placeholder': '--请选择--',
+                                    'disabled': false,
+                                    'size': 'default',
+                                    'options': [
+                                      {
+                                        'label': '是',
+                                        'value': '1',
+                                        'disabled': false
+                                      },
+                                      {
+                                        'label': '否',
+                                        'value': '0',
+                                        'disabled': false
+                                      }
+                                    ],
+                                    'layout': 'column',
+                                    'span': '24'
+                                  }
+                                ]
+                              },
+                              {
+                                controls: [
+                                  {
+                                    'type': 'select',
+                                    'labelSize': '6',
+                                    'controlSize': '16',
+                                    'inputType': 'submit',
+                                    'name': 'isEnabled',
+                                    'label': '是否有效',
+                                    'notFoundContent': '',
+                                    'selectModel': false,
+                                    'showSearch': true,
+                                    'placeholder': '--请选择--',
+                                    'disabled': false,
+                                    'size': 'default',
+                                    'options': [
+                                      {
+                                        'label': '有效',
+                                        'value': '1',
+                                        'disabled': false
+                                      },
+                                      {
+                                        'label': '无效',
+                                        'value': '0',
+                                        'disabled': false
+                                      }
+                                    ],
+                                    'layout': 'column',
+                                    'span': '24'
+                                  }
+                                ]
+                              },
+                              {
+                                controls: [
+                                  {
+                                    'type': 'select',
+                                    'labelSize': '6',
+                                    'controlSize': '16',
+                                    'name': 'belongPlatformType',
+                                    'label': '所属平台',
+                                    'notFoundContent': '',
+                                    'selectModel': false,
+                                    'showSearch': true,
+                                    'placeholder': '--请选择--',
+                                    'disabled': false,
+                                    'size': 'default',
+                                    'options': [
+                                      {
+                                        'label': '配置平台',
+                                        'value': '1',
+                                        'disabled': false
+                                      },
+                                      {
+                                        'label': '运行平台',
+                                        'value': '2',
+                                        'disabled': false
+                                      },
+                                      {
+                                        'label': '通用',
+                                        'value': '3',
+                                        'disabled': false
+                                      }
+                                    ],
                                     'layout': 'column',
                                     'span': '24'
                                   }
@@ -1174,7 +1251,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
   _tableDataSource;
   constructor(
     private apiService: ApiService,
-    @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
+    @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>
   ) { 
     super();
   }
