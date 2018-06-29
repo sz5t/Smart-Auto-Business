@@ -1,5 +1,3 @@
-import { BSN_COMPONENT_MODES } from '@core/relative-Service/BsnTableStatus';
-
 import { Observable } from 'rxjs';
 import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE } from './../../../core/relative-Service/BsnTableStatus';
 
@@ -568,9 +566,10 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     async executeSelectedAction(selectedRow, option) {
         let isSuccess = false;
         if (selectedRow) {
-            const execButtons = this.config.toolbar.filter(item => item.action = 'EXECUTE_SELECTED');
-            const index = execButtons.findIndex(item => item.actionName = option.name);
+            const execButtons = this.config.toolbar.filter(item => item.action === 'EXECUTE_SELECTED');
+            const index = execButtons.findIndex(item => item.actionName === option.name);
             const cfg = execButtons[index].ajaxConfig[option.type];
+
             if (cfg) {
                 for (let i = 0, len = cfg.length; i < len; i++) {
                     const newParam = {};
@@ -826,7 +825,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 //     });
                 // }
                 if (serverData.length > 0) {
-                    this.executeAction(serverData, option);
+                    this.executeCheckedAction(serverData, option);
                 }
             },
             nzOnCancel() {

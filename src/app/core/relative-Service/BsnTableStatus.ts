@@ -11,7 +11,7 @@ export const BSN_COMPONENT_MODES = {
     CANCEL: 'cancel',
     FORM: 'form',
     EXECUTE_SELECTED : 'execute_select',
-    EXECUTE_CHECKED: 'execute_checked'
+    EXECUTE_CHECKED: 'execute_checked',
     // tree
     ADD_NODE: 'addNode',
     EDIT_NODE: 'editNode',

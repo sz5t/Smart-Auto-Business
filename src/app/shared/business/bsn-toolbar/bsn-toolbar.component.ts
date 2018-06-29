@@ -29,11 +29,12 @@ export class BsnToolbarComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        if (this.permissions.length > 0) {
-            this.toolbarConfig = this.getPermissions();
-        } else {
-            this.toolbarConfig = this.config;
-        }
+        // if (this.permissions.length > 0) {
+        //     this.toolbarConfig = this.getPermissions();
+        // } else {
+        //     this.toolbarConfig = this.config;
+        // }
+        this.toolbarConfig = this.config;
         
     }
 
