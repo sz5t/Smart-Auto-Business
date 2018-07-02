@@ -44,7 +44,11 @@ export class DataModelingComponent implements OnInit {
                       // 'url': 'SinoForce.AppData.ShowCase',
                       'url': 'common/ComTabledata',
                       'ajaxType': 'get',
-                      'params': []
+                      'params': [
+                        {
+                          name: '_sort', type: 'value', valueName: '', value: 'createDate desc'
+                        }
+                      ]
                     },
                     'componentType': {
                       'parent': true,
@@ -356,7 +360,7 @@ export class DataModelingComponent implements OnInit {
                         title: '创建时间', field: 'createDate', width: 80, hidden: false, showSort: true,
                         editor: {
                           type: 'input',
-                          field: 'comments',
+                          field: 'createDate',
                           options: {
                             'type': 'input',
                             'labelSize': '6',
@@ -382,7 +386,7 @@ export class DataModelingComponent implements OnInit {
                         'ajaxConfig': {
                           delete: [{
                             'actionName': 'delete',
-                            'url': 'SinoForce.AppData.ShowCase',
+                            'url': 'common/TableDelete',
                             'ajaxType': 'delete'
                           }]
                         }
@@ -393,17 +397,22 @@ export class DataModelingComponent implements OnInit {
                         'ajaxConfig': {
                           post: [{
                             'actionName': 'add',
-                            'url': 'SinoForce.AppData.ShowCase',
+                            'url': 'common/TableAdd',
                             'ajaxType': 'post',
                             'params': [
-                              { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
-                              { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
-                              // { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                              { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                              { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
-                              { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
-                              { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                              { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
+                              { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
+                              { name: 'tableName', type: 'componentValue', valueName: 'tableName', value: '' },
+                              { name: 'tableType', type: 'value', valueName: '', value: '1' },
+
+                              { name: 'parentTableId', type: 'value', valueName: '', value: '' },
+                              { name: 'parentTableName ', type: 'value', valueName: '', value: '' },
+                              { name: 'isHavaDatalink', type: 'value', valueName: '', value: '' },
+                              { name: 'subRefParentColumnId', type: 'value', valueName: '', value: '' },
+                              { name: 'subRefParentColumnName', type: 'value', valueName: '', value: '' },
+                              { name: 'comments', type: 'componentValue', valueName: 'comments', value: '' },
+                              { name: 'isEnabled', type: 'componentValue', valueName: 'isEnabled', value: '' },
+                              { name: 'isNeedDeploy', type: 'componentValue', valueName: 'isNeedDeploy', value: '' },
+                              { name: 'belongPlatformType', type: 'componentValue', valueName: 'belongPlatformType', value: '' }
                             ],
                             'output': [
                               {
@@ -414,19 +423,24 @@ export class DataModelingComponent implements OnInit {
                             ]
                           }],
                           put: [{
-                            'url': 'SinoForce.AppData.ShowCase',
+                            'url': 'common/TableUpdate',
                             'ajaxType': 'put',
                             'params': [
                               { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
-                              { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
-                              { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
-                              // { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                              { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                              { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
-                              { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
-                              { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                              { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
-                            ]
+                               { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
+                               { name: 'tableName', type: 'componentValue', valueName: 'tableName', value: '' },
+                               { name: 'tableType', type: 'value', valueName: '', value: '1' },
+
+                               { name: 'parentTableId', type: 'value', valueName: '', value: '' },
+                               { name: 'parentTableName ', type: 'value', valueName: '', value: '' },
+                               { name: 'isHavaDatalink', type: 'value', valueName: '', value: '' },
+                               { name: 'subRefParentColumnId', type: 'value', valueName: '', value: '' },
+                               { name: 'subRefParentColumnName', type: 'value', valueName: '', value: '' },
+                               { name: 'comments', type: 'componentValue', valueName: 'comments', value: '' },
+                               { name: 'isEnabled', type: 'componentValue', valueName: 'isEnabled', value: '' },
+                               { name: 'isNeedDeploy', type: 'componentValue', valueName: 'isNeedDeploy', value: '' },
+                               { name: 'belongPlatformType', type: 'componentValue', valueName: 'belongPlatformType', value: '' }
+                       ]
                           }]
                         }
                       },
@@ -1389,7 +1403,7 @@ export class DataModelingComponent implements OnInit {
                         'ajaxConfig': {
                           delete: [{
                             'actionName': 'delete',
-                            'url': 'SinoForce.AppData.ShowCase',
+                            'url': 'common/ColumnDelete',
                             'ajaxType': 'delete'
                           }]
                         }
@@ -1400,18 +1414,24 @@ export class DataModelingComponent implements OnInit {
                         'ajaxConfig': {
                           post: [{
                             'actionName': 'add',
-                            'url': 'SinoForce.AppData.ShowCase',
+                            'url': 'common/ColumnAdd',
                             'ajaxType': 'post',
                             'params': [
-                              { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
-                              { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
-                              // { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                              { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                              { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
-                              { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' },
-                              { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                              { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
-                            ],
+                              { name: 'tableId', type: 'tempValue', valueName: '_parentId', value: '' },
+                              { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
+                              { name: 'columnName', type: 'componentValue', valueName: 'columnName', value: '' },
+                              { name: 'columnType', type: 'componentValue', valueName: 'columnType', value: '1' },
+                              { name: 'length', type: 'componentValue', valueName: 'length', value: '' },
+                              { name: 'precision', type: 'componentValue', valueName: 'precision', value: '' },
+                              { name: 'defaultValue', type: 'componentValue', valueName: 'defaultValue', value: '' },
+                              { name: 'isUnique', type: 'componentValue', valueName: 'isUnique', value: '' },
+                              { name: 'isNullabled', type: 'componentValue', valueName: 'isNullabled', value: '' },
+                              { name: 'isDataDictionary', type: 'componentValue', valueName: 'isDataDictionary', value: '' },
+                              { name: 'dataDictionaryCode', type: 'componentValue', valueName: 'dataDictionaryCode', value: '' },
+                              { name: 'orderCode', type: 'componentValue', valueName: 'orderCode', value: '' },
+                              { name: 'isEnabled', type: 'componentValue', valueName: 'isEnabled', value: '' },
+                              { name: 'comments', type: 'componentValue', valueName: 'comments', value: '' }
+                      ],
                             'output': [
                               {
                                 name: '_id',
@@ -1421,19 +1441,25 @@ export class DataModelingComponent implements OnInit {
                             ]
                           }],
                           put: [{
-                            'url': 'SinoForce.AppData.ShowCase',
+                            'url': 'common/ColumnUpdate',
                             'ajaxType': 'put',
                             'params': [
                               { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
-                              { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
-                              { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
-                              // { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                              { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                              { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
-                              // { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
-                              { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                              { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
-                            ]
+                              { name: 'tableId', type: 'tempValue', valueName: '_parentId', value: '' },
+                              { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
+                              { name: 'columnName', type: 'componentValue', valueName: 'columnName', value: '' },
+                              { name: 'columnType', type: 'componentValue', valueName: 'columnType', value: '1' },
+                              { name: 'length', type: 'componentValue', valueName: 'length', value: '' },
+                              { name: 'precision', type: 'componentValue', valueName: 'precision', value: '' },
+                              { name: 'defaultValue', type: 'componentValue', valueName: 'defaultValue', value: '' },
+                              { name: 'isUnique', type: 'componentValue', valueName: 'isUnique', value: '' },
+                              { name: 'isNullabled', type: 'componentValue', valueName: 'isNullabled', value: '' },
+                              { name: 'isDataDictionary', type: 'componentValue', valueName: 'isDataDictionary', value: '' },
+                              { name: 'dataDictionaryCode', type: 'componentValue', valueName: 'dataDictionaryCode', value: '' },
+                              { name: 'orderCode', type: 'componentValue', valueName: 'orderCode', value: '' },
+                              { name: 'isEnabled', type: 'componentValue', valueName: 'isEnabled', value: '' },
+                              { name: 'comments', type: 'componentValue', valueName: 'comments', value: '' }
+                      ]
                           }]
                         }
                       },

@@ -56,6 +56,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     indeterminate = false;
     _sortName;
     _sortType = true;
+    _sortOrder = ' Desc';
     _columnFilterList = [];
     _focusId;
     // endregion
@@ -384,10 +385,13 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     private _buildSort() {
+       
         const sortObj = {};
-        if (this._sortName && this._sortType) {
-            sortObj['_sort'] = this._sortName;
-            sortObj['_order'] = sortObj['_order'] ? 'DESC' : 'ASC';
+        // if (this._sortName && this._sortType) {
+        if (this._sortName && this._sortOrder) {
+            console.log('but');
+            sortObj['_sort'] = this._sortName + this._sortOrder ;
+            // sortObj['_order'] = sortObj['_order'] ? 'DESC' : 'ASC';
         }
         return sortObj;
     }
@@ -450,7 +454,16 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     sort(sort: { key: string, value: string }) {
+        console.log('点击排序' , sort);
         this._sortName = sort.key;
+        if (sort.value === 'ascend') {
+            this._sortOrder = ' Asc';
+        } else if (sort.value === 'descend') {
+            this._sortOrder = ' Desc';
+        } else {
+            this._sortOrder = '';
+        }
+ 
         this._sortType = !this._sortType;
         this.load();
     }
@@ -538,11 +551,11 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     submitData.push(submitItem);
                 });
                 const response = await this[method](postConfig[i].url, submitData);
-                if (response && response.Status === 200) {
+                if (response && response.status === 200) {
                     this.message.create('success', '保存成功');
                     isSuccess = true;
                 } else {
-                    this.message.create('error', response.Message);
+                    this.message.create('error', response.message);
                 }
             }
             if (isSuccess) {
@@ -577,11 +590,11 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         newParam[param['name']] = selectedRow[param['valueName']]; 
                     });
                     const response = await this[option.type](cfg[i].url, newParam);
-                    if (response && response.Status === 200) {
+                    if (response && response.status === 200) {
                         this.message.create('success', '执行成功');
                         isSuccess = true;
                     } else {
-                        this.message.create('error', response.Message);
+                        this.message.create('error', response.message);
                     }
                 }
                 if (isSuccess) {
@@ -619,11 +632,11 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         });
                     }
                     const response = await this[option.type](cfg[i].url, params);
-                    if (response && response.Status === 200) {
+                    if (response && response.status === 200) {
                         this.message.create('success', '执行成功');
                         isSuccess = true;
                     } else {
-                        this.message.create('error', response.Message);
+                        this.message.create('error', response.message);
                     }
                 }
                 if (isSuccess) {
@@ -649,14 +662,14 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             if (deleteConfig) {
                 for (let i = 0, len = deleteConfig.length; i < len; i++) {
                     const params = {
-                        _ids: ids.join(',')
+                        Id: ids.join(',')
                     };
                     const response = await this['delete'](deleteConfig[i].url, params);
-                    if (response && response.Status === 200) {
+                    if (response && response.status === 200) {
                         this.message.create('success', '删除成功');
                         isSuccess = true;
                     } else {
-                        this.message.create('error', response.Message);
+                        this.message.create('error', response.message);
                     }
                 }
                 if (isSuccess) {
