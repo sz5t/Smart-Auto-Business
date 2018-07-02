@@ -334,15 +334,17 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
       }
     }
-    if (p.ajaxType === 'get' && tag) {
+    if (p.ajaxType === 'getById' && tag) {
+      return this._http.getById(`${url}/${params['Id']}`).toPromise();
+    } else if (p.ajaxType === 'get' && tag) {
       // console.log('get参数', params);
-      return this._http.getProj(url, params).toPromise();
+      return this._http.get(url, params).toPromise();
     } else if (p.ajaxType === 'put') {
       // console.log('put参数', params);
-      return this._http.putProj(url, params).toPromise();
+      return this._http.put(url, params).toPromise();
     } else if (p.ajaxType === 'post') {
       // console.log('post参数', params);
-      return this._http.postProj(url, params).toPromise();
+      return this._http.post(url, params).toPromise();
     } else {
       return null;
     }
@@ -362,13 +364,13 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
       console.log('异步加载表单数据load', ajaxData);
       if (ajaxData.data) {
         console.log('待赋值的表单数据', ajaxData.data);
-        this.setFormValue(ajaxData.data[0]);
+        this.setFormValue(ajaxData.data);
         // 给主键赋值
         if (this.config.keyId) {
-          this._tempParameters['_id'] = ajaxData.data[0][this.config.keyId];
+          this._tempParameters['_id'] = ajaxData.data[this.config.keyId];
         } else {
-          if (ajaxData.Data[0]['Id']) {
-            this._tempParameters['_id'] = ajaxData.data[0]['Id'];
+          if (ajaxData.data['Id']) {
+            this._tempParameters['_id'] = ajaxData.data['Id'];
           }
         }
 

@@ -104,10 +104,10 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                     const url = this._buildURL(this.config.dataSet[i].ajaxConfig.url);
                     const params = this._buildParameters(this.config.dataSet[i].ajaxConfig.params);
                     const data = await this.get(url, params);
-                    if (data && data.Status === 200) {
+                    if (data.length > 0 && data.status === 200) {
                         if (this.config.dataSet[i].fields) {
                             const dataSetObjs = [];
-                            data.Data.map(d => {
+                            data.data.map(d => {
                                 const setObj = {};
                                 this.config.dataSet[i].fields.map(fieldItem => {
                                     if (d[fieldItem.field]) {
@@ -249,19 +249,19 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         };
         (async () => {
             const loadData = await this._load(url, params);
-            if (loadData && loadData.Status === 200) {
-                if (loadData.Data && loadData.Data.Rows) {
-                    loadData.Data.Rows.map(row => {
+            if (loadData && loadData.status === 200) {
+                if (loadData.data && loadData.data.rows) {
+                    loadData.data.rows.map(row => {
                         row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
                         this.expandDataCache[row.Id] = this.convertTreeToList(row);
                     });
                     // this._updateEditCacheByLoad(loadData.Data.Rows);
                     this._updateEditCacheByLoad(this._getAllItemList());
-                    this.dataList = loadData.Data.Rows;
-                    this.total = loadData.Data.Total;
+                    this.dataList = loadData.data.rows;
+                    this.total = loadData.data.total;
                 } else {
                     this._updateEditCacheByLoad([]);
-                    this.dataList = loadData.Data;
+                    this.dataList = loadData.data;
                     this.total = 0;
                 }
             } else {
@@ -530,11 +530,11 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                 });
 
                 const response = await this[method](postConfig[i].url, submitData);
-                if (response && response.Status === 200) {
+                if (response && response.status === 200) {
                     this.message.create('success', '保存成功');
                     isSuccess = true;
                 } else {
-                    this.message.create('error', response.Message);
+                    this.message.create('error', response.message);
                 }
             }
             if (isSuccess) {
@@ -567,7 +567,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                         _ids: ids.join(',')
                     };
                     const response = await this['delete'](deleteConfig[i].url, params);
-                    if (response && response.Status === 200) {
+                    if (response && response.status === 200) {
                         this.message.create('success', '删除成功');
                         isSuccess = true;
                     } else {
@@ -600,7 +600,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     }
 
     private _startEdit(key: string): void {
-        console.log('start edit', key);
+        console.log('start edit', this.editCache);
         this.editCache[key].edit = true;
     }
 
@@ -905,8 +905,8 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
 
     expandChange(array: any[], data: any, $event: boolean) {
         if ($event === false) {
-            if (data.Children) {
-                data.Children.forEach(d => {
+            if (data.children) {
+                data.children.forEach(d => {
                     d['key'] = d[this.config.keyId];
                     const target = array.find(a => a[this.config.keyId] === d['key']);
                     if (target) {
@@ -987,19 +987,18 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         const array = [];
         const hashMap = {};
         stack.push({ ...root, level: 0, expand: false });
-
         while (stack.length !== 0) {
             const node = stack.pop();
             this.visitNode(node, hashMap, array);
-            if (node.Children) {
-                for (let i = node.Children.length - 1; i >= 0; i--) {
+            if (node.children) {
+                for (let i = node.children.length - 1; i >= 0; i--) {
                     stack.push(
                         {
-                            ...node.Children[i],
+                            ...node.children[i],
                             level: node.level + 1,
                             expand: false,
                             parent: node,
-                            key: node.Children[i][this.config.keyId]
+                            key: node.children[i][this.config.keyId]
                         });
                 }
             }
