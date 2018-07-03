@@ -41,8 +41,8 @@ export class CnFormSelectTreeComponent implements OnInit {
     loadTreeData() {
         (async () => {
             const data = await this.getAsyncTreeData();
-            if (data.Data && data.Status === 200) {
-                const TotreeBefore = data.Data;
+            if (data.data && data.status === 200) {
+                const TotreeBefore = data.data;
                 TotreeBefore.forEach(d => {
                     if (this.config.columns) {
                         this.config.columns.forEach(col => {
@@ -69,14 +69,17 @@ export class CnFormSelectTreeComponent implements OnInit {
                         }
                     });
                 }
-                const result = [new NzTreeNode({
-                    title: '根节点',
-                    key: 'null',
-                    isLeaf: false,
-                    children: []
-                })];
-                result[0].children.push(...this.listToAsyncTreeData(TotreeBefore, parent));
-                this.treeData = result;
+                // const result = [new NzTreeNode({
+                //     title: '根节点',
+                //     key: 'null',
+                //     isLeaf: false,
+                //     children: []
+                // })];
+                
+                // result[0].children.push(...);
+                console.log(TotreeBefore);
+                this.treeData = this.listToAsyncTreeData(TotreeBefore, parent);
+                console.log('---------------------', this.treeData);
             }
 
 
@@ -87,7 +90,7 @@ export class CnFormSelectTreeComponent implements OnInit {
         const result: NzTreeNode[] = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
-            if (data[i].ParentId === parentid) {
+            if (data[i].parentId === parentid) {
                 temp = this.listToAsyncTreeData(data, data[i].key);
                 if (temp.length > 0) {
                     data[i]['children'] = temp;
@@ -159,7 +162,7 @@ export class CnFormSelectTreeComponent implements OnInit {
             }
         }
         if (p.ajaxType === 'get' && tag) {
-            return this._http.getProj(url, params).toPromise();
+            return this._http.get(url, params).toPromise();
         }
     }
 
@@ -180,8 +183,8 @@ export class CnFormSelectTreeComponent implements OnInit {
                 .filter(p => p.type === e.node.isLeaf)
                 .map(async expand => {
                     const  data =  await this.execAjax(expand.ajaxConfig, e.node.key, 'load');
-                    if (data.Data && data.Status === 200) {
-                    data.Data.forEach(item => {
+                    if (data.data.length > 0 && data.status === 200) {
+                    data.data.forEach(item => {
                         item['isLeaf'] = false;
                         item['children'] = [];
                         if (this.config.columns) {
@@ -190,7 +193,7 @@ export class CnFormSelectTreeComponent implements OnInit {
                             });
                         }
                     });
-                    e.node.addChildren(data.Data);
+                    e.node.addChildren(data.data);
                 }
                 })); 
             }

@@ -54,6 +54,17 @@ export class ApiService {
       });
   }
 
+  getById(resource) {
+    return this.httpClient.request(
+      'GET',
+      resource,
+      {
+        responseType: 'json',
+        headers: this.setHeaders()
+
+      });
+  }
+
   put(resource, body?, params?) {
     return this.httpClient.request(
       'PUT',

@@ -828,14 +828,14 @@ export class SqlSettingComponent implements OnInit , OnDestroy {
   ) { }
 
   async ngOnInit() {
-    const params = { _select: 'Id,Name,ParentId' };
-    const moduleData = await this.getModuleData(params);
-    // 初始化模块列表，将数据加载到及联下拉列表当中
-    this._funcOptions = this.arrayToTree(moduleData.Data, '');
+    // const params = { _select: 'Id,name,parentId' };
+    // const moduleData = await this.getModuleData(params);
+    // // 初始化模块列表，将数据加载到及联下拉列表当中
+    // this._funcOptions = this.arrayToTree(moduleData.Data, '');
   }
   // 获取模块信息
   async getModuleData(params) {
-    return this.apiService.getProj(APIResource.AppModuleConfig, params).toPromise();
+    return this.apiService.get('common/ComProjectModule', params).toPromise();
   }
 
   // 改变模块选项
