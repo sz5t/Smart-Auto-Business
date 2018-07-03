@@ -58,10 +58,9 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
     pageIndex = 1;
     pageSize = 15;
     tableData = [];
-    _tempValue = {};
-    _relativeResolver;
+    _selectedRow;
     _scriptName;
-    loading = true;
+    loading = false;
     scriptModelList = [];
     scriptModel;
     isModelloading = false;
@@ -81,38 +80,13 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     async ngOnInit() {
-        // if (this.config.relations) {
-        //     this._relativeResolver = new RelativeResolver(),
-        //         this._relativeResolver.reference = this;
-        //     this._relativeResolver.relations = this.config.relations;
-        //     this._relativeResolver.relativeService = this._relativeService;
-        //     this._relativeResolver.initParameterEvents = [this.load];
-        //     this._relativeResolver.resolverRelation();
-        // }
         const params = { _select: 'Id,name,parentId', refProjectId: '7fe971700f21d3a796d2017398812dcd' };
         const moduleData = await this.getModuleData(params);
         // 初始化模块列表，将数据加载到及联下拉列表当中
         if (moduleData.data && moduleData.data.length > 0) {
-            console.log(moduleData.data);
             this._funcOptions = this.arrayToTree(moduleData.data, '');
-            console.log(this._funcOptions);
         }
-        
-    }
 
-    loadScriptMode() {
-        this.isModelloading = true;
-        this._http.get('common/ComSqlScript').subscribe(
-            response => {
-                if (response && response.status === 200) {
-                    this.scriptModelList = response.data;
-                }
-            },
-            error => { },
-            () => {
-                this.isModelloading = true;
-            }
-        );
     }
 
     // 获取模块信息
@@ -121,53 +95,44 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     // 改变模块选项
-  async _changeModuleValue($event?) {
-    // 选择功能模块，首先加载服务端配置列表
-    // const params = new HttpParams().set('TagA', this._funcValue.join(','));
-    if (this._funcValue.length > 0) {
-      this._moduleId = this._funcValue[this._funcValue.length - 1];
-      /* const sqlCommondData = await this.sqlRefreshData();
-       this._loading = false;
-       if(sqlCommondData.Data.length>0 && sqlCommondData.Status === 200) {
-         this._sql_dataSet = sqlCommonData.Data.rows;
-         this._sql_current = sqlCommondData.Page;
-         this._sql_total = sqlCommonData.PageCount;
-       }*/
-
+    async _changeModuleValue($event?) {
+        // 选择功能模块，首先加载服务端配置列表
+        if (this._funcValue.length > 0) {
+            this._moduleId = this._funcValue[this._funcValue.length - 1];
+            this.load();
+        }
     }
-  }
 
     arrayToTree(data, parentid) {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
-          if (data[i].parentId === parentid) {
-            const obj = { 'label': data[i].name, 'value': data[i].Id };
-            temp = this.arrayToTree(data, data[i].Id);
-            if (temp.length > 0) {
-              obj['children'] = temp;
-            } else {
-              obj['isLeaf'] = true;
+            if (data[i].parentId === parentid) {
+                const obj = { 'label': data[i].name, 'value': data[i].Id };
+                temp = this.arrayToTree(data, data[i].Id);
+                if (temp.length > 0) {
+                    obj['children'] = temp;
+                } else {
+                    obj['isLeaf'] = true;
+                }
+                result.push(obj);
             }
-            result.push(obj);
-          }
         }
         return result;
-      }
+    }
 
     async load(condition?) {
         let param = {
             _page: this.pageIndex + 1,
             _rows: this.pageSize
         };
-        if (this._relativeResolver.tempParameter) {
-            param = { ...param, ...this._relativeResolver.tempParameter };
-        }
+        
         if (condition) {
             param = { ...param, ...condition };
         }
 
-        const response = await this._http.get(`ComProjectModule/${param['_moduleId']}/ComSqlScript`, param).toPromise();
+        const pid = this._moduleId ? this._moduleId : null;
+        const response = await this._http.get(`common/ComProjectModule/${pid}/ComSqlScript`, param).toPromise();
         if (response.Data && response.status === 200) {
             this.tableData = response.data.rows;
             this.total = response.data.total;
@@ -185,18 +150,19 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
         });
         row.selected = true;
         this.editor.setValue(row.ScriptText);
-        this._scriptName = row.Name;
+        this._scriptName = row.sqlScriptCaption;
+        this._resourceName = row.sqlScriptResourceName;
+        this._selectedRow = row;
     }
 
     add() {
         this.editor.setValue('');
-        this._relativeResolver.tempParameter['_id'] && delete this._relativeResolver.tempParameter['_id'];
     }
 
     async save() {
         const sqlString = this.editor.getValue();
         let returnValue: any;
-        if (this._relativeResolver.tempParameter['_id']) {
+        if (this._selectedRow) {
             // update
             returnValue = this.updateSql(sqlString);
         } else {
@@ -212,7 +178,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
         switch (returnValue.status) {
             case 200:
                 this._message.create('success', 'SQL 保存成功');
-                this.load({ _focusedId: this._relativeResolver.tempParameter['_id'] });
+                this.load();
                 break;
             case 500:
                 this._message.create('error', returnValue.Message);
@@ -257,7 +223,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             isNeedDeploy: '1',
             belongPlatformType: '1'
         };
-        return this._http.postProj(`common/ProjectModule/${this._funcValue}/ComSqlScript`, [params]).toPromise();
+        return this._http.post(`common/ProjectModule/${this._funcValue}/ComSqlScript`, [params]).toPromise();
     }
 
     // private async addSqlRelative() {
@@ -271,7 +237,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
 
 
     private async delSql(id) {
-        return this._http.deleteProjSys(`common/ComSqlScript`, {Id: id}).toPromise();
+        return this._http.delete(`common/ComSqlScript`, { Id: id }).toPromise();
     }
 
 
@@ -290,7 +256,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
 
     private async updateSql(sql) {
         const params = {
-            Id: this._relativeResolver.tempParameter['_id'],
+            Id: this._selectedRow['Id'],
             sqlScriptContent: sql,
             sqlScriptCaption: this._scriptName,
             sqlScriptResourceName: this._resourceName,
@@ -302,9 +268,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     ngOnDestroy() {
-        if (this._relativeResolver) {
-            this._relativeResolver.unsubscribe();
-        }
+        
     }
 
     cancel() { }

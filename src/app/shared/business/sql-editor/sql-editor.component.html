@@ -66,13 +66,12 @@
                 <thead>
                     <tr>
                         <th nzShowExpand></th>
-                        <th>名称</th>
-                        <th>类别</th>
+                        <th>标题</th>
+                        <th>资源名称</th>
                         <th>脚本内容</th>
-                        <th>引用类型</th>
-                        <th>发布状态</th>
-                        <th>作用域</th>
                         <th>是否启用</th>
+                        <th>是否发布</th>
+                        <th>发布平台</th>
                         <th> </th>
                     </tr>
                 </thead>
@@ -80,13 +79,12 @@
                     <ng-template ngFor let-data [ngForOf]="tableData">
                         <tr (click)="selectRow(data)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
                             <td nzShowExpand [(nzExpand)]="data.expand"></td>
-                            <td>{{data.Name}}</td>
-                            <td>{{data.DbObjType}}</td>
-                            <td>{{data.ScriptText}}</td>
-                            <td>{{data.References}}</td>
-                            <td>{{data.IssueFlag}}</td>
-                            <td>{{data.ShareScope}}</td>
-                            <td>{{data.Enabled}}</td>
+                            <td>{{data.sqlScriptCaption}}</td>
+                            <td>{{data.sqlScriptResourceName}}</td>
+                            <td>{{data.sqlScriptContent}}</td>
+                            <td>{{data.isEnabled}}</td>
+                            <td>{{data.isNeedDeploy}}</td>
+                            <td>{{data.belongPlatformType}}</td>
                             <td>
                                     <nz-popconfirm [nzTitle]="'确认删除当前记录?'" (nzOnConfirm)="delete(data.Id)" (nzOnCancel)="cancel()" [nzPlacement]="'top'">
                                             <button nz-popconfirm nz-button [nzType]="'danger'" [nzSize]="'small'">
