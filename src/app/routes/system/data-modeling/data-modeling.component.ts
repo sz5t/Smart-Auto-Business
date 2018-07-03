@@ -368,7 +368,25 @@ export class DataModelingComponent implements OnInit {
                             'inputType': 'text',
                           }
                         }
+                      },
+                      {
+                        title: '是否建模', field: 'isCreated', width: 80, hidden: false, showSort: true,
+                        formatter: [
+                          { 'value': '1', 'bgcolor': '', 'fontcolor': 'text-blue', 'valueas': '已建模' },
+                          { 'value': '0', 'bgcolor': '', 'fontcolor': 'text-red', 'valueas': '未建模' }
+                        ],
+                        // editor: {
+                        //   type: 'input',
+                        //   field: 'isCreated',
+                        //   options: {
+                        //     'type': 'input',
+                        //     'labelSize': '6',
+                        //     'controlSize': '18',
+                        //     'inputType': 'text',
+                        //   }
+                        // }
                       }
+                      
                     
                     ],
                     'toolbar': [

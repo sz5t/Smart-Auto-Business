@@ -389,7 +389,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         const sortObj = {};
         // if (this._sortName && this._sortType) {
         if (this._sortName && this._sortOrder) {
-            console.log('but');
+           
             sortObj['_sort'] = this._sortName + this._sortOrder ;
             // sortObj['_order'] = sortObj['_order'] ? 'DESC' : 'ASC';
         }
