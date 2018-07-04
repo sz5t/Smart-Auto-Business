@@ -509,7 +509,15 @@ export class DataModelingComponent implements OnInit {
                           }]
                         }
                       },
-  
+                      {
+                        'name': 'addSearchRow', 'class': 'editable-add-btn', 'text': '查询', 'action': 'SEARCH',
+                        'actionType': 'addSearchRow', 'actionName': 'addSearchRow',
+                      },
+                      {
+                        'name': 'cancelSearchRow', 'class': 'editable-add-btn', 'text': '取消查询', 'action': 'SEARCH',
+                        'actionType': 'cancelSearchRow', 'actionName': 'cancelSearchRow',
+                      },
+                      
                     ],
                     'formDialog': [
                       {

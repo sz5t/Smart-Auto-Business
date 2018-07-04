@@ -98,7 +98,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     ) {
         super();
-        
+
     }
 
     // region: 生命周期事件
@@ -186,6 +186,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     case BSN_COMPONENT_MODES.FORM:
                         this.formDialog(option);
                         break;
+                    case BSN_COMPONENT_MODES.SEARCH:
+                        this.SearchRow(option);
+                        break;
                 }
             }
         });
@@ -267,7 +270,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             ...this._buildFilter(this.config.ajaxConfig.filter),
             ...this._buildSort(),
             ...this._buildColumnFilter(),
-            ...this._buildFocusId()
+            ...this._buildFocusId(),
+            ...this._buildSearch()
         };
         // console.log('url params', params);
         (async () => {
@@ -296,19 +300,30 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     this._updateEditCacheByLoad(loadData.data.rows);
                     this.dataList = loadData.data.rows;
                     this.total = loadData.data.total;
+                    if (this.is_Search) {
+                        this.createSearchRow();
+                    }
                 } else {
                     this._updateEditCacheByLoad([]);
                     this.dataList = loadData.data;
                     this.total = 0;
+                    if (this.is_Search) {
+                        this.createSearchRow();
+                    }
                 }
             } else {
                 this._updateEditCacheByLoad([]);
                 this.dataList = [];
                 this.total = 0;
+                if (this.is_Search) {
+                    this.createSearchRow();
+                }
             }
 
             this.loading = false;
         })();
+
+       
     }
 
     private _buildFilter(filterConfig) {
@@ -385,12 +400,12 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     private _buildSort() {
-       
+
         const sortObj = {};
         // if (this._sortName && this._sortType) {
         if (this._sortName && this._sortOrder) {
-           
-            sortObj['_sort'] = this._sortName + this._sortOrder ;
+
+            sortObj['_sort'] = this._sortName + this._sortOrder;
             // sortObj['_order'] = sortObj['_order'] ? 'DESC' : 'ASC';
         }
         return sortObj;
@@ -454,7 +469,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     sort(sort: { key: string, value: string }) {
-        console.log('点击排序' , sort);
+        console.log('点击排序', sort);
         this._sortName = sort.key;
         if (sort.value === 'ascend') {
             this._sortOrder = ' Asc';
@@ -463,7 +478,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         } else {
             this._sortOrder = '';
         }
- 
+
         this._sortType = !this._sortType;
         this.load();
     }
@@ -587,7 +602,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 for (let i = 0, len = cfg.length; i < len; i++) {
                     const newParam = {};
                     cfg[i].params.forEach(param => {
-                        newParam[param['name']] = selectedRow[param['valueName']]; 
+                        newParam[param['name']] = selectedRow[param['valueName']];
                     });
                     const response = await this[option.type](cfg[i].url, newParam);
                     if (response && response.status === 200) {
@@ -626,7 +641,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         items.forEach(item => {
                             const newParam = {};
                             cfg[i].params.forEach(param => {
-                                newParam[param['name']] = item[param['valueName']]; 
+                                newParam[param['name']] = item[param['valueName']];
                             });
                             params.push(newParam);
                         });
@@ -694,6 +709,12 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             if (this.dataList[i]['checked']) {
                 if (this.dataList[i]['row_status'] === 'adding') {
                     this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                    i--;
+                    len--;
+                } else if (this.dataList[i]['row_status'] === 'search') {
+                    this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                    this.is_Search = false;
+                    this.search_Row = {};
                     i--;
                     len--;
                 } else {
@@ -768,7 +789,12 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         rowContentNew['key'] = fieldIdentity;
         rowContentNew['checked'] = true;
         rowContentNew['row_status'] = 'adding';
-        this.dataList = [rowContentNew, ...this.dataList];
+        // 针对查询和新增行处理
+        if (this.is_Search) {
+            this.dataList.splice(1, 0 , rowContentNew);        
+        } else {
+            this.dataList = [rowContentNew, ...this.dataList];
+        }
         // this.dataList.push(this.rowContent);
         this._updateEditCache();
         this._startEdit(fieldIdentity.toString());
@@ -776,10 +802,95 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         return true;
     }
 
+    SearchRow(option) {
+
+        if (option['type'] === 'addSearchRow') {
+            this.addSearchRow();
+        } else if (option['type'] === 'cancelSearchRow') {
+            this.cancelSearchRow();
+        }
+    }
+
+    // 查询标识
+    is_Search = false;
+    search_Row = {};
+    // 新增查询
+    addSearchRow() {
+
+        let isSearch = true;
+        for (let i = 0; i < this.dataList.length; i++) {
+            if (this.dataList[i]['row_status'] === 'search') {
+                isSearch = false;
+            }
+        }
+        if (isSearch) {
+           this.createSearchRow();
+        } else {
+   
+            // 执行行查询
+            console.log('行查询', this.search_Row);
+            this.load(1); // 查询后将页面置1
+        }
+        this.is_Search = true;
+        console.log('SearchRow结果' , this.dataList);
+    }
+    // 生成查询行 
+    createSearchRow() {
+        if (this.is_Search) {
+            this.dataList = [this.search_Row, ...this.dataList];
+            // this.dataList.push(this.rowContent);
+            this._updateEditCache();
+            this._startEdit(this.search_Row['key'].toString());
+        } else {
+            const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
+            const fieldIdentity = CommonTools.uuID(6);
+            rowContentNew['key'] = fieldIdentity;
+            rowContentNew['checked'] = false;
+            rowContentNew['row_status'] = 'search';
+            this.dataList = [rowContentNew, ...this.dataList];
+            // this.dataList.push(this.rowContent);
+            this._updateEditCache();
+            this._startEdit(fieldIdentity.toString());
+            this.search_Row = rowContentNew;
+        }
+        console.log('SearchRow' , this.search_Row);
+    }
+    // 取消查询
+    cancelSearchRow() {
+        let len = this.dataList.length;
+        for (let i = 0; i < len; i++) {
+            if (this.dataList[i]['row_status'] === 'search') {
+                this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                i--;
+                len--;
+            }
+        }
+        this.is_Search = false;
+        this.search_Row = {};
+        this.load(1); // 查询后将页面置1
+        return true;
+    }
+    // 创建查询参数
+    _buildSearch() {
+       let search = {};
+       if (this.search_Row) {
+           const searchData =  JSON.parse(JSON.stringify(this.search_Row));
+           delete searchData['key'];
+           delete searchData['checked'];
+           delete searchData['row_status'];
+           delete searchData['selected'];
+     
+           search = searchData;
+       }
+       return search;
+    }
+
     updateRow() {
         this.dataList.forEach(item => {
             if (item.checked) {
                 if (item['row_status'] && item['row_status'] === 'adding') {
+
+                } else if (item['row_status'] && item['row_status'] === 'search') {
 
                 } else {
                     item['row_status'] = 'updating';
@@ -803,7 +914,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     this.message.create('info', '当前数据未保存无法进行处理');
                     return false;
                 }
-                
+
                 this.executeSelectedAction(this._selectRow, option);
             },
             nzOnCancel() {
