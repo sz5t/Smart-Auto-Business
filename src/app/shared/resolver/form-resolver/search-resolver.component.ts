@@ -29,6 +29,7 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
   };
   _tempParameters = {};
   isSpinning = false;
+  expandForm = false;
   constructor(
     private formBuilder: FormBuilder,
     private _http: ApiService,
@@ -41,47 +42,47 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
   // region: 组件生命周期事件
   ngOnInit() {
     this.form = this.createGroup();
-    if (this.config.relations) {
-      this._relativeResolver = new RelativeResolver();
-      this._relativeResolver.reference = this;
-      this._relativeResolver.relativeService = this._messageService;
-      this._relativeResolver.initParameter = [this.load];
-      this._relativeResolver.initParameterEvents = [this.load];
-      this._relativeResolver.relations = this.config.relations;
-      this._relativeResolver.resolverRelation();
-      this._tempParameters = this._relativeResolver._tempParameter;
-    }
-    if (this.ref) {
-      for (const p in this.ref) {
-        this._tempParameters[p] = this.ref[p];
-      }
-    }
-    if (this.config.ajaxConfig) {
-      if (this.config.componentType) {
-        if (!this.config.componentType.child) {
-          this.load();
-        }
-      } else {
-        this.load();
-      }
-    }
+    // if (this.config.relations) {
+    //   this._relativeResolver = new RelativeResolver();
+    //   this._relativeResolver.reference = this;
+    //   this._relativeResolver.relativeService = this._messageService;
+    //   this._relativeResolver.initParameter = [this.load];
+    //   this._relativeResolver.initParameterEvents = [this.load];
+    //   this._relativeResolver.relations = this.config.relations;
+    //   this._relativeResolver.resolverRelation();
+    //   this._tempParameters = this._relativeResolver._tempParameter;
+    // }
+    // if (this.ref) {
+    //   for (const p in this.ref) {
+    //     this._tempParameters[p] = this.ref[p];
+    //   }
+    // }
+    // if (this.config.ajaxConfig) {
+    //   if (this.config.componentType) {
+    //     if (!this.config.componentType.child) {
+    //       this.load();
+    //     }
+    //   } else {
+    //     this.load();
+    //   }
+    // }
   }
 
   ngOnChanges() {
-    if (this.form) {
-      const controls = Object.keys(this.form.controls);
-      const configControls = this.controls.map(item => item.name);
+    // if (this.form) {
+    //   const controls = Object.keys(this.form.controls);
+    //   const configControls = this.controls.map(item => item.name);
 
-      controls
-        .filter(control => !configControls.includes(control))
-        .forEach(control => this.form.removeControl(control));
-      configControls
-        .filter(control => !controls.includes(control))
-        .forEach(name => {
-          const config = this.controls.find(control => control.name === name);
-          this.form.addControl(name, this.createControl(config));
-        });
-    }
+    //   controls
+    //     .filter(control => !configControls.includes(control))
+    //     .forEach(control => this.form.removeControl(control));
+    //   configControls
+    //     .filter(control => !controls.includes(control))
+    //     .forEach(name => {
+    //       const config = this.controls.find(control => control.name === name);
+    //       this.form.addControl(name, this.createControl(config));
+    //     });
+    // }
   }
   // endregion
 
@@ -315,6 +316,15 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
 
   searchFormByValue(data) {
     console.log(data);
+  }
+
+  collapseForm($event) {
+    console.log($event);
+    this.expandForm = !this.expandForm;
+  }
+
+  clickExpand() {
+    this.expandForm = !this.expandForm;
   }
 
 

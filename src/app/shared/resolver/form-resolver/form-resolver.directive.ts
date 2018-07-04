@@ -63,10 +63,14 @@ export class FormResolverDirective implements OnInit, OnChanges {
             this.component.instance.formGroup = this.formGroup;
           }
           if (this.config.type === 'search') {
+            
             // 测试事件上抛
-            (<CnFormSearchComponent>this.component.instance).searchEmitter.subscribe(() => {
-              // console.log('search');
-            });
+            // (<CnFormSearchComponent>this.component.instance).searchEmitter.subscribe(() => {
+            //   console.log('search');
+            // });
+            
+            
+            
           }
           // 级联数据接受 liu
           if (this.component.instance.updateValue) {
@@ -93,15 +97,22 @@ export class FormResolverDirective implements OnInit, OnChanges {
     const comp = this.resolver.resolveComponentFactory<any>(components[this.config.type]);
     this.component = this.container.createComponent(comp);
     this.component.instance.config = this.config;
-    if (this.config.type !== 'submit' || this.config.type !== 'button') {
+    if (this.config.type !== 'submit' || this.config.type !== 'button' || this.config.type !== 'search') {
       this.component.instance.formGroup = this.formGroup;
     }
     if (this.config.type === 'search') {
       // 测试事件上抛
-      (<CnFormSearchComponent>this.component.instance).searchEmitter.subscribe(() => {
-        // console.log('search');
-      });
+      // (<CnFormSearchComponent>this.component.instance).searchEmitter.subscribe(() => {
+      //   // console.log('search');
+      // });
+      
+      
     }
+    // if (this.component.instance.expandEmitter) {
+    //   this.component.instance.expandEmitter.subscribe(expand => {
+    //     this.setExpandForm(expand);
+    //   });
+    // }
     // 级联数据接受 liu
     if (this.component.instance.updateValue) {
       this.component.instance.updateValue.subscribe(event => {
@@ -115,9 +126,13 @@ export class FormResolverDirective implements OnInit, OnChanges {
 
     // 组件将值写回、级联数据-》回写 liu 
     setValue(data?) {
-      // console.log('级联数据回写触发', data);
       this.updateValue.emit(data);
-      // console.log('级联数据回写触发后', data);
+      console.log('级联数据回写触发后', data);
      }
+
+
+    //  setExpandForm(expand?) {
+    //    this.expandSearchForm.emit(expand);
+    //  }
 
 }

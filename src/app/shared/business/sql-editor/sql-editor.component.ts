@@ -214,7 +214,6 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     private async addSql(sql) {
-        const uuid = CommonTools.uuID(32);
         const params = {
             sqlScriptContent: sql,
             sqlScriptCaption: this._scriptName,

@@ -1,13 +1,51 @@
 <nz-spin [nzSpinning]="isSpinning" [nzDelay]="300" nzTip='加载中...'>
     <form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form" (ngSubmit)="searchForm()">
-        <standard-form-row [title]="formItem.title" [ngClass]="formItem.layout" *ngFor="let formItem of config.forms">
-            <div nz-col [nzSpan]="control.span" *ngFor="let control of formItem.controls">
-                <nz-form-item style="margin-bottom:0px">
-                    <ng-container cnFormResolverDirective [formGroup]="form" [config]="control">
+        <div *ngFor="let formItem of config.forms;let i = index">
+            <standard-form-row [title]="formItem.title" [ngClass]="formItem.layout" *ngIf="!formItem.collapse; else collapseForm">
+                <div nz-col [nzSpan]="control.span" *ngFor="let control of formItem.controls">
+                    <nz-form-item style="margin-bottom:0px">
+                        <ng-container cnFormResolverDirective [formGroup]="form" [config]="control">
 
-                    </ng-container>
-                </nz-form-item>
-            </div>
-        </standard-form-row>
+                        </ng-container>
+                    </nz-form-item>
+                </div>
+                <div nz-col [nzSpan]="8" *ngIf="!expandForm">
+                        <nz-form-item style="margin-bottom:0px">
+                                <button  nz-button [nzType]="'primary'" 
+                                (click)="search()" [nzLoading]="loading"><i class="anticon anticon-search"></i>查询</button>
+                                <button  nz-button [nzType]="'default'" type="reset">重置</button>
+                                <a (click)="clickExpand()">
+                                        {{expandForm ? '收起' : '展开'}}
+                                        <i class="anticon" [class.anticon-down]="!expandForm" [class.anticon-up]="expandForm"></i>
+                                 </a>
+                        </nz-form-item>
+                </div>
+            </standard-form-row>
+            <ng-template #collapseForm>
+                <standard-form-row *ngIf="expandForm" [title]="formItem.title" [ngClass]="formItem.layout">
+                    <div nz-col [nzSpan]="control.span" *ngFor="let control of formItem.controls">
+                        <nz-form-item style="margin-bottom:0px">
+                            <ng-container cnFormResolverDirective [formGroup]="form" [config]="control">
+
+                            </ng-container>
+                           
+                        </nz-form-item>
+                    </div>
+                </standard-form-row>
+            </ng-template>
+        </div>
+        <standard-form-row *ngIf="expandForm">
+                <div nz-col [nzSpan]="6" [nzOffset]="18">
+                        <nz-form-item style="margin-bottom:0px">
+                                <button  nz-button [nzType]="'primary'" 
+                                (click)="search()" [nzLoading]="loading"><i class="anticon anticon-search"></i>查询</button>
+                                <button  nz-button [nzType]="'default'" type="reset">重置</button>
+                                <a (click)="clickExpand()">
+                                        {{expandForm ? '收起' : '展开'}}
+                                        <i class="anticon" [class.anticon-down]="!expandForm" [class.anticon-up]="expandForm"></i>
+                                 </a>
+                        </nz-form-item>
+                </div>
+            </standard-form-row>
     </form>
 </nz-spin>

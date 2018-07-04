@@ -11,14 +11,15 @@ export class CnFormSearchComponent implements OnInit {
     expandForm = false;
     loading = false;
     @Input() formGroup: FormGroup;
-    @Output() searchEmitter: EventEmitter<any> = new EventEmitter<any>();
+    @Output() searchEmitter = new EventEmitter();
+    @Output() expandEmitter = new EventEmitter();
     constructor() { }
 
     ngOnInit() { }
 
     clickExpand() {
       this.expandForm = !this.expandForm;
-      // this.expand.emit(this.expandForm);
+      this.expandEmitter.emit(this.expandForm);
     }
 
     search() {
