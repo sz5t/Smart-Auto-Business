@@ -1,9 +1,10 @@
 <ng-container *ngIf="config.rows">
   <div nz-row [nzGutter]="8" *ngFor="let row of config.rows">
+
     <div nz-col *ngFor="let c of row.row.cols" [nzSpan]="c.span" [nzSm]="c.size.nzSm" [nzXs]="c.size.nzXs" [nzMd]="c.size.nzMd"
       [nzLg]="c.size.nzLg" [nzXl]="c.size.nzXl">
       <cn-layout-resolver [layoutId]="layoutId" [config]="c"></cn-layout-resolver>
-      <nz-card [nzTitle]="cardTitle" *ngIf="c.viewCfg">
+      <nz-card nzTitle="cardTitle"  [nzBodyStyle]="{padding: '12px'}">
         <ng-template #cardTitle *ngIf="c.title">
             <i class="{{c.icon}}"></i>
           {{c.title}}

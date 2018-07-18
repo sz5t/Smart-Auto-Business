@@ -18,6 +18,7 @@ import { Exception403Component } from './exception/403.component';
 import { Exception404Component } from './exception/404.component';
 import { Exception500Component } from './exception/500.component';
 import { AuthGuard } from '@core/utility/auth-guard';
+import { BtnTableFieldLimit } from '@core/pipe/btn-table-field-limit.pipe';
 
 @NgModule({
     imports: [SharedModule, RouteRoutingModule],

@@ -27,8 +27,7 @@ export class AppUser  implements  User {
 /**
  * 系统缓存内容
  */
-export class CacheInfo
-{
+export class CacheInfo {
   UserId: string;
   ApplyId: string;
   ProjectId: string;

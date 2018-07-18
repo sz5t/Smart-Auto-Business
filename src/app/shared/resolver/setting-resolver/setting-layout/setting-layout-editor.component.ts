@@ -109,11 +109,11 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
             // 构建tabs/accordion/ 对象
             // 1、LayoutId, ParentId, Title, Icon, Type, showTitle
             this._currentLyoutData = {
-                LayoutId: this.layoutId,
-                Type: this.config.type,
-                Title: '标签页',
-                ParentId: this.blockId, // 当前布局区域ID
-                ShowTitle: true
+                layoutId: this.layoutId,
+                type: this.config.type,
+                title: '标签页',
+                parentId: this.blockId, // 当前布局区域ID
+                showTitle: true
                 // Metadata: JSON.stringify(this.config)
             };
             // 构建tab 对象
@@ -122,16 +122,16 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
             if (event) {
                 (async() => {
                     const tabsResult = await this.save(this._currentLyoutData);
-                    if (tabsResult && tabsResult.Status === 200) {
+                    if (tabsResult && tabsResult.status === 200 && tabsResult.isSuccess) {
                         const tabData = {
-                            LayoutId: this.layoutId,
-                            Type: 'tab',
-                            Title: '标签 1',
-                            ParentId: tabsResult.Data.Id, // 当前布局区域ID
-                            ShowTitle: true
+                            layoutId: this.layoutId,
+                            type: 'tab',
+                            title: '标签 1',
+                            parentId: tabsResult.Data.Id, // 当前布局区域ID
+                            showTitle: true
                         };
                         const tabResult = await this.save(tabData);
-                        if (tabResult.Status === 200 ) {
+                        if (tabResult.status === 200 && tabResult.isSuccess) {
                             if (!component[this.config.type]) {
                                 const supportedTypes = Object.keys(component).join(', ');
                                 throw new Error(
@@ -167,13 +167,11 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
 
             }
         } else {
-            this._http.postProj(APIResource.BlockSetting, data).subscribe(result => {
-                if (result && result.Status === 200) {
-                    if (result && result.Status === 200) {
-                        this.message.success('保存成功');
-                    } else {
-                        this.message.warning(`出现异常: ${result.Message}`);
-                    }
+            this._http.post('common/BlockSetting', data).subscribe(result => {
+                if (result && result.status === 200 && result.isSuccess) {
+                    this.message.success('保存成功');
+                } else {
+                    this.message.warning(`出现异常: ${result.message}`);
                 }
             }, error => {
                 this.message.error(`出现错误：${error}`);
@@ -182,15 +180,15 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
     }
 
     async save(body) {
-        return this._http.postProj(APIResource.BlockSetting, body).toPromise();
+        return this._http.post('common/BlockSettingBuffer', body).toPromise();
     }
 
     async delete (param) {
-        return this._http.deleteProj(APIResource.BlockSetting, param).toPromise();
+        return this._http.delete('common/BlockSettingBuffer', param).toPromise();
     }
 
     async update (param) {
-        return this._http.putProj(APIResource.BlockSetting, param).toPromise();
+        return this._http.put('common/BlockSettingBuffer', param).toPromise();
     }
 
    /*  _saveComponent() {
@@ -232,11 +230,7 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
     } */
 
     async getTabComponent(blockId) {
-        const params = {
-            ParentId: this.layoutId,
-            TagA: blockId
-        };
-        return this._http.get(APIResource.AppConfigPack, params).toPromise();
+        
     }
 
     uuID(w) {

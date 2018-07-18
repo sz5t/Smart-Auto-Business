@@ -5,7 +5,7 @@ import { Component, OnDestroy, Inject, Optional, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { SocialService, TokenService, DA_SERVICE_TOKEN } from '@delon/auth';
+import { SocialService, TokenService, DA_SERVICE_TOKEN, ITokenModel } from '@delon/auth';
 import { ReuseTabService } from '@delon/abc';
 import { environment } from '@env/environment';
 import { OnlineUser, UserLogin } from '../../../model/APIModel/OnlineUser';
@@ -58,6 +58,8 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.tokenService.clear();
+        this.cacheService.clear();
         this.titleService.setTitle('配置平台');
         this.cacheService.set('AppName', '自动化业务装配系统');
     }
@@ -175,9 +177,10 @@ export class UserLoginComponent implements OnInit, OnDestroy {
 
     async login(userLogin) {
         const user = await this._userLogin(userLogin);
-        if (user && user.status === 200 && user.data) {
-            this.cacheService.set('user', user.data);
-            this.tokenService.set({ token: user.data.token, projId:  SystemResource.settingSystem.ProjId}); // 后续projectId需要进行动态获取
+        if (user && user.status === 200 && user.isSuccess) {
+            this.cacheService.set('userInfo', user.data);
+            const token: ITokenModel = {token: user.data.token};
+            this.tokenService.set(token); // 后续projectId需要进行动态获取
 
             const localAppDataResult = await this._getLocalAppData();
             if (localAppDataResult) {
@@ -193,7 +196,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     }
 
     async _userLogin (userLogin) {
-        return this.apiService.post('common/login', userLogin).toPromise();
+        return this.apiService.post('common/Action/ComSysAccount/login', userLogin).toPromise();
     }
 
     async _getOnlineUser(onlineUser) {

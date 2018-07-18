@@ -227,11 +227,17 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                     'pageSize': 5, // 默认每页数据条数
                     'pageSizeOptions': [5, 18, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      'url': 'common/ComProjectModule/null/ComProjectModule',
+                      'url': 'common/ComProjectModule/_root/ComProjectModule',
                       'ajaxType': 'get',
                       'params': [
                         {
                           name: 'refProjectId', type: 'tempValue', valueName: '_parentId',
+                        },
+                        {
+                          name: '_sort', type: 'value', value: 'createDate desc'
+                        },
+                        {
+                          name: '_root.parentId', type: 'value', value: null
                         },
                         {
                           name: '_deep', type: 'value', value: '3'
@@ -319,24 +325,32 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                         }
                       },
                       {
-                        title: '配置文本', field: 'moduleBody', width: 80, hidden: false, expand: false,
+                        title: '父级', field: 'parentId', width: '100px', hidden: false, expand: false,
                         showFilter: false, showSort: false,
                         editor: {
                           type: 'input',
-                          field: 'Level',
+                          field: 'parentId',
                           options: {
                             'type': 'input',
-                            'labelSize': '6',
-                            'controlSize': '18',
-                            'inputType': 'text',
+                            'name': 'parentId',
+                            'notFoundContent': '',
+                            'selectModel': false,
+                            'showSearch': true,
+                            'placeholder': '-请选择数据-',
+                            'disabled': false,
+                            'size': 'default',
+                            'clear': true,
+                            'width': '200px',
+                            'dataSet': 'parentModule'
                           }
                         }
                       },
                       {
-                        title: '备注', field: 'Remark', width: 80, hidden: false, expand: false,
+                        title: '配置文本', field: 'moduleBody', width: 80, hidden: false, expand: false,
+                        showFilter: false, showSort: false,
                         editor: {
                           type: 'input',
-                          field: 'Remark',
+                          field: 'moduleBody',
                           options: {
                             'type': 'input',
                             'labelSize': '6',
@@ -356,9 +370,6 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                           field: 'isEnabled',
                           options: {
                             'type': 'select',
-                            'labelSize': '6',
-                            'controlSize': '18',
-                            'inputType': 'submit',
                             'name': 'isEnabled',
                             'notFoundContent': '',
                             'selectModel': false,
@@ -484,28 +495,28 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                         'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
                       },
                       {
-                        'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增'
+                        'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增', 'action': 'CREATE'
                       },
                       {
-                        'name': 'updateRow', 'class': 'editable-add-btn', 'text': '编辑'
+                        'name': 'updateRow', 'class': 'editable-add-btn', 'text': '编辑', 'action': 'EDIT'
                       },
                       {
-                        'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除',
+                        'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除', 'action': 'DELETE',
                         'ajaxConfig': {
                           delete: [{
                             'actionName': 'delete',
-                            'url': 'common/ProjectModuleDelete',
+                            'url': 'common/ComProjectModule',
                             'ajaxType': 'delete'
                           }]
                         }
                       },
                       {
-                        'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存',
+                        'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存', 'action': 'SAVE',
                         'type': 'method/action',
                         'ajaxConfig': {
                           post: [{
                             'actionName': 'add',
-                            'url': 'common/ProjectModuleAdd',
+                            'url': 'common/ComProjectModule',
                             'ajaxType': 'post',
                             'params': [
                               { name: 'parentId', type: 'componentValue', valueName: 'parentId', value: '' },
@@ -528,7 +539,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                             ]
                           }],
                           put: [{
-                            'url': 'common/ProjectModuleUpdate',
+                            'url': 'common/ComProjectModule',
                             'ajaxType': 'put',
                             'params': [
                               { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
@@ -547,10 +558,11 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                         }
                       },
                       {
-                        'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消',
+                        'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'action': 'CANCEL'
                       },
                       {
                         'name': 'addForm', 'class': 'editable-add-btn', 'text': '新增模块',
+                        'action': 'FORM', 'actionType': 'formDialog', 'actionName': 'addShowCase',
                         'type': 'showForm', 'dialogConfig': {
                           'keyId': 'Id',
                           'layout': 'horizontal',
@@ -833,7 +845,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                 'name': 'save', 'text': '保存', 'type': 'primary',
                                 'ajaxConfig': {
                                   post: [{
-                                    'url': 'common/ProjectModuleAdd',
+                                    'url': 'common/ComProjectModule',
                                     'params': [
                                       { name: 'parentId', type: 'componentValue', valueName: 'parentId', value: '' },
                                       { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
@@ -876,6 +888,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                       },
                       {
                         'name': 'editForm', 'class': 'editable-add-btn', 'text': '编辑模块',
+                        'action': 'FORM', 'actionType': 'formDialog', 'actionName': 'updateShowCase',
                         'type': 'showForm',
                         'dialogConfig': {
                           'keyId': 'Id',
@@ -1219,16 +1232,16 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                       },
                       {
                         'name': 'addSearchRow', 'class': 'editable-add-btn', 'text': '查询', 'action': 'SEARCH',
-                        'actionType': 'addSearchRow', 'actionName': 'addSearchRow',
+                        'actionType': 'addSearchRow', 'actionName': 'addSearchRow'
                       },
                       {
                         'name': 'cancelSearchRow', 'class': 'editable-add-btn', 'text': '取消查询', 'action': 'SEARCH',
-                        'actionType': 'cancelSearchRow', 'actionName': 'cancelSearchRow',
+                        'actionType': 'cancelSearchRow', 'actionName': 'cancelSearchRow'
                       }
                     ],
                     'dataSet': [
                       {
-                        'name': 'moduleName',
+                        'name': 'parentModule',
                         'ajaxConfig': {
                           'url': 'common/ComProjectModule',
                           'ajaxType': 'get',

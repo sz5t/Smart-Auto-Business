@@ -41,7 +41,6 @@ export class DataModelingComponent implements OnInit {
                     'pageSize': 5, // 默pageSizeOptions认每页数据条数
                     '': [5, 10, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      // 'url': 'SinoForce.AppData.ShowCase',
                       'url': 'common/ComTabledata',
                       'ajaxType': 'get',
                       'params': [
@@ -404,7 +403,7 @@ export class DataModelingComponent implements OnInit {
                         'ajaxConfig': {
                           delete: [{
                             'actionName': 'delete',
-                            'url': 'common/TableDelete',
+                            'url': '/common/ComTabledata',
                             'ajaxType': 'delete'
                           }]
                         }
@@ -415,7 +414,7 @@ export class DataModelingComponent implements OnInit {
                         'ajaxConfig': {
                           post: [{
                             'actionName': 'add',
-                            'url': 'common/TableAdd',
+                            'url': 'common/ComTabledata',
                             'ajaxType': 'post',
                             'params': [
                               { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
@@ -441,7 +440,7 @@ export class DataModelingComponent implements OnInit {
                             ]
                           }],
                           put: [{
-                            'url': 'common/TableUpdate',
+                            'url': 'common/ComTabledata',
                             'ajaxType': 'put',
                             'params': [
                               { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
@@ -478,13 +477,29 @@ export class DataModelingComponent implements OnInit {
 
                       },
                       {
-                        'name': 'executeSelectedRow', 'class': 'editable-add-btn', 'text': '建模', 'action': 'EXECUTE_SELECTED',
-                        'actionType': 'get', 'actionName': 'BuildModel',
+                        'name': 'executeCheckedRow', 'class': 'editable-add-btn', 'text': '批量建模', 'action': 'EXECUTE_CHECKED',
+                        'actionType': 'post', 'actionName': 'BuildModel',
                         'ajaxConfig': {
-                          get: [{
-                            'actionName': 'get',
-                            'url': 'common/TableBuildModel',
-                            'ajaxType': 'get',
+                          post: [{
+                            'actionName': 'post',
+                            'url': 'common/Action/ComTabledata/buildModel',
+                            'ajaxType': 'post',
+                            'params' : [
+                              {
+                                name: 'Id', valueName: 'Id', type: 'checkedRow'
+                              }
+                            ]
+                          }]
+                        }
+                      },
+                      {
+                        'name': 'executeSelectedRow', 'class': 'editable-add-btn', 'text': '建模', 'action': 'EXECUTE_SELECTED',
+                        'actionType': 'post', 'actionName': 'BuildModel',
+                        'ajaxConfig': {
+                          post: [{
+                            'actionName': 'post',
+                            'url': 'common/Action/ComTabledata/buildModel',
+                            'ajaxType': 'post',
                             'params' : [
                               {
                                 name: 'Id', valueName: 'Id', type: 'selectedRow'
@@ -495,12 +510,12 @@ export class DataModelingComponent implements OnInit {
                       },
                       {
                         'name': 'executeSelectedRow', 'class': 'editable-add-btn', 'text': '取消建模', 'action': 'EXECUTE_SELECTED',
-                        'actionType': 'get', 'actionName': 'CancelBuildModel',
+                        'actionType': 'post', 'actionName': 'CancelBuildModel',
                         'ajaxConfig': {
-                          get: [{
-                            'actionName': 'get',
-                            'url': 'common/TableCancelBuildModel',
-                            'ajaxType': 'get',
+                          post: [{
+                            'actionName': 'post',
+                            'url': 'common/Action/ComTabledata/cancelModel',
+                            'ajaxType': 'post',
                             'params' : [
                               {
                                 name: 'Id', valueName: 'Id', type: 'selectedRow'
@@ -714,7 +729,7 @@ export class DataModelingComponent implements OnInit {
                               'name': 'save', 'text': '保存', 'type': 'primary',
                               'ajaxConfig': {
                                 post: [{
-                                  'url': 'common/TableAdd',
+                                  'url': 'common/ComTabledata',
                                   'params': [
 
                                    
@@ -739,7 +754,7 @@ export class DataModelingComponent implements OnInit {
                               'name': 'saveAndKeep', 'text': '保存并继续', 'type': 'primary',
                               'ajaxConfig': {
                                 post: [{
-                                  'url': 'common/TableAdd',
+                                  'url': 'common/ComTabledata',
                                   'params': [
                                    
                                     { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
@@ -966,7 +981,7 @@ export class DataModelingComponent implements OnInit {
                               'type': 'primary',
                               'ajaxConfig': {
                                 put: [{
-                                  'url': 'common/TableUpdate',
+                                  'url': 'common/ComTabledata',
                                   'params': [
                                     { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
                                    
@@ -994,29 +1009,7 @@ export class DataModelingComponent implements OnInit {
                       }
                     ],
                     'dataSet': [
-                      {
-                        'name': 'TypeName',
-                        'ajaxConfig': 'SinoForce.User.AppUser',
-                        'ajaxType': 'get',
-                        'params': [],
-                        'fields': [
-                          {
-                            'label': 'ID',
-                            'field': 'Id',
-                            'name': 'value'
-                          },
-                          {
-                            'label': '',
-                            'field': 'Name',
-                            'name': 'label'
-                          },
-                          {
-                            'label': '',
-                            'field': 'Name',
-                            'name': 'text'
-                          }
-                        ]
-                      }
+                      
                     ]
                   },
                   permissions: {
@@ -1058,7 +1051,6 @@ export class DataModelingComponent implements OnInit {
                     'pageSize': 5, // 默认每页数据条数
                     'pageSizeOptions': [5, 10, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      // 'url': 'SinoForce.AppData.ShowCase',
                       'url': 'common/ComColumndata',
                       'ajaxType': 'get',
                       'params': [
@@ -1429,7 +1421,7 @@ export class DataModelingComponent implements OnInit {
                         'ajaxConfig': {
                           delete: [{
                             'actionName': 'delete',
-                            'url': 'common/ColumnDelete',
+                            'url': 'common/ComColumndata',
                             'ajaxType': 'delete'
                           }]
                         }
@@ -1440,7 +1432,7 @@ export class DataModelingComponent implements OnInit {
                         'ajaxConfig': {
                           post: [{
                             'actionName': 'add',
-                            'url': 'common/ColumnAdd',
+                            'url': 'common/ComColumndata',
                             'ajaxType': 'post',
                             'params': [
                               { name: 'tableId', type: 'tempValue', valueName: '_parentId', value: '' },
@@ -1467,7 +1459,7 @@ export class DataModelingComponent implements OnInit {
                             ]
                           }],
                           put: [{
-                            'url': 'common/ColumnUpdate',
+                            'url': 'common/ComColumndata',
                             'ajaxType': 'put',
                             'params': [
                               { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
@@ -1914,7 +1906,7 @@ export class DataModelingComponent implements OnInit {
                               'name': 'save', 'text': '保存', 'type': 'primary',
                               'ajaxConfig': {
                                 post: [{
-                                  'url': 'common/ColumnAdd',
+                                  'url': 'common/ComColumndata',
                                   'params': [
                                     { name: 'tableId', type: 'tempValue', valueName: '_parentId', value: '' },
                                     { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
@@ -1938,7 +1930,7 @@ export class DataModelingComponent implements OnInit {
                               'name': 'saveAndKeep', 'text': '保存并继续', 'type': 'primary',
                               'ajaxConfig': {
                                 post: [{
-                                  'url': 'common/ColumnAdd',
+                                  'url': 'common/ComColumndata',
                                   'params': [
                                    
                                     { name: 'tableId', type: 'tempValue', valueName: '_parentId', value: '' },
@@ -2381,7 +2373,7 @@ export class DataModelingComponent implements OnInit {
                               'type': 'primary',
                               'ajaxConfig': {
                                 put: [{
-                                  'url': 'common/ColumnUpdate',
+                                  'url': 'common/ComColumndata',
                                   'params': [
                                     { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
                                     { name: 'tableId', type: 'tempValue', valueName: '_parentId', value: '' },
@@ -2408,31 +2400,7 @@ export class DataModelingComponent implements OnInit {
                         'dataList': [],
                       }
                     ],
-                    'dataSet': [
-                      {
-                        'name': 'TypeName',
-                        'ajaxConfig': 'SinoForce.User.AppUser',
-                        'ajaxType': 'get',
-                        'params': [],
-                        'fields': [
-                          {
-                            'label': 'ID',
-                            'field': 'Id',
-                            'name': 'value'
-                          },
-                          {
-                            'label': '',
-                            'field': 'Name',
-                            'name': 'label'
-                          },
-                          {
-                            'label': '',
-                            'field': 'Name',
-                            'name': 'text'
-                          }
-                        ]
-                      }
-                    ]
+                    'dataSet': []
                   },
                   permissions: {
                     'viewId': 'childTable',

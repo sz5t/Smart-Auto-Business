@@ -200,7 +200,8 @@ export class APIResource {
    * @type {string}
    */
 
-  public static SettingUrl = 'http://192.168.1.8:8081/api.cfg/';
+  //public static SettingUrl = 'http://192.168.1.8:8081/api.cfg/';
+  public static SettingUrl = 'http://192.168.1.252:8081/api.cfg/';
 
   /**
    * 解析平台标识代码

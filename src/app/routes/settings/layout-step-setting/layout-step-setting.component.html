@@ -70,18 +70,28 @@
     [nzRenderItem]="item"
     [nzLoadMore]="loadMore">
     <ng-template #item let-item>
-      <nz-list-item [nzContent]="'创建时间：' + item.CreateTime" [nzActions]="[editAction,moreAction]">
-        <ng-template #editAction><a (click)="delete(item)">删除</a></ng-template>
-        <ng-template #moreAction><a (click)="enabledLayout(item)">启用</a></ng-template>
+      <nz-list-item [nzContent]="timeContent" [nzActions]="[editAction, enableAction, deleteAction]">
+        <ng-template #timeContent><span class="text-grey-7">创建时间：<i class="anticon anticon-calendar"></i> {{item.createDate | date}}</span></ng-template>
+        <ng-template #editAction>
+            <span><a (click)="editLayout(item)"><i class="anticon anticon-edit"></i> 编辑</a></span>
+        </ng-template>
+        <ng-template #enableAction>
+            <a nz-popconfirm nzTitle="是否启用当前布局配置？" (nzOnConfirm)="enableLayout(item)">
+                <i class="anticon anticon-check-circle-o"></i> 启用</a>
+            </ng-template>
+        <ng-template #deleteAction>
+            <a nz-popconfirm nzTitle="是否删除当前布局配置？" (nzOnConfirm)="delete(item)">
+                <i class="anticon anticon-delete"></i> 删除</a>
+        </ng-template>
         <nz-list-item-meta
             [nzTitle]="nzTitle"
             [nzAvatar]="listImg"
-            nzDescription="{{item.Description}}">
+            nzDescription="{{item.description}}">
             <ng-template #nzTitle>
-                {{item.Name}}
+                <span class="text-capitalize font-weight-bold">{{item.name}} ({{item.enabled === '1' ? '已启用' : '已禁用'}})</span>
             </ng-template>
             <ng-template #listImg>
-                <nz-avatar [nzShape]="'square'" [nzSrc]="item.TemplateImg"></nz-avatar>
+                <nz-avatar [nzShape]="'square'" [nzSrc]="item.templateImg"></nz-avatar>
             </ng-template>
         </nz-list-item-meta>
       </nz-list-item>
@@ -136,6 +146,7 @@
 
     </div>
     <div class="steps-content2" *ngIf="current == 2">
+        <cn-layout-resolver [layoutId]="_selectedLayoutId" [config]="previewLayoutData"></cn-layout-resolver>
         <cn-setting-layout *ngIf="previewLayoutData" [layoutId]="_selectedLayoutId" [config]="previewLayoutData"></cn-setting-layout>
     </div>
     <div class="steps-action">

@@ -59,22 +59,25 @@ export class ComponentResolverComponent implements OnInit, OnChanges {
   }
 
   createBsnComponent() {
-    if (!components[this.config.config.component]) {
-      const supportedTypes = Object.keys(components).join(', ');
-      throw new Error(
-        `Trying to use an unsupported types (${this.config.config.component}).Supported types: ${supportedTypes}`
-      );
+    if (this.config.config) {
+      if (!components[this.config.config.component]) {
+        const supportedTypes = Object.keys(components).join(', ');
+        throw new Error(
+          `Trying to use an unsupported types (${this.config.config.component}).Supported types: ${supportedTypes}`
+        );
+      }
+      const comp = this.resolver.resolveComponentFactory<any>(components[this.config.config.component]);
+      this.componentRef = this.container.createComponent(comp);
+      this.componentRef.instance.config = this.config.config;
+      if (this.componentRef.instance.permissions) {
+        this.componentRef.instance.permissions = this.config.permissions;
+      }
+      if (this.componentRef.instance.dataList) {
+        this.componentRef.instance.dataList = this.config.dataList;
+      }
+      this.componentRef.instance.layoutId = this.layoutId;
+      this.componentRef.instance.blockId = this.blockId;
     }
-    const comp = this.resolver.resolveComponentFactory<any>(components[this.config.config.component]);
-    this.componentRef = this.container.createComponent(comp);
-    this.componentRef.instance.config = this.config.config;
-    if (this.componentRef.instance.permissions) {
-      this.componentRef.instance.permissions = this.config.permissions;
-    }
-    if (this.componentRef.instance.dataList) {
-      this.componentRef.instance.dataList = this.config.dataList;
-    }
-    this.componentRef.instance.layoutId = this.layoutId;
-    this.componentRef.instance.blockId = this.blockId;
+    
   }
 }

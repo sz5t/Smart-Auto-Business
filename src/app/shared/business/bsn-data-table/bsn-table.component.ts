@@ -103,15 +103,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     // region: 生命周期事件
     ngOnInit() {
-        // this._relativeResolver = new RelativeResolver();
-        // if (this.config.relations && this.config.relations.length > 0) {
-        //     this._relativeResolver.reference = this;
-        //     this._relativeResolver.relativeService = this.relativeMessage;
-        //     this._relativeResolver.relations = this.config.relations;
-        //     this._relativeResolver.initParameterEvents = [this.load];
-        //     this._relativeResolver.tempParameter = this._tempParameters;
-        //     this._relativeResolver.resolverRelation();
-        // }
         this.resolverRelation();
         if (this.config.dataSet) {
             (async () => {
@@ -119,7 +110,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     const url = this._buildURL(this.config.dataSet[i].ajaxConfig.url);
                     const params = this._buildParameters(this.config.dataSet[i].ajaxConfig.params);
                     const data = await this.get(url, params);
-                    if (data && data.Status === 200) {
+                    if (data.isSuccess) {
                         if (this.config.dataSet[i].fields) {
                             const dataSetObjs = [];
                             data.Data.map(d => {
@@ -240,9 +231,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     ngOnDestroy() {
-        if (this._relativeResolver) {
-            this._relativeResolver.unsubscribe();
-        }
+        // if (this._relativeResolver) {
+        //     this._relativeResolver.unsubscribe();
+        // }
         if (this._statusSubscription) {
             this._statusSubscription.unsubscribe();
         }
@@ -276,7 +267,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         // console.log('url params', params);
         (async () => {
             const loadData = await this._load(url, params);
-            if (loadData && loadData.status === 200) {
+            if (loadData && loadData.status === 200 && loadData.isSuccess) {
                 if (loadData.data && loadData.data.rows) {
                     // 设置聚焦ID
                     // 默认第一行选中，如果操作后有focusId则聚焦ID为FocusId
@@ -469,7 +460,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     sort(sort: { key: string, value: string }) {
-        console.log('点击排序', sort);
         this._sortName = sort.key;
         if (sort.value === 'ascend') {
             this._sortOrder = ' Asc';
@@ -566,7 +556,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     submitData.push(submitItem);
                 });
                 const response = await this[method](postConfig[i].url, submitData);
-                if (response && response.status === 200) {
+                if (response && response.status === 200 && response.isSuccess) {
                     this.message.create('success', '保存成功');
                     isSuccess = true;
                 } else {
@@ -605,7 +595,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         newParam[param['name']] = selectedRow[param['valueName']];
                     });
                     const response = await this[option.type](cfg[i].url, newParam);
-                    if (response && response.status === 200) {
+                    if (response && response.status === 200 && response.isSuccess) {
                         this.message.create('success', '执行成功');
                         isSuccess = true;
                     } else {
@@ -630,7 +620,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     async executeCheckedAction(items, option) {
         let isSuccess = false;
         if (items && items.length > 0) {
-            const execButtons = this.config.toolbar.filter(item => item.action = 'EXECUTE_SELECTED');
+            const execButtons = this.config.toolbar.filter(item => item.action === 'EXECUTE_CHECKED');
             const index = execButtons.findIndex(item => item.actionName = option.name);
             const cfg = execButtons[index].ajaxConfig[option.type];
             if (cfg) {
@@ -647,7 +637,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         });
                     }
                     const response = await this[option.type](cfg[i].url, params);
-                    if (response && response.status === 200) {
+                    if (response && response.status === 200 && response.isSuccess) {
                         this.message.create('success', '执行成功');
                         isSuccess = true;
                     } else {
@@ -680,7 +670,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         Id: ids.join(',')
                     };
                     const response = await this['delete'](deleteConfig[i].url, params);
-                    if (response && response.status === 200) {
+                    if (response && response.status === 200 && response.isSuccess) {
                         this.message.create('success', '删除成功');
                         isSuccess = true;
                     } else {
@@ -924,7 +914,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     executeCheckedRow(option) {
         if (this.dataList.filter(item => item.checked === true).length <= 0) {
-            this.message.create('info', '请选选择要执行的数据');
+            this.message.create('info', '请选择要执行的数据');
             return false;
         }
         this.modalService.confirm({
@@ -938,7 +928,11 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     //     // 删除新增临时数据
                     //     newData.push(item.key);
                     // }
-                    if (item.checked === true && item['row_status'] !== 'adding') {
+                    if (item.checked === true 
+                        && item['row_status'] !== 'adding' 
+                        && item['row_status'] !== 'updating'
+                        && item['row_status'] !== 'search'
+                    ) {
                         // 删除服务端数据
                         serverData.push(item);
                     }
@@ -948,6 +942,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 //         this.dataList.splice(this.dataList.indexOf(d), 1);
                 //     });
                 // }
+                
+                debugger;
                 if (serverData.length > 0) {
                     this.executeCheckedAction(serverData, option);
                 }

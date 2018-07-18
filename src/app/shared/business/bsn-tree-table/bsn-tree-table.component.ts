@@ -1,4 +1,3 @@
-
 import { Component, OnInit, ViewChild, Input, OnDestroy, Type, Inject } from '@angular/core';
 import { ApiService } from '../../../core/utility/api-service';
 import { CommonTools } from '../../../core/utility/common-tools';
@@ -8,7 +7,7 @@ import { CnComponentBase } from '@shared/components/cn-component-base';
 import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
 import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
 import { BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE_MODES } from '../../../core/relative-Service/BsnTableStatus';
-import { Observable ,  Observer ,  Subscription } from 'rxjs';
+import { Observable, Observer, Subscription } from 'rxjs';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: FormResolverComponent
@@ -32,15 +31,17 @@ const component: { [type: string]: Type<any> } = {
 })
 export class BsnTreeTableComponent extends CnComponentBase implements OnInit, OnDestroy {
     @Input() config;
+    @Input() permissions = [];
     @Input() dataList = []; // 表格数据集合
-    // region: 分页默认参数
+    allDataList = [];
+
+    //  分页默认参数
     loading = false;
     pageIndex = 1;
     pageSize = 10;
     total = 1;
-    // endregion
 
-    // region: 表格操作
+    //  表格操作
     allChecked = false;
     indeterminate = false;
     _sortName;
@@ -48,55 +49,41 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     _columnFilterList = [];
     _focusId;
     expandDataCache = {};
-    // endregion
+    is_Search;
+    search_Row;
 
-    // region: 业务对象
+    editCache;
+    _editDataCache;
+    _editDataList = [];
+
+    //  业务对象
     _selectRow = {};
     _tempParameters = {};
     _searchParameters = {};
     _relativeResolver;
-    selfEvent = {
-        selectRow: [],
-        selectRowBySetValue: [],
-        load: [],
-        saveRow: [],
-        deleteRow: [],
-        delete: [],
-        post: [],
-        put: [],
-        get: []
-    };
     _toolbar;
-    editCache = {};
+    editRootCache = {};
+    editCacheData = {};
     rowContent = {};
     dataSet = {};
     checkedCount = 0;
 
     _statusSubscription: Subscription;
     _cascadeSubscription: Subscription;
-    // endregion
+
 
     constructor(
         private _http: ApiService,
         private message: NzMessageService,
         private modalService: NzModalService,
-        private relativeMessage: RelativeService,
         @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
     ) { super(); }
 
-    // region: 生命周期事件
+    // 生命周期事件
     ngOnInit() {
-        // this._relativeResolver = new RelativeResolver();
-        // if (this.config.relations && this.config.relations.length > 0) {
-        //     this._relativeResolver.reference = this;
-        //     this._relativeResolver.relativeService = this.relativeMessage;
-        //     this._relativeResolver.relations = this.config.relations;
-        //     this._relativeResolver.initParameterEvents = [this.load];
-        //     this._relativeResolver.tempParameter = this._tempParameters;
-        //     this._relativeResolver.resolverRelation();
-        // }
+        console.log(this.config);
         this.resolverRelation();
         if (this.config.dataSet) {
             (async () => {
@@ -115,7 +102,6 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                                     }
                                 });
                                 dataSetObjs.push(setObj);
-
                             });
                             this.dataSet[this.config.dataSet[i].name] = dataSetObjs;
                         } else {
@@ -146,9 +132,8 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
             this._cascadeSubscription.unsubscribe();
         }
     }
-    // endregion
 
-    // region: 解析消息
+    // 解析消息
     private resolverRelation() {
         // 注册按钮状态触发接收器
         this._statusSubscription = this.stateEvents.subscribe(updateState => {
@@ -178,6 +163,9 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                         break;
                     case BSN_COMPONENT_MODES.FORM:
                         this.formDialog(option);
+                        break;
+                    case BSN_COMPONENT_MODES.SEARCH:
+                        this.searchRow(option);
                         break;
                 }
             }
@@ -228,50 +216,22 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
             });
         }
     }
-    // endregion
 
-    // region: 功能实现
-    load(pageIndex = 1) {
-        // this._selectRow = {};
-        this.pageIndex = pageIndex;
-        this.loading = true;
-        this.allChecked = false;
-        this.checkedCount = 0;
-        const url = this._buildURL(this.config.ajaxConfig.url);
-        const params = {
-            ...this._buildParameters(this.config.ajaxConfig.params),
-            ...this._buildPaging(),
-            ...this._buildFilter(this.config.ajaxConfig.filter),
-            ...this._buildSort(),
-            ...this._buildColumnFilter(),
-            ...this._buildFocusId(),
-            ...this._buildRecursive()
-        };
-        (async () => {
-            const loadData = await this._load(url, params);
-            if (loadData && loadData.status === 200) {
-                if (loadData.data && loadData.data.rows) {
-                    loadData.data.rows.map(row => {
-                        row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
-                        this.expandDataCache[row.Id] = this.convertTreeToList(row);
-                    });
-                    // this._updateEditCacheByLoad(loadData.Data.Rows);
-                    this._updateEditCacheByLoad(this._getAllItemList());
-                    this.dataList = loadData.data.rows;
-                    this.total = loadData.data.total;
-                } else {
-                    this._updateEditCacheByLoad([]);
-                    this.dataList = loadData.data;
-                    this.total = 0;
-                }
-            } else {
-                this._updateEditCacheByLoad([]);
-                this.dataList = [];
-                this.total = 0;
+    // 创建查询参数
+    private _buildSearch() {
+        const search = {};
+        if (this.search_Row) {
+            const searchData = JSON.parse(JSON.stringify(this.search_Row));
+            delete searchData['key'];
+            delete searchData['checked'];
+            delete searchData['row_status'];
+            delete searchData['selected'];
+
+            for (const p in searchData) {
+                search[`_root.${p}`] = searchData[p];
             }
-
-            this.loading = false;
-        })();
+        }
+        return search;
     }
 
     private _buildFilter(filterConfig) {
@@ -383,16 +343,208 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         return { _recursive: true };
     }
 
-    private _updateEditCacheByLoad(data) {
-        this.editCache = {};
-        data.forEach(item => {
-            if (!this.editCache[item.key]) {
-                this.editCache[item.key] = {
+    //  功能实现
+    private load(pageIndex = 1) {
+        // this._selectRow = {};
+        this.pageIndex = pageIndex;
+        this.loading = true;
+        this.allChecked = false;
+        this.checkedCount = 0;
+        const url = this._buildURL(this.config.ajaxConfig.url);
+        const params = {
+            ...this._buildParameters(this.config.ajaxConfig.params),
+            ...this._buildPaging(),
+            ...this._buildFilter(this.config.ajaxConfig.filter),
+            ...this._buildSort(),
+            ...this._buildColumnFilter(),
+            ...this._buildFocusId(),
+            ...this._buildRecursive(),
+            ...this._buildSearch()
+        };
+        this.expandDataCache = {};
+        (async () => {
+            const loadData = await this._load(url, params);
+            if (loadData && loadData.status === 200) {
+                if (loadData.data && loadData.data.rows) {
+                    loadData.data.rows.map(row => {
+                        row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
+                        this.expandDataCache[row.Id] = this.convertTreeToList(row);
+                    });
+                    this._editDataList = this._getAllItemList();
+                    this._initEditDataCache();
+
+
+                    this.dataList = loadData.data.rows;
+                    this.total = loadData.data.total;
+                    if (this.is_Search) {
+                        // this.createSearchRow();
+                    }
+                } else {
+                    // this._updateEditCacheByLoad([]);
+                    this.dataList = loadData.data;
+                    this.total = 0;
+                    if (this.is_Search) {
+                        // this.createSearchRow();
+                    }
+                }
+            } else {
+                // this._updateEditCacheByLoad([]);
+                this.dataList = [];
+                this.total = 0;
+                if (this.is_Search) {
+                    // this.createSearchRow();
+                }
+            }
+
+            console.log('dataList', this.dataList);
+            console.log('editDataCache', this._editDataCache);
+            console.log('editDataList', this._editDataList);
+            this.loading = false;
+        })();
+    }
+
+    // 初始化可编辑的数据结构
+    private _initEditDataCache() {
+        this._editDataCache = {};
+        this._editDataList.forEach(item => {
+            if (!this._editDataCache[item.key]) {
+                this._editDataCache[item.key] = {
                     edit: false,
                     data: item
                 };
             }
         });
+
+        // 将编辑数据帮定至页面
+        this.editCache = this._editDataCache;
+    }
+
+    // 将选中行改变为编辑状态
+    updateRow() {
+        this._editDataList.forEach(item => {
+            if (item.checked) {
+                if (item['row_status'] && item['row_status'] === 'adding') {
+
+                } else if (item['row_status'] && item['row_status'] === 'search') {
+
+                } else {
+                    item['row_status'] = 'updating';
+                }
+                this._startEdit(item.key);
+            }
+        });
+        return true;
+    }
+
+    private _startEdit(key: string): void {
+        this._editDataCache[key]['edit'] = true;
+        this.editCache = this._editDataCache;
+    }
+
+    private _saveEdit(key: string): void {
+        const itemList = this._editDataList;
+        const index = itemList.findIndex(item => item.key === key);
+        let checked = false;
+        let selected = false;
+
+        if (itemList[index].checked) {
+            checked = itemList[index].checked;
+        }
+        if (itemList[index].selected) {
+            selected = itemList[index].selected;
+        }
+
+        itemList[index] = this._editDataCache[key].data;
+        itemList[index].checked = checked;
+        itemList[index].selected = selected;
+
+        this._editDataCache[key].edit = false;
+
+        this.editCache = this._editDataCache;
+    }
+
+    cancelRow() {
+        for (let i = 0, len = this.dataList.length; i < len; i++) {
+            if (this.dataList[i].checked) {
+                if (this.dataList[i]['row_status'] === 'adding') {
+                    if (this._editDataCache[this.dataList[i].key]) {
+                        delete this._editDataCache[this.dataList[i].key];
+                    }
+                    this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                    i--;
+                    len--;
+                }
+                
+            }
+        }
+
+        for (let i = 0, len = this._editDataList.length; i < len; i++) {
+            if (this._editDataList[i]['checked']) {
+                if (this._editDataList[i]['row_status'] === 'adding') {
+                    this._editDataList.splice(this._editDataList.indexOf(this._editDataList[i]), 1);
+                    i--;
+                    len--;
+                } else if (this._editDataList[i]['row_status'] === 'search') {
+                    this._editDataList.splice(this._editDataList.indexOf(this._editDataList[i]), 1);
+                    this.is_Search = false;
+                    this.search_Row = {};
+                    i--;
+                    len--;
+                } else {
+                    this._cancelEdit(this._editDataList[i].key);
+                }
+            }
+        }
+        return true;
+    }
+
+    private _cancelEdit(key: string): void {
+        const itemList = this._editDataList;
+        const index = itemList.findIndex(item => item.key === key);
+        this._editDataCache[key].edit = false;
+        this._editDataCache[key].data = JSON.parse(JSON.stringify(itemList[index]));
+
+        this.editCache = this._editDataCache;
+
+    }
+
+    addRow() {
+        const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
+        const fieldIdentity = CommonTools.uuID(6);
+        rowContentNew['key'] = fieldIdentity;
+        rowContentNew['checked'] = true;
+        rowContentNew['row_status'] = 'adding';
+        // 针对查询和新增行处理
+        if (this.is_Search) {
+            this._editDataList.splice(1, 0, rowContentNew);
+        } else {
+            this.expandDataCache[fieldIdentity] = [rowContentNew];
+            this._editDataList = [rowContentNew, ...this._editDataList];
+            this.dataList = [rowContentNew, ...this.dataList];
+
+        }
+        // 需要特殊处理层级问题
+        // this.dataList.push(this.rowContent);
+        this._addEditCache();
+        this._startAdd(fieldIdentity);
+        return true;
+    }
+
+    private _addEditCache(): void {
+        this._editDataList.forEach(item => {
+            if (!this._editDataCache[item.key]) {
+                this._editDataCache[item.key] = {
+                    edit: false,
+                    data: item
+                };
+            }
+        });
+        this.editCache = this._editDataCache;
+    }
+
+    private _startAdd(key: string): void {
+        this._editDataCache[key]['edit'] = true;
+        this.editCache = this._editDataCache;
     }
 
     private selectRow(data, $event) {
@@ -437,13 +589,10 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         this.load();
     }
 
-    // endregion
-
-    // region: 表格操作
-
+    //  表格操作
     _getAllItemList() {
         let list = [];
-        if (this.expandDataCache && this.dataList) {
+        if (this.expandDataCache) {
             for (const r in this.expandDataCache) {
                 list = list.concat(this.expandDataCache[r]);
             }
@@ -460,6 +609,8 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
             });
         }
 
+
+
         this.refChecked();
     }
 
@@ -467,7 +618,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
 
         let allCount = 0;
         // parent count
-        this.checkedCount = this.dataList.filter(w => w.checked).length;
+        this.checkedCount = 0; // = this.dataList.filter(w => w.checked).length;
         // child count
         for (const r in this.expandDataCache) {
             this.checkedCount += this.expandDataCache[r].filter(c => c.checked).length;
@@ -482,11 +633,11 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         const addRows = [];
         const updateRows = [];
         let isSuccess = false;
-        this._getAllItemList().map(item => {
+        this._editDataList.map(item => {
             delete item['$type'];
-            if (item['row_status'] === 'adding') {
+            if (item.checked && item['row_status'] === 'adding') {
                 addRows.push(item);
-            } else if (item['row_status'] === 'updating') {
+            } else if (item.checked && item['row_status'] === 'updating') {
                 updateRows.push(item);
             }
         });
@@ -498,7 +649,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         }
 
         if (updateRows.length > 0) {
-            // 
+            // update 
             console.log(updateRows);
             isSuccess = await this.executeSave(updateRows, 'put');
         }
@@ -564,7 +715,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
             if (deleteConfig) {
                 for (let i = 0, len = deleteConfig.length; i < len; i++) {
                     const params = {
-                        _ids: ids.join(',')
+                        Id: ids.join(',')
                     };
                     const response = await this['delete'](deleteConfig[i].url, params);
                     if (response && response.status === 200) {
@@ -590,47 +741,6 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         return isSuccess;
     }
 
-    cancelRow() {
-        this._getAllItemList().forEach(item => {
-            if (item.checked === true) {
-                this._cancelEdit(item.key);
-            }
-        });
-        return true;
-    }
-
-    private _startEdit(key: string): void {
-        console.log('start edit', this.editCache);
-        this.editCache[key].edit = true;
-    }
-
-    private _cancelEdit(key: string): void {
-        const itemList = this._getAllItemList();
-        const index = itemList.findIndex(item => item.key === key);
-        this.editCache[key].edit = false;
-        this.editCache[key].data = JSON.parse(JSON.stringify(itemList[index]));
-    }
-
-    private _saveEdit(key: string): void {
-        const itemList = this._getAllItemList();
-        const index = itemList.findIndex(item => item.key === key);
-        let checked = false;
-        let selected = false;
-
-        if (itemList[index].checked) {
-            checked = itemList[index].checked;
-        }
-        if (itemList[index].selected) {
-            selected = itemList[index].selected;
-        }
-
-        itemList[index] = this.editCache[key].data;
-        itemList[index].checked = checked;
-        itemList[index].selected = selected;
-
-        this.editCache[key].edit = false;
-    }
-
     private _deleteEdit(i: string): void {
         const dataSet = this._getAllItemList().filter(d => d.key !== i);
         // 需要特殊处理层级问题
@@ -638,7 +748,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     }
 
     private _updateEditCache(): void {
-        this._getAllItemList().forEach(item => {
+        this.allDataList.forEach(item => {
             if (!this.editCache[item.key]) {
                 this.editCache[item.key] = {
                     edit: false,
@@ -657,34 +767,9 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         });
     }
 
-    addRow() {
-        const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
-        const fieldIdentity = CommonTools.uuID(6);
-        rowContentNew['key'] = fieldIdentity;
-        rowContentNew['checked'] = true;
-        rowContentNew['row_status'] = 'adding';
-        // 需要特殊处理层级问题
-        this.dataList = [rowContentNew, ...this.dataList];
-        // this.dataList.push(this.rowContent);
-        this._updateEditCache();
-        this._startEdit(fieldIdentity.toString());
+    
 
-        return true;
-    }
 
-    updateRow() {
-        this._getAllItemList().forEach(item => {
-            if (item.checked) {
-                if (item['row_status'] && item['row_status'] === 'adding') {
-
-                } else {
-                    item['row_status'] = 'updating';
-                }
-                this._startEdit(item.key);
-            }
-        });
-        return true;
-    }
 
     deleteRow() {
         this.modalService.confirm({
@@ -693,22 +778,54 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
             nzOnOk: () => {
                 const newData = [];
                 const serverData = [];
-                const itemList = this._getAllItemList();
-                itemList.forEach(item => {
-                    if (item.checked === true && item['row_status'] === 'adding') {
-                        // 删除新增临时数据
-                        newData.push(item.key);
+                const e = this._editDataList;
+                const d = this._editDataCache;
+
+                for (let i = 0, len = this.dataList.length; i < len; i++) {
+                    if (this.dataList[i].checked && this.dataList[i]['row_status'] === 'adding') {
+                        if (this._editDataCache[this.dataList[i].key]) {
+                            delete this._editDataCache[this.dataList[i].key];
+                        }
+                        this.dataList.splice(this.dataList.indexOf(d), 1);
+                        i--;
+                        len--;
                     }
-                    if (item.checked === true) {
-                        // 删除服务端数据
-                        serverData.push(item.Id);
-                    }
-                });
-                if (newData.length > 0) {
-                    newData.forEach(d => {
-                        itemList.splice(itemList.indexOf(d), 1);
-                    });
                 }
+
+                for (let i = 0, len = this._editDataList.length; i < len; i++) {
+                    if (this._editDataList[i]['checked']) {
+                        if (this._editDataList[i]['row_status'] === 'adding') {
+                            this._editDataList.splice(this._editDataList.indexOf(this._editDataList[i]), 1);
+                            i--;
+                            len--;
+                        } else if (this._editDataList[i]['row_status'] === 'search') {
+                            this._editDataList.splice(this._editDataList.indexOf(this._editDataList[i]), 1);
+                            this.is_Search = false;
+                            this.search_Row = {};
+                            i--;
+                            len--;
+                        } else {
+                            serverData.push(this._editDataList[i].key);
+                        }
+                    }
+                }
+
+                // const itemList = this.allDataList;
+                // itemList.forEach(item => {
+                //     if (item.checked === true && item['row_status'] === 'adding') {
+                //         // 删除新增临时数据
+                //         newData.push(item.key);
+                //     }
+                //     if (item.checked === true) {
+                //         // 删除服务端数据
+                //         serverData.push(item.Id);
+                //     }
+                // });
+                // if (newData.length > 0) {
+                //     newData.forEach(d => {
+                //         itemList.splice(itemList.indexOf(d), 1);
+                //     });
+                // }
                 if (serverData.length > 0) {
                     this.executeDelete(serverData);
                 }
@@ -719,7 +836,6 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     }
 
     toolbarAction(btn) {
-        console.log(btn);
         if (this[btn.name]) {
             this[btn.name]() && this._toolbarEnables(btn.enables);
         } else if (this[btn.type]) {
@@ -748,9 +864,9 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         //     }
         // });
     }
-    // endregion
 
-    // region: 弹出UI
+
+    //  弹出UI
     private showForm(dialog) {
         const footer = [];
         const obj = {
@@ -807,7 +923,6 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         comp.resetForm();
     }
 
-
     private showLayout(dialog) {
         const footer = [];
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
@@ -860,9 +975,9 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         });
 
     }
-    // endregion
 
-    // region: 服务区端交互
+
+    //  服务区端交互
     private async _load(url, params) {
         return this._http.getProj(url, params).toPromise();
     }
@@ -882,9 +997,9 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     private async get(url, params) {
         return this._http.getProj(url, params).toPromise();
     }
-    // endregion
 
-    // region: 格式化单元格
+
+    //  格式化单元格
     setCellFont(value, format) {
         let fontColor = '';
         if (format) {
@@ -897,11 +1012,6 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
 
         return fontColor;
     }
-
-    log($event) {
-
-    }
-    // endregion
 
     expandChange(array: any[], data: any, $event: boolean) {
         if ($event === false) {
@@ -980,7 +1090,82 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
 
     // }
 
+    searchRow(option) {
+        if (option['type'] === 'addSearchRow') {
+            this.addSearchRow();
+        } else if (option['type'] === 'cancelSearchRow') {
+            this.cancelSearchRow();
+        }
+    }
 
+    addSearchRow() {
+        let isSearch = true;
+        for (let i = 0; i < this.dataList.length; i++) {
+            if (this.dataList[i]['row_status'] === 'search') {
+                isSearch = false;
+            }
+        }
+        if (isSearch) {
+            this.createSearchRow();
+        } else {
+
+            // 执行行查询
+            console.log('行查询', this.search_Row);
+            this.load(1); // 查询后将页面置1
+        }
+        this.is_Search = true;
+        console.log('SearchRow结果', this.dataList);
+    }
+
+    // 生成查询行 
+    createSearchRow() {
+        if (this.is_Search) {
+            this.dataList = [this.search_Row, ...this.dataList];
+            // this.dataList.push(this.rowContent);
+            this._updateEditCache();
+            this._startEdit(this.search_Row['key'].toString());
+        } else {
+            const newSearchContent = JSON.parse(JSON.stringify(this.rowContent));
+            const fieldIdentity = CommonTools.uuID(6);
+            newSearchContent['key'] = fieldIdentity;
+            newSearchContent['checked'] = false;
+            newSearchContent['row_status'] = 'search';
+          
+            this.expandDataCache[fieldIdentity] = [newSearchContent];
+            this.dataList = [newSearchContent, ...this.dataList];
+            this._editDataList = [newSearchContent, ...this._editDataList];
+            this._addEditCache();
+            this._startAdd(fieldIdentity);
+           
+            this.search_Row = newSearchContent;
+        }
+        console.log('SearchRow', this.search_Row);
+    }
+
+    // 取消查询
+    cancelSearchRow() {
+        for (let i = 0, len = this.dataList.length; i < len; i++) {
+            if (this.dataList[i]['row_status'] === 'search') {
+                delete this._editDataCache[this.dataList[i].key];
+                this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                i--;
+                len--;
+            }
+        }
+
+        for (let i = 0, len = this._editDataList.length; i < len ; i++) {
+            if (this._editDataList[i]['row_status'] === 'search') {
+                this._editDataList.splice(this._editDataList.indexOf(this._editDataList[i]), 1);
+                i--;
+                len--;
+            }
+        }
+
+        this.is_Search = false;
+        this.search_Row = {};
+        this.load(1); // 查询后将页面置1
+        return true;
+    }
 
     convertTreeToList(root: object): any[] {
         const stack = [];

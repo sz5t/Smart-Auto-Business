@@ -57,7 +57,7 @@ export class StartupService {
                 this.settingService.setLayout('lang', 'zh-CN');
                 // application data
                 const res: any = appData;
-                const user: any = this.cacheService.getNone('User');
+                const user: any = this.cacheService.getNone('userInfo');
                 const menu: any = this.cacheService.getNone('Menus');
 
                 // 判断用户是否已经登录过系统

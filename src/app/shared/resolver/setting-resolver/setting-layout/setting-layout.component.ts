@@ -31,6 +31,8 @@ export class SettingLayoutComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log(this.layoutId);
+    console.log(this.config);
     if (this.config) {
       this._isRows = Array.isArray(this.config.rows);
     }
@@ -40,10 +42,11 @@ export class SettingLayoutComponent implements OnInit {
     if (this.config) {
       (async () => {
         const block: any = await this._loadBlockData();
-        this.title = block.Data.Title ? block.Data.Title : '';
-        this.icon = block.Data.Icon ? block.Data.Icon : '';
-        this.id = block.Data.Id ? block.Data.Id : '';
-        this.metadata = block.Data.Metadata ? JSON.parse(block.Data.Metadata) : {};
+
+        this.title = block.data.title ? block.data.title : '';
+        this.icon = block.data.icon ? block.data.icon : '';
+        this.id = block.data.Id ? block.data.Id : '';
+        this.metadata = block.data.metadata ? JSON.parse(block.data.metadata) : {};
         this.isVisible = true;
       })();
     }
@@ -54,20 +57,20 @@ export class SettingLayoutComponent implements OnInit {
   }
 
   async _loadBlockData() {
-    return this._http.getProj(`${APIResource.BlockSetting}/${this.config.id}`).toPromise();
+    return this._http.get(`common/BlockSettingBuffer/${this.config.id}`).toPromise();
   }
 
   _updateBlockData() {
     this.metadata.title = this.title;
     this.metadata.icon = this.icon;
     const body = {
-      Title: this.title, 
-      Icon: this.icon, 
+      title: this.title, 
+      icon: this.icon, 
       Id: this.id,
-      Metadata: JSON.stringify(this.metadata)
+      metadata: JSON.stringify(this.metadata)
     };
-    this._http.putProj(APIResource.BlockSetting, body).subscribe(result => {
-      if (result && result.Status === 200) {
+    this._http.put('common/BlockSettingBuffer', body).subscribe(result => {
+      if (result && result.status === 200 && result.isSuccess) {
         this.message.create('success', '保存成功');
         this.isVisible = false;
         this.config.icon = this.icon;
@@ -77,7 +80,7 @@ export class SettingLayoutComponent implements OnInit {
         this.message.create('info', '保存失败');
       }
     }, error => {
-      this.message.create('error', error.Message);
+      this.message.create('error', error.message);
     }
     );
   }

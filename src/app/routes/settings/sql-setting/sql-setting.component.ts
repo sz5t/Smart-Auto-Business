@@ -868,8 +868,8 @@ export class SqlSettingComponent implements OnInit , OnDestroy {
     const result = [];
     let temp;
     for (let i = 0; i < data.length; i++) {
-      if (data[i].ParentId === parentid) {
-        const obj = { 'label': data[i].Name, 'value': data[i].Id };
+      if (data[i].parentId === parentid) {
+        const obj = { 'label': data[i].name, 'value': data[i].Id };
         temp = this.arrayToTree(data, data[i].Id);
         if (temp.length > 0) {
           obj['children'] = temp;

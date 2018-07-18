@@ -59,6 +59,7 @@ import { CnGridRangePickerComponent } from './components/cn-grid-range-picker/cn
 import { BsnToolbarComponent } from './business/bsn-toolbar/bsn-toolbar.component';
 import { BsnStepComponent } from './business/bsn-step/bsn-step.component';
 import { CnFormSelectTreeComponent } from './components/cn-form-select-tree/cn-form-select-tree.component';
+import { BtnTableFieldLimit } from '../core/pipe/btn-table-field-limit.pipe';
 // import { NzSchemaFormModule } from 'nz-schema-form';
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -139,7 +140,8 @@ const DIRECTIVES = [
     declarations: [
         // your components
         ...COMPONENTS,
-        ...DIRECTIVES
+        ...DIRECTIVES,
+        BtnTableFieldLimit
     ],
     exports: [
         CommonModule,

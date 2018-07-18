@@ -33,18 +33,6 @@
                         },
                         {
                             "text": "数据建模",
-                            "link": "/system/data-manager",
-                            "i18n": "",
-                            "icon": "icon-user"
-                        },
-                        {
-                            "text": "基本信息",
-                            "link": "/system/base-manager",
-                            "hide":false,
-                            "i18n": ""
-                        },
-                        {
-                            "text": "JAVA数据建模",
                             "link": "/system/dataModeling-manager",
                             "i18n": "",
                             "icon": "icon-user"

@@ -1,3 +1,4 @@
+import { _HttpClient } from '@delon/theme';
 import { CommonTools } from './../../../core/utility/common-tools';
 import { CacheService } from '@delon/cache';
 import { Component, OnInit, LOCALE_ID } from '@angular/core';
@@ -973,80 +974,61 @@ export class LayoutStepSettingComponent implements OnInit {
     _currentUser: any;
     _bufferId;
     _configSuccess;
+    _isEditData = false;
     constructor(
         private apiService: ApiService,
         private formBuilder: FormBuilder,
         private cacheService: CacheService,
-        private message: NzMessageService) { }
+        private message: NzMessageService) {
 
-    async ngOnInit() {
-        this._currentUser = this.cacheService.getNone('User');
-        this._bufferId = 'buffer_' + CommonTools.uuID(6);
-        this._formGroup = this.formBuilder.group({});
-        // const params = new HttpParams().set();
-        const params = { _select: 'Id,Name,ParentId' };
-        const moduleData = await this.getModuleData(params);
-        // 初始化模块列表，将数据加载到及联下拉列表当中
-        this._funcOptions = this.arrayToTree(moduleData.Data, '');
     }
 
-    // 获取模块信息
-    async getModuleData(params) {
-        return this.apiService.getProj(APIResource.AppModuleConfig, params).toPromise();
-    }
+    ngOnInit() {
+        (async () => {
+            this._currentUser = this.cacheService.getNone('userInfo');
+            this._bufferId = 'buffer_' + CommonTools.uuID(6);
+            this._formGroup = this.formBuilder.group({});
+            const params = { _select: 'Id,name,parentId' };
+            const moduleData = await this.getModuleData(params);
+            // 初始化模块列表，将数据加载到及联下拉列表当中
+            this._funcOptions = this.arrayToTree(moduleData.data, null);
+        })();
 
-    // 获取布局设置列表
-    async getLayoutConfigData(params) {
-        return this.apiService.getProj('SinoForce.SysData.LayoutSettingBuffer', params).toPromise();
-    }
-
-    async getBlockConfigData(layoutId) {
-        return this.apiService.getProj('SinoForce.SysData.BlockSettingBuffer', { LayoutId: layoutId }).toPromise();
     }
 
     // 改变模块选项
     _changeModuleValue($event?) {
         // 选择功能模块，首先加载服务端配置列表
-        // const params = new HttpParams().set('TagA', this._funcValue.join(','));
         this.loadLayout();
     }
 
     loadLayout() {
         if (this._funcValue.length > 0) {
             const params = {
-                ModuleId: this._funcValue[this._funcValue.length - 1]
+                moduleId: this._funcValue[this._funcValue.length - 1]
             };
             this.getLayoutConfigData(params).then(serverLayoutData => {
                 this.loading = true;
-                if (serverLayoutData.Status === 200 && serverLayoutData.Data.length > 0) {
-                    this._tableDataSource = serverLayoutData.Data;
-                    for (let i = 0, len = this._tableDataSource.length; i < len; i++) {
-                        const layoutMetadata = JSON.parse(this._tableDataSource[i].Metadata);
-                        (async () => {
+                if (serverLayoutData.status === 200 && serverLayoutData.data && serverLayoutData.isSuccess) {
+                    this._tableDataSource = serverLayoutData.data;
+                    (async () => {
+                        for (let i = 0, len = this._tableDataSource.length; i < len; i++) {
+                            const layoutMetadata = JSON.parse(this._tableDataSource[i].metadata);
                             const result = await this.getBlockConfigData(this._tableDataSource[i].Id);
-                            // const layoutMeta = JSON.parse(this._tableDataSource[i].Metadata);
-                            // 设置布局树表数据
-                            if (result.Data && result.Status) {
-                                this._tableDataSource[i]['BlockList'] = result.Data;
-                                this._tableDataSource[i]['expand'] = false;
-                                this._tableDataSource[i]['selected'] = false;
+                            for (let j = 0, jlen = result.data.length; j < jlen; j++) {
+                                const blockMeta = JSON.parse(result.data[j].metadata);
+                                blockMeta.id = result.data[j].Id;
+                                result.data[j].metadata = blockMeta;                  
+                                this.rewriteLayoutMeta(layoutMetadata, result.data[j]);
                             }
 
-                            for (let j = 0, jlen = result.Data.length; j < jlen; j++) {
-                                const blockMeta = JSON.parse(result.Data[j].Metadata);
-                                blockMeta.id =  result.Data[j].Id;
-                                result.Data[j].Metadata = blockMeta;
-                                this.rewriteLayoutMeta(layoutMetadata, result.Data[j]);
-                            }
-                            
                             if (this._selectedLayoutId === this._tableDataSource[i].Id) {
                                 this.previewLayoutData = JSON.parse(JSON.stringify(layoutMetadata));
                             }
                             this._isShowPreview = false;
-                        })();
-
-                        this._tableDataSource[i]['data'] = layoutMetadata;
-                    }
+                            this._tableDataSource[i]['data'] = layoutMetadata;
+                        }
+                    })();
                 } else {
                     this._tableDataSource = [];
                 }
@@ -1065,6 +1047,7 @@ export class LayoutStepSettingComponent implements OnInit {
 
     _onSelectionChange(selectedOptions: any[]) {
         this._selectedModuleText = `${selectedOptions.map(o => o.label).join(' / ')}`;
+        this._setStepDesp();
     }
 
     showGuide() {
@@ -1076,6 +1059,13 @@ export class LayoutStepSettingComponent implements OnInit {
             // 还是继续创建，直接切换即可
         } else {
             // 点击返回
+            this._isEditData = false;
+            this._configDesc = '';
+            this._configName = '';
+            this._configSuccess = false;
+            this._layoutValue = null;
+            this.current = 0;
+            this._bufferId = null;
         }
         this._configSuccess = '';
     }
@@ -1089,7 +1079,6 @@ export class LayoutStepSettingComponent implements OnInit {
     }
 
     _submitForm($event) {
-        console.log($event);
         event.preventDefault();
         event.stopPropagation();
         const loadingMessage = this.message.loading('正在执行中...', { nzDuration: 0 }).messageId;
@@ -1105,20 +1094,21 @@ export class LayoutStepSettingComponent implements OnInit {
         // 配置信息保存入数据库
 
         const configData = {
-            ModuleId: moduleID,
-            Template: layoutName,
-            Name: configName,
-            Metadata: metadata,
-            Enabled: true
+            moduleId: moduleID,
+            template: layoutName,
+            name: configName,
+            metadata: metadata,
+            enabled: '1'
         };
 
         (async () => {
             const layout = await this.addSettingLayoutBuffer(configData);
-            if (layout.Data && layout.Status === 200) {
+            if (layout.data && layout.status === 200 && layout.isSuccess) {
                 for (let i = 0, len = blockDataList.length; i < len; i++) {
-                    blockDataList[i]['LayoutId'] = layout.Data.Id;
-                    blockDataList[i]['ParentId'] = moduleID;
+                    blockDataList[i]['layoutId'] = layout.data.Id;
+                    blockDataList[i]['parentId'] = moduleID;
                     blockDataList[i]['type'] = 'view';
+                    blockDataList[i]['showTitle'] = '1';
                     const block = await this.addBlockSettingBuffer(blockDataList[i]);
                 }
 
@@ -1142,49 +1132,13 @@ export class LayoutStepSettingComponent implements OnInit {
             this.message.remove(loadingMessage);
             this.loadLayout();
         })();
-
-
-        // this.apiService.postProj(
-        //   APIResource.LayoutSetting,
-        //   configData).subscribe(response => {
-        //     this.message.remove(loadingMessage);
-        //     if (response && response.Status === 200) {
-        //       this.message.create('success', '执行成功');
-        //       this._changeModuleValue();
-        //     } else {
-        //       this.message.create('warning', `出现异常：${response.Message}`);
-        //     }
-        //   });
-    }
-
-    async addSettingLayoutBuffer(data) {
-        return this.apiService.postProj('SinoForce.SysData.LayoutSettingBuffer', data).toPromise();
-
-    }
-
-    async addBlockSettingBuffer(data) {
-        return this.apiService.postProj('SinoForce.SysData.BlockSettingBuffer', data).toPromise();
-    }
-
-    async createLayout() {
-        return this.apiService.postProj('SinoForce.SysData.CreateLayout', {BufferId: this._bufferId}).toPromise();
-    }
-
-    private uuID(w) {
-        let s = '';
-        const str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        for (let i = 0; i < w; i++) {
-            s += str.charAt(Math.round(Math.random() * (str.length - 1)));
-        }
-        return s;
     }
 
     rewriteLayoutMeta(layoutData, block) {
         for (let i = 0, len = layoutData.rows.length; i < len; i++) {
             for (let j = 0, jlen = layoutData.rows[i].row.cols.length; j < jlen; j++) {
-                if (layoutData.rows[i].row.cols[j].id === block.Area) {
-                    layoutData.rows[i].row.cols[j] = block.Metadata;
-                
+                if (layoutData.rows[i].row.cols[j].id === block.area) {
+                    layoutData.rows[i].row.cols[j] = block.metadata;
                     if (layoutData.rows[i].row.cols[j].rows) {
                         this.rewriteLayoutMeta(layoutData.rows[i].row.cols[j], block);
                     }
@@ -1195,16 +1149,23 @@ export class LayoutStepSettingComponent implements OnInit {
 
     }
 
-    private selectRow(row) {
-        this._tableDataSource.map(d => {
-            d.selected = false;
-        });
-        row.selected = true;
-        this._layoutValue = this.getLayoutTypeValue(row.Template);
-        this._configName = row.Name;
-        this._selectedLayoutId = row.Id;
-        // this.previewLayoutData = 
-        
+    editLayout(item) {
+        // 显示布局页面
+        // 加载布局页面布局效果
+        // this.previewLayoutData = JSON.parse(item.metadata);
+        this._showGuide = true;
+        this._selectedLayoutId = item.Id;
+        this._layoutValue = this.getLayoutTypeValue(item.template);
+        this._configName = item.name;
+        this._configDesc = item.description;
+        this._isEditData = true;
+        this._bufferId = item.bufferId;
+
+    }
+
+    enableLayout(item) {
+        console.log(item);
+        // 更新使用状态为启用，根据模块的编号，启用当前数据，禁用其他所有数据
     }
 
     private getLayoutTypeValue(name) {
@@ -1223,13 +1184,13 @@ export class LayoutStepSettingComponent implements OnInit {
             row.row.cols.forEach(col => {
                 const meta = JSON.stringify(col);
                 blockDataList.push(
-                    { 
-                        Title: col.title, 
-                        Icon: '', 
-                        Area: col.id, 
-                        Metadata: meta,
-                        Span: col.span,
-                        Size: JSON.stringify(col.size) 
+                    {
+                        title: col.title,
+                        icon: '',
+                        area: col.id,
+                        metadata: meta,
+                        span: `${col.span}`,
+                        size: JSON.stringify(col.size)
                     });
                 if (col.rows) {
                     blockDataList.push(...this.overrideLayoutId(col));
@@ -1255,8 +1216,8 @@ export class LayoutStepSettingComponent implements OnInit {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
-            if (data[i].ParentId === parentid) {
-                const obj = { 'label': data[i].Name, 'value': data[i].Id };
+            if (data[i].parentId === parentid) {
+                const obj = { 'label': data[i].name, 'value': data[i].Id };
                 temp = this.arrayToTree(data, data[i].Id);
                 if (temp.length > 0) {
                     obj['children'] = temp;
@@ -1312,14 +1273,27 @@ export class LayoutStepSettingComponent implements OnInit {
     // 返回上一步
     pre(): void {
         this.current -= 1;
+        this._setStepDesp();
     }
 
     // 进行下一步
     next(): void {
         if (this.current === 0) {
-            this._saveLayoutBuffer();
+            (async () => {
+                let result;
+                if (!this._isEditData) {
+                    result = await this._saveLayoutBuffer();
+                    
+                } else {
+                    result =  await this._updateLayoutBuffer();
+                }
+                if (result) {
+                    this.current += 1;
+                    this._setStepDesp();
+                }
+            })();
         }
-        this.current += 1;
+
     }
 
     extend() {
@@ -1327,20 +1301,39 @@ export class LayoutStepSettingComponent implements OnInit {
     }
 
     done(): void {
-        (async() => {
-            const lay = await this.createLayout();
-            if (lay && lay.Status === 200) {
-                this._configSuccess = '布局配置成功';
-                this.current += 1;
+        (async () => {
+            let result;
+            if (!this._isEditData) {
+                result = await this.createLayout();
             } else {
-                this.message.create('error', lay.Message);
+                result = await this.updateLayout();
             }
-            
+            if (result.isSuccess) {
+                this.current += 1;
+                this._setStepDesp();
+            } else {
+                this.message.create('error', result.message);
+            }
         })();
-        
     }
 
-    _saveLayoutBuffer() {
+    _setStepDesp() {
+        if (this.current === 0) {
+            this._selectedModuleText = `正在为模块【${this._selectedModuleText}】创建布局`;
+            this._configName = '';
+            this._configSuccess = '';
+        } else if (this.current === 1) {
+            this._selectedModuleText = `布局创建完成`;
+            this._configName = `正在编辑模块【${this._configName}】布局区域`;
+            this._configSuccess = '';
+        } else if (this.current === 2) {
+            this._configName = `区域编辑完成`;
+            this._configSuccess = '布局配置成功';
+        }
+    }
+
+    async _saveLayoutBuffer() {
+        let result = false;
         this._isShowPreview = true;
         // 保存布局
         const loadingMessage = this.message.loading('正在执行中...', { nzDuration: 0 }).messageId;
@@ -1355,37 +1348,57 @@ export class LayoutStepSettingComponent implements OnInit {
         const metadata = JSON.stringify(copyLayout);
         const configName = this._configName;
         // 配置信息保存入数据库
-
         const configData = {
-            ModuleId: moduleID,
-            Template: layoutName,
-            Name: configName,
-            Metadata: metadata,
-            Enabled: true,
-            UserId: this._currentUser.Id,
-            TemplateImg: img,
-            BufferId: this._bufferId,
-            Description: this._configDesc
+            moduleId: moduleID,
+            template: layoutName,
+            name: configName,
+            metadata: metadata,
+            enabled: '0',
+            UserId: this._currentUser.currentAccountId,
+            templateImg: img,
+            bufferId: this._bufferId,
+            description: this._configDesc
         };
-        (async () => {
-            const layout = await this.addSettingLayoutBuffer(configData);
-            if (layout.Data && layout.Status === 200) {
-                this._selectedLayoutId = layout.Data.Id;
-                for (let i = 0, len = blockDataList.length; i < len; i++) {
-                    blockDataList[i]['LayoutId'] = layout.Data.Id;
-                    blockDataList[i]['ParentId'] = moduleID;
-                    blockDataList[i]['Type'] = 'view';
-                    blockDataList[i]['UserId'] = this._currentUser.Id;
-                    blockDataList[i]['BufferId'] = this._bufferId;
-                    const block = await this.addBlockSettingBuffer(blockDataList[i]);
-                }
-                this.message.create('success', '布局保存成功');
-            } else {
-                this.message.create('error', layout.Message);
+        const layout = await this.addSettingLayoutBuffer(configData);
+        if (layout.data && layout.status === 200 && layout.isSuccess) {
+            this._selectedLayoutId = layout.data.Id;
+            for (let i = 0, len = blockDataList.length; i < len; i++) {
+                blockDataList[i]['layoutId'] = layout.data.Id;
+                blockDataList[i]['parentId'] = moduleID;
+                blockDataList[i]['type'] = 'view';
+                blockDataList[i]['userId'] = this._currentUser.currentAccountId;
+                blockDataList[i]['bufferId'] = this._bufferId;
+                blockDataList[i]['showTitle'] = '1';
+                const block = await this.addBlockSettingBuffer(blockDataList[i]);
             }
-            this.message.remove(loadingMessage);
+            this.message.create('success', '布局保存成功');
             this.loadLayout();
-        })();
+            result = true;
+        } else {
+            this.message.create('error', layout.message);
+        }
+        this.message.remove(loadingMessage);
+        return result;
+    }
+
+    async _updateLayoutBuffer() {
+        let res = false;
+        const params = {
+            name: this._configName,
+            description: this._configDesc,
+            Id: this._selectedLayoutId
+        };
+        const result = await this.updateLayoutBuffer(params);
+        if (result.isSuccess) {
+            // 跳转到布局页面
+            // this.previewLayoutData = ;
+            this.loadLayout();
+            res = true;
+        } else {
+            this.message.create('error', result.message);
+            res = false;
+        }
+        return res;
     }
 
     _saveBlockBuffer() {
@@ -1397,28 +1410,72 @@ export class LayoutStepSettingComponent implements OnInit {
         const moduleID = this._funcValue[this._funcValue.length - 1];
         (async () => {
             for (let i = 0, len = blockDataList.length; i < len; i++) {
-                blockDataList[i]['LayoutId'] = this._selectedLayoutId;
-                blockDataList[i]['ParentId'] = moduleID;
+                blockDataList[i]['layoutId'] = this._selectedLayoutId;
+                blockDataList[i]['parentId'] = moduleID;
                 blockDataList[i]['type'] = 'view';
                 const block = await this.addBlockSettingBuffer(blockDataList[i]);
-                if (block.Status === 200) {
+                if (block.status === 200 && block.isSuccess) {
                     this._isShowExtend = true;
-                    this.message.create('success', `区域 [${block.Data.Title}] 保存成功`);
+                    this.message.create('success', `区域 [${block.data.title}] 保存成功`);
                 } else {
-                    this.message.create('error', block.Message);
+                    this.message.create('error', block.message);
                 }
             }
             this.loadLayout();
         })();
     }
 
-    _previewLayout() {
+    // 获取模块信息
+    async getModuleData(params) {
+        return this.apiService.getProj('common/ComProjectModule', params).toPromise();
+    }
+
+    // 获取布局设置列表
+    async getLayoutConfigData(params) {
+        return this.apiService.getProj('common/LayoutSettingBuffer', params).toPromise();
+    }
+
+    async getBlockConfigData(layoutId) {
+        return this.apiService.getProj('common/BlockSettingBuffer', { LayoutId: layoutId }).toPromise();
+    }
+
+    async addSettingLayoutBuffer(data) {
+        return this.apiService.post('common/LayoutSettingBuffer', data).toPromise();
 
     }
 
-    _saveLayout() {
-
+    async addBlockSettingBuffer(data) {
+        return this.apiService.post('common/BlockSettingBuffer', data).toPromise();
     }
-    
+
+    async createLayout() {
+        return this.apiService.post('common/CreateLayout', { BufferId: this._bufferId }).toPromise();
+    }
+
+    async updateLayoutBuffer(data) {
+        return this.apiService.put('common/LayoutSettingBuffer', data).toPromise();
+    }
+
+    async updateBlockBuffer(data) {
+        return this.apiService.put('common/BlockSettingBuffer', data).toPromise();
+    }
+
+    async updateLayout() {
+        return this.apiService.put('common/UpdateLayout', { LayoutId: this._selectedLayoutId }).toPromise();
+    }
+
+    async getBlockSettingBuffer() {
+        return this.apiService.get('common/BlockSettingBuffer', { bufferId: this._bufferId }).toPromise();
+    }
+
+    private uuID(w) {
+        let s = '';
+        const str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        for (let i = 0; i < w; i++) {
+            s += str.charAt(Math.round(Math.random() * (str.length - 1)));
+        }
+        return s;
+    }
+
 
 }

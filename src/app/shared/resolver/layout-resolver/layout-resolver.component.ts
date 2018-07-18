@@ -14,6 +14,7 @@ export class LayoutResolverComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    console.log(this.config);
     this._isRows = Array.isArray(this.config.rows);
   }
 
