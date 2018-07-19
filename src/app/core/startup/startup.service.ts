@@ -9,8 +9,8 @@ import { environment } from '@env/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { zip } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { I18NService } from '../i18n/i18n.service';
-import { SystemResource } from '../utility/system-resource';
+import { I18NService } from '@core/i18n/i18n.service';
+import { SystemResource } from '@core/utility/system-resource';
 
 /**
  * 用于应用启动时

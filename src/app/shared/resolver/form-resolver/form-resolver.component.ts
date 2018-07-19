@@ -4,8 +4,8 @@ import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
-import { CommonTools } from '../../../core/utility/common-tools';
-import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES } from './../../../core/relative-Service/BsnTableStatus';
+import { CommonTools } from '@core/utility/common-tools';
+import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
 import { Observable } from 'rxjs';
 import { Observer } from 'rxjs';
 

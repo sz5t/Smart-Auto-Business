@@ -1,4 +1,4 @@
-import { TypeOperationComponent } from './../../../../routes/system/data-manager/type-operation.component';
+import { TypeOperationComponent } from '../../../../routes/system/data-manager/type-operation.component';
 import { Component, OnInit, ViewChild, ComponentRef, ViewContainerRef, TemplateRef, ComponentFactoryResolver, AfterViewInit, Input, Type, OnChanges } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';

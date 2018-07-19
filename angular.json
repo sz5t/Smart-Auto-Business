@@ -93,7 +93,8 @@
               "node_modules/@antv/data-set/dist/data-set.min.js",
               "node_modules/@antv/g2-plugin-slider/dist/g2-plugin-slider.min.js",
               "src/assets/vender/code-edit/lib/codemirror.js",
-              "src/assets/vender/code-edit/mode/sql/sql.js"
+              "src/assets/vender/code-edit/mode/sql/sql.js",
+              "src/assets/vender/anychart/zh-cn.js"
             ],
             "styles": [
               "src/styles.less"

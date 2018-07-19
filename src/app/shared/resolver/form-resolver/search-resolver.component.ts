@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ApiService } from '../../../core/utility/api-service';
+import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { RelativeService, RelativeResolver } from '../../../core/relative-Service/relative-service';
-import { CommonTools } from '../../../core/utility/common-tools';
-import { APIResource } from '../../../core/utility/api-resource';
+import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
+import { CommonTools } from '@core/utility/common-tools';
+import { APIResource } from '@core/utility/api-resource';
 import { concat } from 'rxjs';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 

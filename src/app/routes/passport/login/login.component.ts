@@ -1,4 +1,4 @@
-import { SysResource } from './../../../core/utility/sys-resource';
+import { SysResource } from '@core/utility/sys-resource';
 
 import { SettingsService, TitleService, MenuService } from '@delon/theme';
 import { Component, OnDestroy, Inject, Optional, OnInit } from '@angular/core';

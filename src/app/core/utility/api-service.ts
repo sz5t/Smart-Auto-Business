@@ -1,12 +1,12 @@
-import { CommonTools } from './common-tools';
+import { CommonTools } from '@core/utility/common-tools';
 import { HttpHeaders, HttpParams, HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { APIResource } from './api-resource';
+import { APIResource } from '@core/utility/api-resource';
 import { _HttpClient } from '@delon/theme';
 import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
-import { SystemResource } from '../../core/utility/system-resource';
+import { SystemResource } from '@core/utility/system-resource';
 
 @Injectable()
 export class ApiService {

@@ -9,7 +9,7 @@ import { ApiService } from '@core/utility/api-service';
 import { APIResource } from '@core/utility/api-resource';
 import { NzMessageService, NzDropdownService, NzDropdownContextComponent } from 'ng-zorro-antd';
 import { TabsResolverComponent } from '@shared/resolver/tabs-resolver/tabs-resolver.component';
-import { AppConfigPack_Block } from 'app/model/APIModel/AppConfigPack';
+import { AppConfigPack_Block } from '../../../../model/APIModel/AppConfigPack';
 const component: { [type: string]: Type<any> } = {
     bsnDataTable: BsnDataTableComponent,
     form_view: FormResolverComponent,

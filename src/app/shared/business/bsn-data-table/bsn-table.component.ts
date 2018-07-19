@@ -1,17 +1,17 @@
 import { Observable } from 'rxjs';
-import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE } from './../../../core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE } from '@core/relative-Service/BsnTableStatus';
 
 import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
 import { ComponentSettingResolverComponent } from '@shared/resolver/component-resolver/component-setting-resolver.component';
-import { LayoutResolverComponent } from './../../resolver/layout-resolver/layout-resolver.component';
-import { TypeOperationComponent } from './../../../routes/system/data-manager/type-operation.component';
+import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
+import { TypeOperationComponent } from '../../../routes/system/data-manager/type-operation.component';
 import { Component, OnInit, Input, OnDestroy, Type, Inject } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { CommonTools } from '../../../core/utility/common-tools';
-import { ApiService } from '../../../core/utility/api-service';
-import { APIResource } from '../../../core/utility/api-resource';
-import { RelativeService, RelativeResolver, BsnTableRelativeMessageService } from '../../../core/relative-Service/relative-service';
+import { CommonTools } from '@core/utility/common-tools';
+import { ApiService } from '@core/utility/api-service';
+import { APIResource } from '@core/utility/api-resource';
+import { RelativeService, RelativeResolver, BsnTableRelativeMessageService } from '@core/relative-Service/relative-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { Observer } from 'rxjs';
 import { Subscription } from 'rxjs';
@@ -942,8 +942,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 //         this.dataList.splice(this.dataList.indexOf(d), 1);
                 //     });
                 // }
-                
-                debugger;
                 if (serverData.length > 0) {
                     this.executeCheckedAction(serverData, option);
                 }

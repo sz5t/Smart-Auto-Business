@@ -1,13 +1,13 @@
 
-import { BsnTableRelativeMessageService } from './core/relative-Service/relative-service';
+import { BsnTableRelativeMessageService } from '@core/relative-Service/relative-service';
 import { NgModule, LOCALE_ID, APP_INITIALIZER, Injector } from '@angular/core';
 import { HttpClient, HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { DelonModule } from './delon.module';
-import { CoreModule } from './core/core.module';
-import { SharedModule } from './shared/shared.module';
+import { CoreModule } from '@core/core.module';
+import { SharedModule } from '@shared/shared.module';
 import { AppComponent } from './app.component';
 import { RoutesModule } from './routes/routes.module';
 import { LayoutModule } from './layout/layout.module';
@@ -28,7 +28,7 @@ import { UEditorModule } from 'ngx-ueditor';
 import { NgxTinymceModule } from 'ngx-tinymce';
 import { ApiService } from '@core/utility/api-service';
 import { RelativeService, RelativeResolver, BsnToolbarRelativeMessage } from '@core/relative-Service/relative-service';
-import { BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_MODES } from './core/relative-Service/BsnTableStatus';
+import { BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_MODES } from '@core/relative-Service/BsnTableStatus';
 import { Subject } from 'rxjs';
 // JSON-Schema form
 // import { JsonSchemaModule } from '@shared/json-schema/json-schema.module';

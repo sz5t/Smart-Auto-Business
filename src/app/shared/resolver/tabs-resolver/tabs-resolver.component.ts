@@ -1,5 +1,5 @@
 import { NzMessageService } from 'ng-zorro-antd';
-import { APIResource } from './../../../core/utility/api-resource';
+import { APIResource } from '@core/utility/api-resource';
 import { ApiService } from '@core/utility/api-service';
 import { Component, Input, OnInit } from '@angular/core';
 import { _HttpClient } from '@delon/theme';

@@ -1,12 +1,12 @@
-import { BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE } from './../../../core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE } from '@core/relative-Service/BsnTableStatus';
 import { Component, OnInit, Input, OnDestroy, Inject } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
-import { ApiService } from '../../../core/utility/api-service';
+import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzTreeNode } from 'ng-zorro-antd';
-import { RelativeService, RelativeResolver } from '../../../core/relative-Service/relative-service';
-import { APIResource } from '../../../core/utility/api-resource';
+import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
+import { APIResource } from '@core/utility/api-resource';
 import { CnComponentBase } from '@shared/components/cn-component-base';
-import { CommonTools } from '../../../core/utility/common-tools';
+import { CommonTools } from '@core/utility/common-tools';
 import { Observer ,  Observable ,  Subscription } from 'rxjs';
 @Component({
     selector: 'cn-bsn-tree',

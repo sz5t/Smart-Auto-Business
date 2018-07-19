@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild, Input, OnDestroy, Type, Inject } from '@angular/core';
-import { ApiService } from '../../../core/utility/api-service';
-import { CommonTools } from '../../../core/utility/common-tools';
+import { ApiService } from '@core/utility/api-service';
+import { CommonTools } from '@core/utility/common-tools';
 import { NzModalService, NzMessageService } from 'ng-zorro-antd';
 import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
 import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
-import { BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE_MODES } from '../../../core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
 import { Observable, Observer, Subscription } from 'rxjs';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,

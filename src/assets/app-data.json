@@ -84,7 +84,17 @@
                         "text": "测试页面",
                         "link": "/test/list",
                         "i18n": ""
-                      }
+                    },
+                    {
+                        "text": "甘特图",
+                        "link": "/test/gantt",
+                        "i18n": ""
+                    },
+                    {
+                        "text": "计划审计图",
+                        "link": "/test/pert",
+                        "i18n": ""
+                    }
                   ]
                 }
             ]

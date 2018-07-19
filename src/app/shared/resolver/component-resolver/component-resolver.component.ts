@@ -1,9 +1,9 @@
-import { LineChartComponent } from './../../chart/line-chart/line-chart.component';
-import { BsnStepComponent } from './../../business/bsn-step/bsn-step.component';
-import { BsnTreeTableComponent } from './../../business/bsn-tree-table/bsn-tree-table.component';
-import { BsnAsyncTreeComponent } from './../../business/bsn-async-tree/bsn-async-tree.component';
+import { LineChartComponent } from '@shared/chart/line-chart/line-chart.component';
+import { BsnStepComponent } from '@shared/business/bsn-step/bsn-step.component';
+import { BsnTreeTableComponent } from '@shared/business/bsn-tree-table/bsn-tree-table.component';
+import { BsnAsyncTreeComponent } from '@shared/business/bsn-async-tree/bsn-async-tree.component';
 import { SearchResolverComponent } from '@shared/resolver/form-resolver/search-resolver.component';
-import { BsnTableComponent } from './../../business/bsn-data-table/bsn-table.component';
+import { BsnTableComponent } from '@shared/business/bsn-data-table/bsn-table.component';
 import {
   Component, ComponentFactoryResolver, ComponentRef, Input, OnChanges, OnInit, Type, ViewChild,
   ViewContainerRef,

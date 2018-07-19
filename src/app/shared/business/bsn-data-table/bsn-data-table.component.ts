@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { CommonTools } from '../../../core/utility/common-tools';
-import { ApiService } from '../../../core/utility/api-service';
-import { APIResource } from '../../../core/utility/api-resource';
-import { RelativeService, RelativeResolver } from '../../../core/relative-Service/relative-service';
+import { CommonTools } from '@core/utility/common-tools';
+import { ApiService } from '@core/utility/api-service';
+import { APIResource } from '@core/utility/api-resource';
+import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
 import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 

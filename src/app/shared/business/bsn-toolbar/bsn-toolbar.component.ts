@@ -1,6 +1,6 @@
-import { BsnComponentMessage } from './../../../core/relative-Service/BsnTableStatus';
+import { BsnComponentMessage } from '@core/relative-Service/BsnTableStatus';
 import { Observable ,  Observer } from 'rxjs';
-import { BsnToolbarRelativeMessage } from './../../../core/relative-Service/relative-service';
+import { BsnToolbarRelativeMessage } from '@core/relative-Service/relative-service';
 import { BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODES } from '@core/relative-Service/BsnTableStatus';
 import { Component, OnInit, Input, OnDestroy, Type, Inject } from '@angular/core';
 import { BsnTableRelativeMessageService } from '@core/relative-Service/relative-service';

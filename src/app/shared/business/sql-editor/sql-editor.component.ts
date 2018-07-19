@@ -1,4 +1,4 @@
-import { CommonTools } from '../../../core/utility/common-tools';
+import { CommonTools } from '@core/utility/common-tools';
 import { Component, OnInit, ViewChild, Input, OnDestroy } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';

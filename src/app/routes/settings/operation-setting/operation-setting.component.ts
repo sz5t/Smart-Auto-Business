@@ -1,4 +1,4 @@
-import { APIResource } from './../../../core/utility/api-resource';
+import { APIResource } from '@core/utility/api-resource';
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzDropdownContextComponent, NzDropdownService, NzMenuItemDirective } from 'ng-zorro-antd';

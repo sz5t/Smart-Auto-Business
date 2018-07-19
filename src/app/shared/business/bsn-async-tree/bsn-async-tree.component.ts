@@ -1,11 +1,11 @@
-import { CommonTools } from './../../../core/utility/common-tools';
+import { CommonTools } from '@core/utility/common-tools';
 import { Component, OnInit, ViewChild, OnDestroy, Input, Inject } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
-import { RelativeService, RelativeResolver } from '../../../core/relative-Service/relative-service';
-import { ApiService } from '../../../core/utility/api-service';
+import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
+import { ApiService } from '@core/utility/api-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
-import { APIResource } from '../../../core/utility/api-resource';
+import { APIResource } from '@core/utility/api-resource';
 import { NzTreeNode } from 'ng-zorro-antd';
 import { Subscription ,  Observable ,  Observer } from 'rxjs';
 import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';

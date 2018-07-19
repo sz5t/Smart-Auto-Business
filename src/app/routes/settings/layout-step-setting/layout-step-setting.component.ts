@@ -1,5 +1,5 @@
 import { _HttpClient } from '@delon/theme';
-import { CommonTools } from './../../../core/utility/common-tools';
+import { CommonTools } from '@core/utility/common-tools';
 import { CacheService } from '@delon/cache';
 import { Component, OnInit, LOCALE_ID } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';

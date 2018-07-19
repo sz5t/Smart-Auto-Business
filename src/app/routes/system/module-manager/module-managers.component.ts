@@ -1,4 +1,4 @@
-import { CnComponentBase } from './../../../shared/components/cn-component-base';
+import { CnComponentBase } from '@shared/components/cn-component-base';
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';

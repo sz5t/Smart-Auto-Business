@@ -1,4 +1,4 @@
-import { ApiService } from './../../../core/utility/api-service';
+import { ApiService } from '@core/utility/api-service';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
 import { ActivatedRoute } from '@angular/router';
