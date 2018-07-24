@@ -27,6 +27,7 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
   @Input() config;
   @Input() blockId;
   @Input() layoutId;
+  @Input() bufferId;
   _serverLayoutId;
   _dataStruct = {
     bsnDataTable: {
@@ -529,7 +530,7 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
   }
 
   async ngAfterViewInit() {
-    this._loadComponent();
+    // this._loadComponent();
   }
 
   ngOnChanges() {
@@ -548,12 +549,12 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
       // 保存选中组件数据
       // BlockId,component,type,Metadata,Title,ParentId
       this._currentComponentData = {
-        BlockId: this.blockId,
-        Component: this.config.component,
-        Type: this.config.type,
-        Title: this.config.name,
-        ParentId: this.layoutId,
-        Metadata: JSON.stringify(this.config)
+        blockId: this.blockId,
+        component: this.config.component,
+        type: this.config.type,
+        title: this.config.name,
+        layoutId: this.layoutId,
+        metadata: JSON.stringify(this.config)
       };
       this._saveComponent(this._currentComponentData, () => {
         // 渲染组件
@@ -565,11 +566,12 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
   private _loadComponent() {
     // 获取组件区域数据
     const params = {
-      BlockId: this.blockId,     // 区域ID
-      ParentId: this.layoutId // 布局ID
+      bufferId: this.bufferId,
+      blockId: this.blockId,     // 区域ID
+      layoutId: this.layoutId // 布局ID
     };
-    this._http.get(APIResource.ViewSetting, params).subscribe(result => {
-      if (result && result.Status === 200 && result.Data.length > 0) {
+    this._http.get('common/ViewSettingBuffer', params).subscribe(result => {
+      if (result && result.status === 200 && result.isSuccess && result.data.length > 0) {
         const d = {};
         d['config'] = JSON.parse(result.Data[0].Metadata);
         d['layoutId'] = result.Data[0].ParentId;
@@ -601,27 +603,23 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
   private _saveComponent(data, callback) {
     if (this._serverLayoutId) {
       data['Id'] = this._serverLayoutId;
-      this._http.putProj(APIResource.ViewSetting, data).subscribe(result => {
-        if (result && result.Status === 200) {
-          if (result && result.Status === 200) {
-            this.message.success('保存成功');
-            callback();
-          } else {
-            this.message.warning(`出现异常: ${result.Message}`);
-          }
+      this._http.put('common/ViewSettingBuffer', data).subscribe(result => {
+        if (result.status === 200 && result.isSuccess) {
+          this.message.success('保存成功');
+          callback();
+        } else {
+          this.message.warning(`出现异常: ${result.message}`);
         }
       }, error => {
         this.message.error(`出现错误：${error}`);
       });
     } else {
-      this._http.postProj(APIResource.ViewSetting, data).subscribe(result => {
-        if (result && result.Status === 200) {
-          if (result && result.Status === 200) {
-            this.message.success('保存成功');
-            callback();
-          } else {
-            this.message.warning(`出现异常: ${result.Message}`);
-          }
+      this._http.postProj('common/ViewSettingBuffer', data).subscribe(result => {
+        if (result.status === 200 && result.isSuccess) {
+          this.message.success('保存成功');
+          callback();
+        } else {
+          this.message.warning(`出现异常: ${result.message}`);
         }
       }, error => {
         this.message.error(`出现错误：${error}`);

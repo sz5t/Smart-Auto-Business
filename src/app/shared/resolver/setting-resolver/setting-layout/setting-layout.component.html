@@ -2,7 +2,7 @@
     <div nz-row [nzGutter]="8" *ngFor="let row of config.rows">
       <div nz-col *ngFor="let c of row.row.cols" [nzSpan]="c.span" [nzSm]="c.size.nzSm" [nzXs]="c.size.nzXs" [nzMd]="c.size.nzMd"
         [nzLg]="c.size.nzLg" [nzXl]="c.size.nzXl">
-        <cn-setting-layout [layoutId]="layoutId" [config]="c"></cn-setting-layout>
+        <cn-setting-layout [bufferId]="bufferId" [layoutId]="layoutId" [config]="c"></cn-setting-layout>
       </div>
     </div>
   </ng-container>
@@ -16,12 +16,13 @@
             </ng-template>
             <ng-container *ngFor="let cfg of tab.viewCfg">
               <cn-setting-layout
+                [bufferId]="bufferId"
                 [layoutId]="layoutId"
                 *ngIf="cfg.tabs" [config]="cfg"></cn-setting-layout>
               <cn-setting-layout-editor
                 [blockId]="cfg.id"
                 [layoutId]="layoutId"
-                *ngIf="!cfg.tabs" [config]="cfg"></cn-setting-layout-editor>
+                *ngIf="!cfg.tabs" [config]="cfg" [bufferId]="bufferId"></cn-setting-layout-editor>
             </ng-container>
             <!-- <cn-layout-resolver [config]="tab.viewCfg"></cn-layout-resolver>-->
           </nz-tab>
@@ -34,8 +35,8 @@
   <nz-card *ngIf="!config.rows && !config.tabs" nzTitle="{{config.title}}" [nzExtra]="extraTemplate">
       <cn-setting-layout-editor 
       [layoutId]="layoutId" 
-      [blockId]="config.id" 
-      [area]="config.area"
+      [blockId]="config.id"
+      [bufferId]="bufferId"
       [config]="config"></cn-setting-layout-editor>
       <ng-template #extraTemplate>
         <nz-dropdown>

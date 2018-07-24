@@ -6,38 +6,38 @@ export class APIResource {
    * 	组织机构树的节点
    * @type {string}
    */
-  public static OrgNode: string = 'SinoForce.User.OrgNode';
+  public static OrgNode = 'SinoForce.User.OrgNode';
   /**
    * 资源类型
    * @type {string}
    */
-  public static Resource_Type: string = 'SinoForce.SysData.ResourceType';
+  public static Resource_Type = 'SinoForce.SysData.ResourceType';
   /**
    * 平台通用数据分类
    * @type {string}
    */
-  public static SysDataCategory: string = 'SinoForce.SysData.SysDataCategory';
+  public static SysDataCategory = 'SinoForce.SysData.SysDataCategory';
   public static DataCategory = 'Sinoforce.AppData.DataCategory';
   /**
    * 	NULL
    * @type {string}
    */
-  public static UserStatusLog: string = 'SinoForce.User.UserStatusLog';
+  public static UserStatusLog = 'SinoForce.User.UserStatusLog';
   /**
    * 排序字段
    * @type {string}
    */
-  public static EntitySort: string = 'SinoForce.SysData.EntitySort';	//
+  public static EntitySort = 'SinoForce.SysData.EntitySort';	//
   /**
    * 应用访问许可集
    * @type {string}
    */
-  public static AppPermission: string = 'AppPermission';	//
+  public static AppPermission = 'AppPermission';	//
   /**
    * 平台通用数据分类连接关系
    * @type {string}
    */
-  public static SysDataCategoryLink: string = 'SinoForce.SysData.SysDataCategoryLink';	//
+  public static SysDataCategoryLink = 'SinoForce.SysData.SysDataCategoryLink';	//
   public static DataCategoryLink = 'SinoForce.AppData.DataCategoryLink';	//
   public static ShowCase = 'SinoForce.AppData.ShowCase';
 
@@ -45,79 +45,79 @@ export class APIResource {
    * 资源访问令牌
    * @type {string}
    */
-  public static AccessToken: string = 'SinoForce.User.AccessToken';	//
+  public static AccessToken = 'SinoForce.User.AccessToken';	//
   /**
    * 组织机构与用户关系表
    * @type {string}
    */
-  public static OrgUserLink: string = 'SinoForce.User.OrgUserLink';	//
+  public static OrgUserLink = 'SinoForce.User.OrgUserLink';	//
   /**
    * 应用配置包
    * @type {string}
    */
-  public static AppConfigPack: string = 'SinoForce.SysData.AppConfigPack';	//
+  public static AppConfigPack = 'SinoForce.SysData.AppConfigPack';	//
   /**
    * 用户信息
    * @type {string}
    */
   // 新建资源类型	新建资源类型
-  public static AppUser: string = 'SinoForce.User.AppUser';	//
+  public static AppUser = 'SinoForce.User.AppUser';	//
   /**
    * 在线用户信息
    * @type {string}
    */
-  public static OnlineUser: string = 'SinoForce.User.OnlineUser';	//
+  public static OnlineUser = 'SinoForce.User.OnlineUser';	//
 
   /**
    *
    * @type {string}
    */
-  public static DynamicResExtend: string = 'SinoForce.SysData.DynamicResExtend';
+  public static DynamicResExtend = 'SinoForce.SysData.DynamicResExtend';
   /**
    * 应用程序模板描述信息
    * @type {string}
    */
-  public static AppTemplate: string = 'SinoForce.SysData.AppTemplate';	//
+  public static AppTemplate = 'SinoForce.SysData.AppTemplate';	//
   /**
    * SQL脚本、存储过程、函数等数据库对象的完整配置
    * @type {string}
    */
-  public static DbCommandConfig: string = 'SinoForce.SysData.DbCommandConfig';	//
+  public static DbCommandConfig = 'SinoForce.SysData.DbCommandConfig';	//
   /**
    * 在线用户信息视图
    * @type {string}
    */
-  public static OnlineUserInfo: string = 'SinoForce.User.OnlineUserInfo';	//
+  public static OnlineUserInfo = 'SinoForce.User.OnlineUserInfo';	//
   /**
    * 一般非结构化数据
    * @type {string}
    */
-  public static UnstructData: string = 'SinoForce.SysData.UnstructData';	//
+  public static UnstructData = 'SinoForce.SysData.UnstructData';	//
   /**
    * 角色访问权限信息
    * @type {string}
    */
-  public static PrivRole: string = 'SinoForce.User.PrivRole';	//
+  public static PrivRole = 'SinoForce.User.PrivRole';	//
   /**
    * 多对多关系的中间表
    * @type {string}
    */
-  public static EntituyRelation: string = 'SinoForce.SysData.EntityRelation';
+  public static EntituyRelation = 'SinoForce.SysData.EntityRelation';
   /**
    *
    * @type {string}
    */
-  public static AppProject: string = 'SinoForce.SysData.AppProject';	// 应用项目
+  public static AppProject = 'SinoForce.SysData.AppProject';	// 应用项目
   /**
    * 动态资源模块
    * @type {string}
    */
-  public static DynamicResModule: string = 'SinoForce.SysData.DynamicResModule';
+  public static DynamicResModule = 'SinoForce.SysData.DynamicResModule';
   /**
    * 关联表
    * @type {string}
    */
-  public static EntityRelevance: string = 'SinoForce.SysData.EntityRelevance';
+  public static EntityRelevance = 'SinoForce.SysData.EntityRelevance';
   /**
    * 平台客户信息
    * @type {string}
@@ -200,7 +200,7 @@ export class APIResource {
    * @type {string}
    */
 
-  //public static SettingUrl = 'http://192.168.1.8:8081/api.cfg/';
+  // public static SettingUrl = 'http://192.168.1.8:8081/api.cfg/';
   public static SettingUrl = 'http://192.168.1.252:8081/api.cfg/';
 
   /**

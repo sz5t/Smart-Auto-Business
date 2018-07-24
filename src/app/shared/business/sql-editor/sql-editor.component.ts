@@ -61,7 +61,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
     _selectedRow;
     _scriptName;
     loading = false;
-    scriptModelList = [{ value: '1', name: '配置平台' }, { value: '2', name: '应用平台' }, { value: '3', name: '通用' }];
+    scriptModelList = [{ value: 1, name: '配置平台' }, { value: 2, name: '应用平台' }, { value: 3, name: '通用' }];
     scriptModel;
     isModelloading = false;
     _funcOptions;
@@ -227,12 +227,12 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
 
     private async addSql(sql) {
         const params = {
-            isAnalysisParameters: '1',
+            isAnalysisParameters: 1,
             sqlScriptContent: sql,
             sqlScriptCaption: this._scriptName,
             sqlScriptResourceName: this._resourceName,
-            isEnabled: '1',
-            isNeedDeploy: '1',
+            isEnabled: 1,
+            isNeedDeploy: 1,
             belongPlatformType: this.scriptModel
         };
         return this._http.post(`common/ComSqlScript`, [params]).toPromise();
@@ -273,10 +273,10 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             sqlScriptContent: sql,
             sqlScriptCaption: this._scriptName,
             sqlScriptResourceName: this._resourceName,
-            isEnabled: '1',
-            isNeedDeploy: '1',
+            isEnabled: 1,
+            isNeedDeploy: 1,
             belongPlatformType: this.scriptModel,
-            isAnalysisParameters: '1'
+            isAnalysisParameters: 1
         };
         return this._http.put(`common/ComSqlScript`, params).toPromise();
     }

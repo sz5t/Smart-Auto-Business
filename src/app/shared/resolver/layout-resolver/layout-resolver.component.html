@@ -4,8 +4,8 @@
     <div nz-col *ngFor="let c of row.row.cols" [nzSpan]="c.span" [nzSm]="c.size.nzSm" [nzXs]="c.size.nzXs" [nzMd]="c.size.nzMd"
       [nzLg]="c.size.nzLg" [nzXl]="c.size.nzXl">
       <cn-layout-resolver [layoutId]="layoutId" [config]="c"></cn-layout-resolver>
-      <nz-card nzTitle="cardTitle"  [nzBodyStyle]="{padding: '12px'}">
-        <ng-template #cardTitle *ngIf="c.title">
+      <nz-card [nzTitle]="cardTitle"  [nzBodyStyle]="{padding: '12px'}">
+        <ng-template #cardTitle>
             <i class="{{c.icon}}"></i>
           {{c.title}}
         </ng-template>

@@ -18,7 +18,7 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
     @Input() config;
     @Input() blockId;
     @Input() layoutId;
-    @Input() area;
+    @Input() bufferId;
     _serverLayoutId;
     menuConfig = [
         {
@@ -33,18 +33,28 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
                             {
                                 id: `tab_${this.uuID(6)}`,
                                 name: `Tab 1`,
-                                config: {}
+                                config: []
                             }
                         ]
                     }
                 },
                 {
                     label: '分步页',
-                    value: {}
+                    value: {
+                        type: 'steps',
+                        config: [
+                            
+                        ]
+                    }
                 },
                 {
                     label: '折叠面板',
-                    value: {}
+                    value: {
+                        type: 'accordion',
+                        config: [
+
+                        ]
+                    }
                 }
             ]
         }
@@ -54,13 +64,14 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
     _currentLyoutData;
     private dropdown: NzDropdownContextComponent;
     constructor(
-        private _http: ApiService,
+        private apiService: ApiService,
         private message: NzMessageService,
         private resolver: ComponentFactoryResolver,
         private nzDropdownService: NzDropdownService
     ) { }
 
     ngOnInit() {
+        
     }
 
     contextMenu($event: MouseEvent, template: TemplateRef<void>): void {
@@ -69,30 +80,96 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
 
     async ngAfterViewInit() {
         // 获取组件区域数据
-        /*
         const params = {
-            BlockId: this.blockId,     // 区域ID
-            // TagB: '',               // 组件类型
-            LayoutId: this.layoutId // 布局ID
+            // parentId: this.blockId,     // 区域ID
+            bufferId: this.bufferId,    // 缓存ID
+            layoutId: this.layoutId,     // 布局ID
+            _recursive: true,
+            _deep: -1
         };
-        this._http.get(APIResource.AppConfigPack, params).subscribe(result => {
-            if (result && result.Status === 200) {
-                result.Data.forEach(data => {
-                    const comp = data.TagB.substring(data.TagB.lastIndexOf('.') + 1, data.TagB.length);
-                    if (comp === 'tabs') {
-                        const d = {};
-                        d['config'] = JSON.parse(data.Metadata);
-                        d['dataList'] = [];
-                        d['component'] = comp;
-                        this.createBsnComponent(d);
-                    } else {
-                        // this.createBsnComponent(this._dataStruct[component]);
-                    }
 
-                    this._serverLayoutId = data.Id;
+        (async() => {
+            const blockTypeData = await this.getBlockTypeByBufferId(this.blockId, params);
+            if (blockTypeData.isSuccess && blockTypeData.data.length > 0) {
+                // 渲染结构布局， tabs/steps/accordion
+                blockTypeData.data.forEach(blockType => {
+                    this.buildTypeLayout(blockType);
                 });
             }
-        }); */
+        })();
+        // this.apiService.get('common/BlockSettingBuffer', params).subscribe(result => {
+        //     if (result && result.status === 200 && result.isSuccess) {
+        //         result.data.forEach(data => {
+        //             const comp = data.type;
+        //             if (comp === 'tabs') {
+        //                 const d = {};
+        //                 d['config'] = JSON.parse(data.metadata);
+        //                 d['dataList'] = [];
+        //                 d['component'] = comp;
+        //                 this.createBsnComponent(d);
+        //             } else {
+        //                 // this.createBsnComponent(this._dataStruct[component]);
+        //             }
+
+        //             this._serverLayoutId = data.Id;
+        //         });
+        //     }
+        // }); 
+    }
+
+    buildTabsLayoutData (blockType) {
+        const tabs = [];
+        blockType.children.forEach(element => {
+            const tab = {};
+            tab['id'] = element.Id;
+            tab['name'] = element.title;
+            tab['config'] = [];
+
+            tabs.push(tab);
+        });
+        return tabs;
+    }
+
+    buildStepsLayoutData(blockType) {
+        return null;
+    }
+
+    buildAccordionLayoutData(blockType) {
+        return null;
+    }
+
+    buildTypeLayoutData(blockType) {
+        if (blockType.type === 'tabs') {
+            return this.buildTabsLayoutData(blockType);
+        } else if (blockType.type === 'steps') {
+            return this.buildStepsLayoutData(blockType);
+        } else if (blockType.type === 'accordion') {
+            return this.buildAccordionLayoutData(blockType);
+        }
+    }
+
+    buildTypeLayout(blockTypeData) {
+        if (this.checkBlockType(blockTypeData.type)) {
+            this.container.clear();
+            const comp = this.resolver.resolveComponentFactory<any>(component[blockTypeData.type]);
+            this.componentRef = this.container.createComponent(comp);
+            this.componentRef.instance.config = this.buildTypeLayoutData(blockTypeData);
+            this.componentRef.instance.dataList = this.config.dataList;
+            this.componentRef.instance.layoutId = this.layoutId;
+            this.componentRef.instance.blockId = this.blockId;
+            this.componentRef.instance.bufferId = this.bufferId;
+            this.componentRef.instance.tabsId = blockTypeData.Id;
+        }
+    }
+
+    checkBlockType(type) {
+        if (!component[type]) {
+            const supportedTypes = Object.keys(component).join(', ');
+            throw new Error(
+                `Trying to use an unsupported types (${type}).Supported types: ${supportedTypes}`
+            );
+        }
+        return true;
     }
 
     ngOnChanges() {
@@ -104,18 +181,39 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
             this.config = event;
         }
         if (this.config && this.config.type) {
+            this._currentLyoutData = {
+                layoutId: this.layoutId,
+                type: this.config.type,
+                parentId: this.blockId, // 当前布局区域ID
+                showTitle: 1,
+                bufferId: this.bufferId
+                // Metadata: JSON.stringify(this.config)
+            };
+            switch (this.config.type) {
+                case 'tabs':
+                this._currentLyoutData.title = '标签页';
+                break;
+                case 'steps':
+                this._currentLyoutData.title = '分步页';
+                break;
+                case 'accordion':
+                this._currentLyoutData.title = '折叠页';
+                break;
+            }
+
+            console.log('bubfferId', this.bufferId);
             // 保存选中组件数据
             //
             // 构建tabs/accordion/ 对象
             // 1、LayoutId, ParentId, Title, Icon, Type, showTitle
-            this._currentLyoutData = {
-                layoutId: this.layoutId,
-                type: this.config.type,
-                title: '标签页',
-                parentId: this.blockId, // 当前布局区域ID
-                showTitle: true
-                // Metadata: JSON.stringify(this.config)
-            };
+            // this._currentLyoutData = {
+            //     layoutId: this.layoutId,
+            //     type: this.config.type,
+            //     title: '标签页',
+            //     parentId: this.blockId, // 当前布局区域ID
+            //     showTitle: true
+            //     // Metadata: JSON.stringify(this.config)
+            // };
             // 构建tab 对象
             // console.log(this._currentLyoutData);
 
@@ -127,8 +225,9 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
                             layoutId: this.layoutId,
                             type: 'tab',
                             title: '标签 1',
-                            parentId: tabsResult.Data.Id, // 当前布局区域ID
-                            showTitle: true
+                            parentId: tabsResult.data.Id, // 当前布局区域ID
+                            showTitle: 1,
+                            bufferId: this.bufferId
                         };
                         const tabResult = await this.save(tabData);
                         if (tabResult.status === 200 && tabResult.isSuccess) {
@@ -141,15 +240,18 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
                             this.container.clear();
                             const comp = this.resolver.resolveComponentFactory<any>(component[this.config.type]);
                             this.componentRef = this.container.createComponent(comp);
+                            console.log(this.config.config);
                             this.componentRef.instance.config = this.config.config;
                             this.componentRef.instance.dataList = this.config.dataList;
                             this.componentRef.instance.layoutId = this.layoutId;
                             this.componentRef.instance.blockId = this.blockId;
-                            this.componentRef.instance.tabsId = tabsResult.Data.Id;
+                            this.componentRef.instance.bufferId = this.bufferId;
+                            this.componentRef.instance.tabsId = tabsResult.data.Id;
                         }
                     }
                 })();
             } else {
+               
 
             }
             
@@ -167,7 +269,7 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
 
             }
         } else {
-            this._http.post('common/BlockSetting', data).subscribe(result => {
+            this.apiService.post('common/BlockSettingBuffer', data).subscribe(result => {
                 if (result && result.status === 200 && result.isSuccess) {
                     this.message.success('保存成功');
                 } else {
@@ -180,57 +282,23 @@ export class SettingLayoutEditorComponent implements OnInit, AfterViewInit, OnCh
     }
 
     async save(body) {
-        return this._http.post('common/BlockSettingBuffer', body).toPromise();
+        return this.apiService.post('common/BlockSettingBuffer', body).toPromise();
     }
 
     async delete (param) {
-        return this._http.delete('common/BlockSettingBuffer', param).toPromise();
+        return this.apiService.delete('common/BlockSettingBuffer', param).toPromise();
     }
 
     async update (param) {
-        return this._http.put('common/BlockSettingBuffer', param).toPromise();
+        return this.apiService.put('common/BlockSettingBuffer', param).toPromise();
     }
-
-   /*  _saveComponent() {
-        const body: AppConfigPack_Block = {
-            ParentId: this.layoutId,
-            Name: this.blockId, // 组件名称
-            TagA: this.uuID(10),
-        };
-        if (this.config.component === 'tabs') {
-            body.Metadata = JSON.stringify(this.config.config);
-            body.TagB = `tabs.${this.config.component}`;
-        } else {
-            body.TagB = `component.${this.config.component}`;
-        }
-        if (this._serverLayoutId) {
-            body.Id = this._serverLayoutId;
-            this._http.putProj(APIResource.AppConfigPack, body, { Id: this._serverLayoutId }).subscribe(result => {
-                if (result && result.Status === 200) {
-                    this.message.success('保存成功');
-                } else {
-                    this.message.warning(`出现异常: ${result.Message}`);
-                }
-            }, error => {
-                this.message.error(`出现错误：${error}`);
-            }
-            );
-        } else {
-            this._http.postProj(APIResource.AppConfigPack, body).subscribe(result => {
-                if (result && result.Status === 200) {
-                    this.message.success('保存成功');
-                } else {
-                    this.message.warning(`出现异常: ${result.Message}`);
-                }
-            }, error => {
-                this.message.error(`出现错误：${error}`);
-            }
-            );
-        }
-    } */
 
     async getTabComponent(blockId) {
         
+    }
+
+    async getBlockTypeByBufferId(parentId, param) {
+        return this.apiService.get(`common/BlockSettingBuffer/${parentId}/BlockSettingBuffer`, param).toPromise();
     }
 
     uuID(w) {

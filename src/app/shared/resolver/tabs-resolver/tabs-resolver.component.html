@@ -6,7 +6,7 @@
             <i class="anticon anticon-close" (click)="closeTab(tab)"></i>
           </div>
     </ng-template>
-    <cn-component-setting-resolver [layoutId]="layoutId" [blockId]="tab.id" [config]="tab.config"></cn-component-setting-resolver>
+    <cn-component-setting-resolver [bufferId]="bufferId" [layoutId]="layoutId" [blockId]="tab.id" [config]="tab.config"></cn-component-setting-resolver>
   </nz-tab>
   <ng-template #extraContent>
     <i class="ant-tabs-new-tab anticon anticon-plus" (click)="showModal('new')"></i>

@@ -110,3 +110,59 @@ UPDATE a SET
 FROM BLOCK_SETTING AS a, BLOCK_SETTING_BUFFER AS f
 WHERE a.id = f.id AND a.layout_id = $LayoutId$
 -----------------------------------------------------------------------------
+
+
+-- VIEW_SETTING--------------------------------------------------------------
+INSERT INTO VIEW_SETTING
+(
+  TITLE,
+  COMPONENT,
+  LAYOUT_ID,
+  TYPE,
+  BLOCK_ID,
+  PARENT_ID,
+  METADATA,
+  ID,
+  CUSTOMER_ID,
+  PROJECT_ID,
+  CREATE_DATE,
+  LAST_UPDATE_DATE,
+  CREATE_USER_ID,
+  LAST_UPDATE_USER_ID
+)
+SELECT
+  TITLE,
+  COMPONENT,
+  LAYOUT_ID,
+  TYPE,
+  BLOCK_ID,
+  PARENT_ID,
+  METADATA,
+  ID,
+  CUSTOMER_ID,
+  PROJECT_ID,
+  CREATE_DATE,
+  LAST_UPDATE_DATE,
+  CREATE_USER_ID,
+  LAST_UPDATE_USER_ID
+FROM VIEW_SETTING_BUFFER WHERE BUFFER_ID = $BufferId$
+-----------------------------------------------------------------------------
+
+-- UPDATE VIEW_SETTING
+UPDATE a SET
+  a.ID = b.ID,
+  a.BLOCK_ID = b.BLOCK_ID,
+  a.COMPONENT = b.COMPONENT,
+  a.CREATE_USER_ID = b.CREATE_USER_ID,
+  a.CREATE_DATE = b.CREATE_DATE,
+  a.CUSTOMER_ID = b.CUSTOMER_ID,
+  a.METADATA = b.METADATA,
+  a.TYPE = b.TYPE,
+  a.LAYOUT_ID = b.LAYOUT_ID,
+  a.PARENT_ID = b.PARENT_ID,
+  a.TITLE = b.TITLE,
+  a.PROJECT_ID = b.PROJECT_ID,
+  a.LAST_UPDATE_DATE = b.LAST_UPDATE_DATE,
+  a.LAST_UPDATE_USER_ID = b.LAST_UPDATE_USER_ID 
+FROM VIEW_SETTING AS a, VIEW_SETTING_BUFFER as b
+WHERE a.ID = b.ID AND b.LAYOUT_ID = $LayoutId$

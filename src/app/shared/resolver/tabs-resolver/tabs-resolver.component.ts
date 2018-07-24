@@ -12,6 +12,7 @@ export class TabsResolverComponent implements OnInit {
   @Input() layoutId;
   @Input() config;
   @Input() blockId;
+  @Input() bufferId;
   @Input() tabsId;
   isVisible = false;
   _tabName;
@@ -19,7 +20,7 @@ export class TabsResolverComponent implements OnInit {
   _tab;
   _index;
   constructor(
-    private _http: ApiService,
+    private apiService: ApiService,
     private _nzMessage: NzMessageService
   ) { }
 
@@ -57,12 +58,13 @@ export class TabsResolverComponent implements OnInit {
       });
       this._index = this.config.length - 1;
       const body = {
-        LayoutId: this.layoutId,
-        ParentId: this.tabsId,
-        Title: this._tabName,
-        Icon: '',
-        ShowTitle: true,
-        Type: 'tab'
+        bufferId: this.bufferId,
+        layoutId: this.layoutId,
+        parentId: this.tabsId,
+        title: this._tabName,
+        icon: '',
+        showTitle: 1,
+        type: 'tab'
       };
       this.save(body);
     }
@@ -84,7 +86,7 @@ export class TabsResolverComponent implements OnInit {
   }
 
   save(body) {
-    this._http.postProj(APIResource.BlockSetting, body).subscribe(result => {
+    this.apiService.post('common/BlockSettingBuffer', body).subscribe(result => {
       if (result && result.Status === 200 ) {
         this._nzMessage.create('success', '标签保存成功');
       }

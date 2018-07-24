@@ -15,6 +15,7 @@ export class SettingLayoutComponent implements OnInit {
 
   @Input() config;
   @Input() layoutId;
+  @Input() bufferId;
   @ViewChild(SettingComponentEditorComponent)
   componentsettingResolver: ComponentSettingResolverComponent;
   _isRows = false;
@@ -31,8 +32,6 @@ export class SettingLayoutComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.layoutId);
-    console.log(this.config);
     if (this.config) {
       this._isRows = Array.isArray(this.config.rows);
     }
@@ -43,6 +42,7 @@ export class SettingLayoutComponent implements OnInit {
       (async () => {
         const block: any = await this._loadBlockData();
 
+        // 还需修改 页面占比宽度和屏幕分辨率自适应设置
         this.title = block.data.title ? block.data.title : '';
         this.icon = block.data.icon ? block.data.icon : '';
         this.id = block.data.Id ? block.data.Id : '';

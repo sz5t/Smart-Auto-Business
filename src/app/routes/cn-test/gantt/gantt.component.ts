@@ -20,8 +20,8 @@ export class GanttComponent implements OnInit, AfterViewInit {
         "enabled": false
       },
       "type": "gantt-project",
-      "splitterPosition": 330,
-      "defaultRowHeight": 20,
+      "splitterPosition": 200,
+      "defaultRowHeight": 30,
       "controller": {
         "treeData": {
           "rootMapping": {},
@@ -322,7 +322,7 @@ export class GanttComponent implements OnInit, AfterViewInit {
               "enabled": true,
               "background": {
                 "enabled": false,
-                "fill": "#ffffff",
+                "fill": "#03f5f4",
                 "stroke": "none",
                 "cornerType": "round",
                 "corners": 0
@@ -341,7 +341,7 @@ export class GanttComponent implements OnInit, AfterViewInit {
               },
               "fontSize": 11,
               "fontFamily": "Verdana, Helvetica, Arial, sans-serif",
-              "fontColor": "#7c868e",
+              "fontColor": "#333",
               "fontOpacity": 1,
               "fontDecoration": "none",
               "fontStyle": "normal",
@@ -601,12 +601,11 @@ export class GanttComponent implements OnInit, AfterViewInit {
     anychart.format.inputLocale('zh-cn');
     anychart.format.inputDateTimeFormat('yyyy.MM.dd'); // Like '2015.03.12'
     anychart.format.outputLocale('zh-cn');
-    this.getGantt_2();
+    this.getGantt_1();
 
   }
 
   getGantt_1() {
-
     const chart = anychart.fromJson(this.data);
     chart.container('container');
     chart.draw();

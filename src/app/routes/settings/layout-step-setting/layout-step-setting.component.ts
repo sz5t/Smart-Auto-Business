@@ -1014,10 +1014,10 @@ export class LayoutStepSettingComponent implements OnInit {
                     (async () => {
                         for (let i = 0, len = this._tableDataSource.length; i < len; i++) {
                             const layoutMetadata = JSON.parse(this._tableDataSource[i].metadata);
-                            const result = await this.getBlockConfigData(this._tableDataSource[i].Id);
+                            const result = await this.getBlockConfigData(this._tableDataSource[i].Id, this._funcValue[this._funcValue.length - 1]);
                             for (let j = 0, jlen = result.data.length; j < jlen; j++) {
                                 const blockMeta = JSON.parse(result.data[j].metadata);
-                                blockMeta.id = result.data[j].Id;
+                                blockMeta['id'] = result.data[j].Id;
                                 result.data[j].metadata = blockMeta;                  
                                 this.rewriteLayoutMeta(layoutMetadata, result.data[j]);
                             }
@@ -1108,7 +1108,7 @@ export class LayoutStepSettingComponent implements OnInit {
                     blockDataList[i]['layoutId'] = layout.data.Id;
                     blockDataList[i]['parentId'] = moduleID;
                     blockDataList[i]['type'] = 'view';
-                    blockDataList[i]['showTitle'] = '1';
+                    blockDataList[i]['showTitle'] = 1;
                     const block = await this.addBlockSettingBuffer(blockDataList[i]);
                 }
 
@@ -1368,7 +1368,7 @@ export class LayoutStepSettingComponent implements OnInit {
                 blockDataList[i]['type'] = 'view';
                 blockDataList[i]['userId'] = this._currentUser.currentAccountId;
                 blockDataList[i]['bufferId'] = this._bufferId;
-                blockDataList[i]['showTitle'] = '1';
+                blockDataList[i]['showTitle'] = 1;
                 const block = await this.addBlockSettingBuffer(blockDataList[i]);
             }
             this.message.create('success', '布局保存成功');
@@ -1435,8 +1435,8 @@ export class LayoutStepSettingComponent implements OnInit {
         return this.apiService.getProj('common/LayoutSettingBuffer', params).toPromise();
     }
 
-    async getBlockConfigData(layoutId) {
-        return this.apiService.getProj('common/BlockSettingBuffer', { LayoutId: layoutId }).toPromise();
+    async getBlockConfigData(layoutId, moduleId) {
+        return this.apiService.getProj('common/BlockSettingBuffer', { layoutId: layoutId, parentId: moduleId }).toPromise();
     }
 
     async addSettingLayoutBuffer(data) {

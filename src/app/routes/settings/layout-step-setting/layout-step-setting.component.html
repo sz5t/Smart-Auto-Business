@@ -13,55 +13,6 @@
 </nz-card>
 
 <nz-card *ngIf="!_showGuide" [nzBordered]="false" [nzTitle]="layoutTitle">
-    <!-- <nz-table #sqlTable [nzData]="_tableDataSource" [nzSize]="'small'" [nzLoading]="loading" [nzTotal]="total" [(nzPageIndex)]="pageIndex"
-        [(nzPageSize)]="pageSize">
-        <thead>
-            <tr>
-                <th nzShowExpand></th>
-                <th>布局名称</th>
-                <th>模版名称</th>
-                <th>是否启用</th>
-                <th>创建时间</th>
-                <th> </th>
-            </tr>
-        </thead>
-        <tbody>
-            <ng-template ngFor let-data [ngForOf]="_tableDataSource">
-                <tr (click)="selectRow(data)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
-                    <td nzShowExpand [(nzExpand)]="data.expand"></td>
-                    <td>{{data.Name}}</td>
-                    <td>{{data.Template}}</td>
-                    <td>{{data.Enabled}}</td>
-                    <td>{{data.CreateTime}}</td>
-                    <td>
-                        <nz-popconfirm [nzTitle]="'确认删除当前记录?'" (nzOnConfirm)="delete(data.Id)" (nzOnCancel)="cancel()" [nzPlacement]="'top'">
-                            <button nz-popconfirm nz-button [nzType]="'danger'" [nzSize]="'small'">
-                                <i class="anticon anticon-delete"></i> 删除</button>
-                        </nz-popconfirm>
-                    </td>
-                </tr>
-                <tr [nzExpand]="data.expand">
-                    <td></td>
-                    <td colspan="7">
-                        <nz-table #innerTable [nzData]="data.BlockList" nzSize="middle" [nzShowPagination]="false">
-                            <thead>
-                                <tr>
-                                    <th>区域标题</th>
-                                    <th>区域图标</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let data of innerTable.data">
-                                    <td>{{data.Title}}</td>
-                                    <td>{{data.Icon}}</td>
-                                </tr>
-                            </tbody>
-                        </nz-table>
-                    </td>
-                </tr>
-            </ng-template>
-        </tbody>
-    </nz-table> -->
     <nz-list
     class="demo-loadmore-list"
     [nzDataSource]="_tableDataSource"
@@ -140,14 +91,19 @@
     <div class="steps-content2" *ngIf="current == 1">
         <nz-card nzTitle="布局预览">
             <nz-spin [nzSpinning]="isShowPreview">
-                    <cn-setting-layout *ngIf="previewLayoutData" [layoutId]="_selectedLayoutId" [config]="previewLayoutData"></cn-setting-layout>
+                    <cn-setting-layout 
+                    *ngIf="previewLayoutData" 
+                    [layoutId]="_selectedLayoutId" 
+                    [config]="previewLayoutData"
+                    [bufferId]="_bufferId"
+                    ></cn-setting-layout>
             </nz-spin>
         </nz-card>
 
     </div>
     <div class="steps-content2" *ngIf="current == 2">
         <cn-layout-resolver [layoutId]="_selectedLayoutId" [config]="previewLayoutData"></cn-layout-resolver>
-        <cn-setting-layout *ngIf="previewLayoutData" [layoutId]="_selectedLayoutId" [config]="previewLayoutData"></cn-setting-layout>
+        <cn-setting-layout [bufferId]="_bufferId" *ngIf="previewLayoutData" [layoutId]="_selectedLayoutId" [config]="previewLayoutData"></cn-setting-layout>
     </div>
     <div class="steps-action">
         <button nz-button nzType="primary" (click)="done()" *ngIf="current === 1">
