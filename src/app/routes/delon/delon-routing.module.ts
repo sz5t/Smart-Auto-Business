@@ -4,7 +4,7 @@ import { ACLGuard } from '@delon/acl';
 
 import { SimpleTableComponent } from './simple-table/simple-table.component';
 import { ClipboardComponent } from './clipboard/clipboard.component';
-import { PrintComponent } from './print/print.component';
+// import { PrintComponent } from './print/print.component';
 import { ACLComponent } from './acl/acl.component';
 import { GuardComponent } from './guard/guard.component';
 import { GuardLeaveComponent } from './guard/leave.component';
@@ -19,7 +19,7 @@ import { ZipComponent } from './zip/zip.component';
 const routes: Routes = [
     { path: 'simple-table', component: SimpleTableComponent },
     { path: 'clipboard', component: ClipboardComponent },
-    { path: 'print', component: PrintComponent },
+    // { path: 'print', component: PrintComponent },
     { path: 'acl', component: ACLComponent },
     {
         path: 'guard',

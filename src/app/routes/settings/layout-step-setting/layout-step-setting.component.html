@@ -1,18 +1,7 @@
 <nz-card *ngIf="!_showGuide" [nzBordered]="false" [nzTitle]="layoutModule" [nzExtra]="extraTplModule">
-    <form nz-form>
-        <nz-form-item>
-            <nz-form-label [nzSpan]="2" nzFor="module">选择模块</nz-form-label>
-            <nz-form-control [nzSpan]="6" [nzSm]="6" [nzXs]="6">
-                <nz-cascader [ngModelOptions]="{standalone: true}" [class.class123]="true" [nzOptions]="_funcOptions" [(ngModel)]="_funcValue"
-                    (nzChange)="_changeModuleValue($event)" (nzSelectionChange)="_onSelectionChange($event)" [nzPlaceHolder]="'--请选择--'"
-                    [nzExpandTrigger]="'hover'">
-                </nz-cascader>
-            </nz-form-control>
-        </nz-form-item>
-    </form>
-</nz-card>
-
-<nz-card *ngIf="!_showGuide" [nzBordered]="false" [nzTitle]="layoutTitle">
+        <button nz-button (click)="showGuide()" [nzType]="'dashed'" class="ant-btn__block mb-sm">
+                <i class="anticon anticon-plus-circle"></i><span> 创建布局</span>
+            </button>
     <nz-list
     class="demo-loadmore-list"
     [nzDataSource]="_tableDataSource"
@@ -123,8 +112,16 @@
 </nz-card>
 
 <ng-template #extraTplModule>
-    <button nz-button *ngIf="!_showGuide" (click)="showGuide()" nzType="primary">
-        <i class="anticon anticon-plus"></i>创建布局</button>
+    <span>
+            <nz-cascader [ngModelOptions]="{standalone: true}" [class.class123]="true" [nzOptions]="_funcOptions" [(ngModel)]="_funcValue"
+            (nzChange)="_changeModuleValue($event)" (nzSelectionChange)="_onSelectionChange($event)" [nzPlaceHolder]="'--请选择--'"
+            [nzExpandTrigger]="'hover'">
+            </nz-cascader>
+            &nbsp;&nbsp;&nbsp;
+            <!-- <button nz-button *ngIf="!_showGuide" (click)="showGuide()" nzType="primary">
+                <i class="anticon anticon-plus"></i>创建布局</button> -->
+    </span>
+   
 </ng-template>
 <ng-template #extraTpl>
     <button (click)="showGuide()" nz-button nzType="primary">

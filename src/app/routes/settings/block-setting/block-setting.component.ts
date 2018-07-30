@@ -1,3 +1,4 @@
+import { NzMessageService } from 'ng-zorro-antd';
 import { SimpleTableButton } from '@delon/abc';
 import { Component, OnInit } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
@@ -20,30 +21,30 @@ export class BlockSettingComponent implements OnInit {
   _layoutId;
   constructor(
     private apiService: ApiService,
+    private message: NzMessageService
   ) { }
 
   async ngOnInit() {
-    const params = { _select: 'Id,Name,ParentId' };
+    const params = { _select: 'Id,name,parentId' };
     const moduleData = await this.getModuleData(params);
     // 初始化模块列表，将数据加载到及联下拉列表当中
-    this._funcOptions = this.arrayToTree(moduleData.Data, '');
+    this._funcOptions = this.arrayToTree(moduleData.data, null);
   }
 
   // 改变模块选项
   _changeModuleValue($event?) {
     this._layoutList = [];
     // 选择功能模块，首先加载服务端配置列表
-    // const params = new HttpParams().set('TagA', this._funcValue.join(','));
     if (this._funcValue.length > 0) {
       const params = {
-        ModuleId: this._funcValue[this._funcValue.length - 1],
-        _select: 'Id,Name,Metadata'
+        moduleId: this._funcValue[this._funcValue.length - 1],
+        _select: 'Id,name,metadata'
       };
       this.getLayoutConfigData(params).then(serverLayoutData => {
-        if (serverLayoutData.Status === 200 && serverLayoutData.Data.length > 0) {
-          serverLayoutData.Data.forEach((data, index) => {
-            const metadata = JSON.parse(data.Metadata);
-            this._layoutList.push({ label: data.Name, value: { id: data.Id, metadata: metadata } });
+        if (serverLayoutData.status === 200 && serverLayoutData.isSuccess && serverLayoutData.data.length > 0) {
+          serverLayoutData.data.forEach((data) => {
+            const metadata = JSON.parse(data.metadata);
+            this._layoutList.push({ label: data.name, value: { id: data.Id, metadata: metadata } });
           });
         } else {
           this._layoutList = [];
@@ -53,19 +54,24 @@ export class BlockSettingComponent implements OnInit {
     }
   }
 
+  // 保存区域设置
+  _saveViewSetting(params) {
+    return this.apiService.post('common/CreateViewComponent', params).toPromise();
+  }
+
   // 获取布局设置列表
   getLayoutConfigData(params) {
-    return this.apiService.getProj(APIResource.LayoutSetting, params).toPromise();
+    return this.apiService.get('common/LayoutSetting', params).toPromise();
   }
 
   // 获取区块信息
   async getBlockConfigData(params) {
-    return this.apiService.getProj(APIResource.BlockSetting, params).toPromise();
+    return this.apiService.get('common/BlockSetting', params).toPromise();
   }
 
   // 获取模块信息
   async getModuleData(params) {
-    return this.apiService.getProj(APIResource.AppModuleConfig, params).toPromise();
+    return this.apiService.get('common/ComProjectModule', params).toPromise();
   }
 
   // 选择布局名称
@@ -76,35 +82,35 @@ export class BlockSettingComponent implements OnInit {
     this._layoutId = $event.id;
     (async () => {
       const params = {
-        LayoutId: $event.id
+        layoutId: $event.id
       };
       const layoutData = $event.metadata;
       const blockData = await this.getBlockConfigData(params);
 
       
       // 获取顶层布局块
-      const topBlock = blockData.Data.filter(block => {
-        return block.ParentId === this._funcValue[this._funcValue.length - 1];
+      const topBlock = blockData.data.filter(block => {
+        return block.parentId === this._funcValue[this._funcValue.length - 1];
       });
 
-      const result = this.listToTreeData(blockData.Data, this._funcValue[this._funcValue.length - 1]);
+      const result = this.listToTreeData(blockData.data, this._funcValue[this._funcValue.length - 1]);
 
       const layoutBlock = [];
 
       result.map(res => {
         const block = {};
         if (res.Type === 'view' && res.children) {
-          block['title'] = res.Title;
+          block['title'] = res.title;
           block['id'] = res.Id;
           block['tabs'] = [];
-          block['area'] = res.Area;
-          block['size'] = JSON.parse(res.Size);
-          block['span'] = res.Span;
+          block['area'] = res.area;
+          block['size'] = JSON.parse(res.size);
+          block['span'] = res.span;
           res.children.map(tabs => {
-            if (tabs.Type === 'tabs' && tabs.children) {
+            if (tabs.type === 'tabs' && tabs.children) {
               tabs.children.map(tab => {
                 const _tab = {};
-                _tab['title'] = tab.Title;
+                _tab['title'] = tab.title;
                 _tab['id'] = tab.Id;
                 _tab['viewCfg'] = [];
                 block['tabs'].push(_tab);
@@ -112,12 +118,12 @@ export class BlockSettingComponent implements OnInit {
             }
           });
         } else {
-          block['title'] = res.Title;
+          block['title'] = res.title;
           block['id'] = res.Id;
           block['viewCfg'] = [];
-          block['area'] = res.Area;
-          block['size'] = JSON.parse(res.Size);
-          block['span'] = res.Span;
+          block['area'] = res.area;
+          block['size'] = JSON.parse(res.size);
+          block['span'] = res.span;
         }
         layoutBlock.push(block);
       });
@@ -148,7 +154,7 @@ export class BlockSettingComponent implements OnInit {
       //   this.resolveLayout(layoutData, lay);
       // });
       // console.log(layoutData);
-      // this._layoutConfig = layoutData;
+      this._layoutConfig = layoutData;
     })();
   }
 
@@ -156,7 +162,7 @@ export class BlockSettingComponent implements OnInit {
     const result = [];
     let temp;
     for (let i = 0; i < data.length; i++) {
-      if (data[i].ParentId === parentid) {
+      if (data[i].parentId === parentid) {
         temp = this.listToTreeData(data, data[i].Id);
         if (temp.length > 0) {
           data[i]['children'] = temp;
@@ -173,9 +179,9 @@ export class BlockSettingComponent implements OnInit {
     if (layout.rows) {
       for (let i = 0, len = layout.rows.length; i < len; i++) {
         for (let j = 0, jlen = layout.rows[i].row.cols.length; j < jlen; j++) {
-          if (layout.rows[i].row.cols[j].id === block.Area) {
+          if (layout.rows[i].row.cols[j].id === block.area) {
             layoutBlock.forEach(b => {
-              if (b.area === block.Area) {
+              if (b.area === block.area) {
                 layout.rows[i].row.cols[j] = {...b};
               }
             });
@@ -183,9 +189,7 @@ export class BlockSettingComponent implements OnInit {
         }
       }
     }
-    console.log(layout);
   }
-
 
   _onSelectionChange(selectedOptions: any[]) {
     this._selectedModuleText = `【${selectedOptions.map(o => o.label).join(' / ')}】`;
@@ -195,8 +199,8 @@ export class BlockSettingComponent implements OnInit {
     const result = [];
     let temp;
     for (let i = 0; i < data.length; i++) {
-      if (data[i].ParentId === parentid) {
-        const obj = { 'label': data[i].Name, 'value': data[i].Id };
+      if (data[i].parentId === parentid) {
+        const obj = { 'label': data[i].name, 'value': data[i].Id };
         temp = this.arrayToTree(data, data[i].Id);
         if (temp.length > 0) {
           obj['children'] = temp;
@@ -207,6 +211,20 @@ export class BlockSettingComponent implements OnInit {
       }
     }
     return result;
+  }
+
+  save() {
+    this._saveViewSetting({LayoutId: this._layoutId}).then(result => {
+      if (result.isSuccess) {
+        this.message.create('success', '保存成功');
+      } else {
+        this.message.create('error', `保存失败：${result.message}`);
+      }
+    });
+  }
+
+  cancel() {
+
   }
 
   resetForm($event) {

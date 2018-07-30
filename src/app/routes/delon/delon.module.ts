@@ -6,7 +6,7 @@ import { DelonRoutingModule } from './delon-routing.module';
 
 import { SimpleTableComponent } from './simple-table/simple-table.component';
 import { ClipboardComponent } from './clipboard/clipboard.component';
-import { PrintComponent } from './print/print.component';
+// import { PrintComponent } from './print/print.component';
 import { ACLComponent } from './acl/acl.component';
 import { CanLeaveProvide } from './guard/can-leave.provide';
 import { GuardComponent } from './guard/guard.component';
@@ -21,7 +21,7 @@ import { ZipComponent } from './zip/zip.component';
 const COMPONENTS = [
     SimpleTableComponent,
     ClipboardComponent,
-    PrintComponent,
+    // PrintComponent,
     ACLComponent,
     GuardComponent,
     GuardLeaveComponent,

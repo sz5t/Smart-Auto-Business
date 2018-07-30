@@ -502,7 +502,7 @@ export class ComponentSettingComponent implements OnInit {
     _layoutNameValue;
     constructor(
         private http: _HttpClient,
-        private _http: ApiService,
+        private apiService: ApiService,
         private message: NzMessageService,
         private relativeMessage: RelativeService
     ) { }
@@ -513,63 +513,58 @@ export class ComponentSettingComponent implements OnInit {
         this.fildConfig = this.componentdic['bsn-datatable'].viewCfg[0]['config'];
         this.parameterConfig = this._editorConfig.rows[0].row.cols[0].tabs[0].viewCfg[1]['tabs'][1].viewCfg[0]['config'];
 
-        const params = { _select: 'Id,Name,ParentId' };
+        const params = { _select: 'Id,name,parentId' };
         const moduleData = await this.getModuleData(params);
         //   初始化模块列表，将数据加载到及联下拉列表当中
-        this._funcOptions = this.arrayToTree(moduleData.Data, '');
+        this._funcOptions = this.arrayToTree(moduleData.data, null);
     }
     _loadLayoutData($event) {
 
     }
     //   获取布局设置列表
     getLayoutConfigData(params) {
-        return this._http.getProj(APIResource.LayoutSetting, params).toPromise();
+        return this.apiService.get('common/LayoutSetting', params).toPromise();
     }
 
     //   获取模块信息
     async getModuleData(params) {
-        return this._http.getProj(APIResource.AppModuleConfig, params).toPromise();
+        return this.apiService.get('common/ComProjectModule', params).toPromise();
     }
 
     // 布局块
     async getBlockConfigData(layoutId) {
-       // SinoForce.SysData.getComponentTree
-       // return this._http.getProj(APIResource.BlockSetting, {LayoutId: layoutId }).toPromise();
-        return this._http.get('SinoForce.SysData.GetComptTree', {}).toPromise();
+        return this.apiService.get('common/GetComptTree', {LayoutId: layoutId}).toPromise();
         
     }
 
     //   选择布局名称
     async  _changeLayoutName($event) {
         //   创建布局
-        //   this._layoutConfig = $event.metadata;
-
-        console.log('布局信息', $event);
         const backdata = await this.getBlockConfigData($event.id);
         const  columns = [
             {title: '主键', field: 'key',  valueName: 'Id'},
-            {title: '父节点', field: 'parentId',  valueName: 'ParentId'},
-            {title: '标题', field: 'title',  valueName: 'Title'},
+            {title: '父节点', field: 'parentId',  valueName: 'parentId'},
+            {title: '标题', field: 'title',  valueName: 'title'},
         ];
-        const TotreeBefore = backdata.Data;
-        TotreeBefore.forEach(data => {
+        const TotreeBefore = backdata.data;
+        TotreeBefore.map(data => {
             columns.forEach(col => {
                 data[col['field']] = data[col['valueName']];
             });
         });
-       
         const treeDataJson = this.listToTreeData(TotreeBefore, this._funcValue[this._funcValue.length - 1]);
+        
         this.treeData = treeDataJson;
-      
-        console.log('list转tree后', treeDataJson);
- 
+        const topNode = new NzTreeNode({title: this._selectedModuleText, key: '0'});
+        topNode.addChildren(treeDataJson);
+        this.treeData = [topNode];
     }
 
     listToTreeData(data, parentid) {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
-            if (data[i].ParentId === parentid) {
+            if (data[i].parentId === parentid) {
                
                 temp = this.listToTreeData(data, data[i].key);
                 if (temp.length > 0) {
@@ -590,17 +585,17 @@ export class ComponentSettingComponent implements OnInit {
         'showLine': false,  //   显示连接线 fal
         'columns': [ // 字段映射，映射成树结构所需
             {title: '主键', field: 'key',  valueName: 'Id'},
-            {title: '父节点', field: 'parentId',  valueName: 'ParentId'},
-            {title: '标题', field: 'title',  valueName: 'Title'},
+            {title: '父节点', field: 'parentId',  valueName: 'parentId'},
+            {title: '标题', field: 'title',  valueName: 'title'},
         ],
         'parent': [
-            { name: 'ParentId', type: 'value', valueName: '取值参数名称', value: '05369c6ce6564d5eb3f044d0dfaaa689' }
+            { name: 'parentId', type: 'value', valueName: '取值参数名称', value: '05369c6ce6564d5eb3f044d0dfaaa689' }
         ],
         'ajaxConfig': {
             'url': 'BlockSetting',
             'ajaxType': 'get',
             'params': [
-                { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }                
+                { name: 'layoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }                
             ]
         },
         'relations': [{
@@ -633,7 +628,7 @@ export class ComponentSettingComponent implements OnInit {
         const params = {
             ParentId: layoutId
         };
-        return this._http.getProj(APIResource.AppConfigPack, params).toPromise();
+        return this.apiService.getProj(APIResource.AppConfigPack, params).toPromise();
     }
 
 
@@ -641,23 +636,20 @@ export class ComponentSettingComponent implements OnInit {
     _changeModuleValue($event?) {
         this._layoutList = [];
         //   选择功能模块，首先加载服务端配置列表
-        //  const params = new HttpParams().set('TagA', this._funcValue.join(','));
         if (this._funcValue.length > 0) {
             const params = {
-                //  TagA: this._funcValue.join(','),
-                MODULEID: this._funcValue[this._funcValue.length - 1],
-                _select: 'Id,Name,Metadata'
+                moduleId: this._funcValue[this._funcValue.length - 1],
+                _select: 'Id,name,metadata'
             };
             this.getLayoutConfigData(params).then(serverLayoutData => {
-                if (serverLayoutData.Status === 200 && serverLayoutData.Data.length > 0) {
-                    serverLayoutData.Data.forEach((data, index) => {
-                        const metadata = JSON.parse(data.Metadata);
-                        this._layoutList.push({ label: data.Name, value: { id: data.Id, metadata: metadata } });
+                if (serverLayoutData.isSuccess && serverLayoutData.data.length > 0) {
+                    serverLayoutData.data.forEach((data) => {
+                        const metadata = JSON.parse(data.metadata);
+                        this._layoutList.push({ label: data.name, value: { id: data.Id, metadata: metadata } });
                     });
                 } else {
                     this._layoutList = [];
                 }
-
             });
         }
     }
@@ -669,8 +661,8 @@ export class ComponentSettingComponent implements OnInit {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
-            if (data[i].ParentId === parentid) {
-                const obj = { 'label': data[i].Name, 'value': data[i].Id };
+            if (data[i].parentId === parentid) {
+                const obj = { 'label': data[i].name, 'value': data[i].Id };
                 temp = this.arrayToTree(data, data[i].Id);
                 if (temp.length > 0) {
                     obj['children'] = temp;
@@ -712,14 +704,14 @@ export class ComponentSettingComponent implements OnInit {
         const params = {
             ScriptText: sql
         };
-        return this._http.postProj(APIResource.DbCommandConfig, params).toPromise();
+        return this.apiService.postProj(APIResource.DbCommandConfig, params).toPromise();
     }
     async  updateSqlByApi(sql?, Id?) {
         const params = {
             Id: Id,
             ScriptText: sql
         };
-        return this._http.putProj(APIResource.DbCommandConfig, params).toPromise();
+        return this.apiService.putProj(APIResource.DbCommandConfig, params).toPromise();
     }
     /**
      * 获取sql对应的字段描述
@@ -729,7 +721,7 @@ export class ComponentSettingComponent implements OnInit {
         const params = {
             OwnerId: Id
         };
-        return this._http.getProj(APIResource.EntityPropertyDefine, params).toPromise();
+        return this.apiService.getProj(APIResource.EntityPropertyDefine, params).toPromise();
     }
 
     /**

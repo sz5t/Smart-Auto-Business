@@ -47,7 +47,7 @@
 // }
 import { Component, OnInit, Inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { SettingsService } from '@delon/theme';
+import { SettingsService, MenuService } from '@delon/theme';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { CacheService } from '@delon/cache';
 import { NzModalService } from 'ng-zorro-antd';
@@ -74,6 +74,7 @@ export class HeaderUserComponent implements OnInit {
     constructor(
         public settings: SettingsService,
         private cacheService: CacheService,
+        private menuService: MenuService,
         private router: Router,
         private modal: NzModalService,
         @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) { }
@@ -99,6 +100,8 @@ export class HeaderUserComponent implements OnInit {
             nzOnOk: () => {
                 this.tokenService.clear();
                 this.cacheService.clear();
+                this.menuService.clear();
+                console.log(this.tokenService.login_url);
                 this.router.navigateByUrl(this.tokenService.login_url);
                 // new Promise((resolve, reject) => {
                 //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);

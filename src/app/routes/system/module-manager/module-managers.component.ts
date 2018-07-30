@@ -1534,7 +1534,6 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
 
   _loadModules() {
     if (this._projValue.length > 0) {
-      console.log(this._projValue[this._projValue.length - 1]);
       this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, 'projectId_module', {
         data: { Id: this._projValue[this._projValue.length - 1] }
       }));

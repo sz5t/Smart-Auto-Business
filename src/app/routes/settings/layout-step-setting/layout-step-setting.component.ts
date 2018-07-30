@@ -1354,7 +1354,7 @@ export class LayoutStepSettingComponent implements OnInit {
             name: configName,
             metadata: metadata,
             enabled: '0',
-            UserId: this._currentUser.currentAccountId,
+            userId: this._currentUser.currentAccountId,
             templateImg: img,
             bufferId: this._bufferId,
             description: this._configDesc

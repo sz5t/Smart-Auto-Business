@@ -55,11 +55,13 @@ export class UserLoginComponent implements OnInit, OnDestroy {
             remember: [true]
         });
         modalSrv.closeAll();
+        this.tokenService.clear();
+        this.cacheService.clear();
+        this.menuService.clear();
     }
 
     ngOnInit(): void {
-        this.tokenService.clear();
-        this.cacheService.clear();
+        
         this.titleService.setTitle('配置平台');
         this.cacheService.set('AppName', '自动化业务装配系统');
     }
@@ -182,17 +184,30 @@ export class UserLoginComponent implements OnInit, OnDestroy {
             const token: ITokenModel = {token: user.data.token};
             this.tokenService.set(token); // 后续projectId需要进行动态获取
 
-            const localAppDataResult = await this._getLocalAppData();
-            if (localAppDataResult) {
-                this.cacheService.set('Menus', localAppDataResult.menu);
-                this.menuService.add(localAppDataResult.menu);
+            let menus;
+            let url;
+            if (this.type === 0) { // 配置平台
+                const localAppDataResult = await this._getLocalAppData();
+                menus = localAppDataResult.menu;
+                url = '/dashboard/analysis';
+            } else { // 解析平台
+                const projModule = await this._loadProjectModule();
+                menus = this.arrayToTree(projModule.data, null);
+                url = '/';
             }
+            
+            this.cacheService.set('Menus', menus);
+            this.menuService.add(menus);
 
-            this.router.navigate(['/dashboard/analysis']);
+            this.router.navigate([`${url}`]);
         } else {
             this.showError(user.message);
         }
         this.loading = false;
+    }
+
+    async _loadProjectModule() {
+        return this.apiService.get('common/ComProjectModule/null/ComProjectModule?projectId=90621e37b806o6fe8538c5eb782901bb&_recursive=true&_deep=3').toPromise();
     }
 
     async _userLogin (userLogin) {
@@ -343,16 +358,16 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
-            if (data[i].ParentId === parentid || !data[i].ParentId) {
+            if (data[i].parentId === parentid) {
                 const obj = {
-                    text: data[i].Name,
+                    text: data[i].name,
                     id: data[i].Id,
-                    group: JSON.parse(data[i].ConfigData).group,
-                    link: (JSON.parse(data[i].ConfigData).link) ? JSON.parse(data[i].ConfigData).link : '',
-                    icon: JSON.parse(data[i].ConfigData).icon,
-                    hide: JSON.parse(data[i].ConfigData).hide ? true : false
+                    // group: JSON.parse(data[i].ConfigData).group,
+                    link: data[i].url ? data[i].url :  '',
+                    icon: data[i].icon,
+                    hide: data[i].isEnabled ? false : true
                 };
-                temp = this.arrayToTree(data[i].Children, data[i].Id);
+                temp = this.arrayToTree(data[i].children, data[i].Id);
                 if (temp.length > 0) {
                     obj['children'] = temp;
                 } else {

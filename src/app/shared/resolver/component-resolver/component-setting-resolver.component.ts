@@ -1,3 +1,4 @@
+import { CommonTools } from '@core/utility/common-tools';
 import {
   AfterViewInit,
   Component, ComponentFactoryResolver, ComponentRef, EventEmitter, Input, OnChanges, OnInit, Output, Type, ViewChild,
@@ -515,27 +516,27 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
   _currentComponentData;
   private dropdown: NzDropdownContextComponent;
   constructor(
-    private _http: ApiService,
+    private apiService: ApiService,
     private message: NzMessageService,
     private resolver: ComponentFactoryResolver,
     private nzDropdownService: NzDropdownService
   ) { }
 
   ngOnInit() {
-
   }
 
   contextMenu($event: MouseEvent, template: TemplateRef<void>): void {
     this.dropdown = this.nzDropdownService.create($event, template);
   }
 
-  async ngAfterViewInit() {
-    // this._loadComponent();
+  ngAfterViewInit() {
+    this._loadComponent();
   }
 
   ngOnChanges() {
     if (this.config) {
-      this._renderComponent(this.config);
+      // console.log('render', this.config);
+      // this._renderComponent(this.config);
     }
 
   }
@@ -552,9 +553,10 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
         blockId: this.blockId,
         component: this.config.component,
         type: this.config.type,
-        title: this.config.name,
+        title: this.config.title,
         layoutId: this.layoutId,
-        metadata: JSON.stringify(this.config)
+        metadata: JSON.stringify(this.config),
+        bufferId: `bufferId_${CommonTools.uuID(6)}`
       };
       this._saveComponent(this._currentComponentData, () => {
         // 渲染组件
@@ -566,18 +568,19 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
   private _loadComponent() {
     // 获取组件区域数据
     const params = {
-      bufferId: this.bufferId,
       blockId: this.blockId,     // 区域ID
       layoutId: this.layoutId // 布局ID
     };
-    this._http.get('common/ViewSettingBuffer', params).subscribe(result => {
+    this.apiService.get('common/ViewSettingBuffer', params).subscribe(result => {
+      console.log(result);
       if (result && result.status === 200 && result.isSuccess && result.data.length > 0) {
+        console.log(result.data);
         const d = {};
-        d['config'] = JSON.parse(result.Data[0].Metadata);
-        d['layoutId'] = result.Data[0].ParentId;
-        d['blockId'] = result.Data[0].BlockId;
+        d['config'] = JSON.parse(result.data[0].metadata);
+        d['layoutId'] = result.data[0].parentId;
+        d['blockId'] = result.data[0].blockId;
         this._renderComponent(d['config']);
-        this._serverLayoutId = result.Data[0].Id;
+        this._serverLayoutId = result.data[0].Id;
       }
     });
   }
@@ -603,7 +606,7 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
   private _saveComponent(data, callback) {
     if (this._serverLayoutId) {
       data['Id'] = this._serverLayoutId;
-      this._http.put('common/ViewSettingBuffer', data).subscribe(result => {
+      this.apiService.put('common/ViewSettingBuffer', data).subscribe(result => {
         if (result.status === 200 && result.isSuccess) {
           this.message.success('保存成功');
           callback();
@@ -614,7 +617,7 @@ export class ComponentSettingResolverComponent implements OnInit, OnChanges, Aft
         this.message.error(`出现错误：${error}`);
       });
     } else {
-      this._http.postProj('common/ViewSettingBuffer', data).subscribe(result => {
+      this.apiService.post('common/ViewSettingBuffer', data).subscribe(result => {
         if (result.status === 200 && result.isSuccess) {
           this.message.success('保存成功');
           callback();
