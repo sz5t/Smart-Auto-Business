@@ -18,6 +18,8 @@ import { OrgOperationComponent } from './org-manager/org-operation.component';
 import { UserRoleComponent } from './user-manager/user-role.component';
 import { ModuleManagersComponent } from './module-manager/module-managers.component';
 import {DataModelingComponent} from './data-modeling/data-modeling.component';
+import {WorkFlowComponent} from './work-flow/work-flow.component';
+
 
 const routes: Routes = [
     {path: 'base-manager', component: BaseManagerComponent},
@@ -28,6 +30,7 @@ const routes: Routes = [
     {path: 'data-manager', component: DataManagerComponent},
     {path: 'priv-manager', component: PrivManagerComponent},
     {path: 'dataModeling-manager', component: DataModelingComponent},
+    {path: 'WorkFlow-manager', component: WorkFlowComponent},
 ];
 const COMPONENT_NOROUNT = [
     UserManagerComponent,
@@ -45,7 +48,8 @@ const COMPONENT_NOROUNT = [
     RoleOperationComponent,
     OrgOperationComponent,
     UserRoleComponent,
-    DataModelingComponent
+    DataModelingComponent,
+    WorkFlowComponent
 ];
 
 @NgModule({

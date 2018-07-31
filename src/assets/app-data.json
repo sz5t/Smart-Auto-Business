@@ -37,6 +37,7 @@
                             "i18n": "",
                             "icon": "icon-user"
                         }
+                        
                     ]
                 },
                 {
@@ -95,6 +96,20 @@
                         "link": "/test/pert",
                         "i18n": ""
                     }
+                  ]
+                },
+                {
+                  "text": "我的流程",
+                  "i18n": "",
+                  "link": "/system",
+                  "icon": "anticon anticon-aliwangwang",
+                  "children": [
+                    {
+                            "text": "工作流构建",
+                            "link": "/system/WorkFlow-manager",
+                            "i18n": "",
+                            "icon": "icon-user"
+                     }
                   ]
                 }
             ]
