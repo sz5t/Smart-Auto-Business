@@ -115,7 +115,7 @@
                     50
                   ],
                   "ajaxConfig": {
-                    "url": "SinoForce.AppData.PersonInfo",
+                    "url": "common/PersonInfo",
                     "ajaxType": "get",
                     "params": [
                       {

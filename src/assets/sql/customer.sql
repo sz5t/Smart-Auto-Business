@@ -166,3 +166,104 @@ UPDATE a SET
   a.LAST_UPDATE_USER_ID = b.LAST_UPDATE_USER_ID 
 FROM VIEW_SETTING AS a, VIEW_SETTING_BUFFER as b
 WHERE a.ID = b.ID AND b.LAYOUT_ID = $LayoutId$
+
+
+
+
+
+
+
+-- Component Tree -------------------------------------------------------------
+SELECT
+  Id,
+  PARENT_ID,
+  TITLE,
+  LAYOUT_ID,
+  TYPE
+     --  ,[AREA]
+     --  ,[CREATE_TIME]
+     --  ,[ICON]
+     --  ,[METADATA]
+     --  ,[PLAT_CUSTOMER_ID]
+     --  ,[PROJ_ID]
+     --  ,[SIZE]
+     --  ,[SPAN]
+FROM BLOCK_SETTING
+WHERE LAYOUT_ID = '2349a7fc1f0a4fa39cb595e19fb4de62'
+UNION ALL
+SELECT
+  Id,
+  BLOCK_ID as PARENT_ID,
+  TITLE as TITLE,
+  PARENT_ID as LAYOUT_ID,
+  TYPE
+      --  ,[METADATA]
+      --  ,[PLAT_CUSTOMER_ID]
+      --  ,[PROJ_ID]
+      --  ,[TITLE]
+      --  ,[CREATE_TIME]
+FROM VIEW_SETTING_BUFFER
+WHERE LAYOUT_ID = '2349a7fc1f0a4fa39cb595e19fb4de62'
+---------------------------------------------------------------------------------
+
+--Add Or Update ViewSetting-------------------------------------------------------------------------------
+DECLARE @hasViewSetting INT
+SET @hasViewSetting = 0
+SELECT  @hasViewSetting = COUNT(1) FROM VIEW_SETTING WHERE LAYOUT_ID = '94658be5cb364e2da995cf4354b9e385'
+
+IF @hasViewSetting > 0
+BEGIN
+  UPDATE a SET
+    a.ID = b.ID,
+    a.BLOCK_ID = b.BLOCK_ID,
+    a.COMPONENT = b.COMPONENT,
+    a.CREATE_USER_ID = b.CREATE_USER_ID,
+    a.CREATE_DATE = b.CREATE_DATE,
+    a.CUSTOMER_ID = b.CUSTOMER_ID,
+    a.METADATA = b.METADATA,
+    a.TYPE = b.TYPE,
+    a.LAYOUT_ID = b.LAYOUT_ID,
+    a.PARENT_ID = b.PARENT_ID,
+    a.TITLE = b.TITLE,
+    a.PROJECT_ID = b.PROJECT_ID,
+    a.LAST_UPDATE_DATE = b.LAST_UPDATE_DATE,
+    a.LAST_UPDATE_USER_ID = b.LAST_UPDATE_USER_ID
+  FROM VIEW_SETTING AS a, VIEW_SETTING_BUFFER as b
+  WHERE a.ID = b.ID AND b.LAYOUT_ID = '94658be5cb364e2da995cf4354b9e385'
+END
+ELSE
+BEGIN
+  INSERT INTO VIEW_SETTING
+  (
+    TITLE,
+    COMPONENT,
+    LAYOUT_ID,
+    TYPE,
+    BLOCK_ID,
+    PARENT_ID,
+    METADATA,
+    ID,
+    CUSTOMER_ID,
+    PROJECT_ID,
+    CREATE_DATE,
+    LAST_UPDATE_DATE,
+    CREATE_USER_ID,
+    LAST_UPDATE_USER_ID
+  )
+  SELECT
+    TITLE,
+    COMPONENT,
+    LAYOUT_ID,
+    TYPE,
+    BLOCK_ID,
+    PARENT_ID,
+    METADATA,
+    ID,
+    CUSTOMER_ID,
+    PROJECT_ID,
+    CREATE_DATE,
+    LAST_UPDATE_DATE,
+    CREATE_USER_ID,
+    LAST_UPDATE_USER_ID
+  FROM VIEW_SETTING_BUFFER WHERE LAYOUT_ID = '94658be5cb364e2da995cf4354b9e385'
+END

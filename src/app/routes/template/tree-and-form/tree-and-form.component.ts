@@ -40,7 +40,7 @@ export class TreeAndFormComponent implements OnInit {
                                         'columns': [ // 字段映射，映射成树结构所需
                                             { title: '主键', field: 'key', valueName: 'Id' },
                                             { title: '父节点', field: 'parentId', valueName: 'ParentId' },
-                                            { title: '标题', field: 'title', valueName: 'CaseName' },
+                                            { title: '标题', field: 'title', valueName: 'caseName' },
                                         ],
                                         'componentType': {
                                             'parent': true,
@@ -51,7 +51,7 @@ export class TreeAndFormComponent implements OnInit {
                                             { name: 'ParentId', type: 'value', valueName: '', value: 'null' }
                                         ],
                                         'ajaxConfig': {
-                                            'url': 'SinoForce.AppData.ShowCase',
+                                            'url': 'common/ShowCase',
                                             'ajaxType': 'get',
                                             'params': [
                                                 { name: 'ParentId', type: 'componentValue', valueName: '', value: 'null' }
@@ -61,7 +61,7 @@ export class TreeAndFormComponent implements OnInit {
                                             {
                                                 'type': false,
                                                 'ajaxConfig': {
-                                                    'url': 'SinoForce.AppData.ShowCase',
+                                                    'url': 'common/ShowCase',
                                                     'ajaxType': 'get',
                                                     'params': [
                                                         { name: 'ParentId', type: 'componentValue', valueName: '', value: '' }
@@ -117,7 +117,7 @@ export class TreeAndFormComponent implements OnInit {
                                         'component': 'form_view',
                                         'keyId': 'Id',
                                         ajaxConfig: {
-                                            'url': 'SinoForce.AppData.ShowCase',
+                                            'url': 'common/ShowCase',
                                             'ajaxType': 'get',
                                             'params': [
                                                 { name: 'Id', type: 'tempValue', valueName: '_id', value: '' }
@@ -216,7 +216,7 @@ export class TreeAndFormComponent implements OnInit {
                                                             'labelSize': '6',
                                                             'controlSize': '16',
                                                             'inputType': 'text',
-                                                            'name': 'CaseName',
+                                                            'name': 'caseName',
                                                             'label': '名称',
                                                             'placeholder': '',
                                                             'disabled': false,
@@ -234,7 +234,7 @@ export class TreeAndFormComponent implements OnInit {
                                                             'labelSize': '6',
                                                             'controlSize': '16',
                                                             'inputType': 'text',
-                                                            'name': 'Level',
+                                                            'name': 'caseLevel',
                                                             'label': '级别',
                                                             'placeholder': '',
                                                             'disabled': false,
@@ -252,7 +252,7 @@ export class TreeAndFormComponent implements OnInit {
                                                             'labelSize': '6',
                                                             'controlSize': '16',
                                                             'inputType': 'text',
-                                                            'name': 'CaseCount',
+                                                            'name': 'caseCount',
                                                             'label': '数量',
                                                             'placeholder': '',
                                                             'disabled': false,

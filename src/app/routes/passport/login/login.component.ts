@@ -207,7 +207,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     }
 
     async _loadProjectModule() {
-        return this.apiService.get('common/ComProjectModule/null/ComProjectModule?projectId=90621e37b806o6fe8538c5eb782901bb&_recursive=true&_deep=3').toPromise();
+        return this.apiService.get('common/ComProjectModule/null/ComProjectModule?refProjectId=7fe971700f21d3a796d2017398812dcd&_recursive=true&_deep=3').toPromise();
     }
 
     async _userLogin (userLogin) {

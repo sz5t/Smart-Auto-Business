@@ -11,17 +11,18 @@ import { TreeAndMultiTableComponent } from './tree-and-multi-table/tree-and-mult
 import { TreeAndFormComponent } from './tree-and-form/tree-and-form.component';
 import { DynamicTemplateComponent } from './dynamic-template/dynamic-template.component';
 import { TableChartComponent } from './table-chart/table-chart.component';
+import { AuthGuard } from '@core/utility/auth-guard';
 
 const routes: Routes = [
-  { path: 'singleTable', component: SingleTableComponent },
-  { path: 'mulitTable', component: MulitTableComponent },
-  { path: 'treeTable', component: TreeTableComponent },
+  { path: 'singleTable', component: SingleTableComponent, canActivate: [AuthGuard] },
+  { path: 'mulitTable', component: MulitTableComponent, canActivate: [AuthGuard]},
+  { path: 'treeTable', component: TreeTableComponent, canActivate: [AuthGuard] },
   { path: 'treeAndTable', component: TreeAndTableComponent },
-  { path: 'treeAndMulitTable', component: TreeAndMultiTableComponent },
-  { path: 'treeAndTabs', component: TreeAndTabsComponent },
-  { path: 'treeAndForm', component: TreeAndFormComponent },
-  { path: 'tableChart', component: TableChartComponent},
-  { path: 'dynamicTemplate/:name', component: DynamicTemplateComponent}
+  { path: 'treeAndMulitTable', component: TreeAndMultiTableComponent, canActivate: [AuthGuard] },
+  { path: 'treeAndTabs', component: TreeAndTabsComponent, canActivate: [AuthGuard] },
+  { path: 'treeAndForm', component: TreeAndFormComponent, canActivate: [AuthGuard] },
+  { path: 'tableChart', component: TableChartComponent, canActivate: [AuthGuard]},
+  { path: 'dynamicTemplate/:name', component: DynamicTemplateComponent, canActivate: [AuthGuard]}
 ];
 
 const COMPONENT_NOROUNT = [

@@ -54,7 +54,7 @@
                     }
                   ],
                   "ajaxConfig": {
-                    "url": "SinoForce.AppData.ShowCase",
+                    "url": "common/ShowCase",
                     "ajaxType": "get",
                     "params": []
                   },
@@ -115,7 +115,7 @@
                     50
                   ],
                   "ajaxConfig": {
-                    "url": "SinoForce.AppData.GetCase",
+                    "url": "common/GetCase",
                     "ajaxType": "get",
                     "params": [
                       {
@@ -350,7 +350,7 @@
                         "delete": [
                           {
                             "actionName": "delete",
-                            "url": "SinoForce.AppData.ShowCase",
+                            "url": "common/ShowCase",
                             "ajaxType": "delete"
                           }
                         ]
@@ -365,7 +365,7 @@
                         "post": [
                           {
                             "actionName": "add",
-                            "url": "SinoForce.AppData.ShowCase",
+                            "url": "common/ShowCase",
                             "ajaxType": "post",
                             "params": [
                               {
@@ -428,7 +428,7 @@
                         ],
                         "put": [
                           {
-                            "url": "SinoForce.AppData.ShowCase",
+                            "url": "common/ShowCase",
                             "ajaxType": "put",
                             "params": [
                               {

@@ -113,7 +113,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     if (data.isSuccess) {
                         if (this.config.dataSet[i].fields) {
                             const dataSetObjs = [];
-                            data.Data.map(d => {
+                            data.data.map(d => {
                                 const setObj = {};
                                 this.config.dataSet[i].fields.forEach((fieldItem, index) => {
                                     if (d[fieldItem.field]) {
@@ -667,7 +667,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             if (deleteConfig) {
                 for (let i = 0, len = deleteConfig.length; i < len; i++) {
                     const params = {
-                        Id: ids.join(',')
+                        _ids: ids.join(',')
                     };
                     const response = await this['delete'](deleteConfig[i].url, params);
                     if (response && response.status === 200 && response.isSuccess) {
@@ -1209,23 +1209,23 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     // region: 服务区端交互
     private async _load(url, params) {
-        return this._http.getProj(url, params).toPromise();
+        return this._http.get(url, params).toPromise();
     }
 
     private async post(url, body) {
-        return this._http.postProj(url, body).toPromise();
+        return this._http.post(url, body).toPromise();
     }
 
     private async put(url, body) {
-        return this._http.putProj(url, body).toPromise();
+        return this._http.put(url, body).toPromise();
     }
 
     private async delete(url, params) {
-        return this._http.deleteProj(url, params).toPromise();
+        return this._http.delete(url, params).toPromise();
     }
 
     private async get(url, params) {
-        return this._http.getProj(url, params).toPromise();
+        return this._http.get(url, params).toPromise();
     }
     // endregion
 
