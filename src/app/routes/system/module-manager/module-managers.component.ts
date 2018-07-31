@@ -52,7 +52,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                               'labelSize': '6',
                               'controlSize': '16',
                               'inputType': 'submit',
-                              'name': 'Enable',
+                              'name': 'enable',
                               'label': '状态',
                               'notFoundContent': '',
                               'selectModel': false,
@@ -80,7 +80,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                               'labelSize': '6',
                               'controlSize': '16',
                               'inputType': 'submit',
-                              'name': 'Type',
+                              'name': 'caseType',
                               'label': '类别',
                               'notFoundContent': '',
                               'selectModel': false,
@@ -130,7 +130,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                               'labelSize': '6',
                               'controlSize': '16',
                               'inputType': 'text',
-                              'name': 'CaseName',
+                              'name': 'caseName',
                               'label': '名称',
                               'placeholder': '',
                               'disabled': false,
@@ -144,7 +144,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                               'labelSize': '6',
                               'controlSize': '16',
                               'inputType': 'text',
-                              'name': 'Level',
+                              'name': 'caseLevel',
                               'label': '级别',
                               'placeholder': '',
                               'disabled': false,
@@ -158,7 +158,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                               'labelSize': '6',
                               'controlSize': '16',
                               'inputType': 'text',
-                              'name': 'CaseCount',
+                              'name': 'caseCount',
                               'label': '数量',
                               'placeholder': '',
                               'disabled': false,
@@ -182,7 +182,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                           relationData: {
                             name: 'refreshAsChild',
                             params: [
-                              { pid: 'CaseName', cid: '_caseName' },
+                              { pid: 'caseName', cid: '_caseName' },
                               { pid: 'Type', cid: '_type' },
                             ]
                           },
@@ -224,7 +224,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                     'keyId': 'Id',
                     'pagination': true, // 是否分页
                     'showTotal': true, // 是否显示总数据量
-                    'pageSize': 5, // 默认每页数据条数
+                    'pageSize': 15, // 默认每页数据条数
                     'pageSizeOptions': [5, 18, 20, 30, 40, 50],
                     'ajaxConfig': {
                       'url': 'common/ComProjectModule/_root/ComProjectModule',
@@ -1398,7 +1398,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                               'labelSize': '6',
                               'controlSize': '16',
                               'inputType': 'text',
-                              'name': 'CaseName',
+                              'name': 'caseName',
                               'label': '名称',
                               'placeholder': '',
                               'disabled': false,
@@ -1434,7 +1434,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                               'labelSize': '6',
                               'controlSize': '16',
                               'inputType': 'text',
-                              'name': 'CaseCount',
+                              'name': 'caseCount',
                               'label': '数量',
                               'placeholder': '',
                               'disabled': false,
@@ -1487,7 +1487,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                           relationData: {
                             name: 'refreshAsChild',
                             params: [
-                              { pid: 'CaseName', cid: '_caseName' },
+                              { pid: 'caseName', cid: '_caseName' },
                               { pid: 'Type', cid: '_type' },
                             ]
                           },

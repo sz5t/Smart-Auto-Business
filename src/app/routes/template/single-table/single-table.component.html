@@ -1,4 +1,4 @@
-<page-header [title]=""></page-header>
+<!-- <page-header [title]=""></page-header> -->
 <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'">
     <nz-tab nzTitle="示例">
         <cn-layout-resolver [config]="config" ></cn-layout-resolver>
@@ -41,7 +41,7 @@
                                                                                 50
                                                                             ],
                                                                             "ajaxConfig": {
-                                                                                "url": "SinoForce.AppData.ShowCase",
+                                                                                "url": "common/ShowCase",
                                                                                 "ajaxType": "get",
                                                                                 "params": [
                                                                                     {
@@ -99,11 +99,11 @@
                                                                                 },
                                                                                 {
                                                                                     "title": "名称",
-                                                                                    "field": "CaseName",
+                                                                                    "field": "caseName",
                                                                                     "width": 80,
                                                                                     "editor": {
                                                                                         "type": "input",
-                                                                                        "field": "CaseName",
+                                                                                        "field": "caseName",
                                                                                         "options": {
                                                                                             "type": "input",
                                                                                             "labelSize": "6",
@@ -167,12 +167,12 @@
                                                                                 },
                                                                                 {
                                                                                     "title": "数量",
-                                                                                    "field": "CaseCount",
+                                                                                    "field": "caseCount",
                                                                                     "width": 80,
                                                                                     "hidden": false,
                                                                                     "editor": {
                                                                                         "type": "input",
-                                                                                        "field": "CaseCount",
+                                                                                        "field": "caseCount",
                                                                                         "options": {
                                                                                             "type": "input",
                                                                                             "labelSize": "6",
@@ -269,173 +269,187 @@
                                                                             ],
                                                                             "toolbar": [
                                                                                 {
-                                                                                    "name": "refresh",
-                                                                                    "class": "editable-add-btn",
-                                                                                    "text": "刷新"
-                                                                                },
-                                                                                {
-                                                                                    "name": "addRow",
-                                                                                    "class": "editable-add-btn",
-                                                                                    "text": "新增"
-                                                                                },
-                                                                                {
-                                                                                    "name": "updateRow",
-                                                                                    "class": "editable-add-btn",
-                                                                                    "text": "修改"
-                                                                                },
-                                                                                {
-                                                                                    "name": "deleteRow",
-                                                                                    "class": "editable-add-btn",
-                                                                                    "text": "删除",
-                                                                                    "ajaxConfig": {
-                                                                                        "delete": [
-                                                                                            {
-                                                                                                "actionName": "delete",
-                                                                                                "url": "SinoForce.AppData.ShowCase",
-                                                                                                "ajaxType": "delete"
-                                                                                            }
-                                                                                        ]
-                                                                                    }
-                                                                                },
-                                                                                {
-                                                                                    "name": "saveRow",
-                                                                                    "class": "editable-add-btn",
-                                                                                    "text": "保存",
-                                                                                    "type": "method/action",
-                                                                                    "ajaxConfig": {
-                                                                                        "post": [
-                                                                                            {
-                                                                                                "actionName": "add",
-                                                                                                "url": "SinoForce.AppData.ShowCase",
-                                                                                                "ajaxType": "post",
-                                                                                                "params": [
+                                                                                    "group": [
+                                                                                        {
+                                                                                            "name": "refresh",
+                                                                                            "class": "editable-add-btn",
+                                                                                            "text": "刷新"
+                                                                                        },
+                                                                                        {
+                                                                                            "name": "addRow",
+                                                                                            "class": "editable-add-btn",
+                                                                                            "text": "新增"
+                                                                                        },
+                                                                                        {
+                                                                                            "name": "updateRow",
+                                                                                            "class": "editable-add-btn",
+                                                                                            "text": "修改"
+                                                                                        },
+                                                                                        {
+                                                                                            "name": "deleteRow",
+                                                                                            "class": "editable-add-btn",
+                                                                                            "text": "删除",
+                                                                                            "ajaxConfig": {
+                                                                                                "delete": [
                                                                                                     {
-                                                                                                        "name": "CaseName",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "CaseName",
-                                                                                                        "value": ""
-                                                                                                    },
-                                                                                                    {
-                                                                                                        "name": "CaseCount",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "CaseCount",
-                                                                                                        "value": ""
-                                                                                                    },
-                                                                                                    {
-                                                                                                        "name": "CreateTime",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "CreateTime",
-                                                                                                        "value": ""
-                                                                                                    },
-                                                                                                    {
-                                                                                                        "name": "Enable",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "Enable",
-                                                                                                        "value": ""
-                                                                                                    },
-                                                                                                    {
-                                                                                                        "name": "Level",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "Level",
-                                                                                                        "value": ""
-                                                                                                    },
-                                                                                                    {
-                                                                                                        "name": "ParentId",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "ParentId",
-                                                                                                        "value": ""
-                                                                                                    },
-                                                                                                    {
-                                                                                                        "name": "Remark",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "Remark",
-                                                                                                        "value": ""
-                                                                                                    },
-                                                                                                    {
-                                                                                                        "name": "Type",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "Type",
-                                                                                                        "value": ""
-                                                                                                    }
-                                                                                                ],
-                                                                                                "output": [
-                                                                                                    {
-                                                                                                        "name": "_id",
-                                                                                                        "type": "",
-                                                                                                        "dataName": "Id"
+                                                                                                        "actionName": "delete",
+                                                                                                        "url": "common/ShowCase",
+                                                                                                        "ajaxType": "delete"
                                                                                                     }
                                                                                                 ]
                                                                                             }
-                                                                                        ],
-                                                                                        "put": [
-                                                                                            {
-                                                                                                "url": "SinoForce.AppData.ShowCase",
-                                                                                                "ajaxType": "put",
-                                                                                                "params": [
-                                                                                                    {
-                                                                                                        "name": "Id",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "Id",
-                                                                                                        "value": ""
-                                                                                                    },
-                                                                                                    {
-                                                                                                        "name": "CaseName",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "",
-                                                                                                        "value": ""
-                                                                                                    },
-                                                                                                    {
-                                                                                                        "name": "CaseCount",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "",
-                                                                                                        "value": ""
-                                                                                                    },
-                                                                                                    {
-                                                                                                        "name": "CreateTime",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "",
-                                                                                                        "value": ""
-                                                                                                    },
-                                                                                                    {
-                                                                                                        "name": "Enable",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "",
-                                                                                                        "value": ""
-                                                                                                    },
-                                                                                                    {
-                                                                                                        "name": "Level",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "",
-                                                                                                        "value": ""
-                                                                                                    },
-                                                                                                    {
-                                                                                                        "name": "ParentId",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "",
-                                                                                                        "value": ""
-                                                                                                    },
-                                                                                                    {
-                                                                                                        "name": "Remark",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "",
-                                                                                                        "value": ""
-                                                                                                    },
-                                                                                                    {
-                                                                                                        "name": "Type",
-                                                                                                        "type": "componentValue",
-                                                                                                        "valueName": "",
-                                                                                                        "value": ""
-                                                                                                    }
-                                                                                                ]
-                                                                                            }
-                                                                                        ]
-                                                                                    }
+                                                                                        }
+                                                                                    ]
                                                                                 },
                                                                                 {
-                                                                                    "name": "cancelRow",
-                                                                                    "class": "editable-add-btn",
-                                                                                    "text": "取消"
+                                                                                    "group": [
+                                                                                    {
+                                                                                        "name": "saveRow",
+                                                                                        "class": "editable-add-btn",
+                                                                                        "text": "保存",
+                                                                                        "type": "method/action",
+                                                                                        "ajaxConfig": {
+                                                                                            "post": [
+                                                                                                {
+                                                                                                    "actionName": "add",
+                                                                                                    "url": "common/ShowCase",
+                                                                                                    "ajaxType": "post",
+                                                                                                    "params": [
+                                                                                                        {
+                                                                                                            "name": "caseName",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "caseName",
+                                                                                                            "value": ""
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "name": "caseCount",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "caseCount",
+                                                                                                            "value": ""
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "name": "CreateTime",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "CreateTime",
+                                                                                                            "value": ""
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "name": "Enable",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "Enable",
+                                                                                                            "value": ""
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "name": "Level",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "Level",
+                                                                                                            "value": ""
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "name": "ParentId",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "ParentId",
+                                                                                                            "value": ""
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "name": "Remark",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "Remark",
+                                                                                                            "value": ""
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "name": "Type",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "Type",
+                                                                                                            "value": ""
+                                                                                                        }
+                                                                                                    ],
+                                                                                                    "output": [
+                                                                                                        {
+                                                                                                            "name": "_id",
+                                                                                                            "type": "",
+                                                                                                            "dataName": "Id"
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ],
+                                                                                            "put": [
+                                                                                                {
+                                                                                                    "url": "common/ShowCase",
+                                                                                                    "ajaxType": "put",
+                                                                                                    "params": [
+                                                                                                        {
+                                                                                                            "name": "Id",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "Id",
+                                                                                                            "value": ""
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "name": "caseName",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "",
+                                                                                                            "value": ""
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "name": "caseCount",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "",
+                                                                                                            "value": ""
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "name": "CreateTime",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "",
+                                                                                                            "value": ""
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "name": "Enable",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "",
+                                                                                                            "value": ""
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "name": "Level",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "",
+                                                                                                            "value": ""
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "name": "ParentId",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "",
+                                                                                                            "value": ""
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "name": "Remark",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "",
+                                                                                                            "value": ""
+                                                                                                        },
+                                                                                                        {
+                                                                                                            "name": "Type",
+                                                                                                            "type": "componentValue",
+                                                                                                            "valueName": "",
+                                                                                                            "value": ""
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "cancelRow",
+                                                                                        "class": "editable-add-btn",
+                                                                                        "text": "取消"
+                                                                                    }
+                                                                                    ]
                                                                                 },
+                                                                                {
+                                                                                    "group": [
+                                                                                    ]
+                                                                                }
+                                                                                
+                                                                                
                                                                                 {
                                                                                     "name": "injectRow",
                                                                                     "class": "editable-add-btn",
@@ -552,7 +566,7 @@
                                                                                 50
                                                                             ],
                                                                             "ajaxConfig": {
-                                                                                "url": "SinoForce.AppData.ShowCase",
+                                                                                "url": "common/ShowCase",
                                                                                 "ajaxType": "get",
                                                                                 "params": [
                                                                                     {
@@ -594,11 +608,11 @@
                                                                                 },
                                                                                 {
                                                                                     "title": "名称",
-                                                                                    "field": "CaseName",
+                                                                                    "field": "caseName",
                                                                                     "width": 80,
                                                                                     "editor": {
                                                                                         "type": "input",
-                                                                                        "field": "CaseName",
+                                                                                        "field": "caseName",
                                                                                         "options": {
                                                                                             "type": "input",
                                                                                             "labelSize": "6",
@@ -662,12 +676,12 @@
                                                                                 },
                                                                                 {
                                                                                     "title": "数量",
-                                                                                    "field": "CaseCount",
+                                                                                    "field": "caseCount",
                                                                                     "width": 80,
                                                                                     "hidden": false,
                                                                                     "editor": {
                                                                                         "type": "input",
-                                                                                        "field": "CaseCount",
+                                                                                        "field": "caseCount",
                                                                                         "options": {
                                                                                             "type": "input",
                                                                                             "labelSize": "6",
@@ -786,7 +800,7 @@
                                                                                         "delete": [
                                                                                             {
                                                                                                 "actionName": "delete",
-                                                                                                "url": "SinoForce.AppData.ShowCase",
+                                                                                                "url": "common/ShowCase",
                                                                                                 "ajaxType": "delete"
                                                                                             }
                                                                                         ]
@@ -801,19 +815,19 @@
                                                                                         "post": [
                                                                                             {
                                                                                                 "actionName": "add",
-                                                                                                "url": "SinoForce.AppData.ShowCase",
+                                                                                                "url": "common/ShowCase",
                                                                                                 "ajaxType": "post",
                                                                                                 "params": [
                                                                                                     {
-                                                                                                        "name": "CaseName",
+                                                                                                        "name": "caseName",
                                                                                                         "type": "componentValue",
-                                                                                                        "valueName": "CaseName",
+                                                                                                        "valueName": "caseName",
                                                                                                         "value": ""
                                                                                                     },
                                                                                                     {
-                                                                                                        "name": "CaseCount",
+                                                                                                        "name": "caseCount",
                                                                                                         "type": "componentValue",
-                                                                                                        "valueName": "CaseCount",
+                                                                                                        "valueName": "caseCount",
                                                                                                         "value": ""
                                                                                                     },
                                                                                                     {
@@ -864,7 +878,7 @@
                                                                                         ],
                                                                                         "put": [
                                                                                             {
-                                                                                                "url": "SinoForce.AppData.ShowCase",
+                                                                                                "url": "common/ShowCase",
                                                                                                 "ajaxType": "put",
                                                                                                 "params": [
                                                                                                     {
@@ -874,13 +888,13 @@
                                                                                                         "value": ""
                                                                                                     },
                                                                                                     {
-                                                                                                        "name": "CaseName",
+                                                                                                        "name": "caseName",
                                                                                                         "type": "componentValue",
                                                                                                         "valueName": "",
                                                                                                         "value": ""
                                                                                                     },
                                                                                                     {
-                                                                                                        "name": "CaseCount",
+                                                                                                        "name": "caseCount",
                                                                                                         "type": "componentValue",
                                                                                                         "valueName": "",
                                                                                                         "value": ""
@@ -1031,7 +1045,7 @@
                 <nz-row [nzGutter]="4">
                     <nz-col [nzSpan]="24">
                         <nz-card nzTitle="组件Demo">
-                            <cn-component-resolver [config]="componentConfig"></cn-component-resolver>
+                            <!-- <cn-component-resolver [config]="componentConfig"></cn-component-resolver> -->
                         </nz-card>
                     </nz-col>
                 </nz-row>
@@ -1144,7 +1158,7 @@
                                                                         "labelSize": "6",
                                                                         "controlSize": "16",
                                                                         "inputType": "text",
-                                                                        "name": "CaseName",
+                                                                        "name": "caseName",
                                                                         "label": "名称",
                                                                         "placeholder": "",
                                                                         "disabled": false,
@@ -1172,7 +1186,7 @@
                                                                         "labelSize": "6",
                                                                         "controlSize": "16",
                                                                         "inputType": "text",
-                                                                        "name": "CaseCount",
+                                                                        "name": "caseCount",
                                                                         "label": "数量",
                                                                         "placeholder": "",
                                                                         "disabled": false,
@@ -1210,7 +1224,7 @@
                                                                             "name": "refreshAsChild",
                                                                             "params": [
                                                                                 {
-                                                                                    "pid": "CaseName",
+                                                                                    "pid": "caseName",
                                                                                     "cid": "_caseName"
                                                                                 },
                                                                                 {
@@ -1321,14 +1335,14 @@
 <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="12">
             <nz-card>
-                    <line-chart></line-chart>
+                    <!-- <line-chart></line-chart> -->
             </nz-card>
                 
             
         </div>
         <div nz-col [nzSpan]="12">
                 <nz-card>
-                        <line-chart></line-chart>
+                        <!-- <line-chart></line-chart> -->
                 </nz-card>
                 
             </div>

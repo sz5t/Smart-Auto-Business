@@ -39,7 +39,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     'pageSize': 5, // 默认每页数据条数
                     'pageSizeOptions': [5, 18, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      // 'url': 'SinoForce.AppData.ShowCase',
+                      // 'url': 'common/ShowCase',
                       'url': 'GetCase2',
                       'ajaxType': 'get',
                       'params': [
@@ -76,11 +76,11 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                         }
                       },
                       {
-                        title: '名称', field: 'CaseName', width: '90px',
+                        title: '名称', field: 'caseName', width: '90px',
                         showFilter: false, showSort: false,
                         editor: {
                           type: 'input',
-                          field: 'CaseName',
+                          field: 'caseName',
                           options: {
                             'type': 'input',
                             'inputType': 'text',
@@ -140,10 +140,10 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                         }
                       },
                       {
-                        title: '数量', field: 'CaseCount', width: 80, hidden: false,
+                        title: '数量', field: 'caseCount', width: 80, hidden: false,
                         editor: {
                           type: 'input',
-                          field: 'CaseCount',
+                          field: 'caseCount',
                           options: {
                             'type': 'input',
                             'labelSize': '6',
@@ -153,11 +153,11 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                         }
                       },
                       {
-                        title: '级别', field: 'Level', width: 80, hidden: false,
+                        title: '级别', field: 'casecaseLevel', width: 80, hidden: false,
                         showFilter: false, showSort: false,
                         editor: {
                           type: 'input',
-                          field: 'Level',
+                          field: 'casecaseLevel',
                           options: {
                             'type': 'input',
                             'labelSize': '6',
@@ -266,7 +266,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                         'ajaxConfig': {
                           delete: [{
                             'actionName': 'delete',
-                            'url': 'SinoForce.AppData.ShowCase',
+                            'url': 'common/ShowCase',
                             'ajaxType': 'delete'
                           }]
                         }
@@ -277,14 +277,14 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                         'ajaxConfig': {
                           post: [{
                             'actionName': 'add',
-                            'url': 'SinoForce.AppData.ShowCase',
+                            'url': 'common/ShowCase',
                             'ajaxType': 'post',
                             'params': [
-                              { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
-                              { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
+                              { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
+                              { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
                               // { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
                               { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                              { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
+                              { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
                               { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
                               { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
                               { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
@@ -298,15 +298,15 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                             ]
                           }],
                           put: [{
-                            'url': 'SinoForce.AppData.ShowCase',
+                            'url': 'common/ShowCase',
                             'ajaxType': 'put',
                             'params': [
                               { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
-                              { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
-                              { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
+                              { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
+                              { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
                               // { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
                               { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                              { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
+                              { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
                               { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
                               { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
                               { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
@@ -413,7 +413,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                     'labelSize': '6',
                                     'controlSize': '16',
                                     'inputType': 'text',
-                                    'name': 'CaseName',
+                                    'name': 'caseName',
                                     'label': '名称',
                                     'isRequired': true,
                                     'placeholder': '请输入Case名称',
@@ -450,7 +450,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                     'labelSize': '6',
                                     'controlSize': '16',
                                     'inputType': 'text',
-                                    'name': 'Level',
+                                    'name': 'caseLevel',
                                     'label': '级别',
                                     'isRequired': true,
                                     'placeholder': '',
@@ -475,7 +475,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                     'labelSize': '6',
                                     'controlSize': '16',
                                     'inputType': 'text',
-                                    'name': 'CaseCount',
+                                    'name': 'caseCount',
                                     'label': '数量',
                                     'isRequired': true,
                                     'placeholder': '',
@@ -566,13 +566,13 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                 'name': 'save', 'text': '保存', 'type': 'primary',
                                 'ajaxConfig': {
                                   post: [{
-                                    'url': 'SinoForce.AppData.ShowCase',
+                                    'url': 'common/ShowCase',
                                     'params': [
-                                      { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
-                                      { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
+                                      { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
+                                      { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
                                       { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
                                       { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                                      { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
+                                      { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
                                       { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' },
                                       { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
                                       { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
@@ -584,13 +584,13 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                 'name': 'saveAndKeep', 'text': '保存并继续', 'type': 'primary',
                                 'ajaxConfig': {
                                   post: [{
-                                    'url': 'SinoForce.AppData.ShowCase',
+                                    'url': 'common/ShowCase',
                                     'params': [
-                                      { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
-                                      { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
+                                      { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
+                                      { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
                                       { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
                                       { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                                      { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
+                                      { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
                                       { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' },
                                       { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
                                       { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
@@ -613,7 +613,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                           'title': '编辑',
                           'width': '600',
                           'ajaxConfig': {
-                            'url': 'SinoForce.AppData.ShowCase',
+                            'url': 'common/ShowCase',
                             'ajaxType': 'get',
                             'params': [
                               {
@@ -721,7 +721,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                     'labelSize': '6',
                                     'controlSize': '16',
                                     'inputType': 'text',
-                                    'name': 'CaseName',
+                                    'name': 'caseName',
                                     'label': '名称',
                                     'placeholder': '',
                                     'disabled': false,
@@ -739,7 +739,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                     'labelSize': '6',
                                     'controlSize': '16',
                                     'inputType': 'text',
-                                    'name': 'Level',
+                                    'name': 'caseLevel',
                                     'label': '级别',
                                     'placeholder': '',
                                     'disabled': false,
@@ -757,7 +757,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                     'labelSize': '6',
                                     'controlSize': '16',
                                     'inputType': 'text',
-                                    'name': 'CaseCount',
+                                    'name': 'caseCount',
                                     'label': '数量',
                                     'placeholder': '',
                                     'disabled': false,
@@ -795,14 +795,14 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                 'type': 'primary',
                                 'ajaxConfig': {
                                   put: [{
-                                    'url': 'SinoForce.AppData.ShowCase',
+                                    'url': 'common/ShowCase',
                                     'params': [
                                       { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
-                                      { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
-                                      { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
+                                      { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
+                                      { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
                                       { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
                                       { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                                      { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
+                                      { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
                                       { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
                                       { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
                                     ]
@@ -868,7 +868,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                     'labelSize': '6',
                                     'controlSize': '16',
                                     'inputType': 'text',
-                                    'name': 'CaseName',
+                                    'name': 'caseName',
                                     'label': '名称',
                                     'placeholder': '',
                                     'disabled': false,
@@ -887,11 +887,11 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                 'type': 'primary',
                                 'ajaxConfig': {
                                   put: [{
-                                    'url': 'SinoForce.AppData.ShowCase',
+                                    'url': 'common/ShowCase',
                                     'batch': true,
                                     'params': [
                                       { name: 'Id', type: 'checkedItem', valueName: 'Id', value: '' },
-                                      { name: 'CaseName', type: 'checkedItem', valueName: 'CaseName', value: '' },
+                                      { name: 'caseName', type: 'checkedItem', valueName: 'caseName', value: '' },
                                       { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
                                     ]
                                   }]
@@ -1053,7 +1053,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                   'labelSize': '6',
                                   'controlSize': '16',
                                   'inputType': 'text',
-                                  'name': 'CaseName',
+                                  'name': 'caseName',
                                   'label': '名称',
                                   'isRequired': true,
                                   'placeholder': '请输入Case名称',
@@ -1090,7 +1090,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                   'labelSize': '6',
                                   'controlSize': '16',
                                   'inputType': 'text',
-                                  'name': 'Level',
+                                  'name': 'caseLevel',
                                   'label': '级别',
                                   'isRequired': true,
                                   'placeholder': '',
@@ -1115,7 +1115,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                   'labelSize': '6',
                                   'controlSize': '16',
                                   'inputType': 'text',
-                                  'name': 'CaseCount',
+                                  'name': 'caseCount',
                                   'label': '数量',
                                   'isRequired': true,
                                   'placeholder': '',
@@ -1206,13 +1206,13 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                               'name': 'save', 'text': '保存', 'type': 'primary',
                               'ajaxConfig': {
                                 post: [{
-                                  'url': 'SinoForce.AppData.ShowCase',
+                                  'url': 'common/ShowCase',
                                   'params': [
-                                    { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
-                                    { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
+                                    { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
+                                    { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
                                     { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
                                     { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                                    { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
+                                    { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
                                     { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' },
                                     { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
                                     { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
@@ -1224,13 +1224,13 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                               'name': 'saveAndKeep', 'text': '保存并继续', 'type': 'primary',
                               'ajaxConfig': {
                                 post: [{
-                                  'url': 'SinoForce.AppData.ShowCase',
+                                  'url': 'common/ShowCase',
                                   'params': [
-                                    { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
-                                    { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
+                                    { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
+                                    { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
                                     { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
                                     { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                                    { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
+                                    { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
                                     { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' },
                                     { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
                                     { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
@@ -1249,7 +1249,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                         'title': '编辑',
                         'width': '600',
                         'ajaxConfig': {
-                          'url': 'SinoForce.AppData.ShowCase',
+                          'url': 'common/ShowCase',
                           'ajaxType': 'get',
                           'params': [
                             {
@@ -1357,7 +1357,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                   'labelSize': '6',
                                   'controlSize': '16',
                                   'inputType': 'text',
-                                  'name': 'CaseName',
+                                  'name': 'caseName',
                                   'label': '名称',
                                   'placeholder': '',
                                   'disabled': false,
@@ -1375,7 +1375,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                   'labelSize': '6',
                                   'controlSize': '16',
                                   'inputType': 'text',
-                                  'name': 'Level',
+                                  'name': 'caseLevel',
                                   'label': '级别',
                                   'placeholder': '',
                                   'disabled': false,
@@ -1393,7 +1393,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                   'labelSize': '6',
                                   'controlSize': '16',
                                   'inputType': 'text',
-                                  'name': 'CaseCount',
+                                  'name': 'caseCount',
                                   'label': '数量',
                                   'placeholder': '',
                                   'disabled': false,
@@ -1431,14 +1431,14 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                               'type': 'primary',
                               'ajaxConfig': {
                                 put: [{
-                                  'url': 'SinoForce.AppData.ShowCase',
+                                  'url': 'common/ShowCase',
                                   'params': [
                                     { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
-                                    { name: 'CaseName', type: 'componentValue', valueName: 'CaseName', value: '' },
-                                    { name: 'CaseCount', type: 'componentValue', valueName: 'CaseCount', value: '' },
+                                    { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
+                                    { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
                                     { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
                                     { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                                    { name: 'Level', type: 'componentValue', valueName: 'Level', value: '' },
+                                    { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
                                     { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
                                     { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
                                   ]
@@ -1478,7 +1478,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                         'editable': false
                       },
                       {
-                        'field': 'CaseName',
+                        'field': 'caseName',
                         'hidden': false,
                         'editable': false
                       },
@@ -1488,7 +1488,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                         'editable': false
                       },
                       {
-                        'field': 'Level',
+                        'field': 'caseLevel',
                         'hidden': false,
                         'editable': false
                       },
@@ -1540,7 +1540,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     'component': 'lineChart',
                     'keyId': 'Id',
                     'ajaxConfig': {
-                      'url': 'SinoForce.AppData.ShowCase',
+                      'url': 'common/ShowCase',
                       'ajaxType': 'get',
                       'params': [
                         { name: 'ParentId', type: 'tempValue', valueName: '_parentId'}
@@ -1564,15 +1564,15 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     width: '500',
                     forceFit: true,
                     key: 'Remark',
-                    value: 'CaseCount',
-                    dataKey: 'CaseName',
+                    value: 'caseCount',
+                    dataKey: 'caseName',
                     scale: [
                       {
-                        dataKey: 'CaseName',
+                        dataKey: 'caseName',
                         min: 0
                       },
                       {
-                        dataKey: 'CaseCount',
+                        dataKey: 'caseCount',
                         min: 0,
                         max: 1
                       }
@@ -1597,7 +1597,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     //   // {name: 'm12',  month: '十二月', Tokyo: 9.6, London: 4.8 , city: '东京'}
                     // ],
                     sharp: 'circle',
-                    fields: ['CaseCount', 'CaseName', 'Remark'],
+                    fields: ['caseCount', 'caseName', 'Remark'],
                     style: {
                       stroke: '#f1f233',
                       lineWidth: 1
@@ -1625,11 +1625,11 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     'component': 'lineChart',
                     'keyId': 'Id',
                     'ajaxConfig': {
-                      'url': 'SinoForce.AppData.ShowCase',
+                      'url': 'common/ShowCase',
                       'ajaxType': 'get',
                       'params': [
                         { name: 'ParentId', type: 'tempValue', valueName: '_parentId'},
-                        { name: '_order', type: 'value', value: 'CaseName asc'}
+                        { name: '_order', type: 'value', value: 'caseName asc'}
                       ]
                     },
                     'componentType': {
@@ -1650,8 +1650,8 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     width: '500',
                     forceFit: true,
                     key: 'Type',
-                    value: 'CaseCount',
-                    dataKey: 'CaseName',
+                    value: 'caseCount',
+                    dataKey: 'caseName',
                     scale: [
                       {
                         dataKey: 'CaseValue',
@@ -1659,7 +1659,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                         max: 1
                       },
                       {
-                        dataKey: 'CaseName',
+                        dataKey: 'caseName',
                         min: 0
                       }
                     ],
@@ -1676,7 +1676,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     //   { name: 'm111', month: '一月', tem: 10, city: '西安' },
                     // ],
                     sharp: 'circle',
-                    fields: ['CaseCount', 'CaseName', 'Type'],
+                    fields: ['caseCount', 'caseName', 'Type'],
                     style: {
                       stroke: '#f1f233',
                       lineWidth: 1
@@ -1716,7 +1716,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     'component': 'barChart',
                     'keyId': 'Id',
                     'ajaxConfig': {
-                      'url': 'SinoForce.AppData.ShowCase',
+                      'url': 'common/ShowCase',
                       'ajaxType': 'get',
                       'params': [
                         { name: 'ParentId', type: 'tempValue', valueName: '_parentId'}
@@ -1740,11 +1740,11 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     width: '500',
                     forceFit: true,
                     key: 'Type',
-                    value: 'CaseCount',
-                    dataKey: 'CaseName',
+                    value: 'caseCount',
+                    dataKey: 'caseName',
                     scale: [
                       {
-                        dataKey: 'CaseName',
+                        dataKey: 'caseName',
                         min: 0
                       }
                     ],
@@ -1768,7 +1768,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     //   // {name: 'm12',  month: '十二月', Tokyo: 9.6, London: 4.8 , city: '东京'}
                     // ],
                     sharp: 'circle',
-                    fields: ['CaseCount', 'CaseName', 'Type'],
+                    fields: ['caseCount', 'caseName', 'Type'],
                     style: {
                       stroke: '#f1f233',
                       lineWidth: 1
@@ -1800,7 +1800,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     'component': 'barChart',
                     'keyId': 'Id',
                     'ajaxConfig': {
-                      'url': 'SinoForce.AppData.ShowCase',
+                      'url': 'common/ShowCase',
                       'ajaxType': 'get',
                       'params': [
                         { name: 'ParentId', type: 'tempValue', valueName: '_parentId'}
@@ -1824,11 +1824,11 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     width: '500',
                     forceFit: true,
                     key: 'Type',
-                    value: 'CaseCount',
-                    dataKey: 'Level',
+                    value: 'caseCount',
+                    dataKey: 'caseLevel',
                     scale: [
                       {
-                        dataKey: 'Level',
+                        dataKey: 'caseLevel',
                         min: 0
                       }
                     ],
@@ -1845,7 +1845,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     //   { name: 'm111', month: '一月', tem: 10, city: '西安' },
                     // ],
                     sharp: 'circle',
-                    fields: ['CaseCount', 'Type', 'Level'],
+                    fields: ['caseCount', 'Type', 'caseLevel'],
                     style: {
                       stroke: '#f1f233',
                       lineWidth: 1

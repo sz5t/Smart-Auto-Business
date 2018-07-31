@@ -2,19 +2,21 @@ import { BsnComponentMessage } from '@core/relative-Service/BsnTableStatus';
 import { Observable ,  Observer } from 'rxjs';
 import { BsnToolbarRelativeMessage } from '@core/relative-Service/relative-service';
 import { BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODES } from '@core/relative-Service/BsnTableStatus';
-import { Component, OnInit, Input, OnDestroy, Type, Inject } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Type, Inject, ViewEncapsulation } from '@angular/core';
 import { BsnTableRelativeMessageService } from '@core/relative-Service/relative-service';
 @Component({
     selector: 'bsn-toolbar',
+    encapsulation: ViewEncapsulation.None,
     templateUrl: './bsn-toolbar.component.html',
     styles: [
         `
 .table-operations {
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
-.table-operations > button {
-  margin-right: 8px;
+.table-operations .ant-btn-group {
+  margin-right: 4px;
+  margin-bottom: 2px;
 }
 `]
 })
@@ -29,12 +31,13 @@ export class BsnToolbarComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        console.log(this.config);
         // if (this.permissions.length > 0) {
         //     this.toolbarConfig = this.getPermissions();
         // } else {
         //     this.toolbarConfig = this.config;
         // }
-        this.toolbarConfig = this.config;
+        // this.toolbarConfig = this.config;
         
     }
 
@@ -77,7 +80,7 @@ export class BsnToolbarComponent implements OnInit {
     }
 
     toolbarAction(btn) {
-        console.log('send btn message');
+        // console.log('send btn message');
         // const message = new BsnToolbarRelativeMessage();
         // message.action = this.TABLE_MODELS[btn.action];
         // message.messageData = this.config;

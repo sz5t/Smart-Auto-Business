@@ -54,7 +54,7 @@
                     }
                   ],
                   "ajaxConfig": {
-                    "url": "SinoForce.AppData.ShowCase",
+                    "url": "common/ShowCase",
                     "ajaxType": "get",
                     "params": []
                   },
@@ -136,7 +136,7 @@
                         50
                       ],
                       "ajaxConfig": {
-                        "url": "SinoForce.AppData.ShowCase",
+                        "url": "common/ShowCase",
                         "ajaxType": "get",
                         "params": [
                           {
@@ -379,7 +379,7 @@
                             "delete": [
                               {
                                 "actionName": "delete",
-                                "url": "SinoForce.AppData.ShowCase",
+                                "url": "common/ShowCase",
                                 "ajaxType": "delete"
                               }
                             ]
@@ -394,7 +394,7 @@
                             "post": [
                               {
                                 "actionName": "add",
-                                "url": "SinoForce.AppData.ShowCase",
+                                "url": "common/ShowCase",
                                 "ajaxType": "post",
                                 "params": [
                                   {
@@ -457,7 +457,7 @@
                             ],
                             "put": [
                               {
-                                "url": "SinoForce.AppData.ShowCase",
+                                "url": "common/ShowCase",
                                 "ajaxType": "put",
                                 "params": [
                                   {
@@ -701,7 +701,7 @@
                                 "ajaxConfig": {
                                   "post": [
                                     {
-                                      "url": "SinoForce.AppData.ShowCase",
+                                      "url": "common/ShowCase",
                                       "params": [
                                         {
                                           "name": "CaseName",
@@ -774,7 +774,7 @@
                             "title": "编辑",
                             "width": "600",
                             "ajaxConfig": {
-                              "url": "SinoForce.AppData.ShowCase",
+                              "url": "common/ShowCase",
                               "ajaxType": "get",
                               "params": [
                                 {
@@ -962,7 +962,7 @@
                                 "ajaxConfig": {
                                   "put": [
                                     {
-                                      "url": "SinoForce.AppData.ShowCase",
+                                      "url": "common/ShowCase",
                                       "params": [
                                         {
                                           "name": "Id",
@@ -1070,7 +1070,7 @@
                       "component": "form_view",
                       "keyId": "Id",
                       "ajaxConfig": {
-                        "url": "SinoForce.AppData.ShowCase",
+                        "url": "common/ShowCase",
                         "ajaxType": "get",
                         "params": [
                           {

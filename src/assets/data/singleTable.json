@@ -237,7 +237,7 @@
                                         50
                                     ],
                                     "ajaxConfig": {
-                                        "url": "SinoForce.AppData.GetCase",
+                                        "url": "common/GetCase",
                                         "ajaxType": "get",
                                         "params": [],
                                         "filter": [
@@ -692,7 +692,7 @@
                                                         "ajaxConfig": {
                                                             "post": [
                                                                 {
-                                                                    "url": "SinoForce.AppData.ShowCase",
+                                                                    "url": "common/ShowCase",
                                                                     "params": [
                                                                         {
                                                                             "name": "CaseName",
@@ -754,7 +754,7 @@
                                                         "ajaxConfig": {
                                                             "post": [
                                                                 {
-                                                                    "url": "SinoForce.AppData.ShowCase",
+                                                                    "url": "common/ShowCase",
                                                                     "params": [
                                                                         {
                                                                             "name": "CaseName",
@@ -830,7 +830,7 @@
                                                 "title": "编辑",
                                                 "width": "600",
                                                 "ajaxConfig": {
-                                                    "url": "SinoForce.AppData.ShowCase",
+                                                    "url": "common/ShowCase",
                                                     "ajaxType": "get",
                                                     "params": [
                                                         {
@@ -1007,7 +1007,7 @@
                                                         "ajaxConfig": {
                                                             "put": [
                                                                 {
-                                                                    "url": "SinoForce.AppData.ShowCase",
+                                                                    "url": "common/ShowCase",
                                                                     "params": [
                                                                         {
                                                                             "name": "Id",
