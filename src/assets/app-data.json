@@ -1,7 +1,7 @@
 {
     "app": {
-        "name": "自动化业务装配系统",
-        "description": "SinoForce 自动化业务装配系统"
+        "name": "SmartOne",
+        "description": "SmartOne"
     },
     "user": {
         "name": "管理员",

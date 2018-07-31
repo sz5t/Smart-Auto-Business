@@ -1,7 +1,7 @@
 {
     "app": {
         "name": "SmartOne",
-        "description": "SmartOne 自动化业务装配系统"
+        "description": "SmartOne"
     },
     "user": {
         "name": "管理员",

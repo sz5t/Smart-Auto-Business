@@ -77,10 +77,10 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     switchLogin(ret: any) {
         this.type = ret.index;
         if (ret.index === 0) {
-            this.titleService.setTitle('配置平台');
+            this.titleService.setTitle('SmartOne配置平台');
         } else {
-            this.titleService.setTitle('解析平台');
-            this.cacheService.set('AppName', 'XXX信息化系统');
+            this.titleService.setTitle('SmartOne运行平台');
+            this.cacheService.set('AppName', 'SmartOne');
         }
     }
 

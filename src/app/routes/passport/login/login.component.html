@@ -1,6 +1,6 @@
 <form nz-form [formGroup]="form" (ngSubmit)="submit()" role="form">
     <nz-tabset [nzAnimated]="false" class="tabs" (nzSelectChange)="switchLogin($event)">
-        <nz-tab nzTitle="配置平台登录">
+        <nz-tab nzTitle="配置系统">
             <nz-alert *ngIf="error" [nzType]="'error'" [nzMessage]="error" [nzShowIcon]="true" class="mb-lg"></nz-alert>
             <nz-form-item>
                 <nz-form-control>
@@ -21,7 +21,7 @@
                 </nz-form-control>
             </nz-form-item>
         </nz-tab>
-        <nz-tab nzTitle="解析平台登录">
+        <nz-tab nzTitle="用户系统">
             <nz-alert *ngIf="errorApp" [nzType]="'error'" [nzMessage]="errorApp" [nzShowIcon]="true" class="mb-lg"></nz-alert>
             <nz-form-item>
                 <nz-form-control>
