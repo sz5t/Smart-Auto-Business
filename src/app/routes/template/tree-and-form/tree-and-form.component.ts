@@ -39,7 +39,7 @@ export class TreeAndFormComponent implements OnInit {
                                         'showLine': false,  //   显示连接线 fal
                                         'columns': [ // 字段映射，映射成树结构所需
                                             { title: '主键', field: 'key', valueName: 'Id' },
-                                            { title: '父节点', field: 'parentId', valueName: 'ParentId' },
+                                            { title: '父节点', field: 'parentId', valueName: 'parentId' },
                                             { title: '标题', field: 'title', valueName: 'caseName' },
                                         ],
                                         'componentType': {
@@ -48,13 +48,13 @@ export class TreeAndFormComponent implements OnInit {
                                             'own': false
                                         },
                                         'parent': [
-                                            { name: 'ParentId', type: 'value', valueName: '', value: 'null' }
+                                            { name: 'parentId', type: 'value', valueName: '', value: 'null' }
                                         ],
                                         'ajaxConfig': {
                                             'url': 'common/ShowCase',
                                             'ajaxType': 'get',
                                             'params': [
-                                                { name: 'ParentId', type: 'componentValue', valueName: '', value: 'null' }
+                                                { name: 'parentId', type: 'componentValue', valueName: '', value: 'null' }
                                             ]
                                         },
                                         'expand': [
@@ -64,7 +64,7 @@ export class TreeAndFormComponent implements OnInit {
                                                     'url': 'common/ShowCase',
                                                     'ajaxType': 'get',
                                                     'params': [
-                                                        { name: 'ParentId', type: 'componentValue', valueName: '', value: '' }
+                                                        { name: 'parentId', type: 'componentValue', valueName: '', value: '' }
                                                     ]
                                                 }
                                             }
@@ -118,7 +118,7 @@ export class TreeAndFormComponent implements OnInit {
                                         'keyId': 'Id',
                                         ajaxConfig: {
                                             'url': 'common/ShowCase',
-                                            'ajaxType': 'get',
+                                            'ajaxType': 'getById',
                                             'params': [
                                                 { name: 'Id', type: 'tempValue', valueName: '_id', value: '' }
                                             ]
@@ -137,7 +137,7 @@ export class TreeAndFormComponent implements OnInit {
                                                             'labelSize': '6',
                                                             'controlSize': '16',
                                                             'inputType': 'submit',
-                                                            'name': 'Enable',
+                                                            'name': 'enabled',
                                                             'label': '状态',
                                                             'notFoundContent': '',
                                                             'selectModel': false,
@@ -169,7 +169,7 @@ export class TreeAndFormComponent implements OnInit {
                                                             'labelSize': '6',
                                                             'controlSize': '16',
                                                             'inputType': 'submit',
-                                                            'name': 'Type',
+                                                            'name': 'type',
                                                             'label': '类别Id',
                                                             'notFoundContent': '',
                                                             'selectModel': false,
@@ -271,7 +271,7 @@ export class TreeAndFormComponent implements OnInit {
                                                             'labelSize': '6',
                                                             'controlSize': '16',
                                                             'inputType': 'text',
-                                                            'name': 'Remark',
+                                                            'name': 'remark',
                                                             'label': '备注',
                                                             'placeholder': '',
                                                             'disabled': false,

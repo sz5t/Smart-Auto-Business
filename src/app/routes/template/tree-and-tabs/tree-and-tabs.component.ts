@@ -35,7 +35,7 @@ export class TreeAndTabsComponent implements OnInit {
                     'showLine': false,  //   显示连接线 fal
                     'columns': [ // 字段映射，映射成树结构所需
                       { title: '主键', field: 'key', valueName: 'Id' },
-                      { title: '父节点', field: 'parentId', valueName: 'ParentId' },
+                      { title: '父节点', field: 'parentId', valueName: 'parentId' },
                       { title: '标题', field: 'title', valueName: 'caseName' },
                     ],
                     'componentType': {
@@ -44,7 +44,7 @@ export class TreeAndTabsComponent implements OnInit {
                       'own': false
                     },
                     'parent': [
-                      { name: 'ParentId', type: 'value', valueName: '取值参数名称', value: 'null' }
+                      { name: 'parentId', type: 'value', valueName: '取值参数名称', value: 'null' }
                     ],
                     'ajaxConfig': {
                       'url': 'common/ShowCase',
@@ -120,7 +120,7 @@ export class TreeAndTabsComponent implements OnInit {
                           'ajaxType': 'get',
                           'params': [
                             {
-                              name: 'ParentId', 'type': 'tempValue', 'valueName': '_id', value: ''
+                              name: 'parentId', 'type': 'tempValue', 'valueName': '_id', value: ''
                             }
                           ],
                           'filter': [
@@ -270,16 +270,16 @@ export class TreeAndTabsComponent implements OnInit {
                             }
                           },
                           {
-                            title: '状态', field: 'Enable', width: 80, hidden: false,
+                            title: '状态', field: 'enabled', width: 80, hidden: false,
                             editor: {
                               type: 'select',
-                              field: 'Enable',
+                              field: 'enabled',
                               options: {
                                 'type': 'select',
                                 'labelSize': '6',
                                 'controlSize': '18',
                                 'inputType': 'submit',
-                                'name': 'Enable',
+                                'name': 'enabled',
                                 'notFoundContent': '',
                                 'selectModel': false,
                                 'showSearch': true,
@@ -337,12 +337,12 @@ export class TreeAndTabsComponent implements OnInit {
                                     'params': [
                                       { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
                                       { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
-                                      { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                                      { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                      { name: 'createTime', type: 'componentValue', valueName: 'createTime', value: '' },
+                                      { name: 'enabled', type: 'componentValue', valueName: 'enabled', value: '' },
                                       { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
-                                      { name: 'ParentId', type: 'tempValue', valueName: '_id', value: '' },
-                                      { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                                      { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
+                                      { name: 'parentId', type: 'tempValue', valueName: '_id', value: '' },
+                                      { name: 'remark', type: 'componentValue', valueName: 'remark', value: '' },
+                                      { name: 'type', type: 'componentValue', valueName: 'type', value: '' }
                                     ],
                                     'output': [
                                       {
@@ -359,12 +359,12 @@ export class TreeAndTabsComponent implements OnInit {
                                       { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
                                       { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
                                       { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
-                                      { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                                      { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                      { name: 'createTime', type: 'componentValue', valueName: 'createTime', value: '' },
+                                      { name: 'enabled', type: 'componentValue', valueName: 'enabled', value: '' },
                                       { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
-                                      { name: 'ParentId', type: 'tempValue', valueName: '_id', value: '' },
-                                      { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                                      { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
+                                      { name: 'parentId', type: 'tempValue', valueName: '_id', value: '' },
+                                      { name: 'remark', type: 'componentValue', valueName: 'remark', value: '' },
+                                      { name: 'type', type: 'componentValue', valueName: 'type', value: '' }
                                     ]
                                   }]
                                 }
@@ -550,12 +550,12 @@ export class TreeAndTabsComponent implements OnInit {
                                             'params': [
                                               { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
                                               { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
-                                              { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                                              { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                              { name: 'createTime', type: 'componentValue', valueName: 'createTime', value: '' },
+                                              { name: 'enabled', type: 'componentValue', valueName: 'enabled', value: '' },
                                               { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
-                                              { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' },
-                                              { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                                              { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
+                                              { name: 'parentId', type: 'tempValue', valueName: '_parentId', value: '' },
+                                              { name: 'remark', type: 'componentValue', valueName: 'remark', value: '' },
+                                              { name: 'type', type: 'componentValue', valueName: 'type', value: '' }
                                             ]
                                           }]
                                         }
@@ -595,7 +595,7 @@ export class TreeAndTabsComponent implements OnInit {
                                             'labelSize': '6',
                                             'controlSize': '16',
                                             'inputType': 'submit',
-                                            'name': 'Enable',
+                                            'name': 'enabled',
                                             'label': '状态',
                                             'notFoundContent': '',
                                             'selectModel': false,
@@ -627,7 +627,7 @@ export class TreeAndTabsComponent implements OnInit {
                                             'labelSize': '6',
                                             'controlSize': '16',
                                             'inputType': 'submit',
-                                            'name': 'Type',
+                                            'name': 'type',
                                             'label': '类别Id',
                                             'notFoundContent': '',
                                             'selectModel': false,
@@ -729,7 +729,7 @@ export class TreeAndTabsComponent implements OnInit {
                                             'labelSize': '6',
                                             'controlSize': '16',
                                             'inputType': 'text',
-                                            'name': 'Remark',
+                                            'name': 'remark',
                                             'label': '备注',
                                             'placeholder': '',
                                             'disabled': false,
@@ -755,12 +755,12 @@ export class TreeAndTabsComponent implements OnInit {
                                               { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
                                               { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
                                               { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
-                                              { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                                              { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                              { name: 'createTime', type: 'componentValue', valueName: 'createTime', value: '' },
+                                              { name: 'enabled', type: 'componentValue', valueName: 'enabled', value: '' },
                                               { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
-                                              { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
-                                              { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                                              { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
+                                              { name: 'parentId', type: 'componentValue', valueName: 'parentId', value: '' },
+                                              { name: 'remark', type: 'componentValue', valueName: 'remark', value: '' },
+                                              { name: 'type', type: 'componentValue', valueName: 'type', value: '' }
                                             ]
                                           }]
                                         }
