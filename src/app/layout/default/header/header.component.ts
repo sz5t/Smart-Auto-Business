@@ -9,11 +9,11 @@ import { CacheService } from '@delon/cache';
         `.title {
             color: whitesmoke;
             font-size: 25px;
-            font-family: 'Myriad Pro', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
             font-weight: 600;
-            letter-spacing: 0.5em;
+            letter-spacing: 0.1em;
             position: relative;
-            top: 2px;
+            top: 5px;
 }`
 
     ]

@@ -693,7 +693,7 @@
                                 "disabled": false,
                                 "size": "default",
                                 "ajaxConfig": {
-                                  "url": "SinoForce.User.AppUser",
+                                  "url": "common/ShowCase",
                                   "ajaxType": "get",
                                   "params": []
                                 },
@@ -1044,7 +1044,7 @@
                                 "disabled": false,
                                 "size": "default",
                                 "ajaxConfig": {
-                                  "url": "SinoForce.User.AppUser",
+                                  "url": "common/ShowCase",
                                   "ajaxType": "get",
                                   "params": []
                                 },
@@ -1396,7 +1396,7 @@
                     {
                       "name": "TypeName",
                       "ajaxConfig": {
-                        "url": "SinoForce.User.AppUser",
+                        "url": "common/ShowCase",
                         "ajaxType": "get",
                         "params": []
                       },

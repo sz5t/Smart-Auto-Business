@@ -189,7 +189,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
             if (this.type === 0) { // 配置平台
                 const localAppDataResult = await this._getLocalAppData();
                 menus = localAppDataResult.menu;
-                url = '/dashboard/analysis';
+                url = '/dashboard/v1';
             } else { // 解析平台
                 const projModule = await this._loadProjectModule();
                 menus = this.arrayToTree(projModule.data, null);

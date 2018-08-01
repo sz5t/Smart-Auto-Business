@@ -1,3 +1,4 @@
+import { LodopService } from '@delon/abc';
 
 import { BsnTableRelativeMessageService } from '@core/relative-Service/relative-service';
 import { NgModule, LOCALE_ID, APP_INITIALIZER, Injector } from '@angular/core';
@@ -102,7 +103,8 @@ export function StartupServiceFactory(startupService: StartupService): Function 
         },
         ApiService,
         RelativeService,
-        RelativeResolver
+        RelativeResolver,
+        LodopService
     ],
     bootstrap: [AppComponent]
 })

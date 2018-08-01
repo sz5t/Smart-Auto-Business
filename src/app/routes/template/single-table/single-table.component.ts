@@ -597,7 +597,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                         'labelSize': '6',
                                         'controlSize': '16',
                                         'inputType': 'submit',
-                                        'name': 'Type',
+                                        'name': 'caseType',
                                         'label': '类别',
                                         'labelName': 'Name',
                                         'valueName': 'Id',
@@ -608,13 +608,13 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                         'disabled': false,
                                         'size': 'default',
                                         'ajaxConfig': {
-                                          'url': 'SinoForce.User.AppUser',
+                                          'url': 'common/ShowCase',
                                           'ajaxType': 'get',
                                           'params': []
                                         },
                                         'cascader': [
                                           {
-                                            'name': 'appUser',
+                                            'name': 'getCaseName',
                                             'type': 'sender',
                                             'cascaderData': {
                                               'params': [
@@ -658,7 +658,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                         },
                                         'cascader': [
                                           {
-                                            'name': 'appUser',
+                                            'name': 'getCaseName',
                                             'type': 'sender',
                                             'cascaderData': {
                                               'params': [
@@ -1304,7 +1304,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                   },
                                   'cascader': [
                                     {
-                                      'name': 'appUser',
+                                      'name': 'getCaseName',
                                       'type': 'sender',
                                       'cascaderData': {
                                         'params': [

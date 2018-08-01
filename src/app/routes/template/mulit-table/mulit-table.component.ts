@@ -34,12 +34,11 @@ export class MulitTableComponent implements OnInit {
                     'pageSize': 5, // 默pageSizeOptions认每页数据条数
                     '': [5, 10, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      // 'url': 'common/ShowCase',
-                      'url': 'GetCase',
+                      'url': 'common/GetCase',
                       'ajaxType': 'get',
                       'params': [
                         {
-                          name: 'parentId', type: 'value', valueName: '', 'value': 'null'
+                          name: 'parentId', type: 'value', valueName: '', 'value': null
                         }
                       ]
                     },
@@ -115,7 +114,7 @@ export class MulitTableComponent implements OnInit {
                             'size': 'default',
                             'clear': true,
                             'width': '130px',
-                            'dataSet': 'TypeName',
+                            'dataSet': 'getCaseName',
                             'options': [
                               {
                                 'label': '表',
@@ -242,15 +241,6 @@ export class MulitTableComponent implements OnInit {
                     'toolbar': [
                       {
                         'group': [
-                          {
-                            'name': 'cus', 'text': '自定义事件', 'type': 'injectFunction',
-                            'context': {
-                              'name': 'text1',
-                              'arguments': [],
-                              'content': 'alert(this)'
-                            }
-    
-                          },
                           {
                             'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
                           },
@@ -387,7 +377,7 @@ export class MulitTableComponent implements OnInit {
                                         'disabled': false,
                                         'size': 'default',
                                         'ajaxConfig': {
-                                          'url': 'SinoForce.User.AppUser',
+                                          'url': 'common/ShowCase',
                                           'ajaxType': 'get',
                                           'params': []
                                         },
@@ -681,7 +671,7 @@ export class MulitTableComponent implements OnInit {
                                         'disabled': false,
                                         'size': 'default',
                                         'ajaxConfig': {
-                                          'url': 'SinoForce.User.AppUser',
+                                          'url': 'common/ShowCase',
                                           'ajaxType': 'get',
                                           'params': []
                                         },
@@ -928,8 +918,12 @@ export class MulitTableComponent implements OnInit {
                     ],
                     'dataSet': [
                       {
-                        'name': 'TypeName',
-                        'ajaxConfig': 'SinoForce.User.AppUser',
+                        'name': 'getCaseName',
+                        'ajaxConfig': {
+                          'url': 'common/ShowCase',
+                          'ajaxType': 'get',
+                          'params': []
+                        },
                         'ajaxType': 'get',
                         'params': [],
                         'fields': [
@@ -991,8 +985,7 @@ export class MulitTableComponent implements OnInit {
                     'pageSize': 5, // 默认每页数据条数
                     'pageSizeOptions': [5, 10, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      // 'url': 'common/ShowCase',
-                      'url': 'GetCase',
+                      'url': 'common/GetCase',
                       'ajaxType': 'get',
                       'params': [
                         { name: 'parentId', type: 'tempValue', valueName: '_parentId', value: '' }
@@ -1060,7 +1053,7 @@ export class MulitTableComponent implements OnInit {
                             'size': 'default',
                             'clear': true,
                             'width': '130px',
-                            'dataSet': 'TypeName',
+                            'dataSet': 'getCaseName',
                             'options': [
                               {
                                 'label': '表',
@@ -1332,7 +1325,7 @@ export class MulitTableComponent implements OnInit {
                                         'disabled': false,
                                         'size': 'default',
                                         'ajaxConfig': {
-                                          'url': 'SinoForce.User.AppUser',
+                                          'url': 'common/ShowCase',
                                           'ajaxType': 'get',
                                           'params': []
                                         },
@@ -1630,7 +1623,7 @@ export class MulitTableComponent implements OnInit {
                                         'disabled': false,
                                         'size': 'default',
                                         'ajaxConfig': {
-                                          'url': 'SinoForce.User.AppUser',
+                                          'url': 'common/ShowCase',
                                           'ajaxType': 'get',
                                           'params': []
                                         },
@@ -1888,7 +1881,11 @@ export class MulitTableComponent implements OnInit {
                     'dataSet': [
                       {
                         'name': 'TypeName',
-                        'ajaxConfig': 'SinoForce.User.AppUser',
+                        'ajaxConfig': {
+                          'url': 'common/ShowCase',
+                          'ajaxType': 'get',
+                          'params': []
+                        },
                         'ajaxType': 'get',
                         'params': [],
                         'fields': [

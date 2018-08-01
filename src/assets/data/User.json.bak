@@ -32,7 +32,7 @@
                     50
                   ],
                   "ajaxConfig": {
-                    "url": "SinoForce.User.AppUser",
+                    "url": "common/ShowCase",
                     "ajaxType": "get",
                     "params": [
                       {
@@ -395,7 +395,7 @@
                         "delete": [
                           {
                             "actionName": "delete",
-                            "url": "SinoForce.User.AppUser",
+                            "url": "common/ShowCase",
                             "ajaxType": "delete"
                           }
                         ]
@@ -410,7 +410,7 @@
                         "post": [
                           {
                             "actionName": "add",
-                            "url": "SinoForce.User.AppUser",
+                            "url": "common/ShowCase",
                             "ajaxType": "post",
                             "params": [
                               {
@@ -521,7 +521,7 @@
                         ],
                         "put": [
                           {
-                            "url": "SinoForce.User.AppUser",
+                            "url": "common/ShowCase",
                             "ajaxType": "put",
                             "params": [
                               {

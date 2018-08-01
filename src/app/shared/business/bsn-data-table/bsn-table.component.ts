@@ -125,7 +125,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                             });
                             this.dataSet[this.config.dataSet[i].name] = dataSetObjs;
                         } else {
-                            this.dataSet[this.config.dataSet[i].name] = data.Data;
+                            this.dataSet[this.config.dataSet[i].name] = data.data;
                         }
 
                     }

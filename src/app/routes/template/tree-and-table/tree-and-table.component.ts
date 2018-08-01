@@ -436,7 +436,7 @@ export class TreeAndTableComponent implements OnInit {
                                         'disabled': false,
                                         'size': 'default',
                                         'ajaxConfig': {
-                                          'url': 'SinoForce.User.AppUser',
+                                          'url': 'common/ShowCase',
                                           'ajaxType': 'get',
                                           'params': []
                                         },
@@ -743,7 +743,7 @@ export class TreeAndTableComponent implements OnInit {
                                         'disabled': false,
                                         'size': 'default',
                                         'ajaxConfig': {
-                                          'url': 'SinoForce.User.AppUser',
+                                          'url': 'common/ShowCase',
                                           'ajaxType': 'get',
                                           'params': []
                                         },
@@ -1001,7 +1001,7 @@ export class TreeAndTableComponent implements OnInit {
                       {
                         'name': 'TypeName',
                         'ajaxConfig': {
-                          'url': 'SinoForce.User.AppUser',
+                          'url': 'common/ShowCase',
                           'ajaxType': 'get',
                           'params': []
                         },
