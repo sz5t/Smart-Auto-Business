@@ -138,8 +138,8 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     loadTreeData() {
         (async () => {
             const data = await this.getTreeData();
-            if (data.Data && data.Status === 200) {
-                const TotreeBefore = data.Data;
+            if (data.data && data.status === 200) {
+                const TotreeBefore = data.data;
                 TotreeBefore.forEach(d => {
                     if (this.config.columns) {
                         this.config.columns.forEach(col => {
@@ -185,7 +185,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         const result: NzTreeNode[] = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
-            if (data[i].ParentId === parentid) {
+            if (data[i].parentId === parentid) {
                 temp = this.listToTreeData(data, data[i].key);
                 if (temp.length > 0) {
                     data[i]['children'] = temp;

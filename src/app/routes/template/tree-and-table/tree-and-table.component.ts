@@ -39,7 +39,7 @@ export class TreeAndTableComponent implements OnInit {
                     'showLine': false,  //   显示连接线 fal
                     'columns': [ // 字段映射，映射成树结构所需
                       { title: '主键', field: 'key', valueName: 'Id' },
-                      { title: '父节点', field: 'parentId', valueName: 'ParentId' },
+                      { title: '父节点', field: 'parentId', valueName: 'parentId' },
                       { title: '标题', field: 'title', valueName: 'caseName' },
                     ],
                     'componentType': {
@@ -48,7 +48,7 @@ export class TreeAndTableComponent implements OnInit {
                       'own': false
                     },
                     'parent': [
-                      { name: 'ParentId', type: 'value', valueName: '', value: 'null' }
+                      { name: 'parentId', type: 'value', valueName: '', value: 'null' }
                     ],
                     'ajaxConfig': {
                       'url': 'common/ShowCase',
@@ -114,7 +114,7 @@ export class TreeAndTableComponent implements OnInit {
                       'ajaxType': 'get',
                       'params': [
                         {
-                          name: 'ParentId', type: 'tempValue', valueName: '_parentId', 'value': ''
+                          name: 'parentId', type: 'tempValue', valueName: '_parentId', 'value': ''
                         }
                       ]
                     },
@@ -435,318 +435,6 @@ export class TreeAndTableComponent implements OnInit {
                                         'placeholder': '--请选择--',
                                         'disabled': false,
                                         'size': 'default',
-                                        'ajaxConfig': {
-                                          'url': 'SinoForce.User.AppUser',
-                                          'ajaxType': 'get',
-                                          'params': []
-                                        },
-                                        'cascader': [
-                                          {
-                                            'name': 'appUser',
-                                            'type': 'sender',
-                                            'cascaderData': {
-                                              'params': [
-                                                {
-                                                  'pid': 'Id', 'cid': '_typeId'
-                                                }
-                                              ]
-                                            }
-                                          }
-                                        ],
-                                        'layout': 'column',
-                                        'span': '24'
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    controls: [
-                                      {
-                                        'type': 'select',
-                                        'labelSize': '6',
-                                        'controlSize': '16',
-                                        'inputType': 'submit',
-                                        'name': 'Type',
-                                        'label': '用例',
-                                        'labelName': 'caseName',
-                                        'valueName': 'Id',
-                                        'notFoundContent': '',
-                                        'selectModel': false,
-                                        'showSearch': true,
-                                        'placeholder': '--请选择--',
-                                        'disabled': false,
-                                        'size': 'default',
-                                        'cascader': [
-                                          {
-                                            'sender': 'appUser',
-                                            'type': 'receiver'
-                                          }
-                                        ],
-                                        'ajaxConfig': {
-                                          'url': 'common/GetCase',
-                                          'ajaxType': 'get',
-                                          'cascader': true,
-                                          'params': [
-                                            {
-                                              'name': 'Type', 'type': 'tempValue', 'valueName': '_typeId', 'value': ''
-                                            }
-                                          ]
-                                        },
-                                        'layout': 'column',
-                                        'span': '24'
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    controls: [
-                                      {
-                                        'type': 'input',
-                                        'labelSize': '6',
-                                        'controlSize': '16',
-                                        'inputType': 'text',
-                                        'name': 'caseName',
-                                        'label': '名称',
-                                        'isRequired': true,
-                                        'placeholder': '请输入Case名称',
-                                        'perfix': 'anticon anticon-edit',
-                                        'suffix': '',
-                                        'disabled': false,
-                                        'readonly': false,
-                                        'size': 'default',
-                                        'layout': 'column',
-                                        'span': '24',
-                                        'validations': [
-                                          {
-                                            'validator': 'required',
-                                            'errorMessage': '请输入Case名称!!!!'
-                                          },
-                                          {
-                                            'validator': 'minLength',
-                                            'length': '3',
-                                            'errorMessage': '请输入最少三个字符'
-                                          },
-                                          {
-                                            'validator': 'maxLength',
-                                            'length': '5',
-                                            'errorMessage': '请输入最5个字符'
-                                          }
-                                        ]
-                                      },
-                                    ]
-                                  },
-                                  {
-                                    controls: [
-                                      {
-                                        'type': 'input',
-                                        'labelSize': '6',
-                                        'controlSize': '16',
-                                        'inputType': 'text',
-                                        'name': 'caseLevel',
-                                        'label': '级别',
-                                        'isRequired': true,
-                                        'placeholder': '',
-                                        'disabled': false,
-                                        'readonly': false,
-                                        'size': 'default',
-                                        'layout': 'column',
-                                        'span': '24',
-                                        'validations': [
-                                          {
-                                            'validator': 'required',
-                                            'errorMessage': '请输入级别'
-                                          }
-                                        ]
-                                      },
-                                    ]
-                                  },
-                                  {
-                                    controls: [
-                                      {
-                                        'type': 'input',
-                                        'labelSize': '6',
-                                        'controlSize': '16',
-                                        'inputType': 'text',
-                                        'name': 'caseCount',
-                                        'label': '数量',
-                                        'isRequired': true,
-                                        'placeholder': '',
-                                        'disabled': false,
-                                        'readonly': false,
-                                        'size': 'default',
-                                        'layout': 'column',
-                                        'span': '24',
-                                        'validations': [
-                                          {
-                                            'validator': 'required',
-                                            'errorMessage': '请输入数量'
-                                          },
-                                          {
-                                            'validator': 'pattern',
-                                            'pattern': /^\d+$/,
-                                            'errorMessage': '请填写数字'
-                                          }
-                                        ]
-                                      },
-    
-                                    ]
-                                  },
-                                  {
-                                    controls: [
-                                      {
-                                        'type': 'datePicker',
-                                        'labelSize': '6',
-                                        'controlSize': '16',
-                                        'inputType': 'text',
-                                        'name': 'CreateTime',
-                                        'label': '创建时间',
-                                        'placeholder': '',
-                                        'disabled': false,
-                                        'readonly': false,
-                                        'size': 'default',
-                                        'layout': 'column',
-                                        'span': '24'
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    controls: [
-                                      {
-                                        'type': 'input',
-                                        'labelSize': '6',
-                                        'controlSize': '16',
-                                        'inputType': 'time',
-                                        'name': 'Remark',
-                                        'label': '备注',
-                                        'placeholder': '',
-                                        'disabled': false,
-                                        'readonly': false,
-                                        'size': 'default',
-                                        'layout': 'column',
-                                        'span': '24'
-                                      }
-                                    ]
-                                  }
-                                ],
-                              'buttons':
-                                [
-                                  {
-                                    'name': 'save', 'text': '保存', 'type': 'primary',
-                                    'ajaxConfig': {
-                                      post: [{
-                                        'url': 'common/ShowCase',
-                                        'params': [
-                                          { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
-                                          { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
-                                          { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                                          { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                                          { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
-                                          { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' },
-                                          { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                                          { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
-                                        ]
-                                      }]
-                                    }
-                                  },
-                                  {
-                                    'name': 'saveAndKeep', 'text': '保存并继续', 'type': 'primary',
-                                    'ajaxConfig': {
-                                      post: [{
-                                        'url': 'common/ShowCase',
-                                        'params': [
-                                          { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
-                                          { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
-                                          { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                                          { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                                          { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
-                                          { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' },
-                                          { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                                          { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
-                                        ]
-                                      }]
-                                    }
-                                  },
-                                  { 'name': 'reset', 'text': '重置' },
-                                  { 'name': 'close', 'text': '关闭' }
-                                ],
-    
-                            }
-                          },
-                          {
-                            'name': 'editForm', 'class': 'editable-add-btn', 'text': '弹出编辑表单',
-                            'type': 'showForm',
-                            'dialogConfig': {
-                              'keyId': 'Id',
-                              'title': '编辑',
-                              'width': '600',
-                              'ajaxConfig': {
-                                'url': 'common/ShowCase',
-                                'ajaxType': 'get',
-                                'params': [
-                                  {
-                                    name: 'Id', type: 'tempValue', valueName: '_id', value: ''
-                                  }
-                                ]
-                              },
-                              'componentType': {
-                                'parent': false,
-                                'child': false,
-                                'own': true
-                              },
-                              'forms':
-                                [
-                                  {
-                                    controls: [
-                                      {
-                                        'type': 'select',
-                                        'labelSize': '6',
-                                        'controlSize': '16',
-                                        'inputType': 'submit',
-                                        'name': 'Enable',
-                                        'label': '状态',
-                                        'notFoundContent': '',
-                                        'selectModel': false,
-                                        'showSearch': true,
-                                        'placeholder': '--请选择--',
-                                        'disabled': false,
-                                        'size': 'default',
-                                        'options': [
-                                          {
-                                            'label': '启用',
-                                            'value': true,
-                                            'disabled': false
-                                          },
-                                          {
-                                            'label': '禁用',
-                                            'value': false,
-                                            'disabled': false
-                                          }
-                                        ],
-                                        'layout': 'column',
-                                        'span': '24'
-                                      },
-                                    ]
-                                  },
-                                  {
-                                    controls: [
-                                      {
-                                        'type': 'select',
-                                        'labelSize': '6',
-                                        'controlSize': '16',
-                                        'inputType': 'submit',
-                                        'name': 'Type',
-                                        'label': '类别Id',
-                                        'labelName': 'Name',
-                                        'valueName': 'Id',
-                                        'notFoundContent': '',
-                                        'selectModel': false,
-                                        'showSearch': true,
-                                        'placeholder': '--请选择--',
-                                        'disabled': false,
-                                        'size': 'default',
-                                        'ajaxConfig': {
-                                          'url': 'SinoForce.User.AppUser',
-                                          'ajaxType': 'get',
-                                          'params': []
-                                        },
                                         'options': [
                                           {
                                             'label': '表',
@@ -774,271 +462,611 @@ export class TreeAndTableComponent implements OnInit {
                                             'disabled': false
                                           }
                                         ],
-                                        'layout': 'column',
-                                        'span': '24'
+                                      
+                                 /*    'ajaxConfig': {
+                                      'url': 'SinoForce.User.AppUser',
+                                      'ajaxType': 'get',
+                                      'params': []
+                                    },
+                                    'cascader': [ 
+                                      {
+                                        'name': 'appUser',
+                                        'type': 'sender',
+                                        'cascaderData': {
+                                          'params': [
+                                            {
+                                              'pid': 'Id', 'cid': '_typeId'
+                                            }
+                                          ]
+                                        }
                                       }
-                                    ]
-                                  },
+                                    ],*/
+                                    'layout': 'column',
+                                    'span': '24'
+                                  }
+                                ]
+                            },
                                   {
-                                    controls: [
-                                      {
-                                        'type': 'input',
-                                        'labelSize': '6',
-                                        'controlSize': '16',
-                                        'inputType': 'text',
-                                        'name': 'caseName',
-                                        'label': '名称',
-                                        'placeholder': '',
-                                        'disabled': false,
-                                        'readonly': false,
-                                        'size': 'default',
-                                        'layout': 'column',
-                                        'span': '24'
-                                      },
-                                    ]
-                                  },
+                            controls: [
+                              {
+                                'type': 'select',
+                                'labelSize': '6',
+                                'controlSize': '16',
+                                'inputType': 'submit',
+                                'name': 'Type',
+                                'label': '用例',
+                                'labelName': 'caseName',
+                                'valueName': 'Id',
+                                'notFoundContent': '',
+                                'selectModel': false,
+                                'showSearch': true,
+                                'placeholder': '--请选择--',
+                                'disabled': false,
+                                'size': 'default',
+                                'cascader': [
                                   {
-                                    controls: [
-                                      {
-                                        'type': 'input',
-                                        'labelSize': '6',
-                                        'controlSize': '16',
-                                        'inputType': 'text',
-                                        'name': 'caseLevel',
-                                        'label': '级别',
-                                        'placeholder': '',
-                                        'disabled': false,
-                                        'readonly': false,
-                                        'size': 'default',
-                                        'layout': 'column',
-                                        'span': '24'
-                                      },
-                                    ]
-                                  },
-                                  {
-                                    controls: [
-                                      {
-                                        'type': 'input',
-                                        'labelSize': '6',
-                                        'controlSize': '16',
-                                        'inputType': 'text',
-                                        'name': 'caseCount',
-                                        'label': '数量',
-                                        'placeholder': '',
-                                        'disabled': false,
-                                        'readonly': false,
-                                        'size': 'default',
-                                        'layout': 'column',
-                                        'span': '24'
-                                      },
-    
-                                    ]
-                                  },
-                                  {
-                                    controls: [
-                                      {
-                                        'type': 'input',
-                                        'labelSize': '6',
-                                        'controlSize': '16',
-                                        'inputType': 'text',
-                                        'name': 'Remark',
-                                        'label': '备注',
-                                        'placeholder': '',
-                                        'disabled': false,
-                                        'readonly': false,
-                                        'size': 'default',
-                                        'layout': 'column',
-                                        'span': '24'
-                                      }
-                                    ]
+                                    'sender': 'appUser',
+                                    'type': 'receiver'
                                   }
                                 ],
-                              'buttons':
-                                [
-                                  {
-                                    'name': 'save', 'text': '保存',
-                                    'type': 'primary',
-                                    'ajaxConfig': {
-                                      put: [{
-                                        'url': 'common/ShowCase',
-                                        'params': [
-                                          { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
-                                          { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
-                                          { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
-                                          { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                                          { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                                          { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
-                                          { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                                          { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
-                                        ]
-                                      }]
+                                'ajaxConfig': {
+                                  'url': 'common/GetCase',
+                                  'ajaxType': 'get',
+                                  'cascader': true,
+                                  'params': [
+                                    {
+                                      'name': 'Type', 'type': 'tempValue', 'valueName': '_typeId', 'value': ''
                                     }
-                                  },
-                                  { 'name': 'close', 'class': 'editable-add-btn', 'text': '关闭' },
-                                  { 'name': 'reset', 'class': 'editable-add-btn', 'text': '重置' }
-                                ],
-                              'dataList': [],
-                            }
+                                  ]
+                                },
+                                'layout': 'column',
+                                'span': '24'
+                              }
+                            ]
                           },
                           {
-                            'name': 'batchEditForm', 'class': 'editable-add-btn', 'text': '弹出批量处理表单',
-                            'type': 'showBatchForm',
-                            'dialogConfig': {
-                              'keyId': 'Id',
-                              'title': '批量处理',
-                              'width': '600',
-                              'componentType': {
-                                'parent': false,
-                                'child': false,
-                                'own': true
-                              },
-                              'forms':
-                                [
+                            controls: [
+                              {
+                                'type': 'input',
+                                'labelSize': '6',
+                                'controlSize': '16',
+                                'inputType': 'text',
+                                'name': 'caseName',
+                                'label': '名称',
+                                'isRequired': true,
+                                'placeholder': '请输入Case名称',
+                                'perfix': 'anticon anticon-edit',
+                                'suffix': '',
+                                'disabled': false,
+                                'readonly': false,
+                                'size': 'default',
+                                'layout': 'column',
+                                'span': '24',
+                                'validations': [
                                   {
-                                    controls: [
-                                      {
-                                        'type': 'select',
-                                        'labelSize': '6',
-                                        'controlSize': '16',
-                                        'inputType': 'submit',
-                                        'name': 'Enable',
-                                        'label': '状态',
-                                        'notFoundContent': '',
-                                        'selectModel': false,
-                                        'showSearch': true,
-                                        'placeholder': '--请选择--',
-                                        'disabled': false,
-                                        'size': 'default',
-                                        'options': [
-                                          {
-                                            'label': '启用',
-                                            'value': true,
-                                            'disabled': false
-                                          },
-                                          {
-                                            'label': '禁用',
-                                            'value': false,
-                                            'disabled': false
-                                          }
-                                        ],
-                                        'layout': 'column',
-                                        'span': '24'
-                                      },
-                                    ]
+                                    'validator': 'required',
+                                    'errorMessage': '请输入Case名称!!!!'
                                   },
                                   {
-                                    controls: [
-                                      {
-                                        'type': 'input',
-                                        'labelSize': '6',
-                                        'controlSize': '16',
-                                        'inputType': 'text',
-                                        'name': 'caseName',
-                                        'label': '名称',
-                                        'placeholder': '',
-                                        'disabled': false,
-                                        'readonly': false,
-                                        'size': 'default',
-                                        'layout': 'column',
-                                        'span': '24'
-                                      },
-                                    ]
+                                    'validator': 'minLength',
+                                    'length': '3',
+                                    'errorMessage': '请输入最少三个字符'
                                   },
-                                ],
-                              'buttons':
-                                [
                                   {
-                                    'name': 'save', 'text': '保存',
-                                    'type': 'primary',
-                                    'ajaxConfig': {
-                                      put: [{
-                                        'url': 'common/ShowCase',
-                                        'batch': true,
-                                        'params': [
-                                          { name: 'Id', type: 'checkedItem', valueName: 'Id', value: '' },
-                                          { name: 'caseName', type: 'checkedItem', valueName: 'caseName', value: '' },
-                                          { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
-                                        ]
-                                      }]
-                                    }
-                                  },
-                                  { 'name': 'close', 'class': 'editable-add-btn', 'text': '关闭' },
-                                  { 'name': 'reset', 'class': 'editable-add-btn', 'text': '重置' }
-                                ],
-                              'dataList': [],
-                            }
-                          },
-                          {
-                            'name': 'showDialogPage', 'class': 'editable-add-btn', 'text': '弹出页面',
-                            'type': 'showLayout', 'dialogConfig': {
-                              'title': '',
-                              'layoutName': 'singleTable',
-                              'width': 800,
-                              'buttons': [
-                                { 'name': 'ok1', 'text': '确定', 'class': 'editable-add-btn', 'type': 'primary' },
-                                { 'name': 'close', 'text': '关闭' }
-                              ]
-                            }
-                          },
-                          {
-                            'name': 'btnGroup', 'text': ' 分组操作', 'type': 'group', 'icon': 'icon-plus',
-                            'group': [
-                              {
-                                'name': 'refresh', 'class': 'editable-add-btn', 'text': ' 刷新', 'icon': 'icon-list'
-                              },
-                              {
-                                'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增'
-                              },
-                              {
-                                'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改'
+                                    'validator': 'maxLength',
+                                    'length': '5',
+                                    'errorMessage': '请输入最5个字符'
+                                  }
+                                ]
                               },
                             ]
+                          },
+                          {
+                            controls: [
+                              {
+                                'type': 'input',
+                                'labelSize': '6',
+                                'controlSize': '16',
+                                'inputType': 'text',
+                                'name': 'caseLevel',
+                                'label': '级别',
+                                'isRequired': true,
+                                'placeholder': '',
+                                'disabled': false,
+                                'readonly': false,
+                                'size': 'default',
+                                'layout': 'column',
+                                'span': '24',
+                                'validations': [
+                                  {
+                                    'validator': 'required',
+                                    'errorMessage': '请输入级别'
+                                  }
+                                ]
+                              },
+                            ]
+                          },
+                          {
+                            controls: [
+                              {
+                                'type': 'input',
+                                'labelSize': '6',
+                                'controlSize': '16',
+                                'inputType': 'text',
+                                'name': 'caseCount',
+                                'label': '数量',
+                                'isRequired': true,
+                                'placeholder': '',
+                                'disabled': false,
+                                'readonly': false,
+                                'size': 'default',
+                                'layout': 'column',
+                                'span': '24',
+                                'validations': [
+                                  {
+                                    'validator': 'required',
+                                    'errorMessage': '请输入数量'
+                                  },
+                                  {
+                                    'validator': 'pattern',
+                                    'pattern': /^\d+$/,
+                                    'errorMessage': '请填写数字'
+                                  }
+                                ]
+                              },
+
+                            ]
+                          },
+                          {
+                            controls: [
+                              {
+                                'type': 'datePicker',
+                                'labelSize': '6',
+                                'controlSize': '16',
+                                'inputType': 'text',
+                                'name': 'CreateTime',
+                                'label': '创建时间',
+                                'placeholder': '',
+                                'disabled': false,
+                                'readonly': false,
+                                'size': 'default',
+                                'layout': 'column',
+                                'span': '24'
+                              }
+                            ]
+                          },
+                          {
+                            controls: [
+                              {
+                                'type': 'input',
+                                'labelSize': '6',
+                                'controlSize': '16',
+                                'inputType': 'time',
+                                'name': 'Remark',
+                                'label': '备注',
+                                'placeholder': '',
+                                'disabled': false,
+                                'readonly': false,
+                                'size': 'default',
+                                'layout': 'column',
+                                'span': '24'
+                              }
+                            ]
                           }
-                        ]
+                        ],
+                        'buttons':
+                          [
+                            {
+                              'name': 'save', 'text': '保存', 'type': 'primary',
+                              'ajaxConfig': {
+                                post: [{
+                                  'url': 'common/ShowCase',
+                                  'params': [
+                                    { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
+                                    { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
+                                    { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
+                                    { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                    { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
+                                    { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' },
+                                    { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
+                                    { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
+                                  ]
+                                }]
+                              }
+                            },
+                            {
+                              'name': 'saveAndKeep', 'text': '保存并继续', 'type': 'primary',
+                              'ajaxConfig': {
+                                post: [{
+                                  'url': 'common/ShowCase',
+                                  'params': [
+                                    { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
+                                    { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
+                                    { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
+                                    { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                    { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
+                                    { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' },
+                                    { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
+                                    { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
+                                  ]
+                                }]
+                              }
+                            },
+                            { 'name': 'reset', 'text': '重置' },
+                            { 'name': 'close', 'text': '关闭' }
+                          ],
+
                       }
-                    ],
-                    'dataSet': [
-                      {
-                        'name': 'TypeName',
-                        'ajaxConfig': {
-                          'url': 'SinoForce.User.AppUser',
-                          'ajaxType': 'get',
-                          'params': []
+                          },
+                          {
+                  'name': 'editForm', 'class': 'editable-add-btn', 'text': '弹出编辑表单',
+                  'type': 'showForm',
+                  'dialogConfig': {
+                    'keyId': 'Id',
+                    'title': '编辑',
+                    'width': '600',
+                    'ajaxConfig': {
+                      'url': 'common/ShowCase',
+                      'ajaxType': 'get',
+                      'params': [
+                        {
+                          name: 'Id', type: 'tempValue', valueName: '_id', value: ''
+                        }
+                      ]
+                    },
+                    'componentType': {
+                      'parent': false,
+                      'child': false,
+                      'own': true
+                    },
+                    'forms':
+                      [
+                        {
+                          controls: [
+                            {
+                              'type': 'select',
+                              'labelSize': '6',
+                              'controlSize': '16',
+                              'inputType': 'submit',
+                              'name': 'Enable',
+                              'label': '状态',
+                              'notFoundContent': '',
+                              'selectModel': false,
+                              'showSearch': true,
+                              'placeholder': '--请选择--',
+                              'disabled': false,
+                              'size': 'default',
+                              'options': [
+                                {
+                                  'label': '启用',
+                                  'value': true,
+                                  'disabled': false
+                                },
+                                {
+                                  'label': '禁用',
+                                  'value': false,
+                                  'disabled': false
+                                }
+                              ],
+                              'layout': 'column',
+                              'span': '24'
+                            },
+                          ]
                         },
-                        'params': [],
-                        'fields': [
-                          {
-                            'label': 'ID',
-                            'field': 'Id',
-                            'name': 'value'
-                          },
-                          {
-                            'label': '',
-                            'field': 'Name',
-                            'name': 'label'
-                          },
-                          {
-                            'label': '',
-                            'field': 'Name',
-                            'name': 'text'
+                        {
+                          controls: [
+                            {
+                              'type': 'select',
+                              'labelSize': '6',
+                              'controlSize': '16',
+                              'inputType': 'submit',
+                              'name': 'Type',
+                              'label': '类别Id',
+                              'labelName': 'Name',
+                              'valueName': 'Id',
+                              'notFoundContent': '',
+                              'selectModel': false,
+                              'showSearch': true,
+                              'placeholder': '--请选择--',
+                              'disabled': false,
+                              'size': 'default',
+                            /*   'ajaxConfig': {
+                                'url': 'SinoForce.User.AppUser',
+                                'ajaxType': 'get',
+                                'params': []
+                              }, */
+                              'options': [
+                                {
+                                  'label': '表',
+                                  'value': '1',
+                                  'disabled': false
+                                },
+                                {
+                                  'label': '树',
+                                  'value': '2',
+                                  'disabled': false
+                                },
+                                {
+                                  'label': '树表',
+                                  'value': '3',
+                                  'disabled': false
+                                },
+                                {
+                                  'label': '表单',
+                                  'value': '4',
+                                  'disabled': false
+                                },
+                                {
+                                  'label': '标签页',
+                                  'value': '5',
+                                  'disabled': false
+                                }
+                              ],
+                              'layout': 'column',
+                              'span': '24'
+                            }
+                          ]
+                        },
+                        {
+                          controls: [
+                            {
+                              'type': 'input',
+                              'labelSize': '6',
+                              'controlSize': '16',
+                              'inputType': 'text',
+                              'name': 'caseName',
+                              'label': '名称',
+                              'placeholder': '',
+                              'disabled': false,
+                              'readonly': false,
+                              'size': 'default',
+                              'layout': 'column',
+                              'span': '24'
+                            },
+                          ]
+                        },
+                        {
+                          controls: [
+                            {
+                              'type': 'input',
+                              'labelSize': '6',
+                              'controlSize': '16',
+                              'inputType': 'text',
+                              'name': 'caseLevel',
+                              'label': '级别',
+                              'placeholder': '',
+                              'disabled': false,
+                              'readonly': false,
+                              'size': 'default',
+                              'layout': 'column',
+                              'span': '24'
+                            },
+                          ]
+                        },
+                        {
+                          controls: [
+                            {
+                              'type': 'input',
+                              'labelSize': '6',
+                              'controlSize': '16',
+                              'inputType': 'text',
+                              'name': 'caseCount',
+                              'label': '数量',
+                              'placeholder': '',
+                              'disabled': false,
+                              'readonly': false,
+                              'size': 'default',
+                              'layout': 'column',
+                              'span': '24'
+                            },
+
+                          ]
+                        },
+                        {
+                          controls: [
+                            {
+                              'type': 'input',
+                              'labelSize': '6',
+                              'controlSize': '16',
+                              'inputType': 'text',
+                              'name': 'Remark',
+                              'label': '备注',
+                              'placeholder': '',
+                              'disabled': false,
+                              'readonly': false,
+                              'size': 'default',
+                              'layout': 'column',
+                              'span': '24'
+                            }
+                          ]
+                        }
+                      ],
+                    'buttons':
+                      [
+                        {
+                          'name': 'save', 'text': '保存',
+                          'type': 'primary',
+                          'ajaxConfig': {
+                            put: [{
+                              'url': 'common/ShowCase',
+                              'params': [
+                                { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
+                                { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
+                                { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
+                                { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
+                                { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
+                                { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
+                                { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
+                              ]
+                            }]
                           }
-                        ]
-                      }
+                        },
+                        { 'name': 'close', 'class': 'editable-add-btn', 'text': '关闭' },
+                        { 'name': 'reset', 'class': 'editable-add-btn', 'text': '重置' }
+                      ],
+                    'dataList': [],
+                  }
+                },
+                {
+                  'name': 'batchEditForm', 'class': 'editable-add-btn', 'text': '弹出批量处理表单',
+                  'type': 'showBatchForm',
+                  'dialogConfig': {
+                    'keyId': 'Id',
+                    'title': '批量处理',
+                    'width': '600',
+                    'componentType': {
+                      'parent': false,
+                      'child': false,
+                      'own': true
+                    },
+                    'forms':
+                      [
+                        {
+                          controls: [
+                            {
+                              'type': 'select',
+                              'labelSize': '6',
+                              'controlSize': '16',
+                              'inputType': 'submit',
+                              'name': 'Enable',
+                              'label': '状态',
+                              'notFoundContent': '',
+                              'selectModel': false,
+                              'showSearch': true,
+                              'placeholder': '--请选择--',
+                              'disabled': false,
+                              'size': 'default',
+                              'options': [
+                                {
+                                  'label': '启用',
+                                  'value': true,
+                                  'disabled': false
+                                },
+                                {
+                                  'label': '禁用',
+                                  'value': false,
+                                  'disabled': false
+                                }
+                              ],
+                              'layout': 'column',
+                              'span': '24'
+                            },
+                          ]
+                        },
+                        {
+                          controls: [
+                            {
+                              'type': 'input',
+                              'labelSize': '6',
+                              'controlSize': '16',
+                              'inputType': 'text',
+                              'name': 'caseName',
+                              'label': '名称',
+                              'placeholder': '',
+                              'disabled': false,
+                              'readonly': false,
+                              'size': 'default',
+                              'layout': 'column',
+                              'span': '24'
+                            },
+                          ]
+                        },
+                      ],
+                    'buttons':
+                      [
+                        {
+                          'name': 'save', 'text': '保存',
+                          'type': 'primary',
+                          'ajaxConfig': {
+                            put: [{
+                              'url': 'common/ShowCase',
+                              'batch': true,
+                              'params': [
+                                { name: 'Id', type: 'checkedItem', valueName: 'Id', value: '' },
+                                { name: 'caseName', type: 'checkedItem', valueName: 'caseName', value: '' },
+                                { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                              ]
+                            }]
+                          }
+                        },
+                        { 'name': 'close', 'class': 'editable-add-btn', 'text': '关闭' },
+                        { 'name': 'reset', 'class': 'editable-add-btn', 'text': '重置' }
+                      ],
+                    'dataList': [],
+                  }
+                },
+                {
+                  'name': 'showDialogPage', 'class': 'editable-add-btn', 'text': '弹出页面',
+                  'type': 'showLayout', 'dialogConfig': {
+                    'title': '',
+                    'layoutName': 'singleTable',
+                    'width': 800,
+                    'buttons': [
+                      { 'name': 'ok1', 'text': '确定', 'class': 'editable-add-btn', 'type': 'primary' },
+                      { 'name': 'close', 'text': '关闭' }
                     ]
-                  },
-                  permissions: {
-                    'viewId': 'tree_and_table_table',
-                    'columns': [],
-                    'toolbar': [],
-                    'formDialog': [],
-                    'windowDialog': []
-                  },
-                  dataList: []
+                  }
+                },
+                {
+                  'name': 'btnGroup', 'text': ' 分组操作', 'type': 'group', 'icon': 'icon-plus',
+                  'group': [
+                    {
+                      'name': 'refresh', 'class': 'editable-add-btn', 'text': ' 刷新', 'icon': 'icon-list'
+                    },
+                    {
+                      'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增'
+                    },
+                    {
+                      'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改'
+                    },
+                  ]
                 }
               ]
             }
+          ],
+          'dataSet': [
+           /*  {
+              'name': 'TypeName',
+              'ajaxConfig': {
+                'url': 'SinoForce.User.AppUser',
+                'ajaxType': 'get',
+                'params': []
+              },
+              'params': [],
+              'fields': [
+                {
+                  'label': 'ID',
+                  'field': 'Id',
+                  'name': 'value'
+                },
+                {
+                  'label': '',
+                  'field': 'Name',
+                  'name': 'label'
+                },
+                {
+                  'label': '',
+                  'field': 'Name',
+                  'name': 'text'
+                }
+              ]
+            } */
           ]
-        }
+        },
+        permissions: {
+          'viewId': 'tree_and_table_table',
+          'columns': [],
+          'toolbar': [],
+          'formDialog': [],
+          'windowDialog': []
+        },
+        dataList: []
+      }
+    ]
+  }
+          ]
+}
       }
 
     ]

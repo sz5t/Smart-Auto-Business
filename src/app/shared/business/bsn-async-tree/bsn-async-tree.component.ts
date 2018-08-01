@@ -142,8 +142,8 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
             // if (data.Data && data.Status === 200) {
             //     this.treeData = this.listToAsyncTreeData(data.Data, '');
             // }
-            if (data.Data && data.Status === 200) {
-                const TotreeBefore = data.Data;
+            if (data.data && data.status === 200) {
+                const TotreeBefore = data.data;
                 TotreeBefore.forEach(d => {
                     if (this.config.columns) {
                         this.config.columns.forEach(col => {
@@ -188,7 +188,7 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
         const result: NzTreeNode[] = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
-            if (data[i].ParentId === parentid) {
+            if (data[i].parentId === parentid) {
                 temp = this.listToAsyncTreeData(data, data[i].key);
                 if (temp.length > 0) {
                     data[i]['children'] = temp;
@@ -288,8 +288,8 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
                 .filter(p => p.type === e.node.isLeaf)
                 .map(async expand => {
                     const  data =  await this.execAjax(expand.ajaxConfig, e.node.key, 'load');
-                    if (data.Data && data.Status === 200) {
-                    data.Data.forEach(item => {
+                    if (data.data && data.status === 200) {
+                    data.data.forEach(item => {
                         item['isLeaf'] = false;
                         item['children'] = [];
                         if (this.config.columns) {
@@ -298,7 +298,7 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
                             });
                         }
                     });
-                    e.node.addChildren(data.Data);
+                    e.node.addChildren(data.data);
                 }
                 }));
 
