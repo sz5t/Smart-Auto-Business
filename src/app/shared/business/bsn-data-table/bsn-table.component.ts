@@ -314,7 +314,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             this.loading = false;
         })();
 
-       
+
     }
 
     private _buildFilter(filterConfig) {
@@ -532,10 +532,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         return isSuccess;
     }
 
-    async executeSave(rowsData, method) {
-        // Todo: 优化配置
-        const index = this.config.toolbar.findIndex(item => item.name === 'saveRow');
-        const postConfig = this.config.toolbar[index].ajaxConfig[method];
+    async _execute(rowsData, method, postConfig) {
         let isSuccess = false;
         if (postConfig) {
             for (let i = 0, len = postConfig.length; i < len; i++) {
@@ -579,6 +576,33 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             );
         }
         return isSuccess;
+    }
+
+    async executeSave(rowsData, method) {
+        // Todo: 优化配置
+        let result;
+        this.config.toolbar.forEach(bar => {
+            if (bar.group && bar.group.length > 0) {
+                const index = bar.group.findIndex(item => item.name === 'saveRow');
+                if (index !== -1) {
+                    const postConfig = bar.group[index].ajaxConfig[method];
+                    result = this._execute(rowsData, method, postConfig);
+                }
+
+            }
+            if (bar.dropdown && bar.dropdown.buttons && bar.dropdown.buttons.length > 0) {
+                const index = bar.dropdown.buttons.findIndex(item => item.name === 'saveRow');
+                if (index !== -1) {
+                    const postConfig = bar.dropdown.buttons[index].ajaxConfig[method];
+                    result = this._execute(rowsData, method, postConfig);
+                }
+
+            }
+        });
+
+        return result;
+
+
     }
 
     async executeSelectedAction(selectedRow, option) {
@@ -781,7 +805,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         rowContentNew['row_status'] = 'adding';
         // 针对查询和新增行处理
         if (this.is_Search) {
-            this.dataList.splice(1, 0 , rowContentNew);        
+            this.dataList.splice(1, 0, rowContentNew);
         } else {
             this.dataList = [rowContentNew, ...this.dataList];
         }
@@ -814,15 +838,15 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             }
         }
         if (isSearch) {
-           this.createSearchRow();
+            this.createSearchRow();
         } else {
-   
+
             // 执行行查询
             console.log('行查询', this.search_Row);
             this.load(1); // 查询后将页面置1
         }
         this.is_Search = true;
-        console.log('SearchRow结果' , this.dataList);
+        console.log('SearchRow结果', this.dataList);
     }
     // 生成查询行 
     createSearchRow() {
@@ -843,7 +867,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             this._startEdit(fieldIdentity.toString());
             this.search_Row = rowContentNew;
         }
-        console.log('SearchRow' , this.search_Row);
+        console.log('SearchRow', this.search_Row);
     }
     // 取消查询
     cancelSearchRow() {
@@ -862,17 +886,17 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
     // 创建查询参数
     _buildSearch() {
-       let search = {};
-       if (this.search_Row) {
-           const searchData =  JSON.parse(JSON.stringify(this.search_Row));
-           delete searchData['key'];
-           delete searchData['checked'];
-           delete searchData['row_status'];
-           delete searchData['selected'];
-     
-           search = searchData;
-       }
-       return search;
+        let search = {};
+        if (this.search_Row) {
+            const searchData = JSON.parse(JSON.stringify(this.search_Row));
+            delete searchData['key'];
+            delete searchData['checked'];
+            delete searchData['row_status'];
+            delete searchData['selected'];
+
+            search = searchData;
+        }
+        return search;
     }
 
     updateRow() {
@@ -928,8 +952,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     //     // 删除新增临时数据
                     //     newData.push(item.key);
                     // }
-                    if (item.checked === true 
-                        && item['row_status'] !== 'adding' 
+                    if (item.checked === true
+                        && item['row_status'] !== 'adding'
                         && item['row_status'] !== 'updating'
                         && item['row_status'] !== 'search'
                     ) {

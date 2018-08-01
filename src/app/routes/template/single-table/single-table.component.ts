@@ -296,7 +296,6 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                             'size': 'default',
                             'clear': true,
                             'width': '200px',
-                            'dataSet': 'getCaseName',
                             'options': [
                               {
                                 'label': '表格',
