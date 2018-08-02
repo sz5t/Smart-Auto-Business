@@ -389,6 +389,7 @@ export class DataModelingComponent implements OnInit {
                     
                     ],
                     'toolbar': [
+                     { group:[
                       {
                         'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
                       },
@@ -532,7 +533,7 @@ export class DataModelingComponent implements OnInit {
                         'name': 'cancelSearchRow', 'class': 'editable-add-btn', 'text': '取消查询', 'action': 'SEARCH',
                         'actionType': 'cancelSearchRow', 'actionName': 'cancelSearchRow',
                       },
-                      
+                    ]}
                     ],
                     'formDialog': [
                       {
@@ -1406,6 +1407,7 @@ export class DataModelingComponent implements OnInit {
 
                     ],
                     'toolbar': [
+                      {group:[
 
                       {
                         'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
@@ -1494,6 +1496,7 @@ export class DataModelingComponent implements OnInit {
                         'action': 'FORM', 'actionType': 'formDialog', 'actionName': 'updateShowCase',
                         'type': 'showForm'
                       }
+                    ]}
                     ],
                     'formDialog': [
                       {
