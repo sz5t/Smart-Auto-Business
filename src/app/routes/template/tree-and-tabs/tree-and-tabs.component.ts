@@ -778,7 +778,7 @@ export class TreeAndTabsComponent implements OnInit {
                           }
                         ],
                         'dataSet': [
-                          {
+                        /*   {
                             'name': 'moduleDataSet',
                             'ajaxConfig': 'AppUser',
                             'ajaxType': 'get',
@@ -795,7 +795,7 @@ export class TreeAndTabsComponent implements OnInit {
                                 'name': 'label'
                               }
                             ]
-                          }
+                          } */
                         ]
                       },
                       permissions: {
@@ -821,7 +821,7 @@ export class TreeAndTabsComponent implements OnInit {
                         'keyId': 'Id',
                         ajaxConfig: {
                           'url': 'common/ShowCase',
-                          'ajaxType': 'get',
+                          'ajaxType': 'getById',
                           'params': [
                             { name: 'Id', type: 'tempValue', valueName: '_id', value: '' }
                           ]
