@@ -1,4 +1,4 @@
-import { Subscription ,  Observer ,  Observable } from 'rxjs';
+import { Subscription, Observer, Observable } from 'rxjs';
 // import { DataSet } from '../../../../node_modules/@antv/data-set';
 import 'zone.js';
 import 'reflect-metadata';
@@ -102,25 +102,23 @@ export class BarChartComponent implements OnInit, AfterViewInit {
   }
 
   async load() {
-        this.loading = true;
-        const url = this._buildURL(this.config.ajaxConfig.url);
-        const params = {
-            ...this._buildParameters(this.config.ajaxConfig.params),
-        };
-        (async () => {
-            const loadData = await this._load(url, params);
-            if (loadData && loadData.Status === 200) {
-                if (loadData.Data && loadData.Data) {
-                    this.data = loadData.Data;
-                } else {
-                    this.data = [];
-                }
-            } else {
-                this.data = [];
-            }
+    this.loading = true;
+    const url = this._buildURL(this.config.ajaxConfig.url);
+    const params = {
+      ...this._buildParameters(this.config.ajaxConfig.params),
+    };
+    const loadData = await this._load(url, params);
+    if (loadData && loadData.status === 200) {
+      if (loadData.data && loadData.data && loadData.isSuccess) {
+        this.data = loadData.data;
+      } else {
+        this.data = [];
+      }
+    } else {
+      this.data = [];
+    }
 
-            this.loading = false;
-        })();
+    this.loading = false;
   }
 
   resolverRelation() {
@@ -211,8 +209,7 @@ export class BarChartComponent implements OnInit, AfterViewInit {
     return Object.prototype.toString.call(url) === '[object String]';
   }
   private async _load(url, params) {
-    return this._http.getProj(url, params).toPromise();
+    return this._http.get(url, params).toPromise();
   }
   // endregion
 }
-

@@ -1,3 +1,4 @@
+
 import { Observable } from 'rxjs';
 import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE } from '@core/relative-Service/BsnTableStatus';
 
@@ -44,14 +45,11 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     @Input() permissions = [];
     @Input() dataList = []; // 表格数据集合
 
-    // region: 分页默认参数
     loading = false;
     pageIndex = 1;
     pageSize = 10;
     total = 1;
-    // endregion
 
-    // region: 表格操作
     allChecked = false;
     indeterminate = false;
     _sortName;
@@ -59,9 +57,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     _sortOrder = ' Desc';
     _columnFilterList = [];
     _focusId;
-    // endregion
 
-    // region: 业务对象
     _selectRow = {};
     _tempParameters = {};
     _searchParameters = {};
@@ -85,7 +81,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     _statusSubscription: Subscription;
     _cascadeSubscription: Subscription;
-    // endregion
 
     constructor(
         private _http: ApiService,
@@ -101,7 +96,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     }
 
-    // region: 生命周期事件
     ngOnInit() {
         this.resolverRelation();
         if (this.config.dataSet) {
@@ -141,6 +135,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             this.load();
         }
     }
+
     private resolverRelation() {
         // 注册按钮状态触发接收器
         this._statusSubscription = this.stateEvents.subscribe(updateState => {
@@ -189,6 +184,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             // 注册消息发送方法
             // 注册行选中事件发送消息
             this.after(this, 'selectRow', () => {
+                console.log('send message', this._selectRow);
                 this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
                     data: this._selectRow
                 }));
@@ -204,12 +200,15 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                             const mode = BSN_COMPONENT_CASCADE_MODES[relation.cascadeMode];
                             // 获取传递的消息数据
                             const option = cascadeEvent.option;
-                            // 解析参数
-                            if (relation.params && relation.params.length > 0) {
-                                relation.params.forEach(param => {
-                                    this._tempParameters[param['cid']] = option.data[param['pid']];
-                                });
+                            if (option) {
+                                // 解析参数
+                                if (relation.params && relation.params.length > 0) {
+                                    relation.params.forEach(param => {
+                                        this._tempParameters[param['cid']] = option.data[param['pid']];
+                                    });
+                                }
                             }
+
                             // 匹配及联模式
                             switch (mode) {
                                 case BSN_COMPONENT_CASCADE_MODES.REFRESH:
@@ -231,9 +230,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     ngOnDestroy() {
-        // if (this._relativeResolver) {
-        //     this._relativeResolver.unsubscribe();
-        // }
         if (this._statusSubscription) {
             this._statusSubscription.unsubscribe();
         }
@@ -241,13 +237,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             this._cascadeSubscription.unsubscribe();
         }
     }
-    // endregion
 
-    // region: 解析消息
-
-    // endregion
-
-    // region: 功能实现
     load(pageIndex = 1) {
         // this._selectRow = {};
         this.pageIndex = pageIndex;
@@ -486,10 +476,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         this.load();
     }
 
-    // endregion
-
-    // region: 表格操作
-
     checkAll(value) {
         this.dataList.forEach(data => {
             if (!data.disabled) {
@@ -606,29 +592,52 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     async executeSelectedAction(selectedRow, option) {
-        let isSuccess = false;
+        let isSuccess;
         if (selectedRow) {
-            const execButtons = this.config.toolbar.filter(item => item.action === 'EXECUTE_SELECTED');
-            const index = execButtons.findIndex(item => item.actionName === option.name);
-            const cfg = execButtons[index].ajaxConfig[option.type];
-
-            if (cfg) {
-                for (let i = 0, len = cfg.length; i < len; i++) {
-                    const newParam = {};
-                    cfg[i].params.forEach(param => {
-                        newParam[param['name']] = selectedRow[param['valueName']];
-                    });
-                    const response = await this[option.type](cfg[i].url, newParam);
-                    if (response && response.status === 200 && response.isSuccess) {
-                        this.message.create('success', '执行成功');
-                        isSuccess = true;
-                    } else {
-                        this.message.create('error', response.message);
+            this.config.toolbar.forEach(bar => {
+                if (bar.group && bar.group.length > 0) {
+                    const execButtons = bar.group.findIndex(item => item.action === 'EXECUTE_SELECTED');
+                    const index = execButtons.findIndex(item => item.actionName = option.name);
+                    if (index !== -1) {
+                        const cfg = execButtons[index].ajaxConfig[option.type];
+                        isSuccess = this._executeCheckedAction(selectedRow, option, cfg);
                     }
+
                 }
-                if (isSuccess) {
-                    this.load();
+                if (bar.dropdown && bar.dropdown.buttons && bar.dropdown.buttons.length > 0) {
+
+                    const execButtons = bar.dropdown.button.findIndex(item => item.action === 'EXECUTE_SELECTED');
+                    const index = execButtons.findIndex(item => item.actionName = option.name);
+                    if (index !== -1) {
+                        const cfg = execButtons[index].ajaxConfig[option.type];
+                        isSuccess = this._executeCheckedAction(selectedRow, option, cfg);
+                    }
+
                 }
+            });
+        }
+        return isSuccess;
+
+    }
+
+    async _executeSelectedAction(selectedRow, option, cfg) {
+        let isSuccess;
+        if (cfg) {
+            for (let i = 0, len = cfg.length; i < len; i++) {
+                const newParam = {};
+                cfg[i].params.forEach(param => {
+                    newParam[param['name']] = selectedRow[param['valueName']];
+                });
+                const response = await this[option.type](cfg[i].url, newParam);
+                if (response && response.status === 200 && response.isSuccess) {
+                    this.message.create('success', '执行成功');
+                    isSuccess = true;
+                } else {
+                    this.message.create('error', response.message);
+                }
+            }
+            if (isSuccess) {
+                this.load();
             }
         }
         if (isSuccess === true) {
@@ -642,35 +651,58 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     async executeCheckedAction(items, option) {
-        let isSuccess = false;
+        let isSuccess;
         if (items && items.length > 0) {
-            const execButtons = this.config.toolbar.filter(item => item.action === 'EXECUTE_CHECKED');
-            const index = execButtons.findIndex(item => item.actionName = option.name);
-            const cfg = execButtons[index].ajaxConfig[option.type];
-            if (cfg) {
-                for (let i = 0, len = cfg.length; i < len; i++) {
-                    // 构建参数
-                    const params = [];
-                    if (cfg[i].params) {
-                        items.forEach(item => {
-                            const newParam = {};
-                            cfg[i].params.forEach(param => {
-                                newParam[param['name']] = item[param['valueName']];
-                            });
-                            params.push(newParam);
+            this.config.toolbar.forEach(bar => {
+                if (bar.group && bar.group.length > 0) {
+                    const execButtons = bar.group.findIndex(item => item.action === 'EXECUTE_CHECKED');
+                    const index = execButtons.findIndex(item => item.actionName = option.name);
+                    if (index !== -1) {
+                        const cfg = execButtons[index].ajaxConfig[option.type];
+                        isSuccess = this._executeCheckedAction(items, option, cfg);
+                    }
+
+                }
+                if (bar.dropdown && bar.dropdown.buttons && bar.dropdown.buttons.length > 0) {
+
+                    const execButtons = bar.dropdown.button.findIndex(item => item.action === 'EXECUTE_CHECKED');
+                    const index = execButtons.findIndex(item => item.actionName = option.name);
+                    if (index !== -1) {
+                        const cfg = execButtons[index].ajaxConfig[option.type];
+                        isSuccess = this._executeCheckedAction(items, option, cfg);
+                    }
+
+                }
+            });
+        }
+        return isSuccess;
+    }
+
+    async _executeCheckedAction(items, option, cfg) {
+        let isSuccess;
+        if (cfg) {
+            for (let i = 0, len = cfg.length; i < len; i++) {
+                // 构建参数
+                const params = [];
+                if (cfg[i].params) {
+                    items.forEach(item => {
+                        const newParam = {};
+                        cfg[i].params.forEach(param => {
+                            newParam[param['name']] = item[param['valueName']];
                         });
-                    }
-                    const response = await this[option.type](cfg[i].url, params);
-                    if (response && response.status === 200 && response.isSuccess) {
-                        this.message.create('success', '执行成功');
-                        isSuccess = true;
-                    } else {
-                        this.message.create('error', response.message);
-                    }
+                        params.push(newParam);
+                    });
                 }
-                if (isSuccess) {
-                    this.load();
+                const response = await this[option.type](cfg[i].url, params);
+                if (response && response.status === 200 && response.isSuccess) {
+                    this.message.create('success', '执行成功');
+                    isSuccess = true;
+                } else {
+                    this.message.create('error', response.message);
                 }
+            }
+            if (isSuccess) {
+                this.load();
             }
         }
         if (isSuccess === true) {
@@ -684,28 +716,51 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     async executeDelete(ids) {
-        let isSuccess = false;
+        let result;
         if (ids && ids.length > 0) {
-            const index = this.config.toolbar.findIndex(item => item.name === 'deleteRow');
-            const deleteConfig = this.config.toolbar[index].ajaxConfig['delete'];
-            if (deleteConfig) {
-                for (let i = 0, len = deleteConfig.length; i < len; i++) {
-                    const params = {
-                        _ids: ids.join(',')
-                    };
-                    const response = await this['delete'](deleteConfig[i].url, params);
-                    if (response && response.status === 200 && response.isSuccess) {
-                        this.message.create('success', '删除成功');
-                        isSuccess = true;
-                    } else {
-                        this.message.create('error', response.message);
+            this.config.toolbar.forEach(bar => {
+                if (bar.group && bar.group.length > 0) {
+                    const index = bar.group.findIndex(item => item.name === 'deleteRow');
+                    if (index !== -1) {
+                        const deleteConfig = bar.group[index].ajaxConfig['delete'];
+                        result = this._executeDelete(deleteConfig, ids);
                     }
+
                 }
-                if (isSuccess) {
-                    this.load();
+                if (bar.dropdown && bar.dropdown.buttons && bar.dropdown.buttons.length > 0) {
+                    const index = bar.dropdown.buttons.findIndex(item => item.name === 'deleteRow');
+                    if (index !== -1) {
+                        const deleteConfig = bar.dropdown.buttons[index].ajaxConfig['delete'];
+                        result = this._executeDelete(deleteConfig, ids);
+                    }
+
+                }
+            });
+        }
+
+        return result;
+    }
+
+    async _executeDelete(deleteConfig, ids) {
+        let isSuccess;
+        if (deleteConfig) {
+            for (let i = 0, len = deleteConfig.length; i < len; i++) {
+                const params = {
+                    _ids: ids.join(',')
+                };
+                const response = await this['delete'](deleteConfig[i].url, params);
+                if (response && response.status === 200 && response.isSuccess) {
+                    this.message.create('success', '删除成功');
+                    isSuccess = true;
+                } else {
+                    this.message.create('error', response.message);
                 }
             }
+            if (isSuccess) {
+                this.load();
+            }
         }
+
         if (isSuccess === true) {
             this.cascade.next(
                 new BsnComponentMessage(
@@ -1014,15 +1069,32 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         if (this[btn.name]) {
             this[btn.name]();
         } else if (this[btn.type]) {
-            const buttons = this.config.toolbar.filter(button => button.type === btn.type);
-            const index = buttons.findIndex(button => button.name === btn.name);
-            if (index >= 0) {
-                if (buttons[index].dialogConfig) {
-                    this[buttons[index].type](buttons[index].dialogConfig);
-                } else if (buttons[index].context) {
-                    this[buttons[index].type](buttons[index].context);
+            // const buttons = this.config.toolbar.filter(button => button.type === btn.type);
+            // const index = buttons.findIndex(button => button.name === btn.name);
+
+            this.config.toolbar.forEach(btnGroup => {
+                let index;
+                let buttons;
+                if (btnGroup.group) {
+                    buttons = btnGroup.group.filter(button => button.type === btn.type);
+                    index = buttons.findIndex(button => button.name === btn.name);
+                    
                 }
-            }
+                if (btnGroup.dropdown) {
+                    buttons = btnGroup.dropdown.buttons.filter(button => button.type === btn.type);
+                    index = buttons.findIndex(button => button.name === btn.name);
+                }
+                if (index >= 0) {
+                    if (buttons[index].dialogConfig) {
+                        this[buttons[index].type](buttons[index].dialogConfig);
+                    } else if (buttons[index].context) {
+                        this[buttons[index].type](buttons[index].context);
+                    }
+                }
+
+            });
+
+
         }
     }
 
@@ -1054,9 +1126,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         //     }
         // });
     }
-    // endregion
 
-    // region: 弹出UI
     private showBatchForm(dialog) {
         const footer = [];
         const checkedItems = [];
@@ -1119,6 +1189,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         }
 
     }
+
     private showForm(dialog) {
         const footer = [];
         const obj = {
@@ -1229,9 +1300,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         });
 
     }
-    // endregion
 
-    // region: 服务区端交互
     private async _load(url, params) {
         return this._http.get(url, params).toPromise();
     }
@@ -1251,9 +1320,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     private async get(url, params) {
         return this._http.get(url, params).toPromise();
     }
-    // endregion
 
-    // region: 格式化单元格
     setCellFont(value, format) {
         let fontColor = '';
         if (format) {
@@ -1270,7 +1337,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     log($event) {
 
     }
-    // endregion
 
     dialog(option) {
         if (this.config.dialog && this.config.dialog.length > 0) {

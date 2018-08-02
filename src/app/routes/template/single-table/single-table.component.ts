@@ -228,9 +228,8 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                     'pagination': true, // 是否分页
                     'showTotal': true, // 是否显示总数据量
                     'pageSize': 5, // 默认每页数据条数
-                    'pageSizeOptions': [5, 18, 20, 30, 40, 50],
+                    'pageSizeOptions': [5, 10, 20, 30, 40, 50],
                     'ajaxConfig': {
-                      // 'url': 'common/ShowCase',
                       'url': 'common/GetCase',
                       'ajaxType': 'get',
                       'params': [],

@@ -31,7 +31,7 @@ export class MulitTableComponent implements OnInit {
                     'keyId': 'Id',
                     'pagination': true, // 是否分页
                     'showTotal': true, // 是否显示总数据量
-                    'pageSize': 5, // 默pageSizeOptions认每页数据条数
+                    'pageSize': 10, // 默pageSizeOptions认每页数据条数
                     '': [5, 10, 20, 30, 40, 50],
                     'ajaxConfig': {
                       'url': 'common/GetCase',
@@ -94,7 +94,7 @@ export class MulitTableComponent implements OnInit {
                         }
                       },
                       {
-                        title: '类别', field: 'TypeName', width: 80, hidden: false,
+                        title: '类别', field: 'caseTypeText', width: 80, hidden: false,
                         showFilter: true, showSort: true,
                         editor: {
                           type: 'select',
@@ -114,7 +114,6 @@ export class MulitTableComponent implements OnInit {
                             'size': 'default',
                             'clear': true,
                             'width': '130px',
-                            'dataSet': 'getCaseName',
                             'options': [
                               {
                                 'label': '表',
@@ -173,11 +172,11 @@ export class MulitTableComponent implements OnInit {
                         }
                       },
                       {
-                        title: '创建时间', field: 'createTime', width: 80, hidden: false,
+                        title: '创建时间', field: 'createDate', width: 80, hidden: false,
                         editor: {
                           type: 'input',
                           pipe: 'datetime',
-                          field: 'createTime',
+                          field: 'createDate',
                           options: {
                             'type': 'input',
                             'labelSize': '6',
@@ -200,7 +199,7 @@ export class MulitTableComponent implements OnInit {
                         }
                       },
                       {
-                        title: '状态', field: 'enabledText', width: 80, hidden: false,
+                        title: '状态', field: 'enableText', width: 80, hidden: false,
                         formatter: [
                           { 'value': '启用', 'bgcolor': '', 'fontcolor': 'text-green', 'valueas': '启用' },
                           { 'value': '禁用', 'bgcolor': '', 'fontcolor': 'text-red', 'valueas': '禁用' }
@@ -1098,6 +1097,19 @@ export class MulitTableComponent implements OnInit {
                         }
                       },
                       {
+                        title: '主名称', field: 'parentName', width: 80, hidden: false,
+                        editor: {
+                          type: 'input',
+                          field: '',
+                          options: {
+                            'type': 'input',
+                            'labelSize': '6',
+                            'controlSize': '18',
+                            'inputType': 'text',
+                          }
+                        }
+                      },
+                      {
                         title: '级别', field: 'caseLevel', width: 80, hidden: false,
                         showFilter: false, showSort: false,
                         editor: {
@@ -1139,7 +1151,7 @@ export class MulitTableComponent implements OnInit {
                         }
                       },
                       {
-                        title: '状态', field: 'enabledText', width: 80, hidden: false,
+                        title: '状态', field: 'enableText', width: 80, hidden: false,
                         formatter: [
                           { 'value': '启用', 'bgcolor': '', 'fontcolor': 'text-green', 'valueas': '启用' },
                           { 'value': '禁用', 'bgcolor': '', 'fontcolor': 'text-red', 'valueas': '禁用' }

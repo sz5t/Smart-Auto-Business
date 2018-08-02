@@ -1538,7 +1538,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                       'url': 'common/ShowCase',
                       'ajaxType': 'get',
                       'params': [
-                        { name: 'ParentId', type: 'tempValue', valueName: '_parentId'}
+                        { name: 'parentId', type: 'tempValue', valueName: '_parentId'}
                       ]
                     },
                     'componentType': {
@@ -1558,7 +1558,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     height: '400',
                     width: '500',
                     forceFit: true,
-                    key: 'Remark',
+                    key: 'remark',
                     value: 'caseCount',
                     dataKey: 'caseName',
                     scale: [
@@ -1592,7 +1592,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     //   // {name: 'm12',  month: '十二月', Tokyo: 9.6, London: 4.8 , city: '东京'}
                     // ],
                     sharp: 'circle',
-                    fields: ['caseCount', 'caseName', 'Remark'],
+                    fields: ['caseCount', 'caseName', 'remark'],
                     style: {
                       stroke: '#f1f233',
                       lineWidth: 1
@@ -1623,7 +1623,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                       'url': 'common/ShowCase',
                       'ajaxType': 'get',
                       'params': [
-                        { name: 'ParentId', type: 'tempValue', valueName: '_parentId'},
+                        { name: 'parentId', type: 'tempValue', valueName: '_parentId'},
                         { name: '_order', type: 'value', value: 'caseName asc'}
                       ]
                     },
@@ -1644,12 +1644,12 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     height: '400',
                     width: '500',
                     forceFit: true,
-                    key: 'Type',
+                    key: 'caseType',
                     value: 'caseCount',
                     dataKey: 'caseName',
                     scale: [
                       {
-                        dataKey: 'CaseValue',
+                        dataKey: 'caseValue',
                         min: 0,
                         max: 1
                       },
@@ -1671,7 +1671,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     //   { name: 'm111', month: '一月', tem: 10, city: '西安' },
                     // ],
                     sharp: 'circle',
-                    fields: ['caseCount', 'caseName', 'Type'],
+                    fields: ['caseCount', 'caseName', 'caseType'],
                     style: {
                       stroke: '#f1f233',
                       lineWidth: 1
@@ -1714,7 +1714,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                       'url': 'common/ShowCase',
                       'ajaxType': 'get',
                       'params': [
-                        { name: 'ParentId', type: 'tempValue', valueName: '_parentId'}
+                        { name: 'parentId', type: 'tempValue', valueName: '_parentId'}
                       ]
                     },
                     'componentType': {
@@ -1734,7 +1734,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     height: '400',
                     width: '500',
                     forceFit: true,
-                    key: 'Type',
+                    key: 'caseType',
                     value: 'caseCount',
                     dataKey: 'caseName',
                     scale: [
@@ -1763,7 +1763,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     //   // {name: 'm12',  month: '十二月', Tokyo: 9.6, London: 4.8 , city: '东京'}
                     // ],
                     sharp: 'circle',
-                    fields: ['caseCount', 'caseName', 'Type'],
+                    fields: ['caseCount', 'caseName', 'caseType'],
                     style: {
                       stroke: '#f1f233',
                       lineWidth: 1
@@ -1798,7 +1798,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                       'url': 'common/ShowCase',
                       'ajaxType': 'get',
                       'params': [
-                        { name: 'ParentId', type: 'tempValue', valueName: '_parentId'}
+                        { name: 'parentId', type: 'tempValue', valueName: '_parentId'}
                       ]
                     },
                     'componentType': {
@@ -1818,7 +1818,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     height: '400',
                     width: '500',
                     forceFit: true,
-                    key: 'Type',
+                    key: 'caseType',
                     value: 'caseCount',
                     dataKey: 'caseLevel',
                     scale: [
