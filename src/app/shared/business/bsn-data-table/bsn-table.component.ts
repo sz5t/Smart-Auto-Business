@@ -595,8 +595,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         let isSuccess;
         if (selectedRow) {
             this.config.toolbar.forEach(bar => {
+                debugger;
                 if (bar.group && bar.group.length > 0) {
-                    const execButtons = bar.group.findIndex(item => item.action === 'EXECUTE_SELECTED');
+                    const execButtons = bar.group.filter(item => item.action === 'EXECUTE_SELECTED');
                     const index = execButtons.findIndex(item => item.actionName = option.name);
                     if (index !== -1) {
                         const cfg = execButtons[index].ajaxConfig[option.type];
@@ -655,7 +656,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         if (items && items.length > 0) {
             this.config.toolbar.forEach(bar => {
                 if (bar.group && bar.group.length > 0) {
-                    const execButtons = bar.group.findIndex(item => item.action === 'EXECUTE_CHECKED');
+                    const execButtons = bar.group.filter(item => item.action === 'EXECUTE_CHECKED');
                     const index = execButtons.findIndex(item => item.actionName = option.name);
                     if (index !== -1) {
                         const cfg = execButtons[index].ajaxConfig[option.type];
@@ -665,7 +666,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 }
                 if (bar.dropdown && bar.dropdown.buttons && bar.dropdown.buttons.length > 0) {
 
-                    const execButtons = bar.dropdown.button.findIndex(item => item.action === 'EXECUTE_CHECKED');
+                    const execButtons = bar.dropdown.button.filter(item => item.action === 'EXECUTE_CHECKED');
                     const index = execButtons.findIndex(item => item.actionName = option.name);
                     if (index !== -1) {
                         const cfg = execButtons[index].ajaxConfig[option.type];
@@ -1069,16 +1070,12 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         if (this[btn.name]) {
             this[btn.name]();
         } else if (this[btn.type]) {
-            // const buttons = this.config.toolbar.filter(button => button.type === btn.type);
-            // const index = buttons.findIndex(button => button.name === btn.name);
-
             this.config.toolbar.forEach(btnGroup => {
                 let index;
                 let buttons;
                 if (btnGroup.group) {
                     buttons = btnGroup.group.filter(button => button.type === btn.type);
                     index = buttons.findIndex(button => button.name === btn.name);
-                    
                 }
                 if (btnGroup.dropdown) {
                     buttons = btnGroup.dropdown.buttons.filter(button => button.type === btn.type);
@@ -1091,10 +1088,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         this[buttons[index].type](buttons[index].context);
                     }
                 }
-
             });
-
-
         }
     }
 

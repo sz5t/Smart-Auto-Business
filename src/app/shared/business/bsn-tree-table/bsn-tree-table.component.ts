@@ -83,7 +83,6 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
 
     // 生命周期事件
     ngOnInit() {
-        console.log(this.config);
         this.resolverRelation();
         if (this.config.dataSet) {
             (async () => {
@@ -122,9 +121,6 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         }
     }
     ngOnDestroy() {
-        if (this._relativeResolver) {
-            this._relativeResolver.unsubscribe();
-        }
         if (this._statusSubscription) {
             this._statusSubscription.unsubscribe();
         }
@@ -137,10 +133,13 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     private resolverRelation() {
         // 注册按钮状态触发接收器
         this._statusSubscription = this.stateEvents.subscribe(updateState => {
+           
             if (updateState._viewId === this.config.viewId) {
                 const option = updateState.option;
+                console.log(option, updateState._mode);
                 switch (updateState._mode) {
                     case BSN_COMPONENT_MODES.CREATE:
+                        console.log('add row');
                         this.addRow();
                         break;
                     case BSN_COMPONENT_MODES.EDIT:
@@ -656,10 +655,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         return isSuccess;
     }
 
-    async executeSave(rowsData, method) {
-        // Todo: 优化配置
-        const index = this.config.toolbar.findIndex(item => item.name === 'saveRow');
-        const postConfig = this.config.toolbar[index].ajaxConfig[method];
+    async _execute(rowsData, method, postConfig) {
         let isSuccess = false;
         if (postConfig) {
             for (let i = 0, len = postConfig.length; i < len; i++) {
@@ -674,14 +670,13 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                         } else if (param.type === 'GUID') {
 
                         } else if (param.type === 'value') {
-                            submitItem[param['name']] = rowData[param['value']];
+                            submitItem[param['name']] = param.value;
                         }
                     });
                     submitData.push(submitItem);
                 });
-
                 const response = await this[method](postConfig[i].url, submitData);
-                if (response && response.status === 200) {
+                if (response && response.status === 200 && response.isSuccess) {
                     this.message.create('success', '保存成功');
                     isSuccess = true;
                 } else {
@@ -693,7 +688,6 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                     this._saveEdit(row.key);
                 });
                 this.load();
-
             }
         }
         if (isSuccess === true) {
@@ -707,27 +701,137 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         return isSuccess;
     }
 
+    async executeSave(rowsData, method) {
+        // Todo: 优化配置
+        let result;
+        this.config.toolbar.forEach(bar => {
+            if (bar.group && bar.group.length > 0) {
+                const index = bar.group.findIndex(item => item.name === 'saveRow');
+                if (index !== -1) {
+                    const postConfig = bar.group[index].ajaxConfig[method];
+                    result = this._execute(rowsData, method, postConfig);
+                }
+
+            }
+            if (bar.dropdown && bar.dropdown.buttons && bar.dropdown.buttons.length > 0) {
+                const index = bar.dropdown.buttons.findIndex(item => item.name === 'saveRow');
+                if (index !== -1) {
+                    const postConfig = bar.dropdown.buttons[index].ajaxConfig[method];
+                    result = this._execute(rowsData, method, postConfig);
+                }
+
+            }
+        });
+
+        return result;
+
+
+    }
+
     async executeDelete(ids) {
-        let isSuccess = false;
+        let result;
         if (ids && ids.length > 0) {
-            const index = this.config.toolbar.findIndex(item => item.name === 'deleteRow');
-            const deleteConfig = this.config.toolbar[index].ajaxConfig['delete'];
-            if (deleteConfig) {
-                for (let i = 0, len = deleteConfig.length; i < len; i++) {
-                    const params = {
-                        _ids: ids.join(',')
-                    };
-                    const response = await this['delete'](deleteConfig[i].url, params);
-                    if (response && response.status === 200) {
-                        this.message.create('success', '删除成功');
-                        isSuccess = true;
-                    } else {
-                        this.message.create('error', response.Message);
+            this.config.toolbar.forEach(bar => {
+                if (bar.group && bar.group.length > 0) {
+                    const index = bar.group.findIndex(item => item.name === 'deleteRow');
+                    if (index !== -1) {
+                        const deleteConfig = bar.group[index].ajaxConfig['delete'];
+                        result = this._executeDelete(deleteConfig, ids);
                     }
+
                 }
-                if (isSuccess) {
-                    this.load();
+                if (bar.dropdown && bar.dropdown.buttons && bar.dropdown.buttons.length > 0) {
+                    const index = bar.dropdown.buttons.findIndex(item => item.name === 'deleteRow');
+                    if (index !== -1) {
+                        const deleteConfig = bar.dropdown.buttons[index].ajaxConfig['delete'];
+                        result = this._executeDelete(deleteConfig, ids);
+                    }
+
                 }
+            });
+        }
+
+        return result;
+    }
+
+    async _executeDelete(deleteConfig, ids) {
+        let isSuccess;
+        if (deleteConfig) {
+            for (let i = 0, len = deleteConfig.length; i < len; i++) {
+                const params = {
+                    _ids: ids.join(',')
+                };
+                const response = await this['delete'](deleteConfig[i].url, params);
+                if (response && response.status === 200 && response.isSuccess) {
+                    this.message.create('success', '删除成功');
+                    isSuccess = true;
+                } else {
+                    this.message.create('error', response.message);
+                }
+            }
+            if (isSuccess) {
+                this.load();
+            }
+        }
+
+        if (isSuccess === true) {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                    this.config.viewId
+                )
+            );
+        }
+        return isSuccess;
+    }
+
+    async executeSelectedAction(selectedRow, option) {
+        let isSuccess;
+        if (selectedRow) {
+            this.config.toolbar.forEach(bar => {
+                if (bar.group && bar.group.length > 0) {
+                    const execButtons = bar.group.findIndex(item => item.action === 'EXECUTE_SELECTED');
+                    const index = execButtons.findIndex(item => item.actionName = option.name);
+                    if (index !== -1) {
+                        const cfg = execButtons[index].ajaxConfig[option.type];
+                        isSuccess = this._executeCheckedAction(selectedRow, option, cfg);
+                    }
+
+                }
+                if (bar.dropdown && bar.dropdown.buttons && bar.dropdown.buttons.length > 0) {
+
+                    const execButtons = bar.dropdown.button.findIndex(item => item.action === 'EXECUTE_SELECTED');
+                    const index = execButtons.findIndex(item => item.actionName = option.name);
+                    if (index !== -1) {
+                        const cfg = execButtons[index].ajaxConfig[option.type];
+                        isSuccess = this._executeCheckedAction(selectedRow, option, cfg);
+                    }
+
+                }
+            });
+        }
+        return isSuccess;
+
+    }
+
+    async _executeSelectedAction(selectedRow, option, cfg) {
+        let isSuccess;
+        if (cfg) {
+            for (let i = 0, len = cfg.length; i < len; i++) {
+                const newParam = {};
+                cfg[i].params.forEach(param => {
+                    newParam[param['name']] = selectedRow[param['valueName']];
+                });
+                const response = await this[option.type](cfg[i].url, newParam);
+                if (response && response.status === 200 && response.isSuccess) {
+                    this.message.create('success', '执行成功');
+                    isSuccess = true;
+                } else {
+                    this.message.create('error', response.message);
+                }
+            }
+            if (isSuccess) {
+                this.load();
             }
         }
         if (isSuccess === true) {
@@ -738,7 +842,71 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                 )
             );
         }
+    }
+
+    async executeCheckedAction(items, option) {
+        let isSuccess;
+        if (items && items.length > 0) {
+            this.config.toolbar.forEach(bar => {
+                if (bar.group && bar.group.length > 0) {
+                    const execButtons = bar.group.findIndex(item => item.action === 'EXECUTE_CHECKED');
+                    const index = execButtons.findIndex(item => item.actionName = option.name);
+                    if (index !== -1) {
+                        const cfg = execButtons[index].ajaxConfig[option.type];
+                        isSuccess = this._executeCheckedAction(items, option, cfg);
+                    }
+
+                }
+                if (bar.dropdown && bar.dropdown.buttons && bar.dropdown.buttons.length > 0) {
+
+                    const execButtons = bar.dropdown.button.findIndex(item => item.action === 'EXECUTE_CHECKED');
+                    const index = execButtons.findIndex(item => item.actionName = option.name);
+                    if (index !== -1) {
+                        const cfg = execButtons[index].ajaxConfig[option.type];
+                        isSuccess = this._executeCheckedAction(items, option, cfg);
+                    }
+
+                }
+            });
+        }
         return isSuccess;
+    }
+
+    async _executeCheckedAction(items, option, cfg) {
+        let isSuccess;
+        if (cfg) {
+            for (let i = 0, len = cfg.length; i < len; i++) {
+                // 构建参数
+                const params = [];
+                if (cfg[i].params) {
+                    items.forEach(item => {
+                        const newParam = {};
+                        cfg[i].params.forEach(param => {
+                            newParam[param['name']] = item[param['valueName']];
+                        });
+                        params.push(newParam);
+                    });
+                }
+                const response = await this[option.type](cfg[i].url, params);
+                if (response && response.status === 200 && response.isSuccess) {
+                    this.message.create('success', '执行成功');
+                    isSuccess = true;
+                } else {
+                    this.message.create('error', response.message);
+                }
+            }
+            if (isSuccess) {
+                this.load();
+            }
+        }
+        if (isSuccess === true) {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                    this.config.viewId
+                )
+            );
+        }
     }
 
     private _deleteEdit(i: string): void {
@@ -766,10 +934,6 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
             this.rowContent[colsname] = '';
         });
     }
-
-    
-
-
 
     deleteRow() {
         this.modalService.confirm({
@@ -837,14 +1001,28 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
 
     toolbarAction(btn) {
         if (this[btn.name]) {
-            this[btn.name]() && this._toolbarEnables(btn.enables);
+            this[btn.name]();
+            console.log(btn.name);
         } else if (this[btn.type]) {
-            const buttons = this.config.toolbar.filter(button => button.type === btn.type);
-            const index = buttons.findIndex(button => button.name === btn.name);
-            if (index >= 0) {
-                this[buttons[index].type](buttons[index].dialogConfig);
-
-            }
+            this.config.toolbar.forEach(btnGroup => {
+                let index;
+                let buttons;
+                if (btnGroup.group) {
+                    buttons = btnGroup.group.filter(button => button.type === btn.type);
+                    index = buttons.findIndex(button => button.name === btn.name);
+                }
+                if (btnGroup.dropdown) {
+                    buttons = btnGroup.dropdown.buttons.filter(button => button.type === btn.type);
+                    index = buttons.findIndex(button => button.name === btn.name);
+                }
+                if (index >= 0) {
+                    if (buttons[index].dialogConfig) {
+                        this[buttons[index].type](buttons[index].dialogConfig);
+                    } else if (buttons[index].context) {
+                        this[buttons[index].type](buttons[index].context);
+                    }
+                }
+            });
         }
     }
 

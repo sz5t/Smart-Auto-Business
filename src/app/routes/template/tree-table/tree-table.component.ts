@@ -1,6 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { _HttpClient } from '@delon/theme';
-import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
 
 @Component({
   selector: 'app-tree-table',
@@ -70,17 +68,17 @@ export class TreeTableComponent implements OnInit {
                         }
                       },
                       {
-                        title: '类别', field: 'TypeName', width: '100px', hidden: false,
+                        title: '类别', field: 'caseType', width: '100px', hidden: false,
                         showFilter: true, showSort: true,
                         editor: {
                           type: 'select',
-                          field: 'Type',
+                          field: 'caseType',
                           options: {
                             'type': 'select',
                             'labelSize': '6',
                             'controlSize': '18',
                             'inputType': 'submit',
-                            'name': 'Type',
+                            'name': 'caseType',
                             'label': 'Type',
                             'notFoundContent': '',
                             'selectModel': false,
@@ -90,7 +88,6 @@ export class TreeTableComponent implements OnInit {
                             'size': 'default',
                             'clear': true,
                             'width': '200px',
-                            'dataSet': 'TypeName',
                             'options': [
                               {
                                 'label': '表格',
@@ -149,11 +146,25 @@ export class TreeTableComponent implements OnInit {
                         }
                       },
                       {
-                        title: '创建时间', field: 'CreateTime', width: 80, hidden: false, dataType: 'date',
+                        title: '父类别', field: 'parentId', width: 80, hidden: false,
+                        showFilter: false, showSort: false,
+                        editor: {
+                          type: 'input',
+                          field: 'parentId',
+                          options: {
+                            'type': 'input',
+                            'labelSize': '6',
+                            'controlSize': '18',
+                            'inputType': 'text',
+                          }
+                        }
+                      },
+                      {
+                        title: '创建时间', field: 'createDate', width: 80, hidden: false, dataType: 'date',
                         editor: {
                           type: 'input',
                           pipe: 'datetime',
-                          field: 'CreateTime',
+                          field: 'createDate',
                           options: {
                             'type': 'input',
                             'labelSize': '6',
@@ -163,7 +174,7 @@ export class TreeTableComponent implements OnInit {
                         }
                       },
                       {
-                        title: '备注', field: 'Remark', width: 80, hidden: false,
+                        title: '备注', field: 'remark', width: 80, hidden: false,
                         editor: {
                           type: 'input',
                           field: 'Remark',
@@ -176,20 +187,20 @@ export class TreeTableComponent implements OnInit {
                         }
                       },
                       {
-                        title: '状态', field: 'EnableText', width: 80, hidden: false,
+                        title: '状态', field: 'enabled', width: 80, hidden: false,
                         formatter: [
                           { 'value': '启用', 'bgcolor': '', 'fontcolor': 'text-blue', 'valueas': '启用' },
                           { 'value': '禁用', 'bgcolor': '', 'fontcolor': 'text-red', 'valueas': '禁用' }
                         ],
                         editor: {
                           type: 'select',
-                          field: 'Enable',
+                          field: 'enabled',
                           options: {
                             'type': 'select',
                             'labelSize': '6',
                             'controlSize': '18',
                             'inputType': 'submit',
-                            'name': 'Enable',
+                            'name': 'enabled',
                             'notFoundContent': '',
                             'selectModel': false,
                             'showSearch': true,
@@ -228,27 +239,68 @@ export class TreeTableComponent implements OnInit {
                       {
                         group: [
                           {
-                            'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
+                            'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新', 'color': 'text-primary'
                           },
                           {
-                            'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增'
+                            'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增', 'action': 'CREATE', 'icon': 'anticon anticon-plus', 'color': 'text-primary'
                           },
                           {
-                            'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改'
+                            'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改', 'action': 'EDIT', 'icon': 'anticon anticon-edit', 'color': 'text-success'
                           },
                           {
-                            'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除',
+                            'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除', 'action': 'DELETE' , 'icon': 'anticon anticon-delete', 'color': 'text-red-light',
                             'ajaxConfig': {
                               delete: [{
                                 'actionName': 'delete',
                                 'url': 'common/ShowCase',
-                                'ajaxType': 'delete'
+                                'ajaxType': 'delete',
+                                'params' : [
+                                  {
+                                    name: 'Id', valueName: 'Id', type: 'checkedRow'
+                                  }
+                                ]
+                              }]
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        group: [
+                          {
+                            'name': 'executeCheckedRow', 'class': 'editable-add-btn', 'text': '多选删除', 'action': 'EXECUTE_CHECKED' , 'icon': 'anticon anticon-delete' , 'color': 'text-red-light',
+                            'actionType': 'post', 'actionName': 'execChecked',
+                            'ajaxConfig': {
+                              post: [{
+                                'actionName': 'post',
+                                'url': 'common/ShowCase',
+                                'ajaxType': 'post',
+                                'params' : [
+                                  {
+                                    name: 'Id', valueName: 'Id', type: 'checkedRow'
+                                  }
+                                ]
                               }]
                             }
                           },
                           {
-                            'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存',
-                            'type': 'method/action',
+                            'name': 'executeSelectedRow', 'class': 'editable-add-btn', 'text': '选中删除', 'action': 'EXECUTE_SELECTED' , 'icon': 'anticon anticon-delete',
+                            'actionType': 'post', 'actionName': 'execSelected',
+                            'ajaxConfig': {
+                              post: [{
+                                'actionName': 'post',
+                                'url': 'common/ShowCase',
+                                'ajaxType': 'post',
+                                'params' : [
+                                  {
+                                    name: 'Id', valueName: 'Id', type: 'checkedRow'
+                                  }
+                                ]
+                              }]
+                            }
+                          },
+                          {
+                            'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存', 'action': 'SAVE' , 'icon': 'anticon anticon-save',
+                            'type': 'default', 'color': 'text-primary',
                             'ajaxConfig': {
                               post: [{
                                 'actionName': 'add',
@@ -257,12 +309,11 @@ export class TreeTableComponent implements OnInit {
                                 'params': [
                                   { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
                                   { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
-                                  // { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                                  { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                  { name: 'enabled', type: 'componentValue', valueName: 'enabled', value: '' },
                                   { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
-                                  { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
-                                  { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                                  { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
+                                  { name: 'parentId', type: 'componentValue', valueName: 'parentId', value: '' },
+                                  { name: 'remark', type: 'componentValue', valueName: 'remark', value: '' },
+                                  { name: 'caseType', type: 'componentValue', valueName: 'caseType', value: '' }
                                 ],
                                 'output': [
                                   {
@@ -279,22 +330,27 @@ export class TreeTableComponent implements OnInit {
                                   { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
                                   { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
                                   { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
-                                  // { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                                  { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                  { name: 'enabled', type: 'componentValue', valueName: 'enabled', value: '' },
                                   { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
-                                  { name: 'ParentId', type: 'componentValue', valueName: 'ParentId', value: '' },
-                                  { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                                  { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
+                                  { name: 'parentId', type: 'componentValue', valueName: 'parentId', value: '' },
+                                  { name: 'remark', type: 'componentValue', valueName: 'remark', value: '' },
+                                  { name: 'caseType', type: 'componentValue', valueName: 'caseType', value: '' }
                                 ]
                               }]
                             }
                           },
                           {
-                            'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消',
-                          },
+                            'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'action': 'CANCEL' , 'icon': 'anticon anticon-rollback', 'color': 'text-grey-darker',
+                          }
+                        ]
+                      },
+                      {
+                        group: [
                           {
-                            'name': 'addForm', 'class': 'editable-add-btn', 'text': '弹出新增表单',
-                            'type': 'showForm', 'dialogConfig': {
+                            'name': 'addForm', 'class': 'editable-add-btn', 'text': '弹出新增表单' , 'icon': 'anticon anticon-form',
+                            'action': 'FORM', 'actionType': 'formDialog', 'actionName': 'addShowCase',
+                            'type': 'showForm',
+                            'dialogConfig': {
                               'keyId': 'Id',
                               'layout': 'horizontal',
                               'title': '新增数据',
@@ -346,7 +402,7 @@ export class TreeTableComponent implements OnInit {
                                         'labelSize': '6',
                                         'controlSize': '16',
                                         'inputType': 'submit',
-                                        'name': 'Type',
+                                        'name': 'caseType',
                                         'label': '类别',
                                         'labelName': 'Name',
                                         'valueName': 'Id',
@@ -363,7 +419,7 @@ export class TreeTableComponent implements OnInit {
                                         },
                                         'cascader': [
                                           {
-                                            'name': 'appUser',
+                                            'name': 'getCaseName',
                                             'type': 'sender',
                                             'cascaderData': {
                                               'params': [
@@ -382,36 +438,42 @@ export class TreeTableComponent implements OnInit {
                                   {
                                     controls: [
                                       {
-                                        'type': 'select',
+                                        'type': 'selectTree',
                                         'labelSize': '6',
                                         'controlSize': '16',
-                                        'inputType': 'submit',
-                                        'name': 'Type',
-                                        'label': '用例',
-                                        'labelName': 'caseName',
-                                        'valueName': 'Id',
+                                        'name': 'ParentId',
+                                        'label': '父类别',
                                         'notFoundContent': '',
                                         'selectModel': false,
                                         'showSearch': true,
                                         'placeholder': '--请选择--',
                                         'disabled': false,
                                         'size': 'default',
-                                        'cascader': [
-                                          {
-                                            'sender': 'appUser',
-                                            'type': 'receiver'
-                                          }
+                                        'columns': [ // 字段映射，映射成树结构所需
+                                          { title: '主键', field: 'key', valueName: 'Id' },
+                                          { title: '父节点', field: 'parentId', valueName: 'ParentId' },
+                                          { title: '标题', field: 'title', valueName: 'caseName' },
                                         ],
                                         'ajaxConfig': {
-                                          'url': 'common/GetCase',
+                                          'url': 'common/ShowCase',
                                           'ajaxType': 'get',
-                                          'cascader': true,
                                           'params': [
-                                            {
-                                              'name': 'Type', 'type': 'tempValue', 'valueName': '_typeId', 'value': ''
-                                            }
+                                            // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
                                           ]
                                         },
+                                        'cascader': [
+                                          {
+                                            'name': 'getCaseName',
+                                            'type': 'sender',
+                                            'cascaderData': {
+                                              'params': [
+                                                {
+                                                  'pid': 'Id', 'cid': '_typeId'
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ],
                                         'layout': 'column',
                                         'span': '24'
                                       }
@@ -513,17 +575,85 @@ export class TreeTableComponent implements OnInit {
                                   {
                                     controls: [
                                       {
+                                        'type': 'selectTree',
+                                        'labelSize': '6',
+                                        'controlSize': '16',
+                                        'name': 'ParentId',
+                                        'label': '父类别',
+                                        'notFoundContent': '',
+                                        'selectModel': false,
+                                        'showSearch': true,
+                                        'placeholder': '--请选择--',
+                                        'disabled': false,
+                                        'size': 'default',
+                                        'columns': [ // 字段映射，映射成树结构所需
+                                          { title: '主键', field: 'key', valueName: 'Id' },
+                                          { title: '父节点', field: 'parentId', valueName: 'ParentId' },
+                                          { title: '标题', field: 'title', valueName: 'caseName' },
+                                        ],
+                                        'ajaxConfig': {
+                                          'url': 'common/ShowCase',
+                                          'ajaxType': 'get',
+                                          'params': [
+                                            // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
+                                          ]
+                                        },
+                                        'cascader': [
+                                          {
+                                            'name': 'getCaseName',
+                                            'type': 'sender',
+                                            'cascaderData': {
+                                              'params': [
+                                                {
+                                                  'pid': 'Id', 'cid': '_typeId'
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ],
+                                        'layout': 'column',
+                                        'span': '24'
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    controls: [
+                                      {
                                         'type': 'datePicker',
                                         'labelSize': '6',
                                         'controlSize': '16',
                                         'inputType': 'text',
-                                        'name': 'CreateTime',
+                                        'name': 'CreateData',
                                         'label': '创建时间',
                                         'placeholder': '',
                                         'disabled': false,
                                         'readonly': false,
                                         'size': 'default',
                                         'layout': 'column',
+                                        'showTime': true,
+                                        'format': 'yyyy-MM-dd',
+                                        'showToday': true,
+                                        'span': '24'
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    controls: [
+                                      {
+                                        'type': 'rangePicker',
+                                        'labelSize': '6',
+                                        'controlSize': '16',
+                                        'inputType': 'text',
+                                        'name': 'CreateData',
+                                        'label': '时间范围',
+                                        'placeholder': '',
+                                        'disabled': false,
+                                        'readonly': false,
+                                        'size': 'default',
+                                        'layout': 'column',
+                                        'showTime': true,
+                                        'format': 'yyyy-MM-dd',
+                                        'showToday': true,
                                         'span': '24'
                                       }
                                     ]
@@ -557,12 +687,12 @@ export class TreeTableComponent implements OnInit {
                                         'params': [
                                           { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
                                           { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
-                                          { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                                          { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                          { name: 'createTime', type: 'componentValue', valueName: 'createTime', value: '' },
+                                          { name: 'enabled', type: 'componentValue', valueName: 'enabled', value: '' },
                                           { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
-                                          { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' },
-                                          { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                                          { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
+                                          { name: 'parentId', type: 'tempValue', valueName: '_parentId', value: '' },
+                                          { name: 'remark', type: 'componentValue', valueName: 'remark', value: '' },
+                                          { name: 'caseType', type: 'componentValue', valueName: 'caseType', value: '' }
                                         ]
                                       }]
                                     }
@@ -575,12 +705,12 @@ export class TreeTableComponent implements OnInit {
                                         'params': [
                                           { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
                                           { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
-                                          { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                                          { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                          { name: 'createTime', type: 'componentValue', valueName: 'createTime', value: '' },
+                                          { name: 'enabled', type: 'componentValue', valueName: 'enabled', value: '' },
                                           { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
-                                          { name: 'ParentId', type: 'tempValue', valueName: '_parentId', value: '' },
-                                          { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                                          { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
+                                          { name: 'parentId', type: 'tempValue', valueName: '_parentId', value: '' },
+                                          { name: 'remark', type: 'componentValue', valueName: 'remark', value: '' },
+                                          { name: 'caseType', type: 'componentValue', valueName: 'caseType', value: '' }
                                         ]
                                       }]
                                     }
@@ -592,7 +722,8 @@ export class TreeTableComponent implements OnInit {
                             }
                           },
                           {
-                            'name': 'editForm', 'class': 'editable-add-btn', 'text': '弹出编辑表单',
+                            'name': 'editForm', 'class': 'editable-add-btn', 'text': '弹出编辑表单' , 'icon': 'anticon anticon-form',
+                            'action': 'FORM', 'actionType': 'formDialog', 'actionName': 'updateShowCase',
                             'type': 'showForm',
                             'dialogConfig': {
                               'keyId': 'Id',
@@ -621,7 +752,7 @@ export class TreeTableComponent implements OnInit {
                                         'labelSize': '6',
                                         'controlSize': '16',
                                         'inputType': 'submit',
-                                        'name': 'Enable',
+                                        'name': 'enabled',
                                         'label': '状态',
                                         'notFoundContent': '',
                                         'selectModel': false,
@@ -653,7 +784,7 @@ export class TreeTableComponent implements OnInit {
                                         'labelSize': '6',
                                         'controlSize': '16',
                                         'inputType': 'submit',
-                                        'name': 'Type',
+                                        'name': 'caseType',
                                         'label': '类别Id',
                                         'labelName': 'Name',
                                         'valueName': 'Id',
@@ -664,7 +795,7 @@ export class TreeTableComponent implements OnInit {
                                         'disabled': false,
                                         'size': 'default',
                                         'ajaxConfig': {
-                                          'url': 'common/ShowCase',
+                                          'url': 'common/ComProjectModule',
                                           'ajaxType': 'get',
                                           'params': []
                                         },
@@ -739,6 +870,50 @@ export class TreeTableComponent implements OnInit {
                                   {
                                     controls: [
                                       {
+                                        'type': 'selectTree',
+                                        'labelSize': '6',
+                                        'controlSize': '16',
+                                        'name': 'ParentId',
+                                        'label': '父类别',
+                                        'notFoundContent': '',
+                                        'selectModel': false,
+                                        'showSearch': true,
+                                        'placeholder': '--请选择--',
+                                        'disabled': false,
+                                        'size': 'default',
+                                        'columns': [ // 字段映射，映射成树结构所需
+                                          { title: '主键', field: 'key', valueName: 'Id' },
+                                          { title: '父节点', field: 'parentId', valueName: 'ParentId' },
+                                          { title: '标题', field: 'title', valueName: 'caseName' },
+                                        ],
+                                        'ajaxConfig': {
+                                          'url': 'common/ShowCase',
+                                          'ajaxType': 'get',
+                                          'params': [
+                                            // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
+                                          ]
+                                        },
+                                        'cascader': [
+                                          {
+                                            'name': 'getCaseName',
+                                            'type': 'sender',
+                                            'cascaderData': {
+                                              'params': [
+                                                {
+                                                  'pid': 'Id', 'cid': '_typeId'
+                                                }
+                                              ]
+                                            }
+                                          }
+                                        ],
+                                        'layout': 'column',
+                                        'span': '24'
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    controls: [
+                                      {
                                         'type': 'input',
                                         'labelSize': '6',
                                         'controlSize': '16',
@@ -762,7 +937,7 @@ export class TreeTableComponent implements OnInit {
                                         'labelSize': '6',
                                         'controlSize': '16',
                                         'inputType': 'text',
-                                        'name': 'Remark',
+                                        'name': 'remark',
                                         'label': '备注',
                                         'placeholder': '',
                                         'disabled': false,
@@ -786,11 +961,11 @@ export class TreeTableComponent implements OnInit {
                                           { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
                                           { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
                                           { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
-                                          { name: 'CreateTime', type: 'componentValue', valueName: 'CreateTime', value: '' },
-                                          { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                          { name: 'createTime', type: 'componentValue', valueName: 'createTime', value: '' },
+                                          { name: 'enabled', type: 'componentValue', valueName: 'enabled', value: '' },
                                           { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
-                                          { name: 'Remark', type: 'componentValue', valueName: 'Remark', value: '' },
-                                          { name: 'Type', type: 'componentValue', valueName: 'Type', value: '' }
+                                          { name: 'remark', type: 'componentValue', valueName: 'remark', value: '' },
+                                          { name: 'caseType', type: 'componentValue', valueName: 'caseType', value: '' }
                                         ]
                                       }]
                                     }
@@ -802,7 +977,7 @@ export class TreeTableComponent implements OnInit {
                             }
                           },
                           {
-                            'name': 'batchEditForm', 'class': 'editable-add-btn', 'text': '弹出批量处理表单',
+                            'name': 'batchEditForm', 'class': 'editable-add-btn', 'text': '弹出批量处理表单' , 'icon': 'anticon anticon-form',
                             'type': 'showBatchForm',
                             'dialogConfig': {
                               'keyId': 'Id',
@@ -822,7 +997,7 @@ export class TreeTableComponent implements OnInit {
                                         'labelSize': '6',
                                         'controlSize': '16',
                                         'inputType': 'submit',
-                                        'name': 'Enable',
+                                        'name': 'enabled',
                                         'label': '状态',
                                         'notFoundContent': '',
                                         'selectModel': false,
@@ -878,7 +1053,7 @@ export class TreeTableComponent implements OnInit {
                                         'params': [
                                           { name: 'Id', type: 'checkedItem', valueName: 'Id', value: '' },
                                           { name: 'caseName', type: 'checkedItem', valueName: 'caseName', value: '' },
-                                          { name: 'Enable', type: 'componentValue', valueName: 'Enable', value: '' },
+                                          { name: 'enabled', type: 'componentValue', valueName: 'enabled', value: '' },
                                         ]
                                       }]
                                     }
@@ -891,6 +1066,7 @@ export class TreeTableComponent implements OnInit {
                           },
                           {
                             'name': 'showDialogPage', 'class': 'editable-add-btn', 'text': '弹出页面',
+                            'action': 'WINDOW', 'actionType': 'windowDialog', 'actionName': 'ShowCaseWindow',
                             'type': 'showLayout', 'dialogConfig': {
                               'title': '',
                               'layoutName': 'singleTable',
@@ -901,9 +1077,13 @@ export class TreeTableComponent implements OnInit {
                               ]
                             }
                           },
+                        ]
+                      },
+                      {
+                        'dropdown': [
                           {
                             'name': 'btnGroup', 'text': ' 分组操作', 'type': 'group', 'icon': 'icon-plus',
-                            'group': [
+                            'buttons': [
                               {
                                 'name': 'refresh', 'class': 'editable-add-btn', 'text': ' 刷新', 'icon': 'icon-list'
                               },
@@ -919,34 +1099,7 @@ export class TreeTableComponent implements OnInit {
                       }
                       
                     ],
-                    'dataSet': [
-                      {
-                        'name': 'TypeName',
-                        'ajaxConfig': {
-                          'url': 'common/ShowCase',
-                          'ajaxType': 'get',
-                          'params': []
-                        },
-                        'params': [],
-                        'fields': [
-                          {
-                            'label': 'ID',
-                            'field': 'Id',
-                            'name': 'value'
-                          },
-                          {
-                            'label': '',
-                            'field': 'Name',
-                            'name': 'label'
-                          },
-                          {
-                            'label': '',
-                            'field': 'Name',
-                            'name': 'text'
-                          }
-                        ]
-                      }
-                    ]
+                    'dataSet': []
                   },
                   permissions: {
                     'viewId': 'bsnTreeTable',
@@ -1186,7 +1339,7 @@ export class TreeTableComponent implements OnInit {
       */
     ]
   };
-  constructor(private http: _HttpClient) { }
+  constructor() { }
 
   ngOnInit() { }
 
