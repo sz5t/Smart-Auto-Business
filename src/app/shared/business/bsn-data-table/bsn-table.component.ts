@@ -140,7 +140,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         // 注册按钮状态触发接收器
         this._statusSubscription = this.stateEvents.subscribe(updateState => {
             if (updateState._viewId === this.config.viewId) {
+
                 const option = updateState.option;
+                console.log(option, updateState._mode);
                 switch (updateState._mode) {
                     case BSN_COMPONENT_MODES.CREATE:
                         this.addRow();
@@ -429,7 +431,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     private selectRow(data?, $event?) {
         if ($event) {
-            if ($event.srcElement.type === 'checkbox' || $event.target.type === 'checkbox') {
+            const src = $event.srcElement || $event.target;
+            if (src.type === 'checkbox') {
                 return;
             }
             $event.stopPropagation();
@@ -511,7 +514,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         }
 
         if (updateRows.length > 0) {
-            // 
+            //
             // console.log(updateRows);
             isSuccess = await this.executeSave(updateRows, 'put');
         }
@@ -595,7 +598,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         let isSuccess;
         if (selectedRow) {
             this.config.toolbar.forEach(bar => {
-                debugger;
                 if (bar.group && bar.group.length > 0) {
                     const execButtons = bar.group.filter(item => item.action === 'EXECUTE_SELECTED');
                     const index = execButtons.findIndex(item => item.actionName = option.name);
@@ -844,7 +846,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         });
     }
 
-    // 获取行内编辑是行填充数据 
+    // 获取行内编辑是行填充数据
     private _getContent() {
         this.rowContent['key'] = null;
         this.config.columns.forEach(element => {
@@ -904,7 +906,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         this.is_Search = true;
         console.log('SearchRow结果', this.dataList);
     }
-    // 生成查询行 
+    // 生成查询行
     createSearchRow() {
         if (this.is_Search) {
             this.dataList = [this.search_Row, ...this.dataList];
@@ -1283,7 +1285,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         } else if (btn['name'] === 'reset') {
                             this._resetForm(componentInstance);
                         } else if (btn['name'] === 'ok') {
-                            // 
+                            //
                         }
 
                     };

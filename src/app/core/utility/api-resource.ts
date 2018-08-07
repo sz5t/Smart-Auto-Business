@@ -214,15 +214,15 @@ export class APIResource {
    * @type {string}
    */
   public static LoginUrl = 'http://192.168.1.8:8082/api.app';
-  
+
   // public static LoginUrl = 'http://39.108.141.68:8016/eb43/Res/';
 
   /**
    * 本地URL
    * @type {string}
    */
+  // public static localUrl =  'http://192.168.0.100:8083/assets';
   public static localUrl =  'http://localhost:4200/assets';
-  // public static localUrl =  'http://192.168.1.8:8002/assets';
   // public static localUrl =  'http://192.168.1.8:8002/assets';
 
 

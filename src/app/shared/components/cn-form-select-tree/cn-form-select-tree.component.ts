@@ -41,7 +41,7 @@ export class CnFormSelectTreeComponent implements OnInit {
     loadTreeData() {
         (async () => {
             const data = await this.getAsyncTreeData();
-            if (data.data && data.status === 200) {
+            if (data.data && data.status === 200 && data.isSuccess) {
                 const TotreeBefore = data.data;
                 TotreeBefore.forEach(d => {
                     if (this.config.columns) {
@@ -50,7 +50,8 @@ export class CnFormSelectTreeComponent implements OnInit {
                         });
                     }
                 });
-                let parent = '';
+                
+                let parent = null;
                 // 解析出 parentid ,一次性加载目前只考虑一个值
                 if (this.config.parent) {
                     this.config.parent.forEach(param => {
@@ -77,9 +78,7 @@ export class CnFormSelectTreeComponent implements OnInit {
                 // })];
                 
                 // result[0].children.push(...);
-                console.log(TotreeBefore);
                 this.treeData = this.listToAsyncTreeData(TotreeBefore, parent);
-                console.log('---------------------', this.treeData);
             }
 
 

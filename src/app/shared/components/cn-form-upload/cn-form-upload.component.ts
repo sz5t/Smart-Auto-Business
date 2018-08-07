@@ -3,10 +3,10 @@ import { _HttpClient } from '@delon/theme';
 import { FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'cn-form-checkbox',
-  templateUrl: './cn-form-checkbox.component.html',
+  selector: 'cn-form-upload',
+  templateUrl: './cn-form-upload.component.html',
 })
-export class CnFormCheckboxComponent implements OnInit {
+export class CnFormUploadComponent implements OnInit {
     @Input() config;
     formGroup: FormGroup;
     model;

@@ -133,13 +133,11 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     private resolverRelation() {
         // 注册按钮状态触发接收器
         this._statusSubscription = this.stateEvents.subscribe(updateState => {
-           
             if (updateState._viewId === this.config.viewId) {
                 const option = updateState.option;
                 console.log(option, updateState._mode);
                 switch (updateState._mode) {
                     case BSN_COMPONENT_MODES.CREATE:
-                        console.log('add row');
                         this.addRow();
                         break;
                     case BSN_COMPONENT_MODES.EDIT:
@@ -156,6 +154,12 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                         break;
                     case BSN_COMPONENT_MODES.DIALOG:
                         this.dialog(option);
+                        break;
+                    case BSN_COMPONENT_MODES.EXECUTE_SELECTED:
+                        this.executeSelectedRow(option);
+                        break;
+                    case BSN_COMPONENT_MODES.EXECUTE_CHECKED:
+                        this.executeCheckedRow(option);
                         break;
                     case BSN_COMPONENT_MODES.WINDOW:
                         this.windowDialog(option);
@@ -473,7 +477,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                     i--;
                     len--;
                 }
-                
+
             }
         }
 
@@ -783,6 +787,65 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
             );
         }
         return isSuccess;
+    }
+    executeSelectedRow(option) {
+        if (!this._selectRow) {
+            this.message.create('info', '请选选择要执行的数据');
+            return false;
+        }
+        this.modalService.confirm({
+            nzTitle: '是否将选中的数据执行当前操作？',
+            nzContent: '',
+            nzOnOk: () => {
+                if (this._selectRow['row_status'] === 'adding') {
+                    this.message.create('info', '当前数据未保存无法进行处理');
+                    return false;
+                }
+
+                this.executeSelectedAction(this._selectRow, option);
+            },
+            nzOnCancel() {
+            }
+        });
+    }
+
+    executeCheckedRow(option) {
+        if (this.dataList.filter(item => item.checked === true).length <= 0) {
+            this.message.create('info', '请选择要执行的数据');
+            return false;
+        }
+        this.modalService.confirm({
+            nzTitle: '是否将选中的数据执行当前操作？',
+            nzContent: '',
+            nzOnOk: () => {
+                const newData = [];
+                const serverData = [];
+                this.dataList.forEach(item => {
+                    // if (item.checked === true && item['row_status'] === 'adding') {
+                    //     // 删除新增临时数据
+                    //     newData.push(item.key);
+                    // }
+                    if (item.checked === true
+                        && item['row_status'] !== 'adding'
+                        && item['row_status'] !== 'updating'
+                        && item['row_status'] !== 'search'
+                    ) {
+                        // 删除服务端数据
+                        serverData.push(item);
+                    }
+                });
+                // if (newData.length > 0) {
+                //     newData.forEach(d => {
+                //         this.dataList.splice(this.dataList.indexOf(d), 1);
+                //     });
+                // }
+                if (serverData.length > 0) {
+                    this.executeCheckedAction(serverData, option);
+                }
+            },
+            nzOnCancel() {
+            }
+        });
     }
 
     async executeSelectedAction(selectedRow, option) {
@@ -1308,13 +1371,13 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
             newSearchContent['key'] = fieldIdentity;
             newSearchContent['checked'] = false;
             newSearchContent['row_status'] = 'search';
-          
+
             this.expandDataCache[fieldIdentity] = [newSearchContent];
             this.dataList = [newSearchContent, ...this.dataList];
             this._editDataList = [newSearchContent, ...this._editDataList];
             this._addEditCache();
             this._startAdd(fieldIdentity);
-           
+
             this.search_Row = newSearchContent;
         }
         console.log('SearchRow', this.search_Row);
@@ -1331,7 +1394,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
             }
         }
 
-        for (let i = 0, len = this._editDataList.length; i < len ; i++) {
+        for (let i = 0, len = this._editDataList.length; i < len; i++) {
             if (this._editDataList[i]['row_status'] === 'search') {
                 this._editDataList.splice(this._editDataList.indexOf(this._editDataList[i]), 1);
                 i--;

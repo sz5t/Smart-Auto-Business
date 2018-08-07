@@ -6,6 +6,7 @@
        formControlName="{{config.name}}"
        (ngModelChange)="valueChange($event)"
        [nzSize]="config.size"
+       [(ngModel)]="value"
        [nzPlaceHolder]="config.placeholder">
        <nz-option *ngFor="let option of _options"
                   nzLabel="{{option.label}}"
