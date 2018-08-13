@@ -42,13 +42,13 @@ export class BsnStepComponent implements OnInit {
         this._current -= 1;
         this.changeContent();
       }
-    
+
       next() {
         if (this._current === this.config.steps.length) return;
         this._current += 1;
         this.changeContent();
       }
-    
+
       done() {
         // console.log('done');
       }
@@ -76,6 +76,5 @@ export class BsnStepComponent implements OnInit {
 
       getViewCfg() {
         this.viewCfg = this.config.steps[this._current].viewCfg;
-        // console.log(this.viewCfg);
       }
 }

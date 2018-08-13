@@ -3,18 +3,18 @@
 .CodeMirror {
     /* Set height, width, borders, and global font properties here */
     font-family: monospace;
-    height: auto;
+    height: 100%;
     color: black;
-    font-size:12px;
+    font-size:14px;
   }
 
   /* PADDING */
 
   .CodeMirror-lines {
-    padding: 4px 0; /* Vertical padding around content */
+    padding: 2px 0; /* Vertical padding around content */
   }
   .CodeMirror pre {
-    padding: 0 4px; /* Horizontal padding of content */
+    padding: 0 2px; /* Horizontal padding of content */
   }
 
   .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
@@ -334,3 +334,16 @@
   /* Help users use markselection to safely style text background */
   span.CodeMirror-selectedtext { background: none; }
 
+blockquote {
+    border-left:#eee solid 5px;
+    padding-left:20px;
+}
+ul li {
+    line-height: 20px;
+}
+
+code {
+    color: #2c2827;
+    background: none;
+    border: hidden;
+}

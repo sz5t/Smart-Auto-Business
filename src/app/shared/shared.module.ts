@@ -60,6 +60,7 @@ import { BsnToolbarComponent } from '@shared/business/bsn-toolbar/bsn-toolbar.co
 import { BsnStepComponent } from '@shared/business/bsn-step/bsn-step.component';
 import { CnFormSelectTreeComponent } from '@shared/components/cn-form-select-tree/cn-form-select-tree.component';
 import { BtnTableFieldLimit } from '@core/pipe/btn-table-field-limit.pipe';
+import {BsnAccordionComponent} from "@shared/business/bsn-accordion/bsn-accordion.component";
 // import { NzSchemaFormModule } from 'nz-schema-form';
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -116,8 +117,9 @@ const COMPONENTS = [
     TableChartComponent,
     LineChartComponent,
     BarChartComponent,
-    CnFormSelectTreeComponent
-    
+    CnFormSelectTreeComponent,
+    BsnAccordionComponent
+
 ];
 const DIRECTIVES = [
     FormResolverDirective,

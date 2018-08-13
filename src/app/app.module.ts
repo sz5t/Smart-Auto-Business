@@ -1,4 +1,4 @@
-import { LodopService } from '@delon/abc';
+import {LodopService, ReuseTabService, ReuseTabStrategy} from '@delon/abc';
 
 import { BsnTableRelativeMessageService } from '@core/relative-Service/relative-service';
 import { NgModule, LOCALE_ID, APP_INITIALIZER, Injector } from '@angular/core';
@@ -31,6 +31,7 @@ import { ApiService } from '@core/utility/api-service';
 import { RelativeService, RelativeResolver, BsnToolbarRelativeMessage } from '@core/relative-Service/relative-service';
 import { BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_MODES } from '@core/relative-Service/BsnTableStatus';
 import { Subject } from 'rxjs';
+import {RouteReuseStrategy} from "@angular/router";
 // JSON-Schema form
 // import { JsonSchemaModule } from '@shared/json-schema/json-schema.module';
 
@@ -86,6 +87,11 @@ export function StartupServiceFactory(startupService: StartupService): Function 
         // { provide: HTTP_INTERCEPTORS, useClass: SimpleInterceptor, multi: true}, //影响自定义的服务请求
         { provide: HTTP_INTERCEPTORS, useClass: DefaultInterceptor, multi: true},
         { provide: ALAIN_I18N_TOKEN, useClass: I18NService, multi: false },
+        {
+            provide: RouteReuseStrategy,
+            useClass: ReuseTabStrategy,
+            deps: [ReuseTabService],
+        },
         StartupService,
         {
             provide: APP_INITIALIZER,
@@ -94,11 +100,11 @@ export function StartupServiceFactory(startupService: StartupService): Function 
             multi: true
         },
         {
-            provide: BSN_COMPONENT_MODES, 
+            provide: BSN_COMPONENT_MODES,
             useValue: new Subject<BsnComponentMessage>()
         },
         {
-            provide: BSN_COMPONENT_CASCADE, 
+            provide: BSN_COMPONENT_CASCADE,
             useValue: new Subject<BsnComponentMessage>()
         },
         ApiService,

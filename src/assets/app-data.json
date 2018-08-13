@@ -37,7 +37,7 @@
                             "i18n": "",
                             "icon": "icon-user"
                         }
-                        
+
                     ]
                 },
                 {
@@ -95,7 +95,17 @@
                         "text": "计划审计图",
                         "link": "/test/pert",
                         "i18n": ""
-                    }
+                    },
+                    {
+                      "text": "APP 配置说明",
+                      "link": "/template/APPConfigIntro",
+                      "i18n": ""
+                    },
+                      {
+                          "text": "API 使用说明",
+                          "link": "/template/APIIntro",
+                          "i18n": ""
+                      }
                   ]
                 },
                 {

@@ -22,7 +22,6 @@ export class LayoutDefaultComponent {
                 this.isFetching = true;
             }
             if (evt instanceof NavigationError) {
-                console.log(evt);
                 this.isFetching = false;
                 _message.error(`无法加载${evt.url}路由`, { nzDuration: 1000 * 3 });
                 return;

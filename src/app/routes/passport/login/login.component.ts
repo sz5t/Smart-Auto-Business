@@ -61,9 +61,9 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        
-        this.titleService.setTitle('配置平台');
-        this.cacheService.set('AppName', '自动化业务装配系统');
+
+        this.titleService.setTitle('SmartOne');
+        this.cacheService.set('AppName', 'SmartOne');
     }
     // region: fields
 
@@ -158,7 +158,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         //         }
         //     }
 
-           
+
         //     const appPermissionResult = await this._getAppPermission();
         //     if (appPermissionResult.Data && appPermissionResult.Status === 200) {
         //         if (this.type === 0) {
@@ -195,7 +195,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                 menus = this.arrayToTree(projModule.data, null);
                 url = '/';
             }
-            
+
             this.cacheService.set('Menus', menus);
             this.menuService.add(menus);
 
@@ -211,7 +211,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     }
 
     async _userLogin (userLogin) {
-        return this.apiService.post('common/Action/ComSysAccount/login', userLogin).toPromise();
+        return this.apiService.post('common/login', userLogin).toPromise();
     }
 
     async _getOnlineUser(onlineUser) {
@@ -249,15 +249,15 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     _buildOnlineUser(onlineUser: UserLogin) {
         if (this.type === 0) {
             onlineUser.loginName = this.userName.value;
-            onlineUser.loginPwd = this.password.value; 
+            onlineUser.loginPwd = this.password.value;
             // Md5.hashStr(this.password.value).toString().toUpperCase();
             // environment.SERVER_URL = APIResource.SettingUrl;
             // environment.COMMONCODE = APIResource.SettingCommonCode;
-            
+
             this.cacheService.set('currentConfig', SystemResource.settingSystem);
         } else {
             onlineUser.loginName = this.uName.value;
-            onlineUser.loginPwd = this.uPassword.value; 
+            onlineUser.loginPwd = this.uPassword.value;
             // Md5.hashStr(this.uPassword.value).toString().toUpperCase();
             // environment.SERVER_URL = APIResource.LoginUrl;
             // environment.COMMONCODE = APIResource.LoginCommonCode;

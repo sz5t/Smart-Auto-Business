@@ -19,9 +19,14 @@ export class CnCodeEditComponent implements OnInit , AfterViewInit {
     ngOnInit() {
 
     }
+    /**
+     * text/x-sql
+     * text/x-markdown
+     */
     ngAfterViewInit () {
         this.editor = CodeMirror.fromTextArea(this.codeEditor.nativeElement, {
-          mode: 'text/x-sql',
+          mode: this.config.type,
+          highlightFormatting: true,
           indentWithTabs: true,
           smartIndent: true,
           lineNumbers: true,

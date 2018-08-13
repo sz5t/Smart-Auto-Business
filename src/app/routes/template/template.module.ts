@@ -1,3 +1,4 @@
+// import { CnCodeEditComponent } from '@shared/components/cn-code-edit/cn-code-edit.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { SharedModule } from '@shared/shared.module';
@@ -12,6 +13,8 @@ import { TreeAndFormComponent } from './tree-and-form/tree-and-form.component';
 import { DynamicTemplateComponent } from './dynamic-template/dynamic-template.component';
 import { TableChartComponent } from './table-chart/table-chart.component';
 import { AuthGuard } from '@core/utility/auth-guard';
+import { CnAppDocumentComponent } from './app-document/app-document.component';
+import {CnApiDocumentComponent} from './api-document/api-document.component';
 
 const routes: Routes = [
   { path: 'singleTable', component: SingleTableComponent, canActivate: [AuthGuard] },
@@ -22,6 +25,8 @@ const routes: Routes = [
   { path: 'treeAndTabs', component: TreeAndTabsComponent, canActivate: [AuthGuard] },
   { path: 'treeAndForm', component: TreeAndFormComponent, canActivate: [AuthGuard] },
   { path: 'tableChart', component: TableChartComponent, canActivate: [AuthGuard]},
+    { path: 'APPConfigIntro', component: CnAppDocumentComponent, canActivate: [AuthGuard]},
+    { path: 'APIIntro', component: CnApiDocumentComponent, canActivate: [AuthGuard]},
   { path: 'dynamicTemplate/:name', component: DynamicTemplateComponent, canActivate: [AuthGuard]}
 ];
 
@@ -33,7 +38,10 @@ const COMPONENT_NOROUNT = [
   TreeAndTabsComponent,
   TreeAndMultiTableComponent,
   TreeAndFormComponent,
-  DynamicTemplateComponent
+  DynamicTemplateComponent,
+  // CnCodeEditComponent,
+    CnAppDocumentComponent,
+    CnApiDocumentComponent
 ];
 
 @NgModule({

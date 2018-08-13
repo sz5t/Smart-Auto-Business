@@ -6,15 +6,35 @@ import { CacheService } from '@delon/cache';
     selector: 'app-header',
     templateUrl: './header.component.html',
     styles: [
-        `.title {
+        `
+            .title {
             color: whitesmoke;
             font-size: 25px;
             font-family: Arial, Helvetica, sans-serif;
             font-weight: 600;
             letter-spacing: 0.1em;
             position: relative;
-            top: 5px;
-}`
+            top: 5px;  
+            }
+            .menu-bg{
+                background-color: #00c4ff;
+            }
+            .menu-item {
+                margin-right:15px;
+                line-height:65px;
+            }
+            .menu-item  a {
+                color:#fff !important;
+                display:block;
+                padding-left:5px;
+                padding-right:5px;
+                font-size:14px;
+            }
+            .menu-item  a:hover {
+               background-color:#77aaff !important;  
+                transition: background-color 300ms;
+            }
+        `
 
     ]
 })

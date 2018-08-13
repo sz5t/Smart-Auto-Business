@@ -69,6 +69,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
     _moduleId;
     _resourceName;
     @Input() config;
+    codeMirrorConfig = {'type': 'text/x-sql'};
     @ViewChild('editor') editor: CnCodeEditComponent;
 
     constructor(
@@ -126,9 +127,9 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
         let param = {
             _page: this.pageIndex,
             _rows: this.pageSize,
-            _subResourceName: 'ComSqlScriptParameter', 
-            _refPropName: 'sqlScriptId', 
-            _subSort: 'orderCode' 
+            _subResourceName: 'ComSqlScriptParameter',
+            _refPropName: 'sqlScriptId',
+            _subSort: 'orderCode'
         };
 
 
@@ -245,7 +246,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             leftResourceName: 'ComProjectModule',
             rightResourceName: 'ComSqlScript'
         };
-        return this._http.postProjSys('common/ComDataLinks', params).toPromise();
+        return this._http.postProjSys('common/SysDataLinks', params).toPromise();
     }
 
 
@@ -264,7 +265,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             LeftId: this._moduleId,
             LinkNote: 'sql'
         };
-        return this._http.delete('common/ComDataLinks', params).toPromise();
+        return this._http.delete('common/SysDataLinks', params).toPromise();
     }
 
     private async updateSql(sql) {
