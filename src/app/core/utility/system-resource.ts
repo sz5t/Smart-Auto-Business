@@ -20,7 +20,7 @@ export class SystemResource {
 
     public static localResource = {
         // 'url': 'http://192.168.0.100:8083'
-        'url': 'http://localhost:4200'
+         'url': 'http://localhost:4200'
     };
 }
 

@@ -1,5 +1,10 @@
 
 import { Component, OnInit, Input, OnDestroy, Type, Inject } from '@angular/core';
+import {Observable, Observer} from "rxjs/index";
+import {BSN_COMPONENT_CASCADE, BSN_COMPONENT_MODES, BsnComponentMessage} from "@core/relative-Service/BsnTableStatus";
+import {ApiService} from "@core/utility/api-service";
+import {NzMessageService} from "ng-zorro-antd";
+import {CommonTools} from "@core/utility/common-tools";
 @Component({
     selector: 'bsn-step',
     templateUrl: './bsn-step.component.html',
@@ -26,16 +31,74 @@ export class BsnStepComponent implements OnInit {
     @Input() config;
     @Input() viewId;
     viewCfg;
+    _tempValue = {};
     _current = 0;
     _status = 'wait';
     indexContent = '';
     constructor(
-
+        private _apiService: ApiService,
+        private _message: NzMessageService,
+        @Inject(BSN_COMPONENT_MODES) private eventStatus: Observable<BsnComponentMessage>,
+        @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
+        @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
     ) { }
 
     ngOnInit() {
-        this.getViewCfg();
+        if(this.config.ajaxConfig) {
+            // 异步加载步骤
+            this.loadSteps();
+        } else {
+            // 加载固定步骤
+            this.getViewCfg();
+        }
     }
+
+    loadSteps() {
+        (async() => {
+            const res: any = await this.getAsyncStepsData();
+            if (res.isSuccess) {
+                this.config.steps = [];
+                res.data.forEach(dataItem => {
+                    const d = {};
+                    d['viewCfg'] = [];
+                    this.config.dataMapping.forEach(dm => {
+                        if(dataItem[dm.field]) {
+                            d[dm.name] = dataItem[dm.field];
+                        }
+                    });
+                    this.config.steps.push(d);
+                    this.getViewCfg();
+                });
+            } else {
+                this._message.error(res.message);
+            }
+        })();
+    }
+
+    async getAsyncStepsData() {
+        const params = {};
+        const url = this.config.ajaxConfig.url;
+        const ajaxParams = this.config.ajaxConfig.params;
+        if (ajaxParams) {
+            ajaxParams.forEach(param => {
+                if (param.type === 'tempValue') {
+                    if (this._tempValue[param.valueName]) {
+                        params[param.name] = this._tempValue[param.valueName];
+                    } else {
+                        this._message.info('参数异常，无法加载数据');
+                    }
+                } else if (param.type === 'value') {
+                    params[param.name] = param.value;
+                } else if (param.type === 'GUID') {
+                    params[param.name] =  CommonTools.uuID(10);
+                } else if (param.type === 'componentValue') {
+                    // params[param.name] = componentValue;
+                }
+            });
+        }
+        return this._apiService.get(url, params).toPromise();
+    }
+
 
     pre() {
         if (this._current === 0) return;

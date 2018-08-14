@@ -1,13 +1,22 @@
 
-<nz-steps [nzCurrent]="_current" nzSize="config.size" >
+<nz-steps [nzCurrent]="_current" nzSize="config.size">
     <nz-step
     *ngFor="let step of config.steps"
-    [nzTitle]="step.title" 
+    [nzTitle]="step.title"
     [nzDescription]="step.desc"
     [nzIcon]="step.icon"
     >
-    </nz-step>   
+    </nz-step>
   </nz-steps>
+<!--<ng-template #progressTemplate let-dot let-status="status" let-index="index">-->
+    <!--<nz-popover nzContent="steps {{index}} status: {{status}}">-->
+        <!--<span nz-popover style="margin-left: -100%;">-->
+          <!--&lt;!&ndash;<ng-template [ngTemplateOutlet]="dot"></ng-template>&ndash;&gt;-->
+             <!--<nz-avatar [nzText]="1" nzSize="large" [ngStyle]="{'background-color':color}" style="vertical-align: middle;"></nz-avatar>-->
+        <!--</span>-->
+    <!--</nz-popover>-->
+<!--</ng-template>-->
+
 <div class="steps-content">
   <cn-component-resolver [config]="stepConfig" *ngFor="let stepConfig of viewCfg"></cn-component-resolver>
 </div>
@@ -15,10 +24,10 @@
     <button nz-button nzType="default" (click)="pre()" *ngIf="_current > 0">
       <span>上一步</span>
     </button>
-    <button nz-button nzType="default" (click)="next()" *ngIf="_current < 2">
+    <button style="float:right" nz-button nzType="default" (click)="next()" *ngIf="_current < config.steps.length">
       <span>下一步</span>
     </button>
-    <button nz-button nzType="primary" (click)="done()" *ngIf="_current === 2">
+    <button style="float:right" nz-button nzType="primary" (click)="done()" *ngIf="_current === config.steps.length">
       <span>完成</span>
     </button>
   </div>

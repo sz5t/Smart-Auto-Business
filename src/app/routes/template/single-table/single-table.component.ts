@@ -132,6 +132,8 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'controlSize': '16',
                                                         'inputType': 'text',
                                                         'name': 'caseName',
+                                                        'perfixIcon': 'icon icon-search',
+                                                        'addOnAfterIcon': 'anticon anticon-setting',
                                                         'label': '名称',
                                                         'placeholder': '',
                                                         'disabled': false,
@@ -146,6 +148,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'controlSize': '16',
                                                         'inputType': 'text',
                                                         'name': 'caseLevel',
+                                                        'addOnBeforeIcon': 'anticon anticon-setting',
                                                         'label': '级别',
                                                         'placeholder': '',
                                                         'disabled': false,
@@ -857,11 +860,11 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 'isRequired': true,
                                                                 'placeholder': '请输入Case名称',
                                                                 'perfix': 'anticon anticon-edit',
-                                                                'suffix': '',
                                                                 'disabled': false,
                                                                 'readonly': false,
                                                                 'size': 'default',
                                                                 'layout': 'column',
+                                                                'explain': '名称需要根据规范填写',
                                                                 'span': '24',
                                                                 'validations': [
                                                                     {
@@ -1943,6 +1946,53 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                 row: {
                     cols: [
                         {
+                            id: 'area11',
+                            title: '分步操作',
+                            span: 24,
+                            icon: 'icon-list',
+                            size: {
+                                nzXs: 24,
+                                nzSm: 24,
+                                nzMd: 24,
+                                nzLg: 24,
+                                ngXl: 24
+                            },
+                            viewCfg: [
+                                {
+                                    config: {
+                                        'title': '数据网格',
+                                        'viewId': 'singlessTable1',
+                                        'component': 'bsnStep',
+                                        'info': true,
+                                        'keyId': 'Id',
+                                        'size': 'default',
+                                        'ajaxConfig': {
+                                            'url': 'common/GetCase',
+                                            'ajaxType': 'get',
+                                            'params': [],
+                                            'filter': [
+                                                {
+                                                    name: 'caseName', valueName: '_caseName', type: '', value: ''
+                                                }
+                                            ]
+                                        },
+                                        'dataMapping': [
+                                            { 'field': 'caseName', 'name': 'title' },
+                                            { 'field': 'remark', 'name': 'desc' }
+                                        ]
+                                    },
+                                    dataList: [],
+                                    permissions: []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                row: {
+                    cols: [
+                        {
                             id: 'area33',
                             title: '折叠面板',
                             span: 24,
@@ -2072,6 +2122,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                             'controlSize': '16',
                                                                             'inputType': 'text',
                                                                             'name': 'caseName',
+                                                                            'addOnBeforeIcon': 'anticon anticon-setting',
                                                                             'label': '名称',
                                                                             'placeholder': '',
                                                                             'disabled': false,
@@ -2086,6 +2137,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                             'controlSize': '16',
                                                                             'inputType': 'text',
                                                                             'name': 'caseLevel',
+                                                                            'addOnAfterIcon': 'anticon anticon-setting',
                                                                             'label': '级别',
                                                                             'placeholder': '',
                                                                             'disabled': false,

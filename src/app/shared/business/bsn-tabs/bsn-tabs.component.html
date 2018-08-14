@@ -1,0 +1,8 @@
+<nz-tabset [nzTabPosition]="config.tabPosition" [nzType]="config.tabType" [nzSize]="config.size">
+    <nz-tab *ngFor="let tab of config.tabs" [nzTitle]="header">
+        <cn-component-resolver [config]="tabConfig" *ngFor="let tabConfig of tab.viewCfg"></cn-component-resolver>
+        <ng-template #header>
+            <span><i class={{tab.icon}}></i> {{tab.title}}</span>
+        </ng-template>
+    </nz-tab>
+</nz-tabset>

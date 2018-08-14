@@ -1,6 +1,5 @@
 import { ApiService } from '@core/utility/api-service';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -21,12 +20,11 @@ export class DynamicTemplateComponent implements OnInit, OnDestroy {
                 this.config = data;
             });
         });
-        
+
     }
 
     ngOnDestroy(): void {
         this.config = null;
-        // throw new Error("Method not implemented.");
     }
 
 }
