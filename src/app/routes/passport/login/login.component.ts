@@ -376,7 +376,6 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                     icon: data[i].icon,
                     hide: data[i].isEnabled ? false : true
                 };
-                console.log(obj);
                 temp = this.arrayToTree(data[i].children, data[i].Id);
                 if (temp.length > 0) {
                     obj['children'] = temp;

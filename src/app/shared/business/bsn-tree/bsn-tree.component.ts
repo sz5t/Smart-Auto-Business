@@ -11,6 +11,13 @@ import { Observer ,  Observable ,  Subscription } from 'rxjs';
 @Component({
     selector: 'cn-bsn-tree',
     templateUrl: './bsn-tree.component.html',
+    styles:[
+        `
+            :host ::ng-deep .ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {
+                width: calc(100% - 50px);
+            }
+        `
+    ]
 })
 export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDestroy {
     @Input() config;
@@ -49,7 +56,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         //     this._relativeResolver.resolverRelation();
         //     this._tempValue = this._relativeResolver. _tempParameter;
         // }
-        
+
         this._statusSubscription = this.eventStatus.subscribe(updateStatus => {
             if (this.config.viewId = updateStatus._viewId) {
                 const option = updateStatus.option;
@@ -71,7 +78,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                 }
             }
         });
-     
+
         if (this.config.componentType && this.config.componentType.parent === true) {
             this.after(this, 'clickNode', () => {
                 this._clickedNode && this.cascade.next(
@@ -192,7 +199,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                 } else {
                     data[i]['isLeaf'] = true;
                 }
-                
+
                 if (this._clickedNode && (data[i]['key'] === this._clickedNode['key'])) {
                     data[i]['isSelected'] = true;
                 }
@@ -200,7 +207,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                 result.push(new NzTreeNode(data[i]));
             }
         }
-        
+
         return result;
     }
 
@@ -216,7 +223,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
             treeData.children.map(d => {
                 list = list.concat(this.treeToListData(d));
             });
-            
+
         }
 
         return list;
@@ -253,7 +260,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     async execAjax(p?, componentValue?, type?) {
-        
+
         const params = {
         };
         let url;

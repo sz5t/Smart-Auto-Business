@@ -62,7 +62,9 @@ import { CnFormSelectTreeComponent } from '@shared/components/cn-form-select-tre
 import { BtnTableFieldLimit } from '@core/pipe/btn-table-field-limit.pipe';
 import {BsnAccordionComponent} from "@shared/business/bsn-accordion/bsn-accordion.component";
 import {BsnTabsComponent} from "@shared/business/bsn-tabs/bsn-tabs.component";
-// import { NzSchemaFormModule } from 'nz-schema-form';
+import {CnFormTextareaComponent} from "@shared/components/cn-form-textarea/cn-form-textarea.component";
+import { BsnUploadComponent } from './business/bsn-upload/bsn-upload.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 const THIRDMODULES = [
     NgZorroAntdModule,
     CountdownModule,
@@ -88,6 +90,7 @@ const COMPONENTS = [
     CnFormRangePickerComponent,
     CnFormCheckboxComponent,
     CnFormCheckboxGroupComponent,
+    CnFormTextareaComponent,
     CnFormRadioGroupComponent,
     CnGridInputComponent,
     CnGridSelectComponent,
@@ -120,7 +123,8 @@ const COMPONENTS = [
     BarChartComponent,
     CnFormSelectTreeComponent,
     BsnAccordionComponent,
-    BsnTabsComponent
+    BsnTabsComponent,
+    BsnUploadComponent
 
 ];
 const DIRECTIVES = [
@@ -138,6 +142,7 @@ const DIRECTIVES = [
         AlainThemeModule.forChild(),
         DelonABCModule,
         DelonACLModule,
+        InfiniteScrollModule,
         // third libs
         ...THIRDMODULES
     ],

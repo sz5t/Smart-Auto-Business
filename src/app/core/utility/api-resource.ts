@@ -213,7 +213,7 @@ export class APIResource {
    * 解析平台URL
    * @type {string}
    */
-  public static LoginUrl = 'http://192.168.1.8:8082/api.app';
+  public static appUrl = 'http://192.168.1.111:8081/api.cfg/';
 
   // public static LoginUrl = 'http://39.108.141.68:8016/eb43/Res/';
 
@@ -221,8 +221,8 @@ export class APIResource {
    * 本地URL
    * @type {string}
    */
-  // public static localUrl =  'http://192.168.0.100:8083/assets';
-   public static localUrl =  'http://localhost:4200/assets';
+   // public static localUrl =  'http://192.168.1.111:8083/assets';
+  public static localUrl =  'http://localhost:4200/assets';
   // public static localUrl =  'http://192.168.1.8:8002/assets';
 
 

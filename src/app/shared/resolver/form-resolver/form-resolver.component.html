@@ -4,31 +4,31 @@
     <ng-container *ngFor="let formItem of config.forms">
         <div nz-row [nzGutter]="24">
             <ng-container *ngFor="let control of formItem.controls">
-            <ng-container *ngIf="!control.hidden">  
+            <ng-container *ngIf="!control.hidden">
                 <!-- 垂直表单布局-->
                 <nz-form-item *ngIf="control.layout==='row'">
                   <ng-container cnFormResolverDirective [formGroup]="form" [config]="control" [changeConfig]="changeConfig"  (updateValue)="valueChange($event)" >
-        
+
                   </ng-container>
                 </nz-form-item>
-        
+
                 <!-- 水平表单布局-->
                 <div nz-col [nzSpan]="control.span">
                     <nz-form-item>
                       <ng-container cnFormResolverDirective [formGroup]="form" [config]="control" [changeConfig]="changeConfig" (updateValue)="valueChange($event)" >
-        
+
                       </ng-container>
                     </nz-form-item>
                   </div>
-              </ng-container> 
+              </ng-container>
             </ng-container>
         </div>
     </ng-container>
 
-    <div nz-row [nzGutter]="24" *ngIf="config.toolbar">
-        <nz-form-control nzOffset="20" nzSpan="4">
-            <ng-container *ngFor="let bar of config.toolbar">
-                <input nz-button type="button" (click)="buttonAction(bar)" class="editable-add-btn" value="{{bar.text}}" />
+    <div nz-row [nzGutter]="config.toolbar.gutter" *ngIf="config.toolbar">
+        <nz-form-control [nzOffset]="config.toolbar.offset" [nzSpan]="config.toolbar.span">
+            <ng-container *ngFor="let bar of config.toolbar.buttons">
+                <button nz-button type="button" [nzLoading]="bar.name==='saveForm' && _isSaving" (click)="buttonAction(bar)" [nzType]="bar.type">{{bar.text}}</button>
             </ng-container>
         </nz-form-control>
     </div>

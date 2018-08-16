@@ -10,6 +10,7 @@ import { mergeMap, catchError } from 'rxjs/operators';
 import { NzMessageService } from 'ng-zorro-antd';
 import { _HttpClient } from '@delon/theme';
 import { environment } from '@env/environment';
+import {APIResource} from "@core/utility/api-resource";
 
 /**
  * 默认HTTP拦截器，其注册细节见 `app.module.ts`
@@ -94,7 +95,7 @@ export class DefaultInterceptor implements HttpInterceptor {
         let url;
         const currentConfig: any = this.cacheService.getNone('currentConfig');
         if (!currentConfig) {
-            url = '';
+            url = APIResource.appUrl;
         } else {
             url = currentConfig.Server;
         }
