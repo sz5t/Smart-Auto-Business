@@ -30,13 +30,13 @@ export class CnGridSelectComponent implements OnInit {
       if (this.config.valueType && this.config.valueType === 'list') {
         const labels = this.config.labelName.split('.');
         const values = this.config.valueName.split('.');
-        result.Data.forEach(d => {
+        result.data.forEach(d => {
           d[this.config.valueName].forEach(v => {
             this._options.push({ label: v.ParameterName, value: v.ParameterName });
           });
         });
       } else {
-        result.Data.forEach(d => {
+        result.data.forEach(d => {
           this._options.push({ 'label': d[this.config.labelName], 'value': d[this.config.valueName] });
         });
       }
@@ -80,7 +80,7 @@ export class CnGridSelectComponent implements OnInit {
           params[param.name] = componentValue[param.valueName];
         }
       });
-     
+
       if (this.isString(p.url)) {
         url = APIResource[p.url];
       } else {
@@ -99,7 +99,7 @@ export class CnGridSelectComponent implements OnInit {
       }
     }
     if (p.ajaxType === 'get' && tag) {
-    
+
       /*  const dd=await this._http.getProj(APIResource[p.url], params).toPromise();
        if (dd && dd.Status === 200) {
        console.log("服务器返回执行成功返回",dd.Data);

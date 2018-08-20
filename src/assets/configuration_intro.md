@@ -817,4 +817,77 @@
 }
 ```
 
+```
+{
+    "config": {
+        "viewId": "tree_and_form_form",
+        "component": "form_view",
+        "keyId": "Id",
+        "ajaxConfig": {
+            "url": "common/ShowCase",
+            "ajaxType": "getById",
+            "params": [
+                { "name": "Id", "type": "tempValue", "valueName": "_id", "value": "" }
+            ]
+        },
+        "componentType": {
+            "parent": false,
+            "child": true,
+            "own": false
+        },
+        "forms": [],
+        "toolbar":{
+            "gutter": 24,
+            "offset": 6,
+            "span": 16,
+            "buttons": [
+                {
+                    "name": "saveForm", "type": "primary", "text": "保存",
+                    "ajaxConfig": {
+                        "post": {
+                            "url": "common/ShowCase",
+                            "ajaxType": "post",
+                            "params": [
+                                {
+                                    "name": "caseName",
+                                    "type": "componentValue",
+                                    "valueName": "caseName",
+                                    "value": ""
+                                }
+                            ]
+                        },
+                        put: {
+                            "url": "common/ShowCase",
+                            "ajaxType": "put",
+                            "params": [
+                                 {
+                                    "name": "caseName",
+                                    "type": "componentValue",
+                                    "valueName": "caseName",
+                                    "value": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "cancelForm", "type": "default", "text": "取消"
+                }
+            ]
+        },
+        "dataList": [],
+        "relations": [{
+            "relationViewId": "tree_and_form_tree",
+            "cascadeMode": "REFRESH_AS_CHILD",
+            "params": [
+              {
+                "pid": "key", "cid": "_id"
+              }
+            ]
+          }]
+    },
+    dataList: []
+}
+```
+
 ### 消息的动作类型

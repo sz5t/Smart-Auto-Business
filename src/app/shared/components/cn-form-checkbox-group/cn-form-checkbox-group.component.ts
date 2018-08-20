@@ -9,6 +9,7 @@ import { FormGroup } from '@angular/forms';
 export class CnFormCheckboxGroupComponent implements OnInit {
     @Input() config;
     formGroup: FormGroup;
+    model;
     constructor(
         private http: _HttpClient
     ) { }

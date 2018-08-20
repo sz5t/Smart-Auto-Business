@@ -1075,7 +1075,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     toolbarAction(btn) {
-        debugger;
         if (this[btn.name]) {
             this[btn.name]();
         } else if (this[btn.type]) {

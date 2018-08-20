@@ -47,24 +47,24 @@ export class MulitTableComponent implements OnInit {
                       'child': false,
                       'own': true
                     },
-                    'relations': [{
-                      'relationViewId': 'parentTable',
-                      'relationSendContent': [
-                        {
-                          name: 'selectRow',
-                          sender: 'parentTable',
-                          aop: 'after',
-                          receiver: 'childTable',
-                          relationData: {
-                            name: 'refreshAsChild',
-                            params: [
-                              { pid: 'Id', cid: '_parentId' },
-                            ]
-                          },
-                        }
-                      ],
-                      'relationReceiveContent': []
-                    }],
+                    // 'relations': [{
+                    //   'relationViewId': 'parentTable',
+                    //   'relationSendContent': [
+                    //     {
+                    //       name: 'selectRow',
+                    //       sender: 'parentTable',
+                    //       aop: 'after',
+                    //       receiver: 'childTable',
+                    //       relationData: {
+                    //         name: 'refreshAsChild',
+                    //         params: [
+                    //           { pid: 'Id', cid: '_parentId' },
+                    //         ]
+                    //       },
+                    //     }
+                    //   ],
+                    //   'relationReceiveContent': []
+                    // }],
                     'columns': [
                       {
                         title: 'Id', field: 'Id', width: 80, hidden: true,
@@ -488,7 +488,7 @@ export class MulitTableComponent implements OnInit {
                                           }
                                         ]
                                       },
-    
+
                                     ]
                                   },
                                   {
@@ -593,7 +593,7 @@ export class MulitTableComponent implements OnInit {
                                   { 'name': 'reset', 'text': '重置' },
                                   { 'name': 'close', 'text': '关闭' }
                                 ],
-    
+
                             }
                           },
                           {
@@ -758,7 +758,7 @@ export class MulitTableComponent implements OnInit {
                                         'layout': 'column',
                                         'span': '24'
                                       },
-    
+
                                     ]
                                   },
                                   {
@@ -1199,7 +1199,7 @@ export class MulitTableComponent implements OnInit {
                               'arguments': [],
                               'content': 'alert(this)'
                             }
-    
+
                           },
                           {
                             'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
@@ -1449,7 +1449,7 @@ export class MulitTableComponent implements OnInit {
                                           }
                                         ]
                                       },
-    
+
                                     ]
                                   },
                                   {
@@ -1554,7 +1554,7 @@ export class MulitTableComponent implements OnInit {
                                   { 'name': 'reset', 'text': '重置' },
                                   { 'name': 'close', 'text': '关闭' }
                                 ],
-    
+
                             }
                           },
                         ]
@@ -1723,7 +1723,7 @@ export class MulitTableComponent implements OnInit {
                                         'layout': 'column',
                                         'span': '24'
                                       },
-    
+
                                     ]
                                   },
                                   {
@@ -1938,7 +1938,7 @@ export class MulitTableComponent implements OnInit {
   };
   constructor(private http: _HttpClient) { }
 
-  ngOnInit() { 
+  ngOnInit() {
   }
 
 }

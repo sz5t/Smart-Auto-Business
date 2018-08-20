@@ -25,10 +25,18 @@
         </div>
     </ng-container>
 
-    <div nz-row [nzGutter]="config.toolbar.gutter" *ngIf="config.toolbar">
+    <div nz-row style="text-align: right;" [nzGutter]="config.toolbar.gutter" *ngIf="config.toolbar">
         <nz-form-control [nzOffset]="config.toolbar.offset" [nzSpan]="config.toolbar.span">
             <ng-container *ngFor="let bar of config.toolbar.buttons">
-                <button nz-button type="button" [nzLoading]="bar.name==='saveForm' && _isSaving" (click)="buttonAction(bar)" [nzType]="bar.type">{{bar.text}}</button>
+                <button
+                    nz-button
+                    type="button"
+                    [nzLoading]="bar.name==='saveForm' && _isSaving"
+                    (click)="buttonAction(bar)"
+                    [nzType]="bar.type"
+                    [ngStyle]
+                >{{bar.text}}
+                </button>
             </ng-container>
         </nz-form-control>
     </div>

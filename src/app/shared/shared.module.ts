@@ -65,6 +65,7 @@ import {BsnTabsComponent} from "@shared/business/bsn-tabs/bsn-tabs.component";
 import {CnFormTextareaComponent} from "@shared/components/cn-form-textarea/cn-form-textarea.component";
 import { BsnUploadComponent } from './business/bsn-upload/bsn-upload.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import {CnGridSelectTreeComponent} from "@shared/components/cn-grid-select-tree/cn-grid-select-tree.component";
 const THIRDMODULES = [
     NgZorroAntdModule,
     CountdownModule,
@@ -124,7 +125,8 @@ const COMPONENTS = [
     CnFormSelectTreeComponent,
     BsnAccordionComponent,
     BsnTabsComponent,
-    BsnUploadComponent
+    BsnUploadComponent,
+    CnGridSelectTreeComponent
 
 ];
 const DIRECTIVES = [

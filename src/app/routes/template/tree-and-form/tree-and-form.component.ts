@@ -395,9 +395,9 @@ export class TreeAndFormComponent implements OnInit {
                                                     }
                                                 },
                                                 {
-                                                    'name': 'cancelRow', 'type': 'default', 'text': '取消'
+                                                    'name': 'cancelForm', 'type': 'default', 'text': '取消'
                                                 }
-                                            ],
+                                            ]
                                         },
                                         'dataList': [],
                                         'relations': [{
@@ -410,13 +410,6 @@ export class TreeAndFormComponent implements OnInit {
                                             ]
                                           }]
                                     },
-                                    permissions: {
-                                        'viewId': 'tree_and_form_form',
-                                        'columns': [],
-                                        'toolbar': [],
-                                        'formDialog': [],
-                                        'windowDialog': []
-                                      },
                                     dataList: []
                                 }
                             ]

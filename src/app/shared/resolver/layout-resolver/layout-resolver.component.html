@@ -4,30 +4,13 @@
     <div nz-col *ngFor="let c of row.row.cols" [nzSpan]="c.span" [nzSm]="c.size.nzSm" [nzXs]="c.size.nzXs" [nzMd]="c.size.nzMd"
       [nzLg]="c.size.nzLg" [nzXl]="c.size.nzXl">
       <cn-layout-resolver [layoutId]="layoutId" [config]="c"></cn-layout-resolver>
-      <nz-card [nzTitle]="cardTitle"  [nzBodyStyle]="{padding: '8px'}">
+        <nz-card *ngIf="c.viewCfg" [nzTitle]="cardTitle"  [nzBodyStyle]="c.bodyStyle ? c.bodyStyle : { padding: '8px' }">
         <ng-template #cardTitle>
             <i class="{{c.icon}}"></i>
           {{c.title}}
         </ng-template>
         <cn-layout-resolver *ngFor="let cfg of c.viewCfg" [layoutId]="layoutId" [config]="cfg"></cn-layout-resolver>
       </nz-card>
-      <!--<nz-card *ngIf="c.tabs">-->
- <!---->
-          <!--<nz-tabset [nzType]="'line'">-->
-              <!--<nz-tab *ngFor="let tab of c.tabs" [nzTitle]="nzTabHeading">-->
-                <!--<ng-template #nzTabHeading>-->
-                  <!--<i [ngClass]="tab.icon"></i>-->
-                  <!--{{tab.title}}-->
-                <!--</ng-template>-->
-                <!--<cn-component-resolver *ngFor="let componentCfg of tab.viewCfg"-->
-                <!--[blockId]="tab.id"-->
-                <!--[layoutId]="layoutId"-->
-                <!--[config]="componentCfg">-->
-               <!---->
-              <!--</cn-component-resolver>-->
-              <!--</nz-tab>-->
-            <!--</nz-tabset>-->
-      <!--</nz-card>-->
     </div>
   </div>
 </ng-container>

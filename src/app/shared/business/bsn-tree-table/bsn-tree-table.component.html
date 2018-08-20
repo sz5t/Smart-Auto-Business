@@ -1,4 +1,4 @@
-<bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId" [permissions]="permissions.toolbar?permissions.toolbar:[]"></bsn-toolbar>
+<bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId"></bsn-toolbar>
 <nz-table #nzTable [nzData]="dataList" [nzSize]="'small'" [nzFrontPagination]="false" [nzShowSizeChanger]="true" [nzTotal]="total"
     [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzShowTotal]="totals" [nzPageSizeOptions]="this.config.pageSizeOptions"
     [nzLoading]="loading" (nzPageIndexChange)="searchData()" (nzPageSizeChange)="searchData(true)" [nzTitle]="tableTitle" [nzFooter]="footer"
@@ -64,7 +64,7 @@
                         <td *ngIf="!col.expand && !col.hidden">
                             <ng-container *ngIf="col.editor">
                                 <div *ngIf="!editCache[item.key].edit">
-                                    <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'']">{{editCache[item.key].data[col.editor.field]}}</span>
+                                    <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'']">{{editCache[item.key].data[col.field]}}</span>
                                 </div>
                                 <ng-container [bsnData]="tempParameters" [rowData]="item" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
                                     CnGridEditorDirective *ngIf="editCache[item.key].edit" [config]="col.editor.options" [value]="{key:item.key,name:col.editor.field,data:editCache[item.key].data[col.editor.field]}"

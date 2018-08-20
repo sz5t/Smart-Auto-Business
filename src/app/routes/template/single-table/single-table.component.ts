@@ -416,6 +416,29 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 }
                                             },
                                             {
+                                                title: '父类别', field: 'parentName', width: 80, hidden: false,
+                                                editor: {
+                                                    type: 'select',
+                                                    field: 'parentId',
+                                                    options: {
+                                                        'type': 'select',
+                                                        'labelSize': '6',
+                                                        'controlSize': '18',
+                                                        'inputType': 'submit',
+                                                        'name': 'parentId',
+                                                        'notFoundContent': '',
+                                                        'selectModel': false,
+                                                        'showSearch': true,
+                                                        'placeholder': '-请选择-',
+                                                        'disabled': false,
+                                                        'size': 'default',
+                                                        'clear': true,
+                                                        'width': '80px',
+                                                        'dataSet': 'getCaseName'
+                                                    }
+                                                }
+                                            },
+                                            {
                                                 title: '状态', field: 'enableText', width: 80, hidden: false,
                                                 formatter: [
                                                     {
@@ -792,12 +815,12 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     },
                                                     {
                                                         'label': '',
-                                                        'field': 'name',
+                                                        'field': 'caseName',
                                                         'name': 'label'
                                                     },
                                                     {
                                                         'label': '',
-                                                        'field': 'name',
+                                                        'field': 'caseName',
                                                         'name': 'text'
                                                     }
                                                 ]
@@ -1558,222 +1581,6 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         }
                                                     ]
                                                 }
-                                            }
-                                        ]
-                                    },
-                                    permissions: {
-                                        'viewId': 'singleTable',
-                                        'columns': [
-                                            {
-                                                'field': '_serilize',
-                                                'hidden': false,
-                                                'editable': false
-                                            },
-                                            {
-                                                'field': 'Id',
-                                                'hidden': false,
-                                                'editable': false
-                                            },
-                                            {
-                                                'field': 'caseName',
-                                                'hidden': false,
-                                                'editable': false
-                                            },
-                                            {
-                                                'field': 'TypeName',
-                                                'hidden': false,
-                                                'editable': false
-                                            },
-                                            {
-                                                'field': 'caseLevel',
-                                                'hidden': false,
-                                                'editable': false
-                                            },
-                                            {
-                                                'field': 'CreateData',
-                                                'hidden': false,
-                                                'editable': false
-                                            },
-                                            {
-                                                'field': 'Remark',
-                                                'hidden': false,
-                                                'editable': false
-                                            },
-                                            {
-                                                'field': 'EnableText',
-                                                'hidden': false,
-                                                'editable': false
-                                            }
-                                        ],
-                                        'toolbar': [
-                                            {
-                                                'name': 'cus',
-                                                'disabled': '',
-                                                'hidden': true
-                                            },
-                                            {
-                                                'name': 'refresh',
-                                                'disabled': true,
-                                                'hidden': true
-                                            },
-                                            {
-                                                'name': 'addRow',
-                                                'disabled': false,
-                                                'hidden': false
-                                            },
-                                            {
-                                                'name': 'updateRow',
-                                                'disabled': false,
-                                                'hidden': false
-                                            },
-                                            {
-                                                'name': 'deleteRow',
-                                                'disabled': false,
-                                                'hidden': false
-                                            },
-                                            {
-                                                'name': 'saveRow',
-                                                'disabled': false,
-                                                'hidden': false
-                                            },
-                                            {
-                                                'name': 'cancelRow',
-                                                'disabled': false,
-                                                'hidden': false
-                                            },
-                                            {
-                                                'name': 'addForm',
-                                                'disabled': true,
-                                                'hidden': false
-                                            },
-                                            {
-                                                'name': 'editForm',
-                                                'disabled': true,
-                                                'hidden': false
-                                            },
-                                            {
-                                                'name': 'batchEditForm',
-                                                'disabled': true,
-                                                'hidden': false
-                                            },
-                                            {
-                                                'name': 'showDialogPage',
-                                                'disabled': true,
-                                                'hidden': false
-                                            }
-                                        ],
-                                        'formDialog': [
-                                            {
-                                                'name': 'addShowCase',
-                                                'form': [
-                                                    {
-                                                        'name': 'Enable',
-                                                        'hidden': false,
-                                                        'enabled': true
-                                                    },
-                                                    {
-                                                        'name': 'Name',
-                                                        'hidden': false,
-                                                        'enabled': true
-                                                    },
-                                                    {
-                                                        'name': 'caseName',
-                                                        'hidden': false,
-                                                        'enabled': true
-                                                    },
-                                                    {
-                                                        'name': 'caseLevel',
-                                                        'hidden': false,
-                                                        'enabled': true
-                                                    },
-                                                    {
-                                                        'name': 'caseCount',
-                                                        'hidden': false,
-                                                        'enabled': true
-                                                    },
-                                                    {
-                                                        'name': 'Remark',
-                                                        'hidden': false,
-                                                        'enabled': true
-                                                    }
-                                                ],
-                                                'buttons': [
-                                                    {
-                                                        'name': 'save',
-                                                        'hidden': false
-                                                    },
-                                                    {
-                                                        'name': 'saveAndKeep',
-                                                        'hidden': false
-                                                    },
-                                                    {
-                                                        'name': 'reset',
-                                                        'hidden': false
-                                                    },
-                                                    {
-                                                        'name': 'close',
-                                                        'hidden': false
-                                                    },
-                                                ]
-                                            },
-                                            {
-                                                'name': 'updateShowCase',
-                                                'form': [
-                                                    {
-                                                        'name': 'Enable',
-                                                        'hidden': false,
-                                                        'enabled': true
-                                                    },
-                                                    {
-                                                        'name': 'Name',
-                                                        'hidden': false,
-                                                        'enabled': true
-                                                    },
-                                                    {
-                                                        'name': 'caseName',
-                                                        'hidden': false,
-                                                        'enabled': true
-                                                    },
-                                                    {
-                                                        'name': 'caseLevel',
-                                                        'hidden': false,
-                                                        'enabled': true
-                                                    },
-                                                    {
-                                                        'name': 'caseCount',
-                                                        'hidden': false,
-                                                        'enabled': true
-                                                    },
-                                                    {
-                                                        'name': 'Remark',
-                                                        'hidden': false,
-                                                        'enabled': true
-                                                    }
-                                                ],
-                                                'buttons': [
-                                                    {
-                                                        'name': 'save',
-                                                        'hidden': false
-                                                    },
-                                                    {
-                                                        'name': 'close',
-                                                        'hidden': false
-                                                    }
-                                                ]
-                                            }
-                                        ],
-                                        'windowDialog': [
-                                            {
-                                                'buttons': [
-                                                    {
-                                                        'name': 'save',
-                                                        'hidden': false
-                                                    },
-                                                    {
-                                                        'name': 'close',
-                                                        'hidden': false
-                                                    }
-                                                ]
                                             }
                                         ]
                                     },

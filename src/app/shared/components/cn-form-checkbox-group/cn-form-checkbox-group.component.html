@@ -3,8 +3,15 @@
       {{config.label}}
   </nz-form-label>
   <nz-form-control [formGroup]="formGroup"  [nzSm]="config.controlSize" [nzXs]="24">
-    <nz-checkbox-group formControlName="{{config.name}}"  [(ngModel)]="config.options" [nzDisabled]="config.disabled">
-      <span>{{config.label}}</span>
-    </nz-checkbox-group>
+    <!--<nz-checkbox-group formControlName="{{config.name}}"  [nzDisabled]="config.disabled">-->
+      <!--<span>{{config.label}}</span>-->
+    <!--</nz-checkbox-group>-->
+      <nz-checkbox-wrapper style="width: 100%;">
+          <div nz-row>
+              <div nz-col nzSpan="3" *ngFor="let opt of config.options">
+                  <label nz-checkbox nzValue="opt.value">{{opt.label}}</label>
+              </div>
+          </div>
+      </nz-checkbox-wrapper>
   </nz-form-control>
 </nz-form-item>

@@ -342,7 +342,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     }
 
     private _buildRecursive() {
-        return { _recursive: true };
+        return { _recursive: true, _deep: -1 };
     }
 
     //  功能实现
@@ -405,6 +405,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     // 初始化可编辑的数据结构
     private _initEditDataCache() {
         this._editDataCache = {};
+        debugger;
         this._editDataList.forEach(item => {
             if (!this._editDataCache[item.key]) {
                 this._editDataCache[item.key] = {
@@ -1072,7 +1073,8 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     }
 
     valueChange(data) {
-        const index = this.dataList.findIndex(item => item.key === data.key);
+        debugger;
+        // const index = this.dataList.findIndex(item => item.key === data.key);
         this.editCache[data.key].data[data.name] = data.data;
     }
 

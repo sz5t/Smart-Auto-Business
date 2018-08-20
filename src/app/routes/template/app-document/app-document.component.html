@@ -14,6 +14,10 @@
                 {
                   "id": "area2",                    -- 列ID，必须为系统唯一值（建议采用 模块+功能+编号）的方式命名
                   "title": "查询",                   -- 设置区域标题，如果不设置或者为""，则区域内将不限时标题
+                  "bodyStyle": {                    -- 自定义样式属性，属性名称参考css3.0的样式标准
+                    "padding":"8px",
+                    "height":"800px"
+                  }
                   "span": 24,                       -- 区域占比设置，每个区域的宽度被平均分为24份，span必须是1-24的数字（默认占比）
                   "icon": "anticon anticon-search", -- 设置标题图标 可以参考 iconfont、 anticon 的官网进行设置
                   "size": {                         -- 设置屏幕自适应宽度占比
@@ -359,6 +363,78 @@
 ```
 
 ## 2、表单
+```
+{
+    "config": {
+        "viewId": "tree_and_form_form",
+        "component": "form_view",
+        "keyId": "Id",
+        "ajaxConfig": {                       -- 加载表单数据
+            "url": "common/ShowCase",
+            "ajaxType": "getById",            -- 根据ID加载表单数据（API端获取一个数据对象）
+            "params": [
+                { "name": "Id", "type": "tempValue", "valueName": "_id", "value": "" }
+            ]
+        },
+        "componentType": {                    -- 配置及联刷新类型
+            "parent": false,
+            "child": true,
+            "own": false
+        },
+        "forms": [],                          -- 表单元素，参考各个组件的配置方式
+        "toolbar":{                           -- 表单按钮
+            "gutter": 24,                     -- 按钮的区域的大小
+            "offset": 6,                      -- 布局偏移量
+            "span": 16,                       -- 按钮所占区域比例
+            "buttons": [
+                {
+                    "name": "saveForm", "type": "primary", "text": "保存",
+                    "ajaxConfig": {
+                        "post": {
+                            "url": "common/ShowCase",
+                            "ajaxType": "post",
+                            "params": [
+                                {
+                                    "name": "caseName",
+                                    "type": "componentValue",
+                                    "valueName": "caseName",
+                                    "value": ""
+                                }
+                            ]
+                        },
+                        put: {
+                            "url": "common/ShowCase",
+                            "ajaxType": "put",
+                            "params": [
+                                 {
+                                    "name": "caseName",
+                                    "type": "componentValue",
+                                    "valueName": "caseName",
+                                    "value": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "cancelForm", "type": "default", "text": "取消"
+                }
+            ]
+        },
+        "dataList": [],
+        "relations": [{
+            "relationViewId": "tree_and_form_tree",
+            "cascadeMode": "REFRESH_AS_CHILD",
+            "params": [
+              {
+                "pid": "key", "cid": "_id"
+              }
+            ]
+          }]
+    },
+    dataList: []
+}
+```
 ### 文本编辑
 ####（1）文本框
 ```bash
