@@ -140,134 +140,137 @@ export class WorkFlowComponent implements OnInit {
                           }
                         }
                       }
-                    
-                    
+
+
                     ],
                     'toolbar': [
                       {
-                        'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
-                      },
-                      {
-                        'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增', 'action': 'CREATE'
-                      },
-                      {
-                        'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改', 'action': 'EDIT'
-                      },
-                      {
-                        'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除', 'action': 'DELETE',
-                        'ajaxConfig': {
-                          delete: [{
-                            'actionName': 'delete',
-                            'url': 'common/WfInfo',
-                            'ajaxType': 'delete'
-                          }]
-                        }
-                      },
-                      {
-                        'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存', 'action': 'SAVE',
-                        'type': 'method/action',
-                        'ajaxConfig': {
-                          post: [{
-                            'actionName': 'add',
-                            'url': 'common/WfInfo',
-                            'ajaxType': 'post',
-                            'params': [
-                              { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
-                              { name: 'code', type: 'componentValue', valueName: 'code', value: '' },
-                              { name: 'remark', type: 'componentValue', valueName: 'remark', value: '1' }
-                            ],
-                            'output': [
-                              {
-                                name: '_id',
-                                type: '',
-                                dataName: 'Id'
-                              }
-                            ]
-                          }],
-                          put: [{
-                            'url': 'common/WfInfo',
-                            'ajaxType': 'put',
-                            'params': [
-                              { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
-                              { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
-                              { name: 'code', type: 'componentValue', valueName: 'code', value: '' },
-                              { name: 'remark', type: 'componentValue', valueName: 'remark', value: '1' }
-                             ]
-                          }]
-                        }
-                      },
-                      {
-                        'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'action': 'CANCEL',
-                      },
-                      {
-                        'name': 'addForm', 'class': 'editable-add-btn', 'text': '弹出新增表单',
-                        'action': 'FORM', 'actionType': 'formDialog', 'actionName': 'addShowCase',
-                        'type': 'showForm'
+                        group: [
+                          {
+                            'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
+                          },
+                          {
+                            'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增', 'action': 'CREATE'
+                          },
+                          {
+                            'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改', 'action': 'EDIT'
+                          },
+                          {
+                            'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除', 'action': 'DELETE',
+                            'ajaxConfig': {
+                              delete: [{
+                                'actionName': 'delete',
+                                'url': 'common/WfInfo',
+                                'ajaxType': 'delete'
+                              }]
+                            }
+                          },
+                          {
+                            'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存', 'action': 'SAVE',
+                            'type': 'method/action',
+                            'ajaxConfig': {
+                              post: [{
+                                'actionName': 'add',
+                                'url': 'common/WfInfo',
+                                'ajaxType': 'post',
+                                'params': [
+                                  { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
+                                  { name: 'code', type: 'componentValue', valueName: 'code', value: '' },
+                                  { name: 'remark', type: 'componentValue', valueName: 'remark', value: '1' }
+                                ],
+                                'output': [
+                                  {
+                                    name: '_id',
+                                    type: '',
+                                    dataName: 'Id'
+                                  }
+                                ]
+                              }],
+                              put: [{
+                                'url': 'common/WfInfo',
+                                'ajaxType': 'put',
+                                'params': [
+                                  { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
+                                  { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
+                                  { name: 'code', type: 'componentValue', valueName: 'code', value: '' },
+                                  { name: 'remark', type: 'componentValue', valueName: 'remark', value: '1' }
+                                ]
+                              }]
+                            }
+                          },
+                          {
+                            'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'action': 'CANCEL',
+                          },
+                          {
+                            'name': 'addForm', 'class': 'editable-add-btn', 'text': '弹出新增表单',
+                            'action': 'FORM', 'actionType': 'formDialog', 'actionName': 'addShowCase',
+                            'type': 'showForm'
 
-                      },
-                      {
-                        'name': 'editForm', 'class': 'editable-add-btn', 'text': '弹出编辑表单',
-                        'action': 'FORM', 'actionType': 'formDialog', 'actionName': 'updateShowCase',
-                        'type': 'showForm'
+                          },
+                          {
+                            'name': 'editForm', 'class': 'editable-add-btn', 'text': '弹出编辑表单',
+                            'action': 'FORM', 'actionType': 'formDialog', 'actionName': 'updateShowCase',
+                            'type': 'showForm'
 
-                      },
-               /*        {
-                        'name': 'executeCheckedRow', 'class': 'editable-add-btn', 'text': '批量建模', 'action': 'EXECUTE_CHECKED',
-                        'actionType': 'post', 'actionName': 'BuildModel',
-                        'ajaxConfig': {
-                          post: [{
-                            'actionName': 'post',
-                            'url': 'common/Action/ComTabledata/buildModel',
-                            'ajaxType': 'post',
-                            'params' : [
-                              {
-                                name: 'Id', valueName: 'Id', type: 'checkedRow'
-                              }
-                            ]
-                          }]
-                        }
-                      },
-                      {
-                        'name': 'executeSelectedRow', 'class': 'editable-add-btn', 'text': '建模', 'action': 'EXECUTE_SELECTED',
-                        'actionType': 'post', 'actionName': 'BuildModel',
-                        'ajaxConfig': {
-                          post: [{
-                            'actionName': 'post',
-                            'url': 'common/Action/ComTabledata/buildModel',
-                            'ajaxType': 'post',
-                            'params' : [
-                              {
-                                name: 'Id', valueName: 'Id', type: 'selectedRow'
-                              }
-                            ]
-                          }]
-                        }
-                      },
-                      {
-                        'name': 'executeSelectedRow', 'class': 'editable-add-btn', 'text': '取消建模', 'action': 'EXECUTE_SELECTED',
-                        'actionType': 'post', 'actionName': 'CancelBuildModel',
-                        'ajaxConfig': {
-                          post: [{
-                            'actionName': 'post',
-                            'url': 'common/Action/ComTabledata/cancelModel',
-                            'ajaxType': 'post',
-                            'params' : [
-                              {
-                                name: 'Id', valueName: 'Id', type: 'selectedRow'
-                              }
-                            ]
-                          }]
-                        }
-                      }, */
-                      {
-                        'name': 'addSearchRow', 'class': 'editable-add-btn', 'text': '查询', 'action': 'SEARCH',
-                        'actionType': 'addSearchRow', 'actionName': 'addSearchRow',
-                      },
-                      {
-                        'name': 'cancelSearchRow', 'class': 'editable-add-btn', 'text': '取消查询', 'action': 'SEARCH',
-                        'actionType': 'cancelSearchRow', 'actionName': 'cancelSearchRow',
-                      },
-                      
+                          },
+                          /*        {
+                                   'name': 'executeCheckedRow', 'class': 'editable-add-btn', 'text': '批量建模', 'action': 'EXECUTE_CHECKED',
+                                   'actionType': 'post', 'actionName': 'BuildModel',
+                                   'ajaxConfig': {
+                                     post: [{
+                                       'actionName': 'post',
+                                       'url': 'common/Action/ComTabledata/buildModel',
+                                       'ajaxType': 'post',
+                                       'params' : [
+                                         {
+                                           name: 'Id', valueName: 'Id', type: 'checkedRow'
+                                         }
+                                       ]
+                                     }]
+                                   }
+                                 },
+                                 {
+                                   'name': 'executeSelectedRow', 'class': 'editable-add-btn', 'text': '建模', 'action': 'EXECUTE_SELECTED',
+                                   'actionType': 'post', 'actionName': 'BuildModel',
+                                   'ajaxConfig': {
+                                     post: [{
+                                       'actionName': 'post',
+                                       'url': 'common/Action/ComTabledata/buildModel',
+                                       'ajaxType': 'post',
+                                       'params' : [
+                                         {
+                                           name: 'Id', valueName: 'Id', type: 'selectedRow'
+                                         }
+                                       ]
+                                     }]
+                                   }
+                                 },
+                                 {
+                                   'name': 'executeSelectedRow', 'class': 'editable-add-btn', 'text': '取消建模', 'action': 'EXECUTE_SELECTED',
+                                   'actionType': 'post', 'actionName': 'CancelBuildModel',
+                                   'ajaxConfig': {
+                                     post: [{
+                                       'actionName': 'post',
+                                       'url': 'common/Action/ComTabledata/cancelModel',
+                                       'ajaxType': 'post',
+                                       'params' : [
+                                         {
+                                           name: 'Id', valueName: 'Id', type: 'selectedRow'
+                                         }
+                                       ]
+                                     }]
+                                   }
+                                 }, */
+                          {
+                            'name': 'addSearchRow', 'class': 'editable-add-btn', 'text': '查询', 'action': 'SEARCH',
+                            'actionType': 'addSearchRow', 'actionName': 'addSearchRow',
+                          },
+                          {
+                            'name': 'cancelSearchRow', 'class': 'editable-add-btn', 'text': '取消查询', 'action': 'SEARCH',
+                            'actionType': 'cancelSearchRow', 'actionName': 'cancelSearchRow',
+                          },
+                        ]
+                      }
                     ],
                     'formDialog': [
                       {
@@ -467,7 +470,7 @@ export class WorkFlowComponent implements OnInit {
                                   'url': 'common/ComTabledata',
                                   'params': [
 
-                                   
+
                                     { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
                                     { name: 'tableName', type: 'componentValue', valueName: 'tableName', value: '' },
                                     { name: 'tableType', type: 'value', valueName: '', value: '1' },
@@ -491,7 +494,7 @@ export class WorkFlowComponent implements OnInit {
                                 post: [{
                                   'url': 'common/ComTabledata',
                                   'params': [
-                                   
+
                                     { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
                                     { name: 'tableName', type: 'componentValue', valueName: 'tableName', value: '' },
                                     { name: 'tableType', type: 'value', valueName: '', value: '1' },
@@ -719,7 +722,7 @@ export class WorkFlowComponent implements OnInit {
                                   'url': 'common/ComTabledata',
                                   'params': [
                                     { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
-                                   
+
                                     { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
                                     { name: 'tableName', type: 'componentValue', valueName: 'tableName', value: '' },
                                     { name: 'tableType', type: 'value', valueName: '', value: '1' },
@@ -744,7 +747,7 @@ export class WorkFlowComponent implements OnInit {
                       }
                     ],
                     'dataSet': [
-                      
+
                     ]
                   },
                   permissions: {
@@ -847,7 +850,7 @@ export class WorkFlowComponent implements OnInit {
                           }
                         }
                       },
-                     
+
                       {
                         title: '版本号', field: 'version', width: 80, hidden: false,
                         editor: {
@@ -861,7 +864,7 @@ export class WorkFlowComponent implements OnInit {
                           }
                         }
                       },
-                    
+
                       {
                         title: '排序', field: 'sort', width: 60, hidden: false,
                         editor: {
@@ -890,7 +893,7 @@ export class WorkFlowComponent implements OnInit {
                           }
                         }
                       },
-                      
+
                       {
 
                         title: '状态', field: 'state', width: 100, hidden: false,
@@ -908,89 +911,92 @@ export class WorkFlowComponent implements OnInit {
 
                     ],
                     'toolbar': [
+                      {
+                        group: [
+                          {
+                            'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
+                          },
+                          {
+                            'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增', 'action': 'CREATE'
+                          },
+                          {
+                            'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改', 'action': 'EDIT'
+                          },
+                          {
+                            'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除', 'action': 'DELETE',
+                            'ajaxConfig': {
+                              delete: [{
+                                'actionName': 'delete',
+                                'url': 'common/WfVersion',
+                                'ajaxType': 'delete'
+                              }]
+                            }
+                          },
+                          {
+                            'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存', 'action': 'SAVE',
+                            'type': 'method/action',
+                            'ajaxConfig': {
+                              post: [{
+                                'actionName': 'add',
+                                'url': 'common/WfVersion',
+                                'ajaxType': 'post',
+                                'params': [
+                                  { name: 'wfid', type: 'tempValue', valueName: '_parentId', value: '' },
+                                  { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
+                                  { name: 'version', type: 'componentValue', valueName: 'version', value: '' },
 
-                      {
-                        'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
-                      },
-                      {
-                        'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增', 'action': 'CREATE'
-                      },
-                      {
-                        'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改', 'action': 'EDIT'
-                      },
-                      {
-                        'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除', 'action': 'DELETE',
-                        'ajaxConfig': {
-                          delete: [{
-                            'actionName': 'delete',
-                            'url': 'common/WfVersion',
-                            'ajaxType': 'delete'
-                          }]
-                        }
-                      },
-                      {
-                        'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存', 'action': 'SAVE',
-                        'type': 'method/action',
-                        'ajaxConfig': {
-                          post: [{
-                            'actionName': 'add',
-                            'url': 'common/WfVersion',
-                            'ajaxType': 'post',
-                            'params': [
-                              { name: 'wfid', type: 'tempValue', valueName: '_parentId', value: '' },
-                              { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
-                              { name: 'version', type: 'componentValue', valueName: 'version', value: '' },
-                              
-                              { name: 'code', type: 'componentValue', valueName: 'code', value: '' },
-                              { name: 'sort', type: 'componentValue', valueName: 'sort', value: '' },
-                              { name: 'remark', type: 'componentValue', valueName: 'remark', value: '' }
-                      ],
-                            'output': [
-                              {
-                                name: '_id',
-                                type: '',
-                                dataName: 'Id'
-                              }
-                            ]
-                          }],
-                          put: [{
-                            'url': 'common/WfVersion',
-                            'ajaxType': 'put',
-                            'params': [
-                              { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
-                              { name: 'wfid', type: 'tempValue', valueName: '_parentId', value: '' },
-                              { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
-                              { name: 'version', type: 'componentValue', valueName: 'version', value: '' },
-                              
-                              { name: 'code', type: 'componentValue', valueName: 'code', value: '' },
-                              { name: 'sort', type: 'componentValue', valueName: 'sort', value: '' },
-                              { name: 'remark', type: 'componentValue', valueName: 'remark', value: '' }
-                      ]
-                          }]
-                        }
-                      },
-                      {
-                        'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'action': 'CANCEL',
-                      },
-                      {
-                        'name': 'addForm', 'class': 'editable-add-btn', 'text': '弹出新增表单',
-                        'action': 'FORM', 'actionType': 'formDialog', 'actionName': 'addShowCase',
-                        'type': 'showForm'
-                      },
-                      {
-                        'name': 'editForm', 'class': 'editable-add-btn', 'text': '弹出编辑表单',
-                        'action': 'FORM', 'actionType': 'formDialog', 'actionName': 'updateShowCase',
-                        'type': 'showForm'
-                      },
-                      {
-                        'name': 'addRow', 'class': 'editable-add-btn', 'text': '启用', 'action': 'CREATE'
-                      },
-                      {
-                        'name': 'addRow', 'class': 'editable-add-btn', 'text': '禁用', 'action': 'CREATE'
-                      },
-                      {
-                        'name': 'addRow', 'class': 'editable-add-btn', 'text': '配置', 'action': 'CREATE'
-                      },
+                                  { name: 'code', type: 'componentValue', valueName: 'code', value: '' },
+                                  { name: 'sort', type: 'componentValue', valueName: 'sort', value: '' },
+                                  { name: 'remark', type: 'componentValue', valueName: 'remark', value: '' }
+                                ],
+                                'output': [
+                                  {
+                                    name: '_id',
+                                    type: '',
+                                    dataName: 'Id'
+                                  }
+                                ]
+                              }],
+                              put: [{
+                                'url': 'common/WfVersion',
+                                'ajaxType': 'put',
+                                'params': [
+                                  { name: 'Id', type: 'componentValue', valueName: 'Id', value: '' },
+                                  { name: 'wfid', type: 'tempValue', valueName: '_parentId', value: '' },
+                                  { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
+                                  { name: 'version', type: 'componentValue', valueName: 'version', value: '' },
+
+                                  { name: 'code', type: 'componentValue', valueName: 'code', value: '' },
+                                  { name: 'sort', type: 'componentValue', valueName: 'sort', value: '' },
+                                  { name: 'remark', type: 'componentValue', valueName: 'remark', value: '' }
+                                ]
+                              }]
+                            }
+                          },
+                          {
+                            'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'action': 'CANCEL',
+                          },
+                          {
+                            'name': 'addForm', 'class': 'editable-add-btn', 'text': '弹出新增表单',
+                            'action': 'FORM', 'actionType': 'formDialog', 'actionName': 'addShowCase',
+                            'type': 'showForm'
+                          },
+                          {
+                            'name': 'editForm', 'class': 'editable-add-btn', 'text': '弹出编辑表单',
+                            'action': 'FORM', 'actionType': 'formDialog', 'actionName': 'updateShowCase',
+                            'type': 'showForm'
+                          },
+                          {
+                            'name': 'addRow', 'class': 'editable-add-btn', 'text': '启用', 'action': 'CREATE'
+                          },
+                          {
+                            'name': 'addRow', 'class': 'editable-add-btn', 'text': '禁用', 'action': 'CREATE'
+                          },
+                          {
+                            'name': 'addRow', 'class': 'editable-add-btn', 'text': '配置', 'action': 'CREATE'
+                          },
+                        ]
+                      }
                     ],
                     'formDialog': [
                       {
@@ -1076,7 +1082,7 @@ export class WorkFlowComponent implements OnInit {
                                   'disabled': false,
                                   'size': 'default',
                                   'options': [
-                                   
+
                                     {
                                       'label': '字符串',
                                       'value': 'string',
@@ -1112,7 +1118,7 @@ export class WorkFlowComponent implements OnInit {
                                       'value': 'blob',
                                       'disabled': false
                                     }
-                                    
+
                                   ],
                                   'layout': 'column',
                                   'span': '24'
@@ -1162,12 +1168,12 @@ export class WorkFlowComponent implements OnInit {
                                   'size': 'default',
                                   'layout': 'column',
                                   'span': '24',
-                                 /*  'validations': [
-                                    {
-                                      'validator': 'required',
-                                      'errorMessage': '请输入字段精度'
-                                    }
-                                  ] */
+                                  /*  'validations': [
+                                     {
+                                       'validator': 'required',
+                                       'errorMessage': '请输入字段精度'
+                                     }
+                                   ] */
                                 },
                               ]
                             },
@@ -1310,12 +1316,12 @@ export class WorkFlowComponent implements OnInit {
                                   'size': 'default',
                                   'layout': 'column',
                                   'span': '24',
-                                 /*  'validations': [
-                                    {
-                                      'validator': 'required',
-                                      'errorMessage': '请输入数据字典编码'
-                                    }
-                                  ] */
+                                  /*  'validations': [
+                                     {
+                                       'validator': 'required',
+                                       'errorMessage': '请输入数据字典编码'
+                                     }
+                                   ] */
                                 },
                               ]
                             },
@@ -1336,12 +1342,12 @@ export class WorkFlowComponent implements OnInit {
                                   'size': 'default',
                                   'layout': 'column',
                                   'span': '24',
-                                 /*  'validations': [
-                                    {
-                                      'validator': 'required',
-                                      'errorMessage': '请输入数据字典编码'
-                                    }
-                                  ] */
+                                  /*  'validations': [
+                                     {
+                                       'validator': 'required',
+                                       'errorMessage': '请输入数据字典编码'
+                                     }
+                                   ] */
                                 },
                               ]
                             },
@@ -1429,7 +1435,7 @@ export class WorkFlowComponent implements OnInit {
                                 post: [{
                                   'url': 'common/ComColumndata',
                                   'params': [
-                                   
+
                                     { name: 'tableId', type: 'tempValue', valueName: '_parentId', value: '' },
                                     { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
                                     { name: 'columnName', type: 'componentValue', valueName: 'columnName', value: '' },
@@ -1473,396 +1479,396 @@ export class WorkFlowComponent implements OnInit {
                           'own': true
                         },
                         'forms':
-                        [
-                          {
-                            controls: [
-                              {
-                                'type': 'input',
-                                'labelSize': '6',
-                                'controlSize': '16',
-                                'inputType': 'text',
-                                'name': 'name',
-                                'label': '名称',
-                                'isRequired': true,
-                                'placeholder': '请输入列名称',
-                                'perfix': 'anticon anticon-edit',
-                                'suffix': '',
-                                'disabled': false,
-                                'readonly': false,
-                                'size': 'default',
-                                'layout': 'column',
-                                'span': '24',
-                                'validations': [
-                                  {
-                                    'validator': 'required',
-                                    'errorMessage': '请输入列名称!!!!'
-                                  }
-                                ]
-                              },
-                            ]
-                          },
-                          {
-                            controls: [
-                              {
-                                'type': 'input',
-                                'labelSize': '6',
-                                'controlSize': '16',
-                                'inputType': 'text',
-                                'name': 'columnName',
-                                'label': '字段名',
-                                'isRequired': true,
-                                'placeholder': '字段名',
-                                'perfix': 'anticon anticon-edit',
-                                'disabled': false,
-                                'readonly': false,
-                                'size': 'default',
-                                'layout': 'column',
-                                'span': '24',
-                                'validations': [
-                                  {
-                                    'validator': 'required',
-                                    'errorMessage': '请输入字段名'
-                                  }
-                                ]
-                              },
-                            ]
-                          },
-                          {
-                            controls: [
-                              {
-                                'type': 'select',
-                                'labelSize': '6',
-                                'controlSize': '16',
-                                'inputType': 'submit',
-                                'name': 'columnType',
-                                'label': '字段数据类型',
-                                'notFoundContent': '',
-                                'selectModel': false,
-                                'showSearch': true,
-                                'placeholder': '--请选择--',
-                                'disabled': false,
-                                'size': 'default',
-                                'options': [
-                                
-                                  {
-                                    'label': '字符串',
-                                    'value': 'string',
-                                    'disabled': false
-                                  },
-                                  {
-                                    'label': '整型',
-                                    'value': 'integer',
-                                    'disabled': false
-                                  },
-                                  {
-                                    'label': '日期',
-                                    'value': 'date',
-                                    'disabled': false
-                                  },
-                                  {
-                                    'label': '布尔值',
-                                    'value': 'boolean',
-                                    'disabled': false
-                                  },
-                                  {
-                                    'label': '浮点型',
-                                    'value': 'double',
-                                    'disabled': false
-                                  },
-                                  {
-                                    'label': '字符大字段',
-                                    'value': 'clob',
-                                    'disabled': false
-                                  },
-                                  {
-                                    'label': '二进制大字段',
-                                    'value': 'blob',
-                                    'disabled': false
-                                  },
-                                ],
-                                'layout': 'column',
-                                'span': '24'
-                              },
-                            ]
-                          },
-                          {
-                            controls: [
-                              {
-                                'type': 'input',
-                                'labelSize': '6',
-                                'controlSize': '16',
-                                'inputType': 'text',
-                                'name': 'length',
-                                'label': '字段长度',
-                                'isRequired': true,
-                                'placeholder': '字段长度',
-                                'perfix': 'anticon anticon-edit',
-                                'disabled': false,
-                                'readonly': false,
-                                'size': 'default',
-                                'layout': 'column',
-                                'span': '24',
-                                'validations': [
-                                  {
-                                    'validator': 'required',
-                                    'errorMessage': '请输入字段长度'
-                                  }
-                                ]
-                              },
-                            ]
-                          },
-                          {
-                            controls: [
-                              {
-                                'type': 'input',
-                                'labelSize': '6',
-                                'controlSize': '16',
-                                'inputType': 'text',
-                                'name': 'precision',
-                                'label': '字段精度',
-                                // 'isRequired': true,
-                                'placeholder': '字段精度',
-                                'perfix': 'anticon anticon-edit',
-                                'disabled': false,
-                                'readonly': false,
-                                'size': 'default',
-                                'layout': 'column',
-                                'span': '24',
-                               /*  'validations': [
-                                  {
-                                    'validator': 'required',
-                                    'errorMessage': '请输入字段精度'
-                                  }
-                                ] */
-                              },
-                            ]
-                          },
-                          {
-                            controls: [
-                              {
-                                'type': 'input',
-                                'labelSize': '6',
-                                'controlSize': '16',
-                                'inputType': 'text',
-                                'name': 'defaultValue',
-                                'label': '默认值',
-                                // 'isRequired': true,
-                                'placeholder': '默认值',
-                                'perfix': 'anticon anticon-edit',
-                                'disabled': false,
-                                'readonly': false,
-                                'size': 'default',
-                                'layout': 'column',
-                                'span': '24',
-                                /* 'validations': [
-                                  {
-                                    'validator': 'required',
-                                    'errorMessage': '请输入默认值'
-                                  }
-                                ] */
-                              },
-                            ]
-                          },
-                          {
-                            controls: [
-                              {
-                                'type': 'select',
-                                'labelSize': '6',
-                                'controlSize': '16',
-                                'inputType': 'submit',
-                                'name': 'isUnique',
-                                'label': '是否唯一',
-                                'notFoundContent': '',
-                                'selectModel': false,
-                                'showSearch': true,
-                                'placeholder': '--请选择--',
-                                'disabled': false,
-                                'size': 'default',
-                                'options': [
-                                  {
-                                    'label': '是',
-                                    'value': '1',
-                                    'disabled': false
-                                  },
-                                  {
-                                    'label': '否',
-                                    'value': '0',
-                                    'disabled': false
-                                  }
-                                ],
-                                'layout': 'column',
-                                'span': '24'
-                              },
-                            ]
-                          },
-                          {
-                            controls: [
-                              {
-                                'type': 'select',
-                                'labelSize': '6',
-                                'controlSize': '16',
-                                'inputType': 'submit',
-                                'name': 'isNullabled',
-                                'label': '是否为空',
-                                'notFoundContent': '',
-                                'selectModel': false,
-                                'showSearch': true,
-                                'placeholder': '--请选择--',
-                                'disabled': false,
-                                'size': 'default',
-                                'options': [
-                                  {
-                                    'label': '是',
-                                    'value': '1',
-                                    'disabled': false
-                                  },
-                                  {
-                                    'label': '否',
-                                    'value': '0',
-                                    'disabled': false
-                                  }
-                                ],
-                                'layout': 'column',
-                                'span': '24'
-                              },
-                            ]
-                          },
-                          {
-                            controls: [
-                              {
-                                'type': 'select',
-                                'labelSize': '6',
-                                'controlSize': '16',
-                                'inputType': 'submit',
-                                'name': 'isDataDictionary',
-                                'label': '是否数据字典',
-                                'notFoundContent': '',
-                                'selectModel': false,
-                                'showSearch': true,
-                                'placeholder': '--请选择--',
-                                'disabled': false,
-                                'size': 'default',
-                                'options': [
-                                  {
-                                    'label': '是',
-                                    'value': '1',
-                                    'disabled': false
-                                  },
-                                  {
-                                    'label': '否',
-                                    'value': '0',
-                                    'disabled': false
-                                  }
-                                ],
-                                'layout': 'column',
-                                'span': '24'
-                              },
-                            ]
-                          },
-                          {
-                            controls: [
-                              {
-                                'type': 'input',
-                                'labelSize': '6',
-                                'controlSize': '16',
-                                'inputType': 'text',
-                                'name': 'dataDictionaryCode',
-                                'label': '数据字典编码',
-                                // 'isRequired': true,
-                                'placeholder': '数据字典编码',
-                                'perfix': 'anticon anticon-edit',
-                                'disabled': false,
-                                'readonly': false,
-                                'size': 'default',
-                                'layout': 'column',
-                                'span': '24',
-                               /*  'validations': [
-                                  {
-                                    'validator': 'required',
-                                    'errorMessage': '请输入数据字典编码'
-                                  }
-                                ] */
-                              },
-                            ]
-                          },
-                          {
-                            controls: [
-                              {
-                                'type': 'input',
-                                'labelSize': '6',
-                                'controlSize': '16',
-                                'inputType': 'text',
-                                'name': 'orderCode',
-                                'label': '排序',
-                                // 'isRequired': true,
-                                'placeholder': '排序',
-                                'perfix': 'anticon anticon-edit',
-                                'disabled': false,
-                                'readonly': false,
-                                'size': 'default',
-                                'layout': 'column',
-                                'span': '24',
-                               /*  'validations': [
-                                  {
-                                    'validator': 'required',
-                                    'errorMessage': '请输入数据字典编码'
-                                  }
-                                ] */
-                              },
-                            ]
-                          },
-                          {
-                            controls: [
-                              {
-                                'type': 'select',
-                                'labelSize': '6',
-                                'controlSize': '16',
-                                'inputType': 'submit',
-                                'name': 'isEnabled',
-                                'label': '是否有效',
-                                'notFoundContent': '',
-                                'selectModel': false,
-                                'showSearch': true,
-                                'placeholder': '--请选择--',
-                                'disabled': false,
-                                'size': 'default',
-                                'options': [
-                                  {
-                                    'label': '是',
-                                    'value': '1',
-                                    'disabled': false
-                                  },
-                                  {
-                                    'label': '否',
-                                    'value': '0',
-                                    'disabled': false
-                                  }
-                                ],
-                                'layout': 'column',
-                                'span': '24'
-                              },
-                            ]
-                          },
+                          [
+                            {
+                              controls: [
+                                {
+                                  'type': 'input',
+                                  'labelSize': '6',
+                                  'controlSize': '16',
+                                  'inputType': 'text',
+                                  'name': 'name',
+                                  'label': '名称',
+                                  'isRequired': true,
+                                  'placeholder': '请输入列名称',
+                                  'perfix': 'anticon anticon-edit',
+                                  'suffix': '',
+                                  'disabled': false,
+                                  'readonly': false,
+                                  'size': 'default',
+                                  'layout': 'column',
+                                  'span': '24',
+                                  'validations': [
+                                    {
+                                      'validator': 'required',
+                                      'errorMessage': '请输入列名称!!!!'
+                                    }
+                                  ]
+                                },
+                              ]
+                            },
+                            {
+                              controls: [
+                                {
+                                  'type': 'input',
+                                  'labelSize': '6',
+                                  'controlSize': '16',
+                                  'inputType': 'text',
+                                  'name': 'columnName',
+                                  'label': '字段名',
+                                  'isRequired': true,
+                                  'placeholder': '字段名',
+                                  'perfix': 'anticon anticon-edit',
+                                  'disabled': false,
+                                  'readonly': false,
+                                  'size': 'default',
+                                  'layout': 'column',
+                                  'span': '24',
+                                  'validations': [
+                                    {
+                                      'validator': 'required',
+                                      'errorMessage': '请输入字段名'
+                                    }
+                                  ]
+                                },
+                              ]
+                            },
+                            {
+                              controls: [
+                                {
+                                  'type': 'select',
+                                  'labelSize': '6',
+                                  'controlSize': '16',
+                                  'inputType': 'submit',
+                                  'name': 'columnType',
+                                  'label': '字段数据类型',
+                                  'notFoundContent': '',
+                                  'selectModel': false,
+                                  'showSearch': true,
+                                  'placeholder': '--请选择--',
+                                  'disabled': false,
+                                  'size': 'default',
+                                  'options': [
 
-                          {
-                            controls: [
-                              {
-                                'type': 'input',
-                                'labelSize': '6',
-                                'controlSize': '16',
-                                'inputType': 'text',
-                                'name': 'comments',
-                                'label': '备注',
-                                'placeholder': '',
-                                'disabled': false,
-                                'readonly': false,
-                                'size': 'default',
-                                'layout': 'column',
-                                'span': '24'
-                              }
-                            ]
-                          }
-                        ],
+                                    {
+                                      'label': '字符串',
+                                      'value': 'string',
+                                      'disabled': false
+                                    },
+                                    {
+                                      'label': '整型',
+                                      'value': 'integer',
+                                      'disabled': false
+                                    },
+                                    {
+                                      'label': '日期',
+                                      'value': 'date',
+                                      'disabled': false
+                                    },
+                                    {
+                                      'label': '布尔值',
+                                      'value': 'boolean',
+                                      'disabled': false
+                                    },
+                                    {
+                                      'label': '浮点型',
+                                      'value': 'double',
+                                      'disabled': false
+                                    },
+                                    {
+                                      'label': '字符大字段',
+                                      'value': 'clob',
+                                      'disabled': false
+                                    },
+                                    {
+                                      'label': '二进制大字段',
+                                      'value': 'blob',
+                                      'disabled': false
+                                    },
+                                  ],
+                                  'layout': 'column',
+                                  'span': '24'
+                                },
+                              ]
+                            },
+                            {
+                              controls: [
+                                {
+                                  'type': 'input',
+                                  'labelSize': '6',
+                                  'controlSize': '16',
+                                  'inputType': 'text',
+                                  'name': 'length',
+                                  'label': '字段长度',
+                                  'isRequired': true,
+                                  'placeholder': '字段长度',
+                                  'perfix': 'anticon anticon-edit',
+                                  'disabled': false,
+                                  'readonly': false,
+                                  'size': 'default',
+                                  'layout': 'column',
+                                  'span': '24',
+                                  'validations': [
+                                    {
+                                      'validator': 'required',
+                                      'errorMessage': '请输入字段长度'
+                                    }
+                                  ]
+                                },
+                              ]
+                            },
+                            {
+                              controls: [
+                                {
+                                  'type': 'input',
+                                  'labelSize': '6',
+                                  'controlSize': '16',
+                                  'inputType': 'text',
+                                  'name': 'precision',
+                                  'label': '字段精度',
+                                  // 'isRequired': true,
+                                  'placeholder': '字段精度',
+                                  'perfix': 'anticon anticon-edit',
+                                  'disabled': false,
+                                  'readonly': false,
+                                  'size': 'default',
+                                  'layout': 'column',
+                                  'span': '24',
+                                  /*  'validations': [
+                                     {
+                                       'validator': 'required',
+                                       'errorMessage': '请输入字段精度'
+                                     }
+                                   ] */
+                                },
+                              ]
+                            },
+                            {
+                              controls: [
+                                {
+                                  'type': 'input',
+                                  'labelSize': '6',
+                                  'controlSize': '16',
+                                  'inputType': 'text',
+                                  'name': 'defaultValue',
+                                  'label': '默认值',
+                                  // 'isRequired': true,
+                                  'placeholder': '默认值',
+                                  'perfix': 'anticon anticon-edit',
+                                  'disabled': false,
+                                  'readonly': false,
+                                  'size': 'default',
+                                  'layout': 'column',
+                                  'span': '24',
+                                  /* 'validations': [
+                                    {
+                                      'validator': 'required',
+                                      'errorMessage': '请输入默认值'
+                                    }
+                                  ] */
+                                },
+                              ]
+                            },
+                            {
+                              controls: [
+                                {
+                                  'type': 'select',
+                                  'labelSize': '6',
+                                  'controlSize': '16',
+                                  'inputType': 'submit',
+                                  'name': 'isUnique',
+                                  'label': '是否唯一',
+                                  'notFoundContent': '',
+                                  'selectModel': false,
+                                  'showSearch': true,
+                                  'placeholder': '--请选择--',
+                                  'disabled': false,
+                                  'size': 'default',
+                                  'options': [
+                                    {
+                                      'label': '是',
+                                      'value': '1',
+                                      'disabled': false
+                                    },
+                                    {
+                                      'label': '否',
+                                      'value': '0',
+                                      'disabled': false
+                                    }
+                                  ],
+                                  'layout': 'column',
+                                  'span': '24'
+                                },
+                              ]
+                            },
+                            {
+                              controls: [
+                                {
+                                  'type': 'select',
+                                  'labelSize': '6',
+                                  'controlSize': '16',
+                                  'inputType': 'submit',
+                                  'name': 'isNullabled',
+                                  'label': '是否为空',
+                                  'notFoundContent': '',
+                                  'selectModel': false,
+                                  'showSearch': true,
+                                  'placeholder': '--请选择--',
+                                  'disabled': false,
+                                  'size': 'default',
+                                  'options': [
+                                    {
+                                      'label': '是',
+                                      'value': '1',
+                                      'disabled': false
+                                    },
+                                    {
+                                      'label': '否',
+                                      'value': '0',
+                                      'disabled': false
+                                    }
+                                  ],
+                                  'layout': 'column',
+                                  'span': '24'
+                                },
+                              ]
+                            },
+                            {
+                              controls: [
+                                {
+                                  'type': 'select',
+                                  'labelSize': '6',
+                                  'controlSize': '16',
+                                  'inputType': 'submit',
+                                  'name': 'isDataDictionary',
+                                  'label': '是否数据字典',
+                                  'notFoundContent': '',
+                                  'selectModel': false,
+                                  'showSearch': true,
+                                  'placeholder': '--请选择--',
+                                  'disabled': false,
+                                  'size': 'default',
+                                  'options': [
+                                    {
+                                      'label': '是',
+                                      'value': '1',
+                                      'disabled': false
+                                    },
+                                    {
+                                      'label': '否',
+                                      'value': '0',
+                                      'disabled': false
+                                    }
+                                  ],
+                                  'layout': 'column',
+                                  'span': '24'
+                                },
+                              ]
+                            },
+                            {
+                              controls: [
+                                {
+                                  'type': 'input',
+                                  'labelSize': '6',
+                                  'controlSize': '16',
+                                  'inputType': 'text',
+                                  'name': 'dataDictionaryCode',
+                                  'label': '数据字典编码',
+                                  // 'isRequired': true,
+                                  'placeholder': '数据字典编码',
+                                  'perfix': 'anticon anticon-edit',
+                                  'disabled': false,
+                                  'readonly': false,
+                                  'size': 'default',
+                                  'layout': 'column',
+                                  'span': '24',
+                                  /*  'validations': [
+                                     {
+                                       'validator': 'required',
+                                       'errorMessage': '请输入数据字典编码'
+                                     }
+                                   ] */
+                                },
+                              ]
+                            },
+                            {
+                              controls: [
+                                {
+                                  'type': 'input',
+                                  'labelSize': '6',
+                                  'controlSize': '16',
+                                  'inputType': 'text',
+                                  'name': 'orderCode',
+                                  'label': '排序',
+                                  // 'isRequired': true,
+                                  'placeholder': '排序',
+                                  'perfix': 'anticon anticon-edit',
+                                  'disabled': false,
+                                  'readonly': false,
+                                  'size': 'default',
+                                  'layout': 'column',
+                                  'span': '24',
+                                  /*  'validations': [
+                                     {
+                                       'validator': 'required',
+                                       'errorMessage': '请输入数据字典编码'
+                                     }
+                                   ] */
+                                },
+                              ]
+                            },
+                            {
+                              controls: [
+                                {
+                                  'type': 'select',
+                                  'labelSize': '6',
+                                  'controlSize': '16',
+                                  'inputType': 'submit',
+                                  'name': 'isEnabled',
+                                  'label': '是否有效',
+                                  'notFoundContent': '',
+                                  'selectModel': false,
+                                  'showSearch': true,
+                                  'placeholder': '--请选择--',
+                                  'disabled': false,
+                                  'size': 'default',
+                                  'options': [
+                                    {
+                                      'label': '是',
+                                      'value': '1',
+                                      'disabled': false
+                                    },
+                                    {
+                                      'label': '否',
+                                      'value': '0',
+                                      'disabled': false
+                                    }
+                                  ],
+                                  'layout': 'column',
+                                  'span': '24'
+                                },
+                              ]
+                            },
+
+                            {
+                              controls: [
+                                {
+                                  'type': 'input',
+                                  'labelSize': '6',
+                                  'controlSize': '16',
+                                  'inputType': 'text',
+                                  'name': 'comments',
+                                  'label': '备注',
+                                  'placeholder': '',
+                                  'disabled': false,
+                                  'readonly': false,
+                                  'size': 'default',
+                                  'layout': 'column',
+                                  'span': '24'
+                                }
+                              ]
+                            }
+                          ],
                         'buttons':
                           [
                             {
