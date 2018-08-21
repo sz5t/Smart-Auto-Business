@@ -19,7 +19,8 @@ import { UserRoleComponent } from './user-manager/user-role.component';
 import { ModuleManagersComponent } from './module-manager/module-managers.component';
 import {DataModelingComponent} from './data-modeling/data-modeling.component';
 import {WorkFlowComponent} from './work-flow/work-flow.component';
-
+import {WorkFlowTodoComponent} from './work-flow/work-flow-todo.component';
+import {WorkFlowInitiateComponent} from './work-flow/work-flow-initiate.component';
 
 const routes: Routes = [
     {path: 'base-manager', component: BaseManagerComponent},
@@ -31,6 +32,9 @@ const routes: Routes = [
     {path: 'priv-manager', component: PrivManagerComponent},
     {path: 'dataModeling-manager', component: DataModelingComponent},
     {path: 'WorkFlow-manager', component: WorkFlowComponent},
+    {path: 'WorkFlow-todo-manager', component: WorkFlowTodoComponent},
+    {path: 'WorkFlow-initiate-manager', component: WorkFlowInitiateComponent},
+    
 ];
 const COMPONENT_NOROUNT = [
     UserManagerComponent,
@@ -49,7 +53,9 @@ const COMPONENT_NOROUNT = [
     OrgOperationComponent,
     UserRoleComponent,
     DataModelingComponent,
-    WorkFlowComponent
+    WorkFlowComponent,
+    WorkFlowTodoComponent,
+    WorkFlowInitiateComponent
 ];
 
 @NgModule({

@@ -119,7 +119,45 @@
                             "link": "/system/WorkFlow-manager",
                             "i18n": "",
                             "icon": "icon-user"
+                     },
+                     {
+                            "text": "发起",
+                            "link": "/system/WorkFlow-initiate-manager",
+                            "i18n": "",
+                            "icon": "icon-user"
+                     },
+                     {
+                            "text": "待办事宜",
+                            "link": "/system/WorkFlow-todo-manager",
+                            "i18n": "",
+                            "icon": "icon-user"
+                     },
+                     {
+                            "text": "在途任务",
+                            "link": "/system/WorkFlow-launch-manager",
+                            "i18n": "",
+                            "icon": "icon-user"
+                     },
+                     {
+                            "text": "已办任务",
+                            "link": "/system/WorkFlow-done-manager",
+                            "i18n": "",
+                            "icon": "icon-user"
+                     },
+                     {
+                            "text": "历史任务",
+                            "link": "/system/WorkFlow-history-manager",
+                            "i18n": "",
+                            "icon": "icon-user"
+                     },
+                     {
+                            "text": "流程委托",
+                            "link": "/system/WorkFlow-delegation-manager",
+                            "i18n": "",
+                            "icon": "icon-user"
                      }
+
+                     
                   ]
                 }
             ]
