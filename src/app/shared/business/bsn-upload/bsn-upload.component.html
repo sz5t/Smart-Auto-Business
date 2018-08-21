@@ -1,0 +1,77 @@
+<nz-card [nzTitle]="header">
+    <ng-template #header>
+        <i class="anticon anticon-upload"></i> 上传附件
+    </ng-template>
+    <div nz-row [nzGutter]="8">
+        <div nz-col nzSpan="24">
+            <nz-upload
+                nzType="drag"
+                [nzMultiple]="true"
+                [nzBeforeUpload]="beforeUpload"
+                [(nzFileList)] = "fileList"
+                (nzChange)="handleChange($event)">
+                <p class="ant-upload-drag-icon">
+                    <i class="anticon anticon-inbox"></i>
+                </p>
+                <p class="ant-upload-text">请将文件【拖拽】至此或【单击】此区域添加文件</p>
+                <p class="ant-upload-hint">此处支持批量文件上传</p>
+            </nz-upload>
+        </div>
+    </div>
+    <nz-divider nzDashed [nzText]="text">
+        <ng-template #text><i class="anticon anticon-plus"></i> 待上传文件</ng-template>
+    </nz-divider>
+    <div nz-row>
+        <div nz-col nzSpan="24">
+            <button
+                style="float:right"
+                [nzLoading]="uploading"
+                (click)="handleUpload()"
+                [disabled]="fileList.length == 0"
+                nz-button
+                [nzType]="'primary'" value="上传">
+                {{ uploading ? '上传中...' : '开始上传' }}
+            </button>
+
+            <span>密级：</span>
+            <nz-select style="width: 100px;" [(ngModel)]="securityLevel" nzPlaceHolder="--密级选择--">
+                <nz-option nzValue="1" nzLabel="公开"></nz-option>
+                <nz-option nzValue="2" nzLabel="保密"></nz-option>
+            </nz-select>
+
+        </div>
+    </div>
+</nz-card>
+<nz-card>
+    <div class="uploadList-container"
+         infiniteScroll
+         [infiniteScrollDistance]="2"
+         [infiniteScrollThrottle]="50"
+         [scrollWindow]="false">
+        <nz-list
+            class="file-list"
+            [nzDataSource]="uploadList"
+            [nzItemLayout]="'horizontal'"
+            [nzLoading]="loading"
+            [nzRenderItem]="item">
+            <ng-template #item let-item>
+                <nz-list-item [nzContent]="'上传时间：'+item.createDate" [nzActions]="[editAction,deleteAction]">
+                    <ng-template #editAction><a target="_blank" href="http://192.168.1.111:8081/api.cfg/file/download?_ids={{item.Id}}">下载</a></ng-template>
+                    <ng-template #deleteAction>
+                        <a nz-popconfirm nzTitle="确定删除该附件"
+                           nzOkText="确定" nzCancelText="取消"
+                           (nzOnConfirm)="delete(item.Id)"
+                           (nzOnCancel)="cancel()">删除</a>
+                    </ng-template>
+                    <nz-list-item-meta
+                        [nzTitle]="item.actName">
+                        <!--<ng-template #nzTitle>-->
+                        <!--<a href="https://ng.ant.design">{{item.name.last}}</a>-->
+                        <!--</ng-template>-->
+                    </nz-list-item-meta>
+                </nz-list-item>
+            </ng-template>
+        </nz-list>
+    </div>
+
+</nz-card>
