@@ -11,7 +11,7 @@
                 </div>
                 <div nz-col [nzSpan]="8" *ngIf="!expandForm">
                         <nz-form-item style="margin-bottom:0px">
-                                <button  nz-button [nzType]="'primary'" 
+                                <button  nz-button [nzType]="'primary'"
                                 (click)="search()" [nzLoading]="loading"><i class="anticon anticon-search"></i>查询</button>
                                 <button  nz-button [nzType]="'default'" type="reset">重置</button>
                                 <a (click)="clickExpand()">
@@ -28,7 +28,7 @@
                             <ng-container cnFormResolverDirective [formGroup]="form" [config]="control">
 
                             </ng-container>
-                           
+
                         </nz-form-item>
                     </div>
                 </standard-form-row>
@@ -37,7 +37,7 @@
         <standard-form-row *ngIf="expandForm">
                 <div nz-col [nzSpan]="6" [nzOffset]="18">
                         <nz-form-item style="margin-bottom:0px">
-                                <button  nz-button [nzType]="'primary'" 
+                                <button  nz-button [nzType]="'primary'"
                                 (click)="search()" [nzLoading]="loading"><i class="anticon anticon-search"></i>查询</button>
                                 <button  nz-button [nzType]="'default'" type="reset">重置</button>
                                 <a (click)="clickExpand()">

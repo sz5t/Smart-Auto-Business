@@ -33,8 +33,8 @@ export class TreeAndFormComponent implements OnInit {
                                     config: {
                                         'viewId': 'tree_and_form_tree',
                                         'component': 'bsnAsyncTree',
-                                        'asyncData': true, // 
-                                        'expandAll': false, //  
+                                        'asyncData': true, //
+                                        'expandAll': false, //
                                         'checkable': false,  //    在节点之前添加一个复选框 false
                                         'showLine': false,  //   显示连接线 fal
                                         'columns': [ // 字段映射，映射成树结构所需
@@ -128,8 +128,7 @@ export class TreeAndFormComponent implements OnInit {
                                             'child': true,
                                             'own': false
                                         },
-                                        'forms':
-                                            [
+                                        'forms': [
                                                 {
                                                     controls: [
                                                         {
@@ -148,12 +147,12 @@ export class TreeAndFormComponent implements OnInit {
                                                             'options': [
                                                                 {
                                                                     'label': '启用',
-                                                                    'value': 1,
+                                                                    'value': true,
                                                                     'disabled': false
                                                                 },
                                                                 {
                                                                     'label': '禁用',
-                                                                    'value': 0,
+                                                                    'value': false,
                                                                     'disabled': false
                                                                 }
                                                             ],
@@ -169,8 +168,8 @@ export class TreeAndFormComponent implements OnInit {
                                                             'labelSize': '6',
                                                             'controlSize': '16',
                                                             'inputType': 'submit',
-                                                            'name': 'type',
-                                                            'label': '类别Id',
+                                                            'name': 'caseType',
+                                                            'label': '类别',
                                                             'notFoundContent': '',
                                                             'selectModel': false,
                                                             'showSearch': true,
@@ -283,15 +282,123 @@ export class TreeAndFormComponent implements OnInit {
                                                     ]
                                                 }
                                             ],
-
-                                        'toolbar':
-                                            [
+                                        'toolbar':{
+                                            'gutter': 24,
+                                            'offset': 6,
+                                            'span': 16,
+                                            'buttons': [
                                                 {
-                                                    'name': 'saveForm', 'class': 'editable-add-btn', 'text': '保存'
+                                                    'name': 'saveForm', 'type': 'primary', 'text': '保存',
+                                                    'ajaxConfig': {
+                                                        post: {
+                                                            'url': 'common/ShowCase',
+                                                            'ajaxType': 'post',
+                                                            'params': [
+                                                                {
+                                                                    name: 'caseName',
+                                                                    type: 'componentValue',
+                                                                    valueName: 'caseName',
+                                                                    value: ''
+                                                                },
+                                                                {
+                                                                    name: 'caseCount',
+                                                                    type: 'componentValue',
+                                                                    valueName: 'caseCount',
+                                                                    value: ''
+                                                                },
+                                                                {
+                                                                    name: 'enabled',
+                                                                    type: 'componentValue',
+                                                                    valueName: 'enabled',
+                                                                    value: ''
+                                                                },
+                                                                {
+                                                                    name: 'caseLevel',
+                                                                    type: 'componentValue',
+                                                                    valueName: 'caseLevel',
+                                                                    value: ''
+                                                                },
+                                                                {
+                                                                    name: 'parentId',
+                                                                    type: 'tempValue',
+                                                                    valueName: '_parentId',
+                                                                    value: ''
+                                                                },
+                                                                {
+                                                                    name: 'remark',
+                                                                    type: 'componentValue',
+                                                                    valueName: 'remark',
+                                                                    value: ''
+                                                                },
+                                                                {
+                                                                    name: 'caseType',
+                                                                    type: 'componentValue',
+                                                                    valueName: 'caseType',
+                                                                    value: ''
+                                                                }
+                                                            ]
+                                                        },
+                                                        put: {
+                                                            'url': 'common/ShowCase',
+                                                            'ajaxType': 'put',
+                                                            'params': [
+                                                                    {
+                                                                        name: 'Id',
+                                                                        type: 'tempValue',
+                                                                        valueName: '_id',
+                                                                        value: ''
+                                                                    },
+                                                                    {
+                                                                        name: 'caseName',
+                                                                        type: 'componentValue',
+                                                                        valueName: 'caseName',
+                                                                        value: ''
+                                                                    },
+                                                                    {
+                                                                        name: 'caseCount',
+                                                                        type: 'componentValue',
+                                                                        valueName: 'caseCount',
+                                                                        value: ''
+                                                                    },
+                                                                    {
+                                                                        name: 'enabled',
+                                                                        type: 'componentValue',
+                                                                        valueName: 'enabled',
+                                                                        value: ''
+                                                                    },
+                                                                    {
+                                                                        name: 'caseLevel',
+                                                                        type: 'componentValue',
+                                                                        valueName: 'caseLevel',
+                                                                        value: ''
+                                                                    },
+                                                                    {
+                                                                        name: 'parentId',
+                                                                        type: 'tempValue',
+                                                                        valueName: '_parentId',
+                                                                        value: ''
+                                                                    },
+                                                                    {
+                                                                        name: 'remark',
+                                                                        type: 'componentValue',
+                                                                        valueName: 'remark',
+                                                                        value: ''
+                                                                    },
+                                                                    {
+                                                                        name: 'caseType',
+                                                                        type: 'componentValue',
+                                                                        valueName: 'caseType',
+                                                                        value: ''
+                                                                    }
+                                                                ]
+                                                        }
+                                                    }
                                                 },
-                                                { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' }
+                                                {
+                                                    'name': 'cancelRow', 'type': 'default', 'text': '取消'
+                                                }
                                             ],
-
+                                        },
                                         'dataList': [],
                                         'relations': [{
                                             'relationViewId': 'tree_and_form_tree',

@@ -129,9 +129,10 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     {
                                                         'type': 'input',
                                                         'labelSize': '6',
-                                                        'controlSize': '16',
+                                                        'controlSize': '18',
                                                         'inputType': 'text',
                                                         'name': 'caseName',
+                                                        'perfix': 'anticon anticon-edit',
                                                         'label': '名称',
                                                         'placeholder': '',
                                                         'disabled': false,
@@ -143,7 +144,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     {
                                                         'type': 'input',
                                                         'labelSize': '6',
-                                                        'controlSize': '16',
+                                                        'controlSize': '18',
                                                         'inputType': 'text',
                                                         'name': 'caseLevel',
                                                         'label': '级别',
@@ -157,7 +158,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     {
                                                         'type': 'input',
                                                         'labelSize': '6',
-                                                        'controlSize': '16',
+                                                        'controlSize': '18',
                                                         'inputType': 'text',
                                                         'name': 'caseCount',
                                                         'label': '数量',
@@ -167,6 +168,31 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'size': 'default',
                                                         'layout': 'column',
                                                         'span': '6'
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                title: '扩展条件',
+                                                layout: 'grid last',
+                                                collapse: true,
+                                                controls: [
+                                                    {
+                                                        'type': 'textarea',
+                                                        'autoSize': {
+                                                            minRows: 4, maxRows: 6
+                                                        },
+                                                        'labelSize': '3',
+                                                        'controlSize': '21',
+                                                        'inputType': 'text',
+                                                        'name': 'caseName',
+                                                        'perfix': 'anticon anticon-edit',
+                                                        'label': '备注',
+                                                        'placeholder': '',
+                                                        'disabled': false,
+                                                        'readonly': false,
+                                                        'size': 'default',
+                                                        'layout': 'column',
+                                                        'span': '12'
                                                     }
                                                 ]
                                             }
@@ -184,7 +210,8 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         name: 'refreshAsChild',
                                                         params: [
                                                             {pid: 'caseName', cid: '_caseName'},
-                                                            {pid: 'Type', cid: '_type'},
+                                                            {pid: 'enabled', cid: '_enabled'},
+                                                            {pid: 'caseType', cid: '_caseType'},
                                                         ]
                                                     },
                                                 }
@@ -223,6 +250,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                         'component': 'bsnTable',
                                         'info': true,
                                         'keyId': 'Id',
+                                        'size': 'small',
                                         'pagination': true, // 是否分页
                                         'showTotal': true, // 是否显示总数据量
                                         'pageSize': 5, // 默认每页数据条数
@@ -234,6 +262,12 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                             'filter': [
                                                 {
                                                     name: 'caseName', valueName: '_caseName', type: '', value: ''
+                                                },
+                                                {
+                                                    name: 'enabled', valueName: '_enabled', type: '', value: ''
+                                                },
+                                                {
+                                                    name: 'caseType', valueName: '_caseType', type: '', value: ''
                                                 }
                                             ]
                                         },
@@ -431,13 +465,18 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                             }
                                         ],
                                         'componentType': {
-                                            'parent': true,
-                                            'child': false,
+                                            'parent': false,
+                                            'child': true,
                                             'own': true
                                         },
                                         'relations': [{
-                                            'relationViewId': 'singleTable',
-                                            'relationSendContent': [],
+                                            'relationViewId': 'search_form',
+                                            'cascadeMode': 'REFRESH_AS_CHILD',
+                                            'params': [
+                                                { pid: 'caseName', cid: '_caseName' },
+                                                { pid: 'enabled', cid: '_enabled' },
+                                                { pid: 'caseType', cid: '_caseType' }
+                                            ],
                                             'relationReceiveContent': []
                                         }],
                                         'toolbar': [
@@ -667,7 +706,6 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 group: [
                                                     {
                                                         'name': 'addForm',
-                                                        'class': 'editable-add-btn',
                                                         'text': '弹出新增表单',
                                                         'icon': 'anticon anticon-form',
                                                         'action': 'FORM',
@@ -677,7 +715,6 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     },
                                                     {
                                                         'name': 'editForm',
-                                                        'class': 'editable-add-btn',
                                                         'text': '弹出编辑表单',
                                                         'icon': 'anticon anticon-form',
                                                         'action': 'FORM',
@@ -687,19 +724,26 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     },
                                                     {
                                                         'name': 'batchEditForm',
-                                                        'class': 'editable-add-btn',
                                                         'text': '弹出批量处理表单',
                                                         'icon': 'anticon anticon-form',
                                                         'type': 'showBatchForm'
                                                     },
                                                     {
                                                         'name': 'showDialogPage',
-                                                        'class': 'editable-add-btn',
                                                         'text': '弹出页面',
                                                         'action': 'WINDOW',
                                                         'actionType': 'windowDialog',
                                                         'actionName': 'ShowCaseWindow',
                                                         'type': 'showLayout'
+                                                    },
+                                                    {
+                                                        'name': 'upload',
+                                                        'icon': 'anticon anticon-upload',
+                                                        'text': '附件上传',
+                                                        'action': 'UPLOAD',
+                                                        'actionType': 'uploadDialog',
+                                                        'actionName': 'uploadCase',
+                                                        'type': 'uploadDialog'
                                                     }
                                                 ]
                                             },
@@ -857,11 +901,11 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 'isRequired': true,
                                                                 'placeholder': '请输入Case名称',
                                                                 'perfix': 'anticon anticon-edit',
-                                                                'suffix': '',
                                                                 'disabled': false,
                                                                 'readonly': false,
                                                                 'size': 'default',
                                                                 'layout': 'column',
+                                                                'explain': '名称需要根据规范填写',
                                                                 'span': '24',
                                                                 'validations': [
                                                                     {
@@ -1166,8 +1210,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     },
                                                     {'name': 'reset', 'text': '重置'},
                                                     {'name': 'close', 'text': '关闭'}
-                                                ],
-
+                                                ]
                                             },
                                             {
                                                 'keyId': 'Id',
@@ -1495,6 +1538,26 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     },
                                                     {'name': 'close', 'text': '关闭'}
                                                 ]
+                                            }
+                                        ],
+                                        'uploadDialog': [
+                                            {
+                                                'keyId': 'Id',
+                                                'title': '',
+                                                'name': 'uploadCase',
+                                                'width': '600',
+                                                'ajaxConfig': {
+                                                    'deleteUrl': 'file/delete',
+                                                    'listUrl': 'common/SysFile',
+                                                    'url': 'file/upload',
+                                                    'downloadUrl': 'file/download',
+                                                    'ajaxType': 'post',
+                                                    'params': [
+                                                        {
+                                                            'name': 'Id', 'type': 'tempValue', 'valueName': '_id'
+                                                        }
+                                                    ]
+                                                }
                                             }
                                         ]
                                     },
@@ -1939,6 +2002,53 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                     ]
                 }
             },
+            // {
+            //     row: {
+            //         cols: [
+            //             {
+            //                 id: 'area11',
+            //                 title: '分步操作',
+            //                 span: 24,
+            //                 icon: 'icon-list',
+            //                 size: {
+            //                     nzXs: 24,
+            //                     nzSm: 24,
+            //                     nzMd: 24,
+            //                     nzLg: 24,
+            //                     ngXl: 24
+            //                 },
+            //                 viewCfg: [
+            //                     {
+            //                         config: {
+            //                             'title': '数据网格',
+            //                             'viewId': 'singlessTable1',
+            //                             'component': 'bsnStep',
+            //                             'info': true,
+            //                             'keyId': 'Id',
+            //                             'size': 'default',
+            //                             'ajaxConfig': {
+            //                                 'url': 'common/GetCase',
+            //                                 'ajaxType': 'get',
+            //                                 'params': [],
+            //                                 'filter': [
+            //                                     {
+            //                                         name: 'caseName', valueName: '_caseName', type: '', value: ''
+            //                                     }
+            //                                 ]
+            //                             },
+            //                             'dataMapping': [
+            //                                 { 'field': 'caseName', 'name': 'title' },
+            //                                 { 'field': 'remark', 'name': 'desc' }
+            //                             ]
+            //                         },
+            //                         dataList: [],
+            //                         permissions: []
+            //                     }
+            //                 ]
+            //             }
+            //         ]
+            //     }
+            // },
             {
                 row: {
                     cols: [
@@ -2072,6 +2182,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                             'controlSize': '16',
                                                                             'inputType': 'text',
                                                                             'name': 'caseName',
+                                                                            'addOnBeforeIcon': 'anticon anticon-setting',
                                                                             'label': '名称',
                                                                             'placeholder': '',
                                                                             'disabled': false,
@@ -2086,6 +2197,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                             'controlSize': '16',
                                                                             'inputType': 'text',
                                                                             'name': 'caseLevel',
+                                                                            'addOnAfterIcon': 'anticon anticon-setting',
                                                                             'label': '级别',
                                                                             'placeholder': '',
                                                                             'disabled': false,
@@ -2390,7 +2502,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        console.log(JSON.stringify(this.config));
+        // console.log(JSON.stringify(this.config));
         this.formGroup = new FormGroup({});
     }
 

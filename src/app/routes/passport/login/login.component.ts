@@ -192,7 +192,16 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                 url = '/dashboard/v1';
             } else { // 解析平台
                 const projModule = await this._loadProjectModule();
-                menus = this.arrayToTree(projModule.data, null);
+                menus = [
+                    {
+                        'text': '主导航',
+                        'i18n': 'main_navigation',
+                        'group': true,
+                        'hideInBreadcrumb': true,
+                        'children': []
+                    }
+                ];
+                menus[0].children = this.arrayToTree(projModule.data, null);;
                 url = '/';
             }
 

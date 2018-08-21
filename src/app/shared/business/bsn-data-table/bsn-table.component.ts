@@ -16,9 +16,11 @@ import { RelativeService, RelativeResolver, BsnTableRelativeMessageService } fro
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { Observer } from 'rxjs';
 import { Subscription } from 'rxjs';
+import {BsnUploadComponent} from "@shared/business/bsn-upload/bsn-upload.component";
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
-    form: FormResolverComponent
+    form: FormResolverComponent,
+    upload: BsnUploadComponent
 };
 
 @Component({
@@ -58,7 +60,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     _columnFilterList = [];
     _focusId;
 
-    _selectRow = {};
+    _selectRow;
     _tempParameters = {};
     _searchParameters = {};
     _relativeResolver;
@@ -86,7 +88,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         private _http: ApiService,
         private message: NzMessageService,
         private modalService: NzModalService,
-        private relativeMessage: RelativeService,
         @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
@@ -130,10 +131,13 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         if (this.config.componentType) {
             if (!this.config.componentType.child) {
                 this.load();
+            } else if(this.config.componentType.own === true) {
+                this.load();
             }
         } else {
             this.load();
         }
+
     }
 
     private resolverRelation() {
@@ -142,7 +146,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             if (updateState._viewId === this.config.viewId) {
 
                 const option = updateState.option;
-                console.log(option, updateState._mode);
                 switch (updateState._mode) {
                     case BSN_COMPONENT_MODES.CREATE:
                         this.addRow();
@@ -177,6 +180,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     case BSN_COMPONENT_MODES.SEARCH:
                         this.SearchRow(option);
                         break;
+                    case BSN_COMPONENT_MODES.UPLOAD:
+                        this.uploadDialog(option);
+                        break;
                 }
             }
         });
@@ -186,7 +192,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             // 注册消息发送方法
             // 注册行选中事件发送消息
             this.after(this, 'selectRow', () => {
-                console.log('send message', this._selectRow);
                 this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
                     data: this._selectRow
                 }));
@@ -256,7 +261,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             ...this._buildFocusId(),
             ...this._buildSearch()
         };
-        // console.log('url params', params);
         (async () => {
             const loadData = await this._load(url, params);
             if (loadData && loadData.status === 200 && loadData.isSuccess) {
@@ -508,14 +512,10 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         });
         if (addRows.length > 0) {
             // save add;
-            // console.log(addRows);
-
             isSuccess = await this.executeSave(addRows, 'post');
         }
 
         if (updateRows.length > 0) {
-            //
-            // console.log(updateRows);
             isSuccess = await this.executeSave(updateRows, 'put');
         }
         return isSuccess;
@@ -800,7 +800,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     private _startEdit(key: string): void {
-        // console.log('start edit', key);
         this.editCache[key].edit = true;
     }
 
@@ -897,14 +896,22 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         }
         if (isSearch) {
             this.createSearchRow();
+            this.is_Search = true;
         } else {
 
             // 执行行查询
-            console.log('行查询', this.search_Row);
             this.load(1); // 查询后将页面置1
+            let len = this.dataList.length;
+            for (let i = 0; i < len; i++) {
+                if (this.dataList[i]['row_status'] === 'search') {
+                    this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                    i--;
+                    len--;
+                }
+            }
+            this.is_Search = false;
+            this.search_Row = {};
         }
-        this.is_Search = true;
-        console.log('SearchRow结果', this.dataList);
     }
     // 生成查询行
     createSearchRow() {
@@ -925,7 +932,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             this._startEdit(fieldIdentity.toString());
             this.search_Row = rowContentNew;
         }
-        console.log('SearchRow', this.search_Row);
     }
     // 取消查询
     cancelSearchRow() {
@@ -1069,6 +1075,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     toolbarAction(btn) {
+        debugger;
         if (this[btn.name]) {
             this[btn.name]();
         } else if (this[btn.type]) {
@@ -1187,6 +1194,10 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     private showForm(dialog) {
+        if(!this._selectRow) {
+            this.message.warning('请选中一条需要添加附件的记录！');
+            return false;
+        }
         const footer = [];
         const obj = {
             _id: this._selectRow[dialog.keyId],
@@ -1243,6 +1254,62 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         comp.resetForm();
     }
 
+    private openUploadDialog(dialog) {
+        if(!this._selectRow) {
+            this.message.warning('请选中一条需要添加附件的记录！');
+            return false;
+        }
+        const footer = [];
+        const obj = {
+            _id: this._selectRow[dialog.keyId],
+            _parentId: this._tempParameters['_parentId']
+        };
+        const modal = this.modalService.create({
+            nzTitle: dialog.title,
+            nzWidth: dialog.width,
+            nzContent: component['upload'],
+            nzComponentParams: {
+                config: dialog,
+                refObj: obj
+            },
+            nzFooter: footer
+        });
+
+        // if (dialog.buttons) {
+        //     dialog.buttons.forEach(btn => {
+        //         const button = {};
+        //         button['label'] = btn.text;
+        //         button['type'] = btn.type ? btn.type : 'default';
+        //         button['onClick'] = (componentInstance) => {
+        //             if (btn['name'] === 'save') {
+        //                 (async () => {
+        //                     const result = await componentInstance.buttonAction(btn);
+        //                     if (result) {
+        //                         modal.close();
+        //                         // todo: 操作完成当前数据后需要定位
+        //                         this.load();
+        //                     }
+        //                 })();
+        //             } else if (btn['name'] === 'saveAndKeep') {
+        //                 (async () => {
+        //                     const result = await componentInstance.buttonAction(btn);
+        //                     if (result) {
+        //                         // todo: 操作完成当前数据后需要定位
+        //                         this.load();
+        //                     }
+        //                 })();
+        //             } else if (btn['name'] === 'close') {
+        //                 modal.close();
+        //             } else if (btn['name'] === 'reset') {
+        //                 this._resetForm(componentInstance);
+        //             }
+        //
+        //         };
+        //         footer.push(button);
+        //     });
+        //
+        // }
+    }
 
     private showLayout(dialog) {
         const footer = [];
@@ -1345,6 +1412,13 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         if (this.config.windowDialog && this.config.windowDialog.length > 0) {
             const index = this.config.windowDialog.findIndex(item => item.name === option.name);
             this.showLayout(this.config.windowDialog[index]);
+        }
+    }
+
+    uploadDialog(option) {
+        if (this.config.uploadDialog && this.config.uploadDialog.length > 0) {
+            const index = this.config.uploadDialog.findIndex(item => item.name === option.name);
+            this.openUploadDialog(this.config.uploadDialog[index]);
         }
     }
 

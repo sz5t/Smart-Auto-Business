@@ -1,39 +1,39 @@
 <bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId" [permissions]="permissions.toolbar?permissions.toolbar:[]"></bsn-toolbar>
-<nz-table #nzTable 
-    [nzData]="dataList" 
-    [nzSize]="'small'" 
-    [nzFrontPagination]="false" 
-    [nzShowSizeChanger]="true" 
+<nz-table #nzTable
+    [nzData]="dataList"
+    [nzSize]="config.size"
+    [nzFrontPagination]="false"
+    [nzShowSizeChanger]="true"
     [nzTotal]="total"
-    [(nzPageIndex)]="pageIndex" 
-    [(nzPageSize)]="pageSize" 
-    [nzShowTotal]="totals" 
+    [(nzPageIndex)]="pageIndex"
+    [(nzPageSize)]="pageSize"
+    [nzShowTotal]="totals"
     [nzPageSizeOptions]="this.config.pageSizeOptions"
-    [nzLoading]="loading" 
-    (nzPageIndexChange)="searchData()" 
-    (nzPageSizeChange)="searchData(true)" 
-    [nzTitle]="this.config.title?this.config.title:null"
+    [nzLoading]="loading"
+    (nzPageIndexChange)="searchData()"
+    (nzPageSizeChange)="searchData(true)"
+    [nzTitle]="config.title?config.title:null"
     [nzFooter]="footer"
     nzBordered>
     <thead (nzSortChange)="sort($event)" nzSingleSort>
         <tr>
-            <th nzShowCheckbox 
-            [(nzChecked)]="allChecked" 
-            [nzIndeterminate]="indeterminate" 
+            <th nzShowCheckbox
+            [(nzChecked)]="allChecked"
+            [nzIndeterminate]="indeterminate"
             (nzCheckedChange)="checkAll($event)"
             >
             </th>
             <ng-template ngFor let-col [ngForOf]="config.columns">
-                <th 
+                <th
                     [nzWidth]="col.width"
-                    [nzShowSort]="col.showSort" 
-                    [nzShowFilter]="col.showFilter" 
-                   
-                    *ngIf="!col.hidden" 
+                    [nzShowSort]="col.showSort"
+                    [nzShowFilter]="col.showFilter"
+
+                    *ngIf="!col.hidden"
                     [nzSortKey]="col.field"
-                   
+
                 >
-               <!--  [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" 
+               <!--  [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
                 (nzFilterChange)="columnFilter(col.editor.field, $event)" -->
                     <span>{{col.title}}</span>
                 </th>

@@ -5,7 +5,7 @@ export class SystemResource {
         'ProjId': '90621e37b806o6fe8538c5eb782901bb',
         'AccountId': 'c027570a50c34384b92efd467c3d38f1',
         'CommonCode': '{WEB前端标识}',
-        'Server': 'http://192.168.0.100:8081/api.cfg/'
+        'Server': 'http://192.168.1.111:8081/api.cfg/'
     };
 
     public static appSystem = {
@@ -14,12 +14,12 @@ export class SystemResource {
         'ProjId': '002905c7bf57c54c9e5e65ec0e5fafe8',
         'PlatCustomerId': 'eb4332bbb4d01a4289457a891b6a0333',
         'CommonCode': '{WEB应用运行平台}',
-        'Server': 'http://192.168.0.100:8081/api.cfg/',
+        'Server': 'http://192.168.1.111:8081/api.cfg/',
         'DrmId': '57e76ec4a882334c85532f3a5f561a12'
     };
 
     public static localResource = {
-        // 'url': 'http://192.168.0.100:8083'
+       //  'url': 'http://192.168.1.111:8081'
         'url': 'http://localhost:4200'
     };
 }

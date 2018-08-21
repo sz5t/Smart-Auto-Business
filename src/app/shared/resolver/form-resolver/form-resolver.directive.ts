@@ -15,6 +15,7 @@ import {CnFormCheckboxGroupComponent} from '@shared/components/cn-form-checkbox-
 import {CnFormRadioGroupComponent} from '@shared/components/cn-form-radio-group/cn-form-radio-group.component';
 import {CnFormSearchComponent} from '@shared/components/cn-form-search/cn-form-search.component';
 import { CnFormSelectTreeComponent } from '@shared/components/cn-form-select-tree/cn-form-select-tree.component';
+import {CnFormTextareaComponent} from '@shared/components/cn-form-textarea/cn-form-textarea.component';
 const components: {[type: string]: Type<any>} = {
   input: CnFormInputComponent,
   submit: CnFormSubmitComponent,
@@ -26,7 +27,8 @@ const components: {[type: string]: Type<any>} = {
   checkboxGroup: CnFormCheckboxGroupComponent,
   radioGroup: CnFormRadioGroupComponent,
   search: CnFormSearchComponent,
-  selectTree: CnFormSelectTreeComponent
+  selectTree: CnFormSelectTreeComponent,
+  textarea: CnFormTextareaComponent
 };
 @Directive({
   selector: '[cnFormResolverDirective]'
@@ -47,7 +49,7 @@ export class FormResolverDirective implements OnInit, OnChanges {
       // 判断是否是自己的级联对象
       this.changeConfig.forEach(changeConfig => {
         if (this.config.name === changeConfig.name) {
-          
+
           this.config = changeConfig;
           this.container.clear();
           if (!components[this.config.type]) {
@@ -63,14 +65,14 @@ export class FormResolverDirective implements OnInit, OnChanges {
             this.component.instance.formGroup = this.formGroup;
           }
           if (this.config.type === 'search') {
-            
+
             // 测试事件上抛
             // (<CnFormSearchComponent>this.component.instance).searchEmitter.subscribe(() => {
             //   console.log('search');
             // });
-            
-            
-            
+
+
+
           }
           // 级联数据接受 liu
           if (this.component.instance.updateValue) {
@@ -82,8 +84,8 @@ export class FormResolverDirective implements OnInit, OnChanges {
          }
       });
 
-      
-       
+
+
     }
   }
 
@@ -105,8 +107,8 @@ export class FormResolverDirective implements OnInit, OnChanges {
       // (<CnFormSearchComponent>this.component.instance).searchEmitter.subscribe(() => {
       //   // console.log('search');
       // });
-      
-      
+
+
     }
     // if (this.component.instance.expandEmitter) {
     //   this.component.instance.expandEmitter.subscribe(expand => {
@@ -119,12 +121,12 @@ export class FormResolverDirective implements OnInit, OnChanges {
         this.setValue(event);
       });
     }
-   
+
 
   }
 
 
-    // 组件将值写回、级联数据-》回写 liu 
+    // 组件将值写回、级联数据-》回写 liu
     setValue(data?) {
       this.updateValue.emit(data);
       console.log('级联数据回写触发后', data);

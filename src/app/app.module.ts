@@ -1,6 +1,4 @@
 import {LodopService, ReuseTabService, ReuseTabStrategy} from '@delon/abc';
-
-import { BsnTableRelativeMessageService } from '@core/relative-Service/relative-service';
 import { NgModule, LOCALE_ID, APP_INITIALIZER, Injector } from '@angular/core';
 import { HttpClient, HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
@@ -14,7 +12,7 @@ import { RoutesModule } from './routes/routes.module';
 import { LayoutModule } from './layout/layout.module';
 import { StartupService } from '@core/startup/startup.service';
 import { DefaultInterceptor } from '@core/net/default.interceptor';
-import { SimpleInterceptor } from '@delon/auth';
+// import { SimpleInterceptor } from '@delon/auth';
 // angular i18n
 import { registerLocaleData, CommonModule } from '@angular/common';
 import localeZhHans from '@angular/common/locales/zh-Hans';

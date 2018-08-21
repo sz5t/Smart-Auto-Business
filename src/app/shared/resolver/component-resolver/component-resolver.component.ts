@@ -16,6 +16,7 @@ import {CnCodeEditComponent} from '@shared/components/cn-code-edit/cn-code-edit.
 import {CnBsnTreeComponent} from '@shared/business/bsn-tree/bsn-tree.component';
 import {BarChartComponent} from '@shared/chart/bar-chart/bar-chart.component';
 import {BsnAccordionComponent} from '@shared/business/bsn-accordion/bsn-accordion.component';
+import {BsnTabsComponent} from "@shared/business/bsn-tabs/bsn-tabs.component";
 const components: { [type: string]: Type<any> } = {
     code_edit: CnCodeEditComponent,
     bsnDataTable: BsnDataTableComponent,
@@ -28,7 +29,8 @@ const components: { [type: string]: Type<any> } = {
     bsnStep: BsnStepComponent,
     lineChart: LineChartComponent,
     barChart: BarChartComponent,
-    bsnAccordion: BsnAccordionComponent
+    bsnAccordion: BsnAccordionComponent,
+    bsnTabs: BsnTabsComponent,
 };
 @Component({
     selector: 'cn-component-resolver',

@@ -385,7 +385,7 @@ export class TreeTableComponent implements OnInit {
                           }
                         ]
                       }
-                      
+
                     ],
                     'formDialog': [
                       {
@@ -986,6 +986,8 @@ export class TreeTableComponent implements OnInit {
   };
   constructor() { }
 
-  ngOnInit() { }
+  ngOnInit() {
+      console.log(JSON.stringify(this.config));
+  }
 
 }

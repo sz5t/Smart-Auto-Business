@@ -3,8 +3,8 @@ import { InjectionToken } from '@angular/core';
 export const BSN_COMPONENT_MODES = {
     // grid
     CREATE: 'create',
-    EDIT: 'edit', 
-    DELETE: 'delete', 
+    EDIT: 'edit',
+    DELETE: 'delete',
     DIALOG: 'dialog',
     WINDOW: 'window',
     SAVE: 'save',
@@ -13,6 +13,7 @@ export const BSN_COMPONENT_MODES = {
     EXECUTE_SELECTED : 'execute_select',
     EXECUTE_CHECKED: 'execute_checked',
     SEARCH : 'Search',
+    UPLOAD: 'upload',
     // tree
     ADD_NODE: 'addNode',
     EDIT_NODE: 'editNode',
@@ -22,6 +23,7 @@ export const BSN_COMPONENT_MODES = {
     FORM_ADD: 'formAdd',
     FORM_EDIT: 'formEdit',
     FORM_LOAD: 'formLoad'
+
 };
 
 export const BSN_COMPONENT_CASCADE_MODES = {

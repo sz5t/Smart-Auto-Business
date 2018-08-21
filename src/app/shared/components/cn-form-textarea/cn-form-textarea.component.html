@@ -3,18 +3,18 @@
 </nz-form-label>
 <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
     <nz-input-group
-        nzAddOnAfterIcon="{{config.addOnAfterIcon}}"
-        nzAddOnBeforeIcon="{{config.addOnBeforeIcon}}"
+        [nzAddOnAfterIcon]="config.addOnAfterIcon"
+        [nzAddOnBeforeIcon]="config.addOnBeforeIcon"
         [nzCompact]="false"
         [nzSize]="'default'"
         [nzSuffix]="suffixTemplate"
         [nzPrefixIcon]="config.perfix">
-        <input nz-input
-               type="{{config.inputType}}"
+        <textarea nz-input
+               [nzAutosize]="config.autoSize"
                formControlName="{{config.name}}"
                [nzSize]="config.size"
                placeholder="{{config.placeholder}}"
-               [(ngModel)]="model"/>
+                  [(ngModel)]="model"></textarea>
 
     </nz-input-group>
     <nz-form-extra *ngIf="config.explain">{{config.explain}}</nz-form-extra>

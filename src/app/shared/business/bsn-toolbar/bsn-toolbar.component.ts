@@ -1,9 +1,7 @@
 import { BsnComponentMessage } from '@core/relative-Service/BsnTableStatus';
 import { Observable ,  Observer } from 'rxjs';
-import { BsnToolbarRelativeMessage } from '@core/relative-Service/relative-service';
 import { BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODES } from '@core/relative-Service/BsnTableStatus';
 import { Component, OnInit, Input, OnDestroy, Type, Inject, ViewEncapsulation } from '@angular/core';
-import { BsnTableRelativeMessageService } from '@core/relative-Service/relative-service';
 @Component({
     selector: 'bsn-toolbar',
     encapsulation: ViewEncapsulation.None,
@@ -38,7 +36,7 @@ export class BsnToolbarComponent implements OnInit {
         //     this.toolbarConfig = this.config;
         // }
         // this.toolbarConfig = this.config;
-        
+
     }
 
     getPermissions() {
@@ -57,7 +55,7 @@ export class BsnToolbarComponent implements OnInit {
                                     g['disabled'] = p.disabled;
                                 }
                                 groupBtn.group.push(g);
-                            } 
+                            }
                         }
                     });
                 });

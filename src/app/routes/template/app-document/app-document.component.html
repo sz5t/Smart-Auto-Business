@@ -34,36 +34,48 @@
 ## 2、标签页布局
 ```bash
     {
-        "rows": [                                       -- 功能页面是一个行集合，可以由多个行对象构成
+        "rows": [                                                    -- 功能页面是一个行集合，可以由多个行对象构成
           {
-            "row": {                                    -- 行对象，一行可以划分多个列对象
-              "cols": [                                 -- 列对象集合，集合内每一个对象代表一列，也就是所谓的布局区域，在区域内可以放置组件、嵌套布局等
+            "row": {                                                 -- 行对象，一行可以划分多个列对象
+              "cols": [                                              -- 列对象集合，集合内每一个对象代表一列，也就是所谓的布局区域，在区域内可以放置组件、嵌套布局等
                 { --
-                  "id": "area2",                        -- 列ID，必须为系统唯一值（建议采用 模块+功能+编号）的方式命名
-                  "title": "查询",                       -- 设置区域标题，如果不设置或者为""，则区域内将不限时标题
-                  "span": 24,                           -- 区域占比设置，每个区域的宽度被平均分为24份，span必须是1-24的数字（默认占比）
-                  "icon": "anticon anticon-search",     -- 设置标题图标 可以参考 iconfont、 anticon 的官网进行设置
-                  "size": {                             -- 设置屏幕自适应宽度占比
-                    "nzXs": 24,                         -- <768px的占比
-                    "nzSm": 24,                         -- >768px的占比
-                    "nzMd": 24,                         -- >996px的占比
-                    "nzLg": 24,                         -- >1200px的占比
-                    "nzXl": 24                          -- >1600px的占比
+                  "id": "area2",                                     -- 列ID，必须为系统唯一值（建议采用 模块+功能+编号）的方式命名
+                  "title": "查询",                                    -- 设置区域标题，如果不设置或者为""，则区域内将不限时标题
+                  "span": 24,                                        -- 区域占比设置，每个区域的宽度被平均分为24份，span必须是1-24的数字（默认占比）
+                  "icon": "anticon anticon-search",                  -- 设置标题图标 可以参考 iconfont、 anticon 的官网进行设置
+                  "size": {                                          -- 设置屏幕自适应宽度占比
+                    "nzXs": 24,                                      -- <768px的占比
+                    "nzSm": 24,                                      -- >768px的占比
+                    "nzMd": 24,                                      -- >996px的占比
+                    "nzLg": 24,                                      -- >1200px的占比
+                    "nzXl": 24                                       -- >1600px的占比
                   },
-                  "tabs": [                             -- 标签页布局集合，集合内的每一个对象都是一个独立的标签
+                  "viewCfg": [
                     {
-                      "title": "tab 1",
-                      "icon": "icon-list",
-                      "active": "",
-                      "viewCfg": []                     -- 设置标签内的组件
-                    },
-                    {
-                      "title": "tab 2",
-                      "icon": "icon-add",
-                      "active": "",
-                      "viewCfg": []                     -- 设置标签内的组件
+                        "config": {
+                            viewId: 'tab_text_1',                    -- 视图ID，全局唯一
+                            tabPosition: 'top',                      -- 标签的位置，top，left，right，bottom
+                            tabType: 'card',                         -- 标签样式，card，line
+                            size: 'small',                           -- 标签尺寸，small，big，default
+                            component: 'bsnTabs',                    -- 组件类型：标签页
+                            "tabs": [                                -- 标签页布局集合，集合内的每一个对象都是一个独立的标签
+                                {
+                                  "title": "tab 1",
+                                  "icon": "icon-list",
+                                  "active": "",
+                                  "viewCfg": []                      -- 设置标签内的组件
+                                },
+                                {
+                                  "title": "tab 2",
+                                  "icon": "icon-add",
+                                  "active": "",
+                                  "viewCfg": []                      -- 设置标签内的组件
+                                }
+                              ]
+                        }
                     }
                   ]
+
                 }
               }
            }
@@ -359,6 +371,7 @@
       "label": "名称",
       "isRequired": true,                                   -- 是否显示为必填元素
       "placeholder": "请输入Case名称",                        -- 默认显示内容
+      "explain": "名称需要根据规范填写",
       "perfix": "anticon anticon-edit",                     -- 前缀图标
       "suffix": "",                                         -- 后缀图标
       "disabled": false,                                    -- 是否禁用

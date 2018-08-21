@@ -135,7 +135,6 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         this._statusSubscription = this.stateEvents.subscribe(updateState => {
             if (updateState._viewId === this.config.viewId) {
                 const option = updateState.option;
-                console.log(option, updateState._mode);
                 switch (updateState._mode) {
                     case BSN_COMPONENT_MODES.CREATE:
                         this.addRow();
@@ -380,14 +379,14 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                     this.dataList = loadData.data.rows;
                     this.total = loadData.data.total;
                     if (this.is_Search) {
-                        // this.createSearchRow();
+                        this.createSearchRow();
                     }
                 } else {
                     // this._updateEditCacheByLoad([]);
                     this.dataList = loadData.data;
                     this.total = 0;
                     if (this.is_Search) {
-                        // this.createSearchRow();
+                        this.createSearchRow();
                     }
                 }
             } else {
@@ -395,13 +394,10 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                 this.dataList = [];
                 this.total = 0;
                 if (this.is_Search) {
-                    // this.createSearchRow();
+                    this.createSearchRow();
                 }
             }
 
-            console.log('dataList', this.dataList);
-            console.log('editDataCache', this._editDataCache);
-            console.log('editDataList', this._editDataList);
             this.loading = false;
         })();
     }
@@ -646,14 +642,11 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         });
         if (addRows.length > 0) {
             // save add;
-            console.log(addRows);
-
             isSuccess = await this.executeSave(addRows, 'post');
         }
 
         if (updateRows.length > 0) {
-            // update 
-            console.log(updateRows);
+            // update
             isSuccess = await this.executeSave(updateRows, 'put');
         }
         return isSuccess;
@@ -788,6 +781,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         }
         return isSuccess;
     }
+
     executeSelectedRow(option) {
         if (!this._selectRow) {
             this.message.create('info', '请选选择要执行的数据');
@@ -978,18 +972,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         this.dataList = dataSet;
     }
 
-    private _updateEditCache(): void {
-        this.allDataList.forEach(item => {
-            if (!this.editCache[item.key]) {
-                this.editCache[item.key] = {
-                    edit: false,
-                    data: item
-                };
-            }
-        });
-    }
-
-    // 获取行内编辑是行填充数据 
+    // 获取行内编辑是行填充数据
     private _getContent() {
         this.rowContent['key'] = null;
         this.config.columns.forEach(element => {
@@ -1065,7 +1048,6 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     toolbarAction(btn) {
         if (this[btn.name]) {
             this[btn.name]();
-            console.log(btn.name);
         } else if (this[btn.type]) {
             this.config.toolbar.forEach(btnGroup => {
                 let index;
@@ -1205,7 +1187,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                         } else if (btn['name'] === 'reset') {
                             this._resetForm(componentInstance);
                         } else if (btn['name'] === 'ok') {
-                            // 
+                            //
                         }
 
                     };
@@ -1331,6 +1313,17 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
 
     // }
 
+    private _updateEditCache(): void {
+        this.dataList.forEach(item => {
+            if (!this.editCache[item.key]) {
+                this.editCache[item.key] = {
+                    edit: false,
+                    data: item
+                };
+            }
+        });
+    }
+
     searchRow(option) {
         if (option['type'] === 'addSearchRow') {
             this.addSearchRow();
@@ -1348,17 +1341,26 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         }
         if (isSearch) {
             this.createSearchRow();
+            this.is_Search = true;
         } else {
 
             // 执行行查询
-            console.log('行查询', this.search_Row);
             this.load(1); // 查询后将页面置1
+            // 执行行查询
+            let len = this.dataList.length;
+            for (let i = 0; i < len; i++) {
+                if (this.dataList[i]['row_status'] === 'search') {
+                    this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                    i--;
+                    len--;
+                }
+            }
+            this.is_Search = false;
+            this.search_Row = {};
         }
-        this.is_Search = true;
-        console.log('SearchRow结果', this.dataList);
     }
 
-    // 生成查询行 
+    // 生成查询行
     createSearchRow() {
         if (this.is_Search) {
             this.dataList = [this.search_Row, ...this.dataList];
@@ -1380,7 +1382,6 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
 
             this.search_Row = newSearchContent;
         }
-        console.log('SearchRow', this.search_Row);
     }
 
     // 取消查询
