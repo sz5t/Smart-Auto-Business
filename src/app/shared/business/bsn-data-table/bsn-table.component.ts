@@ -1,21 +1,29 @@
+import {Observable} from 'rxjs';
+import {
+    BSN_COMPONENT_MODES,
+    BSN_COMPONENT_CASCADE_MODES,
+    BsnComponentMessage,
+    BSN_COMPONENT_CASCADE
+} from '@core/relative-Service/BsnTableStatus';
 
-import { Observable } from 'rxjs';
-import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE } from '@core/relative-Service/BsnTableStatus';
-
-import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
-import { ComponentSettingResolverComponent } from '@shared/resolver/component-resolver/component-setting-resolver.component';
-import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
-import { TypeOperationComponent } from '../../../routes/system/data-manager/type-operation.component';
-import { Component, OnInit, Input, OnDestroy, Type, Inject } from '@angular/core';
-import { _HttpClient } from '@delon/theme';
-import { NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { CommonTools } from '@core/utility/common-tools';
-import { ApiService } from '@core/utility/api-service';
-import { APIResource } from '@core/utility/api-resource';
-import { RelativeService, RelativeResolver, BsnTableRelativeMessageService } from '@core/relative-Service/relative-service';
-import { CnComponentBase } from '@shared/components/cn-component-base';
-import { Observer } from 'rxjs';
-import { Subscription } from 'rxjs';
+import {FormResolverComponent} from '@shared/resolver/form-resolver/form-resolver.component';
+import {ComponentSettingResolverComponent} from '@shared/resolver/component-resolver/component-setting-resolver.component';
+import {LayoutResolverComponent} from '@shared/resolver/layout-resolver/layout-resolver.component';
+import {TypeOperationComponent} from '../../../routes/system/data-manager/type-operation.component';
+import {Component, OnInit, Input, OnDestroy, Type, Inject} from '@angular/core';
+import {_HttpClient} from '@delon/theme';
+import {NzMessageService, NzModalService} from 'ng-zorro-antd';
+import {CommonTools} from '@core/utility/common-tools';
+import {ApiService} from '@core/utility/api-service';
+import {APIResource} from '@core/utility/api-resource';
+import {
+    RelativeService,
+    RelativeResolver,
+    BsnTableRelativeMessageService
+} from '@core/relative-Service/relative-service';
+import {CnComponentBase} from '@shared/components/cn-component-base';
+import {Observer} from 'rxjs';
+import {Subscription} from 'rxjs';
 import {BsnUploadComponent} from "@shared/business/bsn-upload/bsn-upload.component";
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
@@ -27,18 +35,19 @@ const component: { [type: string]: Type<any> } = {
     selector: 'cn-bsn-table,[cn-bsn-table]',
     templateUrl: './bsn-table.component.html',
     styles: [
-        `
-.table-operations {
-  margin-bottom: 16px;
-}
+            `
+            .table-operations {
+                margin-bottom: 16px;
+            }
 
-.table-operations > button {
-  margin-right: 8px;
-}
-.selectedRow{
-    color:blue;
-}
-`
+            .table-operations > button {
+                margin-right: 8px;
+            }
+
+            .selectedRow {
+                color: blue;
+            }
+        `
     ]
 })
 export class BsnTableComponent extends CnComponentBase implements OnInit, OnDestroy {
@@ -46,7 +55,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     @Input() config; // dataTables 的配置参数
     @Input() permissions = [];
     @Input() dataList = []; // 表格数据集合
-    @Input() tempValue = {};
+    tempValue = {};
 
     loading = false;
     pageIndex = 1;
@@ -74,15 +83,12 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     _statusSubscription: Subscription;
     _cascadeSubscription: Subscription;
 
-    constructor(
-        private _http: ApiService,
-        private message: NzMessageService,
-        private modalService: NzModalService,
-        @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
-        @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
-        @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
-
-    ) {
+    constructor(private _http: ApiService,
+                private message: NzMessageService,
+                private modalService: NzModalService,
+                @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
+                @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
+                @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>) {
         super();
 
     }
@@ -121,7 +127,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         if (this.config.componentType) {
             if (!this.config.componentType.child) {
                 this.load();
-            } else if(this.config.componentType.own === true) {
+            } else if (this.config.componentType.own === true) {
                 this.load();
             }
         } else {
@@ -201,6 +207,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                                 // 解析参数
                                 if (relation.params && relation.params.length > 0) {
                                     relation.params.forEach(param => {
+                                        if (!this.tempValue) {
+                                            this.tempValue = {};
+                                        }
                                         this.tempValue[param['cid']] = option.data[param['pid']];
                                     });
                                 }
@@ -305,8 +314,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     private _hasProperty(obj, propertyName) {
         let result = false;
-        for(let p in obj) {
-            if(obj.hasOwnProperty(p) && p === propertyName) {
+        for (let p in obj) {
+            if (obj.hasOwnProperty(p) && p === propertyName) {
                 result = true;
             }
         }
@@ -317,10 +326,11 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         const filter = {};
         if (filterConfig) {
             filterConfig.forEach(param => {
-                if(this._hasProperty(this.tempValue, param['valueName'])){
-                    if (this.tempValue[param['valueName']]) {
-                        filter[param['name']] = this.tempValue[param['valueName']];
-                    }
+                if (!this.tempValue) {
+                    this.tempValue = {}
+                }
+                if (this.tempValue[param['valueName']]) {
+                    filter[param['name']] = this.tempValue[param['valueName']];
                 }
             });
         }
@@ -332,6 +342,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         if (paramsConfig) {
             paramsConfig.map(param => {
                 if (param['type'] === 'tempValue') {
+                    if (!this.tempValue) {
+                        this.tempValue = {}
+                    }
                     params[param['name']] = this.tempValue[param['valueName']];
                 } else if (param['type'] === 'value') {
                     params[param.name] = param.value;
@@ -358,6 +371,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             const parent = {};
             ajaxUrl.params.map(param => {
                 if (param['type'] === 'tempValue') {
+                    if (!this.tempValue) {
+                        this.tempValue = {}
+                    }
                     parent[param['name']] = this.tempValue[param.valueName];
                 } else if (param['type'] === 'value') {
                     if (param.value === 'null') {
@@ -915,6 +931,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             this.search_Row = {};
         }
     }
+
     // 生成查询行
     createSearchRow() {
         if (this.is_Search) {
@@ -935,6 +952,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             this.search_Row = rowContentNew;
         }
     }
+
     // 取消查询
     cancelSearchRow() {
         let len = this.dataList.length;
@@ -950,6 +968,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         this.load(1); // 查询后将页面置1
         return true;
     }
+
     // 创建查询参数
     _buildSearch() {
         let search = {};
@@ -1195,7 +1214,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     private showForm(dialog) {
-        if(!this._selectRow) {
+        if (!this._selectRow) {
             this.message.warning('请选中一条需要添加附件的记录！');
             return false;
         }
@@ -1256,7 +1275,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     private openUploadDialog(dialog) {
-        if(!this._selectRow) {
+        if (!this._selectRow) {
             this.message.warning('请选中一条需要添加附件的记录！');
             return false;
         }

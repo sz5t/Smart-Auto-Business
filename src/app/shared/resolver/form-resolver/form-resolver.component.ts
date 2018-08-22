@@ -143,6 +143,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                             // 解析参数
                             if (relation.params && relation.params.length > 0) {
                                 relation.params.forEach(param => {
+                                    if(!this.tempValue) {this.tempValue = {}}
                                     this.tempValue[param['cid']] = option.data[param['pid']];
                                 });
                             }

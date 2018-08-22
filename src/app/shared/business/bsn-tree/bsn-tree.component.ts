@@ -14,7 +14,7 @@ import { Observer ,  Observable ,  Subscription } from 'rxjs';
     styles:[
         `
             :host ::ng-deep .ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {
-                width: calc(100% - 50px);
+                width: calc(100%);
             }
         `
     ]
