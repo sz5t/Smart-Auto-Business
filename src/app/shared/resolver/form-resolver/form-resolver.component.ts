@@ -36,7 +36,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     changeConfig;
 
     constructor(private formBuilder: FormBuilder,
-                private _http: ApiService,
+                private apiService: ApiService,
                 private message: NzMessageService, private modalService: NzModalService,
                 private _messageService: RelativeService,
                 @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
@@ -47,17 +47,8 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
     // region: 组件生命周期事件
     ngOnInit() {
+        if(!this.tempValue) {this.tempValue = {}}
         this.form = this.createGroup();
-        // if (this.config.relations) {
-        //   this._relativeResolver = new RelativeResolver();
-        //   this._relativeResolver.reference = this;
-        //   this._relativeResolver.relativeService = this._messageService;
-        //   this._relativeResolver.initParameter = [this.load];
-        //   this._relativeResolver.initParameterEvents = [this.load];
-        //   this._relativeResolver.relations = this.config.relations;
-        //   this._relativeResolver.resolverRelation();
-        //   this.tempValue = this._relativeResolver._tempParameter;
-        // }
         this.resolverRelation();
         if (this.ref) {
             for (const p in this.ref) {
@@ -252,7 +243,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     _submitForm($event) {
         event.preventDefault();
         event.stopPropagation();
-        console.log(this.value);
         this.submit.emit(this.value);
     }
 
@@ -334,16 +324,16 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             }
         }
         if (p.ajaxType === 'getById' && tag) {
-            return this._http.getById(`${url}/${params['Id']}`).toPromise();
+            return this.apiService.getById(`${url}/${params['Id']}`).toPromise();
         } else if (p.ajaxType === 'get' && tag) {
             // console.log('get参数', params);
-            return this._http.get(url, params).toPromise();
+            return this.apiService.get(url, params).toPromise();
         } else if (p.ajaxType === 'put') {
             // console.log('put参数', params);
-            return this._http.put(url, params).toPromise();
+            return this.apiService.put(url, params).toPromise();
         } else if (p.ajaxType === 'post') {
             // console.log('post参数', params);
-            return this._http.post(url, params).toPromise();
+            return this.apiService.post(url, params).toPromise();
         } else {
             return null;
         }
@@ -448,18 +438,11 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     }
 
 
-    buttonAction(btn) {
+    async buttonAction(btn) {
+        let result = false;
         this._isSaving = true;
-        if (this.form.invalid) {
-            for (const i in this.form.controls) {
-                this.form.controls[i].markAsDirty();
-                this.form.controls[i].updateValueAndValidity();
-            }
-            this._isSaving = false;
-        }
+        if (this.checkFormValidation()){
 
-        (async() => {
-            let result = false;
             if (this[btn.name] && btn.ajaxConfig) {
                 result = await this[btn.name](btn.ajaxConfig);
             } else if (this[btn.name]) {
@@ -470,40 +453,45 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             if(result || !result) {
                 this._isSaving = false;
             }
-        })();
-
+        } else {
+            this._isSaving = false;
+        }
+        return result;
     }
 
-
-    async save(ajaxConfig) {
+    private checkFormValidation() {
         if (this.form.invalid) {
             for (const i in this.form.controls) {
                 this.form.controls[i].markAsDirty();
                 this.form.controls[i].updateValueAndValidity();
             }
-        } else {
-            if (ajaxConfig.post) {
-                return this.post(ajaxConfig.post);
-            }
-            if (ajaxConfig.put) {
-                return this.put(ajaxConfig.put);
-            }
+            return false;
+        }
+        return true;
+    }
+
+    async save(ajaxConfig) {
+        if (ajaxConfig.post) {
+            return this.post(ajaxConfig.post);
+        }
+        if (ajaxConfig.put) {
+            return this.put(ajaxConfig.put);
         }
 
     }
 
     private async post(postConfig) {
-        let result = false;
+        let result = true;
         for (let i = 0, len = postConfig.length; i < len; i++) {
             const url = this._buildURL(postConfig[i].url);
             const body = this._buildParameters(postConfig[i].params, postConfig[i].batch ? postConfig[i].batch : false);
             const res = await this._post(url, body);
-            if (res && res.status === 200) {
-                result = true;
+            if (res.isSuccess) {
                 this.message.create('success', '保存成功');
                 // 发送消息 刷新其他界面
             } else {
                 this.message.create('error', res.message);
+                result = false;
             }
         }
         return result;
@@ -511,17 +499,17 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
 
     private async put(putConfig) {
-        let result = false;
+        let result = true;
         for (let i = 0, len = putConfig.length; i < len; i++) {
             const url = this._buildURL(putConfig[i].url);
             const body = this._buildParameters(putConfig[i].params, putConfig[i].batch ? putConfig[i].batch : false);
             const res = await this._put(url, body);
-            if (res && res.status === 200) {
-                result = true;
+            if (res.isSuccess) {
                 this.message.create('success', '保存成功');
                 // 发送消息 刷新其他界面
             } else {
                 this.message.create('error', res.message);
+                result = false;
             }
         }
         return result;
@@ -538,6 +526,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                         if (param['type'] === 'checkedItems') {
                             p[param['name']] = items[param['valueName']];
                         } else if (param['type'] === 'tempValue') {
+                            if(!this.tempValue) {this.tempValue = {}}
                             p[param['name']] = this.tempValue[param['valueName']];
                         } else if (param['type'] === 'value') {
                             p[param.name] = param.value;
@@ -555,6 +544,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             params = {};
             paramsConfig.map(param => {
                 if (param['type'] === 'tempValue') {
+                    if(!this.tempValue) {this.tempValue = {}}
                     params[param['name']] = this.tempValue[param['valueName']];
                 } else if (param['type'] === 'value') {
                     params[param.name] = param.value;
@@ -577,6 +567,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             let parent = '';
             urlConfig.params.map(param => {
                 if (param['type'] === 'tempValue') {
+                    if(!this.tempValue) {this.tempValue = {}}
                     parent = this.tempValue[param.value];
                 } else if (param['type'] === 'value') {
                     if (param.value === 'null') {
@@ -597,19 +588,16 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         return Object.prototype.toString.call(url) === '[object String]';
     }
 
-    private setParamsValue(params) {
-
-    }
-
     private async _post(url, body) {
-        return this._http.postProj(url, body).toPromise();
+        return this.apiService.post(url, body).toPromise();
     }
 
     private async _put(url, body) {
-        return this._http.putProj(url, body).toPromise();
+        return this.apiService.put(url, body).toPromise();
     }
 
     initParameters(data?) {
+        if(!this.tempValue) {this.tempValue = {}}
         for (const d in data) {
             this.tempValue[d] = data[d];
         }
@@ -617,6 +605,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     }
 
     initParametersLoad(data?) {
+        if(!this.tempValue) {this.tempValue = {}}
         for (const d in data) {
             this.tempValue[d] = data[d];
         }

@@ -1507,9 +1507,9 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                         value: ''
                                                                     },
                                                                     {
-                                                                        name: 'createTime',
+                                                                        name: 'createDate',
                                                                         type: 'componentValue',
-                                                                        valueName: 'createTime',
+                                                                        valueName: 'createDate',
                                                                         value: ''
                                                                     },
                                                                     {
@@ -1519,7 +1519,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                         value: ''
                                                                     },
                                                                     {
-                                                                        name: 'level',
+                                                                        name: 'caseLevel',
                                                                         type: 'componentValue',
                                                                         valueName: 'caseLevel',
                                                                         value: ''
