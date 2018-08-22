@@ -54,7 +54,7 @@ export class TreeAndSubTableComponent implements OnInit {
                                                         'value': '1', 'subViewId': 'tree_and_form_form'
                                                     },
                                                     {
-                                                        'value': '2', 'subViewId': 'tree_and_form_form'
+                                                        'value': '2', 'subViewId': 'tree_singleTable'
                                                     }
                                                 ]
                                             }

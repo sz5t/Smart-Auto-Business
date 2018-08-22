@@ -125,7 +125,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             // 注册消息发送方法
             // 注册行选中事件发送消息
             this.after(this, 'saveForm', () => {
-                debugger;
                 this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH, this.config.viewId, {
                     data: this.value
                 }));
@@ -355,7 +354,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     }
 
     async load() {
-        debugger;
         this.isSpinning = true;
         const ajaxData = await this.execAjax(this.config.ajaxConfig, null, 'load');
         if (ajaxData) {

@@ -74,7 +74,6 @@ export class ComponentResolverComponent implements OnInit, OnChanges {
             const comp = this.resolver.resolveComponentFactory<any>(components[this.config.config.component]);
             this.componentRef = this.container.createComponent(comp);
             this.componentRef.instance.config = this.config.config;
-            debugger;
             if(this.componentRef.instance.tempValue) {
                 this.componentRef.instance.tempValue = this.tempValue;
             }
