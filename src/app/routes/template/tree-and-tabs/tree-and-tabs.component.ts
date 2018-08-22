@@ -157,7 +157,7 @@ export class TreeAndTabsComponent implements OnInit {
                         },
                         {
                             id: 'area2',
-                            title: '标签页',
+                            // title: '标签页',
                             span: 16,
                             size: {
                                 nzXs: 24,

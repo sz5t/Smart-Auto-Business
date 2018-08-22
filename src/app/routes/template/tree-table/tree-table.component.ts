@@ -979,7 +979,7 @@ export class TreeTableComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-      console.log(JSON.stringify(this.config));
+      // console.log(JSON.stringify(this.config));
   }
 
 }

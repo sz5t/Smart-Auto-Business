@@ -46,6 +46,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     @Input() config; // dataTables 的配置参数
     @Input() permissions = [];
     @Input() dataList = []; // 表格数据集合
+    @Input() tempValue = {};
 
     loading = false;
     pageIndex = 1;
@@ -61,21 +62,10 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     _focusId;
 
     _selectRow;
-    _tempParameters = {};
+
     _searchParameters = {};
     _relativeResolver;
-    selfEvent = {
-        selectRow: [],
-        selectRowBySetValue: [],
-        load: [],
-        saveRow: [],
-        deleteRow: [],
-        delete: [],
-        post: [],
-        put: [],
-        get: []
-    };
-    _toolbar;
+
     editCache = {};
     rowContent = {};
     dataSet = {};
@@ -211,7 +201,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                                 // 解析参数
                                 if (relation.params && relation.params.length > 0) {
                                     relation.params.forEach(param => {
-                                        this._tempParameters[param['cid']] = option.data[param['pid']];
+                                        this.tempValue[param['cid']] = option.data[param['pid']];
                                     });
                                 }
                             }
@@ -313,14 +303,25 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     }
 
+    private _hasProperty(obj, propertyName) {
+        let result = false;
+        for(let p in obj) {
+            if(obj.hasOwnProperty(p) && p === propertyName) {
+                result = true;
+            }
+        }
+        return result;
+    }
+
     private _buildFilter(filterConfig) {
         const filter = {};
         if (filterConfig) {
-            filterConfig.map(param => {
-                if (this._tempParameters[param['valueName']]) {
-                    filter[param['name']] = this._tempParameters[param['valueName']];
+            filterConfig.forEach(param => {
+                if(this._hasProperty(this.tempValue, param['valueName'])){
+                    if (this.tempValue[param['valueName']]) {
+                        filter[param['name']] = this.tempValue[param['valueName']];
+                    }
                 }
-
             });
         }
         return filter;
@@ -331,7 +332,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         if (paramsConfig) {
             paramsConfig.map(param => {
                 if (param['type'] === 'tempValue') {
-                    params[param['name']] = this._tempParameters[param['valueName']];
+                    params[param['name']] = this.tempValue[param['valueName']];
                 } else if (param['type'] === 'value') {
                     params[param.name] = param.value;
                 } else if (param['type'] === 'GUID') {
@@ -357,7 +358,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             const parent = {};
             ajaxUrl.params.map(param => {
                 if (param['type'] === 'tempValue') {
-                    parent[param['name']] = this._tempParameters[param.valueName];
+                    parent[param['name']] = this.tempValue[param.valueName];
                 } else if (param['type'] === 'value') {
                     if (param.value === 'null') {
                         param.value = null;
@@ -530,7 +531,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     const submitItem = {};
                     postConfig[i].params.map(param => {
                         if (param.type === 'tempValue') {
-                            submitItem[param['name']] = this._tempParameters[param['valueName']];
+                            submitItem[param['name']] = this.tempValue[param['valueName']];
                         } else if (param.type === 'componentValue') {
                             submitItem[param['name']] = rowData[param['valueName']];
                         } else if (param.type === 'GUID') {
@@ -795,7 +796,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
             }
         }
-
+        this.refChecked();
         return true;
     }
 
@@ -805,6 +806,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     private _cancelEdit(key: string): void {
         const index = this.dataList.findIndex(item => item.key === key);
+        this.dataList[index].checked = false;
         this.editCache[key].edit = false;
         this.editCache[key].data = JSON.parse(JSON.stringify(this.dataList[index]));
 
@@ -1200,7 +1202,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         const footer = [];
         const obj = {
             _id: this._selectRow[dialog.keyId],
-            _parentId: this._tempParameters['_parentId']
+            _parentId: this.tempValue['_parentId']
         };
         const modal = this.modalService.create({
             nzTitle: dialog.title,
@@ -1261,7 +1263,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         const footer = [];
         const obj = {
             _id: this._selectRow[dialog.keyId],
-            _parentId: this._tempParameters['_parentId']
+            _parentId: this.tempValue['_parentId']
         };
         const modal = this.modalService.create({
             nzTitle: dialog.title,

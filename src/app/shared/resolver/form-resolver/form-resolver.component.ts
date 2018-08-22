@@ -24,15 +24,11 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     @Input() permissions;
     @Input() dataList;
     @Input() ref;
+
     form: FormGroup;
     @Output() submit: EventEmitter<any> = new EventEmitter<any>();
     _relativeResolver;
-    selfEvent = {
-        initParameters: [],
-        saveForm: [],
-        searchFormByValue: []
-    };
-    _tempParameters = {};
+    tempValue = {};
     isSpinning = false;
     _statusSubscription;
     _cascadeSubscription;
@@ -60,12 +56,12 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         //   this._relativeResolver.initParameterEvents = [this.load];
         //   this._relativeResolver.relations = this.config.relations;
         //   this._relativeResolver.resolverRelation();
-        //   this._tempParameters = this._relativeResolver._tempParameter;
+        //   this.tempValue = this._relativeResolver._tempParameter;
         // }
         this.resolverRelation();
         if (this.ref) {
             for (const p in this.ref) {
-                this._tempParameters[p] = this.ref[p];
+                this.tempValue[p] = this.ref[p];
             }
         }
         if (this.config.ajaxConfig) {
@@ -148,7 +144,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                             // 解析参数
                             if (relation.params && relation.params.length > 0) {
                                 relation.params.forEach(param => {
-                                    this._tempParameters[param['cid']] = option.data[param['pid']];
+                                    this.tempValue[param['cid']] = option.data[param['pid']];
                                 });
                             }
                             // 匹配及联模式
@@ -290,18 +286,18 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                     if (param.type === 'tempValue') {
                         if (type) {
                             if (type === 'load') {
-                                if (this._tempParameters[param.valueName]) {
-                                    params[param.name] = this._tempParameters[param.valueName];
+                                if (this.tempValue[param.valueName]) {
+                                    params[param.name] = this.tempValue[param.valueName];
                                 } else {
                                     // console.log('参数不全不能加载');
                                     tag = false;
                                     return;
                                 }
                             } else {
-                                params[param.name] = this._tempParameters[param.valueName];
+                                params[param.name] = this.tempValue[param.valueName];
                             }
                         } else {
-                            params[param.name] = this._tempParameters[param.valueName];
+                            params[param.name] = this.tempValue[param.valueName];
                         }
 
                     } else if (param.type === 'value') {
@@ -330,7 +326,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                     } else if (param.type === 'componentValue') {
                         pc = componentValue[param.valueName];
                     } else if (param.type === 'tempValue') {
-                        pc = this._tempParameters[param.valueName];
+                        pc = this.tempValue[param.valueName];
                     }
                 });
 
@@ -359,7 +355,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     }
 
     async load() {
-
+        debugger;
         this.isSpinning = true;
         const ajaxData = await this.execAjax(this.config.ajaxConfig, null, 'load');
         if (ajaxData) {
@@ -367,18 +363,18 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                 this.setFormValue(ajaxData.data);
                 // 给主键赋值
                 if (this.config.keyId) {
-                    this._tempParameters['_id'] = ajaxData.data[this.config.keyId];
+                    this.tempValue['_id'] = ajaxData.data[this.config.keyId];
                 } else {
                     if (ajaxData.data['Id']) {
-                        this._tempParameters['_id'] = ajaxData.data['Id'];
+                        this.tempValue['_id'] = ajaxData.data['Id'];
                     }
                 }
 
             } else {
-                this._tempParameters['_id'] && delete this._tempParameters['_id'];
+                this.tempValue['_id'] && delete this.tempValue['_id'];
             }
         } else {
-            this._tempParameters['_id'] && delete this._tempParameters['_id'];
+            this.tempValue['_id'] && delete this.tempValue['_id'];
         }
         this.isSpinning = false;
     }
@@ -390,7 +386,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             const index = buttons.findIndex(item => item.name === 'saveForm');
             if (buttons[index].ajaxConfig) {
                 const pconfig = JSON.parse(JSON.stringify(buttons[index].ajaxConfig));
-                if (this._tempParameters['_id']) {
+                if (this.tempValue['_id']) {
                     // 修改保存
                     const ajaxData = await this.execAjax(pconfig['put'], this.value);
                     if (ajaxData.isSuccess) {
@@ -409,7 +405,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                             if (ajaxData) {
                                 if (pconfig['post'][i]['output']) {
                                     pconfig['post'][i]['output'].forEach(out => {
-                                        this._tempParameters[out.name] = ajaxData.Data[out['dataName']];
+                                        this.tempValue[out.name] = ajaxData.Data[out['dataName']];
                                     });
                                 }
                             }
@@ -536,14 +532,14 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         let params;
         if (paramsConfig && isBatch) {
             params = [];
-            if (this._tempParameters['_checkedItems']) {
-                this._tempParameters['_checkedItems'].map(items => {
+            if (this.tempValue['_checkedItems']) {
+                this.tempValue['_checkedItems'].map(items => {
                     const p = {};
                     paramsConfig.map(param => {
                         if (param['type'] === 'checkedItems') {
                             p[param['name']] = items[param['valueName']];
                         } else if (param['type'] === 'tempValue') {
-                            p[param['name']] = this._tempParameters[param['valueName']];
+                            p[param['name']] = this.tempValue[param['valueName']];
                         } else if (param['type'] === 'value') {
                             p[param.name] = param.value;
                         } else if (param['type'] === 'GUID') {
@@ -560,7 +556,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             params = {};
             paramsConfig.map(param => {
                 if (param['type'] === 'tempValue') {
-                    params[param['name']] = this._tempParameters[param['valueName']];
+                    params[param['name']] = this.tempValue[param['valueName']];
                 } else if (param['type'] === 'value') {
                     params[param.name] = param.value;
                 } else if (param['type'] === 'GUID') {
@@ -582,7 +578,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             let parent = '';
             urlConfig.params.map(param => {
                 if (param['type'] === 'tempValue') {
-                    parent = this._tempParameters[param.value];
+                    parent = this.tempValue[param.value];
                 } else if (param['type'] === 'value') {
                     if (param.value === 'null') {
                         param.value = null;
@@ -616,17 +612,17 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
     initParameters(data?) {
         for (const d in data) {
-            this._tempParameters[d] = data[d];
+            this.tempValue[d] = data[d];
         }
-        // console.log('初始化参数', this._tempParameters);
+        // console.log('初始化参数', this.tempValue);
     }
 
     initParametersLoad(data?) {
         for (const d in data) {
-            this._tempParameters[d] = data[d];
+            this.tempValue[d] = data[d];
         }
         this.load();
-        // console.log('初始化参数并load', this._tempParameters);
+        // console.log('初始化参数并load', this.tempValue);
     }
 
 

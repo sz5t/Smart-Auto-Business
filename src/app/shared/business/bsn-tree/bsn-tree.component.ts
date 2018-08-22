@@ -26,13 +26,8 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     _tempValue = {};
     checkedKeys = [];
     selectedKeys = [];
-    selfEvent = {
-        clickNode: [],
-        expandNode: [],
-        load: []
-    };
     _clickedNode: any;
-
+    _toTreeBefore = [];
     _statusSubscription: Subscription;
     _cascadeSubscription: Subscription;
     constructor(
@@ -46,17 +41,6 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     ngOnInit() {
-        // if (this.config.relations) {
-        //     this._relativeResolver = new RelativeResolver();
-        //     this._relativeResolver.reference = this;
-        //     this._relativeResolver.relativeService = this._messageService;
-        //     this._relativeResolver.initParameter = [this.loadTreeData];
-        //     this._relativeResolver.initParameterEvents = [this.loadTreeData];
-        //     this._relativeResolver.relations = this.config.relations;
-        //     this._relativeResolver.resolverRelation();
-        //     this._tempValue = this._relativeResolver. _tempParameter;
-        // }
-
         this._statusSubscription = this.eventStatus.subscribe(updateStatus => {
             if (this.config.viewId = updateStatus._viewId) {
                 const option = updateStatus.option;
@@ -79,6 +63,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
             }
         });
 
+        // 父类型注册节点点击后触发消息
         if (this.config.componentType && this.config.componentType.parent === true) {
             this.after(this, 'clickNode', () => {
                 this._clickedNode && this.cascade.next(
@@ -93,6 +78,37 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
             });
         }
 
+        // 注册多界面切换消息
+        if(this.config.componentType && this.config.componentType.sub === true){
+            this.after(this, 'clickNode', () => {
+               this._clickedNode && this.cascade.next(
+                   new BsnComponentMessage(
+                       BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
+                       this.config.viewId,
+                       {
+                           data: this._clickedNode,
+                           tempValue: this._tempValue,
+                           subViewId: () => {
+                               let id = '';
+                               this.config.subMapping.forEach(sub => {
+                                   const mappingVal = this._clickedNode[sub['field']];
+                                   if(sub.mapping){
+                                       sub.mapping.forEach(m => {
+                                           if(m.value === mappingVal) {
+                                               id = m.subViewId;
+                                           }
+                                       });
+                                   }
+                               });
+                               return id;
+                           }
+                       }
+                   )
+               );
+            });
+        }
+
+        // 子类型注册接收消息后加载事件
         if (this.config.componentType && this.config.componentType.child === true) {
             this._statusSubscription =  this.cascadeEvents.subscribe(cascadeEvent => {
                 if (this.config.relations && this.config.relations.length > 0) {
@@ -134,7 +150,6 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         } else {
             this.loadTreeData();
         }
-       // this.loadTreeData();
     }
 
     async getTreeData() {
@@ -146,8 +161,8 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         (async () => {
             const data = await this.getTreeData();
             if (data.data && data.status === 200) {
-                const TotreeBefore = data.data;
-                TotreeBefore.forEach(d => {
+                this._toTreeBefore = data.data;
+                this._toTreeBefore.forEach(d => {
                     if (this.config.columns) {
                         this.config.columns.forEach(col => {
                             d[col['field']] = d[col['valueName']];
@@ -179,7 +194,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                     isLeaf: false,
                     children: []
                 })];
-                result[0].children.push(...this.listToTreeData(TotreeBefore, parent));
+                result[0].children.push(...this.listToTreeData(this._toTreeBefore, parent));
                 this.treeData = result;
             }
         })();
@@ -236,8 +251,8 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     clickNode = (e) => {
-        this._clickedNode = e.node;
-    }
+        this._clickedNode = this._toTreeBefore.find(n => n.key === e.node.key);
+    };
 
     checkboxChange = (e) => {
         let checkItemList = [];
@@ -245,7 +260,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
             checkItemList = checkItemList.concat(this.treeToListData(item));
         });
         // console.log(checkItemList);
-    }
+    };
 
     ngOnDestroy() {
         // if (this._relativeResolver) {

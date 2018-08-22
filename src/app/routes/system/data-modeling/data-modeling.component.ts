@@ -369,7 +369,7 @@ export class DataModelingComponent implements OnInit {
                         }
                       },
                       {
-                        title: '是否建模', field: 'isCreated', width: 80, hidden: false, showSort: true,
+                        title: '是否建模', field: 'isBuildModel', width: 80, hidden: false, showSort: true,
                         formatter: [
                           { 'value': '1', 'bgcolor': '', 'fontcolor': 'text-blue', 'valueas': '已建模' },
                           { 'value': '0', 'bgcolor': '', 'fontcolor': 'text-red', 'valueas': '未建模' }
@@ -385,8 +385,8 @@ export class DataModelingComponent implements OnInit {
                         //   }
                         // }
                       }
-                      
-                    
+
+
                     ],
                     'toolbar': [
                      { group:[
@@ -733,7 +733,7 @@ export class DataModelingComponent implements OnInit {
                                   'url': 'common/ComTabledata',
                                   'params': [
 
-                                   
+
                                     { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
                                     { name: 'tableName', type: 'componentValue', valueName: 'tableName', value: '' },
                                     { name: 'tableType', type: 'value', valueName: '', value: '1' },
@@ -757,7 +757,7 @@ export class DataModelingComponent implements OnInit {
                                 post: [{
                                   'url': 'common/ComTabledata',
                                   'params': [
-                                   
+
                                     { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
                                     { name: 'tableName', type: 'componentValue', valueName: 'tableName', value: '' },
                                     { name: 'tableType', type: 'value', valueName: '', value: '1' },
@@ -985,7 +985,7 @@ export class DataModelingComponent implements OnInit {
                                   'url': 'common/ComTabledata',
                                   'params': [
                                     { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
-                                   
+
                                     { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
                                     { name: 'tableName', type: 'componentValue', valueName: 'tableName', value: '' },
                                     { name: 'tableType', type: 'value', valueName: '', value: '1' },
@@ -1010,7 +1010,7 @@ export class DataModelingComponent implements OnInit {
                       }
                     ],
                     'dataSet': [
-                      
+
                     ]
                   },
                   permissions: {
@@ -1136,7 +1136,7 @@ export class DataModelingComponent implements OnInit {
                             'width': '130px',
                             'dataSet': 'TypeName',
                             'options': [
-                            
+
                               {
                                 'label': '字符串',
                                 'value': 'string',
@@ -1582,7 +1582,7 @@ export class DataModelingComponent implements OnInit {
                                   'disabled': false,
                                   'size': 'default',
                                   'options': [
-                                   
+
                                     {
                                       'label': '字符串',
                                       'value': 'string',
@@ -1618,7 +1618,7 @@ export class DataModelingComponent implements OnInit {
                                       'value': 'blob',
                                       'disabled': false
                                     }
-                                    
+
                                   ],
                                   'layout': 'column',
                                   'span': '24'
@@ -1935,7 +1935,7 @@ export class DataModelingComponent implements OnInit {
                                 post: [{
                                   'url': 'common/ComColumndata',
                                   'params': [
-                                   
+
                                     { name: 'tableId', type: 'tempValue', valueName: '_parentId', value: '' },
                                     { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
                                     { name: 'columnName', type: 'componentValue', valueName: 'columnName', value: '' },
@@ -2049,7 +2049,7 @@ export class DataModelingComponent implements OnInit {
                                 'disabled': false,
                                 'size': 'default',
                                 'options': [
-                                
+
                                   {
                                     'label': '字符串',
                                     'value': 'string',

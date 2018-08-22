@@ -30,6 +30,7 @@ export const BSN_COMPONENT_CASCADE_MODES = {
     // grid, tree
     REFRESH_AS_CHILD : 'refreshAsChild',
     REFRESH: 'refresh',
+    REPLACE_AS_CHILD: 'replaceAsChild',
 
     // grid
     SELECTED_ROW: 'selectRow',
@@ -39,6 +40,7 @@ export const BSN_COMPONENT_CASCADE_MODES = {
     CLICK_NODE : 'clickNode',
     SELECTED_NODE: 'selectNode',
     CHEKCED_NODES: 'checkNode',
+
 
     // form
     LOAD_FORM: 'loadForm'

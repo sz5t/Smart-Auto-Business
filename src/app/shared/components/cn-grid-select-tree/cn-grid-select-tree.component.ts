@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ApiService } from '@core/utility/api-service';
-import {CommonTools} from "@core/utility/common-tools";
-import {NzTreeNode} from "ng-zorro-antd";
+import {CommonTools} from '@core/utility/common-tools';
+import {NzTreeNode} from 'ng-zorro-antd';
 
 @Component({
     selector: 'cn-grid-select-tree',

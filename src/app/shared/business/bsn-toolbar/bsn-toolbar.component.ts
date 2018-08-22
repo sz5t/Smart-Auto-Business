@@ -29,7 +29,6 @@ export class BsnToolbarComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        console.log(this.config);
         // if (this.permissions.length > 0) {
         //     this.toolbarConfig = this.getPermissions();
         // } else {

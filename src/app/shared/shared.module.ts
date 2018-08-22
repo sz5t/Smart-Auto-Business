@@ -60,12 +60,13 @@ import { BsnToolbarComponent } from '@shared/business/bsn-toolbar/bsn-toolbar.co
 import { BsnStepComponent } from '@shared/business/bsn-step/bsn-step.component';
 import { CnFormSelectTreeComponent } from '@shared/components/cn-form-select-tree/cn-form-select-tree.component';
 import { BtnTableFieldLimit } from '@core/pipe/btn-table-field-limit.pipe';
-import {BsnAccordionComponent} from "@shared/business/bsn-accordion/bsn-accordion.component";
-import {BsnTabsComponent} from "@shared/business/bsn-tabs/bsn-tabs.component";
-import {CnFormTextareaComponent} from "@shared/components/cn-form-textarea/cn-form-textarea.component";
+import {BsnAccordionComponent} from '@shared/business/bsn-accordion/bsn-accordion.component';
+import {BsnTabsComponent} from '@shared/business/bsn-tabs/bsn-tabs.component';
+import {CnFormTextareaComponent} from '@shared/components/cn-form-textarea/cn-form-textarea.component';
 import { BsnUploadComponent } from './business/bsn-upload/bsn-upload.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
-import {CnGridSelectTreeComponent} from "@shared/components/cn-grid-select-tree/cn-grid-select-tree.component";
+import {CnGridSelectTreeComponent} from '@shared/components/cn-grid-select-tree/cn-grid-select-tree.component';
+import {LayoutResolverDirective} from '@shared/resolver/layout-resolver/layout-resolver.directive';
 const THIRDMODULES = [
     NgZorroAntdModule,
     CountdownModule,
@@ -131,7 +132,8 @@ const COMPONENTS = [
 ];
 const DIRECTIVES = [
     FormResolverDirective,
-    GridEditorDirective
+    GridEditorDirective,
+    LayoutResolverDirective
 ];
 // endregion
 

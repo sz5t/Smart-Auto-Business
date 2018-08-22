@@ -67,8 +67,6 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                           field: 'Id',
                           options: {
                             'type': 'input',
-                            'labelSize': '6',
-                            'controlSize': '18',
                             'inputType': 'text',
                           }
                         }
@@ -119,8 +117,6 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                           field: 'url',
                           options: {
                             'type': 'input',
-                            'labelSize': '6',
-                            'controlSize': '18',
                             'inputType': 'text',
                           }
                         }
@@ -132,8 +128,6 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                           field: 'icon',
                           options: {
                             'type': 'input',
-                            'labelSize': '6',
-                            'controlSize': '18',
                             'inputType': 'text',
                           }
                         }
@@ -167,8 +161,6 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                           field: 'moduleBody',
                           options: {
                             'type': 'input',
-                            'labelSize': '6',
-                            'controlSize': '18',
                             'inputType': 'text',
                           }
                         }
@@ -219,8 +211,6 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                           field: 'isNeedDeploy',
                           options: {
                             'type': 'select',
-                            'labelSize': '6',
-                            'controlSize': '18',
                             'inputType': 'submit',
                             'name': 'isNeedDeploy',
                             'notFoundContent': '',
@@ -258,8 +248,6 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                           field: 'belongPlatformType',
                           options: {
                             'type': 'select',
-                            'labelSize': '6',
-                            'controlSize': '18',
                             'inputType': 'submit',
                             'name': 'belongPlatformType',
                             'notFoundContent': '',
@@ -308,13 +296,13 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                         {
                             group: [
                                 {
-                                    'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
+                                    'name': 'refresh','text': '刷新'
                                 },
                                 {
-                                    'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增', 'action': 'CREATE'
+                                    'name': 'addRow', 'text': '新增', 'action': 'CREATE'
                                 },
                                 {
-                                    'name': 'updateRow', 'class': 'editable-add-btn', 'text': '编辑', 'action': 'EDIT'
+                                    'name': 'updateRow', 'text': '编辑', 'action': 'EDIT'
                                 },
                                 {
                                     'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除', 'action': 'DELETE',
@@ -327,7 +315,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                     }
                                 },
                                 {
-                                    'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存', 'action': 'SAVE',
+                                    'name': 'saveRow', 'text': '保存', 'action': 'SAVE',
                                     'type': 'method/action',
                                     'ajaxConfig': {
                                         post: [{
@@ -377,674 +365,21 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                     'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'action': 'CANCEL'
                                 },
                                 {
-                                    'name': 'addForm', 'class': 'editable-add-btn', 'text': '新增模块',
-                                    'action': 'FORM', 'actionType': 'formDialog', 'actionName': 'addShowCase',
-                                    'type': 'showForm', 'dialogConfig': {
-                                    'keyId': 'Id',
-                                    'layout': 'horizontal',
-                                    'title': '新增模块',
-                                    'width': '800',
-                                    'isCard': true,
-                                    'componentType': {
-                                        'parent': false,
-                                        'child': false,
-                                        'own': true
-                                    },
-                                    'forms':
-                                        [
-                                            {
-                                                controls: [
-                                                    {
-                                                        'type': 'selectTree',
-                                                        'labelSize': '6',
-                                                        'controlSize': '16',
-                                                        'name': 'parentId',
-                                                        'label': '父模块',
-                                                        'labelName': 'name',
-                                                        'valueName': 'Id',
-                                                        'notFoundContent': '',
-                                                        'selectModel': false,
-                                                        'showSearch': true,
-                                                        'placeholder': '--请选择--',
-                                                        'disabled': false,
-                                                        'size': 'default',
-                                                        'columns': [ // 字段映射，映射成树结构所需
-                                                            { title: '主键', field: 'key', valueName: 'Id' },
-                                                            { title: '父节点', field: 'parentId', valueName: 'parentId' },
-                                                            { title: '标题', field: 'title', valueName: 'name' },
-                                                        ],
-                                                        'ajaxConfig': {
-                                                            'url': 'common/ComProjectModule',
-                                                            'ajaxType': 'get',
-                                                            'params': []
-                                                        },
-                                                        'layout': 'column',
-                                                        'span': '24'
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                controls: [
-                                                    {
-                                                        'type': 'input',
-                                                        'labelSize': '6',
-                                                        'controlSize': '16',
-                                                        'inputType': 'text',
-                                                        'name': 'name',
-                                                        'label': '模块名称',
-                                                        'isRequired': true,
-                                                        'placeholder': '请输入模块名称',
-                                                        'perfix': 'anticon anticon-edit',
-                                                        'suffix': '',
-                                                        'disabled': false,
-                                                        'readonly': false,
-                                                        'size': 'default',
-                                                        'layout': 'column',
-                                                        'span': '24',
-                                                        'validations': [
-                                                            {
-                                                                'validator': 'required',
-                                                                'errorMessage': '请输入模块名称!!!!'
-                                                            }
-                                                        ]
-                                                    },
-                                                ]
-                                            },
-                                            {
-                                                controls: [
-                                                    {
-                                                        'type': 'input',
-                                                        'labelSize': '6',
-                                                        'controlSize': '16',
-                                                        'inputType': 'text',
-                                                        'name': 'code',
-                                                        'label': '模块编码',
-                                                        'isRequired': true,
-                                                        'placeholder': '',
-                                                        'disabled': false,
-                                                        'readonly': false,
-                                                        'size': 'default',
-                                                        'layout': 'column',
-                                                        'span': '24',
-                                                        'validations': [
-                                                            {
-                                                                'validator': 'required',
-                                                                'errorMessage': '请输编码'
-                                                            }
-                                                        ]
-                                                    },
-                                                ]
-                                            },
-                                            {
-                                                controls: [
-                                                    {
-                                                        'type': 'input',
-                                                        'labelSize': '6',
-                                                        'controlSize': '16',
-                                                        'inputType': 'text',
-                                                        'name': 'url',
-                                                        'label': 'URL',
-                                                        'isRequired': true,
-                                                        'placeholder': '',
-                                                        'disabled': false,
-                                                        'readonly': false,
-                                                        'size': 'default',
-                                                        'layout': 'column',
-                                                        'span': '24',
-                                                        'validations': [
-                                                            {
-                                                                'validator': 'required',
-                                                                'errorMessage': '请输入数量'
-                                                            }
-                                                        ]
-                                                    },
-
-                                                ]
-                                            },
-                                            {
-                                                controls: [
-                                                    {
-                                                        'type': 'input',
-                                                        'labelSize': '6',
-                                                        'controlSize': '16',
-                                                        'inputType': 'text',
-                                                        'name': 'icon',
-                                                        'label': '图标',
-                                                        'placeholder': '',
-                                                        'disabled': false,
-                                                        'readonly': false,
-                                                        'size': 'default',
-                                                        'layout': 'column',
-                                                        'span': '24'
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                controls: [
-                                                    {
-                                                        'type': 'input',
-                                                        'labelSize': '6',
-                                                        'controlSize': '16',
-                                                        'inputType': 'text',
-                                                        'name': 'codeOrder',
-                                                        'label': '排序',
-                                                        'placeholder': '',
-                                                        'disabled': false,
-                                                        'readonly': false,
-                                                        'size': 'default',
-                                                        'layout': 'column',
-                                                        'span': '24'
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                controls: [
-                                                    {
-                                                        'type': 'input',
-                                                        'labelSize': '6',
-                                                        'controlSize': '16',
-                                                        'inputType': 'text',
-                                                        'name': 'codeOrder',
-                                                        'label': '排序',
-                                                        'placeholder': '',
-                                                        'disabled': false,
-                                                        'readonly': false,
-                                                        'size': 'default',
-                                                        'layout': 'column',
-                                                        'span': '24'
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                controls: [
-                                                    {
-                                                        'type': 'select',
-                                                        'labelSize': '6',
-                                                        'controlSize': '16',
-                                                        'name': 'isNeedDeploy',
-                                                        'label': '是否有效',
-                                                        'notFoundContent': '',
-                                                        'selectModel': false,
-                                                        'showSearch': true,
-                                                        'placeholder': '--请选择--',
-                                                        'disabled': false,
-                                                        'size': 'default',
-                                                        'options': [
-                                                            {
-                                                                'label': '是',
-                                                                'value': '1',
-                                                                'disabled': false
-                                                            },
-                                                            {
-                                                                'label': '否',
-                                                                'value': '0',
-                                                                'disabled': false
-                                                            }
-                                                        ],
-                                                        'layout': 'column',
-                                                        'span': '24'
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                controls: [
-                                                    {
-                                                        'type': 'select',
-                                                        'labelSize': '6',
-                                                        'controlSize': '16',
-                                                        'inputType': 'submit',
-                                                        'name': 'isEnabled',
-                                                        'label': '是否有效',
-                                                        'notFoundContent': '',
-                                                        'selectModel': false,
-                                                        'showSearch': true,
-                                                        'placeholder': '--请选择--',
-                                                        'disabled': false,
-                                                        'size': 'default',
-                                                        'options': [
-                                                            {
-                                                                'label': '有效',
-                                                                'value': '1',
-                                                                'disabled': false
-                                                            },
-                                                            {
-                                                                'label': '无效',
-                                                                'value': '0',
-                                                                'disabled': false
-                                                            }
-                                                        ],
-                                                        'layout': 'column',
-                                                        'span': '24'
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                controls: [
-                                                    {
-                                                        'type': 'select',
-                                                        'labelSize': '6',
-                                                        'controlSize': '16',
-                                                        'name': 'belongPlatformType',
-                                                        'label': '所属平台',
-                                                        'notFoundContent': '',
-                                                        'selectModel': false,
-                                                        'showSearch': true,
-                                                        'placeholder': '--请选择--',
-                                                        'disabled': false,
-                                                        'size': 'default',
-                                                        'options': [
-                                                            {
-                                                                'label': '配置平台',
-                                                                'value': '1',
-                                                                'disabled': false
-                                                            },
-                                                            {
-                                                                'label': '运行平台',
-                                                                'value': '2',
-                                                                'disabled': false
-                                                            },
-                                                            {
-                                                                'label': '通用',
-                                                                'value': '3',
-                                                                'disabled': false
-                                                            }
-                                                        ],
-                                                        'layout': 'column',
-                                                        'span': '24'
-                                                    }
-                                                ]
-                                            }
-                                        ],
-                                    'buttons':
-                                        [
-                                            {
-                                                'name': 'save', 'text': '保存', 'type': 'primary',
-                                                'ajaxConfig': {
-                                                    post: [{
-                                                        'url': 'common/ComProjectModule',
-                                                        'params': [
-                                                            { name: 'parentId', type: 'componentValue', valueName: 'parentId', value: '' },
-                                                            { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
-                                                            { name: 'code', type: 'componentValue', valueName: 'code', value: '' },
-                                                            { name: 'url', type: 'componentValue', valueName: 'url', value: '' },
-                                                            { name: 'icon', type: 'componentValue', valueName: 'icon', value: '' },
-                                                            { name: 'orderCode', type: 'tempValue', valueName: 'orderCode', value: '' },
-                                                            { name: 'moduleBody', type: 'componentValue', valueName: 'moduleBody', value: '' },
-                                                            { name: 'isEnabled', type: 'componentValue', valueName: 'isEnabled', value: '' },
-                                                            { name: 'isNeedDeploy', type: 'componentValue', valueName: 'isNeedDeploy', value: '' },
-                                                            { name: 'belongPlatformType', type: 'componentValue', valueName: 'belongPlatformType', value: '' }
-                                                        ]
-                                                    }]
-                                                }
-                                            },
-                                            {
-                                                'name': 'saveAndKeep', 'text': '保存并继续', 'type': 'primary',
-                                                'ajaxConfig': {
-                                                    post: [{
-                                                        'url': 'common/ProjectModuleUpdate',
-                                                        'params': [
-                                                            { name: 'parentId', type: 'componentValue', valueName: 'parentId', value: '' },
-                                                            { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
-                                                            { name: 'code', type: 'componentValue', valueName: 'code', value: '' },
-                                                            { name: 'url', type: 'componentValue', valueName: 'url', value: '' },
-                                                            { name: 'icon', type: 'componentValue', valueName: 'icon', value: '' },
-                                                            { name: 'orderCode', type: 'tempValue', valueName: 'orderCode', value: '' },
-                                                            { name: 'moduleBody', type: 'componentValue', valueName: 'moduleBody', value: '' },
-                                                            { name: 'isEnabled', type: 'componentValue', valueName: 'isEnabled', value: '' },
-                                                            { name: 'isNeedDeploy', type: 'componentValue', valueName: 'isNeedDeploy', value: '' },
-                                                            { name: 'belongPlatformType', type: 'componentValue', valueName: 'belongPlatformType', value: '' }
-                                                        ]
-                                                    }]
-                                                }
-                                            },
-                                            { 'name': 'reset', 'text': '重置' },
-                                            { 'name': 'close', 'text': '关闭' }
-                                        ],
-                                }
+                                    'name': 'addForm',
+                                    'text': '新增模块',
+                                    'icon': 'anticon anticon-plus',
+                                    'action': 'FORM',
+                                    'actionType': 'formDialog',
+                                    'actionName': 'addModule',
+                                    'type': 'showForm'
                                 },
                                 {
-                                    'name': 'editForm', 'class': 'editable-add-btn', 'text': '编辑模块',
-                                    'action': 'FORM', 'actionType': 'formDialog', 'actionName': 'updateShowCase',
-                                    'type': 'showForm',
-                                    'dialogConfig': {
-                                        'keyId': 'Id',
-                                        'title': '编辑模块',
-                                        'width': '600',
-                                        'ajaxConfig': {
-                                            'url': 'common/ComProjectModule',
-                                            'ajaxType': 'getById',
-                                            'params': [
-                                                {
-                                                    name: 'Id', type: 'tempValue', valueName: '_id', value: ''
-                                                }
-                                            ]
-                                        },
-                                        'componentType': {
-                                            'parent': false,
-                                            'child': false,
-                                            'own': true
-                                        },
-                                        'forms':
-                                            [
-                                                {
-                                                    controls: [
-                                                        {
-                                                            'type': 'input',
-                                                            'labelSize': '6',
-                                                            'controlSize': '16',
-                                                            'inputType': 'text',
-                                                            'name': 'Id',
-                                                            'label': 'Id',
-                                                            'isRequired': false,
-                                                            'placeholder': '',
-                                                            'perfix': 'anticon anticon-edit',
-                                                            'suffix': '',
-                                                            'disabled': true,
-                                                            'readonly': false,
-                                                            'size': 'default',
-                                                            'layout': 'column',
-                                                            'span': '24',
-                                                            'validations': [
-                                                                {
-                                                                    'validator': 'required',
-                                                                    'errorMessage': '请输入模块名称!!!!'
-                                                                }
-                                                            ]
-                                                        },
-                                                    ]
-                                                },
-                                                {
-                                                    controls: [
-                                                        {
-                                                            'type': 'selectTree',
-                                                            'labelSize': '6',
-                                                            'controlSize': '16',
-                                                            'name': 'parentId',
-                                                            'label': '父模块',
-                                                            'labelName': 'name',
-                                                            'valueName': 'Id',
-                                                            'notFoundContent': '',
-                                                            'selectModel': false,
-                                                            'showSearch': true,
-                                                            'placeholder': '--请选择--',
-                                                            'disabled': false,
-                                                            'size': 'default',
-                                                            'columns': [ // 字段映射，映射成树结构所需
-                                                                { title: '主键', field: 'key', valueName: 'Id' },
-                                                                { title: '父节点', field: 'parentId', valueName: 'parentId' },
-                                                                { title: '标题', field: 'title', valueName: 'name' },
-                                                            ],
-                                                            'ajaxConfig': {
-                                                                'url': 'common/ComProjectModule',
-                                                                'ajaxType': 'get',
-                                                                'params': []
-                                                            },
-                                                            'layout': 'column',
-                                                            'span': '24'
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    controls: [
-                                                        {
-                                                            'type': 'input',
-                                                            'labelSize': '6',
-                                                            'controlSize': '16',
-                                                            'inputType': 'text',
-                                                            'name': 'name',
-                                                            'label': '模块名称',
-                                                            'isRequired': true,
-                                                            'placeholder': '请输入模块名称',
-                                                            'perfix': 'anticon anticon-edit',
-                                                            'suffix': '',
-                                                            'disabled': false,
-                                                            'readonly': false,
-                                                            'size': 'default',
-                                                            'layout': 'column',
-                                                            'span': '24',
-                                                            'validations': [
-                                                                {
-                                                                    'validator': 'required',
-                                                                    'errorMessage': '请输入模块名称!!!!'
-                                                                }
-                                                            ]
-                                                        },
-                                                    ]
-                                                },
-                                                {
-                                                    controls: [
-                                                        {
-                                                            'type': 'input',
-                                                            'labelSize': '6',
-                                                            'controlSize': '16',
-                                                            'inputType': 'text',
-                                                            'name': 'code',
-                                                            'label': '模块编码',
-                                                            'isRequired': true,
-                                                            'placeholder': '',
-                                                            'disabled': false,
-                                                            'readonly': false,
-                                                            'size': 'default',
-                                                            'layout': 'column',
-                                                            'span': '24',
-                                                            'validations': [
-                                                                {
-                                                                    'validator': 'required',
-                                                                    'errorMessage': '请输编码'
-                                                                }
-                                                            ]
-                                                        },
-                                                    ]
-                                                },
-                                                {
-                                                    controls: [
-                                                        {
-                                                            'type': 'input',
-                                                            'labelSize': '6',
-                                                            'controlSize': '16',
-                                                            'inputType': 'text',
-                                                            'name': 'url',
-                                                            'label': 'URL',
-                                                            'isRequired': true,
-                                                            'placeholder': '',
-                                                            'disabled': false,
-                                                            'readonly': false,
-                                                            'size': 'default',
-                                                            'layout': 'column',
-                                                            'span': '24',
-                                                            'validations': [
-                                                                {
-                                                                    'validator': 'required',
-                                                                    'errorMessage': '请输入数量'
-                                                                }
-                                                            ]
-                                                        },
-
-                                                    ]
-                                                },
-                                                {
-                                                    controls: [
-                                                        {
-                                                            'type': 'input',
-                                                            'labelSize': '6',
-                                                            'controlSize': '16',
-                                                            'inputType': 'text',
-                                                            'name': 'icon',
-                                                            'label': '图标',
-                                                            'placeholder': '',
-                                                            'disabled': false,
-                                                            'readonly': false,
-                                                            'size': 'default',
-                                                            'layout': 'column',
-                                                            'span': '24'
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    controls: [
-                                                        {
-                                                            'type': 'input',
-                                                            'labelSize': '6',
-                                                            'controlSize': '16',
-                                                            'inputType': 'text',
-                                                            'name': 'codeOrder',
-                                                            'label': '排序',
-                                                            'placeholder': '',
-                                                            'disabled': false,
-                                                            'readonly': false,
-                                                            'size': 'default',
-                                                            'layout': 'column',
-                                                            'span': '24'
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    controls: [
-                                                        {
-                                                            'type': 'input',
-                                                            'labelSize': '6',
-                                                            'controlSize': '16',
-                                                            'inputType': 'text',
-                                                            'name': 'codeOrder',
-                                                            'label': '排序',
-                                                            'placeholder': '',
-                                                            'disabled': false,
-                                                            'readonly': false,
-                                                            'size': 'default',
-                                                            'layout': 'column',
-                                                            'span': '24'
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    controls: [
-                                                        {
-                                                            'type': 'select',
-                                                            'labelSize': '6',
-                                                            'controlSize': '16',
-                                                            'name': 'isNeedDeploy',
-                                                            'label': '是否有效',
-                                                            'notFoundContent': '',
-                                                            'selectModel': false,
-                                                            'showSearch': true,
-                                                            'placeholder': '--请选择--',
-                                                            'disabled': false,
-                                                            'size': 'default',
-                                                            'options': [
-                                                                {
-                                                                    'label': '是',
-                                                                    'value': '1',
-                                                                    'disabled': false
-                                                                },
-                                                                {
-                                                                    'label': '否',
-                                                                    'value': '0',
-                                                                    'disabled': false
-                                                                }
-                                                            ],
-                                                            'layout': 'column',
-                                                            'span': '24'
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    controls: [
-                                                        {
-                                                            'type': 'select',
-                                                            'labelSize': '6',
-                                                            'controlSize': '16',
-                                                            'inputType': 'submit',
-                                                            'name': 'isEnabled',
-                                                            'label': '是否有效',
-                                                            'notFoundContent': '',
-                                                            'selectModel': false,
-                                                            'showSearch': true,
-                                                            'placeholder': '--请选择--',
-                                                            'disabled': false,
-                                                            'size': 'default',
-                                                            'options': [
-                                                                {
-                                                                    'label': '有效',
-                                                                    'value': '1',
-                                                                    'disabled': false
-                                                                },
-                                                                {
-                                                                    'label': '无效',
-                                                                    'value': '0',
-                                                                    'disabled': false
-                                                                }
-                                                            ],
-                                                            'layout': 'column',
-                                                            'span': '24'
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    controls: [
-                                                        {
-                                                            'type': 'select',
-                                                            'labelSize': '6',
-                                                            'controlSize': '16',
-                                                            'name': 'belongPlatformType',
-                                                            'label': '所属平台',
-                                                            'notFoundContent': '',
-                                                            'selectModel': false,
-                                                            'showSearch': true,
-                                                            'placeholder': '--请选择--',
-                                                            'disabled': false,
-                                                            'size': 'default',
-                                                            'options': [
-                                                                {
-                                                                    'label': '配置平台',
-                                                                    'value': '1',
-                                                                    'disabled': false
-                                                                },
-                                                                {
-                                                                    'label': '运行平台',
-                                                                    'value': '2',
-                                                                    'disabled': false
-                                                                },
-                                                                {
-                                                                    'label': '通用',
-                                                                    'value': '3',
-                                                                    'disabled': false
-                                                                }
-                                                            ],
-                                                            'layout': 'column',
-                                                            'span': '24'
-                                                        }
-                                                    ]
-                                                }
-                                            ],
-                                        'buttons':
-                                            [
-                                                {
-                                                    'name': 'save', 'text': '保存',
-                                                    'type': 'primary',
-                                                    'ajaxConfig': {
-                                                        put: [{
-                                                            'url': 'common/ComProjectModule',
-                                                            'params': [
-                                                                { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
-                                                                { name: 'parentId', type: 'componentValue', valueName: 'parentId', value: '' },
-                                                                { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
-                                                                { name: 'code', type: 'componentValue', valueName: 'code', value: '' },
-                                                                { name: 'url', type: 'componentValue', valueName: 'url', value: '' },
-                                                                { name: 'icon', type: 'componentValue', valueName: 'icon', value: '' },
-                                                                { name: 'orderCode', type: 'componentValue', valueName: 'orderCode', value: '' },
-                                                                { name: 'moduleBody', type: 'componentValue', valueName: 'moduleBody', value: '' },
-                                                                { name: 'isEnabled', type: 'componentValue', valueName: 'isEnabled', value: '' },
-                                                                { name: 'isNeedDeploy', type: 'componentValue', valueName: 'isNeedDeploy', value: '' },
-                                                                { name: 'belongPlatformType', type: 'componentValue', valueName: 'belongPlatformType', value: '' }
-                                                            ]
-                                                        }]
-                                                    }
-                                                },
-                                                { 'name': 'close', 'class': 'editable-add-btn', 'text': '关闭' },
-                                                { 'name': 'reset', 'class': 'editable-add-btn', 'text': '重置' }
-                                            ],
-                                        'dataList': [],
-                                    }
+                                    'name': 'editForm',
+                                    'text': '编辑模块',
+                                    'action': 'FORM',
+                                    'actionType': 'formDialog',
+                                    'actionName': 'updateModule',
+                                    'type': 'showForm'
                                 },
                                 {
                                     'name': 'addSearchRow', 'class': 'editable-add-btn', 'text': '查询', 'action': 'SEARCH',
@@ -1087,13 +422,670 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                       }
                     ],
                   },
-                  permissions: {
-                    'viewId': 'bsnTreeTable',
-                    'columns': [],
-                    'toolbar': [],
-                    'formDialog': [],
-                    'windowDialog': []
-                  },
+                  'formDialog': [
+                      {
+                          'keyId': 'Id',
+                          'name': 'addModule',
+                          'layout': 'horizontal',
+                          'title': '新增模块',
+                          'width': '800',
+                          'isCard': true,
+                          'componentType': {
+                              'parent': false,
+                              'child': false,
+                              'own': true
+                          },
+                          'forms':
+                              [
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'selectTree',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'name': 'parentId',
+                                              'label': '父模块',
+                                              'labelName': 'name',
+                                              'valueName': 'Id',
+                                              'notFoundContent': '',
+                                              'selectModel': false,
+                                              'showSearch': true,
+                                              'placeholder': '--请选择--',
+                                              'disabled': false,
+                                              'size': 'default',
+                                              'columns': [ // 字段映射，映射成树结构所需
+                                                  { title: '主键', field: 'key', valueName: 'Id' },
+                                                  { title: '父节点', field: 'parentId', valueName: 'parentId' },
+                                                  { title: '标题', field: 'title', valueName: 'name' },
+                                              ],
+                                              'ajaxConfig': {
+                                                  'url': 'common/ComProjectModule',
+                                                  'ajaxType': 'get',
+                                                  'params': []
+                                              },
+                                              'layout': 'column',
+                                              'span': '24'
+                                          }
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'input',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'inputType': 'text',
+                                              'name': 'name',
+                                              'label': '模块名称',
+                                              'isRequired': true,
+                                              'placeholder': '请输入模块名称',
+                                              'perfix': 'anticon anticon-edit',
+                                              'suffix': '',
+                                              'disabled': false,
+                                              'readonly': false,
+                                              'size': 'default',
+                                              'layout': 'column',
+                                              'span': '24',
+                                              'validations': [
+                                                  {
+                                                      'validator': 'required',
+                                                      'errorMessage': '请输入模块名称!!!!'
+                                                  }
+                                              ]
+                                          },
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'input',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'inputType': 'text',
+                                              'name': 'code',
+                                              'label': '模块编码',
+                                              'isRequired': true,
+                                              'placeholder': '',
+                                              'disabled': false,
+                                              'readonly': false,
+                                              'size': 'default',
+                                              'layout': 'column',
+                                              'span': '24',
+                                              'validations': [
+                                                  {
+                                                      'validator': 'required',
+                                                      'errorMessage': '请输编码'
+                                                  }
+                                              ]
+                                          },
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'input',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'inputType': 'text',
+                                              'name': 'url',
+                                              'label': 'URL',
+                                              'isRequired': true,
+                                              'placeholder': '',
+                                              'disabled': false,
+                                              'readonly': false,
+                                              'size': 'default',
+                                              'layout': 'column',
+                                              'span': '24',
+                                              'validations': [
+                                                  {
+                                                      'validator': 'required',
+                                                      'errorMessage': '请输入数量'
+                                                  }
+                                              ]
+                                          },
+
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'input',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'inputType': 'text',
+                                              'name': 'icon',
+                                              'label': '图标',
+                                              'placeholder': '',
+                                              'disabled': false,
+                                              'readonly': false,
+                                              'size': 'default',
+                                              'layout': 'column',
+                                              'span': '24'
+                                          }
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'input',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'inputType': 'text',
+                                              'name': 'codeOrder',
+                                              'label': '排序',
+                                              'placeholder': '',
+                                              'disabled': false,
+                                              'readonly': false,
+                                              'size': 'default',
+                                              'layout': 'column',
+                                              'span': '24'
+                                          }
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'input',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'inputType': 'text',
+                                              'name': 'codeOrder',
+                                              'label': '排序',
+                                              'placeholder': '',
+                                              'disabled': false,
+                                              'readonly': false,
+                                              'size': 'default',
+                                              'layout': 'column',
+                                              'span': '24'
+                                          }
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'select',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'name': 'isNeedDeploy',
+                                              'label': '是否有效',
+                                              'notFoundContent': '',
+                                              'selectModel': false,
+                                              'showSearch': true,
+                                              'placeholder': '--请选择--',
+                                              'disabled': false,
+                                              'size': 'default',
+                                              'options': [
+                                                  {
+                                                      'label': '是',
+                                                      'value': '1',
+                                                      'disabled': false
+                                                  },
+                                                  {
+                                                      'label': '否',
+                                                      'value': '0',
+                                                      'disabled': false
+                                                  }
+                                              ],
+                                              'layout': 'column',
+                                              'span': '24'
+                                          }
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'select',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'inputType': 'submit',
+                                              'name': 'isEnabled',
+                                              'label': '是否有效',
+                                              'notFoundContent': '',
+                                              'selectModel': false,
+                                              'showSearch': true,
+                                              'placeholder': '--请选择--',
+                                              'disabled': false,
+                                              'size': 'default',
+                                              'options': [
+                                                  {
+                                                      'label': '有效',
+                                                      'value': '1',
+                                                      'disabled': false
+                                                  },
+                                                  {
+                                                      'label': '无效',
+                                                      'value': '0',
+                                                      'disabled': false
+                                                  }
+                                              ],
+                                              'layout': 'column',
+                                              'span': '24'
+                                          }
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'select',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'name': 'belongPlatformType',
+                                              'label': '所属平台',
+                                              'notFoundContent': '',
+                                              'selectModel': false,
+                                              'showSearch': true,
+                                              'placeholder': '--请选择--',
+                                              'disabled': false,
+                                              'size': 'default',
+                                              'options': [
+                                                  {
+                                                      'label': '配置平台',
+                                                      'value': '1',
+                                                      'disabled': false
+                                                  },
+                                                  {
+                                                      'label': '运行平台',
+                                                      'value': '2',
+                                                      'disabled': false
+                                                  },
+                                                  {
+                                                      'label': '通用',
+                                                      'value': '3',
+                                                      'disabled': false
+                                                  }
+                                              ],
+                                              'layout': 'column',
+                                              'span': '24'
+                                          }
+                                      ]
+                                  }
+                              ],
+                          'buttons':
+                              [
+                                  {
+                                      'name': 'save', 'text': '保存', 'type': 'primary',
+                                      'ajaxConfig': {
+                                          post: [{
+                                              'url': 'common/ComProjectModule',
+                                              'params': [
+                                                  { name: 'parentId', type: 'componentValue', valueName: 'parentId', value: '' },
+                                                  { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
+                                                  { name: 'code', type: 'componentValue', valueName: 'code', value: '' },
+                                                  { name: 'url', type: 'componentValue', valueName: 'url', value: '' },
+                                                  { name: 'icon', type: 'componentValue', valueName: 'icon', value: '' },
+                                                  { name: 'orderCode', type: 'tempValue', valueName: 'orderCode', value: '' },
+                                                  { name: 'moduleBody', type: 'componentValue', valueName: 'moduleBody', value: '' },
+                                                  { name: 'isEnabled', type: 'componentValue', valueName: 'isEnabled', value: '' },
+                                                  { name: 'isNeedDeploy', type: 'componentValue', valueName: 'isNeedDeploy', value: '' },
+                                                  { name: 'belongPlatformType', type: 'componentValue', valueName: 'belongPlatformType', value: '' }
+                                              ]
+                                          }]
+                                      }
+                                  },
+                                  {
+                                      'name': 'saveAndKeep', 'text': '保存并继续', 'type': 'primary',
+                                      'ajaxConfig': {
+                                          post: [{
+                                              'url': 'common/ProjectModuleUpdate',
+                                              'params': [
+                                                  { name: 'parentId', type: 'componentValue', valueName: 'parentId', value: '' },
+                                                  { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
+                                                  { name: 'code', type: 'componentValue', valueName: 'code', value: '' },
+                                                  { name: 'url', type: 'componentValue', valueName: 'url', value: '' },
+                                                  { name: 'icon', type: 'componentValue', valueName: 'icon', value: '' },
+                                                  { name: 'orderCode', type: 'tempValue', valueName: 'orderCode', value: '' },
+                                                  { name: 'moduleBody', type: 'componentValue', valueName: 'moduleBody', value: '' },
+                                                  { name: 'isEnabled', type: 'componentValue', valueName: 'isEnabled', value: '' },
+                                                  { name: 'isNeedDeploy', type: 'componentValue', valueName: 'isNeedDeploy', value: '' },
+                                                  { name: 'belongPlatformType', type: 'componentValue', valueName: 'belongPlatformType', value: '' }
+                                              ]
+                                          }]
+                                      }
+                                  },
+                                  { 'name': 'reset', 'text': '重置' },
+                                  { 'name': 'close', 'text': '关闭' }
+                              ]
+                      },
+                      {
+                          'keyId': 'Id',
+                          'name': 'updateModule',
+                          'title': '编辑模块',
+                          'width': '600',
+                          'ajaxConfig': {
+                              'url': 'common/ComProjectModule',
+                              'ajaxType': 'getById',
+                              'params': [
+                                  {
+                                      name: 'Id', type: 'tempValue', valueName: '_id', value: ''
+                                  }
+                              ]
+                          },
+                          'componentType': {
+                              'parent': false,
+                              'child': false,
+                              'own': true
+                          },
+                          'forms':
+                              [
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'input',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'inputType': 'text',
+                                              'name': 'Id',
+                                              'label': 'Id',
+                                              'isRequired': false,
+                                              'placeholder': '',
+                                              'perfix': 'anticon anticon-edit',
+                                              'suffix': '',
+                                              'disabled': true,
+                                              'readonly': false,
+                                              'size': 'default',
+                                              'layout': 'column',
+                                              'span': '24',
+                                              'validations': [
+                                                  {
+                                                      'validator': 'required',
+                                                      'errorMessage': '请输入模块名称!!!!'
+                                                  }
+                                              ]
+                                          },
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'selectTree',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'name': 'parentId',
+                                              'label': '父模块',
+                                              'labelName': 'name',
+                                              'valueName': 'Id',
+                                              'notFoundContent': '',
+                                              'selectModel': false,
+                                              'showSearch': true,
+                                              'placeholder': '--请选择--',
+                                              'disabled': false,
+                                              'size': 'default',
+                                              'columns': [ // 字段映射，映射成树结构所需
+                                                  { title: '主键', field: 'key', valueName: 'Id' },
+                                                  { title: '父节点', field: 'parentId', valueName: 'parentId' },
+                                                  { title: '标题', field: 'title', valueName: 'name' },
+                                              ],
+                                              'ajaxConfig': {
+                                                  'url': 'common/ComProjectModule',
+                                                  'ajaxType': 'get',
+                                                  'params': []
+                                              },
+                                              'layout': 'column',
+                                              'span': '24'
+                                          }
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'input',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'inputType': 'text',
+                                              'name': 'name',
+                                              'label': '模块名称',
+                                              'isRequired': true,
+                                              'placeholder': '请输入模块名称',
+                                              'perfix': 'anticon anticon-edit',
+                                              'suffix': '',
+                                              'disabled': false,
+                                              'readonly': false,
+                                              'size': 'default',
+                                              'layout': 'column',
+                                              'span': '24',
+                                              'validations': [
+                                                  {
+                                                      'validator': 'required',
+                                                      'errorMessage': '请输入模块名称!!!!'
+                                                  }
+                                              ]
+                                          },
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'input',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'inputType': 'text',
+                                              'name': 'code',
+                                              'label': '模块编码',
+                                              'isRequired': true,
+                                              'placeholder': '',
+                                              'disabled': false,
+                                              'readonly': false,
+                                              'size': 'default',
+                                              'layout': 'column',
+                                              'span': '24',
+                                              'validations': [
+                                                  {
+                                                      'validator': 'required',
+                                                      'errorMessage': '请输编码'
+                                                  }
+                                              ]
+                                          },
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'input',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'inputType': 'text',
+                                              'name': 'url',
+                                              'label': 'URL',
+                                              'isRequired': true,
+                                              'placeholder': '',
+                                              'disabled': false,
+                                              'readonly': false,
+                                              'size': 'default',
+                                              'layout': 'column',
+                                              'span': '24',
+                                              'validations': [
+                                                  {
+                                                      'validator': 'required',
+                                                      'errorMessage': '请输入数量'
+                                                  }
+                                              ]
+                                          },
+
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'input',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'inputType': 'text',
+                                              'name': 'icon',
+                                              'label': '图标',
+                                              'placeholder': '',
+                                              'disabled': false,
+                                              'readonly': false,
+                                              'size': 'default',
+                                              'layout': 'column',
+                                              'span': '24'
+                                          }
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'input',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'inputType': 'text',
+                                              'name': 'codeOrder',
+                                              'label': '排序',
+                                              'placeholder': '',
+                                              'disabled': false,
+                                              'readonly': false,
+                                              'size': 'default',
+                                              'layout': 'column',
+                                              'span': '24'
+                                          }
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'input',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'inputType': 'text',
+                                              'name': 'codeOrder',
+                                              'label': '排序',
+                                              'placeholder': '',
+                                              'disabled': false,
+                                              'readonly': false,
+                                              'size': 'default',
+                                              'layout': 'column',
+                                              'span': '24'
+                                          }
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'select',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'name': 'isNeedDeploy',
+                                              'label': '是否有效',
+                                              'notFoundContent': '',
+                                              'selectModel': false,
+                                              'showSearch': true,
+                                              'placeholder': '--请选择--',
+                                              'disabled': false,
+                                              'size': 'default',
+                                              'options': [
+                                                  {
+                                                      'label': '是',
+                                                      'value': '1',
+                                                      'disabled': false
+                                                  },
+                                                  {
+                                                      'label': '否',
+                                                      'value': '0',
+                                                      'disabled': false
+                                                  }
+                                              ],
+                                              'layout': 'column',
+                                              'span': '24'
+                                          }
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'select',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'inputType': 'submit',
+                                              'name': 'isEnabled',
+                                              'label': '是否有效',
+                                              'notFoundContent': '',
+                                              'selectModel': false,
+                                              'showSearch': true,
+                                              'placeholder': '--请选择--',
+                                              'disabled': false,
+                                              'size': 'default',
+                                              'options': [
+                                                  {
+                                                      'label': '有效',
+                                                      'value': '1',
+                                                      'disabled': false
+                                                  },
+                                                  {
+                                                      'label': '无效',
+                                                      'value': '0',
+                                                      'disabled': false
+                                                  }
+                                              ],
+                                              'layout': 'column',
+                                              'span': '24'
+                                          }
+                                      ]
+                                  },
+                                  {
+                                      controls: [
+                                          {
+                                              'type': 'select',
+                                              'labelSize': '6',
+                                              'controlSize': '16',
+                                              'name': 'belongPlatformType',
+                                              'label': '所属平台',
+                                              'notFoundContent': '',
+                                              'selectModel': false,
+                                              'showSearch': true,
+                                              'placeholder': '--请选择--',
+                                              'disabled': false,
+                                              'size': 'default',
+                                              'options': [
+                                                  {
+                                                      'label': '配置平台',
+                                                      'value': '1',
+                                                      'disabled': false
+                                                  },
+                                                  {
+                                                      'label': '运行平台',
+                                                      'value': '2',
+                                                      'disabled': false
+                                                  },
+                                                  {
+                                                      'label': '通用',
+                                                      'value': '3',
+                                                      'disabled': false
+                                                  }
+                                              ],
+                                              'layout': 'column',
+                                              'span': '24'
+                                          }
+                                      ]
+                                  }
+                              ],
+                          'buttons':
+                              [
+                                  {
+                                      'name': 'save', 'text': '保存',
+                                      'type': 'primary',
+                                      'ajaxConfig': {
+                                          put: [{
+                                              'url': 'common/ComProjectModule',
+                                              'params': [
+                                                  { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
+                                                  { name: 'parentId', type: 'componentValue', valueName: 'parentId', value: '' },
+                                                  { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
+                                                  { name: 'code', type: 'componentValue', valueName: 'code', value: '' },
+                                                  { name: 'url', type: 'componentValue', valueName: 'url', value: '' },
+                                                  { name: 'icon', type: 'componentValue', valueName: 'icon', value: '' },
+                                                  { name: 'orderCode', type: 'componentValue', valueName: 'orderCode', value: '' },
+                                                  { name: 'moduleBody', type: 'componentValue', valueName: 'moduleBody', value: '' },
+                                                  { name: 'isEnabled', type: 'componentValue', valueName: 'isEnabled', value: '' },
+                                                  { name: 'isNeedDeploy', type: 'componentValue', valueName: 'isNeedDeploy', value: '' },
+                                                  { name: 'belongPlatformType', type: 'componentValue', valueName: 'belongPlatformType', value: '' }
+                                              ]
+                                          }]
+                                      }
+                                  },
+                                  { 'name': 'close', 'class': 'editable-add-btn', 'text': '关闭' },
+                                  { 'name': 'reset', 'class': 'editable-add-btn', 'text': '重置' }
+                              ]
+                      }
+                  ],
                   dataList: []
                 }
               ]
