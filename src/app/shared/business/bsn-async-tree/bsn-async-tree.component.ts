@@ -1,18 +1,80 @@
-import { CommonTools } from '@core/utility/common-tools';
-import { Component, OnInit, ViewChild, OnDestroy, Input, Inject } from '@angular/core';
-import { _HttpClient } from '@delon/theme';
-import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
-import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
-import { ApiService } from '@core/utility/api-service';
-import { CnComponentBase } from '@shared/components/cn-component-base';
-import { APIResource } from '@core/utility/api-resource';
-import { NzTreeNode } from 'ng-zorro-antd';
-import { Subscription ,  Observable ,  Observer } from 'rxjs';
-import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
+import {CommonTools} from '@core/utility/common-tools';
+import {Component, OnInit, ViewChild, OnDestroy, Input, Inject} from '@angular/core';
+import {_HttpClient} from '@delon/theme';
+import {SimpleTableColumn, SimpleTableComponent} from '@delon/abc';
+import {RelativeService, RelativeResolver} from '@core/relative-Service/relative-service';
+import {ApiService} from '@core/utility/api-service';
+import {CnComponentBase} from '@shared/components/cn-component-base';
+import {APIResource} from '@core/utility/api-resource';
+import {NzTreeNode} from 'ng-zorro-antd';
+import {Subscription, Observable, Observer} from 'rxjs';
+import {
+    BSN_COMPONENT_MODES,
+    BsnComponentMessage,
+    BSN_COMPONENT_CASCADE,
+    BSN_COMPONENT_CASCADE_MODES
+} from '@core/relative-Service/BsnTableStatus';
 
 @Component({
     selector: 'cn-bsn-async-tree',
     templateUrl: './bsn-async-tree.component.html',
+    styles: [`
+        :host ::ng-deep .ant-tree {
+            overflow: hidden;
+            /*margin: 0 -24px;*/
+            /*padding: 0 24px;*/
+        }
+
+        :host ::ng-deep .ant-tree li {
+            padding: 4px 0 0 0;
+        }
+
+        @keyframes shine {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .shine-animate {
+            animation: shine 2s ease infinite;
+        }
+
+        .custom-node {
+            cursor: pointer;
+            line-height: 26px;
+            margin-left: 4px;
+            display: inline-block;
+            margin: 0 -1000px;
+            padding: 0 1000px;
+        }
+
+        .active {
+            background: #0BCAF8;
+            color: #fff;
+        }
+
+        .is-dragging {
+            background-color: transparent !important;
+            color: #000;
+            opacity: 0.7;
+        }
+
+        .file-name, .folder-name, .file-desc, .folder-desc {
+            margin-left: 4px;
+        }
+
+        .file-desc, .folder-desc {
+            /*padding: 2px 8px;
+            background: #87CEFF;
+            color: #FFFFFF;*/
+        }
+    `]
 })
 export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, OnDestroy {
 
@@ -22,59 +84,58 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
     _tempValue = {};
     checkedKeys = [];
     selectedKeys = [];
-    selfEvent = {
-        clickNode: [],
-        expandNode: [],
-        load: []
-    };
+    _toTreeBefore = [];
+    activedNode: NzTreeNode;
     _clickedNode: any;
 
     _statusSubscription: Subscription;
     _cascadeSubscription: Subscription;
-    constructor(
-        private _http: ApiService,
-        private _messageService: RelativeService,
-        @Inject(BSN_COMPONENT_MODES) private eventStatus: Observable<BsnComponentMessage>,
-        @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
-        @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
-    ) {
+
+    constructor(private _http: ApiService,
+                private _messageService: RelativeService,
+                @Inject(BSN_COMPONENT_MODES) private eventStatus: Observable<BsnComponentMessage>,
+                @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
+                @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>) {
         super();
     }
 
     ngOnInit() {
-        // if (this.config.relations) {
-        //     this._relativeResolver = new RelativeResolver();
-        //     this._relativeResolver.reference = this;
-        //     this._relativeResolver.relativeService = this._messageService;
-        //     this._relativeResolver.initParameter = [this.loadTreeData];
-        //     this._relativeResolver.initParameterEvents = [this.loadTreeData];
-        //     this._relativeResolver.relations = this.config.relations;
-        //     this._relativeResolver.resolverRelation();
-        //     this._tempValue = this._relativeResolver._tempParameter;
-        // }
-        
+        this.resolverRelation();
+        if (this.config.componentType) {
+            if (this.config.componentType.parent === true) {
+                this.loadTreeData();
+            }
+            if (!this.config.componentType.child) {
+                this.loadTreeData();
+            }
+        } else {
+            this.loadTreeData();
+        }
+    }
+
+    resolverRelation() {
         this._statusSubscription = this.eventStatus.subscribe(updateStatus => {
             if (this.config.viewId = updateStatus._viewId) {
                 const option = updateStatus.option;
                 switch (updateStatus._mode) {
                     case BSN_COMPONENT_MODES.ADD_NODE:
-                    break;
+                        break;
                     case BSN_COMPONENT_MODES.DELETE_NODE:
-                    break;
+                        break;
                     case BSN_COMPONENT_MODES.EDIT_NODE:
-                    break;
+                        break;
                     case BSN_COMPONENT_MODES.SAVE:
-                    break;
+                        break;
                     case BSN_COMPONENT_MODES.FORM:
-                    break;
+                        break;
                     case BSN_COMPONENT_MODES.DIALOG:
-                    break;
+                        break;
                     case BSN_COMPONENT_MODES.WINDOW:
-                    break;
+                        break;
                 }
             }
         });
-     
+
         if (this.config.componentType && this.config.componentType.parent === true) {
             this.after(this, 'clickNode', () => {
                 this._clickedNode && this.cascade.next(
@@ -90,7 +151,7 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
         }
 
         if (this.config.componentType && this.config.componentType.child === true) {
-            this._statusSubscription =  this.cascadeEvents.subscribe(cascadeEvent => {
+            this._statusSubscription = this.cascadeEvents.subscribe(cascadeEvent => {
                 if (this.config.relations && this.config.relations.length > 0) {
                     this.config.relations.forEach(relation => {
                         if (relation.relationViewId === cascadeEvent._viewId) {
@@ -112,23 +173,14 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
                                     this.loadTreeData();
                                     break;
                                 case BSN_COMPONENT_CASCADE_MODES.SELECTED_NODE:
-                                break;
+                                    break;
                             }
                         }
                     });
                 }
             });
         }
-        if (this.config.componentType) {
-            if (this.config.componentType.parent === true) {
-                this.loadTreeData();
-            }
-            if (!this.config.componentType.child) {
-                this.loadTreeData();
-            }
-        } else {
-            this.loadTreeData();
-        }
+
     }
 
     async getAsyncTreeData(nodeValue = null) {
@@ -142,9 +194,9 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
             // if (data.Data && data.Status === 200) {
             //     this.treeData = this.listToAsyncTreeData(data.Data, '');
             // }
-            if (data.data && data.status === 200) {
-                const TotreeBefore = data.data;
-                TotreeBefore.forEach(d => {
+            if (data.data && data.isSuccess) {
+                this._toTreeBefore = data.data;
+                this._toTreeBefore.forEach(d => {
                     if (this.config.columns) {
                         this.config.columns.forEach(col => {
                             d[col['field']] = d[col['valueName']];
@@ -176,7 +228,7 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
                     isLeaf: false,
                     children: []
                 })];
-                result[0].children.push(...this.listToAsyncTreeData(TotreeBefore, parent));
+                result[0].children.push(...this.listToAsyncTreeData(this._toTreeBefore, parent));
                 this.treeData = result;
             }
 
@@ -202,6 +254,7 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
         }
         return result;
     }
+
     ngOnDestroy() {
         // if (this._relativeResolver) {
         //     this._relativeResolver.unsubscribe();
@@ -215,12 +268,11 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
     }
 
     async execAjax(p?, componentValue?, type?) {
-        const params = {
-        };
+        const params = {};
         let url;
         let tag = true;
         /*  if (!this._tempValue)  {
-             this._tempValue = {};
+         this._tempValue = {};
          } */
         if (p) {
             p.params.forEach(param => {
@@ -283,62 +335,40 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
     expandNode = (e) => {
         (async () => {
             if (e.node.getChildren().length === 0 && e.node.isExpanded) {
-                
+
                 const s = await Promise.all(this.config.expand
-                .filter(p => p.type === e.node.isLeaf)
-                .map(async expand => {
-                    const  data =  await this.execAjax(expand.ajaxConfig, e.node.key, 'load');
-                    if (data.data && data.status === 200) {
-                    data.data.forEach(item => {
-                        item['isLeaf'] = false;
-                        item['children'] = [];
-                        if (this.config.columns) {
-                            this.config.columns.forEach(col => {
-                                item[col['field']] = item[col['valueName']];
+                    .filter(p => p.type === e.node.isLeaf)
+                    .map(async expand => {
+                        const data = await this.execAjax(expand.ajaxConfig, e.node.key, 'load');
+                        if (data.isSuccess && data.data.length > 0) {
+                            this._toTreeBefore.push(...JSON.parse(JSON.stringify(data.data)));
+                            data.data.forEach(item => {
+                                item['isLeaf'] = false;
+                                item['children'] = [];
+                                if (this.config.columns) {
+                                    this.config.columns.forEach(col => {
+                                        item[col['field']] = item[col['valueName']];
+                                    });
+                                }
                             });
+                            e.node.addChildren(data.data);
+
                         }
-                    });
-                    e.node.addChildren(data.data);
-                }
-                }));
-
-                
-                
-                // if (data.Data && data.Status === 200) {
-                //     data.Data.forEach(item => {
-                //         item['isLeaf'] = false;
-                //         item['children'] = [];
-                //     });
-                //     e.node.addChildren(data.Data);
-                // }
-
-
-
-                // this.config.expand.map(async expand => {
-                //     if (expand.type === e.node.level) {
-                //         const data = await this.execAjax(expand.ajaxConfig, e.node.key, 'load');
-                //         console.log(data);
-                //         if (data.Data && data.Status === 200) {
-                //             data.Data.forEach(item => {
-                //                 item['isLeaf'] = false;
-                //                 item['children'] = [];
-                //             });
-                //             e.node.addChildren(data.Data);
-                //         }
-                //     }
-                // });
-
-
-                
+                    }));
             }
         })();
     }
 
 
-
     clickNode = (e) => {
-        this._clickedNode = e.node;
-    }
+        if (this.activedNode) {
+            this.activedNode = null;
+        }
+        e.node.isSelected = true;
+        this.activedNode = e.node;
+        // 从节点的列表中查找选中的数据对象
+        this._clickedNode = this._toTreeBefore.find(n => n.Id === e.node.key);
+    };
 
 
     isString(obj) { // 判断对象是否是字符串

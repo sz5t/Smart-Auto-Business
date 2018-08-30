@@ -1,14 +1,16 @@
-<nz-tree
-    [(ngModel)]="treeData"
-    [nzAsyncData]="config.asyncData"
-    [nzDefaultExpandAll]="config.expandAll"
-    [nzCheckable]="config.checkable"
-    [nzDefaultCheckedKeys]="checkedKeys"
-    [nzDefaultSelectedKeys]="selectedKeys"
-    [nzMultiple]="false"
-    (nzCheckBoxChange)="checkboxChange($event)"
-    (nzClick)="onMouseAction('clickNode', $event)">
-    <ng-template #nzTreeTemplate let-node>
+<bsn-toolbar *ngIf="config.toolbar" [config]="config.toolbar" [viewId]="config.viewId"></bsn-toolbar>
+<nz-card [nzBodyStyle]="{padding: '0px'}">
+    <nz-tree
+        [(ngModel)]="treeData"
+        [nzAsyncData]="config.asyncData"
+        [nzDefaultExpandAll]="config.expandAll"
+        [nzCheckable]="config.checkable"
+        [nzDefaultCheckedKeys]="checkedKeys"
+        [nzDefaultSelectedKeys]="selectedKeys"
+        [nzMultiple]="false"
+        (nzCheckBoxChange)="checkboxChange($event)"
+        (nzClick)="onMouseAction('clickNode', $event)">
+        <ng-template #nzTreeTemplate let-node>
         <span class="custom-node" draggable="true" aria-grabbed="true" [class.active]="activedNode?.key===node.key">
           <span *ngIf="!node.isLeaf" [class.shine-animate]="node.origin.isLoading" (contextmenu)="contextMenu($event,contextTemplate, node)">
             <i class="anticon anticon-folder" *ngIf="!node.isExpanded" (click)="openFolder(node)"></i>
@@ -22,10 +24,10 @@
             <span class="file-desc"> {{node?.origin?.author | lowercase}}</span>
           </span>
         </span>
-    </ng-template>
-</nz-tree>
+        </ng-template>
+    </nz-tree>
+</nz-card>
 
 
-<!--<nz-divider [nzText]="text" nzOrientation="left">-->
-    <!--<ng-template #text><i class="anticon anticon-paper-clip"></i></ng-template>-->
-<!--</nz-divider>-->
+
+

@@ -108,9 +108,8 @@ export class SearchResolverComponent extends CnComponentBase implements OnInit, 
             // 注册消息发送方法
             // 注册行选中事件发送消息
             this.after(this, 'searchFormByValue', () => {
-                console.log('send message', this.value);
                 const that = this;
-                this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
+                this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD, this.config.viewId, {
                     data: that.value
                 }));
             });

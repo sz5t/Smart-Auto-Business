@@ -94,6 +94,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     ngOnInit() {
+        if(!this.tempValue) {
+            this.tempValue = {};
+        }
         this.resolverRelation();
         if (this.config.dataSet) {
             (async () => {
@@ -1214,15 +1217,22 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     private showForm(dialog) {
-        if (!this._selectRow) {
-            this.message.warning('请选中一条需要添加附件的记录！');
-            return false;
+        let obj;
+        if(dialog.type === 'add') {
+
+        } else if(dialog.type === 'edit') {
+            if (!this._selectRow) {
+                this.message.warning('请选中一条需要添加附件的记录！');
+                return false;
+            }
+
         }
-        const footer = [];
-        const obj = {
-            _id: this._selectRow[dialog.keyId],
-            _parentId: this.tempValue['_parentId']
+        obj = {
+            _id: this._selectRow[dialog.keyId] ? this._selectRow[dialog.keyId] : '',
+            _parentId: this.tempValue['_parentId'] ? this.tempValue['_parentId'] : ''
         };
+
+        const footer = [];
         const modal = this.modalService.create({
             nzTitle: dialog.title,
             nzWidth: dialog.width,

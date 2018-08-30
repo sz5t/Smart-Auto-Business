@@ -1,5 +1,5 @@
 import { BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE } from '@core/relative-Service/BsnTableStatus';
-import { Component, OnInit, Input, OnDestroy, Inject } from '@angular/core';
+import {Component, OnInit, Input, OnDestroy, Inject, HostListener} from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzTreeNode } from 'ng-zorro-antd';
@@ -11,28 +11,80 @@ import { Observer ,  Observable ,  Subscription } from 'rxjs';
 @Component({
     selector: 'cn-bsn-tree',
     templateUrl: './bsn-tree.component.html',
-    styles:[
-        `
-            :host ::ng-deep .ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {
-                width: calc(100%);
+    styles  : [ `
+        :host ::ng-deep .ant-tree {
+            overflow: hidden;
+            /*margin: 0 -24px;*/
+            /*padding: 0 24px;*/
+        }
+
+        :host ::ng-deep .ant-tree li {
+            padding: 4px 0 0 0;
+        }
+
+        @keyframes shine {
+            0% {
+                opacity: 1;
             }
-        `
-    ]
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .shine-animate {
+            animation: shine 2s ease infinite;
+        }
+
+        .custom-node {
+            cursor: pointer;
+            line-height: 26px;
+            margin-left: 4px;
+            display: inline-block;
+            margin: 0 -1000px;
+            padding: 0 1000px;
+        }
+
+        .active {
+            background: #0BCAF8;
+            color: #fff;
+        }
+
+        .is-dragging {
+            background-color: transparent !important;
+            color: #000;
+            opacity: 0.7;
+        }
+
+        .file-name, .folder-name, .file-desc, .folder-desc {
+            margin-left: 4px;
+        }
+
+        .file-desc, .folder-desc {
+            /*padding: 2px 8px;
+            background: #87CEFF;
+            color: #FFFFFF;*/
+        }
+    ` ]
 })
 export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDestroy {
     @Input() config;
     treeData;
     _relativeResolver;
-    _tempValue = {};
+    tempValue = {};
     checkedKeys = [];
     selectedKeys = [];
     _clickedNode: any;
     _toTreeBefore = [];
+    activedNode: NzTreeNode;
     _statusSubscription: Subscription;
     _cascadeSubscription: Subscription;
+    _checkItemList = [];
     constructor(
         private _http: ApiService,
-        private _messageService: RelativeService,
+        private _message: NzMessageService,
         @Inject(BSN_COMPONENT_MODES) private eventStatus: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
@@ -41,24 +93,44 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     ngOnInit() {
+        if(!this.tempValue) {
+            this.tempValue = {};
+        }
+        this.resolverRelation();
+        if (this.config.componentType) {
+            if (this.config.componentType.parent === true) {
+                this.loadTreeData(true);
+            }
+            if (!this.config.componentType.child) {
+                this.loadTreeData(true);
+            }
+        } else {
+            this.loadTreeData(true);
+        }
+    }
+
+    resolverRelation() {
         this._statusSubscription = this.eventStatus.subscribe(updateStatus => {
             if (this.config.viewId = updateStatus._viewId) {
                 const option = updateStatus.option;
                 switch (updateStatus._mode) {
                     case BSN_COMPONENT_MODES.ADD_NODE:
-                    break;
+                        break;
                     case BSN_COMPONENT_MODES.DELETE_NODE:
-                    break;
+                        break;
                     case BSN_COMPONENT_MODES.EDIT_NODE:
-                    break;
-                    case BSN_COMPONENT_MODES.SAVE:
-                    break;
+                        break;
+                    case BSN_COMPONENT_MODES.SAVE_NODE:
+                        if(option.ajaxConfig) {
+                            this.submitNodeData(option.ajaxConfig);
+                        }
+                        break;
                     case BSN_COMPONENT_MODES.FORM:
-                    break;
+                        break;
                     case BSN_COMPONENT_MODES.DIALOG:
-                    break;
+                        break;
                     case BSN_COMPONENT_MODES.WINDOW:
-                    break;
+                        break;
                 }
             }
         });
@@ -81,30 +153,30 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         // 注册多界面切换消息
         if(this.config.componentType && this.config.componentType.sub === true){
             this.after(this, 'clickNode', () => {
-               this._clickedNode && this.cascade.next(
-                   new BsnComponentMessage(
-                       BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
-                       this.config.viewId,
-                       {
-                           data: this._clickedNode,
-                           tempValue: this._tempValue,
-                           subViewId: () => {
-                               let id = '';
-                               this.config.subMapping.forEach(sub => {
-                                   const mappingVal = this._clickedNode[sub['field']];
-                                   if(sub.mapping){
-                                       sub.mapping.forEach(m => {
-                                           if(m.value === mappingVal) {
-                                               id = m.subViewId;
-                                           }
-                                       });
-                                   }
-                               });
-                               return id;
-                           }
-                       }
-                   )
-               );
+                this._clickedNode && this.cascade.next(
+                    new BsnComponentMessage(
+                        BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
+                        this.config.viewId,
+                        {
+                            data: this._clickedNode,
+                            tempValue: this.tempValue,
+                            subViewId: () => {
+                                let id = '';
+                                this.config.subMapping.forEach(sub => {
+                                    const mappingVal = this._clickedNode[sub['field']];
+                                    if(sub.mapping){
+                                        sub.mapping.forEach(m => {
+                                            if(m.value === mappingVal) {
+                                                id = m.subViewId;
+                                            }
+                                        });
+                                    }
+                                });
+                                return id;
+                            }
+                        }
+                    )
+                );
             });
         }
 
@@ -121,7 +193,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                             // 解析参数
                             if (relation.params && relation.params.length > 0) {
                                 relation.params.forEach(param => {
-                                    this._tempValue[param['cid']] = option.data[param['pid']];
+                                    this.tempValue[param['cid']] = option.data[param['pid']];
                                 });
                             }
                             switch (mode) {
@@ -132,7 +204,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                                     this.load();
                                     break;
                                 case BSN_COMPONENT_CASCADE_MODES.SELECTED_NODE:
-                                break;
+                                    break;
                             }
                         }
                     });
@@ -140,16 +212,6 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
             });
         }
 
-        if (this.config.componentType) {
-            if (this.config.componentType.parent === true) {
-                this.loadTreeData();
-            }
-            if (!this.config.componentType.child) {
-                this.loadTreeData();
-            }
-        } else {
-            this.loadTreeData();
-        }
     }
 
     async getTreeData() {
@@ -157,24 +219,48 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         return ajaxData;
     }
 
-    loadTreeData() {
+    loadTreeData(pageLoad = false) {
         (async () => {
             const data = await this.getTreeData();
-            if (data.data && data.status === 200) {
+            if (data.data && data.isSuccess) {
                 this._toTreeBefore = data.data;
-                this._toTreeBefore.forEach(d => {
+                for (let i = 0, len = this._toTreeBefore.length; i < len ; i++){
                     if (this.config.columns) {
                         this.config.columns.forEach(col => {
-                            d[col['field']] = d[col['valueName']];
+                            this._toTreeBefore[i][col['field']] = this._toTreeBefore[i][col['valueName']];
                         });
                     }
-                });
+                    if(this.config.checkable && this.config.checkedMapping) {
+                        this.config.checkedMapping.forEach(m => {
+                            if(this._toTreeBefore[i][m.name] && this._toTreeBefore[i][m.name] === m.value) {
+                                this._toTreeBefore[i]['checked'] = true;
+                            }
+                        });
+                    }
+                }
+
+                // this._toTreeBefore.map(d => {
+                //     if (this.config.columns) {
+                //         this.config.columns.forEach(col => {
+                //             // 解析对应字段
+                //             d[col['field']] = d[col['valueName']];
+                //         });
+                //     }
+                //     if (this.config.checkable && this.config.checkedMapping) {
+                //         this.config.checkedMapping.map(m => {
+                //             if(d[m.name] && d[m.name] === m.value) {
+                //                 d['checked'] = true;
+                //             }
+                //         });
+                //         // 解析选中字段
+                //     }
+                // });
                 let parent = '';
                 // 解析出 parentid ,一次性加载目前只考虑一个值
                 if (this.config.parent) {
                     this.config.parent.forEach(param => {
                         if (param.type === 'tempValue') {
-                            parent = this._tempValue[param.valueName];
+                            parent = this.tempValue[param.valueName];
 
                         } else if (param.type === 'value') {
                             if (param.value === 'null') {
@@ -188,14 +274,16 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                         }
                     });
                 }
-                const result = [new NzTreeNode({
+                const result = new NzTreeNode({
                     title: '根节点',
                     key: 'null',
                     isLeaf: false,
                     children: []
-                })];
-                result[0].children.push(...this.listToTreeData(this._toTreeBefore, parent));
-                this.treeData = result;
+                });
+
+                // result.addChildren(this.listToTreeData(this._toTreeBefore, parent));
+                this.treeData = this.listToTreeData(this._toTreeBefore, parent, true);
+                //this.treeData = [result];
             }
         })();
     }
@@ -203,39 +291,52 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     load() {
         this.loadTreeData();
     }
-    listToTreeData(data, parentid):  NzTreeNode[] {
+
+    setItemToNzTreeNode(item): NzTreeNode {
+        return new NzTreeNode(item);
+    }
+
+    listToTreeData(data, parent, isRoot):  NzTreeNode[] {
         const result: NzTreeNode[] = [];
-        let temp;
+
         for (let i = 0; i < data.length; i++) {
-            if (data[i].parentId === parentid) {
-                temp = this.listToTreeData(data, data[i].key);
+            let cNode: NzTreeNode;
+            // 设置默认选中节点
+            if (this._clickedNode && (data[i]['key'] === this._clickedNode['key'])) {
+                data[i]['selected'] = true;
+            }
+            // 查找根节点
+            if (data[i].parentId === parent && isRoot) {
+                debugger;
+                const temp = this.listToTreeData(data, data[i].key, true);
                 if (temp.length > 0) {
-                    data[i]['children'] = temp;
+                    cNode = new NzTreeNode(data[i]);
+                    cNode.addChildren(temp);
                 } else {
                     data[i]['isLeaf'] = true;
+                    cNode = new NzTreeNode(data[i]);
                 }
+                result.push(cNode);
 
-                if (this._clickedNode && (data[i]['key'] === this._clickedNode['key'])) {
-                    data[i]['isSelected'] = true;
-                }
-                data[i].level = '';
-                result.push(new NzTreeNode(data[i]));
+            } else if(data[i].parentId === parent && !isRoot) {
+
             }
-        }
 
+        }
+        console.log(result);
         return result;
     }
 
     treeToListData(treeData) {
         let list = [];
-        const item: {title: any, key: any, isLeaf: boolean} = {
-            title: treeData.title,
-            key: treeData.key,
-            isLeaf: treeData.isLeaf
-        };
-        list.push(item);
+        // const item: {title: any, key: any, isLeaf: boolean} = {
+        //     title: treeData.title,
+        //     key: treeData.key,
+        //     isLeaf: treeData.isLeaf
+        // };
+        list.push(treeData['key']);
         if (treeData.children && treeData.children.length > 0 ) {
-            treeData.children.map(d => {
+            treeData.children.forEach(d => {
                 list = list.concat(this.treeToListData(d));
             });
 
@@ -251,21 +352,51 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     clickNode = (e) => {
+        if (this.activedNode) {
+            this.activedNode = null;
+        }
+        e.node.isSelected = true;
+        this.activedNode = e.node;
+        // 从节点的列表中查找选中的数据对象
         this._clickedNode = this._toTreeBefore.find(n => n.key === e.node.key);
     };
 
     checkboxChange = (e) => {
-        let checkItemList = [];
+
+        const checkedIds = [];
+        // 设置选中项对应的ID数组
+        if(!this.tempValue['_checkedIds']) {
+            this.tempValue['_checkedIds'] = '';
+        }
+        // 获取选中项的数据列表
         e.checkedKeys.map(item => {
-            checkItemList = checkItemList.concat(this.treeToListData(item));
+            checkedIds.push(this.treeToListData(item));
         });
-        // console.log(checkItemList);
-    };
+        // 将选中ID保存到临时变量中，_checkedIds 配置中通过该属性访问id
+        // this._checkItemList.forEach(item => {
+        //     checkedIds.push(item);
+        // });
+        this.tempValue['_checkedIds'] = checkedIds.join(',');
+
+        // 将选中的数据保存到临时变量中
+    }
+
+    submitNodeData(ajaxConfig) {
+        (async() => {
+            if(ajaxConfig.post) {
+                ajaxConfig.post.map(async cfg => {
+                   const res = await this.execAjax(cfg);
+                   if(res.isSuccess) {
+                       this._message.success('保存成功');
+                   } else {
+                       this._message.error('保存失败');
+                   }
+                })
+            }
+        })();
+    }
 
     ngOnDestroy() {
-        // if (this._relativeResolver) {
-        //     this._relativeResolver.unsubscribe();
-        // }
         if (this._statusSubscription) {
             this._statusSubscription.unsubscribe();
         }
@@ -275,31 +406,30 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     async execAjax(p?, componentValue?, type?) {
-
         const params = {
         };
         let url;
         let tag = true;
-       /*  if (!this._tempValue)  {
-            this._tempValue = {};
+       /*  if (!this.tempValue)  {
+            this.tempValue = {};
         } */
         if (p) {
             p.params.forEach(param => {
                 if (param.type === 'tempValue') {
                     if (type) {
                         if (type === 'load') {
-                            if (this._tempValue[param.valueName]) {
-                                params[param.name] = this._tempValue[param.valueName];
+                            if (this.tempValue[param.valueName]) {
+                                params[param.name] = this.tempValue[param.valueName];
                             } else {
                                 // console.log('参数不全不能加载');
                                 tag = false;
                                 return;
                             }
                         } else {
-                            params[param.name] = this._tempValue[param.valueName];
+                            params[param.name] = this.tempValue[param.valueName];
                         }
                     } else {
-                        params[param.name] = this._tempValue[param.valueName];
+                        params[param.name] = this.tempValue[param.valueName];
                     }
                 } else if (param.type === 'value') {
 
@@ -325,7 +455,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                     } else if (param.type === 'componentValue') {
                         pc = componentValue.value;
                     } else if (param.type === 'tempValue') {
-                        pc = this._tempValue[param.valueName];
+                        pc = this.tempValue[param.valueName];
                     }
                 });
                 url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
@@ -333,19 +463,22 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         }
         if (p.ajaxType === 'get' && tag) {
             // console.log('get参数', params);
-            return this._http.getProj(url, params).toPromise();
+            return this._http.get(url, params).toPromise();
         } else if (p.ajaxType === 'put') {
             // console.log('put参数', params);
-            return this._http.putProj(url, params).toPromise();
+            return this._http.put(url, params).toPromise();
         } else if (p.ajaxType === 'post') {
             // console.log('post参数', params);
-            return this._http.postProj(url, params).toPromise();
+            return this._http.post(url, params).toPromise();
         } else {
             return null;
         }
     }
+
     isString(obj) { // 判断对象是否是字符串
         return Object.prototype.toString.call(obj) === '[object String]';
     }
+
+
 
 }

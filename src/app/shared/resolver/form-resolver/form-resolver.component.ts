@@ -144,7 +144,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                                     this.load();
                                     break;
                                 case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
-                                    console.log('form load');
                                     this.load();
                                     break;
                                 case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
@@ -496,7 +495,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         }
         return result;
     }
-
 
     private async put(putConfig) {
         let result = true;
