@@ -26,6 +26,7 @@ export class TreeAndTableComponent implements OnInit {
                                 height: '800px',
                                 padding: '8px'
                             },
+                            span: 5,
                             size: {
                                 nzXs: 24,
                                 nzSm: 24,
@@ -37,15 +38,56 @@ export class TreeAndTableComponent implements OnInit {
                                 {
                                     config: {
                                         'viewId': 'tree_and_table_tree',
+                                        'keyId': 'Id',
                                         'component': 'bsnTree',
                                         'asyncData': true, //
-                                        'expandAll': true, //
-                                        'checkable': false,  //    在节点之前添加一个复选框 false
+                                        'expandAll': false, //
+                                        'checkable': true,  //    在节点之前添加一个复选框 false
                                         'showLine': true,  //   显示连接线 fal
                                         'columns': [ // 字段映射，映射成树结构所需
                                             {title: '主键', field: 'key', valueName: 'Id'},
                                             {title: '父节点', field: 'parentId', valueName: 'parentId'},
                                             {title: '标题', field: 'title', valueName: 'caseName'},
+                                        ],
+                                        'checkedMapping': [
+                                            {
+                                                name: 'enabled', value: true
+                                            }
+                                        ],
+                                        'toolbar': [
+                                            {
+                                                group: [
+                                                    {
+                                                        'name': 'refresh',
+                                                        'text': '刷新',
+                                                        'action': 'REFRESH',
+                                                        'icon': 'anticon anticon-sync',
+                                                        'color': 'text-success-light'
+                                                    },
+                                                    {
+                                                        'name': 'save',
+                                                        'text': '保存',
+                                                        'action': 'SAVE_NODE',
+                                                        'icon': 'anticon anticon-save',
+                                                        'color': 'text-success-light',
+                                                        'ajaxConfig': {
+                                                            post: [{
+                                                                'url': 'common/SetShowCaseEnable',
+                                                                'ajaxType': 'post',
+                                                                'params': [
+                                                                    {
+                                                                        name: 'Ids',
+                                                                        type: 'tempValue',
+                                                                        valueName: '_checkedIds',
+                                                                        value: ''
+                                                                    }
+                                                                ]
+                                                            }
+                                                            ]
+                                                        }
+                                                    }
+                                                ]
+                                            }
                                         ],
                                         'componentType': {
                                             'parent': true,
@@ -53,7 +95,9 @@ export class TreeAndTableComponent implements OnInit {
                                             'own': false
                                         },
                                         'parent': [
-                                            {name: 'parentId', type: 'value', valueName: '', value: 'null'}
+                                            {
+                                                name: 'parentId', type: 'value', valueName: '', value: null
+                                            }
                                         ],
                                         'ajaxConfig': {
                                             'url': 'common/ShowCase',
@@ -423,24 +467,38 @@ export class TreeAndTableComponent implements OnInit {
                                                                 'ajaxType': 'get',
                                                                 'params': [
                                                                     {
-                                                                        'name': 'parentId', 'type': 'tempValue', 'valueName': '_parentId'
+                                                                        'name': 'parentId',
+                                                                        'type': 'tempValue',
+                                                                        'valueName': '_parentId'
                                                                     }
                                                                 ],
                                                                 'filter': [
                                                                     {
-                                                                        name: 'caseName', valueName: '_caseName', type: '', value: ''
+                                                                        name: 'caseName',
+                                                                        valueName: '_caseName',
+                                                                        type: '',
+                                                                        value: ''
                                                                     },
                                                                     {
-                                                                        name: 'enabled', valueName: '_enabled', type: '', value: ''
+                                                                        name: 'enabled',
+                                                                        valueName: '_enabled',
+                                                                        type: '',
+                                                                        value: ''
                                                                     },
                                                                     {
-                                                                        name: 'caseType', valueName: '_caseType', type: '', value: ''
+                                                                        name: 'caseType',
+                                                                        valueName: '_caseType',
+                                                                        type: '',
+                                                                        value: ''
                                                                     }
                                                                 ]
                                                             },
                                                             'columns': [
                                                                 {
-                                                                    title: '序号', field: '_serilize', width: '50px', hidden: false,
+                                                                    title: '序号',
+                                                                    field: '_serilize',
+                                                                    width: '50px',
+                                                                    hidden: false,
                                                                     editor: {
                                                                         type: 'input',
                                                                         field: 'Id',
@@ -474,8 +532,12 @@ export class TreeAndTableComponent implements OnInit {
                                                                     }
                                                                 },
                                                                 {
-                                                                    title: '类别', field: 'caseTypeText', width: '100px', hidden: false,
-                                                                    showFilter: true, showSort: true,
+                                                                    title: '类别',
+                                                                    field: 'caseTypeText',
+                                                                    width: '100px',
+                                                                    hidden: false,
+                                                                    showFilter: true,
+                                                                    showSort: true,
                                                                     editor: {
                                                                         type: 'select',
                                                                         field: 'caseType',
@@ -525,7 +587,10 @@ export class TreeAndTableComponent implements OnInit {
                                                                     }
                                                                 },
                                                                 {
-                                                                    title: '数量', field: 'caseCount', width: 80, hidden: false,
+                                                                    title: '数量',
+                                                                    field: 'caseCount',
+                                                                    width: 80,
+                                                                    hidden: false,
                                                                     editor: {
                                                                         type: 'input',
                                                                         field: 'caseCount',
@@ -538,8 +603,12 @@ export class TreeAndTableComponent implements OnInit {
                                                                     }
                                                                 },
                                                                 {
-                                                                    title: '级别', field: 'caseLevel', width: 80, hidden: false,
-                                                                    showFilter: false, showSort: false,
+                                                                    title: '级别',
+                                                                    field: 'caseLevel',
+                                                                    width: 80,
+                                                                    hidden: false,
+                                                                    showFilter: false,
+                                                                    showSort: false,
                                                                     editor: {
                                                                         type: 'input',
                                                                         field: 'caseLevel',
@@ -570,7 +639,10 @@ export class TreeAndTableComponent implements OnInit {
                                                                     }
                                                                 },
                                                                 {
-                                                                    title: '备注', field: 'remark', width: 80, hidden: false,
+                                                                    title: '备注',
+                                                                    field: 'remark',
+                                                                    width: 80,
+                                                                    hidden: false,
                                                                     editor: {
                                                                         type: 'input',
                                                                         field: 'remark',
@@ -583,7 +655,10 @@ export class TreeAndTableComponent implements OnInit {
                                                                     }
                                                                 },
                                                                 {
-                                                                    title: '状态', field: 'enableText', width: 80, hidden: false,
+                                                                    title: '状态',
+                                                                    field: 'enableText',
+                                                                    width: 80,
+                                                                    hidden: false,
                                                                     formatter: [
                                                                         {
                                                                             'value': '启用',
@@ -640,7 +715,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                 'relationViewId': 'tree_and_table_tree',
                                                                 'cascadeMode': 'REFRESH_AS_CHILD',
                                                                 'params': [
-                                                                    { pid: 'key', cid: '_parentId' }
+                                                                    {pid: 'key', cid: '_parentId'}
                                                                 ],
                                                                 'relationReceiveContent': []
                                                             }],
@@ -683,7 +758,9 @@ export class TreeAndTableComponent implements OnInit {
                                                                                     'ajaxType': 'delete',
                                                                                     'params': [
                                                                                         {
-                                                                                            name: 'Id', valueName: 'Id', type: 'checkedRow'
+                                                                                            name: 'Id',
+                                                                                            valueName: 'Id',
+                                                                                            type: 'checkedRow'
                                                                                         }
                                                                                     ]
                                                                                 }]
@@ -709,7 +786,9 @@ export class TreeAndTableComponent implements OnInit {
                                                                                     'ajaxType': 'post',
                                                                                     'params': [
                                                                                         {
-                                                                                            name: 'Id', valueName: 'Id', type: 'checkedRow'
+                                                                                            name: 'Id',
+                                                                                            valueName: 'Id',
+                                                                                            type: 'checkedRow'
                                                                                         }
                                                                                     ]
                                                                                 }]
@@ -730,7 +809,9 @@ export class TreeAndTableComponent implements OnInit {
                                                                                     'ajaxType': 'post',
                                                                                     'params': [
                                                                                         {
-                                                                                            name: 'Id', valueName: 'Id', type: 'checkedRow'
+                                                                                            name: 'Id',
+                                                                                            valueName: 'Id',
+                                                                                            type: 'checkedRow'
                                                                                         }
                                                                                     ]
                                                                                 }]
@@ -915,7 +996,9 @@ export class TreeAndTableComponent implements OnInit {
                                                                 {
                                                                     dropdown: [
                                                                         {
-                                                                            'name': 'btnGroup', 'text': ' 分组操作', 'icon': 'icon-plus',
+                                                                            'name': 'btnGroup',
+                                                                            'text': ' 分组操作',
+                                                                            'icon': 'icon-plus',
                                                                             'buttons': [
                                                                                 {
                                                                                     'name': 'refresh',
@@ -1043,7 +1126,8 @@ export class TreeAndTableComponent implements OnInit {
                                                                                             'cascaderData': {
                                                                                                 'params': [
                                                                                                     {
-                                                                                                        'pid': 'Id', 'cid': '_typeId'
+                                                                                                        'pid': 'Id',
+                                                                                                        'cid': '_typeId'
                                                                                                     }
                                                                                                 ]
                                                                                             }
@@ -1117,7 +1201,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             ]
                                                                         },
                                                                         {
-                                                                            controls:[
+                                                                            controls: [
                                                                                 {
                                                                                     'type': 'checkboxGroup',
                                                                                     'label': '选项',
@@ -1141,7 +1225,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             ]
                                                                         },
                                                                         {
-                                                                            controls:[
+                                                                            controls: [
                                                                                 {
                                                                                     'type': 'radioGroup',
                                                                                     'label': '选项',
@@ -1258,7 +1342,9 @@ export class TreeAndTableComponent implements OnInit {
                                                                     ],
                                                                     'buttons': [
                                                                         {
-                                                                            'name': 'save', 'text': '保存', 'type': 'primary',
+                                                                            'name': 'save',
+                                                                            'text': '保存',
+                                                                            'type': 'primary',
                                                                             'ajaxConfig': {
                                                                                 post: [{
                                                                                     'url': 'common/ShowCase',
@@ -1316,7 +1402,9 @@ export class TreeAndTableComponent implements OnInit {
                                                                             }
                                                                         },
                                                                         {
-                                                                            'name': 'saveAndKeep', 'text': '保存并继续', 'type': 'primary',
+                                                                            'name': 'saveAndKeep',
+                                                                            'text': '保存并继续',
+                                                                            'type': 'primary',
                                                                             'ajaxConfig': {
                                                                                 post: [{
                                                                                     'url': 'common/ShowCase',
@@ -1387,7 +1475,10 @@ export class TreeAndTableComponent implements OnInit {
                                                                         'ajaxType': 'getById',
                                                                         'params': [
                                                                             {
-                                                                                name: 'Id', type: 'tempValue', valueName: '_id', value: ''
+                                                                                name: 'Id',
+                                                                                type: 'tempValue',
+                                                                                valueName: '_id',
+                                                                                value: ''
                                                                             }
                                                                         ]
                                                                     },
@@ -1457,7 +1548,8 @@ export class TreeAndTableComponent implements OnInit {
                                                                                             'cascaderData': {
                                                                                                 'params': [
                                                                                                     {
-                                                                                                        'pid': 'Id', 'cid': '_typeId'
+                                                                                                        'pid': 'Id',
+                                                                                                        'cid': '_typeId'
                                                                                                     }
                                                                                                 ]
                                                                                             }
@@ -1682,8 +1774,16 @@ export class TreeAndTableComponent implements OnInit {
                                                                                 }]
                                                                             }
                                                                         },
-                                                                        {'name': 'close', 'class': 'editable-add-btn', 'text': '关闭'},
-                                                                        {'name': 'reset', 'class': 'editable-add-btn', 'text': '重置'}
+                                                                        {
+                                                                            'name': 'close',
+                                                                            'class': 'editable-add-btn',
+                                                                            'text': '关闭'
+                                                                        },
+                                                                        {
+                                                                            'name': 'reset',
+                                                                            'class': 'editable-add-btn',
+                                                                            'text': '重置'
+                                                                        }
                                                                     ],
                                                                     'dataList': [],
                                                                 }
@@ -1719,7 +1819,9 @@ export class TreeAndTableComponent implements OnInit {
                                                                         'ajaxType': 'post',
                                                                         'params': [
                                                                             {
-                                                                                'name': 'Id', 'type': 'tempValue', 'valueName': '_id'
+                                                                                'name': 'Id',
+                                                                                'type': 'tempValue',
+                                                                                'valueName': '_id'
                                                                             }
                                                                         ]
                                                                     }

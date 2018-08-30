@@ -18,6 +18,7 @@ export const BSN_COMPONENT_MODES = {
     ADD_NODE: 'addNode',
     EDIT_NODE: 'editNode',
     DELETE_NODE: 'deleteNode',
+    SAVE_NODE: 'saveNode',
 
     // form
     FORM_ADD: 'formAdd',

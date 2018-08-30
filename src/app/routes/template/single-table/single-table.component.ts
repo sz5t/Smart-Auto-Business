@@ -19,9 +19,9 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                     cols: [
                         {
                             id: 'area2',
-                            title: '查询',
-                            span: 24,
-                            icon: 'anticon anticon-search',
+                            title: '查询123',
+                            span: 8,
+                            icon: 'anticon anticon-right-circle text-primary',
                             size: {
                                 nzXs: 24,
                                 nzSm: 24,
@@ -197,29 +197,8 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 ]
                                             }
                                         ],
-                                        'dataList': [],
-                                        'relations': [{
-                                            'relationViewId': 'search_form',
-                                            'relationSendContent': [
-                                                {
-                                                    name: 'searchFormByValue',
-                                                    sender: 'search_form',
-                                                    aop: 'after',
-                                                    receiver: 'singleTable',
-                                                    relationData: {
-                                                        name: 'refreshAsChild',
-                                                        params: [
-                                                            {pid: 'caseName', cid: '_caseName'},
-                                                            {pid: 'enabled', cid: '_enabled'},
-                                                            {pid: 'caseType', cid: '_caseType'},
-                                                        ]
-                                                    },
-                                                }
-                                            ],
-                                            'relationReceiveContent': []
-                                        }],
+                                        'dataList': []
                                     },
-                                    permissions: [],
                                     dataList: []
                                 }
                             ]
@@ -253,8 +232,8 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                         'size': 'small',
                                         'pagination': true, // 是否分页
                                         'showTotal': true, // 是否显示总数据量
-                                        'pageSize': 5, // 默认每页数据条数
-                                        'pageSizeOptions': [5, 10, 20, 30, 40, 50],
+                                        'pageSize': 20, // 默认每页数据条数
+                                        'pageSizeOptions': [5, 10, 20, 30, 40, 100],
                                         'ajaxConfig': {
                                             'url': 'common/GetCase',
                                             'ajaxType': 'get',
@@ -273,7 +252,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                         },
                                         'columns': [
                                             {
-                                                title: '序号', field: '_serilize', width: '50px', hidden: false,
+                                                title: '序号', field: '_serilize', width: '50px', hidden: true,
                                                 editor: {
                                                     type: 'input',
                                                     field: 'Id',
@@ -298,7 +277,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 title: '名称', field: 'caseName', width: '90px',
                                                 showFilter: false, showSort: false,
                                                 editor: {
-                                                    type: 'input',
+                                                    type: '',
                                                     field: 'caseName',
                                                     options: {
                                                         'type': 'input',
@@ -615,6 +594,12 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                         value: ''
                                                                     },
                                                                     {
+                                                                        name: 'caseName',
+                                                                        type: 'componentValue',
+                                                                        valueName: 'caseName',
+                                                                        value: ''
+                                                                    },
+                                                                    {
                                                                         name: 'caseCount',
                                                                         type: 'componentValue',
                                                                         valueName: 'caseCount',
@@ -834,6 +819,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 'title': '新增数据',
                                                 'width': '800',
                                                 'isCard': true,
+                                                'type': 'add',
                                                 'componentType': {
                                                     'parent': false,
                                                     'child': false,
@@ -1240,6 +1226,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 'name': 'updateShowCase',
                                                 'title': '编辑',
                                                 'width': '600',
+                                                'type': 'edit',
                                                 'ajaxConfig': {
                                                     'url': 'common/ShowCase',
                                                     'ajaxType': 'getById',
@@ -1411,7 +1398,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                     },
                                                                     {
                                                                         'validator': 'pattern',
-                                                                        'pattern': /^\d+$/,
+                                                                        'pattern': "/^\d+$/",
                                                                         'errorMessage': '请填写数字'
                                                                     }
                                                                 ]
@@ -1619,7 +1606,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                             {
                                                 'title': '第一步',
                                                 'desc': '一小步',
-                                                'size': 'default', // small ,default,
+                                                'size': 'small', // small ,default,
                                                 'icon': '',
                                                 'viewCfg': [
                                                     {
@@ -1883,7 +1870,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                         'panels': [
                                             {
                                                 'title': '面板 1',
-                                                'size': 'default', // small ,default,
+                                                'size': 'small', // small ,default,
                                                 'icon': 'icon icon-pencil text-grey-darker',
                                                 'active': true,
                                                 'showArrow': true,
@@ -2060,14 +2047,348 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 'size': 'default', // small ,default,
                                                 'active': false,
                                                 'showArrow': true,
-                                                'icon': 'icon icon-bell text-blue-7'
+                                                'icon': 'icon icon-bell text-blue-7',
+                                                'viewCfg': [
+                                                    {
+                                                        config: {
+                                                            'viewId': 'search_form_1',
+                                                            'component': 'search_view',
+                                                            'keyId': 'Id',
+                                                            'layout': 'horizontal',
+                                                            'componentType': {
+                                                                'parent': true,
+                                                                'child': false,
+                                                                'own': true
+                                                            },
+                                                            'forms': [
+                                                                {
+                                                                    title: '分类条件',
+                                                                    layout: 'grid',
+                                                                    collapse: false,
+                                                                    controls: [
+                                                                        {
+                                                                            'type': 'select',
+                                                                            'labelSize': '6',
+                                                                            'controlSize': '16',
+                                                                            'inputType': 'submit',
+                                                                            'name': 'Enable',
+                                                                            'label': '状态',
+                                                                            'notFoundContent': '',
+                                                                            'selectModel': false,
+                                                                            'showSearch': true,
+                                                                            'placeholder': '--请选择--',
+                                                                            'disabled': false,
+                                                                            'size': 'default',
+                                                                            'options': [
+                                                                                {
+                                                                                    'label': '启用',
+                                                                                    'value': 1,
+                                                                                    'disabled': false
+                                                                                },
+                                                                                {
+                                                                                    'label': '禁用',
+                                                                                    'value': 0,
+                                                                                    'disabled': false
+                                                                                }
+                                                                            ],
+                                                                            'layout': 'column',
+                                                                            'span': '6'
+                                                                        },
+                                                                        {
+                                                                            'type': 'select',
+                                                                            'labelSize': '6',
+                                                                            'controlSize': '16',
+                                                                            'inputType': 'submit',
+                                                                            'name': 'Type',
+                                                                            'label': '类别',
+                                                                            'notFoundContent': '',
+                                                                            'selectModel': false,
+                                                                            'showSearch': true,
+                                                                            'placeholder': '--请选择--',
+                                                                            'disabled': false,
+                                                                            'size': 'default',
+                                                                            'options': [
+                                                                                {
+                                                                                    'label': '表',
+                                                                                    'value': '1',
+                                                                                    'disabled': false
+                                                                                },
+                                                                                {
+                                                                                    'label': '树',
+                                                                                    'value': '2',
+                                                                                    'disabled': false
+                                                                                },
+                                                                                {
+                                                                                    'label': '树表',
+                                                                                    'value': '3',
+                                                                                    'disabled': false
+                                                                                },
+                                                                                {
+                                                                                    'label': '表单',
+                                                                                    'value': '4',
+                                                                                    'disabled': false
+                                                                                },
+                                                                                {
+                                                                                    'label': '标签页',
+                                                                                    'value': '5',
+                                                                                    'disabled': false
+                                                                                }
+                                                                            ],
+                                                                            'layout': 'column',
+                                                                            'span': '6'
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    title: '扩展条件',
+                                                                    layout: 'grid last',
+                                                                    collapse: true,
+                                                                    controls: [
+                                                                        {
+                                                                            'type': 'input',
+                                                                            'labelSize': '6',
+                                                                            'controlSize': '16',
+                                                                            'inputType': 'text',
+                                                                            'name': 'caseName',
+                                                                            'addOnBeforeIcon': 'anticon anticon-setting',
+                                                                            'label': '名称',
+                                                                            'placeholder': '',
+                                                                            'disabled': false,
+                                                                            'readonly': false,
+                                                                            'size': 'default',
+                                                                            'layout': 'column',
+                                                                            'span': '6'
+                                                                        },
+                                                                        {
+                                                                            'type': 'input',
+                                                                            'labelSize': '6',
+                                                                            'controlSize': '16',
+                                                                            'inputType': 'text',
+                                                                            'name': 'caseLevel',
+                                                                            'addOnAfterIcon': 'anticon anticon-setting',
+                                                                            'label': '级别',
+                                                                            'placeholder': '',
+                                                                            'disabled': false,
+                                                                            'readonly': false,
+                                                                            'size': 'default',
+                                                                            'layout': 'column',
+                                                                            'span': '6'
+                                                                        },
+                                                                        {
+                                                                            'type': 'input',
+                                                                            'labelSize': '6',
+                                                                            'controlSize': '16',
+                                                                            'inputType': 'text',
+                                                                            'name': 'caseCount',
+                                                                            'label': '数量',
+                                                                            'placeholder': '',
+                                                                            'disabled': false,
+                                                                            'readonly': false,
+                                                                            'size': 'default',
+                                                                            'layout': 'column',
+                                                                            'span': '6'
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            'dataList': [],
+                                                            'relations': [{
+                                                                'relationViewId': 'search_form',
+                                                                'relationSendContent': [
+                                                                    {
+                                                                        name: 'searchFormByValue',
+                                                                        sender: 'search_form',
+                                                                        aop: 'after',
+                                                                        receiver: 'singleTable',
+                                                                        relationData: {
+                                                                            name: 'refreshAsChild',
+                                                                            params: [
+                                                                                {pid: 'caseName', cid: '_caseName'},
+                                                                                {pid: 'caseType', cid: '_type'},
+                                                                            ]
+                                                                        },
+                                                                    }
+                                                                ],
+                                                                'relationReceiveContent': []
+                                                            }],
+                                                        },
+                                                        dataList: []
+                                                    }
+                                                ]
                                             },
                                             {
                                                 'title': '面板 3',
                                                 'size': 'default', // small ,default,
                                                 'active': false,
                                                 'showArrow': true,
-                                                'icon': 'anticon anticon-setting text-success'
+                                                'icon': 'anticon anticon-setting text-success',
+                                                'viewCfg': [
+                                                    {
+                                                        config: {
+                                                            'viewId': 'search_form_2',
+                                                            'component': 'search_view',
+                                                            'keyId': 'Id',
+                                                            'layout': 'horizontal',
+                                                            'componentType': {
+                                                                'parent': true,
+                                                                'child': false,
+                                                                'own': true
+                                                            },
+                                                            'forms': [
+                                                                {
+                                                                    title: '分类条件',
+                                                                    layout: 'grid',
+                                                                    collapse: false,
+                                                                    controls: [
+                                                                        {
+                                                                            'type': 'select',
+                                                                            'labelSize': '6',
+                                                                            'controlSize': '16',
+                                                                            'inputType': 'submit',
+                                                                            'name': 'Enable',
+                                                                            'label': '状态',
+                                                                            'notFoundContent': '',
+                                                                            'selectModel': false,
+                                                                            'showSearch': true,
+                                                                            'placeholder': '--请选择--',
+                                                                            'disabled': false,
+                                                                            'size': 'default',
+                                                                            'options': [
+                                                                                {
+                                                                                    'label': '启用',
+                                                                                    'value': 1,
+                                                                                    'disabled': false
+                                                                                },
+                                                                                {
+                                                                                    'label': '禁用',
+                                                                                    'value': 0,
+                                                                                    'disabled': false
+                                                                                }
+                                                                            ],
+                                                                            'layout': 'column',
+                                                                            'span': '6'
+                                                                        },
+                                                                        {
+                                                                            'type': 'select',
+                                                                            'labelSize': '6',
+                                                                            'controlSize': '16',
+                                                                            'inputType': 'submit',
+                                                                            'name': 'Type',
+                                                                            'label': '类别',
+                                                                            'notFoundContent': '',
+                                                                            'selectModel': false,
+                                                                            'showSearch': true,
+                                                                            'placeholder': '--请选择--',
+                                                                            'disabled': false,
+                                                                            'size': 'default',
+                                                                            'options': [
+                                                                                {
+                                                                                    'label': '表',
+                                                                                    'value': '1',
+                                                                                    'disabled': false
+                                                                                },
+                                                                                {
+                                                                                    'label': '树',
+                                                                                    'value': '2',
+                                                                                    'disabled': false
+                                                                                },
+                                                                                {
+                                                                                    'label': '树表',
+                                                                                    'value': '3',
+                                                                                    'disabled': false
+                                                                                },
+                                                                                {
+                                                                                    'label': '表单',
+                                                                                    'value': '4',
+                                                                                    'disabled': false
+                                                                                },
+                                                                                {
+                                                                                    'label': '标签页',
+                                                                                    'value': '5',
+                                                                                    'disabled': false
+                                                                                }
+                                                                            ],
+                                                                            'layout': 'column',
+                                                                            'span': '6'
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    title: '扩展条件',
+                                                                    layout: 'grid last',
+                                                                    collapse: true,
+                                                                    controls: [
+                                                                        {
+                                                                            'type': 'input',
+                                                                            'labelSize': '6',
+                                                                            'controlSize': '16',
+                                                                            'inputType': 'text',
+                                                                            'name': 'caseName',
+                                                                            'addOnBeforeIcon': 'anticon anticon-setting',
+                                                                            'label': '名称',
+                                                                            'placeholder': '',
+                                                                            'disabled': false,
+                                                                            'readonly': false,
+                                                                            'size': 'default',
+                                                                            'layout': 'column',
+                                                                            'span': '6'
+                                                                        },
+                                                                        {
+                                                                            'type': 'input',
+                                                                            'labelSize': '6',
+                                                                            'controlSize': '16',
+                                                                            'inputType': 'text',
+                                                                            'name': 'caseLevel',
+                                                                            'addOnAfterIcon': 'anticon anticon-setting',
+                                                                            'label': '级别',
+                                                                            'placeholder': '',
+                                                                            'disabled': false,
+                                                                            'readonly': false,
+                                                                            'size': 'default',
+                                                                            'layout': 'column',
+                                                                            'span': '6'
+                                                                        },
+                                                                        {
+                                                                            'type': 'input',
+                                                                            'labelSize': '6',
+                                                                            'controlSize': '16',
+                                                                            'inputType': 'text',
+                                                                            'name': 'caseCount',
+                                                                            'label': '数量',
+                                                                            'placeholder': '',
+                                                                            'disabled': false,
+                                                                            'readonly': false,
+                                                                            'size': 'default',
+                                                                            'layout': 'column',
+                                                                            'span': '6'
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            'dataList': [],
+                                                            'relations': [{
+                                                                'relationViewId': 'search_form',
+                                                                'relationSendContent': [
+                                                                    {
+                                                                        name: 'searchFormByValue',
+                                                                        sender: 'search_form',
+                                                                        aop: 'after',
+                                                                        receiver: 'singleTable',
+                                                                        relationData: {
+                                                                            name: 'refreshAsChild',
+                                                                            params: [
+                                                                                {pid: 'caseName', cid: '_caseName'},
+                                                                                {pid: 'caseType', cid: '_type'},
+                                                                            ]
+                                                                        },
+                                                                    }
+                                                                ],
+                                                                'relationReceiveContent': []
+                                                            }],
+                                                        },
+                                                        dataList: []
+                                                    }
+                                                ]
                                             }
                                         ]
                                     }
@@ -2309,7 +2630,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        // console.log(JSON.stringify(this.config));
+        //console.log(JSON.stringify(this.config));
         this.formGroup = new FormGroup({});
     }
 

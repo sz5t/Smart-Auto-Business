@@ -1,9 +1,24 @@
-<nz-tree 
-    [(ngModel)]="treeData" 
-    [nzAsyncData]="config.asyncData" 
+<nz-tree
+    [(ngModel)]="treeData"
+    [nzAsyncData]="config.asyncData"
     [nzDefaultExpandAll]="config.expandAll"
-    [nzCheckable]="config.checkable" 
+    [nzCheckable]="config.checkable"
     [nzShowLine]="config.showLine"
     (nzExpandChange)="onMouseAction('expandNode', $event)"
     (nzClick)="onMouseAction('clickNode', $event)">
+    <ng-template #nzTreeTemplate let-node>
+        <span class="custom-node" draggable="true" aria-grabbed="true" [class.active]="activedNode?.key===node.key">
+          <span *ngIf="!node.isLeaf" [class.shine-animate]="node.origin.isLoading" (contextmenu)="contextMenu($event,contextTemplate, node)">
+            <i class="anticon anticon-folder" *ngIf="!node.isExpanded" (click)="openFolder(node)"></i>
+            <i class="anticon anticon-folder-open" *ngIf="node.isExpanded" (click)="openFolder(node)"></i>
+            <span class="folder-name"> {{node.title}}</span>
+            <span class="folder-desc"> {{node?.origin?.author | lowercase}}</span>
+          </span>
+          <span *ngIf="node.isLeaf" (contextmenu)="contextMenu($event,contextTemplate, node)">
+            <i class="anticon anticon-file"></i>
+            <span class="file-name"> {{node.title}}</span>
+            <span class="file-desc"> {{node?.origin?.author | lowercase}}</span>
+          </span>
+        </span>
+    </ng-template>
 </nz-tree>

@@ -68,33 +68,8 @@ export class TreeAndFormComponent implements OnInit {
                                                     ]
                                                 }
                                             }
-                                        ],
-                                        'relations': [{
-                                            'relationViewId': 'tree_and_form_tree',
-                                            'relationSendContent': [
-                                                {
-                                                    'name': 'clickNode',
-                                                    'sender': 'tree_and_form_tree',
-                                                    'aop': 'after',
-                                                    'receiver': 'tree_and_form_form',
-                                                    'relationData': {
-                                                        'name': 'refreshAsChild',
-                                                        'params': [
-                                                            { 'pid': 'key', 'cid': '_id' }
-                                                        ]
-                                                    },
-                                                }
-                                            ],
-                                            'relationReceiveContent': []
-                                        }]
+                                        ]
                                     },
-                                    permissions: {
-                                        'viewId': 'parentTable',
-                                        'columns': [],
-                                        'toolbar': [],
-                                        'formDialog': [],
-                                        'windowDialog': []
-                                      },
                                     dataList: []
                                 }
                             ]
@@ -405,7 +380,7 @@ export class TreeAndFormComponent implements OnInit {
                                             'cascadeMode': 'REFRESH_AS_CHILD',
                                             'params': [
                                               {
-                                                pid: 'key', cid: '_id'
+                                                pid: 'Id', cid: '_id'
                                               }
                                             ]
                                           }]

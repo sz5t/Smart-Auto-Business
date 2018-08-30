@@ -20,6 +20,7 @@ import { Component, OnInit, Input, OnDestroy, Type, Inject, ViewEncapsulation } 
 })
 export class BsnToolbarComponent implements OnInit {
     @Input() config;
+    @Input() size;
     @Input() permissions = [];
     @Input() viewId;
     toolbarConfig;
@@ -90,7 +91,8 @@ export class BsnToolbarComponent implements OnInit {
                 this.viewId,
                 {
                     type: btn.actionType ? btn.actionType : null,
-                    name: btn.actionName ? btn.actionName : null
+                    name: btn.actionName ? btn.actionName : null,
+                    ajaxConfig: btn.ajaxConfig ? btn.ajaxConfig : null
                 }
             )
         );

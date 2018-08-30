@@ -1,13 +1,14 @@
 <div class="table-operations">
     <span *ngFor="let toolbar of config">
-           
+
         <span class="toolbarGroup" *ngIf="toolbar.group">
                 <nz-button-group>
-                    <button 
+                    <button
+                        [nzSize]="size ? size : 'default'"
                         [nzType]="btn.type ? btn.type : 'default'"
-                        nz-button 
-                        *ngFor="let btn of toolbar.group" 
-                        (click)="toolbarAction(btn)" 
+                        nz-button
+                        *ngFor="let btn of toolbar.group"
+                        (click)="toolbarAction(btn)"
                         [attr.disabled]="btn.disabled">
                             <strong><i class="{{btn.icon}} {{btn.color}}"></i> {{btn.text}}</strong>
                     </button>
@@ -28,6 +29,6 @@
                             </li>
                         </ul>
                 </nz-dropdown>
-        </span>  
+        </span>
     </span>
 </div>

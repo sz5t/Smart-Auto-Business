@@ -394,6 +394,7 @@ export class TreeTableComponent implements OnInit {
                         'title': '新增数据',
                         'width': '800',
                         'isCard': true,
+                          'type': 'add',
                         'componentType': {
                           'parent': false,
                           'child': false,
@@ -726,6 +727,7 @@ export class TreeTableComponent implements OnInit {
                         'name': 'updateShowCase',
                         'title': '编辑',
                         'width': '600',
+                          'type': 'edit',
                         'ajaxConfig': {
                           'url': 'common/ShowCase',
                           'ajaxType': 'getById',
