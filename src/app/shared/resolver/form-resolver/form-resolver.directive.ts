@@ -37,6 +37,7 @@ export class FormResolverDirective implements OnInit, OnChanges {
   @Input() config;
   @Input() formGroup;
   @Input() changeConfig;
+  @Input() tempValue;
   @Output() updateValue = new EventEmitter();
   component: ComponentRef<any>;
   constructor(private resolver: ComponentFactoryResolver, private container: ViewContainerRef) { }
@@ -44,6 +45,9 @@ export class FormResolverDirective implements OnInit, OnChanges {
     if (this.component) {
       this.component.instance.config = this.config;
       this.component.instance.formGroup = this.formGroup;
+      if (this.component.instance.bsnData) {
+        this.component.instance.bsnData = this.tempValue;
+      }
     }
     if (this.changeConfig) {
       // 判断是否是自己的级联对象
@@ -61,6 +65,10 @@ export class FormResolverDirective implements OnInit, OnChanges {
           const comp = this.resolver.resolveComponentFactory<any>(components[this.config.type]);
           this.component = this.container.createComponent(comp);
           this.component.instance.config = this.config;
+          if (this.component.instance.bsnData) {
+            this.component.instance.bsnData = this.tempValue;
+          }
+  
           if (this.config.type !== 'submit' || this.config.type !== 'button') {
             this.component.instance.formGroup = this.formGroup;
           }
@@ -99,6 +107,9 @@ export class FormResolverDirective implements OnInit, OnChanges {
     const comp = this.resolver.resolveComponentFactory<any>(components[this.config.type]);
     this.component = this.container.createComponent(comp);
     this.component.instance.config = this.config;
+    if (this.component.instance.bsnData) {
+      this.component.instance.bsnData = this.tempValue;
+    }
     if (this.config.type !== 'submit' || this.config.type !== 'button' || this.config.type !== 'search') {
       this.component.instance.formGroup = this.formGroup;
     }
@@ -129,7 +140,7 @@ export class FormResolverDirective implements OnInit, OnChanges {
     // 组件将值写回、级联数据-》回写 liu
     setValue(data?) {
       this.updateValue.emit(data);
-      console.log('级联数据回写触发后', data);
+     // console.log('级联数据回写触发后', data);
      }
 
 

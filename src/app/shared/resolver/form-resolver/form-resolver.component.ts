@@ -610,7 +610,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             this.tempValue[d] = data[d];
         }
         this.load();
-        // console.log('初始化参数并load', this.tempValue);
+         console.log('初始化参数并load 主子刷新', this.tempValue);
     }
 
 
@@ -727,8 +727,8 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
 
     valueChange(data?) {
-        console.log('解析结果预览：', this.cascadeList);
-        console.log('有操作', data);
+       // console.log('解析结果预览：', this.cascadeList);
+        // console.log('有操作', data);
         // Enable
 
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
@@ -864,7 +864,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         }
 
 
-        console.log('变更后的', this.config.forms);
+       // console.log('变更后的', this.config.forms);
     }
 
     // 级联变化，情况大致分为三种

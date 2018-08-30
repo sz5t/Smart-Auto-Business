@@ -115,6 +115,12 @@
                   "icon": "anticon anticon-aliwangwang",
                   "children": [
                     {
+                            "text": "工作流基础数据",
+                            "link": "/system/WorkFlow-dictionary-manager",
+                            "i18n": "",
+                            "icon": "icon-user"
+                     },
+                    {
                             "text": "工作流构建",
                             "link": "/system/WorkFlow-manager",
                             "i18n": "",

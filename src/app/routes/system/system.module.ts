@@ -21,6 +21,7 @@ import {DataModelingComponent} from './data-modeling/data-modeling.component';
 import {WorkFlowComponent} from './work-flow/work-flow.component';
 import {WorkFlowTodoComponent} from './work-flow/work-flow-todo.component';
 import {WorkFlowInitiateComponent} from './work-flow/work-flow-initiate.component';
+import {WorkFlowDictionaryComponent} from './work-flow/work-flow-dictionary.component';
 
 const routes: Routes = [
     {path: 'base-manager', component: BaseManagerComponent},
@@ -34,6 +35,7 @@ const routes: Routes = [
     {path: 'WorkFlow-manager', component: WorkFlowComponent},
     {path: 'WorkFlow-todo-manager', component: WorkFlowTodoComponent},
     {path: 'WorkFlow-initiate-manager', component: WorkFlowInitiateComponent},
+    {path: 'WorkFlow-dictionary-manager', component: WorkFlowDictionaryComponent},
     
 ];
 const COMPONENT_NOROUNT = [
@@ -55,7 +57,8 @@ const COMPONENT_NOROUNT = [
     DataModelingComponent,
     WorkFlowComponent,
     WorkFlowTodoComponent,
-    WorkFlowInitiateComponent
+    WorkFlowInitiateComponent,
+    WorkFlowDictionaryComponent
 ];
 
 @NgModule({

@@ -30,6 +30,14 @@ export class CnFormSelectTreeComponent implements OnInit {
     }
 
     ngOnInit() {
+        if (!this.config['multiple']) {
+            this.config['multiple'] = false;
+          }
+          if (!this.config['Checkable']) {
+            this.config['Checkable'] = false;
+          }
+          
+          
       this.loadTreeData();
     }
 

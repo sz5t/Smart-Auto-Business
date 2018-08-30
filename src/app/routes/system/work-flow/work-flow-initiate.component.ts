@@ -14,7 +14,7 @@ import { _HttpClient } from '@delon/theme';
 })
 export class WorkFlowInitiateComponent implements OnInit {
 
-// 任务名称   创建日期  执行人 任务状态  流程状态  是否已委托 截止时间  是否延迟   
+  // 任务名称   创建日期  执行人 任务状态  流程状态  是否已委托 截止时间  是否延迟   
 
 
 
@@ -26,14 +26,62 @@ export class WorkFlowInitiateComponent implements OnInit {
           cols: [
             {
               id: 'area1',
-              title: '工作流',
-              span: 24,
+              title: '工作流分类',
+              bodyStyle: {
+                height: '800px',
+                padding: '8px'
+              },
               size: {
                 nzXs: 24,
                 nzSm: 24,
-                nzMd: 24,
-                nzLg: 24,
-                ngXl: 24
+                nzMd: 5,
+                nzLg: 5,
+                ngXl: 5
+              },
+              viewCfg: [
+                {
+                  config: {
+                    'viewId': 'tree_and_table_tree',
+                    'component': 'bsnTree',
+                    'asyncData': true, //
+                    'expandAll': true, //
+                    'checkable': false,  //    在节点之前添加一个复选框 false
+                    'showLine': true,  //   显示连接线 fal
+                    'columns': [ // 字段映射，映射成树结构所需
+                      { title: '主键', field: 'key', valueName: 'Id' },
+                      { title: '父节点', field: 'parentId', valueName: 'parentid' },
+                      { title: '标题', field: 'title', valueName: 'name' },
+                    ],
+                    'componentType': {
+                      'parent': true,
+                      'child': true,
+                      'own': false
+                    },
+                    'parent': [
+                      { name: 'parentId', type: 'value', valueName: '', value: 'null' }
+                    ],
+                    'ajaxConfig': {
+                      'url': 'common/WfInfo',
+                      'ajaxType': 'get',
+                      'params': [
+                        // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
+                      ]
+                    }
+                  },
+                  dataList: []
+                }
+              ]
+            },
+            {
+              id: 'area1',
+              title: '工作流',
+              span: 19,
+              size: {
+                nzXs: 24,
+                nzSm: 24,
+                nzMd: 19,
+                nzLg: 19,
+                ngXl: 19
               },
               viewCfg: [
                 {
@@ -200,7 +248,7 @@ export class WorkFlowInitiateComponent implements OnInit {
                         }
                       }
 
-                      
+
                     ],
                     'toolbar': [
                       {
@@ -823,7 +871,7 @@ export class WorkFlowInitiateComponent implements OnInit {
           ]
         }
       }
-  
+
     ]
   };
   constructor(private http: _HttpClient) { }

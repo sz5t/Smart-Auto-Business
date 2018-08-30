@@ -26,6 +26,10 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
   _selectedMultipleOption;
 
   ngOnInit() {
+    if (!this.config['multiple']) {
+      this.config['multiple'] = 'default';
+    }
+
     // console.log('select加载固定数据', this.config);
     if (this.config['caseCodeValue']) {
       // caseCodeValue
@@ -73,6 +77,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngOnChanges() {
     // console.log('select加载固定数据ngOnChanges', this.config);
+   // console.log('变化时临时参数' , this.bsnData);
   }
   ngAfterViewInit() {
     this.selectedByLoaded();
@@ -99,7 +104,9 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
               params[param.name] = this.bsnData[param.valueName];
             }
           } else {
-            params[param.name] = this.bsnData[param.valueName];
+            if (this.bsnData && this.bsnData[param.valueName]) { // liu 参数非空判断
+              params[param.name] = this.bsnData[param.valueName];
+            }
           }
 
         } else if (param.type === 'value') {
