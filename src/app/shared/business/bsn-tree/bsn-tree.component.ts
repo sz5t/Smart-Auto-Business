@@ -152,6 +152,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
 
         // 注册多界面切换消息
         if(this.config.componentType && this.config.componentType.sub === true){
+            debugger;
             this.after(this, 'clickNode', () => {
                 this._clickedNode && this.cascade.next(
                     new BsnComponentMessage(
@@ -282,7 +283,8 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                 });
 
                 // result.addChildren(this.listToTreeData(this._toTreeBefore, parent));
-                this.treeData = this.listToTreeData(this._toTreeBefore, parent, true);
+                this.treeData = this.listToTreeData(this._toTreeBefore, parent);
+                console.log(this.treeData);
                 //this.treeData = [result];
             }
         })();
@@ -296,34 +298,60 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         return new NzTreeNode(item);
     }
 
-    listToTreeData(data, parent, isRoot):  NzTreeNode[] {
+    _getChildrenNodeData(parentId) {
+        const leastNodes =  this._toTreeBefore
+            .filter(d => d.parentId === parentId);
+        return leastNodes;
+
+    }
+
+    _setDataToNzTreeNodes(childrenData, parentNode) {
+        const nodes: NzTreeNode[] = [];
+        if(childrenData && childrenData.length > 0) {
+            childrenData.map(d => {
+                const node: NzTreeNode = new NzTreeNode(d);
+                const leastData = this._getChildrenNodeData(node.key);
+                if(leastData && leastData.length > 0) {
+                    this._setDataToNzTreeNodes(leastData, node);
+                }
+                nodes.push(node);
+            });
+        }
+        if(nodes.length > 0) {
+            console.log(parentNode);
+            parentNode.addChildren(nodes);
+        }
+    }
+
+    listToTreeData(data, parentId):  NzTreeNode[] {
         const result: NzTreeNode[] = [];
 
-        for (let i = 0; i < data.length; i++) {
+        for (let i = 0, len = data.length; i < len; i++) {
             let cNode: NzTreeNode;
             // 设置默认选中节点
             if (this._clickedNode && (data[i]['key'] === this._clickedNode['key'])) {
                 data[i]['selected'] = true;
             }
             // 查找根节点
-            if (data[i].parentId === parent && isRoot) {
-                debugger;
-                const temp = this.listToTreeData(data, data[i].key, true);
-                if (temp.length > 0) {
+            if (data[i].parentId === parentId) {
+                // data.splice(data.indexOf(data[i]), 1);
+                // i--;
+                // len--;
+                // 查找根节点对应的自节点
+                const leastNodes = this._getChildrenNodeData(data[i].key);
+
+                if (leastNodes.length > 0) {
                     cNode = new NzTreeNode(data[i]);
-                    cNode.addChildren(temp);
+                    debugger;
+                    this._setDataToNzTreeNodes(leastNodes, cNode);
                 } else {
                     data[i]['isLeaf'] = true;
                     cNode = new NzTreeNode(data[i]);
                 }
                 result.push(cNode);
 
-            } else if(data[i].parentId === parent && !isRoot) {
-
             }
-
         }
-        console.log(result);
         return result;
     }
 

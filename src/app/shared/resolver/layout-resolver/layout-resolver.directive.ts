@@ -37,7 +37,6 @@ export class LayoutResolverDirective implements OnInit, OnChanges {
     resolveRelation() {
         this._cascadeSubscription = this.cascadeEvents.subscribe(cascadeEvent => {
             const viewCfg = this.config.viewCfg;
-            this.container.clear();
             if(viewCfg) {
                 viewCfg.forEach(cfg => {
                     const option = cascadeEvent.option;

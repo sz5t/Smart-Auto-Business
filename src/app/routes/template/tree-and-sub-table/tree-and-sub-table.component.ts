@@ -50,23 +50,32 @@ export class TreeAndSubTableComponent implements OnInit {
                                         'subMapping': [
                                             {
                                                 'field': 'caseType', 'mapping': [
-                                                    {
-                                                        'value': '1', 'subViewId': 'tree_and_form_form'
-                                                    },
-                                                    {
-                                                        'value': '2', 'subViewId': 'tree_singleTable'
-                                                    }
-                                                ]
+                                                {
+                                                    'value': '1', 'subViewId': 'tree_and_form_form'
+                                                },
+                                                {
+                                                    'value': '2', 'subViewId': 'tree_singleTable'
+                                                },
+                                                {
+                                                    'value': '3', 'subViewId': 'tree_and_form_form'
+                                                },
+                                                {
+                                                    'value': '4', 'subViewId': 'tree_singleTable'
+                                                },
+                                                {
+                                                    'value': '5', 'subViewId': 'tree_and_form_form'
+                                                }
+                                            ]
                                             }
                                         ],
                                         'componentType': {
-                                            'parent': false,
+                                            'parent': true,
                                             'child': false,
                                             'own': false,
                                             'sub': true
                                         },
                                         'parent': [
-                                            {name: 'parentId', type: 'value', valueName: '', value: 'null'}
+                                            {name: 'parentId', type: 'value', valueName: '', value: null}
                                         ],
                                         'ajaxConfig': {
                                             'url': 'common/ShowCase',
@@ -409,7 +418,7 @@ export class TreeAndSubTableComponent implements OnInit {
                                                     {
                                                         config: {
                                                             'title': '数据网格',
-                                                            'viewId': 'tree_and_form_form',
+                                                            'viewId': 'tree_singleTable',
                                                             'component': 'bsnTable',
                                                             'info': true,
                                                             'keyId': 'Id',
