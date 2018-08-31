@@ -623,7 +623,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     const index = execButtons.findIndex(item => item.actionName = option.name);
                     if (index !== -1) {
                         const cfg = execButtons[index].ajaxConfig[option.type];
-                        isSuccess = this._executeCheckedAction(selectedRow, option, cfg);
+                        isSuccess = this._executeSelectedAction(selectedRow, option, cfg);
                     }
 
                 }
@@ -633,7 +633,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     const index = execButtons.findIndex(item => item.actionName = option.name);
                     if (index !== -1) {
                         const cfg = execButtons[index].ajaxConfig[option.type];
-                        isSuccess = this._executeCheckedAction(selectedRow, option, cfg);
+                        isSuccess = this._executeSelectedAction(selectedRow, option, cfg);
                     }
 
                 }

@@ -69,7 +69,9 @@ export class CnGridSelectComponent implements OnInit {
               params[param.name] = this.bsnData[param.valueName];
             }
           } else {
-            params[param.name] = this.bsnData[param.valueName];
+            if (this.bsnData && this.bsnData[param.valueName]) { // liu 参数非空判断
+               params[param.name] = this.bsnData[param.valueName];
+            }
           }
 
         } else if (param.type === 'value') {
@@ -82,7 +84,7 @@ export class CnGridSelectComponent implements OnInit {
       });
 
       if (this.isString(p.url)) {
-        url = APIResource[p.url];
+        url = p.url;
       } else {
         let pc = 'null';
         p.url.params.forEach(param => {
@@ -95,9 +97,10 @@ export class CnGridSelectComponent implements OnInit {
           }
         });
 
-        url = APIResource[p.url['parent']] + '/' + pc + '/' + APIResource[p.url['child']];
+        url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
       }
     }
+
     if (p.ajaxType === 'get' && tag) {
 
       /*  const dd=await this._http.getProj(APIResource[p.url], params).toPromise();

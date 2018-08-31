@@ -84,6 +84,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   async asyncLoadOptions(p?, componentValue?, type?) {
+    console.log('select load 异步加载'); // liu
     const params = {
     };
     let tag = true;

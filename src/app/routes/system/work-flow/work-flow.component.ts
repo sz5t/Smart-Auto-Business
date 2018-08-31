@@ -1974,7 +1974,6 @@ export class WorkFlowComponent implements OnInit {
                                 'cascadeMode': 'REFRESH_AS_CHILD',
                                 'params': [
                                   { pid: 'Id', cid: '_parentId' },
-                                  { pid: 'wfid', cid: '_wfid' }
                                 ],
                                 'relationReceiveContent': []
                               }],
@@ -2113,7 +2112,7 @@ export class WorkFlowComponent implements OnInit {
                                   'params': [],
                                   'fields': [
                                       {
-                                          'label': 'ID',
+                                          'label': 'Id',
                                           'field': 'value',
                                           'name': 'value'
                                       },
@@ -2378,7 +2377,7 @@ export class WorkFlowComponent implements OnInit {
                                                 'name': 'returntstep',
                                                 'label': '退回步骤',
                                                 'labelName': 'name',
-                                                'valueName': 'value',
+                                                'valueName': 'Id',
                                                 'notFoundContent': '',
                                                 'selectModel': false,
                                                 'showSearch': true,
@@ -2507,150 +2506,150 @@ export class WorkFlowComponent implements OnInit {
                                           }
                                         ],
                                         'cascade': [ // 配置 信息
-                                          {
-                                              name: 'Type', // 发出级联请求的小组件（就是配置里的name 字段名称）
-                                              CascadeObjects: [// 当前小组件级联对象数组
-                                                  {
-                                                      cascadeName: 'Enable', // field 对象 接收级联信息的小组件
-                                                      cascadeValueItems: [   // 应答描述数组，同一个组件可以做出不同应答
-                                                          // 需要描述不同的选项下的不同事件 事件优先级，展示-》路由-》赋值 依次解析
-                                                          // [dataType\valueType]大类别，是直接级联变化，还是根据change值含义变化
-                                                          {
-                                                              // 缺少case描述语言
-                                                              // 描述当前值是什么，触发
-                                                              caseValue: { valueName: 'value', regular: '^1$' }, // 哪个字段的值触发，正则表达
-                                                              data: {
-                                                                  type: 'option', // option/ajax/setValue
-                                                                  option_data: { // 静态数据集
-                                                                      option: [
-                                                                          { value: '1', label: '1' }
-                                                                      ]
-                                                                  },
-                                                                  ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
+                                          // {
+                                          //     name: 'Type', // 发出级联请求的小组件（就是配置里的name 字段名称）
+                                          //     CascadeObjects: [// 当前小组件级联对象数组
+                                          //         {
+                                          //             cascadeName: 'Enable', // field 对象 接收级联信息的小组件
+                                          //             cascadeValueItems: [   // 应答描述数组，同一个组件可以做出不同应答
+                                          //                 // 需要描述不同的选项下的不同事件 事件优先级，展示-》路由-》赋值 依次解析
+                                          //                 // [dataType\valueType]大类别，是直接级联变化，还是根据change值含义变化
+                                          //                 {
+                                          //                     // 缺少case描述语言
+                                          //                     // 描述当前值是什么，触发
+                                          //                     caseValue: { valueName: 'value', regular: '^1$' }, // 哪个字段的值触发，正则表达
+                                          //                     data: {
+                                          //                         type: 'option', // option/ajax/setValue
+                                          //                         option_data: { // 静态数据集
+                                          //                             option: [
+                                          //                                 { value: '1', label: '1' }
+                                          //                             ]
+                                          //                         },
+                                          //                         ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
                               
-                                                                      // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
-                                                                  },
-                                                                  setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
-                                                                      value: '新值'
-                                                                  },
-                                                                  show_data: { // 当前表单的展示字段等信息
+                                          //                             // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
+                                          //                         },
+                                          //                         setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
+                                          //                             value: '新值'
+                                          //                         },
+                                          //                         show_data: { // 当前表单的展示字段等信息
                               
-                                                                  },
-                                                                  relation_data: {
+                                          //                         },
+                                          //                         relation_data: {
                               
-                                                                  }
+                                          //                         }
                               
-                                                              }
-                                                          },
-                                                          // 需要描述不同的选项下的不同事件 事件优先级，展示-》路由-》赋值 依次解析
-                                                          // [dataType\valueType]大类别，是直接级联变化，还是根据change值含义变化
-                                                          {
-                                                              // 缺少case描述语言
-                                                              // 描述当前值是什么，触发
-                                                              caseValue: { valueName: 'value', regular: '^2$' }, // 哪个字段的值触发，正则表达
-                                                              //  [
-                                                              //     { type: 'in', value: '1' },
-                                                              //     { type: 'range', fromValue: '1', toValue: '' },
-                                                              // ],
-                                                              data: {
-                                                                  type: 'option', // option/ajax/setValue
-                                                                  option_data: { // 静态数据集
-                                                                      option: [
-                                                                          { value: '2', label: '2' }
-                                                                      ]
-                                                                  },
-                                                                  ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
+                                          //                     }
+                                          //                 },
+                                          //                 // 需要描述不同的选项下的不同事件 事件优先级，展示-》路由-》赋值 依次解析
+                                          //                 // [dataType\valueType]大类别，是直接级联变化，还是根据change值含义变化
+                                          //                 {
+                                          //                     // 缺少case描述语言
+                                          //                     // 描述当前值是什么，触发
+                                          //                     caseValue: { valueName: 'value', regular: '^2$' }, // 哪个字段的值触发，正则表达
+                                          //                     //  [
+                                          //                     //     { type: 'in', value: '1' },
+                                          //                     //     { type: 'range', fromValue: '1', toValue: '' },
+                                          //                     // ],
+                                          //                     data: {
+                                          //                         type: 'option', // option/ajax/setValue
+                                          //                         option_data: { // 静态数据集
+                                          //                             option: [
+                                          //                                 { value: '2', label: '2' }
+                                          //                             ]
+                                          //                         },
+                                          //                         ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
                               
-                                                                      // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
-                                                                  },
-                                                                  setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
-                                                                      value: '新值'
-                                                                  },
-                                                                  show_data: { // 当前表单的展示字段等信息
+                                          //                             // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
+                                          //                         },
+                                          //                         setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
+                                          //                             value: '新值'
+                                          //                         },
+                                          //                         show_data: { // 当前表单的展示字段等信息
                               
-                                                                  },
-                                                                  relation_data: {
+                                          //                         },
+                                          //                         relation_data: {
                               
-                                                                  }
+                                          //                         }
                               
-                                                              }
-                                                          },
-                                                          {
-                                                              // 缺少case描述语言
-                                                              // 描述当前值是什么，触发
-                                                              caseValue: { valueName: 'value', regular: '^3$' }, // 哪个字段的值触发，正则表达
-                                                              //  [
-                                                              //     { type: 'in', value: '1' },
-                                                              //     { type: 'range', fromValue: '1', toValue: '' },
-                                                              // ],
-                                                              data: {
-                                                                  type: 'show', // option/ajax/setValue
-                                                                  option_data: { // 静态数据集
-                                                                      option: [
-                                                                          { value: '3', label: '3' }
-                                                                      ]
-                                                                  },
-                                                                  ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
+                                          //                     }
+                                          //                 },
+                                          //                 {
+                                          //                     // 缺少case描述语言
+                                          //                     // 描述当前值是什么，触发
+                                          //                     caseValue: { valueName: 'value', regular: '^3$' }, // 哪个字段的值触发，正则表达
+                                          //                     //  [
+                                          //                     //     { type: 'in', value: '1' },
+                                          //                     //     { type: 'range', fromValue: '1', toValue: '' },
+                                          //                     // ],
+                                          //                     data: {
+                                          //                         type: 'show', // option/ajax/setValue
+                                          //                         option_data: { // 静态数据集
+                                          //                             option: [
+                                          //                                 { value: '3', label: '3' }
+                                          //                             ]
+                                          //                         },
+                                          //                         ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
                               
-                                                                      // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
-                                                                  },
-                                                                  setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
-                                                                      value: '新值'
-                                                                  },
-                                                                  show_data: { // 当前表单的展示字段等信息
-                                                                      option: // 默认所有操作 状态都是false，为true 的时候当前操作限制操作
-                                                                          { hidden: false}
+                                          //                             // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
+                                          //                         },
+                                          //                         setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
+                                          //                             value: '新值'
+                                          //                         },
+                                          //                         show_data: { // 当前表单的展示字段等信息
+                                          //                             option: // 默认所有操作 状态都是false，为true 的时候当前操作限制操作
+                                          //                                 { hidden: false}
                                                                       
-                                                                  },
-                                                                  relation_data: {
+                                          //                         },
+                                          //                         relation_data: {
                               
-                                                                  }
+                                          //                         }
                               
-                                                              }
-                                                          },
-                                                          {
-                                                              // 缺少case描述语言
-                                                              // 描述当前值是什么，触发
-                                                              caseValue: { valueName: 'value', regular: '^4$' }, // 哪个字段的值触发，正则表达
-                                                              //  [
-                                                              //     { type: 'in', value: '1' },
-                                                              //     { type: 'range', fromValue: '1', toValue: '' },
-                                                              // ],
-                                                              data: {
-                                                                  type: 'show', // option/ajax/setValue
-                                                                  option_data: { // 静态数据集
-                                                                      option: [
-                                                                          { value: '4', label: '4' }
-                                                                      ]
-                                                                  },
-                                                                  ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
+                                          //                     }
+                                          //                 },
+                                          //                 {
+                                          //                     // 缺少case描述语言
+                                          //                     // 描述当前值是什么，触发
+                                          //                     caseValue: { valueName: 'value', regular: '^4$' }, // 哪个字段的值触发，正则表达
+                                          //                     //  [
+                                          //                     //     { type: 'in', value: '1' },
+                                          //                     //     { type: 'range', fromValue: '1', toValue: '' },
+                                          //                     // ],
+                                          //                     data: {
+                                          //                         type: 'show', // option/ajax/setValue
+                                          //                         option_data: { // 静态数据集
+                                          //                             option: [
+                                          //                                 { value: '4', label: '4' }
+                                          //                             ]
+                                          //                         },
+                                          //                         ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
                               
-                                                                      // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
-                                                                  },
-                                                                  setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
-                                                                      value: '新值'
-                                                                  },
-                                                                  show_data: { // 当前表单的展示字段等信息
-                                                                      option: // 默认所有操作 状态都是false，为true 的时候当前操作限制操作
-                                                                          { hidden: true}
+                                          //                             // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
+                                          //                         },
+                                          //                         setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
+                                          //                             value: '新值'
+                                          //                         },
+                                          //                         show_data: { // 当前表单的展示字段等信息
+                                          //                             option: // 默认所有操作 状态都是false，为true 的时候当前操作限制操作
+                                          //                                 { hidden: true}
                                                                       
-                                                                  },
-                                                                  relation_data: {
+                                          //                         },
+                                          //                         relation_data: {
                               
-                                                                  }
+                                          //                         }
                               
-                                                              }
-                                                          },
+                                          //                     }
+                                          //                 },
                                                          
                               
                               
-                                                      ],
-                                                      cascadeDateItems: [ ]  // 应答描述数组，同一个组件可以做出不同应答
+                                          //             ],
+                                          //             cascadeDateItems: [ ]  // 应答描述数组，同一个组件可以做出不同应答
                                                           
-                                                  }
-                                              ],
+                                          //         }
+                                          //     ],
                               
-                                          }
+                                          // }
                               
                                       ],
                                         'toolbar': {
@@ -2677,12 +2676,12 @@ export class WorkFlowComponent implements OnInit {
                                                       valueName: 'cktype',
                                                       value: ''
                                                     },
-                                                    {
-                                                      name: 'approvers',
-                                                      type: 'componentValue',
-                                                      valueName: 'approverspeple',
-                                                      value: ''
-                                                    },
+                                                    // {
+                                                    //   name: 'approvers',
+                                                    //   type: 'componentValue',
+                                                    //   valueName: 'approverspeple',
+                                                    //   value: ''
+                                                    // },
                                                     {
                                                       name: 'approvaltactics',
                                                       type: 'componentValue',
@@ -3767,10 +3766,30 @@ export class WorkFlowComponent implements OnInit {
                                     type: 'input',
                                     field: 'fromnode',
                                     options: {
-                                      'type': 'input',
+                                      'type': 'select',
                                       'labelSize': '6',
                                       'controlSize': '18',
-                                      'inputType': 'text',
+                                      'inputType': 'submit',
+                                      'labelName': 'name',
+                                      'valueName': 'Id',
+                                      'notFoundContent': '',
+                                      'selectModel': false,
+                                      'showSearch': true,
+                                      'placeholder': '-请选择-',
+                                      'disabled': false,
+                                      'size': 'default',
+                                      'clear': true,
+                                      'width': '130px',
+                                      'options': [
+
+                                      ],
+                                      'ajaxConfig': {
+                                        'url': 'common/WfNodes',
+                                        'ajaxType': 'get',
+                                        'params': [
+                                          { name: 'wfid', type: 'tempValue', valueName: '_parentId', value: '' }
+                                        ]
+                                     },
                                     }
                                   }
                                 },
@@ -3778,13 +3797,33 @@ export class WorkFlowComponent implements OnInit {
                                   title: '指向节点', field: 'tofrom', width: 80,
                                   showFilter: false, showSort: false,
                                   editor: {
-                                    type: 'input',
+                                    type: 'select',
                                     field: 'tofrom',
                                     options: {
-                                      'type': 'input',
+                                      'type': 'select',
                                       'labelSize': '6',
                                       'controlSize': '18',
-                                      'inputType': 'text',
+                                      'inputType': 'submit',
+                                      'labelName': 'name',
+                                      'valueName': 'Id',
+                                      'notFoundContent': '',
+                                      'selectModel': false,
+                                      'showSearch': true,
+                                      'placeholder': '-请选择-',
+                                      'disabled': false,
+                                      'size': 'default',
+                                      'clear': true,
+                                      'width': '130px',
+                                      'options': [
+
+                                      ],
+                                      'ajaxConfig': {
+                                        'url': 'common/WfNodes',
+                                        'ajaxType': 'get',
+                                        'params': [
+                                          { name: 'wfid', type: 'tempValue', valueName: '_parentId', value: '' }
+                                        ]
+                                     },
                                     }
                                   }
                                 },
@@ -3909,6 +3948,7 @@ export class WorkFlowComponent implements OnInit {
                                 }
                               ],
                               'dataSet': [
+                               
                               ]
                             },
                             permissions: {
