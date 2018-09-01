@@ -8,6 +8,7 @@ import { APIResource } from '@core/utility/api-resource';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
 import { Observer ,  Observable ,  Subscription } from 'rxjs';
+import {TreeNode} from '@angular/router/src/utils/tree';
 @Component({
     selector: 'cn-bsn-tree',
     templateUrl: './bsn-tree.component.html',
@@ -93,7 +94,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     ngOnInit() {
-        if(!this.tempValue) {
+        if (!this.tempValue) {
             this.tempValue = {};
         }
         this.resolverRelation();
@@ -121,7 +122,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                     case BSN_COMPONENT_MODES.EDIT_NODE:
                         break;
                     case BSN_COMPONENT_MODES.SAVE_NODE:
-                        if(option.ajaxConfig) {
+                        if (option.ajaxConfig) {
                             this.submitNodeData(option.ajaxConfig);
                         }
                         break;
@@ -151,8 +152,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         }
 
         // 注册多界面切换消息
-        if(this.config.componentType && this.config.componentType.sub === true){
-            debugger;
+        if (this.config.componentType && this.config.componentType.sub === true) {
             this.after(this, 'clickNode', () => {
                 this._clickedNode && this.cascade.next(
                     new BsnComponentMessage(
@@ -165,9 +165,9 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                                 let id = '';
                                 this.config.subMapping.forEach(sub => {
                                     const mappingVal = this._clickedNode[sub['field']];
-                                    if(sub.mapping){
+                                    if (sub.mapping) {
                                         sub.mapping.forEach(m => {
-                                            if(m.value === mappingVal) {
+                                            if (m.value === mappingVal) {
                                                 id = m.subViewId;
                                             }
                                         });
@@ -225,15 +225,15 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
             const data = await this.getTreeData();
             if (data.data && data.isSuccess) {
                 this._toTreeBefore = data.data;
-                for (let i = 0, len = this._toTreeBefore.length; i < len ; i++){
+                for (let i = 0, len = this._toTreeBefore.length; i < len ; i++) {
                     if (this.config.columns) {
                         this.config.columns.forEach(col => {
                             this._toTreeBefore[i][col['field']] = this._toTreeBefore[i][col['valueName']];
                         });
                     }
-                    if(this.config.checkable && this.config.checkedMapping) {
+                    if (this.config.checkable && this.config.checkedMapping) {
                         this.config.checkedMapping.forEach(m => {
-                            if(this._toTreeBefore[i][m.name] && this._toTreeBefore[i][m.name] === m.value) {
+                            if (this._toTreeBefore[i][m.name] && this._toTreeBefore[i][m.name] === m.value) {
                                 this._toTreeBefore[i]['checked'] = true;
                             }
                         });
@@ -281,11 +281,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                     isLeaf: false,
                     children: []
                 });
-
-                // result.addChildren(this.listToTreeData(this._toTreeBefore, parent));
-                this.treeData = this.listToTreeData(this._toTreeBefore, parent);
-                console.log(this.treeData);
-                //this.treeData = [result];
+                this.treeData = this._setDataToNzTreeNodes(this._toTreeBefore, parent);
             }
         })();
     }
@@ -305,22 +301,65 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
 
     }
 
-    _setDataToNzTreeNodes(childrenData, parentNode) {
+    _setDataToNzTreeNodes(childrenData, parentId) {
         const nodes: NzTreeNode[] = [];
-        if(childrenData && childrenData.length > 0) {
+        if (childrenData && childrenData.length > 0) {
             childrenData.map(d => {
-                const node: NzTreeNode = new NzTreeNode(d);
-                const leastData = this._getChildrenNodeData(node.key);
-                if(leastData && leastData.length > 0) {
-                    this._setDataToNzTreeNodes(leastData, node);
+                let cNode: NzTreeNode;
+                if (this._clickedNode && d['key'] === this._clickedNode['key']) {
+                    d['selected'] = true;
                 }
-                nodes.push(node);
+                if (d['parentId'] === parentId) {
+                    const leastNodes = this._getChildrenNodeData(d['key']);
+                    if (leastNodes.length > 0) {
+                        d['isLeaf'] = false;
+                        cNode = new NzTreeNode(d);
+                        const childrenNode = this._setDataToNzTreeNodes(leastNodes, d['Id']);
+                        cNode['children'] = childrenNode;
+                    } else {
+                        d['isLeaf'] = true;
+                        cNode = new NzTreeNode(d);
+                    }
+                }
+                if (cNode) {
+                    nodes.push(cNode);
+                }
             });
         }
-        if(nodes.length > 0) {
-            console.log(parentNode);
-            parentNode.addChildren(nodes);
-        }
+        return nodes;
+
+        // if(isRootNode) {
+        //     if (childrenData && childrenData.length > 0) {
+        //         for (let i = 0, len = childrenData.length; i < len; i++) {
+        //             let node: NzTreeNode ;
+        //             const leastData = this._getChildrenNodeData(childrenData[i].Id);
+        //             if (leastData && leastData.length > 0) {
+        //                 node = new NzTreeNode(childrenData[i], parentNode);
+        //                 this._setDataToNzTreeNodes(leastData, node);
+        //             } else {
+        //                 childrenData[i]['isLeaf'] = true;
+        //                 node = new NzTreeNode(childrenData[i], parentNode);
+        //             }
+        //             nodes.push(node);
+        //         }
+        //
+        //         // childrenData.map(d => {
+        //         //     const node: NzTreeNode = new NzTreeNode(d, parentNode);
+        //         //     const leastData = this._getChildrenNodeData(node.key);
+        //         //     if(leastData && leastData.length > 0) {
+        //         //         this._setDataToNzTreeNodes(leastData, node);
+        //         //     }
+        //         //     nodes.push(node);
+        //         // });
+        //         if (nodes.length > 0) {
+        //             console.log(parentNode, nodes);
+        //             parentNode.addChildren(nodes);
+        //         }
+        //     }
+        // } else {
+        //
+        // }
+
     }
 
     listToTreeData(data, parentId):  NzTreeNode[] {
@@ -342,7 +381,6 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
 
                 if (leastNodes.length > 0) {
                     cNode = new NzTreeNode(data[i]);
-                    debugger;
                     this._setDataToNzTreeNodes(leastNodes, cNode);
                 } else {
                     data[i]['isLeaf'] = true;
@@ -387,13 +425,13 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         this.activedNode = e.node;
         // 从节点的列表中查找选中的数据对象
         this._clickedNode = this._toTreeBefore.find(n => n.key === e.node.key);
-    };
+    }
 
     checkboxChange = (e) => {
 
         const checkedIds = [];
         // 设置选中项对应的ID数组
-        if(!this.tempValue['_checkedIds']) {
+        if (!this.tempValue['_checkedIds']) {
             this.tempValue['_checkedIds'] = '';
         }
         // 获取选中项的数据列表
@@ -411,15 +449,15 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
 
     submitNodeData(ajaxConfig) {
         (async() => {
-            if(ajaxConfig.post) {
+            if (ajaxConfig.post) {
                 ajaxConfig.post.map(async cfg => {
                    const res = await this.execAjax(cfg);
-                   if(res.isSuccess) {
+                   if (res.isSuccess) {
                        this._message.success('保存成功');
                    } else {
                        this._message.error('保存失败');
                    }
-                })
+                });
             }
         })();
     }

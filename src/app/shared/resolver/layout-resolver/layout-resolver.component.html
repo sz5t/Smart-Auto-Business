@@ -10,6 +10,9 @@
                 <ng-template #cardTitle>
                     <i class="{{c.icon}}"></i>
                     {{c.title}}
+                    <!--<div *ngIf="c.editable" style="float:right">-->
+                        <!--<nz-switch (click)="switch()" nzCheckedChildren="取消" nzUnCheckedChildren="编辑"></nz-switch>-->
+                    <!--</div>-->
                 </ng-template>
                 <div *ngIf="c.handle && c.handle === 'single'; else elseTemplate">
                     <ng-container cnLayoutResolverDirective [layoutId]="layoutId" [config]="c"></ng-container>
@@ -23,9 +26,9 @@
         </div>
     </div>
 </ng-container>
-
-
 <cn-component-resolver *ngIf="!config.rows && !config.tabs && !config.viewCfg"
                        [layoutId]="layoutId"
                        [blockId]="config.id"
-                       [config]="config"></cn-component-resolver>
+                       [editable]="editable"
+                       [config]="config">
+</cn-component-resolver>

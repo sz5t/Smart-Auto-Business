@@ -2678,6 +2678,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
 
     create() {
         this.config = JSON.parse(this.getValue());
+        console.log(this.config);
     }
 
     resolveComponent() {

@@ -130,6 +130,7 @@ export class TreeAndTableComponent implements OnInit {
                                                 id: 'area2_1',
                                                 title: '表单',
                                                 span: 24,
+                                                editable: true,
                                                 size: {
                                                     nzXs: 24,
                                                     nzSm: 24,
@@ -1834,7 +1835,7 @@ export class TreeAndTableComponent implements OnInit {
                                             }
                                         ]
                                     }
-                                },
+                                }
 
                             ]
                         }

@@ -7,6 +7,7 @@ import {Component, Input, OnInit} from '@angular/core';
 export class LayoutResolverComponent implements OnInit {
   @Input() config;
   @Input() layoutId;
+  @Input() editable = false;
   constructor(
   ) { }
 
@@ -14,4 +15,7 @@ export class LayoutResolverComponent implements OnInit {
 
   }
 
+  switch() {
+      this.editable = !this.editable;
+  }
 }

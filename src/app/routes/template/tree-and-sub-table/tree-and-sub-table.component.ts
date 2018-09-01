@@ -60,7 +60,7 @@ export class TreeAndSubTableComponent implements OnInit {
                                                     'value': '3', 'subViewId': 'tree_and_form_form'
                                                 },
                                                 {
-                                                    'value': '4', 'subViewId': 'tree_singleTable'
+                                                    'value': '4', 'subViewId': 'tree_and_form_form'
                                                 },
                                                 {
                                                     'value': '5', 'subViewId': 'tree_and_form_form'
@@ -69,7 +69,7 @@ export class TreeAndSubTableComponent implements OnInit {
                                             }
                                         ],
                                         'componentType': {
-                                            'parent': true,
+                                            'parent': false,
                                             'child': false,
                                             'own': false,
                                             'sub': true

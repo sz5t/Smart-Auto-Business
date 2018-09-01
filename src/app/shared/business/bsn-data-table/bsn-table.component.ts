@@ -275,17 +275,20 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     } else {
                         loadData.data.rows.length > 0 && (focusId = loadData.data.rows[0].Id);
                     }
-                    loadData.data.rows.forEach((row, index) => {
-                        row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
-                        if (row.Id === focusId) {
-                            this.selectRow(row);
-                        }
-                        if (loadData.data.page === 1) {
-                            row['_serilize'] = index + 1;
-                        } else {
-                            row['_serilize'] = (loadData.data.page - 1) * loadData.data.pageSize + index + 1;
-                        }
-                    });
+                    if(loadData.data.rows.length > 0) {
+                        loadData.data.rows.forEach((row, index) => {
+                            row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
+                            if (row.Id === focusId) {
+                                this.selectRow(row);
+                            }
+                            if (loadData.data.page === 1) {
+                                row['_serilize'] = index + 1;
+                            } else {
+                                row['_serilize'] = (loadData.data.page - 1) * loadData.data.pageSize + index + 1;
+                            }
+                        });
+                    }
+
                     this._updateEditCacheByLoad(loadData.data.rows);
                     this.dataList = loadData.data.rows;
                     this.total = loadData.data.total;
@@ -462,7 +465,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             $event.stopPropagation();
         }
 
-        this.dataList.map(row => {
+        this.dataList && this.dataList.map(row => {
             row.selected = false;
         });
         data['selected'] = true;

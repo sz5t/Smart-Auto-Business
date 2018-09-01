@@ -17,6 +17,10 @@ import {Observer} from 'rxjs';
 @Component({
     selector: 'cn-form-resolver,[cn-form-resolver]',
     templateUrl: './form-resolver.component.html',
+    styles:[
+        `                                                                                                                            
+        `
+    ]
 })
 export class FormResolverComponent extends CnComponentBase implements OnInit, OnChanges, OnDestroy {
 
@@ -24,6 +28,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     @Input() permissions;
     @Input() dataList;
     @Input() ref;
+    @Input() editable = {};
 
     form: FormGroup;
     @Output() submit: EventEmitter<any> = new EventEmitter<any>();
@@ -161,6 +166,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     // endregion
 
     ngOnChanges() {
+        console.log(this.editable);
         if (this.form) {
             const controls = Object.keys(this.form.controls);
             const configControls = this.controls.map(item => item.name);
@@ -176,6 +182,9 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                     // const config = this.config.forms.find(control => control.name === name);
                     this.form.addControl(name, this.createControl(config));
                 });
+        }
+        if(this.editable) {
+
         }
     }
 
@@ -720,14 +729,10 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             });
         // endregion： 解析结束
 
-        // console.log('解析结果预览：', this.cascadeList);
     }
 
 
     valueChange(data?) {
-       // console.log('解析结果预览：', this.cascadeList);
-        // console.log('有操作', data);
-        // Enable
 
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
