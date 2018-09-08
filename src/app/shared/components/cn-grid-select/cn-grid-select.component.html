@@ -3,7 +3,7 @@
   [nzSize]="config.size"
   [nzNotFoundContent]="config.notFoundContent"
   (ngModelChange)="valueChange($event)"
-  [(ngModel)]="_selectedMultipleOption"
+  [(ngModel)]="_selectedOption"
   [nzShowSearch]='config.showSearch'
   [nzPlaceHolder]="config.placeholder"
   [nzDisabled]="config.disabled"
@@ -13,5 +13,6 @@
              [nzLabel]="option.label"
              [nzValue]="option"
              [nzDisabled]="option.disabled"
-  ></nz-option>
+  >
+  </nz-option>
 </nz-select>

@@ -1,8 +1,8 @@
 
 <nz-date-picker
-[(ngModel)]="model"
-formControlName="{{config.name}}"
-nzShowTime="config.showTime"
+[(ngModel)]="_value"
+(ngModelChange)="valueChange($event)"
+[nzShowTime]="config.showTime"
 [nzFormat]="config.format"
 [nzShowToday]="config.showToday"
 [nzAllowClear]="true"

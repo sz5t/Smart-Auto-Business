@@ -15,14 +15,14 @@ import {Observable} from 'rxjs';
 import {Observer} from 'rxjs';
 
 @Component({
-    selector: 'cn-form-resolver,[cn-form-resolver]',
-    templateUrl: './form-resolver.component.html',
+    selector: 'cn-form-window-resolver,[cn-form-window-resolver]',
+    templateUrl: './form-window-resolver.component.html',
     styles:[
         `                                                                                                                            
         `
     ]
 })
-export class FormResolverComponent extends CnComponentBase implements OnInit, OnChanges, OnDestroy {
+export class CnFormWindowResolverComponent extends CnComponentBase implements OnInit, OnChanges, OnDestroy {
 
     @Input() config;
     @Input() permissions;
@@ -105,23 +105,10 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                         this._editable = BSN_FORM_STATUS.TEXT;
                         break;
                     case BSN_COMPONENT_MODES.SAVE:
-                        if(option.ajaxConfig) {
-                            this.saveForm_2(option.ajaxConfig);
-                        }
+                        this.saveForm_2();
                         break;
                     case BSN_COMPONENT_MODES.DELETE:
-                        if(option.ajaxConfig) {
-                            this.modalService.confirm({
-                                nzTitle: '确认当前数据？',
-                                nzContent: '',
-                                nzOnOk: () => {
-                                    this.delete(option.ajaxConfig.delete);
-                                },
-                                nzOnCancel() {
-                                }
-                            });
 
-                        }
                         break;
                     case BSN_COMPONENT_MODES.DIALOG:
 
@@ -399,32 +386,42 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         this.isSpinning = false;
     }
 
-    async saveForm_2(ajaxConfig) {
+    async saveForm_2() {
         let result;
+        let ajaxConfig;
         const method = this._editable;
         if(method === BSN_FORM_STATUS.TEXT) {
             this.message.warning('请在编辑数据后进行保存！');
             return false;
         } else {
-            result = this._execute(method, ajaxConfig[method]);
-            // this.config.toolbar.forEach(bar => {
-            //     if (bar.group && bar.group.length > 0) {
-            //         const index = bar.group.findIndex(item => item.name === 'saveForm');
-            //         if (index !== -1) {
-            //             ajaxConfig = bar.group[index].ajaxConfig[method];
-            //             result =  this._execute(method, ajaxConfig);
-            //         }
-            //
-            //     }
-            //     if (bar.dropdown && bar.dropdown.buttons && bar.dropdown.buttons.length > 0) {
-            //         const index = bar.dropdown.buttons.findIndex(item => item.name === 'saveForm');
-            //         if (index !== -1) {
-            //             ajaxConfig = bar.dropdown.buttons[index].ajaxConfig[method];
-            //             result =  this._execute(method, ajaxConfig);
-            //         }
-            //
-            //     }
-            // });
+            this.config.toolbar.forEach(bar => {
+                if (bar.group && bar.group.length > 0) {
+                    const index = bar.group.findIndex(item => item.name === 'saveForm');
+                    if (index !== -1) {
+                        ajaxConfig = bar.group[index].ajaxConfig[method];
+                        result =  this._execute(method, ajaxConfig);
+                    }
+
+                }
+                if (bar.dropdown && bar.dropdown.buttons && bar.dropdown.buttons.length > 0) {
+                    const index = bar.dropdown.buttons.findIndex(item => item.name === 'saveForm');
+                    if (index !== -1) {
+                        ajaxConfig = bar.dropdown.buttons[index].ajaxConfig[method];
+                        result =  this._execute(method, ajaxConfig);
+                    }
+
+                }
+            });
+        }
+        if(result) {
+            if (this.config.componentType && this.config.componentType.parent === true) {
+                this.cascade.next(
+                    new BsnComponentMessage(
+                        BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                        this.config.viewId
+                    )
+                );
+            }
         }
 
     }
@@ -557,17 +554,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             const res = await this._post(url, body);
             if (res.isSuccess) {
                 this.message.create('success', '保存成功');
-                this._editable = BSN_FORM_STATUS.TEXT;
-                this.load();
                 // 发送消息 刷新其他界面
-                if (this.config.componentType && this.config.componentType.parent === true) {
-                    this.cascade.next(
-                        new BsnComponentMessage(
-                            BSN_COMPONENT_CASCADE_MODES.REFRESH,
-                            this.config.viewId
-                        )
-                    );
-                }
             } else {
                 this.message.create('error', res.message);
                 result = false;
@@ -581,64 +568,16 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         for (let i = 0, len = putConfig.length; i < len; i++) {
             const url = this._buildURL(putConfig[i].url);
             const body = this._buildParameters(putConfig[i].params, putConfig[i].batch ? putConfig[i].batch : false);
-            if (body && !body['Id']) {
-                this.message.warning('编辑数据的Id不存在，无法进行更新！');
-                return;
+            const res = await this._put(url, body);
+            if (res.isSuccess) {
+                this.message.create('success', '保存成功');
+                // 发送消息 刷新其他界面
             } else {
-                const res = await this._put(url, body);
-                if (res.isSuccess) {
-                    this.message.create('success', '保存成功');
-                    this._editable = BSN_FORM_STATUS.TEXT;
-                    this.load();
-                    // 发送消息 刷新其他界面
-                    if (this.config.componentType && this.config.componentType.parent === true) {
-                        this.cascade.next(
-                            new BsnComponentMessage(
-                                BSN_COMPONENT_CASCADE_MODES.REFRESH,
-                                this.config.viewId
-                            )
-                        );
-                    }
-                } else {
-                    this.message.create('error', res.message);
-                    result = false;
-                }
+                this.message.create('error', res.message);
+                result = false;
             }
-
         }
         return result;
-    }
-
-    private async delete(deleteConfig) {
-        let result = true;
-        for (let i = 0, len = deleteConfig.length; i < len; i++) {
-            const url = this._buildURL(deleteConfig[i].url);
-            const body = this._buildParameters(deleteConfig[i].params, deleteConfig[i].batch ? deleteConfig[i].batch : false);
-            if (body && !body['Id']) {
-                this.message.warning('编辑数据的Id不存在，无法进行更新！');
-                return;
-            } else {
-                const res = await this._delete(url, body);
-                if (res.isSuccess) {
-                    this.message.create('success', '删除成功');
-                    this._editable = BSN_FORM_STATUS.TEXT;
-                    this.form.reset();
-                    // 发送消息 刷新其他界面
-                    if (this.config.componentType && this.config.componentType.parent === true) {
-                        this.cascade.next(
-                            new BsnComponentMessage(
-                                BSN_COMPONENT_CASCADE_MODES.REFRESH,
-                                this.config.viewId
-                            )
-                        );
-                    }
-                } else {
-                    this.message.create('error', res.message);
-                    result = false;
-                }
-            }
-        }
-
     }
 
     private _buildParameters(paramsConfig, isBatch) {
@@ -720,10 +659,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
     private async _put(url, body) {
         return this.apiService.put(url, body).toPromise();
-    }
-
-    private async _delete(url, body) {
-        return this.apiService.delete(url, body).toPromise();
     }
 
     initParameters(data?) {

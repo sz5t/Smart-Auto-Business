@@ -111,10 +111,13 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     resolverRelation() {
-        this._statusSubscription = this.eventStatus.subscribe(updateStatus => {
-            if (this.config.viewId = updateStatus._viewId) {
-                const option = updateStatus.option;
-                switch (updateStatus._mode) {
+        this._statusSubscription = this.eventStatus.subscribe(updateState => {
+            if (this.config.viewId === updateState._viewId) {
+                const option = updateState.option;
+                switch (updateState._mode) {
+                    case BSN_COMPONENT_MODES.REFRESH:
+                        this.load();
+                        break;
                     case BSN_COMPONENT_MODES.ADD_NODE:
                         break;
                     case BSN_COMPONENT_MODES.DELETE_NODE:
@@ -154,6 +157,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         // 注册多界面切换消息
         if (this.config.componentType && this.config.componentType.sub === true) {
             this.after(this, 'clickNode', () => {
+
                 this._clickedNode && this.cascade.next(
                     new BsnComponentMessage(
                         BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
@@ -275,12 +279,12 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                         }
                     });
                 }
-                const result = new NzTreeNode({
-                    title: '根节点',
-                    key: 'null',
-                    isLeaf: false,
-                    children: []
-                });
+                // const result = new NzTreeNode({
+                //     title: '根节点',
+                //     key: 'null',
+                //     isLeaf: false,
+                //     children: []
+                // });
                 this.treeData = this._setDataToNzTreeNodes(this._toTreeBefore, parent);
             }
         })();

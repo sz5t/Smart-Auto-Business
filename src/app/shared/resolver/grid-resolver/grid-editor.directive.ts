@@ -19,6 +19,7 @@ import {CnGridInputComponent} from '@shared/components/cn-grid-input/cn-grid-inp
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {CnGridSelectComponent} from '@shared/components/cn-grid-select/cn-grid-select.component';
 import {CnGridSelectTreeComponent} from '@shared/components/cn-grid-select-tree/cn-grid-select-tree.component';
+import {CnGridDatePickerComponent} from '@shared/components/cn-grid-date-picker/cn-grid-date-picker.component';
 const components: { [type: string]: Type<any> } = {
     input: CnGridInputComponent,
     select: CnGridSelectComponent,
@@ -28,7 +29,8 @@ const components: { [type: string]: Type<any> } = {
     checkbox: NzCheckboxComponent,
     checkboxGroup: NzCheckboxGroupComponent,
     radioGroup: NzRadioComponent,
-    selectTree: CnGridSelectTreeComponent
+    selectTree: CnGridSelectTreeComponent,
+    datePicker: CnGridDatePickerComponent
 
 };
 export const EXE_COUNTER_VALUE_ACCESSOR: any = {

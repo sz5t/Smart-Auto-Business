@@ -4,7 +4,7 @@
     nzPlaceHolder="{{config.placeholder}}"
     [(ngModel)]="_selectedValue"
     [nzDefaultExpandedKeys]="_selectedValue"
-    [nzDefaultExpandAll]="true"
+    [nzDefaultExpandAll]="config.expandAll"
     (ngModelChange)="valueChange($event)"
 >
 </nz-tree-select>

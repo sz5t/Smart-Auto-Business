@@ -12,6 +12,7 @@ export class TreeAndSubTableComponent implements OnInit {
     }
 
     ngOnInit() {
+        // console.log(JSON.stringify(this.config));
     }
 
     config = {

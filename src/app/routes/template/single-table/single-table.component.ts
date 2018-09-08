@@ -229,6 +229,8 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                         'component': 'bsnTable',
                                         'info': true,
                                         'keyId': 'Id',
+                                        'scroll': {x: '90%', y: '400px'},
+                                        'showCheckBox': true,
                                         'size': 'small',
                                         'pagination': true, // 是否分页
                                         'showTotal': true, // 是否显示总数据量
@@ -240,41 +242,44 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                             'params': [],
                                             'filter': [
                                                 {
-                                                    name: 'caseName', valueName: '_caseName', type: '', value: ''
+                                                    name: 'caseName',
+                                                    valueName: '_caseName',
+                                                    type: 'tempValue',
+                                                    value: ''
                                                 },
                                                 {
-                                                    name: 'enabled', valueName: '_enabled', type: '', value: ''
+                                                    name: 'enabled', valueName: '_enabled', type: 'tempValue', value: ''
                                                 },
                                                 {
-                                                    name: 'caseType', valueName: '_caseType', type: '', value: ''
+                                                    name: 'caseType',
+                                                    valueName: '_caseType',
+                                                    type: 'tempValue',
+                                                    value: ''
                                                 }
                                             ]
                                         },
                                         'columns': [
                                             {
-                                                title: '序号', field: '_serilize', width: '50px', hidden: true,
+                                                title: '序号',
+                                                field: '_serilize',
+                                                width: '5%',
+                                                hidden: false,
+                                                titleAlign: 'text-center',
+                                                fieldAlign: 'text-center'
+                                            },
+                                            {
+                                                title: 'Id', field: 'Id', width: '1px', hidden: true,
                                                 editor: {
                                                     type: 'input',
                                                     field: 'Id',
                                                     options: {
                                                         'type': 'input',
-                                                        'inputType': 'text',
+                                                        'inputType': 'text'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: 'Id', field: 'Id', width: 80, hidden: true,
-                                                editor: {
-                                                    type: 'input',
-                                                    field: 'Id',
-                                                    options: {
-                                                        'type': 'input',
-                                                        'inputType': 'text',
-                                                    }
-                                                }
-                                            },
-                                            {
-                                                title: '名称', field: 'caseName', width: '90px',
+                                                title: '名称', field: 'caseName', width: '15%',
                                                 showFilter: false, showSort: false,
                                                 editor: {
                                                     type: '',
@@ -286,15 +291,13 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 }
                                             },
                                             {
-                                                title: '类别', field: 'caseTypeText', width: '100px', hidden: false,
+                                                title: '类别', field: 'caseTypeText', width: '15%', hidden: false,
                                                 showFilter: true, showSort: true,
                                                 editor: {
                                                     type: 'select',
                                                     field: 'caseType',
                                                     options: {
                                                         'type': 'select',
-                                                        'labelSize': '6',
-                                                        'controlSize': '18',
                                                         'inputType': 'submit',
                                                         'name': 'caseType',
                                                         'label': 'Type',
@@ -305,7 +308,8 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'disabled': false,
                                                         'size': 'default',
                                                         'clear': true,
-                                                        'width': '200px',
+                                                        'width': '100%',
+                                                        'defaultValue': '1',
                                                         'options': [
                                                             {
                                                                 'label': '表格',
@@ -337,7 +341,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 }
                                             },
                                             {
-                                                title: '数量', field: 'caseCount', width: 80, hidden: false,
+                                                title: '数量', field: 'caseCount', width: '10%', hidden: false,
                                                 editor: {
                                                     type: 'input',
                                                     field: 'caseCount',
@@ -350,7 +354,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 }
                                             },
                                             {
-                                                title: '级别', field: 'caseLevel', width: 80, hidden: false,
+                                                title: '级别', field: 'caseLevel', width: '10%', hidden: false,
                                                 showFilter: false, showSort: false,
                                                 editor: {
                                                     type: 'input',
@@ -365,24 +369,25 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                             },
                                             {
                                                 title: '创建时间',
-                                                field: 'createTime',
-                                                width: 80,
+                                                field: 'createDate',
+                                                width: '10%',
                                                 hidden: false,
                                                 dataType: 'date',
                                                 editor: {
                                                     type: 'input',
                                                     pipe: 'datetime',
-                                                    field: 'createTime',
+                                                    field: 'createDate',
                                                     options: {
-                                                        'type': 'input',
-                                                        'labelSize': '6',
-                                                        'controlSize': '18',
+                                                        'type': 'datePicker',
                                                         'inputType': 'datetime',
+                                                        'name': 'createDate',
+                                                        'showTime': false,
+                                                        'formart': 'yyyy-MM-dd'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: '备注', field: 'remark', width: 80, hidden: false,
+                                                title: '备注', field: 'remark', width: '10%', hidden: false,
                                                 editor: {
                                                     type: 'input',
                                                     field: 'remark',
@@ -390,12 +395,12 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'type': 'input',
                                                         'labelSize': '6',
                                                         'controlSize': '18',
-                                                        'inputType': 'text',
+                                                        'inputType': 'text'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: '父类别', field: 'parentName', width: 80, hidden: false,
+                                                title: '父类别', field: 'parentName', width: '10%', hidden: false,
                                                 editor: {
                                                     type: 'select',
                                                     field: 'parentId',
@@ -412,13 +417,18 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'disabled': false,
                                                         'size': 'default',
                                                         'clear': true,
-                                                        'width': '80px',
-                                                        'dataSet': 'getCaseName'
+                                                        'dataSet': 'getCaseName',
+                                                        'width': '100%'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: '状态', field: 'enableText', width: 80, hidden: false,
+                                                title: '状态',
+                                                field: 'enableText',
+                                                width: '10%',
+                                                hidden: false,
+                                                titleAlign: 'text-right',
+                                                fieldAlign: 'text-right',
                                                 formatter: [
                                                     {
                                                         'value': '启用',
@@ -449,16 +459,17 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'disabled': false,
                                                         'size': 'default',
                                                         'clear': true,
-                                                        'width': '80px',
+                                                        'width': '100%',
+                                                        'defaultValue': 1,
                                                         'options': [
                                                             {
                                                                 'label': '启用',
-                                                                'value': true,
+                                                                'value': 1,
                                                                 'disabled': false
                                                             },
                                                             {
                                                                 'label': '禁用',
-                                                                'value': false,
+                                                                'value': 0,
                                                                 'disabled': false
                                                             }
                                                         ]
@@ -475,9 +486,9 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                             'relationViewId': 'search_form',
                                             'cascadeMode': 'REFRESH_AS_CHILD',
                                             'params': [
-                                                { pid: 'caseName', cid: '_caseName' },
-                                                { pid: 'enabled', cid: '_enabled' },
-                                                { pid: 'caseType', cid: '_caseType' }
+                                                {pid: 'caseName', cid: '_caseName'},
+                                                {pid: 'enabled', cid: '_enabled'},
+                                                {pid: 'caseType', cid: '_caseType'}
                                             ],
                                             'relationReceiveContent': []
                                         }],
@@ -486,7 +497,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 group: [
                                                     {
                                                         'name': 'refresh',
-                                                        'class': 'editable-add-btn',
+                                                        'action': 'REFRESH',
                                                         'text': '刷新',
                                                         'color': 'text-primary'
                                                     },
@@ -514,16 +525,15 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'icon': 'anticon anticon-delete',
                                                         'color': 'text-red-light',
                                                         'ajaxConfig': {
-                                                            delete: [{
-                                                                'actionName': 'delete',
-                                                                'url': 'common/ShowCase',
-                                                                'ajaxType': 'delete',
-                                                                'params': [
-                                                                    {
-                                                                        name: 'Id', valueName: 'Id', type: 'checkedRow'
-                                                                    }
-                                                                ]
-                                                            }]
+                                                            delete: [
+                                                                {
+                                                                    'actionName': 'delete',
+                                                                    'url': 'common/ShowCase',
+                                                                    'ajaxType': 'delete',
+                                                                    'title': '提示',
+                                                                    'message': '确认要删除当前勾选的数据么？'
+                                                                }
+                                                            ]
                                                         }
                                                     }
                                                 ]
@@ -539,18 +549,30 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'color': 'text-red-light',
                                                         'actionType': 'post',
                                                         'actionName': 'execChecked',
-                                                        'ajaxConfig': {
-                                                            post: [{
-                                                                'actionName': 'post',
-                                                                'url': 'common/ShowCase',
+                                                        'ajaxConfig': [
+                                                            {
+                                                                'action': 'EXECUTE_CHECKED',
+                                                                'url': 'common/DeleteShowCase',
                                                                 'ajaxType': 'post',
+                                                                'title': '提示',
+                                                                'message': '是否将选中的数据执行当前操作？',
                                                                 'params': [
                                                                     {
-                                                                        name: 'Id', valueName: 'Id', type: 'checkedRow'
+                                                                        name: 'Id',
+                                                                        valueName: 'Id',
+                                                                        type: 'checkedRow',
+                                                                        'dataType': 'table',
+                                                                        'dataMapping': [
+                                                                            {
+                                                                                name: 'Id',
+                                                                                valueName: 'Id',
+                                                                                type: 'checkedRow'
+                                                                            }
+                                                                        ]
                                                                     }
                                                                 ]
-                                                            }]
-                                                        }
+                                                            }
+                                                        ]
                                                     },
                                                     {
                                                         'name': 'executeSelectedRow',
@@ -560,18 +582,20 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'icon': 'anticon anticon-delete',
                                                         'actionType': 'post',
                                                         'actionName': 'execSelected',
-                                                        'ajaxConfig': {
-                                                            post: [{
-                                                                'actionName': 'post',
+                                                        'ajaxConfig': [
+                                                            {
+                                                                'action': 'EXECUTE_SELECTED',
                                                                 'url': 'common/ShowCase',
                                                                 'ajaxType': 'post',
+                                                                'title': '提示',
+                                                                'message': '是否将选中的数据执行当前操作？',
                                                                 'params': [
                                                                     {
-                                                                        name: 'Id', valueName: 'Id', type: 'checkedRow'
+                                                                        name: 'Id', valueName: 'Id', type: 'selectedRow'
                                                                     }
                                                                 ]
-                                                            }]
-                                                        }
+                                                            }
+                                                        ]
                                                     },
                                                     {
                                                         'name': 'saveRow',
@@ -634,6 +658,12 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                         type: 'componentValue',
                                                                         valueName: 'caseType',
                                                                         value: ''
+                                                                    },
+                                                                    {
+                                                                        name: 'createDate',
+                                                                        type: 'componentValue',
+                                                                        valueName: 'createDate',
+                                                                        value: ''
                                                                     }
                                                                 ],
                                                                 'output': [
@@ -694,6 +724,12 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                         name: 'caseType',
                                                                         type: 'componentValue',
                                                                         valueName: 'caseType',
+                                                                        value: ''
+                                                                    },
+                                                                    {
+                                                                        name: 'createDate',
+                                                                        type: 'componentValue',
+                                                                        valueName: 'createDate',
                                                                         value: ''
                                                                     }
                                                                 ]
@@ -841,16 +877,15 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 'placeholder': '--请选择--',
                                                                 'disabled': false,
                                                                 'size': 'default',
+                                                                'defaultValue': 1,
                                                                 'options': [
                                                                     {
                                                                         'label': '启用',
-                                                                        'value': true,
-                                                                        'disabled': false
+                                                                        'value': 0
                                                                     },
                                                                     {
                                                                         'label': '禁用',
-                                                                        'value': false,
-                                                                        'disabled': false
+                                                                        'value': 1
                                                                     }
                                                                 ],
                                                                 'layout': 'column',
@@ -875,6 +910,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 'placeholder': '--请选择--',
                                                                 'disabled': false,
                                                                 'size': 'default',
+                                                                'defaultValue': '6b4021cef8394d5fb4775afcd01d920f',
                                                                 'ajaxConfig': {
                                                                     'url': 'common/ShowCase',
                                                                     'ajaxType': 'get',
@@ -961,7 +997,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         ]
                                                     },
                                                     {
-                                                        controls:[
+                                                        controls: [
                                                             {
                                                                 'type': 'checkboxGroup',
                                                                 'label': '选项',
@@ -985,7 +1021,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         ]
                                                     },
                                                     {
-                                                        controls:[
+                                                        controls: [
                                                             {
                                                                 'type': 'radioGroup',
                                                                 'label': '选项',
@@ -1256,16 +1292,15 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 'placeholder': '--请选择--',
                                                                 'disabled': false,
                                                                 'size': 'default',
+                                                                'defaultValue': 1,
                                                                 'options': [
                                                                     {
                                                                         'label': '启用',
-                                                                        'value': true,
-                                                                        'disabled': false
+                                                                        'value': 1
                                                                     },
                                                                     {
                                                                         'label': '禁用',
-                                                                        'value': false,
-                                                                        'disabled': false
+                                                                        'value': 0
                                                                     }
                                                                 ],
                                                                 'layout': 'column',
@@ -1331,22 +1366,22 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 'size': 'default',
                                                                 'layout': 'column',
                                                                 'span': '24',
-                                                                'validations': [
-                                                                    {
-                                                                        'validator': 'required',
-                                                                        'errorMessage': '请输入Case名称!!!!'
-                                                                    },
-                                                                    {
-                                                                        'validator': 'minLength',
-                                                                        'length': '3',
-                                                                        'errorMessage': '请输入最少三个字符'
-                                                                    },
-                                                                    {
-                                                                        'validator': 'maxLength',
-                                                                        'length': '5',
-                                                                        'errorMessage': '请输入最5个字符'
-                                                                    }
-                                                                ]
+                                                                // 'validations': [
+                                                                //     {
+                                                                //         'validator': 'required',
+                                                                //         'errorMessage': '请输入Case名称!!!!'
+                                                                //     },
+                                                                //     {
+                                                                //         'validator': 'minLength',
+                                                                //         'length': '3',
+                                                                //         'errorMessage': '请输入最少三个字符'
+                                                                //     },
+                                                                //     {
+                                                                //         'validator': 'maxLength',
+                                                                //         'length': '5',
+                                                                //         'errorMessage': '请输入最5个字符'
+                                                                //     }
+                                                                // ]
                                                             },
                                                         ]
                                                     },
@@ -1391,17 +1426,17 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 'size': 'default',
                                                                 'layout': 'column',
                                                                 'span': '24',
-                                                                'validations': [
-                                                                    {
-                                                                        'validator': 'required',
-                                                                        'errorMessage': '请输入数量'
-                                                                    },
-                                                                    {
-                                                                        'validator': 'pattern',
-                                                                        'pattern': "/^\d+$/",
-                                                                        'errorMessage': '请填写数字'
-                                                                    }
-                                                                ]
+                                                                // 'validations': [
+                                                                //     {
+                                                                //         'validator': 'required',
+                                                                //         'errorMessage': '请输入数量'
+                                                                //     },
+                                                                //     {
+                                                                //         'validator': 'pattern',
+                                                                //         'pattern': /^\d+$/,
+                                                                //         'errorMessage': '请填写数字'
+                                                                //     }
+                                                                // ]
                                                             },
 
                                                         ]
@@ -1488,6 +1523,12 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                         value: ''
                                                                     },
                                                                     {
+                                                                        name: 'parentId',
+                                                                        type: 'componentValue',
+                                                                        valueName: 'parentId',
+                                                                        value: ''
+                                                                    },
+                                                                    {
                                                                         name: 'caseCount',
                                                                         type: 'componentValue',
                                                                         valueName: 'caseCount',
@@ -1543,7 +1584,6 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     {
                                                         'name': 'ok1',
                                                         'text': '确定',
-                                                        'class': 'editable-add-btn',
                                                         'type': 'primary'
                                                     },
                                                     {'name': 'close', 'text': '关闭'}
@@ -2630,7 +2670,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        //console.log(JSON.stringify(this.config));
+        // console.log(JSON.stringify(this.config));
         this.formGroup = new FormGroup({});
     }
 
@@ -2678,7 +2718,6 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
 
     create() {
         this.config = JSON.parse(this.getValue());
-        console.log(this.config);
     }
 
     resolveComponent() {

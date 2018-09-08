@@ -10,7 +10,9 @@ export class TreeAndFormComponent implements OnInit {
 
     constructor(private http: _HttpClient) { }
 
-    ngOnInit() { }
+    ngOnInit() {
+        // console.log(JSON.stringify(this.config));
+    }
 
     config = {
         rows: [

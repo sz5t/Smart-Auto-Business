@@ -1479,6 +1479,7 @@ export class TreeAndTabsComponent implements OnInit {
     }
 
     ngOnInit() {
+        // console.log(JSON.stringify(this.config));
     }
 
 }

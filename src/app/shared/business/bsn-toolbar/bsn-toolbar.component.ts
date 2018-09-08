@@ -78,7 +78,7 @@ export class BsnToolbarComponent implements OnInit {
     }
 
     toolbarAction(btn) {
-        console.log('send btn message');
+        // console.log('send btn message', this.viewId);
         // const message = new BsnToolbarRelativeMessage();
         // message.action = this.TABLE_MODELS[btn.action];
         // message.messageData = this.config;

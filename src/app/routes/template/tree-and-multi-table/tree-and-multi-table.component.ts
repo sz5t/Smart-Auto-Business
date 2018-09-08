@@ -93,6 +93,7 @@ export class TreeAndMultiTableComponent implements OnInit {
                                     'info': true,
                                     'keyId': 'Id',
                                     'size': 'small',
+                                    'showCheckBox': false,
                                     'pagination': true, // 是否分页
                                     'showTotal': true, // 是否显示总数据量
                                     'pageSize': 5, // 默认每页数据条数
@@ -1433,6 +1434,7 @@ export class TreeAndMultiTableComponent implements OnInit {
                                   'title': '数据网格',
                                   'viewId': 'singleTable_2',
                                   'component': 'bsnTable',
+                                  'showCheckBox': false,
                                   'info': true,
                                   'keyId': 'Id',
                                   'size': 'small',
@@ -2768,6 +2770,8 @@ export class TreeAndMultiTableComponent implements OnInit {
   };
   constructor(private http: _HttpClient) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+      // console.log(JSON.stringify(this.config));
+  }
 
 }

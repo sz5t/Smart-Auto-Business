@@ -489,7 +489,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                           }
                                         ]
                                       },
-    
+
                                     ]
                                   },
                                   {
@@ -594,7 +594,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                   { 'name': 'reset', 'text': '重置' },
                                   { 'name': 'close', 'text': '关闭' }
                                 ],
-    
+
                             }
                           },
                           {
@@ -759,7 +759,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                         'layout': 'column',
                                         'span': '24'
                                       },
-    
+
                                     ]
                                   },
                                   {
@@ -1661,7 +1661,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     // data: [
                     //   { name: 'm1', month: '一月', tem: 7.0, city: '东京' },
                     //   { name: 'm11', month: '一月', tem: 3.9, city: '伦敦' },
-                      
+
                     //   { name: 'm2', month: '二月', tem: 9.5, city: '东京' },
                     //   { name: 'm22', month: '二月', tem: 5.7, city: '伦敦' },
                     //   { name: 'm333', month: '二月', tem: 20, city: '西安' },
@@ -1830,7 +1830,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     // data: [
                     //   { name: 'm1', month: '一月', tem: 7.0, city: '东京' },
                     //   { name: 'm11', month: '一月', tem: 3.9, city: '伦敦' },
-                      
+
                     //   { name: 'm2', month: '二月', tem: 9.5, city: '东京' },
                     //   { name: 'm22', month: '二月', tem: 5.7, city: '伦敦' },
                     //   { name: 'm333', month: '二月', tem: 20, city: '西安' },
@@ -1866,6 +1866,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+      // console.log(JSON.stringify(this.config));
   }
   // region: init
   ngAfterViewInit() {

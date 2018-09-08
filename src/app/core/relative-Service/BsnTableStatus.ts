@@ -14,6 +14,7 @@ export const BSN_COMPONENT_MODES = {
     EXECUTE_CHECKED: 'execute_checked',
     SEARCH : 'Search',
     UPLOAD: 'upload',
+    REFRESH: 'refresh',
     // tree
     ADD_NODE: 'addNode',
     EDIT_NODE: 'editNode',
@@ -27,9 +28,30 @@ export const BSN_COMPONENT_MODES = {
 
 };
 
+export const BSN_FORM_STATUS = {
+    CREATE: 'post',
+    EDIT: 'put',
+    TEXT: 'text'
+};
+
+export const BSN_PARAMETER_TYPE = {
+    TEMP_VALUE: 'tempValue',
+    VALUE: 'value',
+    GUID: 'GUID',
+    COMPONENT_VALUE: 'componentValue',
+    CHECKED_ROW: 'checkedRow',
+    SELECTED_ROW: 'selectedRow'
+};
+
+export const BSN_EXECUTE_ACTION = {
+    EXECUTE_SELECTED: 'EXECUTE_SELECTED',
+    EXECUTE_CHECKED: 'EXECUTE_CHECKED'
+};
+
 export const BSN_COMPONENT_CASCADE_MODES = {
     // grid, tree
     REFRESH_AS_CHILD : 'refreshAsChild',
+    RELOAD: 'reload',
     REFRESH: 'refresh',
     REPLACE_AS_CHILD: 'replaceAsChild',
 

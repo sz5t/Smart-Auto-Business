@@ -23,7 +23,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
   constructor(
     private apiService: ApiService
   ) { }
-  _selectedMultipleOption;
+    _selectedOption;
 
   ngOnInit() {
     if (!this.config['multiple']) {
@@ -36,7 +36,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
        for (const key in this.config['caseCodeValue']) {
          if (this.config['caseCodeValue'].hasOwnProperty(key)) {
           this. caseCodeValue['caseCodeValue'] = this.config['caseCodeValue'][key];
-           
+
          }
        }
 
@@ -46,7 +46,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
     if (this.dataSet) {
       // 加载数据集
       this._options = this.dataSet;
-      // this.selectedByLoaded();
+      this.selectedByLoaded();
     } else if (this.config.ajaxConfig) {
       // 异步加载options
       (async () => {
@@ -64,15 +64,15 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
             this._options.push({ 'label': d[this.config.labelName], 'value': d[this.config.valueName] });
           });
         }
-        // this.selectedByLoaded();
+        this.selectedByLoaded();
       })();
     } else {
 
       // 加载固定数据
       this._options = this.config.options;
-      // this.selectedByLoaded();
+      this.selectedByLoaded();
     }
-   
+
   }
 
   ngOnChanges() {
@@ -80,11 +80,11 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
    // console.log('变化时临时参数' , this.bsnData);
   }
   ngAfterViewInit() {
-    this.selectedByLoaded();
+
   }
 
   async asyncLoadOptions(p?, componentValue?, type?) {
-    console.log('select load 异步加载'); // liu
+    // console.log('select load 异步加载'); // liu
     const params = {
     };
     let tag = true;
@@ -118,7 +118,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
           params[param.name] = componentValue[param.valueName];
         } else if (param.type === 'caseCodeValue') {
           params[param.name] = this.caseCodeValue[param.valueName];
-          
+
         }
       });
       if (this.isString(p.url)) {
@@ -161,20 +161,30 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   selectedByLoaded() {
-    if (this.value) {
       let selected;
-      this._options.forEach(element => {
-        if (element.value === this.value.data) {
-          selected = element;
-        }
-      });
-      this._selectedMultipleOption = selected;
-    }
+      if(!this.value) {
+          this.value = this.config.defaultValue;
+      }
+      if (this.value && this.value.data) {
+          this._options.forEach(element => {
+              if (element.value === this.value.data) {
+                  selected = element;
+              }
+          });
+
+      } else {
+          this._options.forEach((element => {
+              if(element.value === this.config.defaultValue) {
+                  selected = element;
+              }
+          }));
+      }
+
+      this._selectedOption = selected;
   }
 
   valueChange(name?) {
     if (name) {
-      //   this.updateValue.emit(name);
       const backValue = { name: this.config.name, value: name };
       this.updateValue.emit(backValue);
     } else {

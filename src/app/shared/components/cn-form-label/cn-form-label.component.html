@@ -1,0 +1,19 @@
+<nz-form-label [nzSpan]="config.labelSize" [nzRequired]="config.isRequired">
+    {{config.label}}
+</nz-form-label>
+<nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+    <nz-input-group
+        [nzCompact]="false"
+        [nzSize]="'default'"
+        [nzSuffix]="suffixTemplate"
+        [nzPrefixIcon]="config.perfix">
+        <input nz-input
+               hidden="hidden"
+               type="{{config.inputType}}"
+               formControlName="{{config.name}}"
+               [nzSize]="config.size"
+               placeholder="{{config.placeholder}}"
+               [(ngModel)]="model"/>
+        <nz-form-text>{{model}}</nz-form-text>
+    </nz-input-group>
+</nz-form-control>
