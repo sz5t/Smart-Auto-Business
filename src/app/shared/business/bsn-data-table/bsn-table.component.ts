@@ -1035,40 +1035,41 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     deleteRow(option) {
         if (this.dataList.filter(item => item.checked === true).length <= 0) {
             this.message.create('info', '请选择要删除的数据');
-            return false;
-        }
-        if (option.ajaxConfig.delete && option.ajaxConfig.delete.length > 0) {
-            option.ajaxConfig.delete.map(async delConfig => {
-                this.modalService.confirm({
-                    nzTitle: delConfig.title ? delConfig.title : '提示' ,
-                    nzContent: delConfig.message ? delConfig.message : '',
-                    nzOnOk: () => {
-                        const newData = [];
-                        const serverData = [];
-                        this.dataList.forEach(item => {
-                            if (item.checked === true && item['row_status'] === 'adding') {
-                                // 删除新增临时数据
-                                newData.push(item.key);
-                            }
-                            if (item.checked === true) {
-                                // 删除服务端数据
-                                serverData.push(item.Id);
-                            }
-                        });
-                        if (newData.length > 0) {
-                            newData.forEach(d => {
-                                this.dataList.splice(this.dataList.indexOf(d), 1);
+        } else {
+            if (option.ajaxConfig.delete && option.ajaxConfig.delete.length > 0) {
+                option.ajaxConfig.delete.map(async delConfig => {
+                    this.modalService.confirm({
+                        nzTitle: delConfig.title ? delConfig.title : '提示' ,
+                        nzContent: delConfig.message ? delConfig.message : '',
+                        nzOnOk: () => {
+                            const newData = [];
+                            const serverData = [];
+                            this.dataList.forEach(item => {
+                                if (item.checked === true && item['row_status'] === 'adding') {
+                                    // 删除新增临时数据
+                                    newData.push(item.key);
+                                }
+                                if (item.checked === true) {
+                                    // 删除服务端数据
+                                    serverData.push(item.Id);
+                                }
                             });
-                        }
-                        if (serverData.length > 0) {
-                            // 目前对应单个操作可以正确执行，多个操作由于异步的问题，需要进一步调整实现方式
-                            this._executeDelete(delConfig, serverData);
-                        }
-                    },
-                    nzOnCancel: () => {}
+                            if (newData.length > 0) {
+                                newData.forEach(d => {
+                                    this.dataList.splice(this.dataList.indexOf(d), 1);
+                                });
+                            }
+                            if (serverData.length > 0) {
+                                // 目前对应单个操作可以正确执行，多个操作由于异步的问题，需要进一步调整实现方式
+                                this._executeDelete(delConfig, serverData);
+                            }
+                        },
+                        nzOnCancel: () => {}
+                    });
                 });
-            });
+            }
         }
+
     }
 
     async _executeDelete(deleteConfig, ids) {
@@ -1267,25 +1268,25 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     private _getCheckedItemIds(): string[] {
+        const serverData = [];
         if (this.dataList.filter(item => item.checked === true).length <= 0) {
             this.message.create('info', '请选择要执行的数据');
-            return false;
+        } else {
+            this.dataList.forEach(item => {
+                // if (item.checked === true && item['row_status'] === 'adding') {
+                //     // 删除新增临时数据
+                //     newData.push(item.key);
+                // }
+                if (item.checked === true
+                    && item['row_status'] !== 'adding'
+                    && item['row_status'] !== 'updating'
+                    && item['row_status'] !== 'search'
+                ) {
+                    // 删除服务端数据
+                    serverData.push(item);
+                }
+            });
         }
-        const serverData = [];
-        this.dataList.forEach(item => {
-            // if (item.checked === true && item['row_status'] === 'adding') {
-            //     // 删除新增临时数据
-            //     newData.push(item.key);
-            // }
-            if (item.checked === true
-                && item['row_status'] !== 'adding'
-                && item['row_status'] !== 'updating'
-                && item['row_status'] !== 'search'
-            ) {
-                // 删除服务端数据
-                serverData.push(item);
-            }
-        });
         return serverData;
     }
 
