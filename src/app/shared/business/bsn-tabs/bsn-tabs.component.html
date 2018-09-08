@@ -1,6 +1,11 @@
 <nz-tabset [nzTabPosition]="config.tabPosition" [nzType]="config.tabType" [nzSize]="config.size">
     <nz-tab *ngFor="let tab of config.tabs" [nzTitle]="header">
-        <cn-component-resolver [config]="tabConfig" *ngFor="let tabConfig of tab.viewCfg"></cn-component-resolver>
+        <ng-container *ngIf="tab.rows;else tabView">
+                <cn-layout-resolver [layoutId]="" [config]="tab"></cn-layout-resolver>
+        </ng-container>
+        <ng-template #tabView>
+                <cn-component-resolver [config]="tabConfig" *ngFor="let tabConfig of tab.viewCfg"></cn-component-resolver>
+        </ng-template>
         <ng-template #header>
             <span><i class={{tab.icon}}></i> {{tab.title}}</span>
         </ng-template>
