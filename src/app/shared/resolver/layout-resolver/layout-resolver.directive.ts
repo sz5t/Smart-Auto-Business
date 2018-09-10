@@ -51,6 +51,7 @@ export class LayoutResolverDirective implements OnInit, OnChanges {
 
     buildComponent(config, data) {
         const comp = this.resolver.resolveComponentFactory<any>(ComponentResolverComponent);
+        this.container.clear();
         this.component = this.container.createComponent(comp);
         this.component.instance.config = config;
         this.component.instance.tempValue = data;

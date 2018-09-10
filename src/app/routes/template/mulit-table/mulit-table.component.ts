@@ -2465,6 +2465,7 @@ export class MulitTableComponent implements OnInit {
     }
 
     ngOnInit() {
+        // console.log(JSON.stringify(this.config));
     }
 
 }

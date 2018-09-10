@@ -1,44 +1,52 @@
+
 <nz-spin [nzSpinning]="isSpinning" [nzDelay]="300" nzTip='加载中...'>
-  <form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form" (ngSubmit)="save($event)">
+    <bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId"></bsn-toolbar>
+    <nz-card>
+        <form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form" (ngSubmit)="save($event)">
+            <ng-container *ngFor="let formItem of config.forms">
+                <div nz-row [nzGutter]="24">
+                    <ng-container *ngFor="let control of formItem.controls">
+                        <ng-container *ngIf="!control.hidden">
+                            <!-- 垂直表单布局-->
+                            <nz-form-item *ngIf="control.layout==='row'">
+                                <ng-container *ngIf="_editable" cnFormResolverDirective [formGroup]="form" [config]="control" [changeConfig]="changeConfig" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
 
-    <ng-container *ngFor="let formItem of config.forms">
-        <div nz-row [nzGutter]="24">
-            <ng-container *ngFor="let control of formItem.controls">
-            <ng-container *ngIf="!control.hidden">
-                <!-- 垂直表单布局-->
-                <nz-form-item *ngIf="control.layout==='row'">
-                  <ng-container cnFormResolverDirective [formGroup]="form" [config]="control" [changeConfig]="changeConfig" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
+                                </ng-container>
+                                <ng-container *ngIf="!_editable"  cnFormLabelDirective [formGroup]="form" [config]="control">
 
-                  </ng-container>
-                </nz-form-item>
+                                </ng-container>
+                            </nz-form-item>
 
-                <!-- 水平表单布局-->
-                <div nz-col [nzSpan]="control.span">
-                    <nz-form-item>
-                      <ng-container cnFormResolverDirective [formGroup]="form" [config]="control" [changeConfig]="changeConfig" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
+                            <!-- 水平表单布局-->
+                            <div nz-col [nzSpan]="control.span">
+                                <nz-form-item>
+                                    <ng-container *ngIf="_editable === 'post'||_editable === 'put'" cnFormResolverDirective [formGroup]="form" [config]="control" [changeConfig]="changeConfig" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
 
-                      </ng-container>
-                    </nz-form-item>
-                  </div>
-              </ng-container>
+                                    </ng-container>
+                                    <ng-container *ngIf="_editable === 'text'" cnFormLabelDirective [formGroup]="form" [config]="control">
+
+                                    </ng-container>
+                                </nz-form-item>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
             </ng-container>
-        </div>
-    </ng-container>
-
-    <div nz-row style="text-align: right;" [nzGutter]="config.toolbar.gutter" *ngIf="config.toolbar">
-        <nz-form-control [nzOffset]="config.toolbar.offset" [nzSpan]="config.toolbar.span">
-            <ng-container *ngFor="let bar of config.toolbar.buttons">
-                <button
-                    nz-button
-                    type="button"
-                    [nzLoading]="bar.name==='saveForm' && _isSaving"
-                    (click)="buttonAction(bar)"
-                    [nzType]="bar.type"
-                    [ngStyle]
-                >{{bar.text}}
-                </button>
-            </ng-container>
-        </nz-form-control>
-    </div>
-  </form>
+            <!--<div nz-row style="text-align: right;" [nzGutter]="config.toolbar.gutter" *ngIf="config.toolbar && _editable">-->
+                <!--<nz-form-control [nzOffset]="config.toolbar.offset" [nzSpan]="config.toolbar.span">-->
+                    <!--<ng-container *ngFor="let bar of config.toolbar.buttons">-->
+                        <!--<button-->
+                            <!--nz-button-->
+                            <!--type="button"-->
+                            <!--[nzLoading]="bar.name==='saveForm' && _isSaving"-->
+                            <!--(click)="buttonAction(bar)"-->
+                            <!--[nzType]="bar.type"-->
+                            <!--[ngStyle]-->
+                        <!--&gt;{{bar.text}}-->
+                        <!--</button>-->
+                    <!--</ng-container>-->
+                <!--</nz-form-control>-->
+            <!--</div>-->
+        </form>
+    </nz-card>
 </nz-spin>

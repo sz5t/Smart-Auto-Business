@@ -12,6 +12,7 @@ export class TreeAndTableComponent implements OnInit {
     }
 
     ngOnInit() {
+        // console.log(JSON.stringify(this.config));
     }
 
     config = {
@@ -105,7 +106,14 @@ export class TreeAndTableComponent implements OnInit {
                                             'params': [
                                                 // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
                                             ]
-                                        }
+                                        },
+                                        'relations':[
+                                            {
+                                                'relationViewId': 'tree_and_form_form',
+                                                'cascadeMode': 'REFRESH',
+                                                'params':[]
+                                            }
+                                        ]
                                     },
                                     dataList: []
                                 }
@@ -130,6 +138,7 @@ export class TreeAndTableComponent implements OnInit {
                                                 id: 'area2_1',
                                                 title: '表单',
                                                 span: 24,
+                                                editable: true,
                                                 size: {
                                                     nzXs: 24,
                                                     nzSm: 24,
@@ -156,7 +165,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                 ]
                                                             },
                                                             componentType: {
-                                                                'parent': false,
+                                                                'parent': true,
                                                                 'child': true,
                                                                 'own': false
                                                             },
@@ -301,128 +310,304 @@ export class TreeAndTableComponent implements OnInit {
                                                                     ]
                                                                 }
                                                             ],
-                                                            'toolbar': {
-                                                                'gutter': 24,
-                                                                'offset': 12,
-                                                                'span': 10,
-                                                                'position': 'right',
-                                                                'buttons': [
-                                                                    {
-                                                                        'name': 'saveForm',
-                                                                        'type': 'primary',
-                                                                        'text': '保存',
-                                                                        'ajaxConfig': {
-                                                                            post: {
-                                                                                'url': 'common/ShowCase',
-                                                                                'ajaxType': 'post',
-                                                                                'params': [
+                                                            'toolbar': [
+                                                                {
+                                                                    group: [
+                                                                        {
+                                                                            'name': 'refresh',
+                                                                            'action': 'REFRESH',
+                                                                            'text': '刷新',
+                                                                            'color': 'text-primary'
+                                                                        },
+                                                                        {
+                                                                            'name': 'addRow',
+                                                                            'class': 'editable-add-btn',
+                                                                            'text': '新增',
+                                                                            'action': 'CREATE',
+                                                                            'icon': 'anticon anticon-plus',
+                                                                            'color': 'text-primary'
+                                                                        },
+                                                                        {
+                                                                            'name': 'updateRow',
+                                                                            'class': 'editable-add-btn',
+                                                                            'text': '修改',
+                                                                            'action': 'EDIT',
+                                                                            'icon': 'anticon anticon-edit',
+                                                                            'color': 'text-success'
+                                                                        },
+                                                                        {
+                                                                            'name': 'updateRow',
+                                                                            'class': 'editable-add-btn',
+                                                                            'text': '取消',
+                                                                            'action': 'CANCEL',
+                                                                            'icon': 'anticon anticon-edit',
+                                                                            'color': 'text-success'
+                                                                        },
+                                                                        {
+                                                                            'name': 'saveForm',
+                                                                            'text': '保存',
+                                                                            'action': 'SAVE',
+                                                                            'icon': 'anticon anticon-save',
+                                                                            'color': 'text-primary',
+                                                                            'ajaxConfig': {
+                                                                                'post': [
                                                                                     {
-                                                                                        name: 'caseName',
-                                                                                        type: 'componentValue',
-                                                                                        valueName: 'caseName',
-                                                                                        value: ''
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'caseCount',
-                                                                                        type: 'componentValue',
-                                                                                        valueName: 'caseCount',
-                                                                                        value: ''
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'enabled',
-                                                                                        type: 'componentValue',
-                                                                                        valueName: 'enabled',
-                                                                                        value: ''
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'caseLevel',
-                                                                                        type: 'componentValue',
-                                                                                        valueName: 'caseLevel',
-                                                                                        value: ''
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'parentId',
-                                                                                        type: 'tempValue',
-                                                                                        valueName: '_parentId',
-                                                                                        value: ''
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'remark',
-                                                                                        type: 'componentValue',
-                                                                                        valueName: 'remark',
-                                                                                        value: ''
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'caseType',
-                                                                                        type: 'componentValue',
-                                                                                        valueName: 'caseType',
-                                                                                        value: ''
+                                                                                        'url': 'common/ShowCase',
+                                                                                        'ajaxType': 'post',
+                                                                                        'params': [
+                                                                                            {
+                                                                                                name: 'parentId',
+                                                                                                type: 'tempValue',
+                                                                                                valueName: '_parentId',
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'caseName',
+                                                                                                type: 'componentValue',
+                                                                                                valueName: 'caseName',
+                                                                                                value: ''
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'caseCount',
+                                                                                                type: 'componentValue',
+                                                                                                valueName: 'caseCount',
+                                                                                                value: ''
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'enabled',
+                                                                                                type: 'componentValue',
+                                                                                                valueName: 'enabled',
+                                                                                                value: ''
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'caseLevel',
+                                                                                                type: 'componentValue',
+                                                                                                valueName: 'caseLevel',
+                                                                                                value: ''
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'parentId',
+                                                                                                type: 'tempValue',
+                                                                                                valueName: '_parentId',
+                                                                                                value: ''
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'remark',
+                                                                                                type: 'componentValue',
+                                                                                                valueName: 'remark',
+                                                                                                value: ''
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'caseType',
+                                                                                                type: 'componentValue',
+                                                                                                valueName: 'caseType',
+                                                                                                value: ''
+                                                                                            }
+                                                                                        ]
                                                                                     }
-                                                                                ]
-                                                                            },
-                                                                            put: {
-                                                                                'url': 'common/ShowCase',
-                                                                                'ajaxType': 'put',
-                                                                                'params': [
+                                                                                ],
+                                                                                'put': [
                                                                                     {
-                                                                                        name: 'Id',
-                                                                                        type: 'tempValue',
-                                                                                        valueName: '_id',
-                                                                                        value: ''
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'caseName',
-                                                                                        type: 'componentValue',
-                                                                                        valueName: 'caseName',
-                                                                                        value: ''
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'caseCount',
-                                                                                        type: 'componentValue',
-                                                                                        valueName: 'caseCount',
-                                                                                        value: ''
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'enabled',
-                                                                                        type: 'componentValue',
-                                                                                        valueName: 'enabled',
-                                                                                        value: ''
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'caseLevel',
-                                                                                        type: 'componentValue',
-                                                                                        valueName: 'caseLevel',
-                                                                                        value: ''
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'parentId',
-                                                                                        type: 'tempValue',
-                                                                                        valueName: '_parentId',
-                                                                                        value: ''
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'remark',
-                                                                                        type: 'componentValue',
-                                                                                        valueName: 'remark',
-                                                                                        value: ''
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'caseType',
-                                                                                        type: 'componentValue',
-                                                                                        valueName: 'caseType',
-                                                                                        value: ''
+                                                                                        'url': 'common/ShowCase',
+                                                                                        'ajaxType': 'put',
+                                                                                        'params': [
+                                                                                            {
+                                                                                                name: 'Id',
+                                                                                                type: 'tempValue',
+                                                                                                valueName: '_id',
+                                                                                                value: ''
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'caseName',
+                                                                                                type: 'componentValue',
+                                                                                                valueName: 'caseName',
+                                                                                                value: ''
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'caseCount',
+                                                                                                type: 'componentValue',
+                                                                                                valueName: 'caseCount',
+                                                                                                value: ''
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'enabled',
+                                                                                                type: 'componentValue',
+                                                                                                valueName: 'enabled',
+                                                                                                value: ''
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'caseLevel',
+                                                                                                type: 'componentValue',
+                                                                                                valueName: 'caseLevel',
+                                                                                                value: ''
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'parentId',
+                                                                                                type: 'tempValue',
+                                                                                                valueName: '_parentId',
+                                                                                                value: ''
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'remark',
+                                                                                                type: 'componentValue',
+                                                                                                valueName: 'remark',
+                                                                                                value: ''
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'caseType',
+                                                                                                type: 'componentValue',
+                                                                                                valueName: 'caseType',
+                                                                                                value: ''
+                                                                                            }
+                                                                                        ]
                                                                                     }
                                                                                 ]
                                                                             }
+                                                                        },
+                                                                        {
+                                                                            'name': 'deleteRow',
+                                                                            'class': 'editable-add-btn',
+                                                                            'text': '删除',
+                                                                            'action': 'DELETE',
+                                                                            'icon': 'anticon anticon-delete',
+                                                                            'color': 'text-red-light',
+                                                                            'ajaxConfig': {
+                                                                                delete: [{
+                                                                                    'actionName': 'delete',
+                                                                                    'url': 'common/ShowCase',
+                                                                                    'ajaxType': 'delete',
+                                                                                    'params': [
+                                                                                        {
+                                                                                            name: 'Id', valueName: 'Id', type: 'checkedRow'
+                                                                                        }
+                                                                                    ]
+                                                                                }]
+                                                                            }
                                                                         }
-                                                                    },
-                                                                    {
-                                                                        'name': 'cancelForm',
-                                                                        'type': 'default',
-                                                                        'text': '取消'
-                                                                    }
-                                                                ]
-                                                            },
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            // 'toolbar': {
+                                                            //     'gutter': 24,
+                                                            //     'offset': 12,
+                                                            //     'span': 10,
+                                                            //     'position': 'right',
+                                                            //     'buttons': [
+                                                            //         {
+                                                            //             'name': 'saveForm',
+                                                            //             'type': 'primary',
+                                                            //             'text': '保存',
+                                                            //             'ajaxConfig': {
+                                                            //                 post: {
+                                                            //                     'url': 'common/ShowCase',
+                                                            //                     'ajaxType': 'post',
+                                                            //                     'params': [
+                                                            //                         {
+                                                            //                             name: 'caseName',
+                                                            //                             type: 'componentValue',
+                                                            //                             valueName: 'caseName',
+                                                            //                             value: ''
+                                                            //                         },
+                                                            //                         {
+                                                            //                             name: 'caseCount',
+                                                            //                             type: 'componentValue',
+                                                            //                             valueName: 'caseCount',
+                                                            //                             value: ''
+                                                            //                         },
+                                                            //                         {
+                                                            //                             name: 'enabled',
+                                                            //                             type: 'componentValue',
+                                                            //                             valueName: 'enabled',
+                                                            //                             value: ''
+                                                            //                         },
+                                                            //                         {
+                                                            //                             name: 'caseLevel',
+                                                            //                             type: 'componentValue',
+                                                            //                             valueName: 'caseLevel',
+                                                            //                             value: ''
+                                                            //                         },
+                                                            //                         {
+                                                            //                             name: 'parentId',
+                                                            //                             type: 'tempValue',
+                                                            //                             valueName: '_parentId',
+                                                            //                             value: ''
+                                                            //                         },
+                                                            //                         {
+                                                            //                             name: 'remark',
+                                                            //                             type: 'componentValue',
+                                                            //                             valueName: 'remark',
+                                                            //                             value: ''
+                                                            //                         },
+                                                            //                         {
+                                                            //                             name: 'caseType',
+                                                            //                             type: 'componentValue',
+                                                            //                             valueName: 'caseType',
+                                                            //                             value: ''
+                                                            //                         }
+                                                            //                     ]
+                                                            //                 },
+                                                            //                 put: {
+                                                            //                     'url': 'common/ShowCase',
+                                                            //                     'ajaxType': 'put',
+                                                            //                     'params': [
+                                                            //                         {
+                                                            //                             name: 'Id',
+                                                            //                             type: 'tempValue',
+                                                            //                             valueName: '_id',
+                                                            //                             value: ''
+                                                            //                         },
+                                                            //                         {
+                                                            //                             name: 'caseName',
+                                                            //                             type: 'componentValue',
+                                                            //                             valueName: 'caseName',
+                                                            //                             value: ''
+                                                            //                         },
+                                                            //                         {
+                                                            //                             name: 'caseCount',
+                                                            //                             type: 'componentValue',
+                                                            //                             valueName: 'caseCount',
+                                                            //                             value: ''
+                                                            //                         },
+                                                            //                         {
+                                                            //                             name: 'enabled',
+                                                            //                             type: 'componentValue',
+                                                            //                             valueName: 'enabled',
+                                                            //                             value: ''
+                                                            //                         },
+                                                            //                         {
+                                                            //                             name: 'caseLevel',
+                                                            //                             type: 'componentValue',
+                                                            //                             valueName: 'caseLevel',
+                                                            //                             value: ''
+                                                            //                         },
+                                                            //                         {
+                                                            //                             name: 'parentId',
+                                                            //                             type: 'tempValue',
+                                                            //                             valueName: '_parentId',
+                                                            //                             value: ''
+                                                            //                         },
+                                                            //                         {
+                                                            //                             name: 'remark',
+                                                            //                             type: 'componentValue',
+                                                            //                             valueName: 'remark',
+                                                            //                             value: ''
+                                                            //                         },
+                                                            //                         {
+                                                            //                             name: 'caseType',
+                                                            //                             type: 'componentValue',
+                                                            //                             valueName: 'caseType',
+                                                            //                             value: ''
+                                                            //                         }
+                                                            //                     ]
+                                                            //                 }
+                                                            //             }
+                                                            //         },
+                                                            //         {
+                                                            //             'name': 'cancelForm',
+                                                            //             'type': 'default',
+                                                            //             'text': '取消'
+                                                            //         }
+                                                            //     ]
+                                                            // },
                                                             'dataList': [],
                                                             'relations': [{
                                                                 'relationViewId': 'tree_singleTable',
@@ -430,6 +615,9 @@ export class TreeAndTableComponent implements OnInit {
                                                                 'params': [
                                                                     {
                                                                         pid: 'Id', cid: '_id'
+                                                                    },
+                                                                    {
+                                                                        pid: 'parentId', cid: '_parentId'
                                                                     }
                                                                 ]
                                                             }]
@@ -711,14 +899,20 @@ export class TreeAndTableComponent implements OnInit {
                                                                 'child': true,
                                                                 'own': false
                                                             },
-                                                            'relations': [{
-                                                                'relationViewId': 'tree_and_table_tree',
-                                                                'cascadeMode': 'REFRESH_AS_CHILD',
-                                                                'params': [
-                                                                    {pid: 'key', cid: '_parentId'}
-                                                                ],
-                                                                'relationReceiveContent': []
-                                                            }],
+                                                            'relations': [
+                                                                {
+                                                                    'relationViewId': 'tree_and_table_tree',
+                                                                    'cascadeMode': 'REFRESH_AS_CHILD',
+                                                                    'params': [
+                                                                        {pid: 'key', cid: '_parentId'}
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    'relationViewId': 'tree_and_form_form',
+                                                                    'cascadeMode': 'REFRESH',
+                                                                    'params':[]
+                                                                }
+                                                            ],
                                                             'toolbar': [
                                                                 {
                                                                     group: [
@@ -1834,7 +2028,7 @@ export class TreeAndTableComponent implements OnInit {
                                             }
                                         ]
                                     }
-                                },
+                                }
 
                             ]
                         }

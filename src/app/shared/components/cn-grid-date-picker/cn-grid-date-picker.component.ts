@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 
 @Component({
@@ -7,12 +7,28 @@ import { _HttpClient } from '@delon/theme';
 })
 export class CnGridDatePickerComponent implements OnInit {
   @Input() config;
-  model;
+    @Input() value;
+  @Output() updateValue = new EventEmitter();
+    _value;
   constructor(
       private http: _HttpClient
   ) { }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+        if (this.value)
+            this._value = this.value.data;
+    }
 
+    setValue(value) {
+        this.value = value;
+    }
+
+    getValue() {
+        return this.value;
+    }
+
+    valueChange(name?) {
+        this.value.data = name;
+        this.updateValue.emit(this.value);
+    }
 }

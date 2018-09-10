@@ -67,6 +67,9 @@ import { BsnUploadComponent } from './business/bsn-upload/bsn-upload.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import {CnGridSelectTreeComponent} from '@shared/components/cn-grid-select-tree/cn-grid-select-tree.component';
 import {LayoutResolverDirective} from '@shared/resolver/layout-resolver/layout-resolver.directive';
+import {CnFormLabelComponent} from '@shared/components/cn-form-label/cn-form-label.component';
+import {CnFormLabelDirective} from "@shared/resolver/form-resolver/form-label.directive";
+import {CnFormWindowResolverComponent} from "@shared/resolver/form-resolver/form-window-resolver.component";
 const THIRDMODULES = [
     NgZorroAntdModule,
     CountdownModule,
@@ -127,12 +130,15 @@ const COMPONENTS = [
     BsnAccordionComponent,
     BsnTabsComponent,
     BsnUploadComponent,
-    CnGridSelectTreeComponent
+    CnGridSelectTreeComponent,
+    CnFormLabelComponent,
+    CnFormWindowResolverComponent
 
 ];
 const DIRECTIVES = [
     FormResolverDirective,
     GridEditorDirective,
+    CnFormLabelDirective,
     LayoutResolverDirective
 ];
 // endregion

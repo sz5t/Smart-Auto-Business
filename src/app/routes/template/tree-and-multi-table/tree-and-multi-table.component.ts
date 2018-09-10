@@ -29,13 +29,13 @@ export class TreeAndMultiTableComponent implements OnInit {
                   config: {
                     'viewId': 'tree_and_mulit_tree',
                     'component': 'bsnTree',
-                    'asyncData': true, //
+                    'asyncData': false, //
                     'expandAll': true, //
                     'checkable': false,  //    在节点之前添加一个复选框 false
                     'showLine': false,  //   显示连接线 fal
                     'columns': [ // 字段映射，映射成树结构所需
                       { title: '主键', field: 'key', valueName: 'Id' },
-                      { title: '父节点', field: 'parentId', valueName: 'ParentId' },
+                      { title: '父节点', field: 'parentId', valueName: 'parentId' },
                       { title: '标题', field: 'title', valueName: 'caseName' },
                     ],
                     'componentType': {
@@ -44,33 +44,15 @@ export class TreeAndMultiTableComponent implements OnInit {
                       'own': false
                     },
                     'parent': [
-                      { name: 'ParentId', type: 'value', valueName: '取值参数名称', value: 'null' }
+                      { name: 'parentId', type: 'value', valueName: '取值参数名称', value: null}
                     ],
                     'ajaxConfig': {
                       'url': 'common/ShowCase',
                       'ajaxType': 'get',
                       'params': [
-                        // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
+                        // { name: 'parentId', type: 'tempValue', valueName: '_parentId', value: '' }
                       ]
-                    },
-                    'relations': [{
-                      'relationViewId': 'tree_and_mulit_tree',
-                      'relationSendContent': [
-                        {
-                          'name': 'clickNode',
-                          'sender': 'tree_and_mulit_tree',
-                          'aop': 'after',
-                          'receiver': 'tree_and_mulit_master',
-                          'relationData': {
-                            'name': 'refreshAsChild',
-                            'params': [
-                              { 'pid': 'key', 'cid': '_parentId' }
-                            ]
-                          },
-                        }
-                      ],
-                      'relationReceiveContent': []
-                    }]
+                    }
                   },
                   dataList: []
                 }
@@ -111,6 +93,7 @@ export class TreeAndMultiTableComponent implements OnInit {
                                     'info': true,
                                     'keyId': 'Id',
                                     'size': 'small',
+                                    'showCheckBox': false,
                                     'pagination': true, // 是否分页
                                     'showTotal': true, // 是否显示总数据量
                                     'pageSize': 5, // 默认每页数据条数
@@ -118,7 +101,11 @@ export class TreeAndMultiTableComponent implements OnInit {
                                     'ajaxConfig': {
                                         'url': 'common/GetCase',
                                         'ajaxType': 'get',
-                                        'params': [],
+                                        'params': [
+                                            {
+                                                name: 'parentId', type: 'tempValue', valueName: '_id'
+                                            }
+                                        ],
                                         'filter': [
                                             {
                                                 name: 'caseName', valueName: '_caseName', type: '', value: ''
@@ -330,34 +317,13 @@ export class TreeAndMultiTableComponent implements OnInit {
                                         'own': false
                                     },
                                     'relations': [{
-                                        'relationViewId': 'tree_and_mulit_master',
-                                        'relationSendContent': [
+                                        'relationViewId': 'tree_and_mulit_tree',
+                                        'cascadeMode':'REFRESH_AS_CHILD',
+                                        'params':[
                                             {
-                                                name: 'selectRow',
-                                                sender: 'tree_and_mulit_master',
-                                                aop: 'after',
-                                                receiver: 'tree_and_mulit_slaver',
-                                                relationData: {
-                                                    name: 'refreshAsChild',
-                                                    params: [
-                                                        { pid: 'Id', cid: '_parentId' },
-                                                    ]
-                                                },
-                                            },
-                                            {
-                                                name: 'load',
-                                                sender: 'tree_and_mulit_master',
-                                                aop: 'before',
-                                                receiver: 'tree_and_mulit_slaver',
-                                                relationData: {
-                                                    name: 'initParameters',
-                                                    params: [
-
-                                                    ]
-                                                },
+                                                'pid': 'Id', 'cid': '_id'
                                             }
-                                        ],
-                                        'relationReceiveContent': []
+                                        ]
                                     }],
                                     'toolbar': [
                                         {
@@ -1466,8 +1432,9 @@ export class TreeAndMultiTableComponent implements OnInit {
                           {
                               config: {
                                   'title': '数据网格',
-                                  'viewId': 'singleTable',
+                                  'viewId': 'singleTable_2',
                                   'component': 'bsnTable',
+                                  'showCheckBox': false,
                                   'info': true,
                                   'keyId': 'Id',
                                   'size': 'small',
@@ -1478,7 +1445,11 @@ export class TreeAndMultiTableComponent implements OnInit {
                                   'ajaxConfig': {
                                       'url': 'common/GetCase',
                                       'ajaxType': 'get',
-                                      'params': [],
+                                      'params': [
+                                          {
+                                              'name': 'parentId', 'type': 'tempValue', nameValue: '_parentId'
+                                          }
+                                      ],
                                       'filter': [
                                           {
                                               name: 'caseName', valueName: '_caseName', type: '', value: ''
@@ -1690,9 +1661,14 @@ export class TreeAndMultiTableComponent implements OnInit {
                                       'own': false
                                   },
                                   'relations': [{
-                                      'relationViewId': 'tree_and_mulit_slaver',
-                                      'relationSendContent': [],
-                                      'relationReceiveContent': []
+                                      'relationViewId': 'singleTable',
+                                      'cascadeMode': 'REFRESH_AS_CHILD',
+                                      'params': [
+                                          {
+                                              'pid': 'Id', 'cid': '_parentId'
+                                          }
+
+                                      ]
                                   }],
                                   'toolbar': [
                                       {
@@ -2794,6 +2770,8 @@ export class TreeAndMultiTableComponent implements OnInit {
   };
   constructor(private http: _HttpClient) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+      // console.log(JSON.stringify(this.config));
+  }
 
 }

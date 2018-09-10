@@ -8,16 +8,19 @@
     [(nzPageIndex)]="pageIndex"
     [(nzPageSize)]="pageSize"
     [nzShowTotal]="totals"
-    [nzPageSizeOptions]="this.config.pageSizeOptions"
+    [nzPageSizeOptions]="config.pageSizeOptions"
     [nzLoading]="loading"
     (nzPageIndexChange)="searchData()"
     (nzPageSizeChange)="searchData(true)"
-    [nzTitle]="config.title?config.title:null"
-    [nzFooter]="footer"
+    [nzTitle]="title"
+    [nzFooter]="footer" [nzNoResult]="noResult" [nzHideOnSinglePage]="true" [nzLoadingDelay]="50"
+          [nzScroll]="config.scroll ? config.scroll : {}"
     nzBordered>
+
     <thead (nzSortChange)="sort($event)" nzSingleSort>
         <tr>
-            <th nzShowCheckbox
+            <th *ngIf="config.showCheckBox"
+                [nzShowCheckbox]="config.showCheckBox ? config.showCheckBox : false"
             [(nzChecked)]="allChecked"
             [nzIndeterminate]="indeterminate"
             (nzCheckedChange)="checkAll($event)"
@@ -28,10 +31,9 @@
                     [nzWidth]="col.width"
                     [nzShowSort]="col.showSort"
                     [nzShowFilter]="col.showFilter"
-
                     *ngIf="!col.hidden"
                     [nzSortKey]="col.field"
-
+                    [ngClass]="[col.titleAlign ? col.titleAlign : '']"
                 >
                <!--  [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
                 (nzFilterChange)="columnFilter(col.editor.field, $event)" -->
@@ -43,13 +45,13 @@
     <tbody>
         <ng-template ngFor let-data [ngForOf]="nzTable.data">
             <tr (click)="selectRow(data, $event)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
-                <td nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked()">
+                <td  *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked()">
                 </td>
                 <ng-template ngFor let-col [ngForOf]="config.columns">
                     <td *ngIf="!col.hidden">
                         <ng-container *ngIf="col.editor">
-                            <div *ngIf="!editCache[data.key]['edit']">
-                                <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'']">{{!col.dataType?data[col.field]:data[col.field] | date}}</span>
+                            <div *ngIf="!editCache[data.key]['edit']" [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'',col.fieldAlign ? col.fieldAlign : '']">
+                                <span>{{!col.dataType?data[col.field]:data[col.field] | date}}</span>
                             </div>
                             <ng-container [bsnData]="tempValue" [rowData]="data" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
                                 CnGridEditorDirective *ngIf="editCache[data.key].edit" [config]="col.editor.options" [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field]}"
@@ -66,12 +68,18 @@
         </ng-template>
 
     </tbody>
-    <ng-template #footer>
-         已选择
-            <strong class="text-primary">{{checkedCount}}</strong> 项&nbsp;&nbsp;
+    <ng-template #title>
+        {{config.title ? config.title : ''}}
+        <span style="float:right">已选择<strong class="text-primary"> {{checkedCount}}</strong> 项</span>&nbsp;
     </ng-template>
+    <!--<ng-template #footer>-->
+         <!--&nbsp;-->
+    <!--</ng-template> -->
     <ng-template #totals let-total>
-            共 {{total}} 条
+        共 {{total}} 条
+    </ng-template>
+    <ng-template #noResult>
+        未查询到任何数据...
     </ng-template>
 </nz-table>
 

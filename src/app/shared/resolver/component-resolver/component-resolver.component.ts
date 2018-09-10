@@ -42,6 +42,7 @@ export class ComponentResolverComponent implements OnInit, OnChanges {
     @Input() blockId;
     @Input() layoutId;
     @Input() tempValue;
+    @Input() editable = true;
     componentRef: ComponentRef<any>;
     @ViewChild('dynamicComponent', {read: ViewContainerRef}) container: ViewContainerRef;
 
@@ -61,6 +62,7 @@ export class ComponentResolverComponent implements OnInit, OnChanges {
             this.container.clear();
             // this.createBsnComponent();
         }
+
     }
 
     createBsnComponent() {
@@ -77,12 +79,16 @@ export class ComponentResolverComponent implements OnInit, OnChanges {
             if(this.componentRef.instance.tempValue) {
                 this.componentRef.instance.tempValue = this.tempValue;
             }
+            // if(this.componentRef.instance.editable) {
+            //     this.componentRef.instance.editable = this.editable;
+            // }
             if (this.componentRef.instance.permissions) {
                 this.componentRef.instance.permissions = this.config.permissions;
             }
             if (this.componentRef.instance.dataList) {
                 this.componentRef.instance.dataList = this.config.dataList;
             }
+
             this.componentRef.instance.layoutId = this.layoutId;
             this.componentRef.instance.blockId = this.blockId;
         }
