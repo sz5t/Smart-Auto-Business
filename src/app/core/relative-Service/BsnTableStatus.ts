@@ -20,6 +20,7 @@ export const BSN_COMPONENT_MODES = {
     EDIT_NODE: 'editNode',
     DELETE_NODE: 'deleteNode',
     SAVE_NODE: 'saveNode',
+    EXECUTE: 'execute',
 
     // form
     FORM_ADD: 'formAdd',
@@ -40,12 +41,22 @@ export const BSN_PARAMETER_TYPE = {
     GUID: 'GUID',
     COMPONENT_VALUE: 'componentValue',
     CHECKED_ROW: 'checkedRow',
-    SELECTED_ROW: 'selectedRow'
+    SELECTED_ROW: 'selectedRow',
+    CHECKED: 'checked',
+    SELECTED: 'selected',
+    CHECKED_ID: 'checkedId'
 };
 
 export const BSN_EXECUTE_ACTION = {
+    EXECUTE_SAVE_ROW: 'EXECUTE_SAVE_ROW',
+    EXECUTE_EDIT_ROW: 'EXECUTE_EDIT_ROW',
     EXECUTE_SELECTED: 'EXECUTE_SELECTED',
-    EXECUTE_CHECKED: 'EXECUTE_CHECKED'
+    EXECUTE_CHECKED: 'EXECUTE_CHECKED',
+    EXECUTE_CHECKED_ID: 'EXECUTE_CHECKED_ID',
+    EXECUTE_NODE_SELECTED: 'EXECUTE_NODE_SELECTED',
+    EXECUTE_NODE_CHECKED: 'EXECUTE_NODE_CHECKED',
+    EXECUTE_NODES_CHECKED_KEY: 'EXECUTE_NODES_CHECKED_KEY'
+
 };
 
 export const BSN_COMPONENT_CASCADE_MODES = {
@@ -63,7 +74,7 @@ export const BSN_COMPONENT_CASCADE_MODES = {
     CLICK_NODE : 'clickNode',
     SELECTED_NODE: 'selectNode',
     CHEKCED_NODES: 'checkNode',
-
+    CHECKED_NODES_ID: 'checkNodesId',
 
     // form
     LOAD_FORM: 'loadForm'

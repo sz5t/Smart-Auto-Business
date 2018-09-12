@@ -682,18 +682,16 @@ export class DataModelingComponent implements OnInit {
                                                         'action': 'EXECUTE_CHECKED',
                                                         'actionType': 'post',
                                                         'actionName': 'BuildModel',
-                                                        'ajaxConfig': {
-                                                            post: [{
-                                                                'actionName': 'post',
-                                                                'url': 'common/Action/ComTabledata/buildModel',
-                                                                'ajaxType': 'post',
-                                                                'params': [
-                                                                    {
-                                                                        name: 'Id', valueName: 'Id', type: 'checkedRow'
-                                                                    }
-                                                                ]
-                                                            }]
-                                                        }
+                                                        'ajaxConfig': [{
+                                                            'action': 'EXECUTE_CHECKED',
+                                                            'url': 'common/Action/ComTabledata/buildModel',
+                                                            'ajaxType': 'post',
+                                                            'params': [
+                                                                {
+                                                                    name: 'Ids', valueName: 'Id', type: 'checkedIds'
+                                                                }
+                                                            ]
+                                                        }]
                                                     },
                                                     {
                                                         'name': 'executeSelectedRow',
@@ -702,18 +700,18 @@ export class DataModelingComponent implements OnInit {
                                                         'action': 'EXECUTE_SELECTED',
                                                         'actionType': 'post',
                                                         'actionName': 'BuildModel',
-                                                        'ajaxConfig': {
-                                                            post: [{
-                                                                'actionName': 'post',
-                                                                'url': 'common/Action/ComTabledata/buildModel',
-                                                                'ajaxType': 'post',
-                                                                'params': [
-                                                                    {
-                                                                        name: 'Id', valueName: 'Id', type: 'selectedRow'
-                                                                    }
-                                                                ]
-                                                            }]
-                                                        }
+                                                        'ajaxConfig': [{
+                                                            'action': 'EXECUTE_SELECTED',
+                                                            'url': 'common/Action/ComTabledata/buildModel',
+                                                            'title': '提示',
+                                                            'message': '是否为该数据进行建模？',
+                                                            'ajaxType': 'post',
+                                                            'params': [
+                                                                {
+                                                                    name: 'Id', valueName: 'Id', type: 'selectedRow'
+                                                                }
+                                                            ]
+                                                        }]
                                                     },
                                                     {
                                                         'name': 'executeSelectedRow',
@@ -722,18 +720,16 @@ export class DataModelingComponent implements OnInit {
                                                         'action': 'EXECUTE_SELECTED',
                                                         'actionType': 'post',
                                                         'actionName': 'CancelBuildModel',
-                                                        'ajaxConfig': {
-                                                            post: [{
-                                                                'actionName': 'post',
-                                                                'url': 'common/Action/ComTabledata/cancelModel',
-                                                                'ajaxType': 'post',
-                                                                'params': [
-                                                                    {
-                                                                        name: 'Id', valueName: 'Id', type: 'selectedRow'
-                                                                    }
-                                                                ]
-                                                            }]
-                                                        }
+                                                        'ajaxConfig': [{
+                                                            'action': 'EXECUTE_SELECTED',
+                                                            'url': 'common/Action/ComTabledata/cancelModel',
+                                                            'ajaxType': 'post',
+                                                            'params': [
+                                                                {
+                                                                    name: 'Id', valueName: 'Id', type: 'selectedRow'
+                                                                }
+                                                            ]
+                                                        }]
                                                     },
                                                     {
                                                         'name': 'addSearchRow',

@@ -85,10 +85,8 @@ export class GridEditorDirective implements OnInit, OnChanges {
 
     // 组件将值写回
     setValue(data?) {
-        // console.log('resolverupdateValue触发', data);
         this.value = data;
         this.updateValue.emit(data);
-        // console.log('resolverupdateValue触发后', data);
     }
 }
 

@@ -81,7 +81,7 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
     @Input() config;
     treeData;
     _relativeResolver;
-    _tempValue = {};
+    // _tempValue = {};
     checkedKeys = [];
     selectedKeys = [];
     _toTreeBefore = [];
@@ -162,7 +162,7 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
                             // 解析参数
                             if (relation.params && relation.params.length > 0) {
                                 relation.params.forEach(param => {
-                                    this._tempValue[param['cid']] = option.data[param['pid']];
+                                    this.tempValue()[param['cid']] = option.data[param['pid']];
                                 });
                             }
                             switch (mode) {
@@ -208,7 +208,7 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
                 if (this.config.parent) {
                     this.config.parent.forEach(param => {
                         if (param.type === 'tempValue') {
-                            parent = this._tempValue[param.valueName];
+                            parent = this.tempValue()[param.valueName];
 
                         } else if (param.type === 'value') {
                             if (param.value === 'null') {
@@ -271,26 +271,26 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
         const params = {};
         let url;
         let tag = true;
-        /*  if (!this._tempValue)  {
-         this._tempValue = {};
+        /*  if (!this.tempValue())  {
+         this.tempValue() = {};
          } */
         if (p) {
             p.params.forEach(param => {
                 if (param.type === 'tempValue') {
                     if (type) {
                         if (type === 'load') {
-                            if (this._tempValue[param.valueName]) {
-                                params[param.name] = this._tempValue[param.valueName];
+                            if (this.tempValue()[param.valueName]) {
+                                params[param.name] = this.tempValue()[param.valueName];
                             } else {
                                 // console.log('参数不全不能加载');
                                 tag = false;
                                 return;
                             }
                         } else {
-                            params[param.name] = this._tempValue[param.valueName];
+                            params[param.name] = this.tempValue()[param.valueName];
                         }
                     } else {
-                        params[param.name] = this._tempValue[param.valueName];
+                        params[param.name] = this.tempValue()[param.valueName];
                     }
                 } else if (param.type === 'value') {
 
@@ -316,7 +316,7 @@ export class BsnAsyncTreeComponent extends CnComponentBase implements OnInit, On
                     } else if (param.type === 'componentValue') {
                         pc = componentValue.value;
                     } else if (param.type === 'tempValue') {
-                        pc = this._tempValue[param.valueName];
+                        pc = this.tempValue()[param.valueName];
                     }
                 });
                 url = p.url['parent'] + '/' + pc + '/' + p.url['child'];

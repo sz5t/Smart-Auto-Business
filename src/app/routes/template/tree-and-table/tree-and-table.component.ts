@@ -71,21 +71,21 @@ export class TreeAndTableComponent implements OnInit {
                                                         'action': 'SAVE_NODE',
                                                         'icon': 'anticon anticon-save',
                                                         'color': 'text-success-light',
-                                                        'ajaxConfig': {
-                                                            post: [{
-                                                                'url': 'common/SetShowCaseEnable',
-                                                                'ajaxType': 'post',
-                                                                'params': [
-                                                                    {
-                                                                        name: 'Ids',
-                                                                        type: 'tempValue',
-                                                                        valueName: '_checkedIds',
-                                                                        value: ''
-                                                                    }
-                                                                ]
-                                                            }
+                                                        'ajaxConfig': [{
+                                                            'url': 'common/SetShowCaseEnable',
+                                                            'ajaxType': 'post',
+                                                            'action': 'EXECUTE_NODES_CHECKED_KEY',
+                                                            'title': '',
+                                                            'message': '是否保存选中结点数据',
+                                                            'params': [
+                                                                {
+                                                                    name: 'Ids',
+                                                                    type: 'tempValue',
+                                                                    valueName: '_checkedIds',
+                                                                    value: ''
+                                                                }
                                                             ]
-                                                        }
+                                                        }]
                                                     }
                                                 ]
                                             }

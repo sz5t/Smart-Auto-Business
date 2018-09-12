@@ -229,7 +229,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                         'component': 'bsnTable',
                                         'info': true,
                                         'keyId': 'Id',
-                                        'scroll': {x: '90%', y: '400px'},
+                                        'scroll': {x: '1200px', y: '200px'},
                                         'showCheckBox': true,
                                         'size': 'small',
                                         'pagination': true, // 是否分页
@@ -264,7 +264,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 field: '_serilize',
                                                 width: '5%',
                                                 hidden: false,
-                                                titleAlign: 'text-center',
+                                                titleAlign: 'text-right',
                                                 fieldAlign: 'text-center'
                                             },
                                             {
@@ -386,19 +386,19 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     }
                                                 }
                                             },
-                                            {
-                                                title: '备注', field: 'remark', width: '10%', hidden: false,
-                                                editor: {
-                                                    type: 'input',
-                                                    field: 'remark',
-                                                    options: {
-                                                        'type': 'input',
-                                                        'labelSize': '6',
-                                                        'controlSize': '18',
-                                                        'inputType': 'text'
-                                                    }
-                                                }
-                                            },
+                                            // {
+                                            //     title: '备注', field: 'remark', width: '10%', hidden: false,
+                                            //     editor: {
+                                            //         type: 'input',
+                                            //         field: 'remark',
+                                            //         options: {
+                                            //             'type': 'input',
+                                            //             'labelSize': '6',
+                                            //             'controlSize': '18',
+                                            //             'inputType': 'text'
+                                            //         }
+                                            //     }
+                                            // },
                                             {
                                                 title: '父类别', field: 'parentName', width: '10%', hidden: false,
                                                 editor: {
@@ -423,12 +423,34 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 }
                                             },
                                             {
+                                                title: '父类别', field: 'parentName', width: '10%', hidden: false,
+                                                editor: {
+                                                    type: 'select',
+                                                    field: 'parentId',
+                                                    options: {
+                                                        'type': 'select',
+                                                        'labelSize': '6',
+                                                        'controlSize': '18',
+                                                        'inputType': 'submit',
+                                                        'name': 'parentId',
+                                                        'notFoundContent': '',
+                                                        'selectModel': false,
+                                                        'showSearch': true,
+                                                        'placeholder': '-请选择-',
+                                                        'disabled': false,
+                                                        'size': 'default',
+                                                        'clear': true,
+                                                        'width': '100%'
+                                                    }
+                                                }
+                                            },
+                                            {
                                                 title: '状态',
                                                 field: 'enableText',
                                                 width: '10%',
                                                 hidden: false,
                                                 titleAlign: 'text-right',
-                                                fieldAlign: 'text-right',
+                                                fieldAlign: 'text-center',
                                                 formatter: [
                                                     {
                                                         'value': '启用',
@@ -521,7 +543,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'name': 'deleteRow',
                                                         'class': 'editable-add-btn',
                                                         'text': '删除',
-                                                        'action': 'DELETE',
+                                                        // 'action': 'DELETE',
                                                         'icon': 'anticon anticon-delete',
                                                         'color': 'text-red-light',
                                                         'ajaxConfig': {
@@ -530,8 +552,8 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                     'actionName': 'delete',
                                                                     'url': 'common/ShowCase',
                                                                     'ajaxType': 'delete',
-                                                                    'title': '提示',
-                                                                    'message': '确认要删除当前勾选的数据么？'
+                                                                    'title': '警告！',
+                                                                    'message': '确认要删除当前勾选的数据么？？？'
                                                                 }
                                                             ]
                                                         }
@@ -544,41 +566,78 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'name': 'executeCheckedRow',
                                                         'class': 'editable-add-btn',
                                                         'text': '多选删除',
-                                                        'action': 'EXECUTE_CHECKED',
                                                         'icon': 'anticon anticon-delete',
                                                         'color': 'text-red-light',
                                                         'actionType': 'post',
                                                         'actionName': 'execChecked',
                                                         'ajaxConfig': [
                                                             {
-                                                                'action': 'EXECUTE_CHECKED',
+                                                                'name': 'checkDeleteShowCase',
+                                                                'action': 'EXECUTE_CHECKED_ID',
                                                                 'url': 'common/DeleteShowCase',
                                                                 'ajaxType': 'post',
                                                                 'title': '提示',
                                                                 'message': '是否将选中的数据执行当前操作？',
                                                                 'params': [
                                                                     {
-                                                                        name: 'Id',
-                                                                        valueName: 'Id',
-                                                                        type: 'checkedRow',
-                                                                        'dataType': 'table',
-                                                                        'dataMapping': [
-                                                                            {
-                                                                                name: 'Id',
-                                                                                valueName: 'Id',
-                                                                                type: 'checkedRow'
-                                                                            }
-                                                                        ]
+                                                                        name: 'Ids',
+                                                                        valueName: 'Id', // 或者'_checkedIds'
+                                                                        type: 'checkedId' //  或者 'tempValue'
+                                                                    },
+                                                                    {
+                                                                        name: 'caseName',
+                                                                        valueName: 'caseName',
+                                                                        type: 'checkedId'
+                                                                    },
+                                                                    {
+                                                                        name: 'isCheck',
+                                                                        valueName: '',
+                                                                        type: 'value',
+                                                                        value: true
+                                                                    }
+                                                                ],
+                                                                'outputParams':[
+                                                                    {
+                                                                        name: 'message', dataType: 'value'
                                                                     }
                                                                 ]
-                                                            }
+                                                            },
+                                                            // {
+                                                            //     'name': 'deleteShowCase',
+                                                            //     'action': 'EXECUTE_CHECKED_ID',
+                                                            //     'url': 'common/DeleteShowCase',
+                                                            //     'ajaxType': 'post',
+                                                            //     'title': '提示',
+                                                            //     'parentName': 'checkDeleteShowCase',
+                                                            //     'message': '是否将选中的数据执行当前操作？',
+                                                            //     'params': [
+                                                            //         {
+                                                            //             name: 'Ids',
+                                                            //             valueName: 'Id', // 或者'_checkedIds'
+                                                            //             type: 'checkedId' //  或者 'tempValue'
+                                                            //         },
+                                                            //         {
+                                                            //             name: 'isCheck',
+                                                            //             valueName: '',
+                                                            //             type: 'value',
+                                                            //             value: true
+                                                            //         }
+                                                            //     ],
+                                                            //     'outputParams':[
+                                                            //         {
+                                                            //             name: 'message', dataType: 'value'
+                                                            //         },
+                                                            //         {
+                                                            //             name: 'dataSet1', dataType: 'table',
+                                                            //         }
+                                                            //     ]
+                                                            // }
                                                         ]
                                                     },
                                                     {
                                                         'name': 'executeSelectedRow',
                                                         'class': 'editable-add-btn',
                                                         'text': '选中删除',
-                                                        'action': 'EXECUTE_SELECTED',
                                                         'icon': 'anticon anticon-delete',
                                                         'actionType': 'post',
                                                         'actionName': 'execSelected',
@@ -586,12 +645,19 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                             {
                                                                 'action': 'EXECUTE_SELECTED',
                                                                 'url': 'common/ShowCase',
-                                                                'ajaxType': 'post',
+                                                                'ajaxType': 'delete',
                                                                 'title': '提示',
                                                                 'message': '是否将选中的数据执行当前操作？',
                                                                 'params': [
                                                                     {
-                                                                        name: 'Id', valueName: 'Id', type: 'selectedRow'
+                                                                        name: 'Id',
+                                                                        valueName: 'Id',  // _selectedItem
+                                                                        type: 'selectedRow' // tempValue
+                                                                    }
+                                                                ],
+                                                                'outputParams':[
+                                                                    {
+                                                                        name: 'Id', dataType: ''
                                                                     }
                                                                 ]
                                                             }
@@ -601,13 +667,12 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'name': 'saveRow',
                                                         'class': 'editable-add-btn',
                                                         'text': '保存',
-                                                        'action': 'SAVE',
                                                         'icon': 'anticon anticon-save',
                                                         'type': 'default',
                                                         'color': 'text-primary',
-                                                        'ajaxConfig': {
-                                                            post: [{
-                                                                'actionName': 'add',
+                                                        'ajaxConfig': [
+                                                            {
+                                                                'action': 'EXECUTE_SAVE_ROW',
                                                                 'url': 'common/ShowCase',
                                                                 'ajaxType': 'post',
                                                                 'params': [
@@ -665,16 +730,10 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                         valueName: 'createDate',
                                                                         value: ''
                                                                     }
-                                                                ],
-                                                                'output': [
-                                                                    {
-                                                                        name: '_id',
-                                                                        type: '',
-                                                                        dataName: 'Id'
-                                                                    }
                                                                 ]
-                                                            }],
-                                                            put: [{
+                                                            },
+                                                            {
+                                                                'action': 'EXECUTE_EDIT_ROW',
                                                                 'url': 'common/ShowCase',
                                                                 'ajaxType': 'put',
                                                                 'params': [
@@ -733,8 +792,8 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                         value: ''
                                                                     }
                                                                 ]
-                                                            }]
-                                                        }
+                                                            }
+                                                        ]
                                                     },
                                                     {
                                                         'name': 'cancelRow',
