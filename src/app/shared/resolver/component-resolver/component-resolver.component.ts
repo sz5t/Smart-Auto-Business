@@ -5,7 +5,7 @@ import {BsnAsyncTreeComponent} from '@shared/business/bsn-async-tree/bsn-async-t
 import {SearchResolverComponent} from '@shared/resolver/form-resolver/search-resolver.component';
 import {BsnTableComponent} from '@shared/business/bsn-data-table/bsn-table.component';
 import {
-    Component, ComponentFactoryResolver, ComponentRef, Input, OnChanges, OnInit, Type, ViewChild,
+    Component, ComponentFactoryResolver, ComponentRef, Input, OnChanges, OnDestroy, OnInit, Type, ViewChild,
     ViewContainerRef,
     ViewEncapsulation
 } from '@angular/core';
@@ -19,7 +19,6 @@ import {BsnAccordionComponent} from '@shared/business/bsn-accordion/bsn-accordio
 import {BsnTabsComponent} from "@shared/business/bsn-tabs/bsn-tabs.component";
 const components: { [type: string]: Type<any> } = {
     code_edit: CnCodeEditComponent,
-    bsnDataTable: BsnDataTableComponent,
     bsnTable: BsnTableComponent,
     bsnTreeTable: BsnTreeTableComponent,
     form_view: FormResolverComponent,
@@ -30,14 +29,14 @@ const components: { [type: string]: Type<any> } = {
     lineChart: LineChartComponent,
     barChart: BarChartComponent,
     bsnAccordion: BsnAccordionComponent,
-    bsnTabs: BsnTabsComponent,
+    bsnTabs: BsnTabsComponent
 };
 @Component({
     selector: 'cn-component-resolver',
     encapsulation: ViewEncapsulation.None,
     templateUrl: './component-resolver.component.html',
 })
-export class ComponentResolverComponent implements OnInit, OnChanges {
+export class ComponentResolverComponent implements OnInit, OnChanges, OnDestroy {
     @Input() config;
     @Input() blockId;
     @Input() layoutId;
@@ -93,5 +92,8 @@ export class ComponentResolverComponent implements OnInit, OnChanges {
             this.componentRef.instance.blockId = this.blockId;
         }
 
+    }
+    ngOnDestroy (){
+        this.componentRef.destroy();
     }
 }

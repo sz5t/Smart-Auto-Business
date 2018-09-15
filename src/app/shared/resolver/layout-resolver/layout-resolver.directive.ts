@@ -1,5 +1,5 @@
 import {
-    ComponentFactoryResolver, ComponentRef, Directive, Inject, Input, OnChanges, OnInit, Type,
+    ComponentFactoryResolver, ComponentRef, Directive, Inject, Input, OnChanges, OnDestroy, OnInit, Type,
     ViewContainerRef
 } from '@angular/core';
 import {ComponentResolverComponent} from '@shared/resolver/component-resolver/component-resolver.component';
@@ -8,11 +8,12 @@ import {
     BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODES,
     BsnComponentMessage
 } from "@core/relative-Service/BsnTableStatus";
+import {IBlockExclusionDescriptor} from "tslint/lib/rules/completed-docs/blockExclusion";
 
 @Directive({
     selector: '[cnLayoutResolverDirective]'
 })
-export class LayoutResolverDirective implements OnInit, OnChanges {
+export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy{
     @Input() config;
     @Input() layoutId;
     component: ComponentRef<any>;
@@ -57,5 +58,9 @@ export class LayoutResolverDirective implements OnInit, OnChanges {
         this.component.instance.tempValue = data;
     }
 
-
+    ngOnDestroy() {
+        if(this.component) {
+            this.component.destroy();
+        }
+    }
 }

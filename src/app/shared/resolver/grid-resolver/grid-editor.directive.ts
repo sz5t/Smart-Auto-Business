@@ -3,7 +3,7 @@ import {
     ViewContainerRef,
     forwardRef,
     Output,
-    EventEmitter
+    EventEmitter, OnDestroy
 } from '@angular/core';
 import {
     NzCheckboxComponent,
@@ -42,7 +42,7 @@ export const EXE_COUNTER_VALUE_ACCESSOR: any = {
     selector: '[CnGridEditorDirective]',
     providers: [EXE_COUNTER_VALUE_ACCESSOR]
 })
-export class GridEditorDirective implements OnInit, OnChanges {
+export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
     @Input() config;
     @Input() value;
     @Input() rowData;
@@ -56,8 +56,6 @@ export class GridEditorDirective implements OnInit, OnChanges {
 
     ngOnChanges() {
         if (this.component) {
-            this.component.instance.config = this.config;
-            this.component.instance.value = this.value;
         }
     }
 
@@ -87,6 +85,12 @@ export class GridEditorDirective implements OnInit, OnChanges {
     setValue(data?) {
         this.value = data;
         this.updateValue.emit(data);
+    }
+
+    ngOnDestroy() {
+        if(this.component) {
+            this.component.destroy();
+        }
     }
 }
 

@@ -1,8 +1,8 @@
 import {
-  ComponentFactoryResolver, ComponentRef, Directive, Input, OnChanges, OnInit, Type,
-  ViewContainerRef,
-  Output,
-  EventEmitter
+    ComponentFactoryResolver, ComponentRef, Directive, Input, OnChanges, OnInit, Type,
+    ViewContainerRef,
+    Output,
+    EventEmitter, OnDestroy
 } from '@angular/core';
 import {CnFormLabelComponent} from '@shared/components/cn-form-label/cn-form-label.component';
 const components: {[type: string]: Type<any>} = {
@@ -11,7 +11,7 @@ const components: {[type: string]: Type<any>} = {
 @Directive({
   selector: '[cnFormLabelDirective]'
 })
-export class CnFormLabelDirective implements OnInit, OnChanges {
+export class CnFormLabelDirective implements OnInit, OnChanges, OnDestroy {
     @Input() config;
     @Input() formGroup;
     @Input() changeConfig;
@@ -83,5 +83,8 @@ export class CnFormLabelDirective implements OnInit, OnChanges {
         this.component = this.container.createComponent(comp);
         this.component.instance.config = this.config;
         this.component.instance.formGroup = this.formGroup;
+    }
+    ngOnDestroy (){
+        this.component.destroy();
     }
 }

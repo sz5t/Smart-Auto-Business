@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, Output, EventEmitter, AfterViewInit} from '@angular/core';
+import {Component, Input, OnInit, Output, EventEmitter, AfterViewInit, OnChanges, SimpleChanges} from '@angular/core';
 import {ApiService} from '@core/utility/api-service';
 import {APIResource} from '@core/utility/api-resource';
 
@@ -6,7 +6,7 @@ import {APIResource} from '@core/utility/api-resource';
     selector: 'cn-grid-select',
     templateUrl: './cn-grid-select.component.html',
 })
-export class CnGridSelectComponent implements OnInit, AfterViewInit {
+export class CnGridSelectComponent implements OnInit , AfterViewInit {
     @Input() config;
     @Input() value;
     @Input() bsnData;
@@ -14,11 +14,11 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit {
     @Input() dataSet;
     @Output() updateValue = new EventEmitter();
     _options = [];
+    _selectedOption;
+    resultData;
     // _selectedMultipleOption:any[];
     constructor(private apiService: ApiService) {
     }
-
-    _selectedOption;
 
     async ngOnInit() {
         if (this.dataSet) {
@@ -26,17 +26,17 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit {
             this._options = this.dataSet;
         } else if (this.config.ajaxConfig) {
             // 异步加载options
-            const result = await this.asyncLoadOptions(this.config.ajaxConfig);
+            this.resultData = await this.asyncLoadOptions(this.config.ajaxConfig);
             if (this.config.valueType && this.config.valueType === 'list') {
                 const labels = this.config.labelName.split('.');
                 const values = this.config.valueName.split('.');
-                result.data.forEach(d => {
+                this.resultData.data.forEach(d => {
                     d[this.config.valueName].forEach(v => {
                         this._options.push({label: v.ParameterName, value: v.ParameterName});
                     });
                 });
             } else {
-                result.data.forEach(d => {
+                this.resultData.data.forEach(d => {
                     this._options.push({'label': d[this.config.labelName], 'value': d[this.config.valueName]});
                 });
             }
@@ -139,15 +139,20 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit {
                 }
             }));
         }
-
         this._selectedOption = selected;
-
-        this.valueChange( this._selectedOption);
+        this.valueChange(this._selectedOption);
     }
 
     valueChange(name?) {
+        // 使用当前rowData['Id'] 作为当前编辑行的唯一标识
+        // 所有接收数据的组件都已自己当前行为标识进行数据及联
         if (name) {
             this.value.data = name.value;
+            // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
+            if(this.resultData) {
+                const index = this.resultData.data.findIndex(item => item['Id'] === name.value);
+                this.resultData.data && (this.value['dataItem'] = this.resultData.data[index]);
+            }
             this.updateValue.emit(this.value);
         } else {
             this.value.data = null;

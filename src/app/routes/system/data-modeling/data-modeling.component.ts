@@ -679,7 +679,6 @@ export class DataModelingComponent implements OnInit {
                                                         'name': 'executeCheckedRow',
                                                         'class': 'editable-add-btn',
                                                         'text': '批量建模',
-                                                        'action': 'EXECUTE_CHECKED',
                                                         'actionType': 'post',
                                                         'actionName': 'BuildModel',
                                                         'ajaxConfig': [{
@@ -697,7 +696,6 @@ export class DataModelingComponent implements OnInit {
                                                         'name': 'executeSelectedRow',
                                                         'class': 'editable-add-btn',
                                                         'text': '建模',
-                                                        'action': 'EXECUTE_SELECTED',
                                                         'actionType': 'post',
                                                         'actionName': 'BuildModel',
                                                         'ajaxConfig': [{

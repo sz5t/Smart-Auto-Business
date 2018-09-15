@@ -15,6 +15,7 @@ export const BSN_COMPONENT_MODES = {
     SEARCH : 'Search',
     UPLOAD: 'upload',
     REFRESH: 'refresh',
+    FORM_BATCH: 'formBatch',
     // tree
     ADD_NODE: 'addNode',
     EDIT_NODE: 'editNode',

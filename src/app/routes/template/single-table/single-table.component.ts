@@ -407,18 +407,24 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     options: {
                                                         'type': 'select',
                                                         'labelSize': '6',
-                                                        'controlSize': '18',
+                                                        'controlSize': '16',
                                                         'inputType': 'submit',
                                                         'name': 'parentId',
+                                                        'label': '父类别',
+                                                        'labelName': 'caseName',
+                                                        'valueName': 'Id',
                                                         'notFoundContent': '',
                                                         'selectModel': false,
                                                         'showSearch': true,
-                                                        'placeholder': '-请选择-',
+                                                        'placeholder': '--请选择--',
                                                         'disabled': false,
                                                         'size': 'default',
-                                                        'clear': true,
-                                                        'dataSet': 'getCaseName',
-                                                        'width': '100%'
+                                                        'defaultValue': '6b4021cef8394d5fb4775afcd01d920f',
+                                                        'ajaxConfig': {
+                                                            'url': 'common/ShowCase',
+                                                            'ajaxType': 'get',
+                                                            'params': []
+                                                        }
                                                     }
                                                 }
                                             },
@@ -426,13 +432,15 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 title: '父类别', field: 'parentName', width: '10%', hidden: false,
                                                 editor: {
                                                     type: 'select',
-                                                    field: 'parentId',
+                                                    field: 'parentIds',
                                                     options: {
                                                         'type': 'select',
                                                         'labelSize': '6',
                                                         'controlSize': '18',
                                                         'inputType': 'submit',
-                                                        'name': 'parentId',
+                                                        'name': 'parentId_2',
+                                                        'labelName': 'caseName',
+                                                        'valueName': 'Id',
                                                         'notFoundContent': '',
                                                         'selectModel': false,
                                                         'showSearch': true,
@@ -440,7 +448,26 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'disabled': false,
                                                         'size': 'default',
                                                         'clear': true,
-                                                        'width': '100%'
+                                                        'width': '100%',
+                                                        'cascades': [
+                                                            {
+                                                                'cascadeName': 'parentId',
+                                                                'params': [
+                                                                    {
+                                                                        'pid': 'parentId', 'cid': '_cas_parentId'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ],
+                                                        'ajaxConfig': {
+                                                            'url': 'common/ShowCase',
+                                                            'ajaxType': 'get',
+                                                            'params': [
+                                                                {
+                                                                    name: 'parentId', type: 'tempValue', valueName: '_cas_parentId'
+                                                                }
+                                                            ]
+                                                        }
                                                     }
                                                 }
                                             },
@@ -525,7 +552,6 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     },
                                                     {
                                                         'name': 'addRow',
-                                                        'class': 'editable-add-btn',
                                                         'text': '新增',
                                                         'action': 'CREATE',
                                                         'icon': 'anticon anticon-plus',
@@ -533,7 +559,6 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     },
                                                     {
                                                         'name': 'updateRow',
-                                                        'class': 'editable-add-btn',
                                                         'text': '修改',
                                                         'action': 'EDIT',
                                                         'icon': 'anticon anticon-edit',
@@ -541,9 +566,8 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     },
                                                     {
                                                         'name': 'deleteRow',
-                                                        'class': 'editable-add-btn',
-                                                        'text': '删除',
-                                                        // 'action': 'DELETE',
+                                                        'text': '删除1',
+                                                        'action': 'DELETE',
                                                         'icon': 'anticon anticon-delete',
                                                         'color': 'text-red-light',
                                                         'ajaxConfig': {
@@ -557,6 +581,26 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 }
                                                             ]
                                                         }
+                                                    },
+                                                    {
+                                                        'name': 'deleteRow',
+                                                        'text': '删除2',
+                                                        'icon': 'anticon anticon-delete',
+                                                        'color': 'text-warning',
+                                                        'ajaxConfig': [
+                                                            {
+                                                                'action': 'EXECUTE_CHECKED_ID',
+                                                                'url': 'common/ShowCase',
+                                                                'ajaxType': 'delete', // 批量删除调用建模API，不能使用该模式，delete动作无法传递数组参数类型
+                                                                'title': '警告！',
+                                                                'message': '确认要删除当前勾选的数据么？？？',
+                                                                'params':[
+                                                                    {
+                                                                        name: '_ids', type: 'checkedId', valueName: 'Id'
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
                                                     }
                                                 ]
                                             },
@@ -564,7 +608,6 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 group: [
                                                     {
                                                         'name': 'executeCheckedRow',
-                                                        'class': 'editable-add-btn',
                                                         'text': '多选删除',
                                                         'icon': 'anticon anticon-delete',
                                                         'color': 'text-red-light',
@@ -828,8 +871,10 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     {
                                                         'name': 'batchEditForm',
                                                         'text': '弹出批量处理表单',
+                                                        'action': 'FORM_BATCH',
+                                                        'actionName': 'batchUpdateShowCase',
                                                         'icon': 'anticon anticon-form',
-                                                        'type': 'showBatchForm'
+                                                        'type': 'showBatchForm',
                                                     },
                                                     {
                                                         'name': 'showDialogPage',
@@ -1209,6 +1254,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'name': 'save', 'text': '保存', 'type': 'primary',
                                                         'ajaxConfig': {
                                                             post: [{
+                                                                'ajaxType': 'post',
                                                                 'url': 'common/ShowCase',
                                                                 'params': [
                                                                     {
@@ -1576,6 +1622,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'type': 'primary',
                                                         'ajaxConfig': {
                                                             put: [{
+                                                                'ajaxType': 'put',
                                                                 'url': 'common/ShowCase',
                                                                 'params': [
                                                                     {
@@ -2048,13 +2095,83 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 ]
                                                             }
                                                         ],
-
                                                     }
 
                                                 ]
 
 
-                                            }
+                                            },
+                                            {
+                                                'keyId': 'Id',
+                                                'name': 'batchUpdateShowCase',
+                                                'title': '批量编辑',
+                                                'width': '600',
+                                                'type': 'edit',
+                                                'componentType': {
+                                                    'parent': false,
+                                                    'child': false,
+                                                    'own': true
+                                                },
+                                                'forms': [
+                                                    {
+                                                        controls: [
+                                                            {
+                                                                'type': 'select',
+                                                                'labelSize': '6',
+                                                                'controlSize': '16',
+                                                                'name': 'enabled',
+                                                                'label': '状态',
+                                                                'notFoundContent': '',
+                                                                'selectModel': false,
+                                                                'showSearch': true,
+                                                                'placeholder': '--请选择--',
+                                                                'disabled': false,
+                                                                'size': 'default',
+                                                                'defaultValue': 1,
+                                                                'options': [
+                                                                    {
+                                                                        'label': '启用',
+                                                                        'value': true
+                                                                    },
+                                                                    {
+                                                                        'label': '禁用',
+                                                                        'value': false
+                                                                    }
+                                                                ],
+                                                                'layout': 'column',
+                                                                'span': '24'
+                                                            },
+                                                        ]
+                                                    }
+                                                ],
+                                                'buttons': [
+                                                    {
+                                                        'name': 'batchSave', 'text': '保存',
+                                                        'type': 'primary',
+                                                        'ajaxConfig': [{
+                                                            'ajaxType': 'put',
+                                                            'url': 'common/ShowCase',
+                                                            'batch': true,
+                                                            'params': [
+                                                                {
+                                                                    name: 'Id',
+                                                                    type: 'checkedRow',
+                                                                    valueName: 'Id',
+                                                                    value: ''
+                                                                },
+                                                                {
+                                                                    name: 'enabled',
+                                                                    type: 'componentValue',
+                                                                    valueName: 'enabled',
+                                                                    value: ''
+                                                                }
+                                                            ]
+                                                        }]
+                                                    },
+                                                    { 'name': 'close', 'class': 'editable-add-btn', 'text': '关闭' }
+                                                ],
+                                                'dataList': [],
+                                            },
                                         ],
                                         'windowDialog': [
                                             {

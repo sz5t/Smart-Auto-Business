@@ -9,7 +9,7 @@ export class CommonTools {
     return s;
   }
 
-  public static parametersResolver (params, tempValue?, item?) {
+  public static parametersResolver (params, tempValue?, item?, componentValue?) {
       const result = {};
       if (Array.isArray(params)) {
           params.forEach(param => {
@@ -28,8 +28,8 @@ export class CommonTools {
                           result[param['name']] = param.value;
                           break;
                       case BSN_PARAMETER_TYPE.COMPONENT_VALUE:
-                          if (item) {
-                              result[param['name']] = item[param['valueName']];
+                          if (componentValue) {
+                              result[param['name']] = componentValue[param['valueName']];
                           }
                           break;
                       case BSN_PARAMETER_TYPE.GUID:

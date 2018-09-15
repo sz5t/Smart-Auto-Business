@@ -91,6 +91,10 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     _statusSubscription: Subscription;
     _cascadeSubscription: Subscription;
 
+    // 查询标识
+    is_Search = false;
+    search_Row = {};
+
     constructor(private _http: ApiService,
                 private _message: NzMessageService,
                 private modalService: NzModalService,
@@ -187,6 +191,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     case BSN_COMPONENT_MODES.UPLOAD:
                         this.uploadDialog(option);
                         break;
+                    case BSN_COMPONENT_MODES.FORM_BATCH:
+                        this.formBatchDialog(option);
+                        break;
                 }
             }
         });
@@ -240,15 +247,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     });
                 }
             });
-        }
-    }
-
-    ngOnDestroy() {
-        if (this._statusSubscription) {
-            this._statusSubscription.unsubscribe();
-        }
-        if (this._cascadeSubscription) {
-            this._cascadeSubscription.unsubscribe();
         }
     }
 
@@ -323,229 +321,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     }
 
-    private _hasProperty(obj, propertyName) {
-        let result = false;
-        for (const p in obj) {
-            if (obj.hasOwnProperty(p) && p === propertyName) {
-                result = true;
-            }
-        }
-        return result;
-    }
 
-    private _buildCurrentPage() {
-
-    }
-
-    private _buildFilter(filterConfig) {
-        let filter = {};
-        if (filterConfig) {
-            filter = CommonTools.parametersResolver(filterConfig, this.tempValue);
-            // filterConfig.forEach(param => {
-            //     if (!this.tempValue) {
-            //         this.tempValue = {};
-            //     }
-            //     if (this.tempValue[param['valueName']]) {
-            //         filter[param['name']] = this.tempValue[param['valueName']];
-            //     }
-            // });
-        }
-        return filter;
-    }
-
-    private _buildParameters(paramsConfig) {
-        let params = {};
-        if (paramsConfig) {
-            params = CommonTools.parametersResolver(paramsConfig, this.tempValue);
-            // paramsConfig.map(param => {
-            //     if (param['type'] === 'tempValue') {
-            //         if (!this.tempValue) {
-            //             this.tempValue = {};
-            //         }
-            //         params[param['name']] = this.tempValue[param['valueName']];
-            //     } else if (param['type'] === 'value') {
-            //         params[param.name] = param.value;
-            //     } else if (param['type'] === 'GUID') {
-            //         const fieldIdentity = CommonTools.uuID(10);
-            //         params[param.name] = fieldIdentity;
-            //     } else if (param['type'] === 'componentValue') {
-            //         // params[param.name] = componentValue[param.valueName];
-            //     } else if (param['type'] === 'searchValue') {
-            //         if (this._searchParameters[param['name']]) {
-            //             params[param['name']] = this._searchParameters[param['valueName']];
-            //         }
-            //     }
-            // });
-        }
-        return params;
-    }
-
-    private _buildURL(ajaxUrl) {
-        let url = '';
-        if (ajaxUrl && this._isUrlString(ajaxUrl)) {
-            url = ajaxUrl;
-        } else if (ajaxUrl) {
-            // 适用于URL主子表操作的配置
-            // const parent = this._paramsResolver(ajaxUrl.params);
-            // ajaxUrl.params.map(param => {
-            //     if (param['type'] === 'tempValue') {
-            //         if (!this.tempValue) {
-            //             this.tempValue = {};
-            //         }
-            //         parent[param['name']] = this.tempValue[param.valueName];
-            //     } else if (param['type'] === 'value') {
-            //         if (param.value === 'null') {
-            //             param.value = null;
-            //         }
-            //         parent[param['name']] = param.value;
-            //     } else if (param['type'] === 'GUID') {
-            //         // todo: 扩展功能
-            //     } else if (param['type'] === 'componentValue') {
-            //         // parent[param['name']] = componentValue[param['valueName']];
-            //     }
-            // });
-        }
-        return url;
-    }
-
-    private _buildPaging() {
-        const params = {};
-        if (this.config['pagination']) {
-            params['_page'] = this.pageIndex;
-            params['_rows'] = this.pageSize;
-        }
-        return params;
-    }
-
-    private _isUrlString(url) {
-        return Object.prototype.toString.call(url) === '[object String]';
-    }
-
-    private _buildSort() {
-        const sortObj = {};
-        // if (this._sortName && this._sortType) {
-        if (this._sortName && this._sortOrder) {
-
-            sortObj['_sort'] = this._sortName + this._sortOrder;
-            // sortObj['_order'] = sortObj['_order'] ? 'DESC' : 'ASC';
-        }
-        return sortObj;
-    }
-
-    private _buildFocusId() {
-        const focusParams = {};
-        // 服务器端待解决
-        if (this.focusIds) {
-            focusParams['_focusedId'] = this.focusIds;
-        }
-        return focusParams;
-    }
-
-    private _buildColumnFilter() {
-        const filterParams = {};
-        if (this._columnFilterList && this._columnFilterList.length > 0) {
-            this._columnFilterList.map(filter => {
-                const valueStr = [];
-                filter.value.map(value => {
-                    valueStr.push(`'${value}'`);
-                });
-                filterParams[filter.field] = `in(${valueStr.join(',')})`;
-            });
-        }
-        return filterParams;
-    }
-
-    // 创建查询参数
-    _buildSearch() {
-        let search = {};
-        if (this.search_Row) {
-            const searchData = JSON.parse(JSON.stringify(this.search_Row));
-            delete searchData['key'];
-            delete searchData['checked'];
-            delete searchData['row_status'];
-            delete searchData['selected'];
-
-            search = searchData;
-        }
-        return search;
-    }
-
-    private _updateEditCacheByLoad(dataList) {
-        this.editCache = {};
-        dataList.forEach(item => {
-            if (!this.editCache[item.key]) {
-                this.editCache[item.key] = {
-                    edit: false,
-                    data: item
-                };
-            }
-        });
-    }
-
-    private selectRow(data?, $event?) {
-        if ($event) {
-            const src = $event.srcElement || $event.target;
-            if (src.type === 'checkbox') {
-                return;
-            }
-            $event.stopPropagation();
-        }
-
-        this.dataList && this.dataList.map(row => {
-            row.selected = false;
-        });
-        data['selected'] = true;
-        this._selectRow = data;
-    }
-
-    searchData(reset: boolean = false) {
-        if (reset) {
-            this.pageIndex = 1;
-        }
-        this.load(this.pageIndex);
-    }
-
-    sort(sort: { key: string, value: string }) {
-        this._sortName = sort.key;
-        if (sort.value === 'ascend') {
-            this._sortOrder = ' Asc';
-        } else if (sort.value === 'descend') {
-            this._sortOrder = ' Desc';
-        } else {
-            this._sortOrder = '';
-        }
-
-        this._sortType = !this._sortType;
-        this.load();
-    }
-
-    columnFilter(field: string, values: string[]) {
-        const filter = {};
-        if (values.length > 0 && field) {
-            filter['field'] = field;
-            filter['value'] = values;
-            this._columnFilterList.push(filter);
-        } else {
-            this._columnFilterList = [];
-        }
-
-        this.load();
-    }
-
-    checkAll(value) {
-        this.dataList.forEach(data => {
-            if (!data.disabled) {
-                data.checked = value;
-            }
-        });
-        this.refChecked();
-    }
-
-    refChecked() {
-        this.checkedCount = this.dataList.filter(w => w.checked).length;
-        this.allChecked = this.checkedCount === this.dataList.length;
-        this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
-    }
 
     async saveRow(option) {
         const addRows = [];
@@ -717,77 +493,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         return isSuccess;
     }
 
-    cancelRow() {
-        let len = this.dataList.length;
-        for (let i = 0; i < len; i++) {
-            if (this.dataList[i]['checked']) {
-                if (this.dataList[i]['row_status'] === 'adding') {
-                    this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
-                    i--;
-                    len--;
-                } else if (this.dataList[i]['row_status'] === 'search') {
-                    this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
-                    this.is_Search = false;
-                    this.search_Row = {};
-                    i--;
-                    len--;
-                } else {
-                    this._cancelEdit(this.dataList[i].key);
-                }
-
-            }
-        }
-        this.refChecked();
-        return true;
-    }
-
-    private _startEdit(key: string): void {
-        this.editCache[key].edit = true;
-    }
-
-    private _cancelEdit(key: string): void {
-        const index = this.dataList.findIndex(item => item.key === key);
-        this.dataList[index].checked = false;
-        this.editCache[key].edit = false;
-        this.editCache[key].data = JSON.parse(JSON.stringify(this.dataList[index]));
-
-    }
-
-    private _saveEdit(key: string): void {
-        const index = this.dataList.findIndex(item => item.key === key);
-        let checked = false;
-        let selected = false;
-
-        if (this.dataList[index].checked) {
-            checked = this.dataList[index].checked;
-        }
-        if (this.dataList[index].selected) {
-            selected = this.dataList[index].selected;
-        }
-
-        this.dataList[index] = this.editCache[key].data;
-        this.dataList[index].checked = checked;
-        this.dataList[index].selected = selected;
-
-        this.editCache[key].edit = false;
-    }
-
-    private _deleteEdit(i: string): void {
-        const dataSet = this.dataList.filter(d => d.key !== i);
-        this.dataList = dataSet;
-    }
-
-    private _updateEditCache(): void {
-        this.dataList.forEach(item => {
-            if (!this.editCache[item.key]) {
-                this.editCache[item.key] = {
-                    edit: false,
-                    data: item
-                };
-            }
-        });
-    }
-
     // 获取行内编辑是行填充数据
     private _getContent() {
         this.rowContent['key'] = null;
@@ -825,9 +530,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         }
     }
 
-    // 查询标识
-    is_Search = false;
-    search_Row = {};
     // 新增查询
     addSearchRow() {
 
@@ -843,7 +545,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         } else {
 
             // 执行行查询
-            this.load(1); // 查询后将页面置1
+            this.load(); // 查询后将页面置1
             let len = this.dataList.length;
             for (let i = 0; i < len; i++) {
                 if (this.dataList[i]['row_status'] === 'search') {
@@ -890,7 +592,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         }
         this.is_Search = false;
         this.search_Row = {};
-        this.load(1); // 查询后将页面置1
+        this.load(); // 查询后将页面置1
         return true;
     }
 
@@ -915,7 +617,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     valueChange(data) {
-        const index = this.dataList.findIndex(item => item.key === data.key);
+        // const index = this.dataList.findIndex(item => item.key === data.key);
+
         this.editCache[data.key].data[data.name] = data.data;
     }
 
@@ -1046,34 +749,28 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         return isSuccess;
     }
 
-    private showBatchForm(dialog) {
+    /**
+     * 未完善功能
+     * @param dialog
+     */
+    private showLayout(dialog) {
         const footer = [];
-        const checkedItems = [];
-        this.dataList.map(item => {
-            if (item.checked) {
-                checkedItems.push(item);
-            }
-        });
-        if (checkedItems.length > 0) {
-            const obj = {
-                _checkedItems: checkedItems
-            };
+        this._http.getLocalData(dialog.layoutName).subscribe(data => {
             const modal = this.modalService.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
-                nzContent: component['form'],
+                nzContent: component['layout'],
                 nzComponentParams: {
-                    config: dialog,
-                    ref: obj
+                    config: data
                 },
                 nzFooter: footer
             });
-
             if (dialog.buttons) {
                 dialog.buttons.forEach(btn => {
                     const button = {};
                     button['label'] = btn.text;
                     button['type'] = btn.type ? btn.type : 'default';
+                    button['show'] = true;
                     button['onClick'] = (componentInstance) => {
                         if (btn['name'] === 'save') {
                             (async () => {
@@ -1096,6 +793,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                             modal.close();
                         } else if (btn['name'] === 'reset') {
                             this._resetForm(componentInstance);
+                        } else if (btn['name'] === 'ok') {
+                            //
                         }
 
                     };
@@ -1103,14 +802,15 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 });
 
             }
-        } else {
-            this._message.create('warning', '请先选中需要处理的数据');
-        }
+        });
 
     }
 
-    // region 批量确认提交数据，未完成与服务端的批量测试功能
+
+
+// region 批量确认提交数据，未完成与服务端的批量测试功能
     // 关于相关配置的问题需要进一步进行讨论
+
     private async  _resolveAjaxConfig(option) {
         if (option.ajaxConfig && option.ajaxConfig.length > 0) {
             option.ajaxConfig.map(async c => {
@@ -1149,7 +849,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                             // 获取保存状态的数据
                             handleData = this._getEditedRows();
                             msg = '编辑数据保存成功';
-                            if(handleData && handleData.length <= 0) {
+                            if (handleData && handleData.length <= 0) {
                                 return ;
                             }
                             break;
@@ -1157,37 +857,33 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                             // 获取更新状态的数据
                             handleData = this._getAddedRows();
                             msg = '新增数据保存成功';
-                            if(handleData && handleData.length <= 0) {
+                            if (handleData && handleData.length <= 0) {
                                 return ;
                             }
                             break;
                     }
-                    if(c.message) {
+                    if (c.message) {
                         this.modalService.confirm({
                             nzTitle: c.title ? c.title : '提示',
                             nzContent: c.message ? c.message : '',
-                            nzOnOk: async () => {
-                                const response = await this._executeAjaxConfig(c, handleData);
-                                if(response.isSuccess) {
-                                    this._message.success(msg);
-                                    this.focusIds = this._getFocusIds(response.data);
-                                    this.load();
-                                } else {
-                                    this._message.error(response.message);
-                                }
+                            nzOnOk: () => {
+                                (async() => {
+                                    const response = await this._executeAjaxConfig(c, handleData);
+                                    this.showAjaxMessage(response, msg, () => {
+                                        this.focusIds = this._getFocusIds(response.data);
+                                        this.load();
+                                    });
+                                })();
                             },
                             nzOnCancel() {
                             }
                         });
                     } else {
                         const response = await this._executeAjaxConfig(c, handleData);
-                        if(response.isSuccess) {
-                            this._message.success(msg);
+                        this.showAjaxMessage(response, msg, () => {
                             this.focusIds = this._getFocusIds(response.data);
                             this.load();
-                        } else {
-                            this._message.error(response.message);
-                        }
+                        });
                     }
 
                 }
@@ -1199,17 +895,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         // 执行存储过程
     }
 
-    private _getFocusIds(data) {
-        const Ids = [];
-        if(Array.isArray(data)) {
-            data.forEach(d => {
-                Ids.push(d['$focusedOper$']);
-            });
-        } else {
-            Ids.push(data['$focusedOper$']);
-        }
-        return Ids.join(',');
-    }
 
     private async _executeAjaxConfig(ajaxConfigObj, handleData) {
         if (Array.isArray(handleData)) {
@@ -1227,12 +912,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             ajaxConfigObj.ajaxType ? ajaxConfigObj.ajaxType : 'post',
             executeParam
         );
-        // if (response.isSuccess) {
-        //     this._message.success('操作成功');
-        //     this.load();
-        // } else {
-        //     this._message.error(`操作失败 ${response.message}`);
-        // }
     }
 
     private async _executeBatchAction(ajaxConfigObj, handleData) {
@@ -1240,12 +919,12 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         if (Array.isArray(handleData)) {
             if (ajaxConfigObj.params) {
                 handleData.forEach(dataItem => {
-                    const newParam = CommonTools.parametersResolver(ajaxConfigObj.params, this.tempValue, dataItem);
+                    const newParam = CommonTools.parametersResolver(ajaxConfigObj.params, this.tempValue, {},dataItem);
                     executeParams.push(newParam);
                 });
             }
         } else {
-            executeParams.push(CommonTools.parametersResolver(ajaxConfigObj.params, this.tempValue, handleData));
+            executeParams.push(CommonTools.parametersResolver(ajaxConfigObj.params, this.tempValue,{} ,handleData));
         }
         // 执行数据操作
         return this._executeRequest(
@@ -1253,12 +932,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             ajaxConfigObj.ajaxType ? ajaxConfigObj.ajaxType : 'post',
             executeParams
         );
-        // if (response.isSuccess) {
-        //     this._message.success('操作成功');
-        //     this.load();
-        // } else {
-        //     this._message.error(`操作失败 ${response.message}`);
-        // }
     }
 
     async _executeCheckedAction(items, option, cfg) {
@@ -1314,12 +987,12 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 serverData.push(item);
             }
         });
-        this.tempValue['_checkedItems'] = serverData;
+        this.tempValue['checkedRow'] = serverData;
         return serverData;
     }
 
     private _getSelectedItem() {
-        this.tempValue['_selectedItem'] = this.selectRow;
+        this.tempValue['selectedRow'] = this.selectRow;
         return this._selectRow;
     }
 
@@ -1371,6 +1044,456 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
     // endregion
 
+
+    private _updateEditCacheByLoad(dataList) {
+        this.editCache = {};
+        // 按照行主键划分每行的组件
+        // 根据配置构建编辑组的配置表单组件
+        // 处理每组表单内部的交互
+        dataList.forEach(item => {
+            if (!this.editCache[item.key]) {
+                this.editCache[item.key] = {
+                    edit: false,
+                    data: item
+                };
+            }
+        });
+    }
+
+    private selectRow(data?, $event?) {
+        if ($event) {
+            const src = $event.srcElement || $event.target;
+            if (src.type === 'checkbox') {
+                return;
+            }
+            $event.stopPropagation();
+        }
+
+        this.dataList && this.dataList.map(row => {
+            row.selected = false;
+        });
+        data['selected'] = true;
+        this._selectRow = data;
+    }
+
+    searchData(reset: boolean = false) {
+        if (reset) {
+            this.pageIndex = 1;
+        }
+        this.load();
+    }
+
+    sort(sort: { key: string, value: string }) {
+        this._sortName = sort.key;
+        if (sort.value === 'ascend') {
+            this._sortOrder = ' Asc';
+        } else if (sort.value === 'descend') {
+            this._sortOrder = ' Desc';
+        } else {
+            this._sortOrder = '';
+        }
+
+        this._sortType = !this._sortType;
+        this.load();
+    }
+
+    columnFilter(field: string, values: string[]) {
+        const filter = {};
+        if (values.length > 0 && field) {
+            filter['field'] = field;
+            filter['value'] = values;
+            this._columnFilterList.push(filter);
+        } else {
+            this._columnFilterList = [];
+        }
+
+        this.load();
+    }
+
+    checkAll(value) {
+        this.dataList.forEach(data => {
+            if (!data.disabled) {
+                data.checked = value;
+            }
+        });
+        this.refChecked();
+    }
+
+    refChecked() {
+        this.checkedCount = this.dataList.filter(w => w.checked).length;
+        this.allChecked = this.checkedCount === this.dataList.length;
+        this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
+    }
+
+    cancelRow() {
+        let len = this.dataList.length;
+        for (let i = 0; i < len; i++) {
+            if (this.dataList[i]['checked']) {
+                if (this.dataList[i]['row_status'] === 'adding') {
+                    this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                    i--;
+                    len--;
+                } else if (this.dataList[i]['row_status'] === 'search') {
+                    this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                    this.is_Search = false;
+                    this.search_Row = {};
+                    i--;
+                    len--;
+                } else {
+                    this._cancelEdit(this.dataList[i].key);
+                }
+
+            }
+        }
+        this.refChecked();
+        return true;
+    }
+
+    /**
+     * 开始编辑状态
+     * @param key
+     * @private
+     */
+    private _startEdit(key: string): void {
+        this.editCache[key].edit = true;
+    }
+    /**
+     * 退出编辑状态
+     * @param key
+     * @private
+     */
+    private _cancelEdit(key: string): void {
+        const index = this.dataList.findIndex(item => item.key === key);
+        this.dataList[index].checked = false;
+        this.editCache[key].edit = false;
+        this.editCache[key].data = JSON.parse(JSON.stringify(this.dataList[index]));
+
+    }
+    /**
+     * 保存编辑状态的数据
+     * @param key
+     * @private
+     */
+    private _saveEdit(key: string): void {
+        const index = this.dataList.findIndex(item => item.key === key);
+        let checked = false;
+        let selected = false;
+
+        if (this.dataList[index].checked) {
+            checked = this.dataList[index].checked;
+        }
+        if (this.dataList[index].selected) {
+            selected = this.dataList[index].selected;
+        }
+
+        this.dataList[index] = this.editCache[key].data;
+        this.dataList[index].checked = checked;
+        this.dataList[index].selected = selected;
+
+        this.editCache[key].edit = false;
+    }
+    /**
+     * 删除编辑
+     */
+    private _deleteEdit(i: string): void {
+        const dataSet = this.dataList.filter(d => d.key !== i);
+        this.dataList = dataSet;
+    }
+    /**
+     * 更新编辑状态的缓存数据
+     * @private
+     */
+    private _updateEditCache(): void {
+        this.dataList.forEach(item => {
+            if (!this.editCache[item.key]) {
+                this.editCache[item.key] = {
+                    edit: false,
+                    data: item
+                };
+            }
+        });
+    }
+    /**
+     * 获取需要聚焦的Ids
+     * @param data
+     * @returns {string}
+     * @private
+     */
+    private _getFocusIds(data) {
+        const Ids = [];
+        if (Array.isArray(data)) {
+            data.forEach(d => {
+                Ids.push(d['$focusedOper$']);
+            });
+        } else {
+            Ids.push(data['$focusedOper$']);
+        }
+        return Ids.join(',');
+    }
+    /**
+     * 构建查询过滤参数
+     * @param filterConfig
+     * @returns {{}}
+     * @private
+     */
+    private _buildFilter(filterConfig) {
+        let filter = {};
+        if (filterConfig) {
+            filter = CommonTools.parametersResolver(filterConfig, this.tempValue);
+            // filterConfig.forEach(param => {
+            //     if (!this.tempValue) {
+            //         this.tempValue = {};
+            //     }
+            //     if (this.tempValue[param['valueName']]) {
+            //         filter[param['name']] = this.tempValue[param['valueName']];
+            //     }
+            // });
+        }
+        return filter;
+    }
+    /**
+     * 构建URL参数
+     * @param paramsConfig
+     * @returns {{}}
+     * @private
+     */
+    private _buildParameters(paramsConfig) {
+        let params = {};
+        if (paramsConfig) {
+            params = CommonTools.parametersResolver(paramsConfig, this.tempValue);
+            // paramsConfig.map(param => {
+            //     if (param['type'] === 'tempValue') {
+            //         if (!this.tempValue) {
+            //             this.tempValue = {};
+            //         }
+            //         params[param['name']] = this.tempValue[param['valueName']];
+            //     } else if (param['type'] === 'value') {
+            //         params[param.name] = param.value;
+            //     } else if (param['type'] === 'GUID') {
+            //         const fieldIdentity = CommonTools.uuID(10);
+            //         params[param.name] = fieldIdentity;
+            //     } else if (param['type'] === 'componentValue') {
+            //         // params[param.name] = componentValue[param.valueName];
+            //     } else if (param['type'] === 'searchValue') {
+            //         if (this._searchParameters[param['name']]) {
+            //             params[param['name']] = this._searchParameters[param['valueName']];
+            //         }
+            //     }
+            // });
+        }
+        return params;
+    }
+    /**
+     * 构建URL
+     * @param ajaxUrl
+     * @returns {string}
+     * @private
+     */
+    private _buildURL(ajaxUrl) {
+        let url = '';
+        if (ajaxUrl && this._isUrlString(ajaxUrl)) {
+            url = ajaxUrl;
+        } else if (ajaxUrl) {
+            // 适用于URL主子表操作的配置
+            // const parent = this._paramsResolver(ajaxUrl.params);
+            // ajaxUrl.params.map(param => {
+            //     if (param['type'] === 'tempValue') {
+            //         if (!this.tempValue) {
+            //             this.tempValue = {};
+            //         }
+            //         parent[param['name']] = this.tempValue[param.valueName];
+            //     } else if (param['type'] === 'value') {
+            //         if (param.value === 'null') {
+            //             param.value = null;
+            //         }
+            //         parent[param['name']] = param.value;
+            //     } else if (param['type'] === 'GUID') {
+            //         // todo: 扩展功能
+            //     } else if (param['type'] === 'componentValue') {
+            //         // parent[param['name']] = componentValue[param['valueName']];
+            //     }
+            // });
+        }
+        return url;
+    }
+    /**
+     * 构建分页
+     * @returns {{}}
+     * @private
+     */
+    private _buildPaging() {
+        const params = {};
+        if (this.config['pagination']) {
+            params['_page'] = this.pageIndex;
+            params['_rows'] = this.pageSize;
+        }
+        return params;
+    }
+    /**
+     * 处理URL格式
+     * @param url
+     * @returns {boolean}
+     * @private
+     */
+    private _isUrlString(url) {
+        return Object.prototype.toString.call(url) === '[object String]';
+    }
+    /**
+     * 构建排序
+     * @returns {{}}
+     * @private
+     */
+    private _buildSort() {
+        const sortObj = {};
+        // if (this._sortName && this._sortType) {
+        if (this._sortName && this._sortOrder) {
+
+            sortObj['_sort'] = this._sortName + this._sortOrder;
+            // sortObj['_order'] = sortObj['_order'] ? 'DESC' : 'ASC';
+        }
+        return sortObj;
+    }
+    /**
+     * 构建查询焦点
+     * @returns {{}}
+     * @private
+     */
+    private _buildFocusId() {
+        const focusParams = {};
+        // 服务器端待解决
+        if (this.focusIds) {
+            focusParams['_focusedId'] = this.focusIds;
+        }
+        return focusParams;
+    }
+    /**
+     * 构建查询字段
+     * @returns {{}}
+     * @private
+     */
+    private _buildColumnFilter() {
+        const filterParams = {};
+        if (this._columnFilterList && this._columnFilterList.length > 0) {
+            this._columnFilterList.map(filter => {
+                const valueStr = [];
+                filter.value.map(value => {
+                    valueStr.push(`'${value}'`);
+                });
+                filterParams[filter.field] = `in(${valueStr.join(',')})`;
+            });
+        }
+        return filterParams;
+    }
+    /**
+     * 构建查询参数
+     */
+    _buildSearch() {
+        let search = {};
+        if (this.search_Row) {
+            const searchData = JSON.parse(JSON.stringify(this.search_Row));
+            delete searchData['key'];
+            delete searchData['checked'];
+            delete searchData['row_status'];
+            delete searchData['selected'];
+
+            search = searchData;
+        }
+        return search;
+    }
+
+    /**
+     * 批量编辑表单
+     * @param dialog
+     */
+    private showBatchForm(dialog) {
+        const footer = [];
+        const checkedItems = [];
+        this.dataList.map(item => {
+            if (item.checked) {
+                checkedItems.push(item);
+            }
+        });
+        if (checkedItems.length > 0) {
+            const obj = {
+                checkedRow: checkedItems
+            };
+            const modal = this.modalService.create({
+                nzTitle: dialog.title,
+                nzWidth: dialog.width,
+                nzContent: component['form'],
+                nzComponentParams: {
+                    config: dialog,
+                    ref: obj
+                },
+                nzFooter: footer
+            });
+
+            if (dialog.buttons) {
+                dialog.buttons.forEach(btn => {
+                    const button = {};
+                    button['label'] = btn.text;
+                    button['type'] = btn.type ? btn.type : 'default';
+                    button['onClick'] = (componentInstance) => {
+                        if (btn['name'] === 'batchSave') {
+                            (async () => {
+                                const result = await componentInstance.buttonAction(btn);
+                                this.showAjaxMessage(result, '保存成功', () => {
+                                    modal.close();
+                                    this.load();
+                                });
+                            })();
+                        } else if (btn['name'] === 'close') {
+                            modal.close();
+                        } else if (btn['name'] === 'reset') {
+                            this._resetForm(componentInstance);
+                        }
+
+                    };
+                    footer.push(button);
+                });
+
+            }
+        } else {
+            this._message.create('warning', '请先选中需要处理的数据');
+        }
+
+    }
+    /**
+     * 数据访问返回消息处理
+     * @param result
+     * @param message
+     * @param callback
+     */
+    showAjaxMessage(result, message?, callback?) {
+        let rs: {success: boolean, msg: string[]} = {success: true, msg:[]};
+        if (result && Array.isArray(result)) {
+            result.forEach(res => {
+                rs['success'] = (rs['success'] && res.isSuccess);
+                if (!res.isSuccess) {
+                    rs.msg.push(res.message);
+                }
+            });
+            if (rs) {
+                this._message.success(message);
+            } else {
+                this._message.error(rs.msg.join('<br/>'));
+            }
+        } else {
+            if (result.isSuccess) {
+                this._message.success(message);
+            } else {
+                this._message.error(result.message);
+            }
+        }
+        if (callback) {
+            callback();
+        }
+    }
+    /**
+     * 单条数据表单
+     * @param dialog
+     * @returns {boolean}
+     */
     private showForm(dialog) {
         let obj;
         if (dialog.type === 'add') {
@@ -1408,19 +1531,18 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     if (btn['name'] === 'save') {
                         (async () => {
                             const result = await componentInstance.buttonAction(btn);
-                            if (result) {
+                            this.showAjaxMessage(result, '保存成功', () => {
                                 modal.close();
-                                // todo: 操作完成当前数据后需要定位
                                 this.load();
-                            }
+                            });
                         })();
                     } else if (btn['name'] === 'saveAndKeep') {
                         (async () => {
                             const result = await componentInstance.buttonAction(btn);
-                            if (result) {
-                                // todo: 操作完成当前数据后需要定位
+                            this.showAjaxMessage(result, '保存成功', () => {
+                                modal.close();
                                 this.load();
-                            }
+                            });
                         })();
                     } else if (btn['name'] === 'close') {
                         modal.close();
@@ -1434,11 +1556,19 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
         }
     }
-
+    /**
+     * 重置表单
+     * @param comp
+     * @private
+     */
     private _resetForm(comp: FormResolverComponent) {
         comp.resetForm();
     }
-
+    /**
+     * 弹出上传表单
+     * @param dialog
+     * @returns {boolean}
+     */
     private openUploadDialog(dialog) {
         if (!this._selectRow) {
             this._message.warning('请选中一条需要添加附件的记录！');
@@ -1460,58 +1590,73 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             nzFooter: footer
         });
     }
-
-    private showLayout(dialog) {
-        const footer = [];
-        this._http.getLocalData(dialog.layoutName).subscribe(data => {
-            const modal = this.modalService.create({
-                nzTitle: dialog.title,
-                nzWidth: dialog.width,
-                nzContent: component['layout'],
-                nzComponentParams: {
-                    config: data
-                },
-                nzFooter: footer
+    /**
+     * 弹出对话框
+     * @param option
+     */
+    dialog(option) {
+        if (this.config.dialog && this.config.dialog.length > 0) {
+            const index = this.config.dialog.findIndex(item => item.name === option.name);
+            this.showForm(this.config.dialog[index]);
+        }
+    }
+    /**
+     * 弹出窗体
+     * @param option
+     */
+    windowDialog(option) {
+        if (this.config.windowDialog && this.config.windowDialog.length > 0) {
+            const index = this.config.windowDialog.findIndex(item => item.name === option.name);
+            this.showLayout(this.config.windowDialog[index]);
+        }
+    }
+    /**
+     * 弹出上传对话
+     * @param option
+     */
+    uploadDialog(option) {
+        if (this.config.uploadDialog && this.config.uploadDialog.length > 0) {
+            const index = this.config.uploadDialog.findIndex(item => item.name === option.name);
+            this.openUploadDialog(this.config.uploadDialog[index]);
+        }
+    }
+    /**
+     * 弹出表单
+     * @param option
+     */
+    formDialog(option) {
+        if (this.config.formDialog && this.config.formDialog.length > 0) {
+            const index = this.config.formDialog.findIndex(item => item.name === option.name);
+            this.showForm(this.config.formDialog[index]);
+        }
+    }
+    /**
+     * 弹出批量处理表单
+     * @param option
+     */
+    formBatchDialog(option) {
+        if (this.config.formDialog && this.config.formDialog.length > 0) {
+            const index = this.config.formDialog.findIndex(item => item.name === option.name);
+            this.showBatchForm(this.config.formDialog[index]);
+        }
+    }
+    /**
+     * 设置单元格样式
+     * @param value
+     * @param format
+     * @returns {string}
+     */
+    setCellFont(value, format) {
+        let fontColor = '';
+        if (format) {
+            format.map(color => {
+                if (color.value === value) {
+                    fontColor = color.fontcolor;
+                }
             });
-            if (dialog.buttons) {
-                dialog.buttons.forEach(btn => {
-                    const button = {};
-                    button['label'] = btn.text;
-                    button['type'] = btn.type ? btn.type : 'default';
-                    button['show'] = true;
-                    button['onClick'] = (componentInstance) => {
-                        if (btn['name'] === 'save') {
-                            (async () => {
-                                const result = await componentInstance.buttonAction(btn);
-                                if (result) {
-                                    modal.close();
-                                    // todo: 操作完成当前数据后需要定位
-                                    this.load();
-                                }
-                            })();
-                        } else if (btn['name'] === 'saveAndKeep') {
-                            (async () => {
-                                const result = await componentInstance.buttonAction(btn);
-                                if (result) {
-                                    // todo: 操作完成当前数据后需要定位
-                                    this.load();
-                                }
-                            })();
-                        } else if (btn['name'] === 'close') {
-                            modal.close();
-                        } else if (btn['name'] === 'reset') {
-                            this._resetForm(componentInstance);
-                        } else if (btn['name'] === 'ok') {
-                            //
-                        }
+        }
 
-                    };
-                    footer.push(button);
-                });
-
-            }
-        });
-
+        return fontColor;
     }
 
     private async _load(url, params) {
@@ -1534,45 +1679,23 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         return this._http.get(url, params).toPromise();
     }
 
-    setCellFont(value, format) {
-        let fontColor = '';
-        if (format) {
-            format.map(color => {
-                if (color.value === value) {
-                    fontColor = color.fontcolor;
-                }
-            });
+    ngOnDestroy() {
+        if (this._statusSubscription) {
+            this._statusSubscription.unsubscribe();
         }
-
-        return fontColor;
-    }
-
-    dialog(option) {
-        if (this.config.dialog && this.config.dialog.length > 0) {
-            const index = this.config.dialog.findIndex(item => item.name === option.name);
-            this.showForm(this.config.dialog[index]);
+        if (this._cascadeSubscription) {
+            this._cascadeSubscription.unsubscribe();
         }
     }
 
-    windowDialog(option) {
-        if (this.config.windowDialog && this.config.windowDialog.length > 0) {
-            const index = this.config.windowDialog.findIndex(item => item.name === option.name);
-            this.showLayout(this.config.windowDialog[index]);
+    private _hasProperty(obj, propertyName) {
+        let result = false;
+        for (const p in obj) {
+            if (obj.hasOwnProperty(p) && p === propertyName) {
+                result = true;
+            }
         }
-    }
-
-    uploadDialog(option) {
-        if (this.config.uploadDialog && this.config.uploadDialog.length > 0) {
-            const index = this.config.uploadDialog.findIndex(item => item.name === option.name);
-            this.openUploadDialog(this.config.uploadDialog[index]);
-        }
-    }
-
-    formDialog(option) {
-        if (this.config.formDialog && this.config.formDialog.length > 0) {
-            const index = this.config.formDialog.findIndex(item => item.name === option.name);
-            this.showForm(this.config.formDialog[index]);
-        }
+        return result;
     }
 
     /**
