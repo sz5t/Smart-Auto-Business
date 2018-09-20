@@ -5,8 +5,10 @@ import {
     EventEmitter, OnDestroy
 } from '@angular/core';
 import {CnFormLabelComponent} from '@shared/components/cn-form-label/cn-form-label.component';
+import {CnFormCheckboxComponent} from "@shared/components/cn-form-checkbox/cn-form-checkbox.component";
 const components: {[type: string]: Type<any>} = {
-    label: CnFormLabelComponent
+    label: CnFormLabelComponent,
+    checkbox: CnFormCheckboxComponent
 };
 @Directive({
   selector: '[cnFormLabelDirective]'
@@ -79,7 +81,12 @@ export class CnFormLabelDirective implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnInit() {
-        const comp = this.resolver.resolveComponentFactory<any>(components['label']);
+        let comp;
+        if(this.config.type === 'checkbox') {
+            comp = this.resolver.resolveComponentFactory<any>(components['checkbox']);
+        } else {
+            comp = this.resolver.resolveComponentFactory<any>(components['label']);
+        }
         this.component = this.container.createComponent(comp);
         this.component.instance.config = this.config;
         this.component.instance.formGroup = this.formGroup;

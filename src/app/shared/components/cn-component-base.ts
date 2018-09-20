@@ -13,6 +13,14 @@ export class CnComponentBase {
         this._tempValue = value;
     }
 
+    private _initValue;
+    get initValue() {
+        return this._initValue;
+    }
+    set initValue(value) {
+        this._initValue = value;
+    }
+
     before(target, method, advice) {
         const original = target[method];
         target[method] = function () {

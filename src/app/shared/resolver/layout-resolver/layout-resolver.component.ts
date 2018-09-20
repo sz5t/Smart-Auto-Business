@@ -14,16 +14,10 @@ import {Component, Input, OnInit} from '@angular/core';
 export class LayoutResolverComponent implements OnInit {
     @Input() config;
     @Input() layoutId;
-    @Input() editable = false;
-
+    @Input() initData;
     constructor() {
     }
 
     ngOnInit() {
-
-    }
-
-    switch() {
-        this.editable = !this.editable;
     }
 }

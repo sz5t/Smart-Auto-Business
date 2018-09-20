@@ -17,6 +17,7 @@ import {CnBsnTreeComponent} from '@shared/business/bsn-tree/bsn-tree.component';
 import {BarChartComponent} from '@shared/chart/bar-chart/bar-chart.component';
 import {BsnAccordionComponent} from '@shared/business/bsn-accordion/bsn-accordion.component';
 import {BsnTabsComponent} from "@shared/business/bsn-tabs/bsn-tabs.component";
+import {BsnTransferComponent} from "@shared/business/bsn-transfer/bsn-transfer.component";
 const components: { [type: string]: Type<any> } = {
     code_edit: CnCodeEditComponent,
     bsnTable: BsnTableComponent,
@@ -29,7 +30,8 @@ const components: { [type: string]: Type<any> } = {
     lineChart: LineChartComponent,
     barChart: BarChartComponent,
     bsnAccordion: BsnAccordionComponent,
-    bsnTabs: BsnTabsComponent
+    bsnTabs: BsnTabsComponent,
+    bsnTransfer: BsnTransferComponent
 };
 @Component({
     selector: 'cn-component-resolver',
@@ -41,6 +43,7 @@ export class ComponentResolverComponent implements OnInit, OnChanges, OnDestroy 
     @Input() blockId;
     @Input() layoutId;
     @Input() tempValue;
+    @Input() initData;
     @Input() editable = true;
     componentRef: ComponentRef<any>;
     @ViewChild('dynamicComponent', {read: ViewContainerRef}) container: ViewContainerRef;
@@ -75,8 +78,11 @@ export class ComponentResolverComponent implements OnInit, OnChanges, OnDestroy 
             const comp = this.resolver.resolveComponentFactory<any>(components[this.config.config.component]);
             this.componentRef = this.container.createComponent(comp);
             this.componentRef.instance.config = this.config.config;
-            if(this.componentRef.instance.tempValue) {
+            if(this.tempValue && this.componentRef.instance.tempValue) {
                 this.componentRef.instance.tempValue = this.tempValue;
+            }
+            if(this.initData) {
+                this.componentRef.instance.initData = this.initData;
             }
             // if(this.componentRef.instance.editable) {
             //     this.componentRef.instance.editable = this.editable;

@@ -59,6 +59,9 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy{
     }
 
     ngOnDestroy() {
+        if(this._cascadeSubscription){
+            this._cascadeSubscription.unsubscribe();
+        }
         if(this.component) {
             this.component.destroy();
         }

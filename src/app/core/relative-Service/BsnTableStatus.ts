@@ -45,7 +45,8 @@ export const BSN_PARAMETER_TYPE = {
     SELECTED_ROW: 'selectedRow',
     CHECKED: 'checked',
     SELECTED: 'selected',
-    CHECKED_ID: 'checkedId'
+    CHECKED_ID: 'checkedId',
+    INIT_VALUE: 'initValue'
 };
 
 export const BSN_EXECUTE_ACTION = {
@@ -58,6 +59,13 @@ export const BSN_EXECUTE_ACTION = {
     EXECUTE_NODE_CHECKED: 'EXECUTE_NODE_CHECKED',
     EXECUTE_NODES_CHECKED_KEY: 'EXECUTE_NODES_CHECKED_KEY'
 
+};
+
+export const BSN_OUTPOUT_PARAMETER_TYPE = {
+    TABLE: 'table',
+    VALUE: 'value',
+    MESSAGE: 'message',
+    NEXT: 'next'
 };
 
 export const BSN_COMPONENT_CASCADE_MODES = {

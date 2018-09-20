@@ -33,6 +33,7 @@ export class TreeAndTabsComponent implements OnInit {
                                         'expandAll': true, //
                                         'checkable': false,  //    在节点之前添加一个复选框 false
                                         'showLine': false,  //   显示连接线 fal
+                                        'currentRoot': false,
                                         'columns': [ // 字段映射，映射成树结构所需
                                             {title: '主键', field: 'key', valueName: 'Id'},
                                             {title: '父节点', field: 'parentId', valueName: 'parentId'},
@@ -122,6 +123,7 @@ export class TreeAndTabsComponent implements OnInit {
                                         'expandAll': true, //
                                         'checkable': false,  //    在节点之前添加一个复选框 false
                                         'showLine': false,  //   显示连接线 fal
+                                        'currentRoot': true,
                                         'columns': [ // 字段映射，映射成树结构所需
                                             {title: '主键', field: 'key', valueName: 'Id'},
                                             {title: '父节点', field: 'parentId', valueName: 'parentId'},
@@ -139,7 +141,7 @@ export class TreeAndTabsComponent implements OnInit {
                                             'url': 'common/ShowCase',
                                             'ajaxType': 'get',
                                             'params': [
-                                                 { name: 'parentId', type: 'tempValue', valueName: '_parentId', value: '' }
+                                                 // { name: 'parentId', type: 'tempValue', valueName: '_parentId', value: '' }
                                             ]
                                         },
                                         'relations': [{

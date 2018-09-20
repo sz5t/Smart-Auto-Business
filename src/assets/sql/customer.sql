@@ -163,7 +163,7 @@ UPDATE a SET
   a.TITLE = b.TITLE,
   a.PROJECT_ID = b.PROJECT_ID,
   a.LAST_UPDATE_DATE = b.LAST_UPDATE_DATE,
-  a.LAST_UPDATE_USER_ID = b.LAST_UPDATE_USER_ID 
+  a.LAST_UPDATE_USER_ID = b.LAST_UPDATE_USER_ID
 FROM VIEW_SETTING AS a, VIEW_SETTING_BUFFER as b
 WHERE a.ID = b.ID AND b.LAYOUT_ID = $LayoutId$
 
@@ -266,4 +266,167 @@ BEGIN
     CREATE_USER_ID,
     LAST_UPDATE_USER_ID
   FROM VIEW_SETTING_BUFFER WHERE LAYOUT_ID = '94658be5cb364e2da995cf4354b9e385'
+END
+
+-----------------------------------------------------------------------
+CREATE PROCEDURE DEL_SHOWCASE
+  @isCheck BIT,
+  @Ids VARCHAR(2500),
+  @Message VARCHAR(200) OUTPUT
+AS
+DECLARE @Result TABLE
+(
+  ID VARCHAR(32),
+  CASE_NAME VARCHAR(64),
+  CASE_COUNT INT,
+  CASE_LEVEL INT,
+  ENABLE_TEXT VARCHAR(255),
+  CASE_TYPE_TEXT VARCHAR(255),
+  DELETE_STATUS VARCHAR(255),
+  DELETE_MESSAGE VARCHAR(255)
+)
+DECLARE @tempTable TABLE
+(
+  ID varchar(32)
+)
+
+INSERT INTO @tempTable(ID)
+SELECT
+  value
+FROM
+  [dbo].F_Split(@Ids,',')
+
+IF (@isCheck = 1)
+  BEGIN
+    IF EXISTS (SELECT CASE_NAME FROM SHOW_CASE
+    WHERE ID IN (SELECT ID FROM @tempTable)
+          AND ENABLED = '1')
+    BEGIN
+      SET @Message = 'error:删除操作存在启用的数据，是否继续删除'
+    END
+	ELSE
+	BEGIN
+	  SET @Message = 'success:可以删除'
+	END
+  END
+ELSE
+  BEGIN
+    /*
+    * 可删除结果集
+    */
+    INSERT INTO @Result
+    (
+      ID,
+      CASE_NAME,
+      CASE_COUNT,
+      CASE_LEVEL,
+      ENABLE_TEXT,
+      CASE_TYPE_TEXT,
+      DELETE_STATUS,
+      DELETE_MESSAGE
+    )
+    SELECT
+      A.ID,
+      A.CASE_NAME,
+      A.CASE_COUNT,
+      A.CASE_LEVEL,
+      CASE A.ENABLED
+        WHEN 1 THEN '启用'
+        WHEN 0 THEN '禁用'
+        END AS ENABLE_TEXT,
+      CASE A.CASE_TYPE
+        WHEN '1' THEN '表格'
+        WHEN '2' THEN '组件树'
+        WHEN '3' THEN '树表'
+        WHEN '4' THEN '表单'
+        WHEN '5' THEN '标签页'
+        END AS CASE_TYPE_TEXT,
+      '已删除' AS DELETE_STATUS,
+      '无' AS DELETE_MESSAGE
+    FROM
+      SHOW_CASE AS A LEFT JOIN @tempTable AS B
+      ON A.ID = B.ID
+    WHERE A.ID IN (
+      SELECT
+        ID
+      FROM SHOW_CASE
+      WHERE ID NOT IN (PARENT_ID) AND ENABLED = 0
+    )
+    UNION ALL
+    SELECT
+      A.ID,
+      A.CASE_NAME,
+      A.CASE_COUNT,
+      A.CASE_LEVEL,
+      CASE A.ENABLED
+        WHEN 1 THEN '启用'
+        WHEN 0 THEN '禁用'
+        END AS ENABLE_TEXT,
+      CASE A.CASE_TYPE
+        WHEN '1' THEN '表格'
+        WHEN '2' THEN '组件树'
+        WHEN '3' THEN '树表'
+        WHEN '4' THEN '表单'
+        WHEN '5' THEN '标签页'
+        END AS CASE_TYPE_TEXT,
+      '未删除' AS DELETE_STATUS,
+      '包含子节点或已启用' AS DELETE_MESSAGE
+    FROM
+      SHOW_CASE AS A LEFT JOIN @tempTable AS B
+      ON A.ID = B.ID
+    WHERE A.ID IN (
+      SELECT
+        ID
+      FROM SHOW_CASE
+      WHERE ID IN (PARENT_ID) OR ENABLED = 1
+    )
+
+    DELETE FROM SHOW_CASE
+    WHERE ID IN (
+        SELECT ID FROM @Result
+        WHERE DELETE_STATUS = '已删除'
+    )
+
+    SELECT
+      ID,
+      CASE_NAME,
+      CASE_COUNT,
+      CASE_LEVEL,
+      ENABLE_TEXT,
+      CASE_TYPE_TEXT,
+      DELETE_STATUS,
+      DELETE_MESSAGE
+    FROM @Result
+
+    SET @Message = 'success:操作完成'
+    /*
+    未删除结果集
+    */
+  END
+--验证检查---------------------------------------------------------------------------------------
+CREATE PROCEDURE DEL_SHOWCASE
+  @Ids VARCHAR(2500),
+  @Message VARCHAR(200) OUTPUT
+AS
+DECLARE @tempTable TABLE
+(
+  ID varchar(32)
+)
+
+INSERT INTO @tempTable(ID)
+SELECT
+  value
+FROM
+  [dbo].F_Split(@Ids,',')
+
+IF EXISTS (SELECT CASE_NAME FROM SHOW_CASE
+    WHERE ID IN (SELECT ID FROM @tempTable) AND ENABLED = '1')
+BEGIN
+  SET @Message = 'error:删除操作存在启用的数据，是否继续删除'
+END
+ELSE
+BEGIN
+  DELETE FROM SHOW_CASE
+  WHERE ID IN (SELECT ID FROM @tempTable)
+  SET @Message = 'success:删除成功'
 END

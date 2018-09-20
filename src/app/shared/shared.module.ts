@@ -70,6 +70,7 @@ import {LayoutResolverDirective} from '@shared/resolver/layout-resolver/layout-r
 import {CnFormLabelComponent} from '@shared/components/cn-form-label/cn-form-label.component';
 import {CnFormLabelDirective} from "@shared/resolver/form-resolver/form-label.directive";
 import {CnFormWindowResolverComponent} from "@shared/resolver/form-resolver/form-window-resolver.component";
+import { BsnTransferComponent } from './business/bsn-transfer/bsn-transfer.component';
 const THIRDMODULES = [
     NgZorroAntdModule,
     CountdownModule,
@@ -132,8 +133,8 @@ const COMPONENTS = [
     BsnUploadComponent,
     CnGridSelectTreeComponent,
     CnFormLabelComponent,
-    CnFormWindowResolverComponent
-
+    CnFormWindowResolverComponent,
+    BsnTransferComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

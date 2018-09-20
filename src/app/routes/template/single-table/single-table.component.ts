@@ -608,7 +608,69 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 group: [
                                                     {
                                                         'name': 'executeCheckedRow',
-                                                        'text': '多选删除',
+                                                        'text': '多选删除(确认+提示操作)',
+                                                        'icon': 'anticon anticon-delete',
+                                                        'color': 'text-red-light',
+                                                        'actionType': 'post',
+                                                        'actionName': 'execChecked',
+                                                        'ajaxConfig': [
+                                                            {
+                                                                'name': 'checkDeleteShowCase',
+                                                                'action': 'EXECUTE_CHECKED_ID',
+                                                                'url': 'common/DelConfirmShowCase',
+                                                                'ajaxType': 'post',
+                                                                'params': [
+                                                                    {
+                                                                        name: 'Ids',
+                                                                        valueName: 'Id', // 或者'_checkedIds'
+                                                                        type: 'checkedId' //  或者 'tempValue'
+                                                                    },
+                                                                    {
+                                                                        name: 'isCheck',
+                                                                        valueName: '',
+                                                                        type: 'value',
+                                                                        value: true
+                                                                    }
+                                                                ],
+                                                                'outputParams':[
+                                                                    {
+                                                                        name: 'Message', dataType: 'message'
+                                                                    }
+                                                                ]
+                                                            },
+                                                            {
+                                                                'name': 'deleteShowCase',
+                                                                'action': 'EXECUTE_CHECKED_ID',
+                                                                'url': 'common/DelConfirmShowCase',
+                                                                'ajaxType': 'post',
+                                                                'parentName': 'checkDeleteShowCase',
+                                                                'params': [
+                                                                    {
+                                                                        name: 'Ids',
+                                                                        valueName: 'Id', // 或者'_checkedIds'
+                                                                        type: 'checkedId' //  或者 'tempValue'
+                                                                    },
+                                                                    {
+                                                                        name: 'isCheck',
+                                                                        valueName: '',
+                                                                        type: 'value',
+                                                                        value: false
+                                                                    }
+                                                                ],
+                                                                'outputParams':[
+                                                                    {
+                                                                        name: 'Message', dataType: 'message'
+                                                                    },
+                                                                    {
+                                                                        name: 'dataSet1', dataType: 'table',
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        'name': 'executeCheckedRow1',
+                                                        'text': '多选删除(验证+提示)',
                                                         'icon': 'anticon anticon-delete',
                                                         'color': 'text-red-light',
                                                         'actionType': 'post',
@@ -626,55 +688,14 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                         name: 'Ids',
                                                                         valueName: 'Id', // 或者'_checkedIds'
                                                                         type: 'checkedId' //  或者 'tempValue'
-                                                                    },
-                                                                    {
-                                                                        name: 'caseName',
-                                                                        valueName: 'caseName',
-                                                                        type: 'checkedId'
-                                                                    },
-                                                                    {
-                                                                        name: 'isCheck',
-                                                                        valueName: '',
-                                                                        type: 'value',
-                                                                        value: true
                                                                     }
                                                                 ],
                                                                 'outputParams':[
                                                                     {
-                                                                        name: 'message', dataType: 'value'
+                                                                        name: 'Message', dataType: 'message'
                                                                     }
                                                                 ]
-                                                            },
-                                                            // {
-                                                            //     'name': 'deleteShowCase',
-                                                            //     'action': 'EXECUTE_CHECKED_ID',
-                                                            //     'url': 'common/DeleteShowCase',
-                                                            //     'ajaxType': 'post',
-                                                            //     'title': '提示',
-                                                            //     'parentName': 'checkDeleteShowCase',
-                                                            //     'message': '是否将选中的数据执行当前操作？',
-                                                            //     'params': [
-                                                            //         {
-                                                            //             name: 'Ids',
-                                                            //             valueName: 'Id', // 或者'_checkedIds'
-                                                            //             type: 'checkedId' //  或者 'tempValue'
-                                                            //         },
-                                                            //         {
-                                                            //             name: 'isCheck',
-                                                            //             valueName: '',
-                                                            //             type: 'value',
-                                                            //             value: true
-                                                            //         }
-                                                            //     ],
-                                                            //     'outputParams':[
-                                                            //         {
-                                                            //             name: 'message', dataType: 'value'
-                                                            //         },
-                                                            //         {
-                                                            //             name: 'dataSet1', dataType: 'table',
-                                                            //         }
-                                                            //     ]
-                                                            // }
+                                                            }
                                                         ]
                                                     },
                                                     {
@@ -2181,7 +2202,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 'width': 800,
                                                 'buttons': [
                                                     {
-                                                        'name': 'ok1',
+                                                        'name': 'ok',
                                                         'text': '确定',
                                                         'type': 'primary'
                                                     },

@@ -1,4 +1,11 @@
 import {BSN_PARAMETER_TYPE} from '@core/relative-Service/BsnTableStatus';
+export interface ParametersResolverModel {
+    params;
+    tempValue?;
+    item?;
+    componentValue?;
+    initValue?;
+}
 export class CommonTools {
   public static uuID(w) {
     let s = '';
@@ -9,16 +16,16 @@ export class CommonTools {
     return s;
   }
 
-  public static parametersResolver (params, tempValue?, item?, componentValue?) {
+  public static parametersResolver (model: ParametersResolverModel) {
       const result = {};
-      if (Array.isArray(params)) {
-          params.forEach(param => {
+      if (Array.isArray(model.params)) {
+          model.params.forEach(param => {
               const paramType = param['type'];
               if (paramType) {
                   switch (paramType) {
                       case BSN_PARAMETER_TYPE.TEMP_VALUE:
-                          if (tempValue && tempValue[param['valueName']]) {
-                              result[param['name']] = tempValue[param['valueName']];
+                          if (model.tempValue && model.tempValue[param['valueName']]) {
+                              result[param['name']] = model.tempValue[param['valueName']];
                           }
                           break;
                       case BSN_PARAMETER_TYPE.VALUE:
@@ -28,38 +35,42 @@ export class CommonTools {
                           result[param['name']] = param.value;
                           break;
                       case BSN_PARAMETER_TYPE.COMPONENT_VALUE:
-                          if (componentValue) {
-                              result[param['name']] = componentValue[param['valueName']];
+                          if (model.componentValue) {
+                              result[param['name']] = model.componentValue[param['valueName']];
                           }
                           break;
                       case BSN_PARAMETER_TYPE.GUID:
                           result[param['name']] = CommonTools.uuID(32);
                           break;
                       case BSN_PARAMETER_TYPE.CHECKED:
-                          if (item) {
-                              result[param['name']] = item[param['valueName']];
+                          if (model.item) {
+                              result[param['name']] = model.item[param['valueName']];
                           }
                           break;
                       case BSN_PARAMETER_TYPE.SELECTED:
-                          if (item) {
-                              result[param['name']] = item[param['valueName']];
+                          if (model.item) {
+                              result[param['name']] = model.item[param['valueName']];
                           }
                           break;
                       case BSN_PARAMETER_TYPE.CHECKED_ID:
-                          if(item) {
-                              result[param['name']] = item;
+                          if(model.item) {
+                              result[param['name']] = model.item;
                           }
                           break;
                       case BSN_PARAMETER_TYPE.CHECKED_ROW: // 后续替换为 CHECKED
-                          if (item) {
-                              result[param['name']] = item[param['valueName']];
+                          if (model.item) {
+                              result[param['name']] = model.item[param['valueName']];
                           }
                           break;
                       case BSN_PARAMETER_TYPE.SELECTED_ROW: // 后续替换 SELECTED
-                          if (item) {
-                              result[param['name']] = item[param['valueName']];
+                          if (model.item) {
+                              result[param['name']] = model.item[param['valueName']];
                           }
                           break;
+                      case BSN_PARAMETER_TYPE.INIT_VALUE:
+                          if(model.initValue) {
+                              result[param['name']] = model.initValue[param['valueName']];
+                          }
                   }
               }
           });

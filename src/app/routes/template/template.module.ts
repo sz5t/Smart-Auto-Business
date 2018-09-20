@@ -16,6 +16,7 @@ import {AuthGuard} from '@core/utility/auth-guard';
 import {CnAppDocumentComponent} from './app-document/app-document.component';
 import {CnApiDocumentComponent} from './api-document/api-document.component';
 import {TreeAndSubTableComponent} from "./tree-and-sub-table/tree-and-sub-table.component";
+import {TreeTransferComponent} from "./tree-transform/tree-transfer.component";
 
 const routes: Routes = [
     {path: 'singleTable', component: SingleTableComponent, canActivate: [AuthGuard]},
@@ -29,6 +30,7 @@ const routes: Routes = [
     {path: 'APPConfigIntro', component: CnAppDocumentComponent, canActivate: [AuthGuard]},
     {path: 'APIIntro', component: CnApiDocumentComponent, canActivate: [AuthGuard]},
     {path: 'treeAndSubTable', component: TreeAndSubTableComponent, canActivate: [AuthGuard]},
+    {path: 'treeAndTransfer', component: TreeTransferComponent, canActivate: [AuthGuard]},
     {path: 'dynamicTemplate/:name', component: DynamicTemplateComponent, canActivate: [AuthGuard]}
 ];
 
@@ -44,8 +46,8 @@ const COMPONENT_NOROUNT = [
     // CnCodeEditComponent,
     CnAppDocumentComponent,
     CnApiDocumentComponent,
-    TreeAndSubTableComponent
-
+    TreeAndSubTableComponent,
+    TreeTransferComponent
 ];
 
 @NgModule({

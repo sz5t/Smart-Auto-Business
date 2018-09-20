@@ -75,6 +75,7 @@ import {TreeNode} from '@angular/router/src/utils/tree';
 })
 export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDestroy {
     @Input() config;
+    @Input() initData;
     treeData;
     _relativeResolver;
     checkedKeys = [];
@@ -93,10 +94,12 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
     ) {
         super();
-        this.tempValue = {};
     }
 
     ngOnInit() {
+        if(this.initData) {
+            this.initValue = this.initData;
+        }
         this.resolverRelation();
         if (this.config.componentType) {
             if (this.config.componentType.parent === true) {
@@ -130,9 +133,22 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                             data: this.tempValue['_selectedNode']
                         }
                     )
-                )
+                );
+            });
+
+            this.after(this, 'checkboxChange', () => {
+               this.tempValue['_checkedIds'] && this.cascade.next(
+                   new BsnComponentMessage(
+                       BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                       this.config.viewId,
+                       {
+                           data: this.tempValue['_checkedIds']
+                       }
+                   )
+               );
             });
         }
+
 
         // 注册多界面切换消息
         if (this.config.componentType && this.config.componentType.sub === true) {
@@ -199,7 +215,11 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     async getTreeData() {
-        const params = CommonTools.parametersResolver(this.config.ajaxConfig.params, this.tempValue);
+        const params = CommonTools.parametersResolver({
+            params: this.config.ajaxConfig.params,
+            tempValue: this.tempValue,
+            initValue: this.initValue
+        });
         const ajaxData = await this._execute(this.config.ajaxConfig.url, 'get', params);
         return ajaxData;
     }
@@ -249,7 +269,9 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                 //     isLeaf: false,
                 //     children: []
                 // });
-                this.treeData = this._setDataToNzTreeNodes(this._toTreeBefore, parent);
+
+                this.treeData = this._setDataToNzTreeNodes(this._toTreeBefore, parent, this.config.currentRoot);
+                // this._selectedDefaultNode();
             }
         })();
     }
@@ -269,64 +291,82 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
 
     }
 
-    _setDataToNzTreeNodes(childrenData, parentId) {
+    _setDataToNzTreeNodes(childrenData, parentId, isCurrentRoot) {
         const nodes: NzTreeNode[] = [];
         if (childrenData && childrenData.length > 0) {
             childrenData.map(d => {
                 let cNode: NzTreeNode;
-                if (this.tempValue['_selectedNode'] && d['key'] === this.tempValue['_selectedNode']['key']) {
-                    d['selected'] = true;
-                }
-                if (d['parentId'] === parentId) {
+                // if (this.tempValue['_selectedNode'] && d['key'] === this.tempValue['_selectedNode']['key']) {
+                //     d['selected'] = true;
+                // }
+                if (d['Id'] === parentId && isCurrentRoot) {
                     const leastNodes = this._getChildrenNodeData(d['key']);
                     if (leastNodes.length > 0) {
                         d['isLeaf'] = false;
+                        d['selected'] = true;
                         cNode = new NzTreeNode(d);
-                        const childrenNode = this._setDataToNzTreeNodes(leastNodes, d['Id']);
+                        const childrenNode = this._setDataToNzTreeNodes(leastNodes, d['Id'], false);
                         cNode['children'] = childrenNode;
                     } else {
                         d['isLeaf'] = true;
                         cNode = new NzTreeNode(d);
                     }
+                    if (cNode) {
+                        nodes.push(cNode);
+                    }
                 }
-                if (cNode) {
-                    nodes.push(cNode);
+                else if (d['parentId'] === parentId && !isCurrentRoot) {
+                    const leastNodes = this._getChildrenNodeData(d['key']);
+                    if (leastNodes.length > 0) {
+                        d['isLeaf'] = false;
+                        d['selected'] = true;
+                        cNode = new NzTreeNode(d);
+                        const childrenNode = this._setDataToNzTreeNodes(leastNodes, d['Id'], false);
+                        cNode['children'] = childrenNode;
+                    } else {
+                        d['isLeaf'] = true;
+                        cNode = new NzTreeNode(d);
+                    }
+                    if (cNode) {
+                        nodes.push(cNode);
+                    }
                 }
+
             });
         }
         return nodes;
     }
 
-    listToTreeData(data, parentId):  NzTreeNode[] {
-        const result: NzTreeNode[] = [];
-
-        for (let i = 0, len = data.length; i < len; i++) {
-            let cNode: NzTreeNode;
-            // 设置默认选中节点
-            if (this.tempValue['_selectedNode'] && (data[i]['key'] === this.tempValue['_selectedNode']['key'])) {
-                data[i]['selected'] = true;
-            }
-            // 查找根节点
-            if (data[i].parentId === parentId) {
-                // data.splice(data.indexOf(data[i]), 1);
-                // i--;
-                // len--;
-                // 查找根节点对应的自节点
-                const leastNodes = this._getChildrenNodeData(data[i].key);
-
-                if (leastNodes.length > 0) {
-                    cNode = new NzTreeNode(data[i]);
-                    this._setDataToNzTreeNodes(leastNodes, cNode);
-                } else {
-                    data[i]['isLeaf'] = true;
-                    cNode = new NzTreeNode(data[i]);
-                }
-                result.push(cNode);
-
-            }
-        }
-        return result;
-    }
+    // listToTreeData(data, parentId):  NzTreeNode[] {
+    //     const result: NzTreeNode[] = [];
+    //
+    //     for (let i = 0, len = data.length; i < len; i++) {
+    //         let cNode: NzTreeNode;
+    //         // 设置默认选中节点
+    //         if (this.tempValue['_selectedNode'] && (data[i]['key'] === this.tempValue['_selectedNode']['key'])) {
+    //             data[i]['selected'] = true;
+    //         }
+    //         // 查找根节点
+    //         if (data[i].parentId === parentId) {
+    //             // data.splice(data.indexOf(data[i]), 1);
+    //             // i--;
+    //             // len--;
+    //             // 查找根节点对应的自节点
+    //             const leastNodes = this._getChildrenNodeData(data[i].key);
+    //
+    //             if (leastNodes.length > 0) {
+    //                 cNode = new NzTreeNode(data[i]);
+    //                 this._setDataToNzTreeNodes(leastNodes, cNode,);
+    //             } else {
+    //                 data[i]['isLeaf'] = true;
+    //                 cNode = new NzTreeNode(data[i]);
+    //             }
+    //             result.push(cNode);
+    //
+    //         }
+    //     }
+    //     return result;
+    // }
 
     treeToListData(treeData) {
         let list = [];
@@ -363,7 +403,6 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     checkboxChange = (e) => {
-
         const checkedIds = [];
         // 设置选中项对应的ID数组
         if (!this.tempValue['_checkedIds']) {
@@ -409,6 +448,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                             this.load();
                             break;
                         case BSN_EXECUTE_ACTION.EXECUTE_NODES_CHECKED_KEY:
+                            debugger;
                             handleData = this._getCheckedNodesIds();
                             break;
                         case BSN_EXECUTE_ACTION.EXECUTE_NODE_SELECTED:
@@ -441,7 +481,12 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     private async _executeAction(ajaxConfigObj, handleData) {
-        const executeParam = CommonTools.parametersResolver(ajaxConfigObj.params, this.tempValue, handleData);
+        const executeParam = CommonTools.parametersResolver({
+                params: ajaxConfigObj.params,
+                tempValue: this.tempValue,
+                item: handleData,
+                initValue: this.initValue
+        });
         // 执行数据操作
         const response = await this._execute(
             ajaxConfigObj.url,
@@ -460,12 +505,22 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         if (Array.isArray(handleData)) {
             if (ajaxConfigObj.params) {
                 handleData.forEach(dataItem => {
-                    const newParam = CommonTools.parametersResolver(ajaxConfigObj.params, this.tempValue, dataItem);
+                    const newParam = CommonTools.parametersResolver({
+                        params: ajaxConfigObj.params,
+                        tempValue: this.tempValue,
+                        item: dataItem,
+                        initValue: this.initValue
+                    });
                     executeParams.push(newParam);
                 });
             }
         } else {
-            executeParams.push(CommonTools.parametersResolver(ajaxConfigObj.params, this.tempValue, handleData));
+            executeParams.push(CommonTools.parametersResolver({
+                params: ajaxConfigObj.params,
+                tempValue: this.tempValue,
+                item: handleData,
+                initValue: this.initValue
+            }));
         }
         // 执行数据操作
         const response = await this._execute(

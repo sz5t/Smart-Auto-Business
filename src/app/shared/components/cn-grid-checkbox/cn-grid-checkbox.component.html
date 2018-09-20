@@ -1,3 +1,12 @@
-<label name="{{config.name}}" nz-checkbox [(ngModel)]="model" [nzDisabled]="config.disabled">
+<label formControlName="{{config.name}}"  nz-checkbox [(ngModel)]="model" [nzDisabled]="config.disabled">
   <span>{{config.label}}</span>
 </label>
+
+<!--<nz-form-label [nzSpan]="config.labelSize" [nzRequired]="config.isRequired">-->
+    <!--{{config.label}}-->
+<!--</nz-form-label>-->
+<!--<nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">-->
+    <!--<label formControlName="{{config.name}}"  nz-checkbox [(ngModel)]="model" [nzDisabled]="config.disabled">-->
+        <!--<span>{{config.label}}</span>-->
+    <!--</label>-->
+<!--</nz-form-control>-->

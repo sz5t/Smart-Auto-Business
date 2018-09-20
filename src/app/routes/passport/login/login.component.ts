@@ -191,7 +191,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                 menus = localAppDataResult.menu;
                 url = '/dashboard/v1';
             } else { // 解析平台
-                const projModule = await this._loadProjectModule();
+                // const projModule = await this._loadProjectModule();
                 menus = [
                     {
                         'text': '主导航',
@@ -201,7 +201,8 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                         'children': []
                     }
                 ];
-                menus[0].children = this.arrayToTree(projModule.data, null);;
+                //menus[0].children = this.arrayToTree(projModule.data, null);
+                menus[0].children = user.data.modules;
                 url = '/';
             }
 

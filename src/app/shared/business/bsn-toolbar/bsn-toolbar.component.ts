@@ -88,7 +88,7 @@ export class BsnToolbarComponent implements OnInit {
         // 根据按钮是否包含action属性，区别组件的内部状态操作还是进行数据操作
         const action = btn.action
             ? BSN_COMPONENT_MODES[btn.action]
-            : BSN_COMPONENT_MODES['EXECUTE']
+            : BSN_COMPONENT_MODES['EXECUTE'];
         this.state.next(
             new BsnComponentMessage(
                 action,

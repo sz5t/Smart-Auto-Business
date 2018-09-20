@@ -28,6 +28,7 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
     @Input() permissions;
     @Input() dataList;
     @Input() ref;
+    @Input() initData;
     _editable = BSN_FORM_STATUS.TEXT;
 
     form: FormGroup;
@@ -52,7 +53,9 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
 
     // region: 组件生命周期事件
     ngOnInit() {
-        if (!this.tempValue) {this.tempValue = {}; }
+        if(this.initData) {
+            this.initValue = this.initData;
+        }
         this.form = this.createGroup();
         this.resolverRelation();
         if (this.ref) {
@@ -69,7 +72,6 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
                 this.load();
             }
         }
-
         this.caseLoad(); // liu 20180521 测试
     }
 
@@ -556,7 +558,7 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
         const result = [];
         if (ajaxConfig && Array.isArray(ajaxConfig)) {
             ajaxConfig.map(async ajaxConfigObj => {
-                result.push(this._executeAjax(ajaxConfigObj)) ;
+                result.push(await this._executeAjax(ajaxConfigObj)) ;
             });
         }
         return result;
@@ -614,13 +616,25 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
             if (this.tempValue['checkedRow']) {
                 this.tempValue['checkedRow'].map(item => {
                     // 构建参数
-                    const p = CommonTools.parametersResolver(paramsConfig, this.tempValue, item, this.value);
+                    const p = CommonTools.parametersResolver({
+                            params: paramsConfig,
+                            tempValue: this.tempValue,
+                            item: item,
+                            componentValue: this.value,
+                            initValue: this.initValue
+                        });
                     params.push(p);
                 });
             }
         } else {
             // 单一参数
-            params = CommonTools.parametersResolver(paramsConfig, this.tempValue, null , this.value);
+            params = CommonTools.parametersResolver({
+                params: paramsConfig,
+                tempValue: this.tempValue,
+                item: {} ,
+                componentValue: this.value,
+                initValue: this.initValue
+            });
         }
         return params;
     }

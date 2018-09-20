@@ -3,24 +3,15 @@ import {
     BSN_COMPONENT_MODES,
     BSN_COMPONENT_CASCADE_MODES,
     BsnComponentMessage,
-    BSN_COMPONENT_CASCADE, BSN_PARAMETER_TYPE, BSN_EXECUTE_ACTION
+    BSN_COMPONENT_CASCADE, BSN_PARAMETER_TYPE, BSN_EXECUTE_ACTION, BSN_OUTPOUT_PARAMETER_TYPE
 } from '@core/relative-Service/BsnTableStatus';
 
 import {FormResolverComponent} from '@shared/resolver/form-resolver/form-resolver.component';
-import {ComponentSettingResolverComponent} from '@shared/resolver/component-resolver/component-setting-resolver.component';
 import {LayoutResolverComponent} from '@shared/resolver/layout-resolver/layout-resolver.component';
-import {TypeOperationComponent} from '../../../routes/system/data-manager/type-operation.component';
 import {Component, OnInit, Input, OnDestroy, Type, Inject} from '@angular/core';
-import {_HttpClient} from '@delon/theme';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {CommonTools} from '@core/utility/common-tools';
 import {ApiService} from '@core/utility/api-service';
-import {APIResource} from '@core/utility/api-resource';
-import {
-    RelativeService,
-    RelativeResolver,
-    BsnTableRelativeMessageService
-} from '@core/relative-Service/relative-service';
 import {CnComponentBase} from '@shared/components/cn-component-base';
 import {Observer} from 'rxjs';
 import {Subscription} from 'rxjs';
@@ -62,6 +53,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     @Input() config; // dataTables 的配置参数
     @Input() permissions = [];
     @Input() dataList = []; // 表格数据集合
+    @Input() initData;
     // tempValue = {};
 
     loading = false;
@@ -107,6 +99,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     ngOnInit() {
         this.resolverRelation();
+        if(this.initData) {
+            this.initValue = this.initData;
+        }
         if (this.config.dataSet) {
             (async () => {
                 for (let i = 0, len = this.config.dataSet.length; i < len; i++) {
@@ -289,8 +284,18 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                             } else {
                                 row['_serilize'] = (loadData.data.page - 1) * loadData.data.pageSize + index + 1;
                             }
+
+                            if (this.config.checkedMapping) {
+                                this.config.checkedMapping.forEach(m => {
+                                    if (row[m.name] && row[m.name] === m.value) {
+                                        row['checked'] = true;
+                                    }
+                                });
+                            }
                         });
                     }
+
+
 
                     this._updateEditCacheByLoad(loadData.data.rows);
                     this.dataList = loadData.data.rows;
@@ -317,8 +322,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
             this.loading = false;
         })();
-
-
     }
 
 
@@ -352,7 +355,14 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             for (let i = 0, len = postConfig.length; i < len; i++) {
                 const submitData = [];
                 rowsData.map(rowData => {
-                    const submitItem = CommonTools.parametersResolver(postConfig[i].params, this.tempValue, rowData);
+                    const submitItem = CommonTools.parametersResolver(
+                        {
+                            params: postConfig[i].params,
+                            tempValue: this.tempValue,
+                            item: rowData
+                        }
+
+                    );
                     submitData.push(submitItem);
                 });
                 const response = await this[method](postConfig[i].url, submitData);
@@ -444,7 +454,12 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         let isSuccess;
         if (cfg) {
             for (let i = 0, len = cfg.length; i < len; i++) {
-                const newParam = CommonTools.parametersResolver(cfg[i].params, this.tempValue, selectedRow);
+                const newParam = CommonTools.parametersResolver({
+                        params: cfg[i].params,
+                        tempValue: this.tempValue,
+                        item: selectedRow,
+                        initValue: this.initValue
+                });
                 const response = await this[option.type](cfg[i].url, newParam);
                 if (response.isSuccess) {
                     this._message.create('success', '执行成功');
@@ -761,7 +776,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 nzWidth: dialog.width,
                 nzContent: component['layout'],
                 nzComponentParams: {
-                    config: data
+                    config: data,
+                    initData: this._selectRow
                 },
                 nzFooter: footer
             });
@@ -791,9 +807,12 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                             })();
                         } else if (btn['name'] === 'close') {
                             modal.close();
+                            this.load();
                         } else if (btn['name'] === 'reset') {
                             this._resetForm(componentInstance);
                         } else if (btn['name'] === 'ok') {
+                            modal.close();
+                            this.load();
                             //
                         }
 
@@ -806,95 +825,212 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     }
 
-
-
-// region 批量确认提交数据，未完成与服务端的批量测试功能
+    // region 批量确认提交数据，未完成与服务端的批量测试功能
     // 关于相关配置的问题需要进一步进行讨论
 
-    private async  _resolveAjaxConfig(option) {
+    private _resolveAjaxConfig(option) {
         if (option.ajaxConfig && option.ajaxConfig.length > 0) {
-            option.ajaxConfig.map(async c => {
-                let msg;
-                if (c.action) {
-                    let handleData;
-                    // 所有获取数据的方法都会将数据保存至tempValue
-                    // 使用时可以通过临时变量定义的固定属性访问
-                    // 使用时乐意通过内置的参数类型进行访问
-                    switch (c.action) {
-                        case BSN_EXECUTE_ACTION.EXECUTE_CHECKED:
-                            if (this.dataList.filter(item => item.checked === true).length <= 0) {
-                                this._message.create('info', '请选择要执行的数据');
-                                return false;
-                            }
-                            handleData = this._getCheckedItems();
-                            msg = '操作完成';
-                            break;
-                        case BSN_EXECUTE_ACTION.EXECUTE_SELECTED:
-                            if (this._selectRow['row_status'] === 'adding') {
-                                this._message.create('info', '当前数据未保存无法进行处理');
-                                return false;
-                            }
-                            handleData = this._getSelectedItem();
-                            msg = '操作完成';
-                            break;
-                        case BSN_EXECUTE_ACTION.EXECUTE_CHECKED_ID:
-                            if (this.dataList.filter(item => item.checked === true).length <= 0) {
-                                this._message.create('info', '请选择要执行的数据');
-                                return false;
-                            }
-                            handleData = this._getCheckItemsId();
-                            msg = '操作完成';
-                            break;
-                        case BSN_EXECUTE_ACTION.EXECUTE_EDIT_ROW:
-                            // 获取保存状态的数据
-                            handleData = this._getEditedRows();
-                            msg = '编辑数据保存成功';
-                            if (handleData && handleData.length <= 0) {
-                                return ;
-                            }
-                            break;
-                        case BSN_EXECUTE_ACTION.EXECUTE_SAVE_ROW:
-                            // 获取更新状态的数据
-                            handleData = this._getAddedRows();
-                            msg = '新增数据保存成功';
-                            if (handleData && handleData.length <= 0) {
-                                return ;
-                            }
-                            break;
+            option.ajaxConfig.filter(c => !c.parentName).map(c => {
+                this._getAjaxConfig(c, option.ajaxConfig);
+            });
+        }
+    }
+
+    // private _resolveChildrendAjaxConfig(currentAjax, ajaxConfig) {
+    //     ajaxConfig.filter(c => c.name === currentAjax.parentName).map(c => {
+    //         this._getAjaxConfig(c, option.ajaxConfig);
+    //     });
+    // }
+
+    private _getAjaxConfig(c, ajaxConfig) {
+        let msg;
+        if (c.action) {
+            let handleData;
+            // 所有获取数据的方法都会将数据保存至tempValue
+            // 使用时可以通过临时变量定义的固定属性访问
+            // 使用时乐意通过内置的参数类型进行访问
+            switch (c.action) {
+                case BSN_EXECUTE_ACTION.EXECUTE_CHECKED:
+                    if (this.dataList.filter(item => item.checked === true).length <= 0) {
+                        this._message.create('info', '请选择要执行的数据');
+                        return false;
                     }
-                    if (c.message) {
-                        this.modalService.confirm({
-                            nzTitle: c.title ? c.title : '提示',
-                            nzContent: c.message ? c.message : '',
-                            nzOnOk: () => {
-                                (async() => {
-                                    const response = await this._executeAjaxConfig(c, handleData);
-                                    this.showAjaxMessage(response, msg, () => {
-                                        this.focusIds = this._getFocusIds(response.data);
-                                        this.load();
-                                    });
-                                })();
-                            },
-                            nzOnCancel() {
+                    handleData = this._getCheckedItems();
+                    msg = '操作完成';
+                    break;
+                case BSN_EXECUTE_ACTION.EXECUTE_SELECTED:
+                    if (this._selectRow['row_status'] === 'adding') {
+                        this._message.create('info', '当前数据未保存无法进行处理');
+                        return false;
+                    }
+                    handleData = this._getSelectedItem();
+                    msg = '操作完成';
+                    break;
+                case BSN_EXECUTE_ACTION.EXECUTE_CHECKED_ID:
+                    if (this.dataList.filter(item => item.checked === true).length <= 0) {
+                        this._message.create('info', '请选择要执行的数据');
+                        return false;
+                    }
+                    handleData = this._getCheckItemsId();
+                    msg = '操作完成';
+                    break;
+                case BSN_EXECUTE_ACTION.EXECUTE_EDIT_ROW:
+                    // 获取保存状态的数据
+                    handleData = this._getEditedRows();
+                    msg = '编辑数据保存成功';
+                    if (handleData && handleData.length <= 0) {
+                        return ;
+                    }
+                    break;
+                case BSN_EXECUTE_ACTION.EXECUTE_SAVE_ROW:
+                    // 获取更新状态的数据
+                    handleData = this._getAddedRows();
+                    msg = '新增数据保存成功';
+                    if (handleData && handleData.length <= 0) {
+                        return ;
+                    }
+                    break;
+            }
+            if (c.message) {
+                this.modalService.confirm({
+                    nzTitle: c.title ? c.title : '提示',
+                    nzContent: c.message ? c.message : '',
+                    nzOnOk: () => {
+                        (async() => {
+                            const response = await this._executeAjaxConfig(c, handleData);
+                            // 处理输出参数
+                            if(c.outputParams) {
+                                this._outputParametersResolver(c, response, ajaxConfig,() => {
+                                    this.focusIds = this._getFocusIds(response.data);
+                                    this.load();
+                                });
+                            } else { // 没有输出参数，进行默认处理
+                                this.showAjaxMessage(response, msg, () => {
+                                    this.focusIds = this._getFocusIds(response.data);
+                                    this.load();
+                                });
                             }
+
+                        })();
+                    },
+                    nzOnCancel() {
+                    }
+                });
+            } else {
+                (async() => {
+                    const response = await this._executeAjaxConfig(c, handleData);
+                    // 处理输出参数
+                    if(c.outputParams) {
+                        this._outputParametersResolver(c, response, ajaxConfig,() => {
+                            this.focusIds = this._getFocusIds(response.data);
+                            this.load();
                         });
-                    } else {
-                        const response = await this._executeAjaxConfig(c, handleData);
+                    } else {// 没有输出参数，进行默认处理
                         this.showAjaxMessage(response, msg, () => {
                             this.focusIds = this._getFocusIds(response.data);
                             this.load();
                         });
                     }
+                })();
 
-                }
-            });
+
+            }
         }
-
-        // 执行一般API资源
-        // 执行自建SQL
-        // 执行存储过程
     }
 
+
+    /**
+     *
+     * @param outputParams
+     * @param response
+     * @param callback
+     * @returns {Array}
+     * @private
+     * 1、输出参数的配置中，消息类型的参数只能设置一次
+     * 2、值类型的结果可以设置多个
+     * 3、表类型的返回结果可以设置多个
+     */
+    private _outputParametersResolver(c, response, ajaxConfig, callback) {
+        let result = false;
+        if (response.isSuccess) {
+            const msg = c.outputParams[c.outputParams.findIndex(m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE)];
+            const value = c.outputParams[c.outputParams.findIndex(m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE)];
+            const table = c.outputParams[c.outputParams.findIndex(m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE)];
+            const msgObj = response.data[msg.name] ? response.data[msg.name].split(':') : '';
+            //const valueObj = response.data[value.name] ? response.data[value.name] : [];
+            //const tableObj = response.data[table.name] ? response.data[table.name] : [];
+            if(msgObj && msgObj.length > 1) {
+                const messageType = msgObj[0];
+                let options;
+                switch (messageType) {
+                    case 'info':
+                        options = {
+                            nzTitle: '提示',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.modalService[messageType](options);
+                        break;
+                    case 'error':
+                        options = {
+                            nzTitle: '提示',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.modalService[messageType](options);
+                        break;
+                    case 'confirm':
+                        options = {
+                            nzTitle: '提示',
+                            nzContent: msgObj[1],
+                            nzOnOk: () => {
+                                // 是否继续后续操作，根据返回状态结果
+                                const childrenConfig = ajaxConfig.filter(f => f.parentName && f.parentName === c.name);
+                                childrenConfig && childrenConfig.map(currentAjax => {
+                                    this._getAjaxConfig(currentAjax, ajaxConfig);
+                                });
+                            },
+                            nzOnCancel: () => {
+
+                            }
+                        };
+                        this.modalService[messageType](options);
+                        break;
+                    case 'warning':
+                        options = {
+                            nzTitle: '提示',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.modalService[messageType](options);
+                        break;
+                    case 'success':
+                        options = {
+                            nzTitle: '',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this._message.success(msgObj[1]);
+                        callback && callback();
+                        break;
+                }
+                // if(options) {
+                //     this.modalService[messageType](options);
+                //
+                //     // 如果成功则执行回调
+                //     if(messageType === 'success') {
+                //         callback && callback();
+                //     }
+                // }
+
+            } else {
+                this._message.error('存储过程返回结果异常：未获得输出的消息内容');
+            }
+
+        } else {
+            this._message.error('操作异常：', response.message);
+        }
+    }
 
     private async _executeAjaxConfig(ajaxConfigObj, handleData) {
         if (Array.isArray(handleData)) {
@@ -905,7 +1041,12 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     private async _executeAction(ajaxConfigObj, handleData) {
-        const executeParam = CommonTools.parametersResolver(ajaxConfigObj.params, this.tempValue, handleData);
+        const executeParam = CommonTools.parametersResolver({
+            params: ajaxConfigObj.params,
+            tempValue: this.tempValue,
+            item: handleData,
+            initValue: this.initValue
+        });
         // 执行数据操作
         return this._executeRequest(
             ajaxConfigObj.url,
@@ -919,12 +1060,24 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         if (Array.isArray(handleData)) {
             if (ajaxConfigObj.params) {
                 handleData.forEach(dataItem => {
-                    const newParam = CommonTools.parametersResolver(ajaxConfigObj.params, this.tempValue, {},dataItem);
+                    const newParam = CommonTools.parametersResolver({
+                        params: ajaxConfigObj.params,
+                        tempValue: this.tempValue,
+                        item: {},
+                        componentValue: dataItem,
+                        initValue: this.initValue
+                    });
                     executeParams.push(newParam);
                 });
             }
         } else {
-            executeParams.push(CommonTools.parametersResolver(ajaxConfigObj.params, this.tempValue,{} ,handleData));
+            executeParams.push(CommonTools.parametersResolver({
+                params: ajaxConfigObj.params,
+                tempValue: this.tempValue,
+                item: {} ,
+                componentValue: handleData,
+                initValue: this.initValue
+            }));
         }
         // 执行数据操作
         return this._executeRequest(
@@ -942,7 +1095,12 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 const params = [];
                 if (cfg[i].params) {
                     items.forEach(item => {
-                        const newParam = CommonTools.parametersResolver(cfg[i].params, this.tempValue, item);
+                        const newParam = CommonTools.parametersResolver({
+                            params: cfg[i].params,
+                            tempValue: this.tempValue,
+                            item: item,
+                            initValue: this.initValue
+                        });
                         params.push(newParam);
                     });
                 }
@@ -1043,7 +1201,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     }
     // endregion
-
 
     private _updateEditCacheByLoad(dataList) {
         this.editCache = {};
@@ -1239,15 +1396,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     private _buildFilter(filterConfig) {
         let filter = {};
         if (filterConfig) {
-            filter = CommonTools.parametersResolver(filterConfig, this.tempValue);
-            // filterConfig.forEach(param => {
-            //     if (!this.tempValue) {
-            //         this.tempValue = {};
-            //     }
-            //     if (this.tempValue[param['valueName']]) {
-            //         filter[param['name']] = this.tempValue[param['valueName']];
-            //     }
-            // });
+            filter = CommonTools.parametersResolver({
+                params: filterConfig,
+                tempValue: this.tempValue});
         }
         return filter;
     }
@@ -1260,26 +1411,11 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     private _buildParameters(paramsConfig) {
         let params = {};
         if (paramsConfig) {
-            params = CommonTools.parametersResolver(paramsConfig, this.tempValue);
-            // paramsConfig.map(param => {
-            //     if (param['type'] === 'tempValue') {
-            //         if (!this.tempValue) {
-            //             this.tempValue = {};
-            //         }
-            //         params[param['name']] = this.tempValue[param['valueName']];
-            //     } else if (param['type'] === 'value') {
-            //         params[param.name] = param.value;
-            //     } else if (param['type'] === 'GUID') {
-            //         const fieldIdentity = CommonTools.uuID(10);
-            //         params[param.name] = fieldIdentity;
-            //     } else if (param['type'] === 'componentValue') {
-            //         // params[param.name] = componentValue[param.valueName];
-            //     } else if (param['type'] === 'searchValue') {
-            //         if (this._searchParameters[param['name']]) {
-            //             params[param['name']] = this._searchParameters[param['valueName']];
-            //         }
-            //     }
-            // });
+            params = CommonTools.parametersResolver({
+                params: paramsConfig,
+                tempValue: this.tempValue,
+                initValue: this.initValue
+            });
         }
         return params;
     }
@@ -1294,25 +1430,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         if (ajaxUrl && this._isUrlString(ajaxUrl)) {
             url = ajaxUrl;
         } else if (ajaxUrl) {
-            // 适用于URL主子表操作的配置
-            // const parent = this._paramsResolver(ajaxUrl.params);
-            // ajaxUrl.params.map(param => {
-            //     if (param['type'] === 'tempValue') {
-            //         if (!this.tempValue) {
-            //             this.tempValue = {};
-            //         }
-            //         parent[param['name']] = this.tempValue[param.valueName];
-            //     } else if (param['type'] === 'value') {
-            //         if (param.value === 'null') {
-            //             param.value = null;
-            //         }
-            //         parent[param['name']] = param.value;
-            //     } else if (param['type'] === 'GUID') {
-            //         // todo: 扩展功能
-            //     } else if (param['type'] === 'componentValue') {
-            //         // parent[param['name']] = componentValue[param['valueName']];
-            //     }
-            // });
+
         }
         return url;
     }
@@ -1473,7 +1591,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     rs.msg.push(res.message);
                 }
             });
-            if (rs) {
+            if (rs.success) {
                 this._message.success(message);
             } else {
                 this._message.error(rs.msg.join('<br/>'));

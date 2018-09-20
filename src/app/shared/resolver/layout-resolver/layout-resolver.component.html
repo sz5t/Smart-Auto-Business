@@ -4,22 +4,19 @@
         <div nz-col *ngFor="let c of row.row.cols" [nzSpan]="c.span" [nzSm]="c.size.nzSm" [nzXs]="c.size.nzXs"
              [nzMd]="c.size.nzMd"
              [nzLg]="c.size.nzLg" [nzXl]="c.size.nzXl">
-            <cn-layout-resolver [layoutId]="layoutId" [config]="c"></cn-layout-resolver>
-            <nz-card *ngIf="c.viewCfg" [nzTitle]="cardTitle"
+            <cn-layout-resolver [initData]="initData" [layoutId]="layoutId" [config]="c"></cn-layout-resolver>
+            <nz-card *ngIf="c.viewCfg" [nzTitle]="c.title ? cardTitle : false"
                      [nzBodyStyle]="c.bodyStyle ? c.bodyStyle : { padding: '8px' }">
                 <ng-template #cardTitle>
                     <i class="{{c.icon}}"></i>
                     {{c.title}}
-                    <!--<div *ngIf="c.editable" style="float:right">-->
-                        <!--<nz-switch (click)="switch()" nzCheckedChildren="取消" nzUnCheckedChildren="编辑"></nz-switch>-->
-                    <!--</div>-->
                 </ng-template>
                 <div *ngIf="c.handle && c.handle === 'single'; else elseTemplate">
                     <ng-container cnLayoutResolverDirective [layoutId]="layoutId" [config]="c"></ng-container>
                 </div>
                 <ng-template #elseTemplate>
                     <cn-layout-resolver *ngFor="let cfg of c.viewCfg" [layoutId]="layoutId"
-                                        [config]="cfg"></cn-layout-resolver>
+                                        [config]="cfg" [initData]="initData"></cn-layout-resolver>
                 </ng-template>
 
             </nz-card>
@@ -29,6 +26,6 @@
 <cn-component-resolver *ngIf="!config.rows && !config.tabs && !config.viewCfg"
                        [layoutId]="layoutId"
                        [blockId]="config.id"
-                       [editable]="editable"
+                       [initData]="initData"
                        [config]="config">
 </cn-component-resolver>

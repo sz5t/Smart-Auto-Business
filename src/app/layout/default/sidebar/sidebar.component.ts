@@ -7,14 +7,22 @@ import {Router} from '@angular/router';
 
 @Component({
     selector   : 'app-sidebar',
-    templateUrl: './sidebar.component.html'
+    templateUrl: './sidebar.component.html',
+    styles:[`
+        :host ::ng-deep .nav{
+            font-size:12px;
+        }
+        :host ::ng-deep ul .nav > li > a{
+            font-size:12px;
+        }
+    `]
 })
 export class SidebarComponent {
     constructor(
         public settings: SettingsService ,
-        private modal: NzModalService, 
-        private router: Router, 
-        private cacheService: CacheService, 
+        private modal: NzModalService,
+        private router: Router,
+        private cacheService: CacheService,
         public msgSrv: NzMessageService,
         @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
     }
