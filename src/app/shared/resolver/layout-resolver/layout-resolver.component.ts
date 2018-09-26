@@ -3,7 +3,7 @@ import {Component, Input, OnInit} from '@angular/core';
 @Component({
     selector: 'cn-layout-resolver',
     templateUrl: './layout-resolver.component.html',
-    styles:[
+    styles: [
         `
             :host ::ng-deep .ant-card-head {
                 min-height:36px;

@@ -1,6 +1,5 @@
 import {LineChartComponent} from '@shared/chart/line-chart/line-chart.component';
 import {BsnStepComponent} from '@shared/business/bsn-step/bsn-step.component';
-import {BsnTreeTableComponent} from '@shared/business/bsn-tree-table/bsn-tree-table.component';
 import {BsnAsyncTreeComponent} from '@shared/business/bsn-async-tree/bsn-async-tree.component';
 import {SearchResolverComponent} from '@shared/resolver/form-resolver/search-resolver.component';
 import {BsnTableComponent} from '@shared/business/bsn-data-table/bsn-table.component';
@@ -16,8 +15,9 @@ import {CnCodeEditComponent} from '@shared/components/cn-code-edit/cn-code-edit.
 import {CnBsnTreeComponent} from '@shared/business/bsn-tree/bsn-tree.component';
 import {BarChartComponent} from '@shared/chart/bar-chart/bar-chart.component';
 import {BsnAccordionComponent} from '@shared/business/bsn-accordion/bsn-accordion.component';
-import {BsnTabsComponent} from "@shared/business/bsn-tabs/bsn-tabs.component";
-import {BsnTransferComponent} from "@shared/business/bsn-transfer/bsn-transfer.component";
+import {BsnTabsComponent} from '@shared/business/bsn-tabs/bsn-tabs.component';
+import {BsnTransferComponent} from '@shared/business/bsn-transfer/bsn-transfer.component';
+import { BsnTreeTableComponent } from '@shared/business/bsn-tree-table/bsn-tree-table.component';
 const components: { [type: string]: Type<any> } = {
     code_edit: CnCodeEditComponent,
     bsnTable: BsnTableComponent,
@@ -78,10 +78,10 @@ export class ComponentResolverComponent implements OnInit, OnChanges, OnDestroy 
             const comp = this.resolver.resolveComponentFactory<any>(components[this.config.config.component]);
             this.componentRef = this.container.createComponent(comp);
             this.componentRef.instance.config = this.config.config;
-            if(this.tempValue && this.componentRef.instance.tempValue) {
+            if (this.tempValue && this.componentRef.instance.tempValue) {
                 this.componentRef.instance.tempValue = this.tempValue;
             }
-            if(this.initData) {
+            if (this.initData) {
                 this.componentRef.instance.initData = this.initData;
             }
             // if(this.componentRef.instance.editable) {
@@ -99,7 +99,7 @@ export class ComponentResolverComponent implements OnInit, OnChanges, OnDestroy 
         }
 
     }
-    ngOnDestroy (){
+    ngOnDestroy () {
         this.componentRef.destroy();
     }
 }

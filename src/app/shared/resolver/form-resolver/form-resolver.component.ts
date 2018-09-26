@@ -398,6 +398,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     }
 
     async saveForm_2(ajaxConfigs) {
+        debugger;
         let result;
         const method = this._editable;
         if (method === BSN_FORM_STATUS.TEXT) {
@@ -550,9 +551,8 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
     private async post(postConfig) {
         let result = true;
-        for (let i = 0, len = postConfig.length; i < len; i++) {
-            const url = this._buildURL(postConfig[i].url);
-            const body = this._buildParameters(postConfig[i].params, postConfig[i].batch ? postConfig[i].batch : false);
+        const url = this._buildURL(postConfig.url);
+            const body = this._buildParameters(postConfig.params, postConfig.batch ? postConfig.batch : false);
             const res = await this._post(url, body);
             if (res.isSuccess) {
                 this.message.create('success', '保存成功');
@@ -571,15 +571,16 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                 this.message.create('error', res.message);
                 result = false;
             }
-        }
+        // for (let i = 0, len = postConfig.length; i < len; i++) {
+            
+        // }
         return result;
     }
 
     private async put(putConfig) {
         let result = true;
-        for (let i = 0, len = putConfig.length; i < len; i++) {
-            const url = this._buildURL(putConfig[i].url);
-            const body = this._buildParameters(putConfig[i].params, putConfig[i].batch ? putConfig[i].batch : false);
+        const url = this._buildURL(putConfig.url);
+            const body = this._buildParameters(putConfig.params, putConfig.batch ? putConfig.batch : false);
             if (body && !body['Id']) {
                 this.message.warning('编辑数据的Id不存在，无法进行更新！');
                 return;
@@ -603,8 +604,10 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                     result = false;
                 }
             }
+        // for (let i = 0, len = putConfig.length; i < len; i++) {
+            
 
-        }
+        // }
         return result;
     }
 

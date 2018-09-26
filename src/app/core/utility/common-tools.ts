@@ -53,7 +53,7 @@ export class CommonTools {
                           }
                           break;
                       case BSN_PARAMETER_TYPE.CHECKED_ID:
-                          if(model.item) {
+                          if (model.item) {
                               result[param['name']] = model.item;
                           }
                           break;
@@ -68,7 +68,7 @@ export class CommonTools {
                           }
                           break;
                       case BSN_PARAMETER_TYPE.INIT_VALUE:
-                          if(model.initValue) {
+                          if (model.initValue) {
                               result[param['name']] = model.initValue[param['valueName']];
                           }
                   }

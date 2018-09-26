@@ -162,7 +162,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         this.cancelRow();
                         break;
                     case BSN_COMPONENT_MODES.SAVE:
-                    debugger;
                         this.saveRow(option);
                         break;
                     case BSN_COMPONENT_MODES.DELETE:
