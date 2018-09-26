@@ -162,6 +162,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         this.cancelRow();
                         break;
                     case BSN_COMPONENT_MODES.SAVE:
+                    debugger;
                         this.saveRow(option);
                         break;
                     case BSN_COMPONENT_MODES.DELETE:
@@ -362,7 +363,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         {
                             params: postConfig[i].params,
                             tempValue: this.tempValue,
-                            item: rowData
+                            componentValue: rowData,
+                            item: rowData,
+                            initValue: this.initValue
                         }
 
                     );
