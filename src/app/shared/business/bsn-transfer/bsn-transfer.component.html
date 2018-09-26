@@ -1,0 +1,14 @@
+<nz-transfer
+    [nzDataSource]="dataList"
+    nzShowSearch
+    [nzFilterOption]="filterOption"
+    (nzSearchChange)="search($event)"
+    (nzSelectChange)="select($event)"
+    [nzOperations]="config.transformButtons"
+    [nzListStyle]="config.bodyStyle"
+    [nzRender]="render"
+    (nzChange)="change($event)">
+    <ng-template #render let-item>
+        <i class="{{item.icon}}"></i> {{item.title}} - {{item.description}}
+    </ng-template>
+</nz-transfer>
