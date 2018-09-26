@@ -33,7 +33,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     @Input() config;
     @Input() permissions = [];
     @Input() dataList = []; // 表格数据集合
-    tempValue = {};
+    @Input() initData;
     allDataList = [];
 
     //  分页默认参数
@@ -84,10 +84,10 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
 
     // 生命周期事件
     ngOnInit() {
-        if(!this.tempValue) {
-            this.tempValue = {};
-        }
         this.resolverRelation();
+        if (this.initData) {
+            this.initValue = this.initData;
+        }
         if (this.config.dataSet) {
             (async () => {
                 for (let i = 0, len = this.config.dataSet.length; i < len; i++) {
@@ -157,6 +157,9 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                         break;
                     case BSN_COMPONENT_MODES.DIALOG:
                         this.dialog(option);
+                        break;
+                    case BSN_COMPONENT_MODES.EXECUTE:
+
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE_SELECTED:
                         this.executeSelectedRow(option);
@@ -1097,9 +1100,9 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     private showForm(dialog) {
         const footer = [];
         let obj;
-        if(dialog.type === 'add') {
+        if (dialog.type === 'add') {
 
-        } else if(dialog.type === 'update') {
+        } else if (dialog.type === 'update') {
             if (!this._selectRow) {
                 this.message.warning('请选中一条需要添加附件的记录！');
                 return false;
