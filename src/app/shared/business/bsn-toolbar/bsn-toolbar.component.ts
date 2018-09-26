@@ -18,13 +18,14 @@ import { Component, OnInit, Input, OnDestroy, Type, Inject, ViewEncapsulation } 
 }
 `]
 })
-export class BsnToolbarComponent implements OnInit {
+export class BsnToolbarComponent implements OnInit, OnDestroy {
     @Input() config;
     @Input() size;
     @Input() permissions = [];
     @Input() viewId;
     toolbarConfig;
     model;
+    _cascadeState;
     constructor(
         @Inject(BSN_COMPONENT_MODES) private state: Observer<BsnComponentMessage>
     ) { }
@@ -89,7 +90,7 @@ export class BsnToolbarComponent implements OnInit {
         const action = btn.action
             ? BSN_COMPONENT_MODES[btn.action]
             : BSN_COMPONENT_MODES['EXECUTE'];
-        this.state.next(
+        this._cascadeState = this.state.next(
             new BsnComponentMessage(
                 action,
                 this.viewId,
@@ -101,4 +102,11 @@ export class BsnToolbarComponent implements OnInit {
             )
         );
     }
+
+    ngOnDestroy() {
+        if(this._cascadeState) {
+            this._cascadeState.unsubscribe();
+        }
+    }
+
 }

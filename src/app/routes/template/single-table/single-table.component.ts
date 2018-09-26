@@ -594,7 +594,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 'ajaxType': 'delete', // 批量删除调用建模API，不能使用该模式，delete动作无法传递数组参数类型
                                                                 'title': '警告！',
                                                                 'message': '确认要删除当前勾选的数据么？？？',
-                                                                'params':[
+                                                                'params': [
                                                                     {
                                                                         name: '_ids', type: 'checkedId', valueName: 'Id'
                                                                     }
@@ -630,9 +630,15 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                         valueName: '',
                                                                         type: 'value',
                                                                         value: true
+                                                                    },
+                                                                    {
+                                                                        name: 'Message',
+                                                                        type: 'value',
+                                                                        value: 'output',
+                                                                        valueName: ''
                                                                     }
                                                                 ],
-                                                                'outputParams':[
+                                                                'outputParams': [
                                                                     {
                                                                         name: 'Message', dataType: 'message'
                                                                     }
@@ -657,12 +663,12 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                         value: false
                                                                     }
                                                                 ],
-                                                                'outputParams':[
+                                                                'outputParams': [
                                                                     {
                                                                         name: 'Message', dataType: 'message'
                                                                     },
                                                                     {
-                                                                        name: 'dataSet1', dataType: 'table',
+                                                                            name: 'dataSet1', dataType: 'table',
                                                                     }
                                                                 ]
                                                             }
@@ -688,9 +694,15 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                         name: 'Ids',
                                                                         valueName: 'Id', // 或者'_checkedIds'
                                                                         type: 'checkedId' //  或者 'tempValue'
+                                                                    },
+                                                                    {
+                                                                        name: 'Message',
+                                                                        type: 'value',
+                                                                        value: 'output',
+                                                                        valueName: ''
                                                                     }
                                                                 ],
-                                                                'outputParams':[
+                                                                'outputParams': [
                                                                     {
                                                                         name: 'Message', dataType: 'message'
                                                                     }
@@ -717,9 +729,14 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                         name: 'Id',
                                                                         valueName: 'Id',  // _selectedItem
                                                                         type: 'selectedRow' // tempValue
+                                                                    },
+                                                                    {
+                                                                        name: 'Message',
+                                                                        value: 'output', // 或者'_checkedIds'
+                                                                        type: 'value' //  或者 'tempValue'
                                                                     }
                                                                 ],
-                                                                'outputParams':[
+                                                                'outputParams': [
                                                                     {
                                                                         name: 'Id', dataType: ''
                                                                     }

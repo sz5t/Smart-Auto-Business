@@ -97,7 +97,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     ngOnInit() {
-        if(this.initData) {
+        if (this.initData) {
             this.initValue = this.initData;
         }
         this.resolverRelation();
@@ -139,7 +139,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
             this.after(this, 'checkboxChange', () => {
                this.tempValue['_checkedIds'] && this.cascade.next(
                    new BsnComponentMessage(
-                       BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                       BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN,
                        this.config.viewId,
                        {
                            data: this.tempValue['_checkedIds']
@@ -182,7 +182,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
 
         // 子类型注册接收消息后加载事件
         if (this.config.componentType && this.config.componentType.child === true) {
-            this._statusSubscription =  this.cascadeEvents.subscribe(cascadeEvent => {
+            this._cascadeSubscription =  this.cascadeEvents.subscribe(cascadeEvent => {
                 if (this.config.relations && this.config.relations.length > 0) {
                     this.config.relations.forEach(relation => {
                         if (relation.relationViewId === cascadeEvent._viewId) {
@@ -229,6 +229,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
             const data = await this.getTreeData();
             if (data.data && data.isSuccess) {
                 this._toTreeBefore = data.data;
+                this.selectedKeys.push(this._toTreeBefore[0].Id);
                 for (let i = 0, len = this._toTreeBefore.length; i < len ; i++) {
                     if (this.config.columns) {
                         this.config.columns.forEach(col => {
@@ -296,14 +297,15 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         if (childrenData && childrenData.length > 0) {
             childrenData.map(d => {
                 let cNode: NzTreeNode;
-                // if (this.tempValue['_selectedNode'] && d['key'] === this.tempValue['_selectedNode']['key']) {
-                //     d['selected'] = true;
-                // }
+                if (this.tempValue['_selectedNode'] && d['key'] === this.tempValue['_selectedNode']['key']) {
+                    d['selected'] = true;
+                } else if (d['Id'] === this._toTreeBefore[0]['Id']) {
+                    d['selected'] = true;
+                }
                 if (d['Id'] === parentId && isCurrentRoot) {
                     const leastNodes = this._getChildrenNodeData(d['key']);
                     if (leastNodes.length > 0) {
                         d['isLeaf'] = false;
-                        d['selected'] = true;
                         cNode = new NzTreeNode(d);
                         const childrenNode = this._setDataToNzTreeNodes(leastNodes, d['Id'], false);
                         cNode['children'] = childrenNode;
@@ -314,12 +316,10 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                     if (cNode) {
                         nodes.push(cNode);
                     }
-                }
-                else if (d['parentId'] === parentId && !isCurrentRoot) {
+                } else if (d['parentId'] === parentId && !isCurrentRoot) {
                     const leastNodes = this._getChildrenNodeData(d['key']);
                     if (leastNodes.length > 0) {
                         d['isLeaf'] = false;
-                        d['selected'] = true;
                         cNode = new NzTreeNode(d);
                         const childrenNode = this._setDataToNzTreeNodes(leastNodes, d['Id'], false);
                         cNode['children'] = childrenNode;
@@ -388,7 +388,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     onMouseAction(actionName, $event) {
-
+        console.log(actionName, $event);
         this[actionName]($event);
     }
 
@@ -396,7 +396,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         if (this.activedNode) {
             this.activedNode = null;
         }
-        e.node.isSelected = true;
+        // e.node.isSelected = true;
         this.activedNode = e.node;
         // 从节点的列表中查找选中的数据对象
         this.tempValue['_selectedNode'] = this._toTreeBefore.find(n => n.key === e.node.key);
@@ -448,7 +448,6 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
                             this.load();
                             break;
                         case BSN_EXECUTE_ACTION.EXECUTE_NODES_CHECKED_KEY:
-                            debugger;
                             handleData = this._getCheckedNodesIds();
                             break;
                         case BSN_EXECUTE_ACTION.EXECUTE_NODE_SELECTED:

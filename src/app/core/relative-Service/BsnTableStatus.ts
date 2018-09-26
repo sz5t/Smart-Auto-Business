@@ -74,6 +74,7 @@ export const BSN_COMPONENT_CASCADE_MODES = {
     RELOAD: 'reload',
     REFRESH: 'refresh',
     REPLACE_AS_CHILD: 'replaceAsChild',
+    REFRESH_AS_CHILDREN: 'refreshAsChildren',
 
     // grid
     SELECTED_ROW: 'selectRow',

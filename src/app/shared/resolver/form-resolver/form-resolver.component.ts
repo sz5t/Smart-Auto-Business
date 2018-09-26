@@ -17,7 +17,7 @@ import {Observer} from 'rxjs';
 @Component({
     selector: 'cn-form-resolver,[cn-form-resolver]',
     templateUrl: './form-resolver.component.html',
-    styles:[
+    styles: [
         `                                                                                                                            
         `
     ]
@@ -33,7 +33,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     form: FormGroup;
     @Output() submit: EventEmitter<any> = new EventEmitter<any>();
     _relativeResolver;
-    tempValue = {};
     isSpinning = false;
     _statusSubscription;
     _cascadeSubscription;
@@ -52,7 +51,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
     // region: 组件生命周期事件
     ngOnInit() {
-        if(!this.tempValue) {this.tempValue = {}}
         this.form = this.createGroup();
         this.resolverRelation();
         if (this.ref) {
@@ -104,13 +102,13 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                         this.load();
                         this._editable = BSN_FORM_STATUS.TEXT;
                         break;
-                    case BSN_COMPONENT_MODES.SAVE:
-                        if(option.ajaxConfig) {
+                    case BSN_COMPONENT_MODES.EXECUTE:
+                        if (option.ajaxConfig) {
                             this.saveForm_2(option.ajaxConfig);
                         }
                         break;
                     case BSN_COMPONENT_MODES.DELETE:
-                        if(option.ajaxConfig) {
+                        if (option.ajaxConfig) {
                             this.modalService.confirm({
                                 nzTitle: '确认当前数据？',
                                 nzContent: '',
@@ -166,7 +164,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                             // 解析参数
                             if (relation.params && relation.params.length > 0) {
                                 relation.params.forEach(param => {
-                                    if(!this.tempValue) {this.tempValue = {}}
+                                    if (!this.tempValue) {this.tempValue = {}; }
                                     this.tempValue[param['cid']] = option.data[param['pid']];
                                 });
                             }
@@ -399,14 +397,15 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         this.isSpinning = false;
     }
 
-    async saveForm_2(ajaxConfig) {
+    async saveForm_2(ajaxConfigs) {
         let result;
         const method = this._editable;
-        if(method === BSN_FORM_STATUS.TEXT) {
+        if (method === BSN_FORM_STATUS.TEXT) {
             this.message.warning('请在编辑数据后进行保存！');
             return false;
         } else {
-            result = this._execute(method, ajaxConfig[method]);
+            const index = ajaxConfigs.findIndex(item => item.ajaxType === method);
+            result = this._execute(method, ajaxConfigs[index]);
             // this.config.toolbar.forEach(bar => {
             //     if (bar.group && bar.group.length > 0) {
             //         const index = bar.group.findIndex(item => item.name === 'saveForm');
@@ -431,7 +430,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
     async _execute(method, ajaxConfig) {
         let isSuccess;
-        if(ajaxConfig) {
+        if (ajaxConfig) {
             isSuccess = await this[method](ajaxConfig);
         }
         return isSuccess;
@@ -510,7 +509,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     async buttonAction(btn) {
         let result = false;
         this._isSaving = true;
-        if (this.checkFormValidation()){
+        if (this.checkFormValidation()) {
 
             if (this[btn.name] && btn.ajaxConfig) {
                 result = await this[btn.name](btn.ajaxConfig);
@@ -519,7 +518,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             } else if (btn.name === 'saveAndKeep') { // 特殊处理：执行保存并继续
                 result = await this.save(btn.ajaxConfig);
             }
-            if(result || !result) {
+            if (result || !result) {
                 this._isSaving = false;
             }
         } else {
@@ -652,7 +651,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                         if (param['type'] === 'checkedItems') {
                             p[param['name']] = items[param['valueName']];
                         } else if (param['type'] === 'tempValue') {
-                            if(!this.tempValue) {this.tempValue = {}}
+                            if (!this.tempValue) {this.tempValue = {}; }
                             p[param['name']] = this.tempValue[param['valueName']];
                         } else if (param['type'] === 'value') {
                             p[param.name] = param.value;
@@ -670,7 +669,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             params = {};
             paramsConfig.map(param => {
                 if (param['type'] === 'tempValue') {
-                    if(!this.tempValue) {this.tempValue = {}}
+                    if (!this.tempValue) {this.tempValue = {}; }
                     params[param['name']] = this.tempValue[param['valueName']];
                 } else if (param['type'] === 'value') {
                     params[param.name] = param.value;
@@ -693,7 +692,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             let parent = '';
             urlConfig.params.map(param => {
                 if (param['type'] === 'tempValue') {
-                    if(!this.tempValue) {this.tempValue = {}}
+                    if (!this.tempValue) {this.tempValue = {}; }
                     parent = this.tempValue[param.value];
                 } else if (param['type'] === 'value') {
                     if (param.value === 'null') {
@@ -727,7 +726,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     }
 
     initParameters(data?) {
-        if(!this.tempValue) {this.tempValue = {}}
+        if (!this.tempValue) {this.tempValue = {}; }
         for (const d in data) {
             this.tempValue[d] = data[d];
         }
@@ -735,7 +734,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     }
 
     initParametersLoad(data?) {
-        if(!this.tempValue) {this.tempValue = {}}
+        if (!this.tempValue) {this.tempValue = {}; }
         for (const d in data) {
             this.tempValue[d] = data[d];
         }

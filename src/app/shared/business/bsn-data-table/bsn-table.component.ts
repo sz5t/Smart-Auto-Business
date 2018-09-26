@@ -99,7 +99,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     ngOnInit() {
         this.resolverRelation();
-        if(this.initData) {
+        if (this.initData) {
             this.initValue = this.initData;
         }
         if (this.config.dataSet) {
@@ -233,6 +233,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                                 case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
                                     this.load();
                                     break;
+                                case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN:
+                                    this.load();
+                                    break;
                                 case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
                                     break;
                                 case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
@@ -247,7 +250,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     load() {
         // this._selectRow = {};
-        //this.pageIndex = pageIndex;
+        // this.pageIndex = pageIndex;
         this.loading = true;
         this.allChecked = false;
         this.checkedCount = 0;
@@ -765,7 +768,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     /**
-     * 未完善功能
+     * 弹出页面
      * @param dialog
      */
     private showLayout(dialog) {
@@ -836,12 +839,6 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         }
     }
 
-    // private _resolveChildrendAjaxConfig(currentAjax, ajaxConfig) {
-    //     ajaxConfig.filter(c => c.name === currentAjax.parentName).map(c => {
-    //         this._getAjaxConfig(c, option.ajaxConfig);
-    //     });
-    // }
-
     private _getAjaxConfig(c, ajaxConfig) {
         let msg;
         if (c.action) {
@@ -899,8 +896,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         (async() => {
                             const response = await this._executeAjaxConfig(c, handleData);
                             // 处理输出参数
-                            if(c.outputParams) {
-                                this._outputParametersResolver(c, response, ajaxConfig,() => {
+                            if (c.outputParams) {
+                                this._outputParametersResolver(c, response, ajaxConfig, () => {
                                     this.focusIds = this._getFocusIds(response.data);
                                     this.load();
                                 });
@@ -920,8 +917,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 (async() => {
                     const response = await this._executeAjaxConfig(c, handleData);
                     // 处理输出参数
-                    if(c.outputParams) {
-                        this._outputParametersResolver(c, response, ajaxConfig,() => {
+                    if (c.outputParams) {
+                        this._outputParametersResolver(c, response, ajaxConfig, () => {
                             this.focusIds = this._getFocusIds(response.data);
                             this.load();
                         });
@@ -951,15 +948,15 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
      * 3、表类型的返回结果可以设置多个
      */
     private _outputParametersResolver(c, response, ajaxConfig, callback) {
-        let result = false;
+        const result = false;
         if (response.isSuccess) {
             const msg = c.outputParams[c.outputParams.findIndex(m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE)];
             const value = c.outputParams[c.outputParams.findIndex(m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE)];
             const table = c.outputParams[c.outputParams.findIndex(m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE)];
             const msgObj = response.data[msg.name] ? response.data[msg.name].split(':') : '';
-            //const valueObj = response.data[value.name] ? response.data[value.name] : [];
-            //const tableObj = response.data[table.name] ? response.data[table.name] : [];
-            if(msgObj && msgObj.length > 1) {
+            // const valueObj = response.data[value.name] ? response.data[value.name] : [];
+            // const tableObj = response.data[table.name] ? response.data[table.name] : [];
+            if (msgObj && msgObj.length > 1) {
                 const messageType = msgObj[0];
                 let options;
                 switch (messageType) {
@@ -1124,11 +1121,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         }
 
     }
-
-    private _executeNextAction() {
-
-    }
-
+    
     private _getCheckedItems() {
         const serverData = [];
         this.dataList.forEach(item => {
@@ -1583,7 +1576,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
      * @param callback
      */
     showAjaxMessage(result, message?, callback?) {
-        let rs: {success: boolean, msg: string[]} = {success: true, msg:[]};
+        const rs: {success: boolean, msg: string[]} = {success: true, msg: []};
         if (result && Array.isArray(result)) {
             result.forEach(res => {
                 rs['success'] = (rs['success'] && res.isSuccess);
