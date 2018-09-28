@@ -11,9 +11,12 @@
                hidden="hidden"
                type="{{config.inputType}}"
                formControlName="{{config.name}}"
-               [nzSize]="config.size"
-               placeholder="{{config.placeholder}}"
                [(ngModel)]="model"/>
-        <nz-form-text>{{model}}</nz-form-text>
+        <input nz-input
+               hidden="hidden"
+               type="hidden"
+               formControlName="{{config.textName ? config.textName : config.name}}"
+               [(ngModel)]="modelText"/>
+        <nz-form-text>{{config.textName? modelText: model}}</nz-form-text>
     </nz-input-group>
 </nz-form-control>

@@ -36,7 +36,13 @@ export class CommonTools {
                           break;
                       case BSN_PARAMETER_TYPE.COMPONENT_VALUE:
                           if (model.componentValue) {
-                              result[param['name']] = model.componentValue[param['valueName']];
+                              if (model.componentValue[param['valueName']]) {
+                                result[param['name']] = model.componentValue[param['valueName']];
+                              } else {
+                                  if (param['value']) {
+                                    result[param['name']] = param['value'];
+                                  }
+                              }
                           }
                           break;
                       case BSN_PARAMETER_TYPE.GUID:

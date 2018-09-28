@@ -1,33 +1,42 @@
-<bsn-toolbar *ngIf="config.toolbar" [config]="config.toolbar" [viewId]="config.viewId"></bsn-toolbar>
+<bsn-toolbar 
+    *ngIf="config.toolbar" 
+    [config]="config.toolbar" 
+    [viewId]="config.viewId"></bsn-toolbar>
 <nz-card [nzBodyStyle]="{padding: '0px'}">
-    <nz-tree
-        [(ngModel)]="treeData"
-        [nzAsyncData]="config.asyncData"
-        [nzDefaultExpandAll]="config.expandAll"
-        [nzCheckable]="config.checkable"
-        [nzDefaultCheckedKeys]="checkedKeys"
-        [nzDefaultSelectedKeys]="selectedKeys"
-        [nzMultiple]="false"
-        (nzCheckBoxChange)="checkboxChange($event)"
-        (nzClick)="onMouseAction('clickNode', $event)">
-        <ng-template #nzTreeTemplate let-node>
-        <span class="custom-node" draggable="true" aria-grabbed="true" [class.active]="activedNode?.key===node.key">
-          <span *ngIf="!node.isLeaf" [class.shine-animate]="node.origin.isLoading" (contextmenu)="contextMenu($event,contextTemplate, node)">
-            <i class="anticon anticon-folder" *ngIf="!node.isExpanded" (click)="openFolder(node)"></i>
-            <i class="anticon anticon-folder-open" *ngIf="node.isExpanded" (click)="openFolder(node)"></i>
-            <span class="folder-name"> {{node.title}}</span>
-            <span class="folder-desc"> {{node?.origin?.author | lowercase}}</span>
-          </span>
-          <span *ngIf="node.isLeaf" (contextmenu)="contextMenu($event,contextTemplate, node)">
-            <i class="anticon anticon-file"></i>
-            <span class="file-name"> {{node.title}}</span>
-            <span class="file-desc"> {{node?.origin?.author | lowercase}}</span>
-          </span>
+  <nz-tree 
+    [(ngModel)]="treeData" 
+    [nzAsyncData]="config.asyncData" 
+    [nzDefaultExpandAll]="config.expandAll"
+    [nzCheckable]="config.checkable" 
+    [nzDefaultCheckedKeys]="checkedKeys" 
+    [nzDefaultSelectedKeys]="selectedKeys"
+    [nzMultiple]="false" 
+    (nzCheckBoxChange)="checkboxChange($event)" 
+    (nzClick)="onMouseAction('clickNode', $event)">
+    <ng-template #nzTreeTemplate let-node>
+      <span class="custom-node" 
+        draggable="true" 
+        aria-grabbed="true" 
+        [class.active]="activedNode?.key===node.key"
+        (contextmenu)="contextMenu($event,contextTemplate)"
+        >
+        <span *ngIf="!node.isLeaf" 
+          [class.shine-animate]="node.origin.isLoading" 
+         >
+          <i class="anticon anticon-folder" *ngIf="!node.isExpanded"></i>
+          <i class="anticon anticon-folder-open" *ngIf="node.isExpanded"></i>
+          <span class="folder-name"> {{node.title}}</span>
+          <span class="folder-desc"> {{node?.origin?.author}}</span>
         </span>
-        </ng-template>
-    </nz-tree>
+        <span *ngIf="node.isLeaf">
+          <i class="anticon anticon-file"></i>
+          <span class="file-name"> {{node.title}}</span>
+          <span class="file-desc"> {{node?.origin?.author}}</span>
+        </span>
+      </span>
+    </ng-template>
+    <ng-template  #contextTemplate>
+      <cn-bsn-tree-menu [config]="config.menus" [dropdown]="dropdown"></cn-bsn-tree-menu>
+    </ng-template>
+  </nz-tree>
 </nz-card>
-
-
-
-

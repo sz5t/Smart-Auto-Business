@@ -1,5 +1,5 @@
 import { FormGroup } from '@angular/forms';
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, AfterViewInit} from '@angular/core';
 
 @Component({
   selector: 'cn-form-label',
@@ -23,15 +23,20 @@ import {Component, Input, OnInit} from '@angular/core';
     `
   ]
 })
-export class CnFormLabelComponent implements OnInit {
+export class CnFormLabelComponent implements OnInit, AfterViewInit {
     @Input() config;
     @Input() formGroup: FormGroup;
     model;
+    modelText;
     constructor(
     ) { }
 
     ngOnInit() {
-
+     
     }
-
+    ngAfterViewInit() {
+      // if (this.config.textName) {
+      //   this.modelText = this.formGroup.controls[this.config.textName].value;
+      // }
+    }
 }

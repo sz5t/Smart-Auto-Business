@@ -1,3 +1,4 @@
+import { CnBsnTreeMenuComponent } from './business/bsn-tree/bsn-tree-menu.component';
 import { BarChartComponent } from '@shared/chart/bar-chart/bar-chart.component';
 import { TableChartComponent } from '../routes/template/table-chart/table-chart.component';
 import { LineChartComponent } from '@shared/chart/line-chart/line-chart.component';
@@ -71,6 +72,7 @@ import {CnFormLabelDirective} from '@shared/resolver/form-resolver/form-label.di
 import {CnFormWindowResolverComponent} from '@shared/resolver/form-resolver/form-window-resolver.component';
 import { BsnTransferComponent } from './business/bsn-transfer/bsn-transfer.component';
 import { BsnTreeTableComponent } from '@shared/business/bsn-tree-table/bsn-tree-table.component';
+import { CnFormHiddenComponent } from '@shared/components/cn-form-hidden/cn-form-hidden.component';
 const THIRDMODULES = [
     NgZorroAntdModule,
     CountdownModule,
@@ -134,7 +136,9 @@ const COMPONENTS = [
     CnGridSelectTreeComponent,
     CnFormLabelComponent,
     CnFormWindowResolverComponent,
-    BsnTransferComponent
+    BsnTransferComponent,
+    CnFormHiddenComponent,
+    CnBsnTreeMenuComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

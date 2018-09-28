@@ -1,17 +1,15 @@
+import { GridBase } from './../grid.base';
 import {
     BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE,
     BSN_EXECUTE_ACTION
 } from '@core/relative-Service/BsnTableStatus';
-import {Component, OnInit, Input, OnDestroy, Inject, HostListener} from '@angular/core';
+import {Component, OnInit, Input, OnDestroy, Inject, TemplateRef} from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/utility/api-service';
-import {NzMessageService, NzModalService, NzTreeNode} from 'ng-zorro-antd';
-import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
-import { APIResource } from '@core/utility/api-resource';
+import { NzMessageService, NzModalService, NzTreeNode, NzDropdownContextComponent, NzDropdownService } from 'ng-zorro-antd';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
 import { Observer ,  Observable ,  Subscription } from 'rxjs';
-import {TreeNode} from '@angular/router/src/utils/tree';
 @Component({
     selector: 'cn-bsn-tree',
     templateUrl: './bsn-tree.component.html',
@@ -73,7 +71,7 @@ import {TreeNode} from '@angular/router/src/utils/tree';
         }
     ` ]
 })
-export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDestroy {
+export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     @Input() config;
     @Input() initData;
     treeData;
@@ -85,15 +83,20 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     _statusSubscription: Subscription;
     _cascadeSubscription: Subscription;
     _checkItemList = [];
+    dropdown: NzDropdownContextComponent;
     constructor(
         private _http: ApiService,
-        private _message: NzMessageService,
-        private _modalService: NzModalService,
+        private _msg: NzMessageService,
+        private _modal: NzModalService,
+        private _dropdownService: NzDropdownService,
         @Inject(BSN_COMPONENT_MODES) private eventStatus: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
     ) {
         super();
+        this.apiService = this._http;
+        this.message = this._msg;
+        this.modalService = this._modal;
     }
 
     ngOnInit() {
@@ -118,7 +121,49 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         // 监听消息，执行对应的数据操作
         this._statusSubscription = this.eventStatus.subscribe(updateState => {
             if (this.config.viewId === updateState._viewId) {
-                this._resolveAjaxConfig(updateState.option);
+                const option = updateState.option;
+                switch (updateState._mode) {
+                    case BSN_COMPONENT_MODES.REFRESH:
+                        this.load();
+                        break;
+                    case BSN_COMPONENT_MODES.CREATE:
+                        // this.addRow();
+                        break;
+                    case BSN_COMPONENT_MODES.EDIT:
+                        // this.updateRow();
+                        break;
+                    case BSN_COMPONENT_MODES.CANCEL:
+                        // this.cancelRow();
+                        break;
+                    case BSN_COMPONENT_MODES.SAVE:
+                        // this.saveRow(option);
+                        break;
+                    case BSN_COMPONENT_MODES.DELETE:
+                        // this.deleteRow(option);
+                        break;
+                    case BSN_COMPONENT_MODES.DIALOG:
+                        this.dialog(option);
+                        break;
+                    case BSN_COMPONENT_MODES.EXECUTE:
+                        // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
+                        this._resolveAjaxConfig(option);
+                        break;
+                    case BSN_COMPONENT_MODES.WINDOW:
+                        this.windowDialog(option);
+                        break;
+                    case BSN_COMPONENT_MODES.FORM:
+                        this.formDialog(option);
+                        break;
+                    case BSN_COMPONENT_MODES.SEARCH:
+                        // this.SearchRow(option);
+                        break;
+                    case BSN_COMPONENT_MODES.UPLOAD:
+                        this.uploadDialog(option);
+                        break;
+                    case BSN_COMPONENT_MODES.FORM_BATCH:
+                        this.formBatchDialog(option);
+                        break;
+                }
             }
         });
 
@@ -392,6 +437,10 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         this[actionName]($event);
     }
 
+    contextMenu($event: MouseEvent, template: TemplateRef<void>): void {
+        this.dropdown = this._dropdownService.create($event, template);
+    }
+
     clickNode = (e) => {
         if (this.activedNode) {
             this.activedNode = null;
@@ -400,6 +449,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
         this.activedNode = e.node;
         // 从节点的列表中查找选中的数据对象
         this.tempValue['_selectedNode'] = this._toTreeBefore.find(n => n.key === e.node.key);
+        this.selectedItem = this.tempValue['_selectedNode'];
     }
 
     checkboxChange = (e) => {
@@ -464,7 +514,7 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
     }
 
     private _executeAjaxConfig(ajaxConfigObj, handleData) {
-        this._modalService.confirm({
+        this.modalService.confirm({
             nzTitle: ajaxConfigObj.title ? ajaxConfigObj.title : '提示',
             nzContent: ajaxConfigObj.message ? ajaxConfigObj.message : '',
             nzOnOk: () => {
@@ -493,9 +543,9 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
             executeParam
         );
         if (response.isSuccess) {
-            this._message.success('操作成功');
+            this.message.success('操作成功');
         } else {
-            this._message.error(`操作失败 ${response.message}`);
+            this.message.error(`操作失败 ${response.message}`);
         }
     }
 
@@ -528,9 +578,9 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
             executeParams
         );
         if (response.isSuccess) {
-            this._message.success('操作成功');
+            this.message.success('操作成功');
         } else {
-            this._message.error(`操作失败 ${response.message}`);
+            this.message.error(`操作失败 ${response.message}`);
         }
     }
 
@@ -551,6 +601,56 @@ export class CnBsnTreeComponent extends CnComponentBase implements OnInit, OnDes
 
     }
 
+    /**
+     * 弹出对话框
+     * @param option
+     */
+    dialog(option) {
+        if (this.config.dialog && this.config.dialog.length > 0) {
+            const index = this.config.dialog.findIndex(item => item.name === option.name);
+            this.showForm(this.config.dialog[index]);
+        }
+    }
+    /**
+     * 弹出窗体
+     * @param option
+     */
+    windowDialog(option) {
+        if (this.config.windowDialog && this.config.windowDialog.length > 0) {
+            const index = this.config.windowDialog.findIndex(item => item.name === option.name);
+            this.showLayout(this.config.windowDialog[index]);
+        }
+    }
+    /**
+     * 弹出上传对话
+     * @param option
+     */
+    uploadDialog(option) {
+        if (this.config.uploadDialog && this.config.uploadDialog.length > 0) {
+            const index = this.config.uploadDialog.findIndex(item => item.name === option.name);
+            this.openUploadDialog(this.config.uploadDialog[index]);
+        }
+    }
+    /**
+     * 弹出表单
+     * @param option
+     */
+    formDialog(option) {
+        if (this.config.formDialog && this.config.formDialog.length > 0) {
+            const index = this.config.formDialog.findIndex(item => item.name === option.name);
+            this.showForm(this.config.formDialog[index]);
+        }
+    }
+    /**
+     * 弹出批量处理表单
+     * @param option
+     */
+    formBatchDialog(option) {
+        if (this.config.formDialog && this.config.formDialog.length > 0) {
+            const index = this.config.formDialog.findIndex(item => item.name === option.name);
+            this.showBatchForm(this.config.formDialog[index]);
+        }
+    }
     // endregion
 
 }

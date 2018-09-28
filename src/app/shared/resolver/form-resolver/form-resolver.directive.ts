@@ -1,3 +1,4 @@
+import { CnFormHiddenComponent } from '@shared/components/cn-form-hidden/cn-form-hidden.component';
 import {
     ComponentFactoryResolver, ComponentRef, Directive, Input, OnChanges, OnInit, Type,
     ViewContainerRef,
@@ -28,7 +29,8 @@ const components: { [type: string]: Type<any> } = {
     radioGroup: CnFormRadioGroupComponent,
     search: CnFormSearchComponent,
     selectTree: CnFormSelectTreeComponent,
-    textarea: CnFormTextareaComponent
+    textarea: CnFormTextareaComponent,
+    hidden: CnFormHiddenComponent
 };
 @Directive({
     selector: '[cnFormResolverDirective]'
@@ -145,7 +147,7 @@ export class FormResolverDirective implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnDestroy() {
-        if(this.component) {
+        if (this.component) {
             this.component.destroy();
         }
     }

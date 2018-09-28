@@ -1,18 +1,18 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, Inject, OnDestroy} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ApiService} from '@core/utility/api-service';
-import {NzMessageService, NzModalService} from 'ng-zorro-antd';
-import {RelativeService, RelativeResolver} from '@core/relative-Service/relative-service';
-import {CnComponentBase} from '@shared/components/cn-component-base';
-import {CommonTools} from '@core/utility/common-tools';
+import { CommonTools } from './../../../core/utility/common-tools';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, Inject, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ApiService } from '@core/utility/api-service';
+import { NzMessageService, NzModalService } from 'ng-zorro-antd';
+import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
+import { CnComponentBase } from '@shared/components/cn-component-base';
 import {
     BSN_COMPONENT_MODES,
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
     BSN_COMPONENT_CASCADE_MODES, BSN_FORM_STATUS
 } from '@core/relative-Service/BsnTableStatus';
-import {Observable} from 'rxjs';
-import {Observer} from 'rxjs';
+import { Observable } from 'rxjs';
+import { Observer } from 'rxjs';
 
 @Component({
     selector: 'cn-form-resolver,[cn-form-resolver]',
@@ -28,6 +28,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     @Input() permissions;
     @Input() dataList;
     @Input() ref;
+    @Input() initData;
     _editable = BSN_FORM_STATUS.TEXT;
 
     form: FormGroup;
@@ -40,17 +41,20 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     changeConfig;
 
     constructor(private formBuilder: FormBuilder,
-                private apiService: ApiService,
-                private message: NzMessageService, private modalService: NzModalService,
-                private _messageService: RelativeService,
-                @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
-                @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
-                @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>) {
+        private apiService: ApiService,
+        private message: NzMessageService, private modalService: NzModalService,
+        private _messageService: RelativeService,
+        @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
+        @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
+        @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>) {
         super();
     }
 
     // region: 组件生命周期事件
     ngOnInit() {
+        if (this.initData) {
+            this.initValue = this.initData;
+        }
         this.form = this.createGroup();
         this.resolverRelation();
         if (this.ref) {
@@ -102,7 +106,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                         this.load();
                         this._editable = BSN_FORM_STATUS.TEXT;
                         break;
-                    case BSN_COMPONENT_MODES.EXECUTE:
+                    case BSN_COMPONENT_MODES.SAVE:
                         if (option.ajaxConfig) {
                             this.saveForm_2(option.ajaxConfig);
                         }
@@ -110,16 +114,19 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                     case BSN_COMPONENT_MODES.DELETE:
                         if (option.ajaxConfig) {
                             this.modalService.confirm({
-                                nzTitle: '确认当前数据？',
+                                nzTitle: '确认删除当前数据？',
                                 nzContent: '',
                                 nzOnOk: () => {
-                                    this.delete(option.ajaxConfig.delete);
+                                    this.delete(option.ajaxConfig);
                                 },
                                 nzOnCancel() {
                                 }
                             });
 
                         }
+                        break;
+                    case BSN_COMPONENT_MODES.EXECUTE:
+
                         break;
                     case BSN_COMPONENT_MODES.DIALOG:
 
@@ -141,8 +148,8 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             this.after(this, 'saveForm', () => {
                 this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH,
                     this.config.viewId, {
-                    data: this.value
-                }));
+                        data: this.value
+                    }));
             });
             // this.after(this, 'saveForm_2', () => {
             //     this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH,
@@ -164,7 +171,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                             // 解析参数
                             if (relation.params && relation.params.length > 0) {
                                 relation.params.forEach(param => {
-                                    if (!this.tempValue) {this.tempValue = {}; }
+                                    if (!this.tempValue) { this.tempValue = {}; }
                                     this.tempValue[param['cid']] = option.data[param['pid']];
                                 });
                             }
@@ -215,7 +222,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     get controls() {
         const controls = [];
         this.config.forms.map(formItem => {
-            const items = formItem.controls.filter(({type}) => {
+            const items = formItem.controls.filter(({ type }) => {
                 return type !== 'button' && type !== 'submit';
             });
             controls.push(...items);
@@ -246,9 +253,9 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     }
 
     createControl(control) {
-        const {disabled, value} = control;
+        const { disabled, value } = control;
         const validations = this.getValidations(control.validations);
-        return this.formBuilder.control({disabled, value}, validations);
+        return this.formBuilder.control({ disabled, value }, validations);
     }
 
     getValidations(validations) {
@@ -278,7 +285,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     setValue(name: string, value: any) {
         const control = this.form.controls[name];
         if (control) {
-            control.setValue(value, {emitEvent: true});
+            control.setValue(value, { emitEvent: true });
         }
     }
 
@@ -295,76 +302,25 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     // endregion
 
     // region: 数据处理
-    async execAjax(p?, componentValue?, type?) {
-        const params = {};
-        let tag = true;
+    async execAjax(ajaxConfig) {
         let url;
-        if (p) {
-            if (p.params) {
-                p.params.forEach(param => {
-                    if (param.type === 'tempValue') {
-                        if (type) {
-                            if (type === 'load') {
-                                if (this.tempValue[param.valueName]) {
-                                    params[param.name] = this.tempValue[param.valueName];
-                                } else {
-                                    // console.log('参数不全不能加载');
-                                    tag = false;
-                                    return;
-                                }
-                            } else {
-                                params[param.name] = this.tempValue[param.valueName];
-                            }
-                        } else {
-                            params[param.name] = this.tempValue[param.valueName];
-                        }
-
-                    } else if (param.type === 'value') {
-
-                        params[param.name] = param.value;
-
-                    } else if (param.type === 'GUID') {
-                        const fieldIdentity = CommonTools.uuID(10);
-                        params[param.name] = fieldIdentity;
-                    } else if (param.type === 'componentValue') {
-                        params[param.name] = componentValue[param.valueName];
-                    }
-                });
-            }
-
-            if (this.isString(p.url)) {
-                url = p.url;
-            } else {
-                let pc = 'null';
-                p.url.params.forEach(param => {
-                    if (param['type'] === 'value') {
-                        pc = param.value;
-                    } else if (param.type === 'GUID') {
-                        const fieldIdentity = CommonTools.uuID(10);
-                        pc = fieldIdentity;
-                    } else if (param.type === 'componentValue') {
-                        pc = componentValue[param.valueName];
-                    } else if (param.type === 'tempValue') {
-                        pc = this.tempValue[param.valueName];
-                    }
-                });
-
-                url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
-            }
-        }
-        if (p.ajaxType === 'getById' && tag) {
-            return this.apiService.getById(`${url}/${params['Id']}`).toPromise();
-        } else if (p.ajaxType === 'get' && tag) {
-            // console.log('get参数', params);
-            return this.apiService.get(url, params).toPromise();
-        } else if (p.ajaxType === 'put') {
-            // console.log('put参数', params);
-            return this.apiService.put(url, params).toPromise();
-        } else if (p.ajaxType === 'post') {
-            // console.log('post参数', params);
-            return this.apiService.post(url, params).toPromise();
+        const params = CommonTools.parametersResolver({
+            params: ajaxConfig.params,
+            tempValue: this.tempValue,
+            initValue: this.initValue
+        });
+        if (this.isString(ajaxConfig.url)) {
+            url = ajaxConfig.url;
         } else {
-            return null;
+            const pc = CommonTools.parametersResolver({
+                params: ajaxConfig.url.params,
+                tempValue: this.tempValue,
+                initValue: this.initValue
+            });
+            url = ajaxConfig.url['parent'] + '/' + pc + '/' + ajaxConfig.url['child'];
+        }
+        if (ajaxConfig.ajaxType === 'getById') {
+            return this.apiService.getById(`${url}/${params['Id']}`).toPromise();
         }
     }
 
@@ -375,7 +331,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
     async load() {
         this.isSpinning = true;
-        const ajaxData = await this.execAjax(this.config.ajaxConfig, null, 'load');
+        const ajaxData = await this.execAjax(this.config.ajaxConfig);
         if (ajaxData) {
             if (ajaxData.data) {
                 this.setFormValue(ajaxData.data);
@@ -398,7 +354,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     }
 
     async saveForm_2(ajaxConfigs) {
-        debugger;
+        debugger;    
         let result;
         const method = this._editable;
         if (method === BSN_FORM_STATUS.TEXT) {
@@ -406,97 +362,58 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             return false;
         } else {
             const index = ajaxConfigs.findIndex(item => item.ajaxType === method);
-            result = this._execute(method, ajaxConfigs[index]);
-            // this.config.toolbar.forEach(bar => {
-            //     if (bar.group && bar.group.length > 0) {
-            //         const index = bar.group.findIndex(item => item.name === 'saveForm');
-            //         if (index !== -1) {
-            //             ajaxConfig = bar.group[index].ajaxConfig[method];
-            //             result =  this._execute(method, ajaxConfig);
-            //         }
-            //
-            //     }
-            //     if (bar.dropdown && bar.dropdown.buttons && bar.dropdown.buttons.length > 0) {
-            //         const index = bar.dropdown.buttons.findIndex(item => item.name === 'saveForm');
-            //         if (index !== -1) {
-            //             ajaxConfig = bar.dropdown.buttons[index].ajaxConfig[method];
-            //             result =  this._execute(method, ajaxConfig);
-            //         }
-            //
-            //     }
-            // });
+            result = await this[method](ajaxConfigs[index]);
         }
 
     }
 
-    async _execute(method, ajaxConfig) {
-        let isSuccess;
-        if (ajaxConfig) {
-            isSuccess = await this[method](ajaxConfig);
-        }
-        return isSuccess;
-    }
+   /*  // async saveForm() {
+    //     let result;
+    //     const buttons = this.config.toolbar.buttons;
+    //     if (buttons) {
+    //         const index = buttons.findIndex(item => item.name === 'saveForm');
+    //         if (buttons[index].ajaxConfig) {
+    //             const pconfig = JSON.parse(JSON.stringify(buttons[index].ajaxConfig));
+    //             if (this.tempValue['_id']) {
+    //                 // 修改保存
+    //                 const ajaxData = await this.execAjax(pconfig['put'], this.value);
+    //                 if (ajaxData.isSuccess) {
+    //                     this.message.success('保存成功');
+    //                     result = true;
+    //                 } else {
+    //                     this.message.error(`保存失败！<br/> ${ajaxData.message}`);
+    //                     result = false;
+    //                 }
 
-    async saveForm() {
-        let result;
-        const buttons = this.config.toolbar.buttons;
-        if (buttons) {
-            const index = buttons.findIndex(item => item.name === 'saveForm');
-            if (buttons[index].ajaxConfig) {
-                const pconfig = JSON.parse(JSON.stringify(buttons[index].ajaxConfig));
-                if (this.tempValue['_id']) {
-                    // 修改保存
-                    const ajaxData = await this.execAjax(pconfig['put'], this.value);
-                    if (ajaxData.isSuccess) {
-                        this.message.success('保存成功');
-                        result = true;
-                    } else {
-                        this.message.error(`保存失败！<br/> ${ajaxData.message}`);
-                        result = false;
-                    }
+    //             } else {
+    //                 // 新增保存
+    //                 if (Array.isArray(pconfig['post'])) {
+    //                     for (let i = 0; i < pconfig['post'].length; i++) {
+    //                         const ajaxData = await this.execAjax(pconfig['post'][i], this.value);
+    //                         if (ajaxData) {
+    //                             if (pconfig['post'][i]['output']) {
+    //                                 pconfig['post'][i]['output'].forEach(out => {
+    //                                     this.tempValue[out.name] = ajaxData.Data[out['dataName']];
+    //                                 });
+    //                             }
+    //                         }
+    //                     }
+    //                 } else {
+    //                     const ajaxData = await this.execAjax(pconfig['add'], this.value);
+    //                     if (ajaxData.isSuccess) {
+    //                         this.message.success('保存成功');
+    //                         result = true;
+    //                     } else {
+    //                         this.message.error(`保存失败！<br/> ${ajaxData.message}`);
+    //                         result = false;
+    //                     }
 
-                } else {
-                    // 新增保存
-                    if (Array.isArray(pconfig['post'])) {
-                        for (let i = 0; i < pconfig['post'].length; i++) {
-                            const ajaxData = await this.execAjax(pconfig['post'][i], this.value);
-                            if (ajaxData) {
-                                if (pconfig['post'][i]['output']) {
-                                    pconfig['post'][i]['output'].forEach(out => {
-                                        this.tempValue[out.name] = ajaxData.Data[out['dataName']];
-                                    });
-                                }
-                            }
-                        }
-                    } else {
-                        const ajaxData = await this.execAjax(pconfig['add'], this.value);
-                        if (ajaxData.isSuccess) {
-                            this.message.success('保存成功');
-                            result = true;
-                        } else {
-                            this.message.error(`保存失败！<br/> ${ajaxData.message}`);
-                            result = false;
-                        }
-
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    execFun(name?) {
-        switch (name) {
-            case 'saveForm':
-                this.saveForm();
-                break;
-            case 'initParametersLoad':
-                this.initParametersLoad();
-                break;
-            default:
-                break;
-        }
-    }
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return result;
+    // } */
 
     searchForm() {
         this.searchFormByValue(this.value);
@@ -507,7 +424,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     }
 
 
-    async buttonAction(btn) {
+    /* async buttonAction(btn) {
         let result = false;
         this._isSaving = true;
         if (this.checkFormValidation()) {
@@ -526,7 +443,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             this._isSaving = false;
         }
         return result;
-    }
+    } */
 
     private checkFormValidation() {
         if (this.form.invalid) {
@@ -539,7 +456,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         return true;
     }
 
-    private async save(ajaxConfig) {
+    /* private async save(ajaxConfig) {
         if (ajaxConfig.post) {
             return this.post(ajaxConfig.post);
         }
@@ -547,13 +464,60 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             return this.put(ajaxConfig.put);
         }
 
-    }
+    } */
 
+    /**
+     * 新增数据
+     * @param postConfig 数据访问配置
+     */
     private async post(postConfig) {
         let result = true;
         const url = this._buildURL(postConfig.url);
-            const body = this._buildParameters(postConfig.params, postConfig.batch ? postConfig.batch : false);
-            const res = await this._post(url, body);
+        const params = CommonTools.parametersResolver({
+            params: postConfig.params,
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            componentValue: this.value,
+        });
+        const res = await this.execute(url, postConfig.ajaxType, params);
+        if (res.isSuccess) {
+            this.message.create('success', '保存成功');
+            this._editable = BSN_FORM_STATUS.TEXT;
+            this.load();
+            // 发送消息 刷新其他界面
+            if (this.config.componentType && this.config.componentType.parent === true) {
+                this.cascade.next(
+                    new BsnComponentMessage(
+                        BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                        this.config.viewId
+                    )
+                );
+            }
+        } else {
+            this.message.create('error', res.message);
+            result = false;
+        }
+        return result;
+    }
+
+    /**
+     * 修改数据
+     * @param putConfig 数据访问配置
+     */
+    private async put(putConfig) {
+        let result = true;
+        const url = this._buildURL(putConfig.url);
+        const params = CommonTools.parametersResolver({
+            params: putConfig.params,
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            componentValue: this.value,
+        });
+        if (params && !params['Id']) {
+            this.message.warning('编辑数据的Id不存在，无法进行更新！');
+            return;
+        } else {
+            const res = await this.execute(url, putConfig.ajaxType, params);
             if (res.isSuccess) {
                 this.message.create('success', '保存成功');
                 this._editable = BSN_FORM_STATUS.TEXT;
@@ -571,56 +535,29 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                 this.message.create('error', res.message);
                 result = false;
             }
-        // for (let i = 0, len = postConfig.length; i < len; i++) {
-            
-        // }
+        }
         return result;
     }
 
-    private async put(putConfig) {
-        let result = true;
-        const url = this._buildURL(putConfig.url);
-            const body = this._buildParameters(putConfig.params, putConfig.batch ? putConfig.batch : false);
-            if (body && !body['Id']) {
-                this.message.warning('编辑数据的Id不存在，无法进行更新！');
-                return;
-            } else {
-                const res = await this._put(url, body);
-                if (res.isSuccess) {
-                    this.message.create('success', '保存成功');
-                    this._editable = BSN_FORM_STATUS.TEXT;
-                    this.load();
-                    // 发送消息 刷新其他界面
-                    if (this.config.componentType && this.config.componentType.parent === true) {
-                        this.cascade.next(
-                            new BsnComponentMessage(
-                                BSN_COMPONENT_CASCADE_MODES.REFRESH,
-                                this.config.viewId
-                            )
-                        );
-                    }
-                } else {
-                    this.message.create('error', res.message);
-                    result = false;
-                }
-            }
-        // for (let i = 0, len = putConfig.length; i < len; i++) {
-            
-
-        // }
-        return result;
-    }
-
+    /**
+     * 删除数据
+     * @param deleteConfig 数据访问配置
+     */
     private async delete(deleteConfig) {
         let result = true;
         for (let i = 0, len = deleteConfig.length; i < len; i++) {
             const url = this._buildURL(deleteConfig[i].url);
-            const body = this._buildParameters(deleteConfig[i].params, deleteConfig[i].batch ? deleteConfig[i].batch : false);
-            if (body && !body['Id']) {
-                this.message.warning('编辑数据的Id不存在，无法进行更新！');
+            const params = CommonTools.parametersResolver({
+                params: deleteConfig[i].params,
+                tempValue: this.tempValue,
+                initValue: this.initValue,
+                componentValue: this.value,
+            });
+            if (params && !params['Id']) {
+                this.message.warning('删除数据的Id不存在，无法进行删除！');
                 return;
             } else {
-                const res = await this._delete(url, body);
+                const res = await this.execute(url, deleteConfig[i].ajaxType, params);
                 if (res.isSuccess) {
                     this.message.create('success', '删除成功');
                     this._editable = BSN_FORM_STATUS.TEXT;
@@ -643,71 +580,10 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
     }
 
-    private _buildParameters(paramsConfig, isBatch) {
-        let params;
-        if (paramsConfig && isBatch) {
-            params = [];
-            if (this.tempValue['_checkedItems']) {
-                this.tempValue['_checkedItems'].map(items => {
-                    const p = {};
-                    paramsConfig.map(param => {
-                        if (param['type'] === 'checkedItems') {
-                            p[param['name']] = items[param['valueName']];
-                        } else if (param['type'] === 'tempValue') {
-                            if (!this.tempValue) {this.tempValue = {}; }
-                            p[param['name']] = this.tempValue[param['valueName']];
-                        } else if (param['type'] === 'value') {
-                            p[param.name] = param.value;
-                        } else if (param['type'] === 'GUID') {
-                            const fieldIdentity = CommonTools.uuID(10);
-                            p[param.name] = fieldIdentity;
-                        } else if (param['type'] === 'componentValue') {
-                            p[param.name] = this.value[param.valueName];
-                        }
-                    });
-                    params.push(p);
-                });
-            }
-        } else {
-            params = {};
-            paramsConfig.map(param => {
-                if (param['type'] === 'tempValue') {
-                    if (!this.tempValue) {this.tempValue = {}; }
-                    params[param['name']] = this.tempValue[param['valueName']];
-                } else if (param['type'] === 'value') {
-                    params[param.name] = param.value;
-                } else if (param['type'] === 'GUID') {
-                    const fieldIdentity = CommonTools.uuID(10);
-                    params[param.name] = fieldIdentity;
-                } else if (param['type'] === 'componentValue') {
-                    params[param.name] = this.value[param.valueName];
-                }
-            });
-        }
-        return params;
-    }
-
     private _buildURL(urlConfig) {
         let url = '';
         if (urlConfig && this._isUrlString(urlConfig)) {
             url = urlConfig;
-        } else if (urlConfig) {
-            let parent = '';
-            urlConfig.params.map(param => {
-                if (param['type'] === 'tempValue') {
-                    if (!this.tempValue) {this.tempValue = {}; }
-                    parent = this.tempValue[param.value];
-                } else if (param['type'] === 'value') {
-                    if (param.value === 'null') {
-                        param.value = null;
-                    }
-                    parent = param.value;
-                } else if (param['type'] === 'GUID') {
-                    // todo: 扩展功能
-                } else if (param['type'] === 'componentValue') {
-                    parent = this.value[param['valueName']];
-                }
-            });
         }
         return url;
     }
@@ -716,20 +592,12 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         return Object.prototype.toString.call(url) === '[object String]';
     }
 
-    private async _post(url, body) {
-        return this.apiService.post(url, body).toPromise();
-    }
-
-    private async _put(url, body) {
-        return this.apiService.put(url, body).toPromise();
-    }
-
-    private async _delete(url, body) {
-        return this.apiService.delete(url, body).toPromise();
+    private async execute(url, method, body) {
+        return this.apiService[method](url, body).toPromise();
     }
 
     initParameters(data?) {
-        if (!this.tempValue) {this.tempValue = {}; }
+        if (!this.tempValue) { this.tempValue = {}; }
         for (const d in data) {
             this.tempValue[d] = data[d];
         }
@@ -737,12 +605,12 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     }
 
     initParametersLoad(data?) {
-        if (!this.tempValue) {this.tempValue = {}; }
+        if (!this.tempValue) { this.tempValue = {}; }
         for (const d in data) {
             this.tempValue[d] = data[d];
         }
         this.load();
-         console.log('初始化参数并load 主子刷新', this.tempValue);
+        console.log('初始化参数并load 主子刷新', this.tempValue);
     }
 
 
@@ -992,7 +860,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         }
 
 
-       // console.log('变更后的', this.config.forms);
+        // console.log('变更后的', this.config.forms);
     }
 
     // 级联变化，情况大致分为三种

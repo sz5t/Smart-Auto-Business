@@ -136,7 +136,6 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         this._statusSubscription = this.stateEvents.subscribe(updateState => {
             if (updateState._viewId === this.config.viewId) {
                 const option = updateState.option;
-                debugger;
                 switch (updateState._mode) {
                     case BSN_COMPONENT_MODES.CREATE:
                         this.addRow();
