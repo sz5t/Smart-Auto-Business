@@ -1,3 +1,4 @@
+import { CnBsnTreeMenuComponent } from './business/bsn-tree/bsn-tree-menu.component';
 import { BarChartComponent } from '@shared/chart/bar-chart/bar-chart.component';
 import { TableChartComponent } from '../routes/template/table-chart/table-chart.component';
 import { LineChartComponent } from '@shared/chart/line-chart/line-chart.component';
@@ -47,7 +48,6 @@ import { SettingLayoutComponent } from '@shared/resolver/setting-resolver/settin
 import { SettingComponentComponent } from '@shared/resolver/setting-resolver/setting-component/setting-component.component';
 import { SettingLayoutEditorComponent } from '@shared/resolver/setting-resolver/setting-layout/setting-layout-editor.component';
 import { SettingComponentEditorComponent } from '@shared/resolver/setting-resolver/setting-component/setting-component-editor.component';
-import { BsnTreeTableComponent } from '@shared/business/bsn-tree-table/bsn-tree-table.component';
 import { SearchResolverComponent } from '@shared/resolver/form-resolver/search-resolver.component';
 import { CnFormSearchComponent } from '@shared/components/cn-form-search/cn-form-search.component';
 import { CnDatePickerComponent } from '@shared/components/cn-date-picker/cn-date-picker.component';
@@ -68,9 +68,11 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import {CnGridSelectTreeComponent} from '@shared/components/cn-grid-select-tree/cn-grid-select-tree.component';
 import {LayoutResolverDirective} from '@shared/resolver/layout-resolver/layout-resolver.directive';
 import {CnFormLabelComponent} from '@shared/components/cn-form-label/cn-form-label.component';
-import {CnFormLabelDirective} from "@shared/resolver/form-resolver/form-label.directive";
-import {CnFormWindowResolverComponent} from "@shared/resolver/form-resolver/form-window-resolver.component";
+import {CnFormLabelDirective} from '@shared/resolver/form-resolver/form-label.directive';
+import {CnFormWindowResolverComponent} from '@shared/resolver/form-resolver/form-window-resolver.component';
 import { BsnTransferComponent } from './business/bsn-transfer/bsn-transfer.component';
+import { BsnTreeTableComponent } from '@shared/business/bsn-tree-table/bsn-tree-table.component';
+import { CnFormHiddenComponent } from '@shared/components/cn-form-hidden/cn-form-hidden.component';
 const THIRDMODULES = [
     NgZorroAntdModule,
     CountdownModule,
@@ -134,7 +136,9 @@ const COMPONENTS = [
     CnGridSelectTreeComponent,
     CnFormLabelComponent,
     CnFormWindowResolverComponent,
-    BsnTransferComponent
+    BsnTransferComponent,
+    CnFormHiddenComponent,
+    CnBsnTreeMenuComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

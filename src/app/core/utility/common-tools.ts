@@ -36,7 +36,13 @@ export class CommonTools {
                           break;
                       case BSN_PARAMETER_TYPE.COMPONENT_VALUE:
                           if (model.componentValue) {
-                              result[param['name']] = model.componentValue[param['valueName']];
+                              if (model.componentValue[param['valueName']]) {
+                                result[param['name']] = model.componentValue[param['valueName']];
+                              } else {
+                                  if (param['value']) {
+                                    result[param['name']] = param['value'];
+                                  }
+                              }
                           }
                           break;
                       case BSN_PARAMETER_TYPE.GUID:
@@ -53,7 +59,7 @@ export class CommonTools {
                           }
                           break;
                       case BSN_PARAMETER_TYPE.CHECKED_ID:
-                          if(model.item) {
+                          if (model.item) {
                               result[param['name']] = model.item;
                           }
                           break;
@@ -68,7 +74,7 @@ export class CommonTools {
                           }
                           break;
                       case BSN_PARAMETER_TYPE.INIT_VALUE:
-                          if(model.initValue) {
+                          if (model.initValue) {
                               result[param['name']] = model.initValue[param['valueName']];
                           }
                   }

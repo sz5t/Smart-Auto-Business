@@ -4,28 +4,31 @@
       "row": {
         "cols": [
           {
-            "id": "MpmProcess",
-            "title": "标准工序",
-            "span": 6,
+            "id": "",
+            "title": "产品结构树",
+            "span": 10,
+            "bodyStyle": {
+              "height": "600px"
+            },
             "size": {
-              "nzXs": 6,
-              "nzSm": 6,
-              "nzMd": 6,
-              "nzLg": 6,
-              "ngXl": 6
+              "nzXs": 10,
+              "nzSm": 10,
+              "nzMd": 10,
+              "nzLg": 10,
+              "ngXl": 10
             },
             "viewCfg": [
               {
                 "config": {
-                  "title": "数据网格",
-                  "viewId": "MpmProcess",
+                  "title": "",
+                  "viewId": "MpmProductdetails",
                   "component": "bsnTree",
                   "asyncData": true,
                   "expandAll": true,
                   "checkable": true,
-                  "showLine": true,
+                  "showLine": true, 
                   "ajaxConfig": {
-                    "url": "common/MpmProcess",
+                    "url": "common/GETPRODUCTRTREE",
                     "ajaxType": "get",
                     "params": [],
                     "filter": []
@@ -44,33 +47,7 @@
                     {
                       "title": "标题",
                       "field": "title",
-                      "valueName": "processname"
-                    }
-                  ],
-                  "componentType": {
-                    "parent": true,
-                    "child": true,
-                    "own": true
-                  },
-                  "subMapping": [
-                    {
-                      "field": "processcode",
-                      "mapping": [
-                        {
-                          "value": "1",
-                          "subViewId": "materialinfo2_1"
-                        },
-                        {
-                          "value": "2.4",
-                          "subViewId": "materialinfo2_2"
-                        }
-                      ]
-                    }
-                  ],
-                  "relations": [
-                    {
-                      "relationViewId": "MpmProcess_from",
-                      "cascadeMode": "REFRESH"
+                      "valueName": "productname"
                     }
                   ],
                   "parent": [
@@ -80,64 +57,77 @@
                       "valueName": "",
                       "value": null
                     }
-                  ]
+                  ],
+                  "componentType": {
+                    "parent": false,
+                    "child": true,
+                    "own": true
+                  },
+                  "relations": [],
+                  "toolbar": [],
+                  "dataSet": [],
+                  "formDialog": [],
+                  "windowDialog": [],
+                  "uploadDialog": []
                 },
                 "dataList": []
               }
             ]
           },
           {
-            "id": "process",
-            "title": "",
-            "span": 18,
-            "size": {
-              "nzXs": 18,
-              "nzSm": 18,
-              "nzMd": 18,
-              "nzLg": 18,
-              "ngXl": 18
+            "id": "",
+            "span": 14,
+            "bodyStyle": {
+              "height": "600px"
             },
-            "rows": [
+            "size": {
+              "nzXs": 14,
+              "nzSm": 14,
+              "nzMd": 14,
+              "nzLg": 14,
+              "ngXl": 14
+            },
+            "viewCfg": [
               {
-                "row": {
-                  "cols": [
+                "config": {
+                  "viewId": "tab_bom",
+                  "tabPosition": "top",
+                  "tabType": "card",
+                  "size": "small",
+                  "component": "bsnTabs",
+                  "tabs": [
                     {
-                      "id": "MpmProcess",
-                      "title": "",
-                      "span": 24,
-                      "size": {
-                        "nzXs": 24,
-                        "nzSm": 24,
-                        "nzMd": 24,
-                        "nzLg": 24,
-                        "ngXl": 24
-                      },
-                      "viewCfg": [
+                      "title": "属性信息",
+                      "icon": "icon-list text-green-light",
+                      "active": false,
+                      "rows": [
                         {
-                          "config": {
-                            "viewId": "MpmProcess_card",
-                            "tabPosition": "top",
-                            "tabType": "card",
-                            "size": "small",
-                            "component": "bsnTabs",
-                            "tabs": [
+                          "row": {
+                            "cols": [
                               {
-                                "title": "工序详细信息",
-                                "active": false,
+                                "id": "",
+                                "span": 24,
+                                "size": {
+                                  "nzXs": 24,
+                                  "nzSm": 24,
+                                  "nzMd": 24,
+                                  "nzLg": 24,
+                                  "ngXl": 24
+                                },
                                 "viewCfg": [
                                   {
                                     "config": {
-                                      "viewId": "MpmProcess_from",
+                                      "viewId": "tab_bom_1",
                                       "component": "form_view",
                                       "keyId": "Id",
                                       "ajaxConfig": {
-                                        "url": "common/MpmProcess",
+                                        "url": "common/GETMPM_PRODUCTDETAILS",
                                         "ajaxType": "getById",
                                         "params": [
                                           {
                                             "name": "Id",
                                             "type": "tempValue",
-                                            "valueName": "_id",
+                                            "valueName": "_parentId",
                                             "value": ""
                                           }
                                         ]
@@ -147,258 +137,373 @@
                                         "child": true,
                                         "own": false
                                       },
+                                      "relations": [
+                                        {
+                                          "relationViewId": "MpmProductdetails",
+                                          "cascadeMode": "REFRESH_AS_CHILD",
+                                          "params": [
+                                            {
+                                              "pid": "parentId",
+                                              "cid": "_parentId"
+                                            }
+                                          ]
+                                        }
+                                      ],
                                       "forms": [
                                         {
                                           "controls": [
                                             {
-                                              "type": "input",
+                                              "type": "select",
                                               "labelSize": "6",
-                                              "controlSize": "10",
-                                              "inputType": "text",
+                                              "controlSize": "12",
+                                              "inputType": "submit",
+                                              "name": "producttype",
+                                              "label": "物料分类:",
                                               "isRequired": true,
-                                              "hidden":true,
-                                              "name": "id",
-                                              "label": "工艺id",
-                                              "placeholder": "",
+                                              "notFoundContent": "",
+                                              "selectModel": false,
+                                              "showSearch": true,
+                                              "placeholder": "--请选择--",
                                               "disabled": false,
-                                              "readonly": false,
                                               "size": "default",
-                                              "layout": "column",
-                                              "span": "12"
-                                            },
-                                            {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "10",
-                                              "inputType": "text",
-                                              "hidden":true,
-                                              "name": "parentId",
-                                              "label": "父节点",
-                                              "placeholder": "",
-                                              "disabled": false,
-                                              "readonly": false,
-                                              "size": "default",
-                                              "layout": "column",
-                                              "span": "12"
-                                            }
-                                          ]
-                                        },
-                                        {
-                                          "controls": [
-                                            {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "10",
-                                              "inputType": "text",
-                                              "isRequired": true,
-                                              "name": "processname",
-                                              "label": "工艺名称",
-                                              "placeholder": "",
-                                              "disabled": false,
-                                              "readonly": false,
-                                              "size": "default",
-                                              "layout": "column",
-                                              "span": "12"
-                                            },
-                                            {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "10",
-                                              "inputType": "text",
-                                              "name": "processcode",
-                                              "label": "节点编号",
-                                              "placeholder": "",
-                                              "disabled": false,
-                                              "readonly": false,
-                                              "size": "default",
-                                              "layout": "column",
-                                              "span": "12"
-                                            }
-                                          ]
-
-                                        },
-                                        {
-                                          "controls": [
-                                            {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "10",
-                                              "inputType": "text",
-                                              "isRequired": true,
-                                              "name": "processlevel",
-                                              "label": "工艺等级",
-                                              "placeholder": "",
-                                              "disabled": false,
-                                              "readonly": false,
-                                              "size": "default",
-                                              "layout": "column",
-                                              "span": "12"
-                                            },
-                                            {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "10",
-                                              "inputType": "text",
-                                              "name": "workinghours",
-                                              "label": "工时定额",
-                                              "placeholder": "",
-                                              "disabled": false,
-                                              "readonly": false,
-                                              "size": "default",
-                                              "layout": "column",
-                                              "span": "12"
-                                            }
-                                          ]
-
-                                        },
-                                        {
-                                          "controls": [
-                                            {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "10",
-                                              "inputType": "text",
-                                              "isRequired": true,
-                                              "name": "workshop",
-                                              "label": "车间",
-                                              "placeholder": "",
-                                              "disabled": false,
-                                              "readonly": false,
-                                              "size": "default",
-                                              "layout": "column",
-                                              "span": "12"
-                                            },
-                                            {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "10",
-                                              "inputType": "text",
-                                              "name": "masterteam",
-                                              "label": "执行班组",
-                                              "placeholder": "",
-                                              "disabled": false,
-                                              "readonly": false,
-                                              "size": "default",
-                                              "layout": "column",
-                                              "span": "12"
-                                            }
-                                          ]
-
-                                        },
-                                        {
-                                          "controls": [
-                                            {
-                                              "type": "input",
-                                              "labelSize": "3",
-                                              "controlSize": "21",
-                                              "inputType": "text",
-                                              "isRequired": true,
-                                              "name": "equipmentinfo",
-                                              "label": "使用设备信息",
-                                              "placeholder": "",
-                                              "disabled": false,
-                                              "readonly": false,
-                                              "size": "default",
-                                              "layout": "column",
-                                              "span": "24"
-                                            }
-                                          ]
-                                        },
-                                        {
-                                          "controls": [
-                                            {
-                                              "type": "input",
-                                              "labelSize": "3",
-                                              "controlSize": "21",
-                                              "inputType": "text",
-                                              "isRequired": true,
-                                              "name": "toolinfo",
-                                              "label": "使用工具信息",
-                                              "placeholder": "",
-                                              "disabled": false,
-                                              "readonly": false,
-                                              "size": "default",
-                                              "layout": "column",
-                                              "span": "24"
-                                            }
-                                          ]
-                                        },
-                                        {
-                                          "controls": [
-                                            {
-                                              "type": "checkbox",
-                                              "labelSize": "14",
-                                              "controlSize": "10",
-                                              "name": "keyprocess",
-                                              "label": "关键工序",
-                                              "placeholder": "",
-                                              "disabled": false,
-                                              "span": "6",
                                               "options": [
                                                 {
-                                                  "label": "",
-                                                  "value":1,
-                                                  "disabled": false
-                                                }
-
-                                              ]
-                                            },
-                                            {
-                                              "type": "checkbox",
-                                              "labelSize": "14",
-                                              "controlSize": "10",
-                                              "name": "isprepare",
-                                              "label": "齐套工序",
-                                              "placeholder": "",
-                                              "disabled": false,
-                                              "span": "6",
-                                              "options": [
-                                                {
-                                                  "label": "",
+                                                  "label": "产品",
                                                   "value": 1,
                                                   "disabled": false
-                                                }
-                                              ]
-                                            },
-                                            {
-                                              "type": "checkbox",
-                                              "labelSize": "14",
-                                              "controlSize": "10",
-                                              "name": "ischecked",
-                                              "label": "检验工序",
-                                              "placeholder": "",
-                                              "disabled": false,
-                                              "span": "6",
-                                              "options": [
+                                                },
                                                 {
-                                                  "label": "",
-                                                  "value":1,
+                                                  "label": "零部件",
+                                                  "value": 2,
                                                   "disabled": false
                                                 }
-                                              ]
-                                            },
-                                            {
-                                              "type": "checkbox",
-                                              "labelSize": "14",
-                                              "controlSize": "10",
-                                              "name": "outprocess",
-                                              "label": "外协工序",
-                                              "placeholder": "",
-                                              "disabled": false,
-                                              "span": "6",
-                                              "options": [
-                                                {
-                                                  "label": "",
-                                                  "value":1,
-                                                  "disabled": false
-                                                }
-                                              ]
+                                              ],
+                                              "layout": "column",
+                                              "span": "12"
                                             }
-
-
+                                          ]
+                                        },
+                                        {
+                                          "controls": [
+                                            {
+                                              "type": "select",
+                                              "labelSize": "6",
+                                              "controlSize": "12",
+                                              "inputType": "submit",
+                                              "name": "productid2",
+                                              "label": "产品名称",
+                                              "labelName": "materialname",
+                                              "valueName": "Id",
+                                              "isRequired": true,
+                                              "notFoundContent": "",
+                                              "selectModel": false,
+                                              "showSearch": true,
+                                              "placeholder": "请输入产品名称",
+                                              "disabled": false,
+                                              "ajaxConfig": {
+                                                "url": "common/GETPRODUCTNAME",
+                                                "ajaxType": "get",
+                                                "params": []
+                                              },
+                                              "explain": "名称需要根据规范填写",
+                                              "span": "12",
+                                              "layout": "column"
+                                            },
+                                            {
+                                              "type": "input",
+                                              "labelSize": "6",
+                                              "controlSize": "12",
+                                              "inputType": "text",
+                                              "name": "figurenumber2",
+                                              "label": "产品图号",
+                                              "isRequired": false,
+                                              "placeholder": "请输入产品图号",
+                                              "perfix": "anticon anticon-edit",
+                                              "disabled": false,
+                                              "readonly": false,
+                                              "size": "default",
+                                              "layout": "column",
+                                              "explain": "图号需要根据规范填写",
+                                              "span": "12"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "controls": [
+                                            {
+                                              "type": "select",
+                                              "labelSize": "6",
+                                              "controlSize": "12",
+                                              "inputType": "submit",
+                                              "name": "systemcodeid",
+                                              "label": "型号",
+                                              "isRequired": true,
+                                              "labelName": "valuesname",
+                                              "valueName": "Id",
+                                              "notFoundContent": "",
+                                              "selectModel": false,
+                                              "showSearch": true,
+                                              "placeholder": "--请选择--",
+                                              "disabled": false,
+                                              "size": "default",
+                                              "ajaxConfig": {
+                                                "url": "common/GetSystemCode",
+                                                "ajaxType": "get",
+                                                "params": []
+                                              },
+                                              "layout": "column",
+                                              "span": "12"
+                                            },
+                                            {
+                                              "type": "select",
+                                              "labelSize": "6",
+                                              "controlSize": "11",
+                                              "inputType": "submit",
+                                              "name": "productcodeid",
+                                              "label": "项目",
+                                              "isRequired": true,
+                                              "labelName": "valuesname",
+                                              "valueName": "Id",
+                                              "notFoundContent": "",
+                                              "selectModel": false,
+                                              "showSearch": true,
+                                              "placeholder": "--请选择--",
+                                              "disabled": false,
+                                              "size": "default",
+                                              "ajaxConfig": {
+                                                "url": "common/GetProductCode",
+                                                "ajaxType": "get",
+                                                "params": []
+                                              },
+                                              "layout": "column",
+                                              "span": "12"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "controls": [
+                                            {
+                                              "type": "select",
+                                              "labelSize": "6",
+                                              "controlSize": "12",
+                                              "inputType": "submit",
+                                              "name": "stageid",
+                                              "label": "研制阶段",
+                                              "isRequired": true,
+                                              "labelName": "valuesname",
+                                              "valueName": "Id",
+                                              "notFoundContent": "",
+                                              "selectModel": false,
+                                              "showSearch": true,
+                                              "placeholder": "--请选择--",
+                                              "disabled": false,
+                                              "size": "default",
+                                              "ajaxConfig": {
+                                                "url": "common/GetStage",
+                                                "ajaxType": "get",
+                                                "params": []
+                                              },
+                                              "layout": "column",
+                                              "span": "12"
+                                            },
+                                            {
+                                              "type": "input",
+                                              "labelSize": "6",
+                                              "controlSize": "12",
+                                              "inputType": "text",
+                                              "name": "serialnumber",
+                                              "label": "批次号",
+                                              "isRequired": true,
+                                              "placeholder": "请输入批次号",
+                                              "perfix": "anticon anticon-edit",
+                                              "disabled": false,
+                                              "readonly": false,
+                                              "size": "default",
+                                              "layout": "column",
+                                              "explain": "批次号填写要规范",
+                                              "span": "12"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "controls": [
+                                            {
+                                              "type": "select",
+                                              "labelSize": "6",
+                                              "controlSize": "12",
+                                              "inputType": "submit",
+                                              "name": "dataflag",
+                                              "label": "零部件分类:",
+                                              "isRequired": true,
+                                              "notFoundContent": "",
+                                              "selectModel": false,
+                                              "showSearch": true,
+                                              "placeholder": "--请选择--",
+                                              "disabled": false,
+                                              "size": "default",
+                                              "options": [
+                                                {
+                                                  "label": "专用件",
+                                                  "value": 1,
+                                                  "disabled": false
+                                                },
+                                                {
+                                                  "label": "标准间",
+                                                  "value": 2,
+                                                  "disabled": false
+                                                },
+                                                {
+                                                  "label": "借用件",
+                                                  "value": 3,
+                                                  "disabled": false
+                                                }
+                                              ],
+                                              "layout": "column",
+                                              "span": "12"
+                                            },
+                                            {
+                                              "type": "select",
+                                              "labelSize": "6",
+                                              "controlSize": "12",
+                                              "inputType": "submit",
+                                              "name": "partsid",
+                                              "label": "零部组件名称",
+                                              "labelName": "materialname",
+                                              "valueName": "Id",
+                                              "notFoundContent": "",
+                                              "selectModel": false,
+                                              "showSearch": true,
+                                              "placeholder": "--请选择--",
+                                              "disabled": false,
+                                              "size": "default",
+                                              "ajaxConfig": {
+                                                "url": "common/GETPARTSNAME",
+                                                "ajaxType": "get",
+                                                "params": []
+                                              },
+                                              "layout": "column",
+                                              "span": "12"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "controls": [
+                                            {
+                                              "type": "input",
+                                              "labelSize": "6",
+                                              "controlSize": "12",
+                                              "inputType": "text",
+                                              "name": "figurenumber1",
+                                              "label": "零部件图号",
+                                              "isRequired": true,
+                                              "placeholder": "请输入零部件图号",
+                                              "perfix": "anticon anticon-edit",
+                                              "disabled": false,
+                                              "readonly": false,
+                                              "size": "default",
+                                              "layout": "column",
+                                              "explain": "图号需要根据规范填写",
+                                              "span": "12"
+                                            },
+                                            {
+                                              "type": "input",
+                                              "labelSize": "6",
+                                              "controlSize": "12",
+                                              "inputType": "text",
+                                              "name": "partsnumber",
+                                              "label": "配套数量",
+                                              "isRequired": true,
+                                              "placeholder": "请输入配套数量",
+                                              "perfix": "anticon anticon-edit",
+                                              "disabled": false,
+                                              "readonly": false,
+                                              "size": "default",
+                                              "layout": "column",
+                                              "explain": "版本号填写要规范",
+                                              "span": "12"
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "controls": [
+                                            {
+                                              "type": "selectTree",
+                                              "labelSize": "6",
+                                              "controlSize": "12",
+                                              "inputType": "submit",
+                                              "name": "mainworkshopid",
+                                              "label": "主制车间",
+                                              "notFoundContent": "",
+                                              "selectModel": false,
+                                              "showSearch": true,
+                                              "placeholder": "--请选择--",
+                                              "disabled": false,
+                                              "size": "default",
+                                              "columns": [
+                                                {
+                                                  "title": "主键",
+                                                  "field": "key",
+                                                  "valueName": "Id"
+                                                },
+                                                {
+                                                  "title": "父节点",
+                                                  "field": "parentId",
+                                                  "valueName": "parentId"
+                                                },
+                                                {
+                                                  "title": "标题",
+                                                  "field": "title",
+                                                  "valueName": "name"
+                                                }
+                                              ],
+                                              "ajaxConfig": {
+                                                "url": "common/GETdept",
+                                                "ajaxType": "get",
+                                                "params": []
+                                              },
+                                              "layout": "column",
+                                              "span": "12"
+                                            },
+                                            {
+                                              "type": "selectTree",
+                                              "labelSize": "6",
+                                              "controlSize": "12",
+                                              "inputType": "submit",
+                                              "name": "supplydeptid",
+                                              "label": "提供单位",
+                                              "notFoundContent": "",
+                                              "selectModel": false,
+                                              "showSearch": true,
+                                              "placeholder": "--请选择--",
+                                              "disabled": false,
+                                              "size": "default",
+                                              "columns": [
+                                                {
+                                                  "title": "主键",
+                                                  "field": "key",
+                                                  "valueName": "Id"
+                                                },
+                                                {
+                                                  "title": "父节点",
+                                                  "field": "parentId",
+                                                  "valueName": "parentId"
+                                                },
+                                                {
+                                                  "title": "标题",
+                                                  "field": "title",
+                                                  "valueName": "name"
+                                                }
+                                              ],
+                                              "ajaxConfig": {
+                                                "url": "common/GETdept",
+                                                "ajaxType": "get",
+                                                "params": []
+                                              },
+                                              "layout": "column",
+                                              "span": "12"
+                                            }
                                           ]
                                         }
-
                                       ],
                                       "toolbar": [
                                         {
@@ -427,1296 +532,242 @@
                                             },
                                             {
                                               "name": "deleteRow",
-                                              "class": "editable-add-btn",
                                               "text": "删除",
-                                              "action": "DELETE",
                                               "icon": "anticon anticon-delete",
-                                              "color": "text-red-light",
-                                              "ajaxConfig": {
-                                                "delete": [
-                                                  {
-                                                    "actionName": "delete",
-                                                    "url": "common/MpmProcess",
-                                                    "ajaxType": "delete",
-                                                    "params": [
-                                                      {
-                                                        "name": "Id",
-                                                        "valueName": "_id",
-                                                        "type": "tempValue"
-                                                      }
-                                                    ]
-                                                  }
-                                                ]
-                                              }
-                                            },
-                                            {
-                                              "name": "saveForm",
-                                              "text": "保存",
-                                              "action": "SAVE",
-                                              "icon": "anticon anticon-save",
-                                              "color": "text-primary",
-                                              "ajaxConfig": {
-                                                "post": [
-                                                  {
-                                                    "url": "common/MpmProcess",
-                                                    "ajaxType": "post",
-                                                    "params": [
-                                                      {
-                                                        "name": "parentId",
-                                                        "type": "tempValue",
-                                                        "valueName": "_id"
-                                                      },
-                                                      {
-                                                        "name": "processname",
-                                                        "type": "componentValue",
-                                                        "valueName": "processname",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "processcode",
-                                                        "type": "componentValue",
-                                                        "valueName": "processcode",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "processlevel",
-                                                        "type": "componentValue",
-                                                        "valueName": "processlevel",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "workinghours",
-                                                        "type": "componentValue",
-                                                        "valueName": "workinghours",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "keyprocess",
-                                                        "type": "componentValue",
-                                                        "valueName": "keyprocess",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "isprepare",
-                                                        "type": "componentValue",
-                                                        "valueName": "isprepare",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "ischecked",
-                                                        "type": "componentValue",
-                                                        "valueName": "ischecked",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "outprocess",
-                                                        "type": "componentValue",
-                                                        "valueName": "outprocess",
-                                                        "value": ""
-                                                      }
-
-                                                    ]
-                                                  }
-                                                ],
-                                                "put": [
-                                                  {
-                                                    "url": "common/MpmProcess",
-                                                    "ajaxType": "put",
-                                                    "params": [
-                                                      {
-                                                        "name": "Id",
-                                                        "type": "tempValue",
-                                                        "valueName": "_id",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "processname",
-                                                        "type": "componentValue",
-                                                        "valueName": "processname",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "processcode",
-                                                        "type": "componentValue",
-                                                        "valueName": "processcode",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "processlevel",
-                                                        "type": "componentValue",
-                                                        "valueName": "processlevel",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "workinghours",
-                                                        "type": "componentValue",
-                                                        "valueName": "workinghours",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "keyprocess",
-                                                        "type": "componentValue",
-                                                        "valueName": "keyprocess",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "isprepare",
-                                                        "type": "componentValue",
-                                                        "valueName": "isprepare",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "ischecked",
-                                                        "type": "componentValue",
-                                                        "valueName": "ischecked",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "outprocess",
-                                                        "type": "componentValue",
-                                                        "valueName": "outprocess",
-                                                        "value": ""
-                                                      }
-
-                                                    ]
-                                                  }
-                                                ]
-                                              }
-                                            },
-                                            {
-                                              "name": "saveForm",
-                                              "text": "保存为根节点",
-                                              "action": "SAVE",
-                                              "icon": "anticon anticon-save",
-                                              "color": "text-primary",
-                                              "ajaxConfig": {
-                                                "post": [
-                                                  {
-                                                    "url": "common/MpmProcess",
-                                                    "ajaxType": "post",
-                                                    "params": [
-                                                      {
-                                                        "name": "processname",
-                                                        "type": "componentValue",
-                                                        "valueName": "processname",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "processcode",
-                                                        "type": "componentValue",
-                                                        "valueName": "processcode",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "processlevel",
-                                                        "type": "componentValue",
-                                                        "valueName": "processlevel",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "workinghours",
-                                                        "type": "componentValue",
-                                                        "valueName": "workinghours",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "keyprocess",
-                                                        "type": "componentValue",
-                                                        "valueName": "keyprocess",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "isprepare",
-                                                        "type": "componentValue",
-                                                        "valueName": "isprepare",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "ischecked",
-                                                        "type": "componentValue",
-                                                        "valueName": "ischecked",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "outprocess",
-                                                        "type": "componentValue",
-                                                        "valueName": "outprocess",
-                                                        "value": ""
-                                                      }
-                                                    ]
-                                                  }
-                                                ]
-                                              }
-                                            },
-                                            {
-                                              "name": "updateRow",
-                                              "class": "editable-add-btn",
-                                              "text": "取消",
-                                              "action": "CANCEL",
-                                              "icon": "anticon anticon-edit",
-                                              "color": "text-success"
-                                            }
-                                          ]
-                                        }
-                                      ],
-                                      "dataList": [],
-                                      "relations": [
-                                        {
-                                          "relationViewId": "MpmProcess",
-                                          "cascadeMode": "REFRESH_AS_CHILD",
-                                          "params": [
-                                            {
-                                              "pid": "Id",
-                                              "cid": "_id"
-                                            },
-                                            {
-                                              "pid": "parentId",
-                                              "cid": "_parentId"
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  }
-                                ]
-                              },
-                              {
-                                "title": "工艺资源清单",
-                                "span": 24,
-                                "size": {
-                                  "nzXs": 24,
-                                  "nzSm": 24,
-                                  "nzMd": 24,
-                                  "nzLg": 24,
-                                  "ngXl": 24
-                                },
-                                "viewCfg": [
-                                  {
-                                    "config": {
-                                      "viewId": "MpmProcessresource",
-                                      "component": "bsnTable",
-                                      "keyId": "Id",
-                                      "pagination": true,
-                                      "showTotal": true,
-                                      "pageSize": 5,
-                                      "size": "small",
-                                      "showCheckBox":true,
-                                      "pageSizeOptions": [
-                                        5,
-                                        10,
-                                        20,
-                                        30,
-                                        40,
-                                        50
-                                      ],
-                                      "ajaxConfig": {
-                                        "url": "common/GetMpmProcessResources",
-                                        "ajaxType": "get",
-                                        "params": [
-                                          {
-                                            "name": "processid",
-                                            "type": "tempValue",
-                                            "valueName": "_processid"
-                                          }
-                                        ]
-                                      },
-                                      "componentType": {
-                                        "parent": false,
-                                        "child": true,
-                                        "own": true
-                                      },
-                                      "relations": [
-                                        {
-                                          "relationViewId": "MpmProcess",
-                                          "cascadeMode": "REFRESH_AS_CHILD",
-                                          "params": [
-                                            {
-                                              "pid": "Id",
-                                              "cid": "_processid"
-                                            }
-                                          ],
-                                          "relationReceiveContent": []
-                                        }
-                                      ],
-                                      "columns": [
-                                        {
-                                          "title": "Id",
-                                          "field": "Id",
-                                          "width": 80,
-                                          "hidden": true,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "Id",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "资源类型",
-                                          "field": "resourcetypename",
-                                          "width":80,
-                                          "hidden": false,
-                                          "showFilter": false,
-                                          "showSort": true,
-                                          "titleAlign": "text-right",
-                                          "fieldAlign": "text-center",
-                                          "formatter": [
-                                            {
-                                              "value": "1",
-                                              "bgcolor": "",
-                                              "fontcolor": "text-blue",
-                                              "valueas": "量具"
-                                            },
-                                            {
-                                              "value": "2",
-                                              "bgcolor": "",
-                                              "fontcolor": "text-red",
-                                              "valueas": "设备"
-                                            }
-                                          ],
-                                          "editor": {
-                                            "type": "select",
-                                            "field": "resourcetype",
-                                            "options": {
-                                              "type": "select",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "submit",
-                                              "name": "resourcetype",
-                                              "notFoundContent": "",
-                                              "selectModel": false,
-                                              "showSearch": true,
-                                              "placeholder": "-请选择-",
-                                              "disabled": false,
-                                              "size": "default",
-                                              "clear": true,
-                                              "width": "100%",
-                                              "defaultValue": 1,
-                                              "options": [
+                                              "color": "text-warning",
+                                              "ajaxConfig": [
                                                 {
-                                                  "label": "量具",
-                                                  "value": 1,
-                                                  "disabled": false
-                                                },
-                                                {
-                                                  "label": "设备",
-                                                  "value": 2,
-                                                  "disabled": false
+                                                  "action": "EXECUTE_CHECKED_ID",
+                                                  "url": "common/MpmProduct",
+                                                  "ajaxType": "delete",
+                                                  "title": "警告！",
+                                                  "message": "确认要删除当前勾选的数据么？？？",
+                                                  "params": [
+                                                    {
+                                                      "name": "_ids",
+                                                      "type": "checkedId",
+                                                      "valueName": "Id"
+                                                    }
+                                                  ]
                                                 }
                                               ]
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "资源ID",
-                                          "field": "resourceid",
-                                          "width": 80,
-                                          "hidden": false,
-                                          "showFilter": false,
-                                          "showSort": true,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "resourceid",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "资源名称",
-                                          "field": "resourcename",
-                                          "width": 80,
-                                          "hidden": false,
-                                          "showFilter": false,
-                                          "showSort": true,
-                                          "editor": {
-                                            "type": "select",
-                                            "field": "resourceid",
-                                            "options": {
-                                              "type": "select",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "submit",
-                                              "name": "resourceid",
-                                              "notFoundContent": "",
-                                              "selectModel": false,
-                                              "showSearch": true,
-                                              "placeholder": "-请选择-",
-                                              "disabled": false,
-                                              "size": "default",
-                                              "clear": true,
-                                              "dataSet": "getResources",
-                                              "width": "100%"
-                                            }
-                                          }
-                                        },
-
-                                        {
-                                          "title": "资源数量",
-                                          "field": "number",
-                                          "width": 80,
-                                          "showFilter": false,
-                                          "showSort": true,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "number",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "密级",
-                                          "field": "securitylevel",
-                                          "width": 80,
-                                          "hidden":true,
-                                          "showFilter": false,
-                                          "showSort": true,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "securitylevel",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "排序码",
-                                          "field": "sortcode",
-                                          "width": 80,
-                                          "hidden":true,
-                                          "showFilter": false,
-                                          "showSort": true,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "sortcode",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "删除标记",
-                                          "field": "deleteflag",
-                                          "width": 80,
-                                          "hidden":true,
-                                          "showFilter": false,
-                                          "showSort": true,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "deleteflag",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "备注",
-                                          "field": "remark",
-                                          "width": 80,
-                                          "hidden":false,
-                                          "showFilter": false,
-                                          "showSort": true,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "remark",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        }
-                                      ],
-                                      "toolbar": [
-                                        {
-                                          "group": [
-                                            {
-                                              "name": "refresh",
-                                              "class": "editable-add-btn",
-                                              "text": "刷新",
-                                              "icon": "anticon anticon-reload",
-                                              "color": "text-primary"
                                             },
                                             {
-                                              "name": "addRow",
+                                              "name": "saveRow",
+                                              "action":"SAVE",
                                               "class": "editable-add-btn",
-                                              "text": "新增",
-                                              "action": "CREATE",
-                                              "icon": "anticon anticon-plus",
-                                              "color": "text-primary"
+                                              "text": "保存",
+                                              "icon": "anticon anticon-save",
+                                              "type": "default",
+                                              "color": "text-primary",
+                                              "ajaxConfig": [
+                                                {
+                                                  "url": "common/SAVEPRODUCTINFORMATION",
+                                                  "ajaxType": "post",
+                                                  "params": [
+                                                    {
+                                                      "name": "producttype",
+                                                      "type": "componentValue",
+                                                      "valueName": "producttype",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "productid",
+                                                      "type": "componentValue",
+                                                      "valueName": "productid2",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "productname",
+                                                      "type": "componentValue",
+                                                      "valueName": "productname",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "figurenumber",
+                                                      "type": "componentValue",
+                                                      "valueName": "figurenumber2",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "systemcodeid",
+                                                      "type": "componentValue",
+                                                      "valueName": "systemcodeid",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "productcodeid",
+                                                      "type": "componentValue",
+                                                      "valueName": "productcodeid",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "stageid",
+                                                      "type": "componentValue",
+                                                      "valueName": "stageid",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "serialnumber",
+                                                      "type": "componentValue",
+                                                      "valueName": "serialnumber",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "productid1",
+                                                      "type": "componentValue",
+                                                      "valueName": "productid1",
+                                                      "value": null
+                                                    },
+                                                    {
+                                                      "name": "parentId",
+                                                      "type": "componentValue",
+                                                      "valueName": "_parentId",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "dataflag",
+                                                      "type": "componentValue",
+                                                      "valueName": "dataflag",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "partsid",
+                                                      "type": "componentValue",
+                                                      "valueName": "partsid",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "figurenumber",
+                                                      "type": "componentValue",
+                                                      "valueName": "figurenumber1",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "partsnumber",
+                                                      "type": "componentValue",
+                                                      "valueName": "partsnumber",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "supplydeptid",
+                                                      "type": "componentValue",
+                                                      "valueName": "supplydeptid",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "mainworkshopid",
+                                                      "type": "componentValue",
+                                                      "valueName": "mainworkshopid",
+                                                      "value": ""
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "url": "common/ShowCase",
+                                                  "ajaxType": "put",
+                                                  "params": [
+                                                    {
+                                                      "name": "Id",
+                                                      "type": "componentValue",
+                                                      "valueName": "Id",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "producttype",
+                                                      "type": "componentValue",
+                                                      "valueName": "producttype",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "productid",
+                                                      "type": "componentValue",
+                                                      "valueName": "productid",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "productname",
+                                                      "type": "componentValue",
+                                                      "valueName": "productname",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "figurenumber",
+                                                      "type": "componentValue",
+                                                      "valueName": "figurenumber",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "systemcodeid",
+                                                      "type": "componentValue",
+                                                      "valueName": "systemcodeid",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "productcodeid",
+                                                      "type": "componentValue",
+                                                      "valueName": "productcodeid",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "versionid",
+                                                      "type": "componentValue",
+                                                      "valueName": "versionid",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "stageid",
+                                                      "type": "componentValue",
+                                                      "valueName": "stageid",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "partsnumber",
+                                                      "type": "componentValue",
+                                                      "valueName": "partsnumber",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "supplydeptid",
+                                                      "type": "componentValue",
+                                                      "valueName": "supplydeptid",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "unitid",
+                                                      "type": "componentValue",
+                                                      "valueName": "unitid",
+                                                      "value": ""
+                                                    },
+                                                    {
+                                                      "name": "mainworkshopid",
+                                                      "type": "componentValue",
+                                                      "valueName": "mainworkshopid",
+                                                      "value": ""
+                                                    }
+                                                  ]
+                                                }
+                                              ]
                                             },
                                             {
                                               "name": "updateRow",
                                               "class": "editable-add-btn",
-                                              "text": "修改",
-                                              "action": "EDIT",
-                                              "icon": "anticon anticon-edit",
-                                              "color": "text-success"
-                                            },
-                                            {
-                                              "name": "deleteRow",
-                                              "class": "editable-add-btn",
-                                              "text": "删除",
-                                              "action":"DELETE",
-                                              "icon": "anticon anticon-delete",
-                                              "color": "text-red-light",
-                                              "ajaxConfig": {
-                                                "delete": [
-                                                  {
-                                                    "actionName": "delete",
-                                                    "url": "common/MpmProcessresource",
-                                                    "ajaxType": "delete"
-                                                  }
-                                                ]
-                                              }
-                                            },
-                                            {
-                                              "name": "saveRow",
-                                              "class": "editable-add-btn",
-                                              "text": "保存",
-                                              "icon": "anticon anticon-save",
-                                              "color": "text-primary",
-                                              "ajaxConfig": [
-                                                  {
-                                                    "action": "EXECUTE_SAVE_ROW",
-                                                    "url": "common/MpmProcessresource",
-                                                    "ajaxType": "post",
-                                                    "params": [
-                                                      {
-                                                        "name": "processid",
-                                                        "type": "tempValue",
-                                                        "valueName": "_processid",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "resourcetype",
-                                                        "type": "componentValue",
-                                                        "valueName": "resourcetype",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "resourceid",
-                                                        "type": "componentValue",
-                                                        "valueName": "resourceid",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "number",
-                                                        "type": "componentValue",
-                                                        "valueName": "number",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "securitylevel",
-                                                        "type": "componentValue",
-                                                        "valueName": "securitylevel",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "sortcode",
-                                                        "type": "componentValue",
-                                                        "valueName": "sortcode",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "deleteflag",
-                                                        "type": "componentValue",
-                                                        "valueName": "deleteflag",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "remark",
-                                                        "type": "componentValue",
-                                                        "valueName": "remark",
-                                                        "value": ""
-                                                      }
-                                                    ]
-                                                  },
-                                                  {
-                                                    "action": "EXECUTE_EDIT_ROW",
-                                                    "url": "common/MpmProcessresource",
-                                                    "ajaxType": "put",
-                                                    "params": [
-                                                      {
-                                                        "name": "Id",
-                                                        "type": "componentValue",
-                                                        "valueName": "Id",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "processid",
-                                                        "type": "tempValue",
-                                                        "valueName": "_processid",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "resourcetype",
-                                                        "type": "componentValue",
-                                                        "valueName": "resourcetype",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "resourceid",
-                                                        "type": "componentValue",
-                                                        "valueName": "resourceid",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "number",
-                                                        "type": "componentValue",
-                                                        "valueName": "number",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "securitylevel",
-                                                        "type": "componentValue",
-                                                        "valueName": "securitylevel",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "sortcode",
-                                                        "type": "componentValue",
-                                                        "valueName": "sortcode",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "deleteflag",
-                                                        "type": "componentValue",
-                                                        "valueName": "deleteflag",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "remark",
-                                                        "type": "componentValue",
-                                                        "valueName": "remark",
-                                                        "value": ""
-                                                      }
-                                                    ]
-                                                  },
-                                                  {
-                                                    "action": "EXECUTE_CHECKED",
-                                                    "url": "common/InsertResources",
-                                                    "ajaxType": "post",
-                                                    "params": [
-                                                      {
-                                                        "name": "PROCESSID",
-                                                        "type": "tempValue",
-                                                        "valueName": "_processid",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "TOOLINFO",
-                                                        "type": "value",
-                                                        "valueName": "",
-                                                        "value": "aa"
-                                                      },
-                                                      {
-                                                        "name": "EQUIPMENTINFO",
-                                                        "type": "value",
-                                                        "valueName": "",
-                                                        "value": "bb"
-                                                      }
-                                                    ]
-                                                  }
-
-
-                                              ]
-                                            },
-                                            {
-                                              "name": "cancelrow",
-                                              "class": "editable-add-btn",
                                               "text": "取消",
                                               "action": "CANCEL",
-                                              "icon": "anticon anticon-rollback",
-                                              "color": "text-grey-darker"
-                                            }
-                                          ]
-                                        },
-                                        {
-                                          "group": [
-                                            {
-                                              "name": "addSearchRow",
-                                              "class": "editable-add-btn",
-                                              "text": "查询",
-                                              "action": "SEARCH",
-                                              "actionType": "addSearchRow",
-                                              "actionName": "addSearchRow",
-                                              "icon": "anticon anticon-search",
-                                              "color": "text-primary"
-                                            },
-                                            {
-                                              "name": "cancelSearchRow",
-                                              "class": "editable-add-btn",
-                                              "text": "取消查询",
-                                              "action": "SEARCH",
-                                              "actionType": "cancelSearchRow",
-                                              "actionName": "cancelSearchRow",
-                                              "icon": "anticon anticon-rollback",
-                                              "color": "text-grey-darker"
+                                              "icon": "anticon anticon-edit",
+                                              "color": "text-success"
                                             }
                                           ]
                                         }
                                       ],
-                                      "dataSet": [
-                                        {
-                                          "name": "getResources",
-                                          "ajaxConfig": {
-                                            "url": "common/GetMaterialinfo",
-                                            "ajaxType": "get",
-                                            "params": []
-                                          },
-                                          "params": [],
-                                          "fields": [
-                                            {
-                                              "label": "ID",
-                                              "field": "Id",
-                                              "name": "value"
-                                            },
-                                            {
-                                              "label": "",
-                                              "field": "materialname",
-                                              "name": "label"
-                                            },
-                                            {
-                                              "label": "",
-                                              "field": "materialname",
-                                              "name": "text"
-                                            }
-                                          ]
-                                        }
-                                      ]
+                                      "dataList": []
                                     },
-                                    "dataList": []
-                                  }
-                                ]
-                              },
-                              {
-                                "title": "工序图纸附件清单",
-                                "span": 24,
-                                "size": {
-                                  "nzXs": 24,
-                                  "nzSm": 24,
-                                  "nzMd": 24,
-                                  "nzLg": 24,
-                                  "ngXl": 24
-                                },
-                                "viewCfg": [
-                                  {
-                                    "config": {
-                                      "viewId": "MpmProcessattachment",
-                                      "component": "bsnTable",
-                                      "keyId": "Id",
-                                      "pagination": true,
-                                      "showTotal": true,
-                                      "pageSize": 10,
-                                      "size": "small",
-                                      "showCheckBox":true,
-                                      "pageSizeOptions": [
-                                        5,
-                                        10,
-                                        20,
-                                        30,
-                                        40,
-                                        50
-                                      ],
-                                      "ajaxConfig": {
-                                        "url": "common/MpmProcessattachment",
-                                        "ajaxType": "get",
-                                        "params": [
-                                          {
-                                            "name": "processid",
-                                            "type": "tempValue",
-                                            "valueName": "_processid"
-                                          }
-                                        ]
-                                      },
-                                      "componentType": {
-                                        "parent": false,
-                                        "child": true,
-                                        "own": true
-                                      },
-                                      "relations": [
-                                        {
-                                          "relationViewId": "MpmProcess",
-                                          "cascadeMode": "REFRESH_AS_CHILD",
-                                          "params": [
-                                            {
-                                              "pid": "Id",
-                                              "cid": "_processid"
-                                            }
-                                          ]
-                                        }
-                                      ],
-                                      "columns": [
-                                        {
-                                          "title": "Id",
-                                          "field": "Id",
-                                          "width": 80,
-                                          "hidden": true,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "Id",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "所属标准工序id",
-                                          "field": "processid",
-                                          "width": 80,
-                                          "hidden": true,
-                                          "showFilter": false,
-                                          "showSort": false,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "processid",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "附件编码",
-                                          "field": "attachmentcode",
-                                          "width": 80,
-                                          "hidden": false,
-                                          "showFilter": false,
-                                          "showSort": false,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "attachmentcode",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "附件名称",
-                                          "field": "attachmentname",
-                                          "width": 80,
-                                          "showFilter": false,
-                                          "showSort": false,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "attachmentname",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "附件描述",
-                                          "field": "description",
-                                          "width": 80,
-                                          "hidden": false,
-                                          "showFilter": false,
-                                          "showSort": false,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "description",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "附件物理名称",
-                                          "field": "physicalname",
-                                          "width": 80,
-                                          "hidden": false,
-                                          "showFilter": false,
-                                          "showSort": false,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "physicalname",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "附件路径",
-                                          "field": "attachmentpath",
-                                          "width": 80,
-                                          "hidden": false,
-                                          "showFilter": false,
-                                          "showSort": false,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "attachmentpath",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "密级",
-                                          "field": "securitylevel",
-                                          "width": 80,
-                                          "hidden": true,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "securitylevel",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "排序码",
-                                          "field": "sortcode",
-                                          "width": 80,
-                                          "hidden": true,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "sortcode",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "input"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "备注",
-                                          "field": "remark",
-                                          "width": 80,
-                                          "hidden": false,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "remark",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        },
-                                        {
-                                          "title": "删除标记",
-                                          "field": "deleteflag",
-                                          "width": 80,
-                                          "hidden": true,
-                                          "editor": {
-                                            "type": "input",
-                                            "field": "deleteflag",
-                                            "options": {
-                                              "type": "input",
-                                              "labelSize": "6",
-                                              "controlSize": "18",
-                                              "inputType": "text"
-                                            }
-                                          }
-                                        }
-                                      ],
-                                      "uploadDialog": [
-                                        {
-                                          "keyId": "Id",
-                                          "title": "",
-                                          "name": "uploadProcess",
-                                          "width": "600",
-                                          "ajaxConfig": {
-                                            "deleteUrl": "file/delete",
-                                            "listUrl": "common/SysFile",
-                                            "url": "file/upload",
-                                            "downloadUrl": "file/download",
-                                            "ajaxType": "post",
-                                            "params": [
-                                              {
-                                                "name": "Id",
-                                                "type": "tempValue",
-                                                "valueName": "_processid"
-                                              }
-                                            ]
-                                          }
-                                        }
-                                      ],
-                                      "toolbar": [
-                                        {
-                                          "group": [
-                                            {
-                                              "name": "upload",
-                                              "icon": "anticon anticon-upload",
-                                              "text": "附件上传",
-                                              "action": "UPLOAD",
-                                              "actionType": "uploadDialog",
-                                              "actionName": "uploadProcess",
-                                              "type": "uploadDialog"
-                                            },
-                                            {
-                                              "name": "refresh",
-                                              "class": "editable-add-btn",
-                                              "text": "刷新",
-                                              "icon": "anticon anticon-reload",
-                                              "color": "text-primary"
-                                            },
-                                            {
-                                              "name": "addRow",
-                                              "class": "editable-add-btn",
-                                              "text": "新增",
-                                              "action": "CREATE",
-                                              "icon": "anticon anticon-plus",
-                                              "color": "text-primary"
-                                            },
-                                            {
-                                              "name": "updateRow",
-                                              "class": "editable-add-btn",
-                                              "text": "修改",
-                                              "action": "EDIT",
-                                              "icon": "anticon anticon-edit",
-                                              "color": "text-success"
-                                            },
-                                            {
-                                              "name": "deleteRow",
-                                              "class": "editable-add-btn",
-                                              "text": "删除",
-                                              "action":"DELETE",
-                                              "icon": "anticon anticon-delete",
-                                              "color": "text-red-light",
-                                              "ajaxConfig": {
-                                                "delete": [
-                                                  {
-                                                    "actionName": "delete",
-                                                    "url": "common/MpmProcessattachment",
-                                                    "ajaxType": "delete"
-                                                  }
-                                                ]
-                                              }
-                                            },
-                                            {
-                                              "name": "saveRow",
-                                              "class": "editable-add-btn",
-                                              "text": "保存",
-                                              "icon": "anticon anticon-save",
-                                              "color": "text-primary",
-                                              "ajaxConfig": [
-                                                  {
-                                                    "action": "EXECUTE_SAVE_ROW",
-                                                    "url": "common/MpmProcessattachment",
-                                                    "ajaxType": "post",
-                                                    "params": [
-                                                      {
-                                                        "name": "processid",
-                                                        "type": "tempValue",
-                                                        "valueName": "_processid",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "attachmentcode",
-                                                        "type": "componentValue",
-                                                        "valueName": "attachmentcode",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "attachmentname",
-                                                        "type": "componentValue",
-                                                        "valueName": "attachmentname",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "description",
-                                                        "type": "componentValue",
-                                                        "valueName": "description",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "physicalname",
-                                                        "type": "componentValue",
-                                                        "valueName": "physicalname",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "attachmentpath",
-                                                        "type": "componentValue",
-                                                        "valueName": "attachmentpath",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "securitylevel",
-                                                        "type": "componentValue",
-                                                        "valueName": "securitylevel",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "sortcode",
-                                                        "type": "componentValue",
-                                                        "valueName": "sortcode",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "deleteflag",
-                                                        "type": "componentValue",
-                                                        "valueName": "deleteflag",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "remark",
-                                                        "type": "componentValue",
-                                                        "valueName": "remark",
-                                                        "value": ""
-                                                      }
-                                                    ]
-                                                  },
-                                                  {
-                                                    "action": "EXECUTE_EDIT_ROW",
-                                                    "url": "common/MpmProcessattachment",
-                                                    "ajaxType": "put",
-                                                    "params": [
-                                                      {
-                                                        "name": "Id",
-                                                        "type": "componentValue",
-                                                        "valueName": "Id",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "processid",
-                                                        "type": "tempValue",
-                                                        "valueName": "_processid",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "attachmentcode",
-                                                        "type": "componentValue",
-                                                        "valueName": "attachmentcode",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "attachmentname",
-                                                        "type": "componentValue",
-                                                        "valueName": "attachmentname",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "description",
-                                                        "type": "componentValue",
-                                                        "valueName": "description",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "physicalname",
-                                                        "type": "componentValue",
-                                                        "valueName": "physicalname",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "attachmentpath",
-                                                        "type": "componentValue",
-                                                        "valueName": "attachmentpath",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "securitylevel",
-                                                        "type": "componentValue",
-                                                        "valueName": "securitylevel",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "sortcode",
-                                                        "type": "componentValue",
-                                                        "valueName": "sortcode",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "deleteflag",
-                                                        "type": "componentValue",
-                                                        "valueName": "deleteflag",
-                                                        "value": ""
-                                                      },
-                                                      {
-                                                        "name": "remark",
-                                                        "type": "componentValue",
-                                                        "valueName": "remark",
-                                                        "value": ""
-                                                      }
-                                                    ]
-                                                  }
-
-                                              ]
-                                            },
-                                            {
-                                              "name": "cancelrow",
-                                              "class": "editable-add-btn",
-                                              "text": "取消",
-                                              "action": "CANCEL",
-                                              "icon": "anticon anticon-rollback",
-                                              "color": "text-grey-darker"
-                                            }
-                                          ]
-                                        },
-                                        {
-                                          "group": [
-                                            {
-                                              "name": "addSearchRow",
-                                              "class": "editable-add-btn",
-                                              "text": "查询",
-                                              "action": "SEARCH",
-                                              "actionType": "addSearchRow",
-                                              "actionName": "addSearchRow",
-                                              "icon": "anticon anticon-search",
-                                              "color": "text-primary"
-                                            },
-                                            {
-                                              "name": "cancelSearchRow",
-                                              "class": "editable-add-btn",
-                                              "text": "取消查询",
-                                              "action": "SEARCH",
-                                              "actionType": "cancelSearchRow",
-                                              "actionName": "cancelSearchRow",
-                                              "icon": "anticon anticon-rollback",
-                                              "color": "text-grey-darker"
-                                            }
-                                          ]
-                                        }
-                                      ],
-                                      "dataSet": []
+                                    "permissions": {
+                                      "viewId": "tree_and_tabs_form",
+                                      "columns": [],
+                                      "toolbar": [],
+                                      "formDialog": [],
+                                      "windowDialog": []
                                     },
                                     "dataList": []
                                   }
@@ -1724,6 +775,393 @@
                               }
                             ]
                           }
+                        },
+                        {
+                          "row": {
+                            "cols": [
+                              {
+                                "id": "",
+                                "title": "",
+                                "span": 24,
+                                "icon": "icon-list",
+                                "size": {
+                                  "nzXs": 24,
+                                  "nzSm": 24,
+                                  "nzMd": 24,
+                                  "nzLg": 24,
+                                  "ngXl": 24
+                                },
+                                "viewCfg": [
+                                  {
+                                    "config": {
+                                      "title": "选配条件",
+                                      "viewId": "1",
+                                      "component": "bsnTable",
+                                      "info": true,
+                                      "keyId": "Id",
+                                      "size": "small",
+                                      "pagination": true,
+                                      "showTotal": true,
+                                      "pageSize": 20,
+                                      "pageSizeOptions": [
+                                        5,
+                                        10,
+                                        20,
+                                        30,
+                                        40,
+                                        100
+                                      ],
+                                      "ajaxConfig": {
+                                        "url": "common/MpmProductdetails",
+                                        "ajaxType": "get",
+                                        "params": [],
+                                        "filter": []
+                                      },
+                                      "columns": [],
+                                      "componentType": {},
+                                      "relations": [],
+                                      "toolbar": [],
+                                      "dataSet": [],
+                                      "formDialog": [],
+                                      "windowDialog": [],
+                                      "uploadDialog": []
+                                    },
+                                    "dataList": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "title": "设计指标",
+                      "icon": "icon-list text-success",
+                      "active": true,
+                      "viewCfg": [
+                        {
+                          "config": {
+                            "viewId": "tab_bom_2",
+                            "component": "bsnTable",
+                            "keyId": "Id",
+                            "pagination": true,
+                            "showTotal": true,
+                            "pageSize": 5,
+                            "pageSizeOptions": [
+                              5,
+                              10,
+                              20,
+                              30,
+                              40,
+                              50
+                            ],
+                            "ajaxConfig": {
+                              "url": "common/MpmExpectelement",
+                              "ajaxType": "get",
+                              "params": [
+                                {
+                                  "name": "parentnodeid",
+                                  "type": "tempValue",
+                                  "valueName": "_parentnodeid",
+                                  "value": ""
+                                }
+                              ]
+                            },
+                            "componentType": {
+                              "parent": false,
+                              "child": true,
+                              "own": false
+                            },
+                            "relations": [
+                              {
+                                "relationViewId": "MpmProductdetails",
+                                "cascadeMode": "REFRESH_AS_CHILD",
+                                "params": [
+                                  {
+                                    "pid": "Id",
+                                    "cid": "_parentnodeid"
+                                  }
+                                ],
+                                "relationReceiveContent": []
+                              }
+                            ],
+                            "columns": [],
+                            "toolbar": [],
+                            "dataSet": []
+                          },
+                          "permissions": {
+                            "viewId": "tree_and_tabs_table",
+                            "columns": [],
+                            "toolbar": [],
+                            "formDialog": [],
+                            "windowDialog": []
+                          },
+                          "dataList": []
+                        }
+                      ]
+                    },
+                    {
+                      "title": "工艺路线",
+                      "icon": "icon-list text-success",
+                      "active": true,
+                      "viewCfg": [
+                        {
+                          "config": {
+                            "viewId": "tab_bom_2",
+                            "component": "bsnTable",
+                            "keyId": "Id",
+                            "pagination": true,
+                            "showTotal": true,
+                            "pageSize": 5,
+                            "pageSizeOptions": [
+                              5,
+                              10,
+                              20,
+                              30,
+                              40,
+                              50
+                            ],
+                            "ajaxConfig": {
+                              "url": "common/MpmProcessroute",
+                              "ajaxType": "get",
+                              "params": [
+                                {
+                                  "name": "parentnodeid",
+                                  "type": "tempValue",
+                                  "valueName": "_parentnodeid",
+                                  "value": ""
+                                }
+                              ]
+                            },
+                            "componentType": {
+                              "parent": false,
+                              "child": true,
+                              "own": false
+                            },
+                            "relations": [
+                              {
+                                "relationViewId": "MpmProductdetails",
+                                "cascadeMode": "REFRESH_AS_CHILD",
+                                "params": [
+                                  {
+                                    "pid": "Id",
+                                    "cid": "_parentnodeid"
+                                  }
+                                ],
+                                "relationReceiveContent": []
+                              }
+                            ],
+                            "columns": [],
+                            "toolbar": [],
+                            "dataSet": []
+                          },
+                          "permissions": {
+                            "viewId": "tree_and_tabs_table",
+                            "columns": [],
+                            "toolbar": [],
+                            "formDialog": [],
+                            "windowDialog": []
+                          },
+                          "dataList": []
+                        }
+                      ]
+                    },
+                    {
+                      "title": "材料定额",
+                      "icon": "icon-list text-success",
+                      "active": true,
+                      "viewCfg": [
+                        {
+                          "config": {
+                            "viewId": "tab_bom_2",
+                            "component": "bsnTable",
+                            "keyId": "Id",
+                            "pagination": true,
+                            "showTotal": true,
+                            "pageSize": 5,
+                            "pageSizeOptions": [
+                              5,
+                              10,
+                              20,
+                              30,
+                              40,
+                              50
+                            ],
+                            "ajaxConfig": {
+                              "url": "common/MpmMaterial",
+                              "ajaxType": "get",
+                              "params": [
+                                {
+                                  "name": "parentnodeid",
+                                  "type": "tempValue",
+                                  "valueName": "_parentnodeid",
+                                  "value": ""
+                                }
+                              ]
+                            },
+                            "componentType": {
+                              "parent": false,
+                              "child": true,
+                              "own": false
+                            },
+                            "relations": [
+                              {
+                                "relationViewId": "MpmProductdetails",
+                                "cascadeMode": "REFRESH_AS_CHILD",
+                                "params": [
+                                  {
+                                    "pid": "Id",
+                                    "cid": "_parentnodeid"
+                                  }
+                                ],
+                                "relationReceiveContent": []
+                              }
+                            ],
+                            "columns": [],
+                            "toolbar": [],
+                            "dataSet": []
+                          },
+                          "permissions": {
+                            "viewId": "tree_and_tabs_table",
+                            "columns": [],
+                            "toolbar": [],
+                            "formDialog": [],
+                            "windowDialog": []
+                          },
+                          "dataList": []
+                        }
+                      ]
+                    },
+                    {
+                      "title": "产品配方",
+                      "icon": "icon-list text-success",
+                      "active": true,
+                      "viewCfg": [
+                        {
+                          "config": {
+                            "viewId": "tab_bom_2",
+                            "component": "bsnTable",
+                            "keyId": "Id",
+                            "pagination": true,
+                            "showTotal": true,
+                            "pageSize": 5,
+                            "pageSizeOptions": [
+                              5,
+                              10,
+                              20,
+                              30,
+                              40,
+                              50
+                            ],
+                            "ajaxConfig": {
+                              "url": "common/MpmMaterial",
+                              "ajaxType": "get",
+                              "params": [
+                                {
+                                  "name": "parentnodeid",
+                                  "type": "tempValue",
+                                  "valueName": "_parentnodeid",
+                                  "value": ""
+                                }
+                              ]
+                            },
+                            "componentType": {
+                              "parent": false,
+                              "child": true,
+                              "own": false
+                            },
+                            "relations": [
+                              {
+                                "relationViewId": "MpmProductdetails",
+                                "cascadeMode": "REFRESH_AS_CHILD",
+                                "params": [
+                                  {
+                                    "pid": "Id",
+                                    "cid": "_parentnodeid"
+                                  }
+                                ],
+                                "relationReceiveContent": []
+                              }
+                            ],
+                            "columns": [],
+                            "toolbar": [],
+                            "dataSet": []
+                          },
+                          "permissions": {
+                            "viewId": "tree_and_tabs_table",
+                            "columns": [],
+                            "toolbar": [],
+                            "formDialog": [],
+                            "windowDialog": []
+                          },
+                          "dataList": []
+                        }
+                      ]
+                    },
+                    {
+                      "title": "图纸附件",
+                      "icon": "icon-list text-success",
+                      "active": true,
+                      "viewCfg": [
+                        {
+                          "config": {
+                            "viewId": "tab_bom_2",
+                            "component": "bsnTable",
+                            "keyId": "Id",
+                            "pagination": true,
+                            "showTotal": true,
+                            "pageSize": 5,
+                            "pageSizeOptions": [
+                              5,
+                              10,
+                              20,
+                              30,
+                              40,
+                              50
+                            ],
+                            "ajaxConfig": {
+                              "url": "common/MpmAttachment",
+                              "ajaxType": "get",
+                              "params": [
+                                {
+                                  "name": "parentnodeid",
+                                  "type": "tempValue",
+                                  "valueName": "_parentnodeid",
+                                  "value": ""
+                                }
+                              ]
+                            },
+                            "componentType": {
+                              "parent": false,
+                              "child": true,
+                              "own": false
+                            },
+                            "relations": [
+                              {
+                                "relationViewId": "MpmProductdetails",
+                                "cascadeMode": "REFRESH_AS_CHILD",
+                                "params": [
+                                  {
+                                    "pid": "Id",
+                                    "cid": "_parentnodeid"
+                                  }
+                                ],
+                                "relationReceiveContent": []
+                              }
+                            ],
+                            "columns": [],
+                            "toolbar": [],
+                            "dataSet": []
+                          },
+                          "permissions": {
+                            "viewId": "tree_and_tabs_table",
+                            "columns": [],
+                            "toolbar": [],
+                            "formDialog": [],
+                            "windowDialog": []
+                          },
+                          "dataList": []
                         }
                       ]
                     }

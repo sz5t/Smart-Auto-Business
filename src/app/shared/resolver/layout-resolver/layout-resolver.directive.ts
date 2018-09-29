@@ -3,17 +3,17 @@ import {
     ViewContainerRef
 } from '@angular/core';
 import {ComponentResolverComponent} from '@shared/resolver/component-resolver/component-resolver.component';
-import {Observable, Observer, Subscription} from "rxjs/index";
+import {Observable, Observer, Subscription} from 'rxjs/index';
 import {
     BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODES,
     BsnComponentMessage
-} from "@core/relative-Service/BsnTableStatus";
-import {IBlockExclusionDescriptor} from "tslint/lib/rules/completed-docs/blockExclusion";
+} from '@core/relative-Service/BsnTableStatus';
+import {IBlockExclusionDescriptor} from 'tslint/lib/rules/completed-docs/blockExclusion';
 
 @Directive({
     selector: '[cnLayoutResolverDirective]'
 })
-export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy{
+export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
     @Input() config;
     @Input() layoutId;
     component: ComponentRef<any>;
@@ -38,7 +38,7 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy{
     resolveRelation() {
         this._cascadeSubscription = this.cascadeEvents.subscribe(cascadeEvent => {
             const viewCfg = this.config.viewCfg;
-            if(viewCfg) {
+            if (viewCfg && cascadeEvent._mode === BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD) {
                 viewCfg.forEach(cfg => {
                     const option = cascadeEvent.option;
                     if (option && (cfg.config.viewId === option.subViewId())) {
@@ -59,10 +59,10 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy{
     }
 
     ngOnDestroy() {
-        if(this._cascadeSubscription){
+        if (this._cascadeSubscription) {
             this._cascadeSubscription.unsubscribe();
         }
-        if(this.component) {
+        if (this.component) {
             this.component.destroy();
         }
     }

@@ -1,3 +1,4 @@
+import { GridBase } from './../grid.base';
 import { Component, OnInit, ViewChild, Input, OnDestroy, Type, Inject } from '@angular/core';
 import { ApiService } from '@core/utility/api-service';
 import { CommonTools } from '@core/utility/common-tools';
@@ -29,26 +30,20 @@ const component: { [type: string]: Type<any> } = {
         `
     ]
 })
-export class BsnTreeTableComponent extends CnComponentBase implements OnInit, OnDestroy {
+export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy {
     @Input() config;
     @Input() permissions = [];
     @Input() dataList = []; // 表格数据集合
     @Input() initData;
-    allDataList = [];
 
     //  分页默认参数
     loading = false;
-    pageIndex = 1;
-    pageSize = 10;
     total = 1;
 
     //  表格操作
     allChecked = false;
     indeterminate = false;
-    _sortName;
-    _sortType = true;
-    _columnFilterList = [];
-    _focusId;
+
     expandDataCache = {};
     is_Search;
     search_Row;
@@ -61,10 +56,6 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
     _selectRow = {};
     _tempParameters = {};
     _searchParameters = {};
-    _relativeResolver;
-    _toolbar;
-    editRootCache = {};
-    editCacheData = {};
     rowContent = {};
     dataSet = {};
     checkedCount = 0;
@@ -74,25 +65,31 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
 
 
     constructor(
-        private _http: ApiService,
-        private message: NzMessageService,
-        private modalService: NzModalService,
+        private _api: ApiService,
+        private _msg: NzMessageService,
+        private _modal: NzModalService,
         @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
-    ) { super(); }
+    ) {
+        super();
+        this.apiService = this._api;
+        this.message = this._msg;
+        this.modalService = this._modal;
+        if (this.initData) {
+            this.initValue = this.initData;
+        }
+        this.callback = this.load;
+    }
 
     // 生命周期事件
     ngOnInit() {
         this.resolverRelation();
-        if (this.initData) {
-            this.initValue = this.initData;
-        }
         if (this.config.dataSet) {
             (async () => {
                 for (let i = 0, len = this.config.dataSet.length; i < len; i++) {
-                    const url = this._buildURL(this.config.dataSet[i].ajaxConfig.url);
-                    const params = this._buildParameters(this.config.dataSet[i].ajaxConfig.params);
+                    const url = this.buildURL(this.config.dataSet[i].ajaxConfig.url);
+                    const params = this.buildParameters(this.config.dataSet[i].ajaxConfig.params);
                     const data = await this.get(url, params);
                     if (data.length > 0 && data.status === 200) {
                         if (this.config.dataSet[i].fields) {
@@ -159,7 +156,7 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                         this.dialog(option);
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE:
-
+                        this.resolver(option.ajaxConfig);
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE_SELECTED:
                         this.executeSelectedRow(option);
@@ -175,6 +172,15 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                         break;
                     case BSN_COMPONENT_MODES.SEARCH:
                         this.searchRow(option);
+                        break;
+                    case BSN_COMPONENT_MODES.SEARCH:
+                        this.searchRow(option);
+                        break;
+                    case BSN_COMPONENT_MODES.UPLOAD:
+                        this.uploadDialog(option);
+                        break;
+                    case BSN_COMPONENT_MODES.FORM_BATCH:
+                        this.formBatchDialog(option);
                         break;
                 }
             }
@@ -226,149 +232,147 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         }
     }
 
-    // 创建查询参数
-    private _buildSearch() {
-        const search = {};
-        if (this.search_Row) {
-            const searchData = JSON.parse(JSON.stringify(this.search_Row));
-            delete searchData['key'];
-            delete searchData['checked'];
-            delete searchData['row_status'];
-            delete searchData['selected'];
+    // // 创建查询参数
+    // private _buildSearch() {
+    //     const search = {};
+    //     if (this.search_Row) {
+    //         const searchData = JSON.parse(JSON.stringify(this.search_Row));
+    //         delete searchData['key'];
+    //         delete searchData['checked'];
+    //         delete searchData['row_status'];
+    //         delete searchData['selected'];
 
-            for (const p in searchData) {
-                search[`_root.${p}`] = searchData[p];
-            }
-        }
-        return search;
-    }
+    //         for (const p in searchData) {
+    //             search[`_root.${p}`] = searchData[p];
+    //         }
+    //     }
+    //     return search;
+    // }
 
-    private _buildFilter(filterConfig) {
-        const filter = {};
-        if (filterConfig) {
-            filterConfig.map(param => {
-                if (this._tempParameters[param['valueName']]) {
-                    filter[param['name']] = this._tempParameters[param['valueName']];
-                }
+    // private _buildFilter(filterConfig) {
+    //     const filter = {};
+    //     if (filterConfig) {
+    //         filterConfig.map(param => {
+    //             if (this._tempParameters[param['valueName']]) {
+    //                 filter[param['name']] = this._tempParameters[param['valueName']];
+    //             }
 
-            });
-        }
-        return filter;
-    }
+    //         });
+    //     }
+    //     return filter;
+    // }
 
-    private _buildParameters(paramsConfig) {
-        const params = {};
-        if (paramsConfig) {
-            paramsConfig.map(param => {
-                if (param['type'] === 'tempValue') {
-                    params[param['name']] = this._tempParameters[param['valueName']];
-                } else if (param['type'] === 'value') {
-                    params[param.name] = param.value;
-                } else if (param['type'] === 'GUID') {
-                    const fieldIdentity = CommonTools.uuID(10);
-                    params[param.name] = fieldIdentity;
-                } else if (param['type'] === 'componentValue') {
-                    // params[param.name] = componentValue[param.valueName];
-                } else if (param['type'] === 'searchValue') {
-                    if (this._searchParameters[param['name']]) {
-                        params[param['name']] = this._searchParameters[param['valueName']];
-                    }
-                }
-            });
-        }
-        return params;
-    }
+    // private _buildParameters(paramsConfig) {
+    //     const params = {};
+    //     if (paramsConfig) {
+    //         paramsConfig.map(param => {
+    //             if (param['type'] === 'tempValue') {
+    //                 params[param['name']] = this._tempParameters[param['valueName']];
+    //             } else if (param['type'] === 'value') {
+    //                 params[param.name] = param.value;
+    //             } else if (param['type'] === 'GUID') {
+    //                 const fieldIdentity = CommonTools.uuID(10);
+    //                 params[param.name] = fieldIdentity;
+    //             } else if (param['type'] === 'componentValue') {
+    //                 // params[param.name] = componentValue[param.valueName];
+    //             } else if (param['type'] === 'searchValue') {
+    //                 if (this._searchParameters[param['name']]) {
+    //                     params[param['name']] = this._searchParameters[param['valueName']];
+    //                 }
+    //             }
+    //         });
+    //     }
+    //     return params;
+    // }
 
-    private _buildURL(urlConfig) {
-        let url = '';
-        if (urlConfig && this._isUrlString(urlConfig)) {
-            url = urlConfig;
-        } else if (urlConfig) {
-            let parent = '';
-            urlConfig.params.map(param => {
-                if (param['type'] === 'tempValue') {
-                    parent = this._tempParameters[param.value];
-                } else if (param['type'] === 'value') {
-                    if (param.value === 'null') {
-                        param.value = null;
-                    }
-                    parent = param.value;
-                } else if (param['type'] === 'GUID') {
-                    // todo: 扩展功能
-                } else if (param['type'] === 'componentValue') {
-                    // parent = componentValue[param['valueName']];
-                }
-            });
-        }
-        return url;
-    }
+    // private _buildURL(urlConfig) {
+    //     let url = '';
+    //     if (urlConfig && this._isUrlString(urlConfig)) {
+    //         url = urlConfig;
+    //     } else if (urlConfig) {
+    //         let parent = '';
+    //         urlConfig.params.map(param => {
+    //             if (param['type'] === 'tempValue') {
+    //                 parent = this._tempParameters[param.value];
+    //             } else if (param['type'] === 'value') {
+    //                 if (param.value === 'null') {
+    //                     param.value = null;
+    //                 }
+    //                 parent = param.value;
+    //             } else if (param['type'] === 'GUID') {
+    //                 // todo: 扩展功能
+    //             } else if (param['type'] === 'componentValue') {
+    //                 // parent = componentValue[param['valueName']];
+    //             }
+    //         });
+    //     }
+    //     return url;
+    // }
 
-    private _buildPaging() {
-        const params = {};
-        if (this.config['pagination']) {
-            params['_page'] = this.pageIndex;
-            params['_rows'] = this.pageSize;
-        }
-        return params;
-    }
+    // private _buildPaging() {
+    //     const params = {};
+    //     if (this.config['pagination']) {
+    //         params['_page'] = this.pageIndex;
+    //         params['_rows'] = this.pageSize;
+    //     }
+    //     return params;
+    // }
 
-    private _isUrlString(url) {
-        return Object.prototype.toString.call(url) === '[object String]';
-    }
+    // private _isUrlString(url) {
+    //     return Object.prototype.toString.call(url) === '[object String]';
+    // }
 
-    private _buildSort() {
-        const sortObj = {};
-        if (this._sortName && this._sortType) {
-            sortObj['_sort'] = this._sortName;
-            sortObj['_order'] = sortObj['_order'] ? 'DESC' : 'ASC';
-        }
-        return sortObj;
-    }
+    // private _buildSort() {
+    //     const sortObj = {};
+    //     if (this._sortName && this._sortType) {
+    //         sortObj['_sort'] = this._sortName;
+    //         sortObj['_order'] = sortObj['_order'] ? 'DESC' : 'ASC';
+    //     }
+    //     return sortObj;
+    // }
 
-    private _buildFocusId() {
-        const focusParams = {};
-        // 服务器端待解决
-        // if (this._selectRow && this._selectRow['Id']) {
-        //     focusParams['_focusedId'] = this._selectRow['Id'];
-        // }
-        return focusParams;
-    }
+    // private _buildFocusId() {
+    //     const focusParams = {};
+    //     // 服务器端待解决
+    //     // if (this._selectRow && this._selectRow['Id']) {
+    //     //     focusParams['_focusedId'] = this._selectRow['Id'];
+    //     // }
+    //     return focusParams;
+    // }
 
-    private _buildColumnFilter() {
-        const filterParams = {};
-        if (this._columnFilterList && this._columnFilterList.length > 0) {
-            this._columnFilterList.map(filter => {
-                const valueStr = [];
-                filter.value.map(value => {
-                    valueStr.push(`'${value}'`);
-                });
-                filterParams[filter.field] = `in(${valueStr.join(',')})`;
-            });
-        }
-        return filterParams;
-    }
+    // private _buildColumnFilter() {
+    //     const filterParams = {};
+    //     if (this._columnFilterList && this._columnFilterList.length > 0) {
+    //         this._columnFilterList.map(filter => {
+    //             const valueStr = [];
+    //             filter.value.map(value => {
+    //                 valueStr.push(`'${value}'`);
+    //             });
+    //             filterParams[filter.field] = `in(${valueStr.join(',')})`;
+    //         });
+    //     }
+    //     return filterParams;
+    // }
 
-    private _buildRecursive() {
-        return { _recursive: true, _deep: -1 };
-    }
+    // private _buildRecursive() {
+    //     return { _recursive: true, _deep: -1 };
+    // }
 
     //  功能实现
-    private load(pageIndex = 1) {
-        // this._selectRow = {};
-        this.pageIndex = pageIndex;
+    private load() {
         this.loading = true;
         this.allChecked = false;
         this.checkedCount = 0;
-        const url = this._buildURL(this.config.ajaxConfig.url);
+        const url = this.buildURL(this.config.ajaxConfig.url);
         const params = {
-            ...this._buildParameters(this.config.ajaxConfig.params),
-            ...this._buildPaging(),
-            ...this._buildFilter(this.config.ajaxConfig.filter),
-            ...this._buildSort(),
-            ...this._buildColumnFilter(),
-            ...this._buildFocusId(),
-            ...this._buildRecursive(),
-            ...this._buildSearch()
+            ...this.buildParameters(this.config.ajaxConfig.params),
+            ...this.buildPaging(this.config.pagination),
+            ...this.buildFilter(this.config.ajaxConfig.filter),
+            ...this.buildSort(),
+            ...this.buildColumnFilter(),
+            ...this.buildFocusId(),
+            ...this.buildRecursive(),
+            ...this.buildSearch()
         };
         this.expandDataCache = {};
         (async () => {
@@ -383,7 +387,9 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
                     this._initEditDataCache();
 
 
-                    this.dataList = loadData.data.rows;
+                    this.dataList = this._editDataList;
+
+
                     this.total = loadData.data.total;
                     if (this.is_Search) {
                         this.createSearchRow();
@@ -409,150 +415,6 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         })();
     }
 
-    // 初始化可编辑的数据结构
-    private _initEditDataCache() {
-        this._editDataCache = {};
-        this._editDataList.forEach(item => {
-            if (!this._editDataCache[item.key]) {
-                this._editDataCache[item.key] = {
-                    edit: false,
-                    data: item
-                };
-            }
-        });
-
-        // 将编辑数据帮定至页面
-        this.editCache = this._editDataCache;
-    }
-
-    // 将选中行改变为编辑状态
-    updateRow() {
-        this._editDataList.forEach(item => {
-            if (item.checked) {
-                if (item['row_status'] && item['row_status'] === 'adding') {
-
-                } else if (item['row_status'] && item['row_status'] === 'search') {
-
-                } else {
-                    item['row_status'] = 'updating';
-                }
-                this._startEdit(item.key);
-            }
-        });
-        return true;
-    }
-
-    private _startEdit(key: string): void {
-        this._editDataCache[key]['edit'] = true;
-        this.editCache = this._editDataCache;
-    }
-
-    private _saveEdit(key: string): void {
-        const itemList = this._editDataList;
-        const index = itemList.findIndex(item => item.key === key);
-        let checked = false;
-        let selected = false;
-
-        if (itemList[index].checked) {
-            checked = itemList[index].checked;
-        }
-        if (itemList[index].selected) {
-            selected = itemList[index].selected;
-        }
-
-        itemList[index] = this._editDataCache[key].data;
-        itemList[index].checked = checked;
-        itemList[index].selected = selected;
-
-        this._editDataCache[key].edit = false;
-
-        this.editCache = this._editDataCache;
-    }
-
-    cancelRow() {
-        for (let i = 0, len = this.dataList.length; i < len; i++) {
-            if (this.dataList[i].checked) {
-                if (this.dataList[i]['row_status'] === 'adding') {
-                    if (this._editDataCache[this.dataList[i].key]) {
-                        delete this._editDataCache[this.dataList[i].key];
-                    }
-                    this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
-                    i--;
-                    len--;
-                }
-
-            }
-        }
-
-        for (let i = 0, len = this._editDataList.length; i < len; i++) {
-            if (this._editDataList[i]['checked']) {
-                if (this._editDataList[i]['row_status'] === 'adding') {
-                    this._editDataList.splice(this._editDataList.indexOf(this._editDataList[i]), 1);
-                    i--;
-                    len--;
-                } else if (this._editDataList[i]['row_status'] === 'search') {
-                    this._editDataList.splice(this._editDataList.indexOf(this._editDataList[i]), 1);
-                    this.is_Search = false;
-                    this.search_Row = {};
-                    i--;
-                    len--;
-                } else {
-                    this._cancelEdit(this._editDataList[i].key);
-                }
-            }
-        }
-        return true;
-    }
-
-    private _cancelEdit(key: string): void {
-        const itemList = this._editDataList;
-        const index = itemList.findIndex(item => item.key === key);
-        this._editDataCache[key].edit = false;
-        this._editDataCache[key].data = JSON.parse(JSON.stringify(itemList[index]));
-
-        this.editCache = this._editDataCache;
-
-    }
-
-    addRow() {
-        const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
-        const fieldIdentity = CommonTools.uuID(6);
-        rowContentNew['key'] = fieldIdentity;
-        rowContentNew['checked'] = true;
-        rowContentNew['row_status'] = 'adding';
-        // 针对查询和新增行处理
-        if (this.is_Search) {
-            this._editDataList.splice(1, 0, rowContentNew);
-        } else {
-            this.expandDataCache[fieldIdentity] = [rowContentNew];
-            this._editDataList = [rowContentNew, ...this._editDataList];
-            this.dataList = [rowContentNew, ...this.dataList];
-
-        }
-        // 需要特殊处理层级问题
-        // this.dataList.push(this.rowContent);
-        this._addEditCache();
-        this._startAdd(fieldIdentity);
-        return true;
-    }
-
-    private _addEditCache(): void {
-        this._editDataList.forEach(item => {
-            if (!this._editDataCache[item.key]) {
-                this._editDataCache[item.key] = {
-                    edit: false,
-                    data: item
-                };
-            }
-        });
-        this.editCache = this._editDataCache;
-    }
-
-    private _startAdd(key: string): void {
-        this._editDataCache[key]['edit'] = true;
-        this.editCache = this._editDataCache;
-    }
-
     private selectRow(data, $event) {
         if ($event.srcElement.type === 'checkbox' || $event.target.type === 'checkbox') {
             return;
@@ -566,34 +428,168 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
             });
         }
         data['selected'] = true;
-        this._selectRow = data;
+        this.selectedItem = data;
     }
 
     searchData(reset: boolean = false) {
         if (reset) {
             this.pageIndex = 1;
         }
-        this.load(this.pageIndex);
-    }
-
-    sort(sort: { key: string, value: string }) {
-        this._sortName = sort.key;
-        this._sortType = !this._sortType;
         this.load();
     }
 
-    columnFilter(field: string, values: string[]) {
-        const filter = {};
-        if (values.length > 0 && field) {
-            filter['field'] = field;
-            filter['value'] = values;
-            this._columnFilterList.push(filter);
-        } else {
-            this._columnFilterList = [];
+    //  服务区端交互
+    private async _load(url, params) {
+        return this.apiService.get(url, params).toPromise();
+    }
+
+    private async post(url, body) {
+        return this.apiService.post(url, body).toPromise();
+    }
+
+    private async put(url, body) {
+        return this.apiService.put(url, body).toPromise();
+    }
+
+    private async delete(url, params) {
+        return this.apiService.delete(url, params).toPromise();
+    }
+
+    private async get(url, params) {
+        return this.apiService.get(url, params).toPromise();
+    }
+
+
+    //  格式化单元格
+    setCellFont(value, format) {
+        let fontColor = '';
+        if (format) {
+            format.map(color => {
+                if (color.value === value) {
+                    fontColor = color.fontcolor;
+                }
+            });
         }
 
-        this.load();
+        return fontColor;
     }
+
+    // async expandLoad(componentValue?) {
+    //     let childs = [];
+    //     const url = this._buildURL(this.config.ajaxConfig.url);
+    //     const params = {
+    //         ...this._buildParameters(this.config.ajaxConfig.params, componentValue),
+    //     };
+
+    //     const loadData = await this._load(url, params);
+    //     console.log('#数表展开节点异步返回#', loadData);
+    //     if (loadData && loadData.Status === 200) {
+
+    //         if (loadData.Data && loadData.Data) {
+    //             loadData.Data.forEach(row => {
+    //                 row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
+    //                 if (this.config.ShowName) {
+    //                     this.config.ShowName.forEach(col => {
+    //                         row[col['field']] = row[col['valueName']];
+    //                     });
+    //                 }
+    //                 row['Children'] = [];
+    //             });
+    //             // this.dataToTreetable(loadData.Data);
+    //             childs = loadData.Data;
+
+    //         }
+    //     }
+    //     return childs;
+
+    // }
+    searchRow(option) {
+        if (option['type'] === 'addSearchRow') {
+            this.addSearchRow();
+        } else if (option['type'] === 'cancelSearchRow') {
+            this.cancelSearchRow();
+        }
+    }
+
+    addSearchRow() {
+        let isSearch = true;
+        for (let i = 0; i < this.dataList.length; i++) {
+            if (this.dataList[i]['row_status'] === 'search') {
+                isSearch = false;
+            }
+        }
+        if (isSearch) {
+            this.createSearchRow();
+            this.is_Search = true;
+        } else {
+
+            // 执行行查询
+            this.load(); // 查询后将页面置1
+            // 执行行查询
+            let len = this.dataList.length;
+            for (let i = 0; i < len; i++) {
+                if (this.dataList[i]['row_status'] === 'search') {
+                    this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                    i--;
+                    len--;
+                }
+            }
+            this.is_Search = false;
+            this.search_Row = {};
+        }
+    }
+
+    // 生成查询行
+    createSearchRow() {
+        if (this.is_Search) {
+            this.dataList = [this.search_Row, ...this.dataList];
+            // this.dataList.push(this.rowContent);
+            this._updateEditCache();
+            this._startEdit(this.search_Row['key'].toString());
+        } else {
+            const newSearchContent = JSON.parse(JSON.stringify(this.rowContent));
+            const fieldIdentity = CommonTools.uuID(6);
+            newSearchContent['key'] = fieldIdentity;
+            newSearchContent['checked'] = false;
+            newSearchContent['row_status'] = 'search';
+
+            this.expandDataCache[fieldIdentity] = [newSearchContent];
+            this.dataList = [newSearchContent, ...this.dataList];
+            this._editDataList = [newSearchContent, ...this._editDataList];
+            this._addEditCache();
+            this._startAdd(fieldIdentity);
+
+            this.search_Row = newSearchContent;
+        }
+    }
+
+    // 取消查询
+    cancelSearchRow() {
+        for (let i = 0, len = this.dataList.length; i < len; i++) {
+            if (this.dataList[i]['row_status'] === 'search') {
+                delete this._editDataCache[this.dataList[i].key];
+                this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                i--;
+                len--;
+            }
+        }
+
+        for (let i = 0, len = this._editDataList.length; i < len; i++) {
+            if (this._editDataList[i]['row_status'] === 'search') {
+                this._editDataList.splice(this._editDataList.indexOf(this._editDataList[i]), 1);
+                i--;
+                len--;
+            }
+        }
+
+        this.is_Search = false;
+        this.search_Row = {};
+        this.load(); // 查询后将页面置1
+        return true;
+    }
+
+
+
 
     //  表格操作
     _getAllItemList() {
@@ -1052,208 +1048,164 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         });
     }
 
-    toolbarAction(btn) {
-        if (this[btn.name]) {
-            this[btn.name]();
-        } else if (this[btn.type]) {
-            this.config.toolbar.forEach(btnGroup => {
-                let index;
-                let buttons;
-                if (btnGroup.group) {
-                    buttons = btnGroup.group.filter(button => button.type === btn.type);
-                    index = buttons.findIndex(button => button.name === btn.name);
+    // 初始化可编辑的数据结构
+    private _initEditDataCache() {
+        this._editDataCache = {};
+        this._editDataList.forEach(item => {
+            if (!this._editDataCache[item.key]) {
+                this._editDataCache[item.key] = {
+                    edit: false,
+                    data: item
+                };
+            }
+        });
+
+        // 将编辑数据帮定至页面
+        this.editCache = this._editDataCache;
+    }
+
+    // 将选中行改变为编辑状态
+    updateRow() {
+        this._editDataList.forEach(item => {
+            if (item.checked) {
+                if (item['row_status'] && item['row_status'] === 'adding') {
+
+                } else if (item['row_status'] && item['row_status'] === 'search') {
+
+                } else {
+                    item['row_status'] = 'updating';
                 }
-                if (btnGroup.dropdown) {
-                    buttons = btnGroup.dropdown.buttons.filter(button => button.type === btn.type);
-                    index = buttons.findIndex(button => button.name === btn.name);
-                }
-                if (index >= 0) {
-                    if (buttons[index].dialogConfig) {
-                        this[buttons[index].type](buttons[index].dialogConfig);
-                    } else if (buttons[index].context) {
-                        this[buttons[index].type](buttons[index].context);
-                    }
-                }
-            });
+                this._startEdit(item.key);
+            }
+        });
+        return true;
+    }
+
+    private _startEdit(key: string): void {
+        this._editDataCache[key]['edit'] = true;
+        this.editCache = this._editDataCache;
+    }
+
+    private _saveEdit(key: string): void {
+        const itemList = this._editDataList;
+        const index = itemList.findIndex(item => item.key === key);
+        let checked = false;
+        let selected = false;
+
+        if (itemList[index].checked) {
+            checked = itemList[index].checked;
         }
+        if (itemList[index].selected) {
+            selected = itemList[index].selected;
+        }
+
+        itemList[index] = this._editDataCache[key].data;
+        itemList[index].checked = checked;
+        itemList[index].selected = selected;
+
+        this._editDataCache[key].edit = false;
+
+        this.editCache = this._editDataCache;
+    }
+
+    cancelRow() {
+        for (let i = 0, len = this.dataList.length; i < len; i++) {
+            if (this.dataList[i].checked) {
+                if (this.dataList[i]['row_status'] === 'adding') {
+                    if (this._editDataCache[this.dataList[i].key]) {
+                        delete this._editDataCache[this.dataList[i].key];
+                    }
+                    this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                    i--;
+                    len--;
+                }
+
+            }
+        }
+
+        for (let i = 0, len = this._editDataList.length; i < len; i++) {
+            if (this._editDataList[i]['checked']) {
+                if (this._editDataList[i]['row_status'] === 'adding') {
+                    this._editDataList.splice(this._editDataList.indexOf(this._editDataList[i]), 1);
+                    i--;
+                    len--;
+                } else if (this._editDataList[i]['row_status'] === 'search') {
+                    this._editDataList.splice(this._editDataList.indexOf(this._editDataList[i]), 1);
+                    this.is_Search = false;
+                    this.search_Row = {};
+                    i--;
+                    len--;
+                } else {
+                    this._cancelEdit(this._editDataList[i].key);
+                }
+            }
+        }
+        return true;
+    }
+
+    private _cancelEdit(key: string): void {
+        const itemList = this._editDataList;
+        const index = itemList.findIndex(item => item.key === key);
+        this._editDataCache[key].edit = false;
+        this._editDataCache[key].data = JSON.parse(JSON.stringify(itemList[index]));
+
+        this.editCache = this._editDataCache;
+
+    }
+
+    addRow() {
+        const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
+        const fieldIdentity = CommonTools.uuID(6);
+        rowContentNew['key'] = fieldIdentity;
+        rowContentNew['checked'] = true;
+        rowContentNew['row_status'] = 'adding';
+        // 针对查询和新增行处理
+        if (this.is_Search) {
+            this._editDataList.splice(1, 0, rowContentNew);
+        } else {
+            this.expandDataCache[fieldIdentity] = [rowContentNew];
+            this._editDataList = [rowContentNew, ...this._editDataList];
+            this.dataList = [rowContentNew, ...this.dataList];
+
+        }
+        // 需要特殊处理层级问题
+        // this.dataList.push(this.rowContent);
+        this._addEditCache();
+        this._startAdd(fieldIdentity);
+        return true;
+    }
+
+    private _addEditCache(): void {
+        this._editDataList.forEach(item => {
+            if (!this._editDataCache[item.key]) {
+                this._editDataCache[item.key] = {
+                    edit: false,
+                    data: item
+                };
+            }
+        });
+        this.editCache = this._editDataCache;
+    }
+
+    private _startAdd(key: string): void {
+        this._editDataCache[key]['edit'] = true;
+        this.editCache = this._editDataCache;
+    }
+
+    private _updateEditCache(): void {
+        this.dataList.forEach(item => {
+            if (!this.editCache[item.key]) {
+                this.editCache[item.key] = {
+                    edit: false,
+                    data: item
+                };
+            }
+        });
     }
 
     valueChange(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
         this.editCache[data.key].data[data.name] = data.data;
-    }
-
-    private _toolbarEnables(enables) {
-
-        return true;
-        // this.config.toolbar.map(btn => {
-        //     if (!enables[btn.name]) {
-        //         delete btn['disabled'];
-        //     } else {
-        //         btn['disabled'] = '';
-        //     }
-        // });
-    }
-
-
-    //  弹出UI
-    private showForm(dialog) {
-        const footer = [];
-        let obj;
-        if (dialog.type === 'add') {
-
-        } else if (dialog.type === 'update') {
-            if (!this._selectRow) {
-                this.message.warning('请选中一条需要添加附件的记录！');
-                return false;
-            }
-        }
-
-        obj = {
-            _id: this._selectRow[dialog.keyId] ? this._selectRow[dialog.keyId] : '',
-            _parentId: this.tempValue['_parentId'] ? this.tempValue['_parentId'] : ''
-        };
-
-
-        const modal = this.modalService.create({
-            nzTitle: dialog.title,
-            nzWidth: dialog.width,
-            nzContent: component['form'],
-            nzComponentParams: {
-                config: dialog,
-                ref: obj
-            },
-            nzFooter: footer
-        });
-
-        if (dialog.buttons) {
-            dialog.buttons.forEach(btn => {
-                const button = {};
-                button['label'] = btn.text;
-                button['type'] = btn.type ? btn.type : 'default';
-                button['onClick'] = (componentInstance) => {
-                    if (btn['name'] === 'save') {
-                        (async () => {
-                            const result = await componentInstance.buttonAction(btn);
-                            if (result) {
-                                modal.close();
-                                // todo: 操作完成当前数据后需要定位
-                                this.load();
-                            }
-                        })();
-                    } else if (btn['name'] === 'saveAndKeep') {
-                        (async () => {
-                            const result = await componentInstance.buttonAction(btn);
-                            if (result) {
-                                // todo: 操作完成当前数据后需要定位
-                                this.load();
-                            }
-                        })();
-                    } else if (btn['name'] === 'close') {
-                        modal.close();
-                    } else if (btn['name'] === 'reset') {
-                        this._resetForm(componentInstance);
-                    }
-
-                };
-                footer.push(button);
-            });
-
-        }
-    }
-
-    private _resetForm(comp: FormResolverComponent) {
-        comp.resetForm();
-    }
-
-    private showLayout(dialog) {
-        const footer = [];
-        this._http.getLocalData(dialog.layoutName).subscribe(data => {
-            const modal = this.modalService.create({
-                nzTitle: dialog.title,
-                nzWidth: dialog.width,
-                nzContent: component['layout'],
-                nzComponentParams: {
-                    config: data
-                },
-                nzFooter: footer
-            });
-            if (dialog.buttons) {
-                dialog.buttons.forEach(btn => {
-                    const button = {};
-                    button['label'] = btn.text;
-                    button['type'] = btn.type ? btn.type : 'default';
-                    button['show'] = true;
-                    button['onClick'] = (componentInstance) => {
-                        if (btn['name'] === 'save') {
-                            (async () => {
-                                const result = await componentInstance.buttonAction(btn);
-                                if (result) {
-                                    modal.close();
-                                    // todo: 操作完成当前数据后需要定位
-                                    this.load();
-                                }
-                            })();
-                        } else if (btn['name'] === 'saveAndKeep') {
-                            (async () => {
-                                const result = await componentInstance.buttonAction(btn);
-                                if (result) {
-                                    // todo: 操作完成当前数据后需要定位
-                                    this.load();
-                                }
-                            })();
-                        } else if (btn['name'] === 'close') {
-                            modal.close();
-                        } else if (btn['name'] === 'reset') {
-                            this._resetForm(componentInstance);
-                        } else if (btn['name'] === 'ok') {
-                            //
-                        }
-
-                    };
-                    footer.push(button);
-                });
-
-            }
-        });
-
-    }
-
-
-    //  服务区端交互
-    private async _load(url, params) {
-        return this._http.get(url, params).toPromise();
-    }
-
-    private async post(url, body) {
-        return this._http.post(url, body).toPromise();
-    }
-
-    private async put(url, body) {
-        return this._http.put(url, body).toPromise();
-    }
-
-    private async delete(url, params) {
-        return this._http.delete(url, params).toPromise();
-    }
-
-    private async get(url, params) {
-        return this._http.get(url, params).toPromise();
-    }
-
-
-    //  格式化单元格
-    setCellFont(value, format) {
-        let fontColor = '';
-        if (format) {
-            format.map(color => {
-                if (color.value === value) {
-                    fontColor = color.fontcolor;
-                }
-            });
-        }
-
-        return fontColor;
     }
 
     expandChange(array: any[], data: any, $event: boolean) {
@@ -1300,133 +1252,6 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         // }
 
         // console.log('最终展示有关的数据', this.expandDataCache);
-    }
-
-
-    // async expandLoad(componentValue?) {
-    //     let childs = [];
-    //     const url = this._buildURL(this.config.ajaxConfig.url);
-    //     const params = {
-    //         ...this._buildParameters(this.config.ajaxConfig.params, componentValue),
-    //     };
-
-    //     const loadData = await this._load(url, params);
-    //     console.log('#数表展开节点异步返回#', loadData);
-    //     if (loadData && loadData.Status === 200) {
-
-    //         if (loadData.Data && loadData.Data) {
-    //             loadData.Data.forEach(row => {
-    //                 row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
-    //                 if (this.config.ShowName) {
-    //                     this.config.ShowName.forEach(col => {
-    //                         row[col['field']] = row[col['valueName']];
-    //                     });
-    //                 }
-    //                 row['Children'] = [];
-    //             });
-    //             // this.dataToTreetable(loadData.Data);
-    //             childs = loadData.Data;
-
-    //         }
-    //     }
-    //     return childs;
-
-    // }
-
-    private _updateEditCache(): void {
-        this.dataList.forEach(item => {
-            if (!this.editCache[item.key]) {
-                this.editCache[item.key] = {
-                    edit: false,
-                    data: item
-                };
-            }
-        });
-    }
-
-    searchRow(option) {
-        if (option['type'] === 'addSearchRow') {
-            this.addSearchRow();
-        } else if (option['type'] === 'cancelSearchRow') {
-            this.cancelSearchRow();
-        }
-    }
-
-    addSearchRow() {
-        let isSearch = true;
-        for (let i = 0; i < this.dataList.length; i++) {
-            if (this.dataList[i]['row_status'] === 'search') {
-                isSearch = false;
-            }
-        }
-        if (isSearch) {
-            this.createSearchRow();
-            this.is_Search = true;
-        } else {
-
-            // 执行行查询
-            this.load(1); // 查询后将页面置1
-            // 执行行查询
-            let len = this.dataList.length;
-            for (let i = 0; i < len; i++) {
-                if (this.dataList[i]['row_status'] === 'search') {
-                    this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
-                    i--;
-                    len--;
-                }
-            }
-            this.is_Search = false;
-            this.search_Row = {};
-        }
-    }
-
-    // 生成查询行
-    createSearchRow() {
-        if (this.is_Search) {
-            this.dataList = [this.search_Row, ...this.dataList];
-            // this.dataList.push(this.rowContent);
-            this._updateEditCache();
-            this._startEdit(this.search_Row['key'].toString());
-        } else {
-            const newSearchContent = JSON.parse(JSON.stringify(this.rowContent));
-            const fieldIdentity = CommonTools.uuID(6);
-            newSearchContent['key'] = fieldIdentity;
-            newSearchContent['checked'] = false;
-            newSearchContent['row_status'] = 'search';
-
-            this.expandDataCache[fieldIdentity] = [newSearchContent];
-            this.dataList = [newSearchContent, ...this.dataList];
-            this._editDataList = [newSearchContent, ...this._editDataList];
-            this._addEditCache();
-            this._startAdd(fieldIdentity);
-
-            this.search_Row = newSearchContent;
-        }
-    }
-
-    // 取消查询
-    cancelSearchRow() {
-        for (let i = 0, len = this.dataList.length; i < len; i++) {
-            if (this.dataList[i]['row_status'] === 'search') {
-                delete this._editDataCache[this.dataList[i].key];
-                this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
-                i--;
-                len--;
-            }
-        }
-
-        for (let i = 0, len = this._editDataList.length; i < len; i++) {
-            if (this._editDataList[i]['row_status'] === 'search') {
-                this._editDataList.splice(this._editDataList.indexOf(this._editDataList[i]), 1);
-                i--;
-                len--;
-            }
-        }
-
-        this.is_Search = false;
-        this.search_Row = {};
-        this.load(1); // 查询后将页面置1
-        return true;
     }
 
     convertTreeToList(root: object): any[] {
@@ -1478,6 +1303,26 @@ export class BsnTreeTableComponent extends CnComponentBase implements OnInit, On
         if (this.config.formDialog && this.config.formDialog.length > 0) {
             const index = this.config.formDialog.findIndex(item => item.name === option.name);
             this.showForm(this.config.formDialog[index]);
+        }
+    }
+    /**
+     * 弹出批量处理表单
+     * @param option
+     */
+    formBatchDialog(option) {
+        if (this.config.formDialog && this.config.formDialog.length > 0) {
+            const index = this.config.formDialog.findIndex(item => item.name === option.name);
+            this.showBatchForm(this.config.formDialog[index]);
+        }
+    }
+    /**
+     * 弹出上传对话
+     * @param option
+     */
+    uploadDialog(option) {
+        if (this.config.uploadDialog && this.config.uploadDialog.length > 0) {
+            const index = this.config.uploadDialog.findIndex(item => item.name === option.name);
+            this.openUploadDialog(this.config.uploadDialog[index]);
         }
     }
 

@@ -53,7 +53,7 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
 
     // region: 组件生命周期事件
     ngOnInit() {
-        if(this.initData) {
+        if (this.initData) {
             this.initValue = this.initData;
         }
         this.form = this.createGroup();

@@ -15,17 +15,17 @@
                     <ng-container cnLayoutResolverDirective [layoutId]="layoutId" [config]="c"></ng-container>
                 </div>
                 <ng-template #elseTemplate>
-                    <cn-layout-resolver *ngFor="let cfg of c.viewCfg" [layoutId]="layoutId"
-                                        [config]="cfg" [initData]="initData"></cn-layout-resolver>
+                    <cn-component-resolver *ngFor="let cfg of c.viewCfg" [layoutId]="layoutId"
+                                        [config]="cfg" [initData]="initData"></cn-component-resolver>
                 </ng-template>
 
             </nz-card>
         </div>
     </div>
 </ng-container>
-<cn-component-resolver *ngIf="!config.rows && !config.tabs && !config.viewCfg"
+<!-- <cn-component-resolver *ngIf="!config.rows && !config.tabs && !config.viewCfg"
                        [layoutId]="layoutId"
                        [blockId]="config.id"
                        [initData]="initData"
                        [config]="config">
-</cn-component-resolver>
+</cn-component-resolver> -->

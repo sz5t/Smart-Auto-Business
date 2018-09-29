@@ -104,7 +104,7 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        if(this._cascadeState) {
+        if (this._cascadeState) {
             this._cascadeState.unsubscribe();
         }
     }
