@@ -938,10 +938,10 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
                 });
             }
 
-
+            console.log('变更后的', changeConfig_new);
             this.changeConfig = JSON.parse(JSON.stringify(changeConfig_new));
 
-
+          
         }
 
 

@@ -18,7 +18,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
   // @Output() updateValue = new EventEmitter();
   @Output() updateValue = new EventEmitter();
   _options = [];
-  caseCodeValue = {};
+  cascadeValue = {};
   // _selectedMultipleOption:any[];
   constructor(
     private apiService: ApiService
@@ -31,11 +31,11 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     // console.log('select加载固定数据', this.config);
-    if (this.config['caseCodeValue']) {
-      // caseCodeValue
-       for (const key in this.config['caseCodeValue']) {
-         if (this.config['caseCodeValue'].hasOwnProperty(key)) {
-          this. caseCodeValue['caseCodeValue'] = this.config['caseCodeValue'][key];
+    if (this.config['cascadeValue']) {
+      // cascadeValue
+       for (const key in this.config['cascadeValue']) {
+         if (this.config['cascadeValue'].hasOwnProperty(key)) {
+          this. cascadeValue['cascadeValue'] = this.config['cascadeValue'][key];
 
          }
        }
@@ -116,8 +116,8 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
 
         } else if (param.type === 'componentValue') {
           params[param.name] = componentValue[param.valueName];
-        } else if (param.type === 'caseCodeValue') {
-          params[param.name] = this.caseCodeValue[param.valueName];
+        } else if (param.type === 'cascadeValue') {
+          params[param.name] = this.cascadeValue[param.valueName];
 
         }
       });
