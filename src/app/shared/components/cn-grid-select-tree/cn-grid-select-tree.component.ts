@@ -208,7 +208,6 @@ export class CnGridSelectTreeComponent implements OnInit {
 
 
     valueChange(val?: NzTreeNode) {
-        // origin key
         if (val) {
             this.value.data = val;
             if (this.treeData) {
@@ -220,7 +219,7 @@ export class CnGridSelectTreeComponent implements OnInit {
             this.value.data = null;
             this.updateValue.emit(this.value);
         }
-        console.log('***下拉树返回值***' , this.value);
+       // console.log('***下拉树返回值***' , this.value);
 
     }
 
