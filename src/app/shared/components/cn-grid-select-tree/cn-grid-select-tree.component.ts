@@ -13,16 +13,41 @@ export class CnGridSelectTreeComponent implements OnInit {
     @Input() bsnData;
     @Input() rowData;
     @Input() dataSet;
+    @Input() casadeData;
     @Output() updateValue = new EventEmitter();
     _selectedValue;
     treeData = [];
     _tempValue = {};
+    cascadeValue = {};
+    cascadeSetValue = {};
     constructor(
         private apiService: ApiService
     ) { }
     _selectedMultipleOption;
 
     async ngOnInit() {
+
+        if (this.casadeData) {
+            for (const key in this.casadeData) {
+                // 临时变量的整理
+                if (key === 'cascadeValue') {
+                    for (const casekey in this.casadeData['cascadeValue']) {
+                        if (this.casadeData['cascadeValue'].hasOwnProperty(casekey)) {
+                            this.cascadeValue[casekey] = this.casadeData['cascadeValue'][casekey];
+                        }
+                    }
+                } else if (key === 'options') { // 目前版本，静态数据集 优先级低【树目前不支持】
+                    // this.config.options = this.casadeData['options'];
+                } else if (key === 'setValue') {
+                    // this.config.defaultValue 赋值，将值写入
+                   
+                    this.cascadeSetValue['setValue'] = JSON.parse(JSON.stringify(this.casadeData['setValue']));
+                    delete this.casadeData['setValue'];
+                   
+                }
+            }
+        }
+
         if (this.dataSet) {
             // 加载数据集
             this.treeData = this.dataSet;
@@ -33,7 +58,14 @@ export class CnGridSelectTreeComponent implements OnInit {
             // 加载固定数据
             this.treeData = this.config.options;
         }
-        this._selectedValue = this.value['data'];
+
+        if ( this.cascadeSetValue.hasOwnProperty('setValue')) {
+            this._selectedValue = this.cascadeSetValue['setValue'];
+            delete this.cascadeSetValue['setValue'];
+         } else {
+            this._selectedValue = this.value['data'];
+         }
+  
         // this.selectedByLoaded();
     }
 
@@ -123,6 +155,9 @@ export class CnGridSelectTreeComponent implements OnInit {
                     params[param.name] = fieldIdentity;
                 } else if (param.type === 'componentValue') {
                     params[param.name] = componentValue;
+                } else if (param.type === 'cascadeValue') {
+                    params[param.name] = this.cascadeValue[param.valueName];
+
                 }
             });
             if (this.isString(p.url)) {
@@ -139,6 +174,9 @@ export class CnGridSelectTreeComponent implements OnInit {
                         pc = componentValue.value;
                     } else if (param.type === 'tempValue') {
                         pc = this._tempValue[param.valueName];
+                    } else if (param.type === 'cascadeValue') {
+                        pc = this.cascadeValue[param.valueName];
+    
                     }
                 });
                 url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
@@ -170,13 +208,19 @@ export class CnGridSelectTreeComponent implements OnInit {
 
 
     valueChange(val?: NzTreeNode) {
+        // origin key
         if (val) {
             this.value.data = val;
+            if (this.treeData) {
+                const index = this.treeData.findIndex(item => item['key'] === val);
+                this.treeData && (this.value['dataItem'] = this.treeData[index]['origin']);
+            }
             this.updateValue.emit(this.value);
         } else {
             this.value.data = null;
             this.updateValue.emit(this.value);
         }
+        console.log('***下拉树返回值***' , this.value);
 
     }
 
