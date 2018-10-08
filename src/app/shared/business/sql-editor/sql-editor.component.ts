@@ -234,7 +234,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             sqlScriptResourceName: this._resourceName,
             isEnabled: 1,
             isNeedDeploy: 1,
-            belongPlatformType: this.scriptModel,
+            // belongPlatformType: this.scriptModel,
             isImmediateCreate: 1
         };
         return this._http.post(`common/ComSqlScript`, [params]).toPromise();
@@ -277,7 +277,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             sqlScriptResourceName: this._resourceName,
             isEnabled: 1,
             isNeedDeploy: 1,
-            belongPlatformType: this.scriptModel,
+            // belongPlatformType: this.scriptModel,
             isAnalysisParameters: 1,
             isImmediateCreate: 1
         };

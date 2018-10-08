@@ -1263,7 +1263,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     const newParam = CommonTools.parametersResolver({
                         params: ajaxConfigObj.params,
                         tempValue: this.tempValue,
-                        item: {},
+                        item: dataItem,
                         componentValue: dataItem,
                         initValue: this.initValue
                     });
@@ -1274,7 +1274,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             executeParams.push(CommonTools.parametersResolver({
                 params: ajaxConfigObj.params,
                 tempValue: this.tempValue,
-                item: {},
+                item: handleData,
                 componentValue: handleData,
                 initValue: this.initValue
             }));
