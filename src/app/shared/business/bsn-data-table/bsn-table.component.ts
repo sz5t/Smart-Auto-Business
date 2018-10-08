@@ -165,10 +165,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         this.cancelRow();
                         break;
                     case BSN_COMPONENT_MODES.SAVE:
-<<<<<<< HEAD
-                        debugger;
-=======
->>>>>>> f536bded6d57b0c826a179a08e224ea679b5e2d3
+                        // debugger;
                         this.saveRow(option);
                         break;
                     case BSN_COMPONENT_MODES.DELETE:
@@ -256,6 +253,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     load() {
+        this.changeConfig_new = { };
         // this._selectRow = {};
         // this.pageIndex = pageIndex;
         this.loading = true;
@@ -337,6 +335,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
 
     async saveRow(option) {
+        console.log('保存');
         const addRows = [];
         const updateRows = [];
         let isSuccess = false;
@@ -651,21 +650,22 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         // const index = this.dataList.findIndex(item => item.key === data.key);
        // console.log('值变化', data);
         this.editCache[data.key].data[data.name] = data.data;
-
+        this.editCache[data.key].data[data.name] = JSON.parse(JSON.stringify(this.editCache[data.key].data[data.name]));
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { key:行标识,name: this.config.name, value: name }
         const rowCasade = data.key;
         const sendCasade = data.name;
        // const changeConfig_new = {};
-        if (!this.changeConfig_new[rowCasade]) {
-            this.changeConfig_new[rowCasade] = {};
-        }
+     
         // {hang：[name:{具体属性}]}
         if (this.cascadeList[sendCasade]) { // 判断当前组件是否有级联
-            console.log('当前组件有被级联的子对象');
+            if (!this.changeConfig_new[rowCasade]) {
+                this.changeConfig_new[rowCasade] = {};
+            }
+           // console.log('当前组件有被级联的子对象');
             for (const key in this.cascadeList[sendCasade]) {
                 // 处理当前级联
-                console.log('处理当前级联', key);
+              //  console.log('处理当前级联', key);
                 if (!this.changeConfig_new[rowCasade][key]) {
                     this.changeConfig_new[rowCasade][key] = {};
                 }
@@ -714,7 +714,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                             }
                         } */
                         if (caseItem['type'] === 'setValue') {
-                            console.log('setValueinput' , caseItem['setValue'] );
+                           // console.log('setValueinput' , caseItem['setValue'] );
                             
 
                             if (caseItem['setValue']['type']  === 'value') { // 静态数据
@@ -772,7 +772,24 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                             }
                             if (caseItem['type'] === 'ajax') {
                                 // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
-
+                                if (!this.changeConfig_new[rowCasade][key]['cascadeValue']) {
+                                    this.changeConfig_new[rowCasade][key]['cascadeValue'] = {};
+                                   }
+                                    caseItem['ajax'].forEach(ajaxItem => {
+                                        if (ajaxItem['type'] === 'value') { // 静态数据
+                                            this.changeConfig_new[rowCasade][key]['cascadeValue'][ajaxItem['name']] = ajaxItem['value'];
+                                        }
+                                        if (ajaxItem['type'] === 'selectValue') { // 选中行数据[这个是单值]
+                                            this.changeConfig_new[rowCasade][key]['cascadeValue'][ajaxItem['name']] = data[ajaxItem['valueName']];
+                                        }
+                                        if (ajaxItem['type'] === 'selectObjectValue') { // 选中行对象数据
+                                            if ( data.dataItem) {
+                                                this.changeConfig_new[rowCasade][key]['cascadeValue'][ajaxItem['name']] = data.dataItem[ajaxItem['valueName']];
+                                            }
+                                        }
+                                        
+                                        // 其他取值【日后扩展部分】value
+                                    });
                             }
                            /*   else {
                                 if (this.changeConfig_new[rowCasade][key]['cascadeValue'] ) {
@@ -814,14 +831,16 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
                     });
                 }
-
-                this.changeConfig_new[rowCasade][key] = JSON.parse(JSON.stringify(this.changeConfig_new[rowCasade][key]));
-
+               // if (!this.isEmptyObject(this.changeConfig_new[rowCasade][key])) { }
+                    
+                    this.changeConfig_new[rowCasade][key] = JSON.parse(JSON.stringify(this.changeConfig_new[rowCasade][key]));
+                
+              
             }
            // console.log('级联结果数据集', this.changeConfig_new);
         }
         // this.changeConfig_new = JSON.parse(JSON.stringify(this.changeConfig_new));
-
+     // console.log('当前编辑缓存行内容', this.editCache[data.key].data);
     }
 
     executeSelectedRow(option) {
@@ -1356,6 +1375,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         this.dataList.map(item => {
             delete item['$type'];
             if (item['row_status'] === 'adding') {
+              
                 addedRows.push(item);
             }
         });
@@ -1363,10 +1383,13 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     private _getEditedRows() {
+
         const updatedRows = [];
         this.dataList.map(item => {
             delete item['$type'];
+          
             if (item['row_status'] === 'updating') {
+                item = JSON.parse(JSON.stringify(this.editCache[item.key].data));
                 updatedRows.push(item);
             }
         });
@@ -1388,7 +1411,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             if (!this.editCache[item.key]) {
                 this.editCache[item.key] = {
                     edit: false,
-                    data: item
+                    data: JSON.parse(JSON.stringify(item))
                 };
             }
         });
@@ -1501,7 +1524,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         this.dataList[index].checked = false;
         this.editCache[key].edit = false;
         this.editCache[key].data = JSON.parse(JSON.stringify(this.dataList[index]));
-
+        console.log('取消行数据' , this.editCache[key].data);
     }
     /**
      * 保存编辑状态的数据
@@ -1520,7 +1543,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             selected = this.dataList[index].selected;
         }
 
-        this.dataList[index] = this.editCache[key].data;
+        this.dataList[index] = JSON.parse(JSON.stringify(this.editCache[key].data));
         this.dataList[index].checked = checked;
         this.dataList[index].selected = selected;
 
@@ -2168,7 +2191,13 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
 
 
+    isEmptyObject(e) {
+        let t;
+        for (t in e)
+            return !1;
+        return !0;
 
+    }
 
 
 

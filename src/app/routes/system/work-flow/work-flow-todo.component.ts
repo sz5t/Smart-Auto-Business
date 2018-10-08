@@ -947,7 +947,7 @@ export class WorkFlowTodoComponent implements OnInit {
                           options: {
                             'type': 'select',
                             'labelSize': '6',
-                            'controlSize': '16',
+                            'controlSize': '18',
                             'inputType': 'submit',
                             'name': 'parentId',
                             'label': '父类别',
@@ -959,6 +959,7 @@ export class WorkFlowTodoComponent implements OnInit {
                             'placeholder': '--请选择--',
                             'disabled': false,
                             'size': 'default',
+                            'width': '100%',
                             'defaultValue': '6b4021cef8394d5fb4775afcd01d920f',
                             'ajaxConfig': {
                               'url': 'common/ShowCase',
@@ -1004,7 +1005,7 @@ export class WorkFlowTodoComponent implements OnInit {
                               'ajaxType': 'get',
                               'params': [
                                 {
-                                  name: 'parentId', type: 'tempValue', valueName: '_cas_parentId'
+                                  name: 'parentId', type: 'cascadeValue', valueName: '_cas_parentId'
                                 }
                               ]
                             }
@@ -1331,6 +1332,58 @@ export class WorkFlowTodoComponent implements OnInit {
                             ]
                           }
                         ],
+                      },
+                      {
+                        name: 'parentId',
+                        CascadeObjects: [
+                          {
+                            cascadeName: 'parentIds', // field 对象 接收级联信息的小组件
+                            cascadeValueItems: [   // 应答描述数组，同一个组件可以做出不同应答
+                            ],
+                            cascadeDateItems: [   // 应答描述数组，同一个组件可以做出不同应答
+                              // 需要描述不同的选项下的不同事件 事件优先级，展示-》路由-》赋值 依次解析
+                              {
+                                data: {
+                                  type: 'ajax', // option/ajax/setValue
+                                  option_data: { // 静态数据集
+                                    option: [
+                                      { value: '1', label: '高级date' },
+                                      { value: '2', label: '高级date' },
+                                      { value: '3', label: '高级date' }
+                                    ]
+                                  },
+                                  ajax_data: { // 路由发生变化，复杂问题，涉及参数取值  组件参数配置为caseCodeValue
+
+                                    // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
+                                    option: [
+                                      { name: '_cas_parentId', type: 'selectValue', value: '1', valueName: 'data' } // ,
+                                     // { name: 'typevaluename', type: 'selectValue', value: '1', valueName: 'data' },
+
+                                    ]
+                                  },
+                                  setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
+                                    option: {
+                                      name: 'value',
+                                      type: 'selectValue',
+                                      value: '1',
+                                      valueName: 'data'
+                                    }
+                                  },
+                                  show_data: { // 当前表单的展示字段等信息
+
+                                  },
+                                  relation_data: {
+
+                                  }
+                                }
+
+
+                              }
+
+
+                            ]
+                          }
+                        ]
                       }
 
                     ],
