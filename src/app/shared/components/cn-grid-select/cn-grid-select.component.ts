@@ -1,26 +1,58 @@
-import {Component, Input, OnInit, Output, EventEmitter, AfterViewInit, OnChanges, SimpleChanges} from '@angular/core';
-import {ApiService} from '@core/utility/api-service';
-import {APIResource} from '@core/utility/api-resource';
+import { Component, Input, OnInit, Output, EventEmitter, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core';
+import { ApiService } from '@core/utility/api-service';
+import { APIResource } from '@core/utility/api-resource';
 
 @Component({
     selector: 'cn-grid-select',
     templateUrl: './cn-grid-select.component.html',
 })
-export class CnGridSelectComponent implements OnInit , AfterViewInit {
+export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
     @Input() config;
     @Input() value;
     @Input() bsnData;
     @Input() rowData;
     @Input() dataSet;
+    @Input() casadeData;
     @Output() updateValue = new EventEmitter();
     _options = [];
     _selectedOption;
     resultData;
+    cascadeValue = {};
+    cascadeSetValue = {};
     // _selectedMultipleOption:any[];
     constructor(private apiService: ApiService) {
     }
 
     async ngOnInit() {
+       // console.log('变化时临时参数', this.casadeData);
+       // console.log('变化配置', this.config);
+        for (const key in this.casadeData) {
+            // 临时变量的整理
+            if (key === 'cascadeValue') {
+                for (const casekey in this.casadeData['cascadeValue']) {
+                    if (this.casadeData['cascadeValue'].hasOwnProperty(casekey)) {
+                        this.cascadeValue['cascadeValue'] = this.casadeData['cascadeValue'][casekey];
+                    }
+                }
+            } else if (key === 'options') { // 目前版本，静态数据集 优先级低
+                this.config.options = this.casadeData['options'];
+            } else if (key === 'setValue') {
+                // this.config.defaultValue 赋值，将值写入
+           /*      if (this.value && this.value.data) {
+                    this.value.data = this.casadeData['setValue'];
+                } else {
+                    this.config.defaultValue = this.casadeData['setValue'];
+                }
+
+                if (this.config.defaultValue ) {
+                    this.config.defaultValue = this.casadeData['setValue'];
+                } */
+                this.cascadeSetValue['setValue'] = this.casadeData['setValue'];
+            }
+           
+
+        }
+
         if (this.dataSet) {
             // 加载数据集
             this._options = this.dataSet;
@@ -32,25 +64,34 @@ export class CnGridSelectComponent implements OnInit , AfterViewInit {
                 const values = this.config.valueName.split('.');
                 this.resultData.data.forEach(d => {
                     d[this.config.valueName].forEach(v => {
-                        this._options.push({label: v.ParameterName, value: v.ParameterName});
+                        this._options.push({ label: v.ParameterName, value: v.ParameterName });
                     });
                 });
             } else {
                 this.resultData.data.forEach(d => {
-                    this._options.push({'label': d[this.config.labelName], 'value': d[this.config.valueName]});
+                    this._options.push({ 'label': d[this.config.labelName], 'value': d[this.config.valueName] });
                 });
             }
         } else {
             // 加载固定数据
             this._options = this.config.options;
         }
-        this.selectedByLoaded();
+
+        if ( this.cascadeSetValue.hasOwnProperty('setValue')) {
+           this. selectedBycascade();
+        } else {
+            this.selectedByLoaded();
+        }
     }
 
     ngAfterViewInit() {
 
     }
-
+    // casadeData
+    ngOnChanges() {
+        // console.log('select加载固定数据ngOnChanges', this.config);
+       // console.log('变化时临时参数ngOnChanges', this.casadeData);
+    }
     async asyncLoadOptions(p?, componentValue?, type?) {
         const params = {};
         let tag = true;
@@ -82,6 +123,9 @@ export class CnGridSelectComponent implements OnInit , AfterViewInit {
 
                 } else if (param.type === 'componentValue') {
                     params[param.name] = componentValue[param.valueName];
+                } else if (param.type === 'cascadeValue') {
+                    params[param.name] = this.cascadeValue[param.valueName];
+
                 }
             });
 
@@ -123,6 +167,17 @@ export class CnGridSelectComponent implements OnInit , AfterViewInit {
         }
     }
 
+    selectedBycascade() {
+        let selected;
+        this._options.forEach((element => {
+                if (element.value === this.cascadeSetValue['setValue']) {
+                    selected = element;
+                }
+        }));
+        
+        this._selectedOption = selected;
+        this.valueChange(this._selectedOption);
+    }
     selectedByLoaded() {
         let selected;
         if (this.value && this.value.data) {
@@ -134,7 +189,7 @@ export class CnGridSelectComponent implements OnInit , AfterViewInit {
 
         } else {
             this._options.forEach((element => {
-                if(element.value === this.config.defaultValue) {
+                if (element.value === this.config.defaultValue) {
                     selected = element;
                 }
             }));
@@ -142,14 +197,16 @@ export class CnGridSelectComponent implements OnInit , AfterViewInit {
         this._selectedOption = selected;
         this.valueChange(this._selectedOption);
     }
+    
 
     valueChange(name?) {
         // 使用当前rowData['Id'] 作为当前编辑行的唯一标识
         // 所有接收数据的组件都已自己当前行为标识进行数据及联
+        // dataItem
         if (name) {
             this.value.data = name.value;
             // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
-            if(this.resultData) {
+            if (this.resultData) {
                 const index = this.resultData.data.findIndex(item => item['Id'] === name.value);
                 this.resultData.data && (this.value['dataItem'] = this.resultData.data[index]);
             }
