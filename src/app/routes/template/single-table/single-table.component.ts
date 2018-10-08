@@ -513,12 +513,12 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'options': [
                                                             {
                                                                 'label': '启用',
-                                                                'value': 1,
+                                                                'value': true,
                                                                 'disabled': false
                                                             },
                                                             {
                                                                 'label': '禁用',
-                                                                'value': 0,
+                                                                'value': false,
                                                                 'disabled': false
                                                             }
                                                         ]

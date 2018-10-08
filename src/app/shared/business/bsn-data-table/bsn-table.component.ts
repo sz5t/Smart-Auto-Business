@@ -850,6 +850,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             // 使用时乐意通过内置的参数类型进行访问
             switch (c.action) {
                 case BSN_EXECUTE_ACTION.EXECUTE_CHECKED:
+                debugger;
                     if (this.dataList.filter(item => item.checked === true).length <= 0) {
                         this._message.create('info', '请选择要执行的数据');
                         return false;
@@ -1062,7 +1063,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     const newParam = CommonTools.parametersResolver({
                         params: ajaxConfigObj.params,
                         tempValue: this.tempValue,
-                        item: {},
+                        item: dataItem,
                         componentValue: dataItem,
                         initValue: this.initValue
                     });
@@ -1073,7 +1074,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             executeParams.push(CommonTools.parametersResolver({
                 params: ajaxConfigObj.params,
                 tempValue: this.tempValue,
-                item: {} ,
+                item: handleData ,
                 componentValue: handleData,
                 initValue: this.initValue
             }));

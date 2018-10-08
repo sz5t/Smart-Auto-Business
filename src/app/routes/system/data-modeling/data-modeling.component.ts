@@ -547,12 +547,12 @@ export class DataModelingComponent implements OnInit {
                                                                         valueName: 'isNeedDeploy',
                                                                         value: ''
                                                                     },
-                                                                    {
-                                                                        name: 'belongPlatformType',
-                                                                        type: 'componentValue',
-                                                                        valueName: 'belongPlatformType',
-                                                                        value: ''
-                                                                    }
+                                                                    // {
+                                                                    //     name: 'belongPlatformType',
+                                                                    //     type: 'componentValue',
+                                                                    //     valueName: 'belongPlatformType',
+                                                                    //     value: ''
+                                                                    // }
                                                                 ],
                                                                 'output': [
                                                                     {
