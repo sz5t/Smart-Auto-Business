@@ -2094,7 +2094,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
                     const dataType = [];
                     const valueType = [];
-                    cobj['cascadeDateItems'].forEach(item => {
+                    cobj['cascadeDataItems'].forEach(item => {
                         // 数据关联 （只是单纯的数据关联，内容只有ajax）
                         // cobj.data
                         const dataTypeItem = {};

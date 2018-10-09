@@ -1244,7 +1244,7 @@ export class WorkFlowTodoComponent implements OnInit {
 
 
                             ],
-                            cascadeDateItems: []  // 应答描述数组，同一个组件可以做出不同应答
+                            cascadeDataItems: []  // 应答描述数组，同一个组件可以做出不同应答
 
                           },
                           {
@@ -1288,7 +1288,7 @@ export class WorkFlowTodoComponent implements OnInit {
 
 
                             ],
-                            cascadeDateItems: [   // 应答描述数组，同一个组件可以做出不同应答
+                            cascadeDataItems: [   // 应答描述数组，同一个组件可以做出不同应答
                               // 需要描述不同的选项下的不同事件 事件优先级，展示-》路由-》赋值 依次解析
                               {
                                 data: {
@@ -1300,7 +1300,7 @@ export class WorkFlowTodoComponent implements OnInit {
                                       { value: '3', label: '高级date' }
                                     ]
                                   },
-                                  ajax_data: { // 路由发生变化，复杂问题，涉及参数取值  组件参数配置为caseCodeValue
+                                /*   ajax_data: { // 路由发生变化，复杂问题，涉及参数取值  组件参数配置为caseCodeValue
 
                                     // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
                                     option: [
@@ -1308,7 +1308,7 @@ export class WorkFlowTodoComponent implements OnInit {
                                       { name: 'typevaluename', type: 'selectValue', value: '1', valueName: 'data' },
 
                                     ]
-                                  },
+                                  }, */
                                   setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
                                     option: {
                                       name: 'value',
@@ -1340,7 +1340,7 @@ export class WorkFlowTodoComponent implements OnInit {
                             cascadeName: 'parentIds', // field 对象 接收级联信息的小组件
                             cascadeValueItems: [   // 应答描述数组，同一个组件可以做出不同应答
                             ],
-                            cascadeDateItems: [   // 应答描述数组，同一个组件可以做出不同应答
+                            cascadeDataItems: [   // 应答描述数组，同一个组件可以做出不同应答
                               // 需要描述不同的选项下的不同事件 事件优先级，展示-》路由-》赋值 依次解析
                               {
                                 data: {
@@ -2914,7 +2914,7 @@ export class WorkFlowTodoComponent implements OnInit {
 
 
                                 ],
-                                cascadeDateItems: []  // 应答描述数组，同一个组件可以做出不同应答
+                                cascadeDataItems: []  // 应答描述数组，同一个组件可以做出不同应答
 
                               },
                               {
@@ -2957,7 +2957,7 @@ export class WorkFlowTodoComponent implements OnInit {
 
 
                                 ],
-                                cascadeDateItems: [   // 应答描述数组，同一个组件可以做出不同应答
+                                cascadeDataItems: [   // 应答描述数组，同一个组件可以做出不同应答
                                   // 需要描述不同的选项下的不同事件 事件优先级，展示-》路由-》赋值 依次解析
                                   {
                                     data: {
