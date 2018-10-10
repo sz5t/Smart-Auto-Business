@@ -1,3 +1,4 @@
+import { CacheService } from '@delon/cache';
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, Inject, OnDestroy} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ApiService} from '@core/utility/api-service';
@@ -43,6 +44,7 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
 
     constructor(private formBuilder: FormBuilder,
                 private _apiService: ApiService,
+                private cacheService: CacheService,
                 private message: NzMessageService, private modalService: NzModalService,
                 private _messageService: RelativeService,
                 @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
@@ -55,6 +57,9 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
     ngOnInit() {
         if (this.initData) {
             this.initValue = this.initData;
+        }
+        if (this.cacheService) {
+            this.cacheValue = this.cacheService;
         }
         this.form = this.createGroup();
         this.resolverRelation();
@@ -621,7 +626,8 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
                             tempValue: this.tempValue,
                             item: item,
                             componentValue: this.value,
-                            initValue: this.initValue
+                            initValue: this.initValue,
+                            cacheValue: this.cacheValue
                         });
                     params.push(p);
                 });
@@ -633,7 +639,8 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
                 tempValue: this.tempValue,
                 item: {} ,
                 componentValue: this.value,
-                initValue: this.initValue
+                initValue: this.initValue,
+                cacheValue: this.cacheValue
             });
         }
         return params;

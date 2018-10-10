@@ -1,3 +1,4 @@
+import { CacheService } from '@delon/cache';
 import { Observable } from 'rxjs';
 import {
     BSN_COMPONENT_MODES,
@@ -90,6 +91,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     constructor(private _http: ApiService,
         private _message: NzMessageService,
         private modalService: NzModalService,
+        private cacheService: CacheService,
         @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>) {
@@ -101,6 +103,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         this.resolverRelation();
         if (this.initData) {
             this.initValue = this.initData;
+        }
+        if (this.cacheService) {
+            this.cacheValue = this.cacheService;
         }
         if (this.config.dataSet) {
             (async () => {
@@ -370,7 +375,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                             tempValue: this.tempValue,
                             componentValue: rowData,
                             item: rowData,
-                            initValue: this.initValue
+                            initValue: this.initValue,
+                            cacheValue: this.cacheService
                         }
 
                     );
@@ -469,7 +475,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     params: cfg[i].params,
                     tempValue: this.tempValue,
                     item: selectedRow,
-                    initValue: this.initValue
+                    initValue: this.initValue,
+                    cacheValue: this.cacheService
                 });
                 const response = await this[option.type](cfg[i].url, newParam);
                 if (response.isSuccess) {
@@ -1245,7 +1252,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             params: ajaxConfigObj.params,
             tempValue: this.tempValue,
             item: handleData,
-            initValue: this.initValue
+            initValue: this.initValue,
+            cacheValue: this.cacheService
         });
         // 执行数据操作
         return this._executeRequest(
@@ -1265,7 +1273,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         tempValue: this.tempValue,
                         item: dataItem,
                         componentValue: dataItem,
-                        initValue: this.initValue
+                        initValue: this.initValue,
+                        cacheValue: this.cacheService
                     });
                     executeParams.push(newParam);
                 });
@@ -1276,7 +1285,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 tempValue: this.tempValue,
                 item: handleData,
                 componentValue: handleData,
-                initValue: this.initValue
+                initValue: this.initValue,
+                cacheValue: this.cacheService
             }));
         }
         // 执行数据操作
@@ -1299,7 +1309,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                             params: cfg[i].params,
                             tempValue: this.tempValue,
                             item: item,
-                            initValue: this.initValue
+                            initValue: this.initValue,
+                            cacheValue: this.cacheService
                         });
                         params.push(newParam);
                     });
@@ -1598,7 +1609,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         if (filterConfig) {
             filter = CommonTools.parametersResolver({
                 params: filterConfig,
-                tempValue: this.tempValue
+                tempValue: this.tempValue,
+                cacheValue: this.cacheService
             });
         }
         return filter;
@@ -1615,7 +1627,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             params = CommonTools.parametersResolver({
                 params: paramsConfig,
                 tempValue: this.tempValue,
-                initValue: this.initValue
+                initValue: this.initValue,
+                cacheValue: this.cacheService
             });
         }
         return params;
