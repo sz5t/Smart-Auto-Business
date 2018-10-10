@@ -57,11 +57,25 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
     constructor(private resolver: ComponentFactoryResolver, private container: ViewContainerRef) {
     }
 
+    changecount = 'first';
     ngOnChanges() {
         if (this.component) {
         }
      
         if (this.config) {
+          
+        }
+        if (this.changeConfig ) {  // && !this.isEmptyObject(this.changeConfig)
+           // console.log('ngOnChanges', this.changeConfig);
+           // console.log('ngOnChangesvalue', this.value);
+           // console.log('ngOnChangesvalueconfig', this.config);
+           this.changecount = 'repeat';
+          
+       }
+    }
+
+    ngOnInit() {
+        if (  this.changecount === 'first') {
             if (!components[this.config.type]) {
                 const supportedTypes = Object.keys(components).join(', ');
                 throw new Error(
@@ -87,12 +101,8 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
             this.component.instance.updateValue.subscribe(event => {
                 this.setValue(event);
             });
-        }
-        if (this.changeConfig ) {  // && !this.isEmptyObject(this.changeConfig)
-           // console.log('ngOnChanges', this.changeConfig);
-           // console.log('ngOnChangesvalue', this.value);
-           // console.log('ngOnChangesvalueconfig', this.config);
-           this.container.clear();
+        } else {
+            this.container.clear();
            if (!components[this.config.type]) {
                const supportedTypes = Object.keys(components).join(', ');
                throw new Error(
@@ -121,11 +131,8 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
                this.setValue(event);
            });
       
-       }
-    }
-
-    ngOnInit() {
-      
+        }
+       
 
     }
 
