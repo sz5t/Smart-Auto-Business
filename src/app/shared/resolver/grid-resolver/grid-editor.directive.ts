@@ -60,29 +60,27 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
     ngOnChanges() {
         if (this.component) {
         }
-        if (this.changeConfig ) {  // && !this.isEmptyObject(this.changeConfig)
-            // console.log('ngOnChanges', this.changeConfig);
-            // console.log('ngOnChangesvalue', this.value);
-            // console.log('ngOnChangesvalueconfig', this.config);
-            this.container.clear();
+     
+        if (this.config) {
             if (!components[this.config.type]) {
                 const supportedTypes = Object.keys(components).join(', ');
                 throw new Error(
                     `不支持此类型的组件 (${this.config.type}).可支持的类型为: ${supportedTypes}`
                 );
             }
+            this.container.clear();
             const comp = this.resolver.resolveComponentFactory<any>(components[this.config.type]);
             this.component = this.container.createComponent(comp);
-            const c_config = JSON.parse(JSON.stringify(this.config));
-            this.component.instance.config = c_config;
+            // const c_config = JSON.parse(JSON.stringify(this.config));
+            this.component.instance.config = this.config;
             this.component.instance.value = this.value;
             this.component.instance.bsnData = this.bsnData;
             this.component.instance.rowData = this.rowData;
-            // if (this.component.instance.casadeData) {
-            //  console.log('ngOnInit', this.changeConfig);
-            this.component.instance.casadeData = this.changeConfig;
-            // }
-
+            if (this.component.instance.casadeData) {
+                const c_changeConfig = JSON.parse(JSON.stringify(this.changeConfig));
+                this.component.instance.casadeData = c_changeConfig;
+               
+            }
             if (this.dataSet) {
                 this.component.instance.dataSet = this.dataSet;
             }
@@ -90,32 +88,44 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
                 this.setValue(event);
             });
         }
+        if (this.changeConfig ) {  // && !this.isEmptyObject(this.changeConfig)
+           // console.log('ngOnChanges', this.changeConfig);
+           // console.log('ngOnChangesvalue', this.value);
+           // console.log('ngOnChangesvalueconfig', this.config);
+           this.container.clear();
+           if (!components[this.config.type]) {
+               const supportedTypes = Object.keys(components).join(', ');
+               throw new Error(
+                   `不支持此类型的组件 (${this.config.type}).可支持的类型为: ${supportedTypes}`
+               );
+           }
+           const comp = this.resolver.resolveComponentFactory<any>(components[this.config.type]);
+           this.component = this.container.createComponent(comp);
+           // const c_config = JSON.parse(JSON.stringify(this.config));
+           this.component.instance.config = this.config;
+           this.component.instance.value = this.value;
+           this.component.instance.bsnData = this.bsnData;
+           this.component.instance.rowData = this.rowData;
+           // if (this.component.instance.casadeData) {
+           //  console.log('ngOnInit', this.changeConfig);
+     
+           const c_changeConfig = JSON.parse(JSON.stringify(this.changeConfig));
+           this.component.instance.casadeData = c_changeConfig;
+          
+           // }
+
+           if (this.dataSet) {
+               this.component.instance.dataSet = this.dataSet;
+           }
+           this.component.instance.updateValue.subscribe(event => {
+               this.setValue(event);
+           });
+      
+       }
     }
 
     ngOnInit() {
-        if (!components[this.config.type]) {
-            const supportedTypes = Object.keys(components).join(', ');
-            throw new Error(
-                `不支持此类型的组件 (${this.config.type}).可支持的类型为: ${supportedTypes}`
-            );
-        }
-        this.container.clear();
-        const comp = this.resolver.resolveComponentFactory<any>(components[this.config.type]);
-        this.component = this.container.createComponent(comp);
-        const c_config = JSON.parse(JSON.stringify(this.config));
-        this.component.instance.config = c_config;
-        this.component.instance.value = this.value;
-        this.component.instance.bsnData = this.bsnData;
-        this.component.instance.rowData = this.rowData;
-        if (this.component.instance.casadeData) {
-            this.component.instance.casadeData = this.changeConfig;
-        }
-        if (this.dataSet) {
-            this.component.instance.dataSet = this.dataSet;
-        }
-        this.component.instance.updateValue.subscribe(event => {
-            this.setValue(event);
-        });
+      
 
     }
 

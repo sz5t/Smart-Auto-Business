@@ -2775,7 +2775,7 @@ export class WorkFlowTodoComponent implements OnInit {
                               ]
                             }
                           ],
-                        'cascade': [ // 配置 信息
+                        'cascade1': [ // 配置 信息
                           {
                             name: 'Type', // 发出级联请求的小组件（就是配置里的name 字段名称）
                             CascadeObjects: [// 当前小组件级联对象数组

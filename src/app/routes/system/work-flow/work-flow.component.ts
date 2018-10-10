@@ -36,6 +36,7 @@ export class WorkFlowComponent implements OnInit {
                     'viewId': 'parentTable',
                     'component': 'bsnTable',
                     'keyId': 'Id',
+                    'showCheckBox': true,
                     'pagination': true, // 是否分页
                     'showTotal': true, // 是否显示总数据量
                     'pageSize': 5, // 默pageSizeOptions认每页数据条数
@@ -784,6 +785,7 @@ export class WorkFlowComponent implements OnInit {
                     'viewId': 'wf_Version_Table',
                     'component': 'bsnTable',
                     'keyId': 'Id',
+                    'showCheckBox': true,
                     'pagination': true, // 是否分页
                     'showTotal': true, // 是否显示总数据量
                     'pageSize': 5, // 默认每页数据条数
@@ -1953,6 +1955,7 @@ export class WorkFlowComponent implements OnInit {
                               'viewId': 'wf_node_Table',
                               'component': 'bsnTable',
                               'keyId': 'Id',
+                              'showCheckBox': true,
                               'pagination': true, // 是否分页
                               'showTotal': true, // 是否显示总数据量
                               'pageSize': 5, // 默认每页数据条数
@@ -2789,6 +2792,7 @@ export class WorkFlowComponent implements OnInit {
                                                   'viewId': 'Operation_Table',
                                                   'component': 'bsnTable',
                                                   'keyId': 'Id',
+                                                  'showCheckBox': true,
                                                   'pagination': true, // 是否分页
                                                   'showTotal': true, // 是否显示总数据量
                                                   'pageSize': 5, // 默pageSizeOptions认每页数据条数
@@ -3019,6 +3023,7 @@ export class WorkFlowComponent implements OnInit {
                                                   'viewId': 'OperationGroup_Table',
                                                   'component': 'bsnTable',
                                                   'keyId': 'Id',
+                                                  'showCheckBox': true,
                                                   'pagination': true, // 是否分页
                                                   'showTotal': true, // 是否显示总数据量
                                                   'pageSize': 5, // 默pageSizeOptions认每页数据条数
@@ -3215,6 +3220,7 @@ export class WorkFlowComponent implements OnInit {
                                                             'viewId': 'wfAjaxconfig_Table',
                                                             'component': 'bsnTable',
                                                             'keyId': 'Id',
+                                                            'showCheckBox': true,
                                                             'pagination': true, // 是否分页
                                                             'showTotal': true, // 是否显示总数据量
                                                             'pageSize': 5, // 默pageSizeOptions认每页数据条数
@@ -3506,6 +3512,7 @@ export class WorkFlowComponent implements OnInit {
                                                             'viewId': 'Wfajaxparams_Table',
                                                             'component': 'bsnTable',
                                                             'keyId': 'Id',
+                                                            'showCheckBox': true,
                                                             'pagination': true, // 是否分页
                                                             'showTotal': true, // 是否显示总数据量
                                                             'pageSize': 5, // 默pageSizeOptions认每页数据条数
@@ -3858,6 +3865,7 @@ export class WorkFlowComponent implements OnInit {
                                         'viewId': 'tree_tab_childTable11',
                                         'component': 'bsnTable',
                                         'keyId': 'Id',
+                                        'showCheckBox': true,
                                         'pagination': true, // 是否分页
                                         'showTotal': true, // 是否显示总数据量
                                         'pageSize': 5, // 默认每页数据条数
@@ -4177,6 +4185,7 @@ export class WorkFlowComponent implements OnInit {
                               'viewId': 'wf_node_line_Table',
                               'component': 'bsnTable',
                               'keyId': 'Id',
+                              'showCheckBox': true,
                               'pagination': true, // 是否分页
                               'showTotal': true, // 是否显示总数据量
                               'pageSize': 5, // 默认每页数据条数
