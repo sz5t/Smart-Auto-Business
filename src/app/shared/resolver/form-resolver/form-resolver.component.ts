@@ -356,6 +356,10 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     }
 
     async saveForm_2(ajaxConfigs) {
+<<<<<<< HEAD
+=======
+        // debugger;    
+>>>>>>> 4e5652d39125d915ecbe25d479d5784cc8c079f5
         let result;
         const method = this._editable;
         if (method === BSN_FORM_STATUS.TEXT) {
