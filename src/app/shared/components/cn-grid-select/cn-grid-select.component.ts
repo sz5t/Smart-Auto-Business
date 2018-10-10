@@ -26,8 +26,9 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
     async ngOnInit() {
         // console.log('变化时临时参数', this.casadeData);
         // console.log('变化配置', this.config);
-        // console.log('下拉选中的本来值', this.value);
+        // console.log('下拉选中的本来值: ** ', this.value);
         if (this.casadeData) {
+         
             for (const key in this.casadeData) {
                 // 临时变量的整理
                 if (key === 'cascadeValue') {
@@ -39,18 +40,7 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
                     }
                 } else if (key === 'options') { // 目前版本，静态数据集 优先级低
                     this.config.options = this.casadeData['options'];
-                } else if (key === 'setValue') {
-                    // this.config.defaultValue 赋值，将值写入
-               /*      if (this.value && this.value.data) {
-                        this.value.data = this.casadeData['setValue'];
-                    } else {
-                        this.config.defaultValue = this.casadeData['setValue'];
-                    }
-    
-                    if (this.config.defaultValue ) {
-                        this.config.defaultValue = this.casadeData['setValue'];
-                    } */
-                   
+                } else if (key === 'setValue') {               
                     this.cascadeSetValue['setValue'] = JSON.parse(JSON.stringify(this.casadeData['setValue']));
                     delete this.casadeData['setValue'];
                    
@@ -76,9 +66,14 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
                     });
                 });
             } else {
-                this.resultData.data.forEach(d => {
-                    this._options.push({ 'label': d[this.config.labelName], 'value': d[this.config.valueName] });
-                });
+                if (this.resultData) {
+                    this.resultData.data.forEach(d => {
+                        this._options.push({ 'label': d[this.config.labelName], 'value': d[this.config.valueName] });
+                    });
+                } else {
+                    this._options = [];
+                }
+              
             }
         } else {
             // 加载固定数据
@@ -88,6 +83,7 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
         if ( this.cascadeSetValue.hasOwnProperty('setValue')) {
            this. selectedBycascade();
         } else {
+         
             this.selectedByLoaded();
         }
     }
@@ -98,7 +94,7 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
     // casadeData
     ngOnChanges() {
         // console.log('select加载固定数据ngOnChanges', this.config);
-       // console.log('变化时临时参数ngOnChanges', this.casadeData);
+        // console.log('select变化时临时参数ngOnChanges', this.casadeData);
     }
     async asyncLoadOptions(p?, componentValue?, type?) {
         const params = {};
@@ -133,8 +129,15 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
                 } else if (param.type === 'componentValue') {
                     params[param.name] = componentValue[param.valueName];
                 } else if (param.type === 'cascadeValue') {
-                    params[param.name] = this.cascadeValue[param.valueName];
-
+                    if (this.cascadeValue[param.valueName]) {
+                        params[param.name] = this.cascadeValue[param.valueName];
+                    } else {
+                        // console.log('参数不全不能加载');
+                        tag = false;
+                        return null;
+                    }
+                   // params[param.name] = this.cascadeValue[param.valueName];
+                   
                 }
             });
 
@@ -194,8 +197,7 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
 
     }
     selectedByLoaded() {
-       // console.log('selectedByLoaded', this.value);
-       //  console.log('数据源', this._options);
+    
         let selected;
         if (this.value && this.value.hasOwnProperty('data')) {
             this._options.forEach(element => {
@@ -212,7 +214,11 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
             }));
         }
         this._selectedOption = selected;
-        this.valueChange(this._selectedOption);
+        // console.log('值不为空触发', this._selectedOption);
+        if (this._selectedOption) {
+            this.valueChange(this._selectedOption);
+        }
+
     }
     
 
@@ -232,6 +238,7 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
             this.value.data = null;
             this.updateValue.emit(this.value);
         }
+      
 
     }
 
