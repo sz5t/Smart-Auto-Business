@@ -9,7 +9,7 @@ import {
     BSN_COMPONENT_MODES,
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
-    BSN_COMPONENT_CASCADE_MODES, BSN_FORM_STATUS
+    BSN_COMPONENT_CASCADE_MODES, BSN_FORM_STATUS, BSN_OUTPOUT_PARAMETER_TYPE
 } from '@core/relative-Service/BsnTableStatus';
 import { Observable } from 'rxjs';
 import { Observer } from 'rxjs';
@@ -127,7 +127,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE:
                     if (option.ajaxConfig) {
-                        this.executeFormAction(option.ajaxConfig);
+                        this._resolveAjaxConfig(option.ajaxConfig);
                     }
                         break;
                     case BSN_COMPONENT_MODES.DIALOG:
@@ -348,18 +348,16 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
             } else {
                 this.tempValue['_id'] && delete this.tempValue['_id'];
+                this.form.reset();
             }
         } else {
             this.tempValue['_id'] && delete this.tempValue['_id'];
+            this.form.reset();
         }
         this.isSpinning = false;
     }
 
     async saveForm_2(ajaxConfigs) {
-<<<<<<< HEAD
-=======
-        // debugger;    
->>>>>>> 4e5652d39125d915ecbe25d479d5784cc8c079f5
         let result;
         const method = this._editable;
         if (method === BSN_FORM_STATUS.TEXT) {
@@ -372,10 +370,201 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
     }
 
-    async executeFormAction(ajaxConfigs) {
-        let result;
+    private _resolveAjaxConfig(ajaxConfigs) {
         const index = ajaxConfigs.findIndex(item => item.ajaxType === 'post');
-        result = await this.post(ajaxConfigs[index]);
+        const c = ajaxConfigs[index];
+        this._getAjaxConfig(c, ajaxConfigs);
+    }
+
+    private _getAjaxConfig(c, ajaxConfigs) {
+        if (c) {
+            if (c.message) {
+                this.modalService.confirm({
+                    nzTitle: c.title ? c.title : '提示',
+                    nzContent: c.message ? c.message : '',
+                    nzOnOk: () => {
+                        (async () => {
+                            const response = await this.executeAction(c);
+                            // 处理输出参数
+                            if (c.outputParams) {
+                                this._outputParametersResolver(c, response, ajaxConfigs, () => {
+                                    this.load();
+                                });
+                            } else { // 没有输出参数，进行默认处理
+                                this.showAjaxMessage(response, '操作成功', () => {
+                                    this.load();
+                                });
+                            }
+
+                        })();
+                    },
+                    nzOnCancel() {
+                    }
+                });
+            } else {
+                (async () => {
+                    const response = await this.executeAction(c);
+                    // 处理输出参数
+                    if (c.outputParams) {
+                        this._outputParametersResolver(c, response, ajaxConfigs, () => {
+                            this.load();
+                        });
+                    } else {// 没有输出参数，进行默认处理
+                        this.showAjaxMessage(response, '操作成功', () => {
+                            this.load();
+                        });
+                    }
+                })();
+
+
+            }
+        }
+    }
+
+
+
+    /**
+     *
+     * @param outputParams
+     * @param response
+     * @param callback
+     * @returns {Array}
+     * @private
+     * 1、输出参数的配置中，消息类型的参数只能设置一次
+     * 2、值类型的结果可以设置多个
+     * 3、表类型的返回结果可以设置多个
+     */
+    private _outputParametersResolver(c, response, ajaxConfig, callback) {
+        const result = false;
+        if (response.isSuccess) {
+            const msg = c.outputParams[c.outputParams.findIndex(m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE)];
+            const value = c.outputParams[c.outputParams.findIndex(m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE)];
+            const table = c.outputParams[c.outputParams.findIndex(m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE)];
+            const msgObj = response.data[msg.name] ? response.data[msg.name].split(':') : '';
+            // const valueObj = response.data[value.name] ? response.data[value.name] : [];
+            // const tableObj = response.data[table.name] ? response.data[table.name] : [];
+            if (msgObj && msgObj.length > 1) {
+                const messageType = msgObj[0];
+                let options;
+                switch (messageType) {
+                    case 'info':
+                        options = {
+                            nzTitle: '提示',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.modalService[messageType](options);
+                        break;
+                    case 'error':
+                        options = {
+                            nzTitle: '提示',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.modalService[messageType](options);
+                        break;
+                    case 'confirm':
+                        options = {
+                            nzTitle: '提示',
+                            nzContent: msgObj[1],
+                            nzOnOk: () => {
+                                // 是否继续后续操作，根据返回状态结果
+                                const childrenConfig = ajaxConfig.filter(f => f.parentName && f.parentName === c.name);
+                                childrenConfig && childrenConfig.map(currentAjax => {
+                                    this._getAjaxConfig(currentAjax, ajaxConfig);
+                                });
+                            },
+                            nzOnCancel: () => {
+
+                            }
+                        };
+                        this.modalService[messageType](options);
+                        break;
+                    case 'warning':
+                        options = {
+                            nzTitle: '提示',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.modalService[messageType](options);
+                        break;
+                    case 'success':
+                        options = {
+                            nzTitle: '',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.message.success(msgObj[1]);
+                        callback && callback();
+                        break;
+                }
+                // if(options) {
+                //     this.modalService[messageType](options);
+                //
+                //     // 如果成功则执行回调
+                //     if(messageType === 'success') {
+                //         callback && callback();
+                //     }
+                // }
+
+            } else {
+                this.message.error('存储过程返回结果异常：未获得输出的消息内容');
+            }
+
+        } else {
+            this.message.error('操作异常：', response.message);
+        }
+    }
+
+        /**
+     * 数据访问返回消息处理
+     * @param result
+     * @param message
+     * @param callback
+     */
+    showAjaxMessage(result, message?, callback?) {
+        const rs: { success: boolean, msg: string[] } = { success: true, msg: [] };
+        if (result && Array.isArray(result)) {
+            result.forEach(res => {
+                rs['success'] = (rs['success'] && res.isSuccess);
+                if (!res.isSuccess) {
+                    rs.msg.push(res.message);
+                }
+            });
+            if (rs.success) {
+                this.message.success(message);
+            } else {
+                this.message.error(rs.msg.join('<br/>'));
+            }
+        } else {
+            if (result.isSuccess) {
+                this.message.success(message);
+            } else {
+                this.message.error(result.message);
+            }
+        }
+        if (callback) {
+            callback();
+            if (this.config.componentType && this.config.componentType.parent === true) {
+                this.cascade.next(
+                    new BsnComponentMessage(
+                        BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                        this.config.viewId
+                    )
+                );
+            }
+        }
+    }
+
+    private async executeAction(postConfig) {
+        const url = this._buildURL(postConfig.url);
+        const params = CommonTools.parametersResolver({
+            params: postConfig.params,
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            componentValue: this.value,
+        });
+        return this.execute(url, postConfig.ajaxType, params);
     }
 
    /*  // async saveForm() {

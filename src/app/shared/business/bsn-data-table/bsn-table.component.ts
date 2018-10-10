@@ -165,7 +165,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                         this.cancelRow();
                         break;
                     case BSN_COMPONENT_MODES.SAVE:
-                        // debugger;
+                        debugger;
                         this.saveRow(option);
                         break;
                     case BSN_COMPONENT_MODES.DELETE:
@@ -344,6 +344,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             if (item['row_status'] === 'adding') {
                 addRows.push(item);
             } else if (item['row_status'] === 'updating') {
+                item = JSON.parse(JSON.stringify(this.editCache[item.key].data));
                 updateRows.push(item);
             }
         });

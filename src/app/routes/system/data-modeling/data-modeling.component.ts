@@ -59,24 +59,24 @@ export class DataModelingComponent implements OnInit {
                                             'child': false,
                                             'own': true
                                         },
-                                        'relations': [{
-                                            'relationViewId': 'parentTable',
-                                            'relationSendContent': [
-                                                {
-                                                    name: 'selectRow',
-                                                    sender: 'parentTable',
-                                                    aop: 'after',
-                                                    receiver: 'childTable',
-                                                    relationData: {
-                                                        name: 'refreshAsChild',
-                                                        params: [
-                                                            {pid: 'Id', cid: '_parentId'},
-                                                        ]
-                                                    },
-                                                }
-                                            ],
-                                            'relationReceiveContent': []
-                                        }],
+                                        // 'relations': [{
+                                        //     'relationViewId': 'parentTable',
+                                        //     'relationSendContent': [
+                                        //         {
+                                        //             name: 'selectRow',
+                                        //             sender: 'parentTable',
+                                        //             aop: 'after',
+                                        //             receiver: 'childTable',
+                                        //             relationData: {
+                                        //                 name: 'refreshAsChild',
+                                        //                 params: [
+                                        //                     {pid: 'Id', cid: '_parentId'},
+                                        //                 ]
+                                        //             },
+                                        //         }
+                                        //     ],
+                                        //     'relationReceiveContent': []
+                                        // }],
                                         'columns': [
                                             {
                                                 title: 'Id', field: 'Id', width: 80, hidden: true,
@@ -554,13 +554,6 @@ export class DataModelingComponent implements OnInit {
                                                                     //     value: ''
                                                                     // }
                                                                 ],
-                                                                'output': [
-                                                                    {
-                                                                        name: '_id',
-                                                                        type: '',
-                                                                        dataName: 'Id'
-                                                                    }
-                                                                ]
                                                             }],
                                                             put: [{
                                                                 'url': 'common/ComTabledata',
