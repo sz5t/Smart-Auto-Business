@@ -5,6 +5,7 @@ export interface ParametersResolverModel {
     item?;
     componentValue?;
     initValue?;
+    cacheValue?;
 }
 export class CommonTools {
   public static uuID(w) {
@@ -77,6 +78,12 @@ export class CommonTools {
                           if (model.initValue) {
                               result[param['name']] = model.initValue[param['valueName']];
                           }
+                          break;
+                      case BSN_PARAMETER_TYPE.CACHE_VALUE:
+                          if (model.cacheValue) {
+                              result[param['name']] = model.cacheValue.get('userInfo')[param('valueName')];
+                          }
+                          break; 
                   }
               }
           });

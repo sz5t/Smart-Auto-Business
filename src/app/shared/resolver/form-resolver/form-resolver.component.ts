@@ -1,3 +1,4 @@
+import { CacheService } from '@delon/cache';
 import { CommonTools } from './../../../core/utility/common-tools';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, Inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -42,6 +43,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
     constructor(private formBuilder: FormBuilder,
         private apiService: ApiService,
+        private cacheService: CacheService,
         private message: NzMessageService, private modalService: NzModalService,
         private _messageService: RelativeService,
         @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
@@ -54,6 +56,9 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     ngOnInit() {
         if (this.initData) {
             this.initValue = this.initData;
+        }
+        if (this.cacheService) {
+            this.cacheValue = this.cacheService;
         }
         this.form = this.createGroup();
         this.resolverRelation();

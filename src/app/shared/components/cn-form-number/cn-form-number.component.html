@@ -9,16 +9,15 @@
         [nzSize]="'default'"
         [nzSuffix]="suffixTemplate"
         [nzPrefixIcon]="config.perfix">
-        <input nz-input-number
+        <nz-input-number
                [nzMin]="config.min"
                [nzMax]="config.max"
                [nzStep]="config.step"
-               [nzFormatter]=""
-               [nzParser]=""
+               [nzFormatter]="formatter"
+               [nzParser]="parser"
                formControlName="{{config.name}}"
                [nzSize]="config.size"
-               placeholder="{{config.placeholder}}"
-               [(ngModel)]="model"/>
+               [(ngModel)]="model"></nz-input-number>
 
     </nz-input-group>
     <nz-form-extra *ngIf="config.explain">{{config.explain}}</nz-form-extra>

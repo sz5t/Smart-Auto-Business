@@ -17,6 +17,7 @@ import {CnFormRadioGroupComponent} from '@shared/components/cn-form-radio-group/
 import {CnFormSearchComponent} from '@shared/components/cn-form-search/cn-form-search.component';
 import {CnFormSelectTreeComponent} from '@shared/components/cn-form-select-tree/cn-form-select-tree.component';
 import {CnFormTextareaComponent} from '@shared/components/cn-form-textarea/cn-form-textarea.component';
+import { CnFormNumberComponent } from '@shared/components/cn-form-number/cn-form-number.component';
 const components: { [type: string]: Type<any> } = {
     input: CnFormInputComponent,
     submit: CnFormSubmitComponent,
@@ -30,7 +31,8 @@ const components: { [type: string]: Type<any> } = {
     search: CnFormSearchComponent,
     selectTree: CnFormSelectTreeComponent,
     textarea: CnFormTextareaComponent,
-    hidden: CnFormHiddenComponent
+    hidden: CnFormHiddenComponent,
+    number: CnFormNumberComponent
 };
 @Directive({
     selector: '[cnFormResolverDirective]'

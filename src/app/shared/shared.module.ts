@@ -1,3 +1,4 @@
+import { CnFormNumberComponent } from './components/cn-form-number/cn-form-number.component';
 import { CnBsnTreeMenuComponent } from './business/bsn-tree/bsn-tree-menu.component';
 import { BarChartComponent } from '@shared/chart/bar-chart/bar-chart.component';
 import { TableChartComponent } from '../routes/template/table-chart/table-chart.component';
@@ -73,6 +74,7 @@ import {CnFormWindowResolverComponent} from '@shared/resolver/form-resolver/form
 import { BsnTransferComponent } from './business/bsn-transfer/bsn-transfer.component';
 import { BsnTreeTableComponent } from '@shared/business/bsn-tree-table/bsn-tree-table.component';
 import { CnFormHiddenComponent } from '@shared/components/cn-form-hidden/cn-form-hidden.component';
+import { CnGridNumberComponent } from '@shared/components/cn-grid-munber/cn-grid-number.component';
 const THIRDMODULES = [
     NgZorroAntdModule,
     CountdownModule,
@@ -93,6 +95,7 @@ const COMPONENTS = [
     CnFormInputComponent,
     CnFormSubmitComponent,
     CnFormSelectComponent,
+    CnFormNumberComponent,
     CnDatePickerComponent,
     CnTimePickerComponent,
     CnFormRangePickerComponent,
@@ -106,6 +109,7 @@ const COMPONENTS = [
     CnGridTimePickerComponent,
     CnGridRangePickerComponent,
     CnGridCheckboxComponent,
+    CnGridNumberComponent,
     BsnDataTableComponent,
     BsnTableComponent,
     BsnTreeTableComponent,

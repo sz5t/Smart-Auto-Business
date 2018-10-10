@@ -46,7 +46,8 @@ export const BSN_PARAMETER_TYPE = {
     CHECKED: 'checked',
     SELECTED: 'selected',
     CHECKED_ID: 'checkedId',
-    INIT_VALUE: 'initValue'
+    INIT_VALUE: 'initValue',
+    CACHE_VALUE: 'cacheValue'
 };
 
 export const BSN_EXECUTE_ACTION = {

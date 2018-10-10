@@ -180,6 +180,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     async login(userLogin) {
         const user = await this._userLogin(userLogin);
         if (user && user.status === 200 && user.isSuccess) {
+            console.log(user.data);
             this.cacheService.set('userInfo', user.data);
             const token: ITokenModel = {token: user.data.token};
             this.tokenService.set(token); // 后续projectId需要进行动态获取

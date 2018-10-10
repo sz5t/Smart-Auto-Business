@@ -156,7 +156,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'span': '6'
                                                     },
                                                     {
-                                                        'type': 'input',
+                                                        'type': 'number',
                                                         'labelSize': '6',
                                                         'controlSize': '18',
                                                         'inputType': 'text',
@@ -165,7 +165,11 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'placeholder': '',
                                                         'disabled': false,
                                                         'readonly': false,
-                                                        'size': 'default',
+                                                        'min': '1',
+                                                        'max': '100',
+                                                        'step': '1',
+                                                        // 'beforFormatter':'',
+                                                        'afterFormatter': ' 个',
                                                         'layout': 'column',
                                                         'span': '6'
                                                     }

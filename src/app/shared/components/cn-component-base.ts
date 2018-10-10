@@ -21,6 +21,14 @@ export class CnComponentBase {
         this._initValue = value;
     }
 
+    private _cacheValue;
+    public get cacheValue() {
+        return this._cacheValue;
+    }
+    public set cacheValue(value) {
+        this._cacheValue = value;
+    }
+
     before(target, method, advice) {
         const original = target[method];
         target[method] = function () {
