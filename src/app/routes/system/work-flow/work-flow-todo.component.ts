@@ -1251,40 +1251,40 @@ export class WorkFlowTodoComponent implements OnInit {
                             cascadeName: 'caseLevel', // field 对象 接收级联信息的小组件
                             cascadeValueItems: [   // 应答描述数组，同一个组件可以做出不同应答
                               // 需要描述不同的选项下的不同事件 事件优先级，展示-》路由-》赋值 依次解析
-                           /*    {
-                                // 缺少case描述语言
-                                // 描述当前值是什么，触发 selectValue/selectObjectValue
-                                caseValue: { type: 'selectValue', valueName: 'value', regular: '^2$' }, // 哪个字段的值触发，正则表达
-                                data: {
-                                  type: 'setValue', // option/ajax/setValue
-                                  option_data: { // 静态数据集
-                                    option: [
-                                      { value: '1', label: '高级' },
-                                      { value: '2', label: '中级' },
-                                      { value: '3', label: '普通' }
-                                    ]
-                                  },
-                                  ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
-
-                                    // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
-                                  },
-                                  setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
-                                    option: {
-                                      name: 'value',
-                                      type: 'selectValue',
-                                      value: '1',
-                                      valueName: 'value'
-                                    }
-                                  },
-                                  show_data: { // 当前表单的展示字段等信息
-
-                                  },
-                                  relation_data: {
-
-                                  }
-
-                                }
-                              }, */
+                              /*    {
+                                   // 缺少case描述语言
+                                   // 描述当前值是什么，触发 selectValue/selectObjectValue
+                                   caseValue: { type: 'selectValue', valueName: 'value', regular: '^2$' }, // 哪个字段的值触发，正则表达
+                                   data: {
+                                     type: 'setValue', // option/ajax/setValue
+                                     option_data: { // 静态数据集
+                                       option: [
+                                         { value: '1', label: '高级' },
+                                         { value: '2', label: '中级' },
+                                         { value: '3', label: '普通' }
+                                       ]
+                                     },
+                                     ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
+   
+                                       // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
+                                     },
+                                     setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
+                                       option: {
+                                         name: 'value',
+                                         type: 'selectValue',
+                                         value: '1',
+                                         valueName: 'value'
+                                       }
+                                     },
+                                     show_data: { // 当前表单的展示字段等信息
+   
+                                     },
+                                     relation_data: {
+   
+                                     }
+   
+                                   }
+                                 }, */
 
 
                             ],
@@ -1300,15 +1300,15 @@ export class WorkFlowTodoComponent implements OnInit {
                                       { value: '3', label: '高级date' }
                                     ]
                                   },
-                                /*   ajax_data: { // 路由发生变化，复杂问题，涉及参数取值  组件参数配置为caseCodeValue
-
-                                    // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
-                                    option: [
-                                      { name: 'typevalue', type: 'value', value: '1', valueName: 'data' },
-                                      { name: 'typevaluename', type: 'selectValue', value: '1', valueName: 'data' },
-
-                                    ]
-                                  }, */
+                                  /*   ajax_data: { // 路由发生变化，复杂问题，涉及参数取值  组件参数配置为caseCodeValue
+  
+                                      // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
+                                      option: [
+                                        { name: 'typevalue', type: 'value', value: '1', valueName: 'data' },
+                                        { name: 'typevaluename', type: 'selectValue', value: '1', valueName: 'data' },
+  
+                                      ]
+                                    }, */
                                   setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
                                     option: {
                                       name: 'value',
@@ -1357,7 +1357,7 @@ export class WorkFlowTodoComponent implements OnInit {
                                     // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
                                     option: [
                                       { name: '_cas_parentId', type: 'selectValue', value: '1', valueName: 'data' } // ,
-                                     // { name: 'typevaluename', type: 'selectValue', value: '1', valueName: 'data' },
+                                      // { name: 'typevaluename', type: 'selectValue', value: '1', valueName: 'data' },
 
                                     ]
                                   },
@@ -2991,6 +2991,25 @@ export class WorkFlowTodoComponent implements OnInit {
                                   }
 
 
+                                ]
+                              },
+                              {
+                                cascadeName: 'Remark', // field 对象 接收级联信息的小组件
+                                cascadeValueItems: [],
+                                cascadeDataItems: [
+                                  {
+                                    data: {
+                                      type: 'setValue', // option/ajax/setValue
+                                      setValue_data: { // 静态数据集
+                                        option: {
+                                          name: 'value',    // 这个是固定写法
+                                          type: 'selectValue',    // type：value(固定值) selectValue （当前选中值） selectObjectValue（当前选中对象）
+                                          value: 0,         // type 是 value 时写固定值
+                                          valueName: 'value'
+                                        }
+                                      }
+                                    }
+                                  }
                                 ]
                               }
                             ],

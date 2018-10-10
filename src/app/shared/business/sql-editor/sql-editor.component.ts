@@ -247,7 +247,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             leftResourceName: 'ComProjectModule',
             rightResourceName: 'ComSqlScript'
         };
-        return this._http.postProjSys('common/SysDataLinks', params).toPromise();
+        return this._http.post('common/SysDataLinks', params).toPromise();
     }
 
 

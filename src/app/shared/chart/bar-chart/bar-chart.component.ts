@@ -1,69 +1,32 @@
+
+import { CnComponentBase } from '@shared/components/cn-component-base';
+import { CommonTools } from './../../../core/utility/common-tools';
 import { Subscription, Observer, Observable } from 'rxjs';
-// import { DataSet } from '../../../../node_modules/@antv/data-set';
+import G2 from '@antv/g2';
+import { View } from '@antv/data-set';
 import 'zone.js';
 import 'reflect-metadata';
 import { Component, NgModule, AfterViewInit, OnInit, ViewEncapsulation, Input, Inject, ViewChild, ElementRef } from '@angular/core';
-import { CommonTools } from '@core/utility/common-tools';
 import { ApiService } from '@core/utility/api-service';
 import { BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
-import { Chart } from 'viser-ng/lib/Chart';
 @Component({
   selector: 'bar-chart',
   encapsulation: ViewEncapsulation.None,
   template: `
-    <v-chart #chartContainer [forceFit]="config.forceFit" [width]="config.width" [height]="config.height" [data]="data" [scale]="config.scale">
-      <v-tooltip 
-      [g2Tooltip]="g2Tooltip"
-      [g2TooltipList]="g2TooltipList"
-      [containerTpl]="containerTpl"
-      [itemTpl]="itemTpl"
-      ></v-tooltip>
-        <v-axis></v-axis>
-        <v-legend></v-legend>
-        <v-bar position="{{config.dataKey}}*{{config.value}}" color="{{config.key}}" [adjust]="config.adjust"></v-bar>
-    </v-chart>
+   <div #barContainer></div>
   `,
   styles: [
     `
     `
   ]
 })
-export class BarChartComponent implements OnInit, AfterViewInit {
+export class BarChartComponent extends CnComponentBase implements OnInit, AfterViewInit {
   @Input() layoutId;
   @Input() blockId;
   @Input() config;
-
-  @ViewChild('chartContainer') chartElement: Chart;
-
-  width;
+  
+  @ViewChild('barContainer') chartElement: ElementRef;
   data;
-  containerTpl = `
-  <div class="g2-tooltip">
-    <p class="g2-tooltip-title"></p>
-    <table class="g2-tooltip-list"></table>
-  </div>`;
-  itemTpl = `
-  <tr class="g2-tooltip-list-item">
-    <td style="color:{color}">{name}</td>
-    <td>{value}</td>
-  </tr>
-`;
-  g2TooltipList = {
-    margin: '10px'
-  };
-  g2Tooltip = {
-    position: 'absolute',
-    visibility: 'hidden',
-    border: '1px solid #efefef',
-    backgroundColor: 'white',
-    color: '#000',
-    opacity: '0.8',
-    padding: '5px 5px',
-    transition: 'top 100ms,left 100ms'
-  };
-  // defaultPoint = { name: 'm2', month: '二月', tem: 9.5, city: '东京' };
-  _tempParameters = {};
-  _searchParameters = {};
   loading = false;
   _cascadeSubscription: Subscription;
   constructor(
@@ -71,34 +34,51 @@ export class BarChartComponent implements OnInit, AfterViewInit {
     @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
   ) {
-
+    super();
   }
 
 
 
   ngOnInit(): void {
-    this.width = 500;
     this.resolverRelation();
-    // 初始化数据源对象
-    // const ds = new DataSet();
-    // const dv = ds.createView().source(this.config.data);
-
-    // 转换数据源属性
-    // dv.transform({
-    //   type: 'fold',
-    //   fields: this.config.fields,
-    //   key: this.config.key,
-    //   value: this.config.value
-    // });
-
-    // // 指定数据对象
-    // this.data = dv.rows;
-
-    // this.data = this.config.data;
-
   }
   ngAfterViewInit(): void {
-
+    this.data = [
+      { value: 10, time: '2015-03-01T16:00:00.000Z' },
+      { value: 15, time: '2015-03-01T16:10:00.000Z' },
+      { value: 26, time: '2015-03-01T16:20:00.000Z' },
+      { value: 9, time: '2015-03-01T16:30:00.000Z' },
+      { value: 12, time: '2015-03-01T16:40:00.000Z' },
+      { value: 23, time: '2015-03-01T16:50:00.000Z' },
+      { value: 18, time: '2015-03-01T17:00:00.000Z' },
+      { value: 21, time: '2015-03-01T17:10:00.000Z' },
+      { value: 22, time: '2015-03-01T17:20:00.000Z' }
+    ]; 
+    // Step 1: 创建 Chart 对象
+    const chart = new G2.Chart({
+      container: this.chartElement.nativeElement, // 指定图表容器 ID
+      forceFit: true,
+      width : 500, // 指定图表宽度
+      height : 500 // 指定图表高度
+    });
+    // chart.forceFit();
+    // Step 2: 载入数据源
+    chart.source(this.data, {
+      'time': {
+        type: 'time',
+        nice: true,
+        mask: 'HH:mm'
+      },
+      'value': {
+        formatter: val => {
+          return val + ' k';
+        }
+      }
+    });
+    // Step 3：创建图形语法，绘制柱状图，由 genre 和 sold 两个属性决定图形位置，genre 映射至 x 轴，sold 映射至 y 轴
+    chart.point().position('time*value').color('value').size(2).shape('value', [ 'circle', 'triangle-down', 'square', 'diamond' ]);
+    // Step 4: 渲染图表
+    chart.render();
   }
 
   async load() {
@@ -135,7 +115,7 @@ export class BarChartComponent implements OnInit, AfterViewInit {
               // 解析参数
               if (relation.params && relation.params.length > 0) {
                 relation.params.forEach(param => {
-                  this._tempParameters[param['cid']] = option.data[param['pid']];
+                  this.tempValue[param['cid']] = option.data[param['pid']];
                 });
               }
               // 匹配及联模式
@@ -158,26 +138,14 @@ export class BarChartComponent implements OnInit, AfterViewInit {
     }
   }
 
-
   // region: build params
   private _buildParameters(paramsConfig) {
-    const params = {};
+    let params;
     if (paramsConfig) {
-      paramsConfig.map(param => {
-        if (param['type'] === 'tempValue') {
-          params[param['name']] = this._tempParameters[param['valueName']];
-        } else if (param['type'] === 'value') {
-          params[param.name] = param.value;
-        } else if (param['type'] === 'GUID') {
-          const fieldIdentity = CommonTools.uuID(10);
-          params[param.name] = fieldIdentity;
-        } else if (param['type'] === 'componentValue') {
-          // params[param.name] = componentValue[param.valueName];
-        } else if (param['type'] === 'searchValue') {
-          if (this._searchParameters[param['name']]) {
-            params[param['name']] = this._searchParameters[param['valueName']];
-          }
-        }
+      params = CommonTools.parametersResolver({
+        params: paramsConfig,
+        tempValue: this.tempValue,
+        initValue: this.initValue
       });
     }
     return params;
@@ -187,20 +155,10 @@ export class BarChartComponent implements OnInit, AfterViewInit {
     if (ajaxUrl && this._isUrlString(ajaxUrl)) {
       url = ajaxUrl;
     } else if (ajaxUrl) {
-      const parent = {};
-      ajaxUrl.params.map(param => {
-        if (param['type'] === 'tempValue') {
-          parent[param['name']] = this._tempParameters[param.valueName];
-        } else if (param['type'] === 'value') {
-          if (param.value === 'null') {
-            param.value = null;
-          }
-          parent[param['name']] = param.value;
-        } else if (param['type'] === 'GUID') {
-          // todo: 扩展功能
-        } else if (param['type'] === 'componentValue') {
-          // parent[param['name']] = componentValue[param['valueName']];
-        }
+      const parent = CommonTools.parametersResolver({
+        params: ajaxUrl.params,
+        tempValue: this.tempValue,
+        initValue: this.initValue
       });
     }
     return url;

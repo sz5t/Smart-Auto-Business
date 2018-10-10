@@ -126,7 +126,9 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                         }
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE:
-
+                    if (option.ajaxConfig) {
+                        this.executeFormAction(option.ajaxConfig);
+                    }
                         break;
                     case BSN_COMPONENT_MODES.DIALOG:
 
@@ -354,7 +356,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     }
 
     async saveForm_2(ajaxConfigs) {
-        debugger;    
         let result;
         const method = this._editable;
         if (method === BSN_FORM_STATUS.TEXT) {
@@ -365,6 +366,12 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             result = await this[method](ajaxConfigs[index]);
         }
 
+    }
+
+    async executeFormAction(ajaxConfigs) {
+        let result;
+        const index = ajaxConfigs.findIndex(item => item.ajaxType === 'post');
+        result = await this.post(ajaxConfigs[index]);
     }
 
    /*  // async saveForm() {
@@ -481,7 +488,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         });
         const res = await this.execute(url, postConfig.ajaxType, params);
         if (res.isSuccess) {
-            this.message.create('success', '保存成功');
+            this.message.create('success', '操作成功');
             this._editable = BSN_FORM_STATUS.TEXT;
             this.load();
             // 发送消息 刷新其他界面
@@ -774,7 +781,15 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                                         const caseCodeValue = {};
                                         caseItem['ajax'].forEach(ajaxItem => {
                                             if (ajaxItem['type'] === 'value') {
-                                                caseCodeValue['name'] = data[ajaxItem['valueName']];
+                                                caseCodeValue[ajaxItem['name']] = ajaxItem['value'];
+                                            }
+                                            if (ajaxItem['type'] === 'selectValue') { // 选中行数据[这个是单值]
+                                                caseCodeValue[ajaxItem['name']] = data['value'];
+                                            }
+                                            if (ajaxItem['type'] === 'selectObjectValue') { // 选中行对象数据
+                                                if ( data.dataItem) {
+                                                    caseCodeValue[ajaxItem['name']] = data.dataItem[ajaxItem['valueName']];
+                                                }
                                             }
                                             // 其他取值【日后扩展部分】
                                         });
@@ -792,6 +807,27 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                                         }
 
                                     }
+                                    if (caseItem['type'] === 'setValue') {
+                                        // console.log('setValueinput' , caseItem['setValue'] );
+                                         
+                                        const setValuedata = {};
+                                         if (caseItem['setValue']['type']  === 'value') { // 静态数据
+                                            setValuedata['data'] = caseItem['setValue']['value'];
+                                         }
+                                         if (caseItem['setValue']['type']  === 'selectValue') { // 选中行数据[这个是单值]
+                                            setValuedata['data']  = data[caseItem['setValue']['valueName']];
+                                         }
+                                         if (caseItem['setValue']['type']  === 'selectObjectValue') { // 选中行对象数据
+                                             if ( data.dataItem) {
+                                                setValuedata['data']  = data.dataItem[caseItem['setValue']['valueName']];
+                                             }
+                                         }
+                                         // 手动给表单赋值，将值
+                                         if (setValuedata.hasOwnProperty('data')) {
+                                            this.setValue(key, setValuedata['data']);
+                                         }
+
+                                     }
 
                                     // endregion  解析结束
 
@@ -827,7 +863,34 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                                         }
                                         if (caseItem['type'] === 'ajax') {
                                             // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
-
+                                            const caseCodeValue = {};
+                                            caseItem['ajax'].forEach(ajaxItem => {
+                                                if (ajaxItem['type'] === 'value') {
+                                                    caseCodeValue[ajaxItem['name']] = ajaxItem['value'];
+                                                }
+                                                if (ajaxItem['type'] === 'selectValue') { // 选中行数据[这个是单值]
+                                                    caseCodeValue[ajaxItem['name']] = data['value'];
+                                                }
+                                                if (ajaxItem['type'] === 'selectObjectValue') { // 选中行对象数据
+                                                    if ( data.dataItem) {
+                                                        caseCodeValue[ajaxItem['name']] = data.dataItem[ajaxItem['valueName']];
+                                                    }
+                                                }
+                                                // 其他取值【日后扩展部分】
+                                            });
+                                            let Exist = false;
+                                            changeConfig_new.forEach(config_new => {
+                                                if (config_new.name === control.name) {
+                                                    Exist = true;
+                                                    config_new['caseCodeValue'] = caseCodeValue;
+                                                }
+                                            });
+                                            if (!Exist) {
+                                                control['caseCodeValue'] = caseCodeValue;
+                                                control = JSON.parse(JSON.stringify(control));
+                                                changeConfig_new.push(control);
+                                            }
+    
                                         }
                                         if (caseItem['type'] === 'show') {
 
@@ -838,6 +901,27 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
 
                                         }
+                                        if (caseItem['type'] === 'setValue') {
+                                            // console.log('setValueinput' , caseItem['setValue'] );
+                                             
+                                            const setValuedata = {};
+                                            if (caseItem['setValue']['type']  === 'value') { // 静态数据
+                                                setValuedata['data'] = caseItem['setValue']['value'];
+                                             }
+                                             if (caseItem['setValue']['type']  === 'selectValue') { // 选中行数据[这个是单值]
+                                                setValuedata['data']  = data[caseItem['setValue']['valueName']];
+                                             }
+                                             if (caseItem['setValue']['type']  === 'selectObjectValue') { // 选中行对象数据
+                                                 if ( data.dataItem) {
+                                                    setValuedata['data']  = data.dataItem[caseItem['setValue']['valueName']];
+                                                 }
+                                             }
+                                             // 手动给表单赋值，将值
+                                             if (setValuedata.hasOwnProperty('data')) {
+                                                this.setValue(key, setValuedata['data']);
+                                             }
+    
+                                         }
 
                                     }
                                     // endregion  解析结束

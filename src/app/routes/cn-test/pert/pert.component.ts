@@ -53,6 +53,9 @@ export class PertComponent implements OnInit, AfterViewInit {
         ${deviation} 天
       `);
 
+    chart.listen('click', function(e) {
+      console.log('hello', e);
+    });
     // set settings for tasks
     const tasks = chart.tasks();
     // format upper label tasks
@@ -145,7 +148,7 @@ export class PertComponent implements OnInit, AfterViewInit {
 
     chart.container('container');
     chart.draw();
-    //chart.fitAll();
+    // chart.fitAll();
   }
 
   timeTask(duration) {
@@ -217,7 +220,7 @@ export class PertComponent implements OnInit, AfterViewInit {
         mostLikely: 43,
         name: '流程 4',
         dependsOn: [
-          '2','3'
+          '2', '3'
         ],
         fullName: '软件设计'
       },

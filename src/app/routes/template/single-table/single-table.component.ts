@@ -4488,6 +4488,25 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
 
 
                                                                 ]
+                                                            },
+                                                            {
+                                                                cascadeName: 'Remark', // field 对象 接收级联信息的小组件
+                                                                cascadeValueItems: [],
+                                                                cascadeDataItems: [
+                                                                    {
+                                                                        data: {
+                                                                            type: 'setValue', // option/ajax/setValue
+                                                                            setValue_data: { // 静态数据集
+                                                                                option: {
+                                                                                    name: 'value',    // 这个是固定写法
+                                                                                    type: 'selectValue',    // type：value(固定值) selectValue （当前选中值） selectObjectValue（当前选中对象）
+                                                                                    value: 0,         // type 是 value 时写固定值
+                                                                                    valueName: 'value'
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                ]
                                                             }
                                                         ],
                                                     }
