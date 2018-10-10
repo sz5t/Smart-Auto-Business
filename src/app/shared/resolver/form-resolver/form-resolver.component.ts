@@ -314,7 +314,8 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         const params = CommonTools.parametersResolver({
             params: ajaxConfig.params,
             tempValue: this.tempValue,
-            initValue: this.initValue
+            initValue: this.initValue,
+            cacheValue: this.cacheService
         });
         if (this.isString(ajaxConfig.url)) {
             url = ajaxConfig.url;
@@ -322,7 +323,8 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             const pc = CommonTools.parametersResolver({
                 params: ajaxConfig.url.params,
                 tempValue: this.tempValue,
-                initValue: this.initValue
+                initValue: this.initValue,
+                cacheValue: this.cacheService
             });
             url = ajaxConfig.url['parent'] + '/' + pc + '/' + ajaxConfig.url['child'];
         }
@@ -568,6 +570,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             tempValue: this.tempValue,
             initValue: this.initValue,
             componentValue: this.value,
+            cacheValue: this.cacheService
         });
         return this.execute(url, postConfig.ajaxType, params);
     }
@@ -683,6 +686,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             tempValue: this.tempValue,
             initValue: this.initValue,
             componentValue: this.value,
+            cacheValue: this.cacheService
         });
         const res = await this.execute(url, postConfig.ajaxType, params);
         if (res.isSuccess) {
@@ -717,6 +721,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             tempValue: this.tempValue,
             initValue: this.initValue,
             componentValue: this.value,
+            cacheValue: this.cacheService
         });
         if (params && !params['Id']) {
             this.message.warning('编辑数据的Id不存在，无法进行更新！');
@@ -757,6 +762,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                 tempValue: this.tempValue,
                 initValue: this.initValue,
                 componentValue: this.value,
+                cacheValue: this.cacheService
             });
             if (params && !params['Id']) {
                 this.message.warning('删除数据的Id不存在，无法进行删除！');

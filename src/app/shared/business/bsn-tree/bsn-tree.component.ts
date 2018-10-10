@@ -10,6 +10,7 @@ import { NzMessageService, NzModalService, NzTreeNode, NzDropdownContextComponen
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
 import { Observer ,  Observable ,  Subscription } from 'rxjs';
+import { CacheService } from '@delon/cache';
 @Component({
     selector: 'cn-bsn-tree',
     templateUrl: './bsn-tree.component.html',
@@ -86,6 +87,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     dropdown: NzDropdownContextComponent;
     constructor(
         private _http: ApiService,
+        private _cacheService: CacheService,
         private _msg: NzMessageService,
         private _modal: NzModalService,
         private _dropdownService: NzDropdownService,
@@ -102,6 +104,9 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     ngOnInit() {
         if (this.initData) {
             this.initValue = this.initData;
+        }
+        if (this._cacheService) {
+            this.cacheValue = this._cacheService;
         }
         this.resolverRelation();
         if (this.config.componentType) {
@@ -263,7 +268,8 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
         const params = CommonTools.parametersResolver({
             params: this.config.ajaxConfig.params,
             tempValue: this.tempValue,
-            initValue: this.initValue
+            initValue: this.initValue,
+            cacheValue: this.cacheValue
         });
         const ajaxData = await this._execute(this.config.ajaxConfig.url, 'get', params);
         return ajaxData;
@@ -534,7 +540,8 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                 params: ajaxConfigObj.params,
                 tempValue: this.tempValue,
                 item: handleData,
-                initValue: this.initValue
+                initValue: this.initValue,
+                cacheValue: this.cacheValue
         });
         // 执行数据操作
         const response = await this._execute(
@@ -558,7 +565,8 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                         params: ajaxConfigObj.params,
                         tempValue: this.tempValue,
                         item: dataItem,
-                        initValue: this.initValue
+                        initValue: this.initValue,
+                        cacheValue: this.cacheValue
                     });
                     executeParams.push(newParam);
                 });
@@ -568,7 +576,8 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                 params: ajaxConfigObj.params,
                 tempValue: this.tempValue,
                 item: handleData,
-                initValue: this.initValue
+                initValue: this.initValue,
+                cacheValue: this.cacheValue
             }));
         }
         // 执行数据操作

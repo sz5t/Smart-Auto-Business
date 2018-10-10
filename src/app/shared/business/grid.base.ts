@@ -283,7 +283,8 @@ export class GridBase extends CnComponentBase {
                         tempValue: this.tempValue,
                         item: {},
                         componentValue: dataItem,
-                        initValue: this.initValue
+                        initValue: this.initValue,
+                        cacheValue: this.cacheValue
                     });
                     executeParams.push(newParam);
                 });
@@ -294,7 +295,8 @@ export class GridBase extends CnComponentBase {
                 tempValue: this.tempValue,
                 item: {} ,
                 componentValue: handleData,
-                initValue: this.initValue
+                initValue: this.initValue,
+                cacheValue: this.cacheValue
             }));
         }
         // 执行数据操作
@@ -310,7 +312,8 @@ export class GridBase extends CnComponentBase {
             params: ajaxConfigObj.params,
             tempValue: this.tempValue,
             item: handleData,
-            initValue: this.initValue
+            initValue: this.initValue,
+            cacheValue: this.cacheValue
         });
         // 执行数据操作
         return this.executeRequest(
@@ -754,7 +757,9 @@ export class GridBase extends CnComponentBase {
         if (filterConfig) {
             filter = CommonTools.parametersResolver({
                 params: filterConfig,
-                tempValue: this.tempValue});
+                tempValue: this.tempValue,
+                cacheValue: this.cacheValue
+            });
         }
         return filter;
     }
@@ -770,7 +775,8 @@ export class GridBase extends CnComponentBase {
             params = CommonTools.parametersResolver({
                 params: paramsConfig,
                 tempValue: this.tempValue,
-                initValue: this.initValue
+                initValue: this.initValue,
+                cacheValue: this.cacheValue
             });
         }
         return params;

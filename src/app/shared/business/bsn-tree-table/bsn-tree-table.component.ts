@@ -9,6 +9,7 @@ import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout
 import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
 import { BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
 import { Observable, Observer, Subscription } from 'rxjs';
+import { CacheService } from '@delon/cache';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: FormResolverComponent
@@ -68,6 +69,7 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         private _api: ApiService,
         private _msg: NzMessageService,
         private _modal: NzModalService,
+        private _cacheService: CacheService,
         @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
@@ -85,6 +87,9 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
     // 生命周期事件
     ngOnInit() {
         this.resolverRelation();
+        if (this._cacheService) {
+            this.cacheValue = this._cacheService;
+        }
         if (this.config.dataSet) {
             (async () => {
                 for (let i = 0, len = this.config.dataSet.length; i < len; i++) {
