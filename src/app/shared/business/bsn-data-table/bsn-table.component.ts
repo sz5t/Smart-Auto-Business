@@ -540,6 +540,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         } else {
             this.dataList = [rowContentNew, ...this.dataList];
         }
+        if (!this.changeConfig_new[fieldIdentity]) {
+            this.changeConfig_new[fieldIdentity] = {};
+        }
         // this.dataList.push(this.rowContent);
         this._updateEditCache();
         this._startEdit(fieldIdentity.toString());
@@ -839,6 +842,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             }
            // console.log('级联结果数据集', this.changeConfig_new);
         }
+       // console.log('级联结果数据集', this.changeConfig_new[rowCasade]);
         // this.changeConfig_new = JSON.parse(JSON.stringify(this.changeConfig_new));
      // console.log('当前编辑缓存行内容', this.editCache[data.key].data);
     }
