@@ -40,7 +40,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     _cascadeSubscription;
     _isSaving = false;
     changeConfig;
-
+    formconfigcontrol = {}; // liu 表单配置
     constructor(private formBuilder: FormBuilder,
         private apiService: ApiService,
         private cacheService: CacheService,
@@ -77,6 +77,12 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             }
         }
 
+        this.config.forms.forEach((formItem => {
+            formItem.controls.forEach((control => {
+                this.formconfigcontrol[control.name] = control;
+            }));
+
+        }));
         this.caseLoad(); // liu 20180521 测试
     }
 
@@ -131,9 +137,9 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                         }
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE:
-                    if (option.ajaxConfig) {
-                        this._resolveAjaxConfig(option.ajaxConfig);
-                    }
+                        if (option.ajaxConfig) {
+                            this._resolveAjaxConfig(option.ajaxConfig);
+                        }
                         break;
                     case BSN_COMPONENT_MODES.DIALOG:
 
@@ -300,7 +306,25 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         if (data) {
             for (const d in data) {
                 if (data.hasOwnProperty(d)) {
-                    this.setValue(d, data[d]);
+                    if (this.formconfigcontrol[d]) {
+
+                        if (this.formconfigcontrol[d]['type'] === 'selectMultiple' || this.formconfigcontrol[d]['type'] === 'selectTreeMultiple' ) {
+                            let ArrayValue = [];
+                            if (data[d]) {
+                                if (data[d].length > 0) {
+                                    ArrayValue = data[d].split(',');
+                                }
+                            }
+                            this.setValue(d, ArrayValue);
+                            // console.log('拼接', ArrayValue); 
+                        } else {
+                            this.setValue(d, data[d]);
+                        }
+        
+                    } else {
+                        this.setValue(d, data[d]);
+                    }
+                   
                 }
             }
         }
@@ -523,12 +547,12 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         }
     }
 
-        /**
-     * 数据访问返回消息处理
-     * @param result
-     * @param message
-     * @param callback
-     */
+    /**
+ * 数据访问返回消息处理
+ * @param result
+ * @param message
+ * @param callback
+ */
     showAjaxMessage(result, message?, callback?) {
         const rs: { success: boolean, msg: string[] } = { success: true, msg: [] };
         if (result && Array.isArray(result)) {
@@ -575,53 +599,53 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         return this.execute(url, postConfig.ajaxType, params);
     }
 
-   /*  // async saveForm() {
-    //     let result;
-    //     const buttons = this.config.toolbar.buttons;
-    //     if (buttons) {
-    //         const index = buttons.findIndex(item => item.name === 'saveForm');
-    //         if (buttons[index].ajaxConfig) {
-    //             const pconfig = JSON.parse(JSON.stringify(buttons[index].ajaxConfig));
-    //             if (this.tempValue['_id']) {
-    //                 // 修改保存
-    //                 const ajaxData = await this.execAjax(pconfig['put'], this.value);
-    //                 if (ajaxData.isSuccess) {
-    //                     this.message.success('保存成功');
-    //                     result = true;
-    //                 } else {
-    //                     this.message.error(`保存失败！<br/> ${ajaxData.message}`);
-    //                     result = false;
-    //                 }
-
-    //             } else {
-    //                 // 新增保存
-    //                 if (Array.isArray(pconfig['post'])) {
-    //                     for (let i = 0; i < pconfig['post'].length; i++) {
-    //                         const ajaxData = await this.execAjax(pconfig['post'][i], this.value);
-    //                         if (ajaxData) {
-    //                             if (pconfig['post'][i]['output']) {
-    //                                 pconfig['post'][i]['output'].forEach(out => {
-    //                                     this.tempValue[out.name] = ajaxData.Data[out['dataName']];
-    //                                 });
-    //                             }
-    //                         }
-    //                     }
-    //                 } else {
-    //                     const ajaxData = await this.execAjax(pconfig['add'], this.value);
-    //                     if (ajaxData.isSuccess) {
-    //                         this.message.success('保存成功');
-    //                         result = true;
-    //                     } else {
-    //                         this.message.error(`保存失败！<br/> ${ajaxData.message}`);
-    //                         result = false;
-    //                     }
-
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     return result;
-    // } */
+    /*  // async saveForm() {
+     //     let result;
+     //     const buttons = this.config.toolbar.buttons;
+     //     if (buttons) {
+     //         const index = buttons.findIndex(item => item.name === 'saveForm');
+     //         if (buttons[index].ajaxConfig) {
+     //             const pconfig = JSON.parse(JSON.stringify(buttons[index].ajaxConfig));
+     //             if (this.tempValue['_id']) {
+     //                 // 修改保存
+     //                 const ajaxData = await this.execAjax(pconfig['put'], this.value);
+     //                 if (ajaxData.isSuccess) {
+     //                     this.message.success('保存成功');
+     //                     result = true;
+     //                 } else {
+     //                     this.message.error(`保存失败！<br/> ${ajaxData.message}`);
+     //                     result = false;
+     //                 }
+ 
+     //             } else {
+     //                 // 新增保存
+     //                 if (Array.isArray(pconfig['post'])) {
+     //                     for (let i = 0; i < pconfig['post'].length; i++) {
+     //                         const ajaxData = await this.execAjax(pconfig['post'][i], this.value);
+     //                         if (ajaxData) {
+     //                             if (pconfig['post'][i]['output']) {
+     //                                 pconfig['post'][i]['output'].forEach(out => {
+     //                                     this.tempValue[out.name] = ajaxData.Data[out['dataName']];
+     //                                 });
+     //                             }
+     //                         }
+     //                     }
+     //                 } else {
+     //                     const ajaxData = await this.execAjax(pconfig['add'], this.value);
+     //                     if (ajaxData.isSuccess) {
+     //                         this.message.success('保存成功');
+     //                         result = true;
+     //                     } else {
+     //                         this.message.error(`保存失败！<br/> ${ajaxData.message}`);
+     //                         result = false;
+     //                     }
+ 
+     //                 }
+     //             }
+     //         }
+     //     }
+     //     return result;
+     // } */
 
     searchForm() {
         this.searchFormByValue(this.value);
@@ -681,11 +705,12 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     private async post(postConfig) {
         let result = true;
         const url = this._buildURL(postConfig.url);
+        const newValue = this.GetComponentValue();
         const params = CommonTools.parametersResolver({
             params: postConfig.params,
             tempValue: this.tempValue,
             initValue: this.initValue,
-            componentValue: this.value,
+            componentValue: newValue, // liu this.value,
             cacheValue: this.cacheService
         });
         const res = await this.execute(url, postConfig.ajaxType, params);
@@ -716,11 +741,12 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     private async put(putConfig) {
         let result = true;
         const url = this._buildURL(putConfig.url);
+        const newValue = this.GetComponentValue();
         const params = CommonTools.parametersResolver({
             params: putConfig.params,
             tempValue: this.tempValue,
             initValue: this.initValue,
-            componentValue: this.value,
+            componentValue: newValue, // liu this.value,
             cacheValue: this.cacheService
         });
         if (params && !params['Id']) {
@@ -749,6 +775,41 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         return result;
     }
 
+
+    // 处理参数 liu 
+    private GetComponentValue() {
+        this.formconfigcontrol; // liu 表单配置
+        const ComponentValue = {};
+        // 循环 this.value
+        for (const key in this.value) {
+            if (this.formconfigcontrol[key]) {
+
+                if (this.formconfigcontrol[key]['type'] === 'selectMultiple' || this.formconfigcontrol[key]['type'] === 'selectTreeMultiple' ) {
+                    let ArrayValue = '';
+                   // console.log('数组', this.value[key]);
+                    this.value[key].forEach(element => {
+                        ArrayValue = ArrayValue + element.toString() + ',';
+                    });
+                    if (ArrayValue.length > 0 ) {
+                        ArrayValue = ArrayValue.slice(0 , ArrayValue.length - 1);
+                    }
+                    ComponentValue[key] = ArrayValue;
+                   // console.log('拼接', ArrayValue); 
+                } else {
+                    ComponentValue[key] = this.value[key];
+                }
+
+            } else {
+                ComponentValue[key] = this.value[key];
+            }
+        }
+        return ComponentValue;
+
+    }
+
+    private isArray(obj) { // 判断对象是否是数组
+        return Object.prototype.toString.call(obj) === '[object Array]';
+    }
     /**
      * 删除数据
      * @param deleteConfig 数据访问配置
@@ -991,7 +1052,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                                                 caseCodeValue[ajaxItem['name']] = data['value'];
                                             }
                                             if (ajaxItem['type'] === 'selectObjectValue') { // 选中行对象数据
-                                                if ( data.dataItem) {
+                                                if (data.dataItem) {
                                                     caseCodeValue[ajaxItem['name']] = data.dataItem[ajaxItem['valueName']];
                                                 }
                                             }
@@ -1013,25 +1074,25 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                                     }
                                     if (caseItem['type'] === 'setValue') {
                                         // console.log('setValueinput' , caseItem['setValue'] );
-                                         
-                                        const setValuedata = {};
-                                         if (caseItem['setValue']['type']  === 'value') { // 静态数据
-                                            setValuedata['data'] = caseItem['setValue']['value'];
-                                         }
-                                         if (caseItem['setValue']['type']  === 'selectValue') { // 选中行数据[这个是单值]
-                                            setValuedata['data']  = data[caseItem['setValue']['valueName']];
-                                         }
-                                         if (caseItem['setValue']['type']  === 'selectObjectValue') { // 选中行对象数据
-                                             if ( data.dataItem) {
-                                                setValuedata['data']  = data.dataItem[caseItem['setValue']['valueName']];
-                                             }
-                                         }
-                                         // 手动给表单赋值，将值
-                                         if (setValuedata.hasOwnProperty('data')) {
-                                            this.setValue(key, setValuedata['data']);
-                                         }
 
-                                     }
+                                        const setValuedata = {};
+                                        if (caseItem['setValue']['type'] === 'value') { // 静态数据
+                                            setValuedata['data'] = caseItem['setValue']['value'];
+                                        }
+                                        if (caseItem['setValue']['type'] === 'selectValue') { // 选中行数据[这个是单值]
+                                            setValuedata['data'] = data[caseItem['setValue']['valueName']];
+                                        }
+                                        if (caseItem['setValue']['type'] === 'selectObjectValue') { // 选中行对象数据
+                                            if (data.dataItem) {
+                                                setValuedata['data'] = data.dataItem[caseItem['setValue']['valueName']];
+                                            }
+                                        }
+                                        // 手动给表单赋值，将值
+                                        if (setValuedata.hasOwnProperty('data')) {
+                                            this.setValue(key, setValuedata['data']);
+                                        }
+
+                                    }
 
                                     // endregion  解析结束
 
@@ -1076,7 +1137,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                                                     caseCodeValue[ajaxItem['name']] = data['value'];
                                                 }
                                                 if (ajaxItem['type'] === 'selectObjectValue') { // 选中行对象数据
-                                                    if ( data.dataItem) {
+                                                    if (data.dataItem) {
                                                         caseCodeValue[ajaxItem['name']] = data.dataItem[ajaxItem['valueName']];
                                                     }
                                                 }
@@ -1094,7 +1155,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                                                 control = JSON.parse(JSON.stringify(control));
                                                 changeConfig_new.push(control);
                                             }
-    
+
                                         }
                                         if (caseItem['type'] === 'show') {
 
@@ -1107,25 +1168,25 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                                         }
                                         if (caseItem['type'] === 'setValue') {
                                             // console.log('setValueinput' , caseItem['setValue'] );
-                                             
+
                                             const setValuedata = {};
-                                            if (caseItem['setValue']['type']  === 'value') { // 静态数据
+                                            if (caseItem['setValue']['type'] === 'value') { // 静态数据
                                                 setValuedata['data'] = caseItem['setValue']['value'];
-                                             }
-                                             if (caseItem['setValue']['type']  === 'selectValue') { // 选中行数据[这个是单值]
-                                                setValuedata['data']  = data[caseItem['setValue']['valueName']];
-                                             }
-                                             if (caseItem['setValue']['type']  === 'selectObjectValue') { // 选中行对象数据
-                                                 if ( data.dataItem) {
-                                                    setValuedata['data']  = data.dataItem[caseItem['setValue']['valueName']];
-                                                 }
-                                             }
-                                             // 手动给表单赋值，将值
-                                             if (setValuedata.hasOwnProperty('data')) {
+                                            }
+                                            if (caseItem['setValue']['type'] === 'selectValue') { // 选中行数据[这个是单值]
+                                                setValuedata['data'] = data[caseItem['setValue']['valueName']];
+                                            }
+                                            if (caseItem['setValue']['type'] === 'selectObjectValue') { // 选中行对象数据
+                                                if (data.dataItem) {
+                                                    setValuedata['data'] = data.dataItem[caseItem['setValue']['valueName']];
+                                                }
+                                            }
+                                            // 手动给表单赋值，将值
+                                            if (setValuedata.hasOwnProperty('data')) {
                                                 this.setValue(key, setValuedata['data']);
-                                             }
-    
-                                         }
+                                            }
+
+                                        }
 
                                     }
                                     // endregion  解析结束
