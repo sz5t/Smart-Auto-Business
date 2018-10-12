@@ -248,8 +248,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 {
                                                     name: 'caseName',
                                                     valueName: '_caseName',
-                                                    type: 'tempValue',
-                                                    value: ''
+                                                    type: 'tempValue'
                                                 },
                                                 {
                                                     name: 'enabled', valueName: '_enabled', type: 'tempValue', value: ''
@@ -257,8 +256,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 {
                                                     name: 'caseType',
                                                     valueName: '_caseType',
-                                                    type: 'tempValue',
-                                                    value: ''
+                                                    type: 'tempValue'
                                                 }
                                             ]
                                         },
@@ -1424,7 +1422,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     'ajaxType': 'getById',
                                                     'params': [
                                                         {
-                                                            name: 'Id', type: 'tempValue', valueName: '_id', value: ''
+                                                            name: 'Id', type: 'tempValue', valueName: '_id'
                                                         }
                                                     ]
                                                 },

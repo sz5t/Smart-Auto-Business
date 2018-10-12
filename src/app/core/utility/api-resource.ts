@@ -221,9 +221,9 @@ export class APIResource {
    * 本地URL
    * @type {string}
    */
-    public static localUrl =  'http://192.168.1.111:8083/assets';
+  //  public static localUrl =  'http://192.168.1.111:8083/assets';
   //  public static localUrl =  'http://192.168.1.111:8084/assets';
-  //   public static localUrl =  'http://localhost:4200/assets';
+     public static localUrl =  'http://localhost:4200/assets';
   // public static localUrl =  'http://192.168.1.8:8002/assets';
 
 

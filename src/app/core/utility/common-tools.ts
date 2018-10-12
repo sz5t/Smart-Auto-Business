@@ -28,7 +28,9 @@ export class CommonTools {
                           if (model.tempValue && model.tempValue[param['valueName']]) {
                               result[param['name']] = model.tempValue[param['valueName']];
                           } else {
-                            result[param['name']] = param.value;
+                              if (param.value) {
+                                result[param['name']] = param.value;
+                              }
                           }
                           break;
                       case BSN_PARAMETER_TYPE.VALUE:

@@ -1816,24 +1816,28 @@ export class TableChartComponent implements OnInit, AfterViewInit {
           cols: [
             {
               id: 'dataSteps',
-              span: 12,
+              span: 24,
               icon: 'icon-list',
               size: {
-                nzXs: 12,
-                nzSm: 12,
-                nzMd: 12,
-                nzLg: 12,
-                ngXl: 12
+                nzXs: 24,
+                nzSm: 24,
+                nzMd: 24,
+                nzLg: 24,
+                ngXl: 24
               },
               viewCfg: [
                 {
                   config: {
                     'viewId': 'chart3',
                     'component': 'dataSteps',
+                    'width': 1400,
+                    'height': 300,
                     'stepNum': 50,
                     'startX': 100,
-                    'startY': 100, 
+                    'startY': 100,
                     'textField': 'caseName',
+                    'mainTitle': '工艺',
+                    'subTitle': '工步',
                     'ajaxConfig': {
                       'url': 'common/ShowCase',
                       'ajaxType': 'get',

@@ -29,12 +29,12 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
     private _cacheService: CacheService,
     @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
-    @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>) { 
-      super();
+    @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>) {
+    super();
   }
 
   ngOnInit() {
-    if(this.initData) {
+    if (this.initData) {
       this.initValue = this.initValue;
     }
     this.resolverRelation();
@@ -42,112 +42,138 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
 
   async load() {
     this.isLoading = true;
-    const response = await this._apiService.get(this.config.ajaxConfig.url, CommonTools.parametersResolver({
-      params: this.config.ajaxConfig.params,
-      tempValue: this.tempValue,
-      initValue: this.initValue,
-      cacheValue: this._cacheService
-    })).toPromise();
+    const response = await this.get();
     if (response.isSuccess) {
       // 构建数据源
-      const nodes = this.listToAsyncTreeData(response.data, null);
-      console.log(nodes);
-      const edges = this.convertTreeToEdges(nodes);
-      this.graph.read({nodes: nodes, edges: []});
+      const rgNodes = this.listToAsyncTreeData(response.data, null);
+      const crNodes = this.convertTreeToNodes(rgNodes);
+      const copy = JSON.parse(JSON.stringify(crNodes));
+      const edges = this.convertTreeToEdges(copy);
+      this.graph.read({ nodes: crNodes, edges: edges });
       this.isLoading = false;
     }
   }
+
+
 
   listToAsyncTreeData(data, parentid) {
     const result: any[] = [];
     let temp;
     for (let i = 0; i < data.length; i++) {
-        if (data[i].parentId === parentid) {
-            temp = this.listToAsyncTreeData(data, data[i].Id);
-            if (temp.length > 0) {
-                // data[i]['children'] = temp;
-                // data[i]['isLeaf'] = false;
-            } else {
-                data[i]['isLeaf'] = false;
-            }
-            data[i].level = '';
-            result.push(data[i]);
+      if (data[i].parentId === parentid) {
+        const temps = [];
+        temp = this.listToAsyncTreeData(data, data[i].Id);
+        if (temp.length > 0) {
+          temp.forEach(item => {
+            item['type'] = 'child';
+            temps.push(item);
+          });
+        } else {
+          data[i]['type'] = 'parent';
         }
+        data[i]['type'] = 'parent';
+        data[i]['id'] = data[i]['Id'];
+        result.push(data[i]);
+        if (temps.length > 0) {
+          result.push(...temps);
+        }
+      }
     }
     return result;
-}
+  }
 
-  convertTreeToList(root): any[] {
-    const stack = [];
-    const array = [];
-    const hashMap = {};
-    stack.push(...root);
-    let index = 1;
-    while (stack.length !== 0) {
-        const node = stack.pop();
-        node['x'] = index === 1 ? this.config.startX : this.config.startX + this.config.stepNum * index;
-        node['y'] = this.config.startX;
-        node['type'] = 'parent';
-        this.visitNode(node, hashMap, array);
-        if (node) {
-            const lastItems: any[] = stack.filter(item => item.parentId === node.Id);
-            for (let i = 0, len = lastItems.length; i < len ; i++) {
-                array.push(
-                    {
-                        ...lastItems[i],
-                        x: i === 0 ? this.config.startX : i * this.config.stepNum,
-                        y: this.config.startY,
-                        type: 'child'
-                    });
-            }
+  convertTreeToNodes(rgNodes) {
+    const nodes = [];
+    if (rgNodes && rgNodes.length > 0) {
+      for (let i = 0, len = rgNodes.length; i < len; i++) {
+        rgNodes[i]['x'] = this.config.startX * i === 0 ? this.config.startX : this.config.startX + this.config.startX * i;
+        rgNodes[i]['y'] = this.config.startY;
+        rgNodes[i]['label'] = rgNodes[i][this.config.textField];
+        if (rgNodes[i]['type'] === 'child') {
+          rgNodes[i]['color'] = this.sNodeColor;
         }
-        index++;
+        nodes.push(rgNodes[i]);
+      }
     }
-    return array;
-}
+    return nodes;
+  }
 
-convertTreeToEdges(nodes) {
-  return [];
-}
+  convertTreeToEdges(cNodes) {
+    const edges = [];
+    let next;
+    if (cNodes) {
+      while (cNodes.length > 0) {
+        const edge = {};
+        let current;
 
-visitNode(node: any, hashMap: object, array: any[]): void {
+        if (next) {
+          current = next;
+        } else {
+          current = cNodes.pop();
+        }
+        next = cNodes.pop();
+
+        edge['source'] = next.Id;
+        edge['target'] = current.Id;
+        edge['endArrow'] = true;
+        if (next.type === 'child') {
+          edge['label'] = this.config.subTitle;
+        } else if (next.type === 'parent') {
+          edge['label'] = this.config.mainTitle;
+        }
+        edges.push(edge);
+      }
+    }
+    return edges;
+  }
+
+  async get() {
+    return this._apiService.get(this.config.ajaxConfig.url, CommonTools.parametersResolver({
+      params: this.config.ajaxConfig.params,
+      tempValue: this.tempValue,
+      initValue: this.initValue,
+      cacheValue: this._cacheService
+    })).toPromise();
+  }
+
+  visitNode(node: any, hashMap: object, array: any[]): void {
     if (!hashMap[node.Id]) {
-        hashMap[node.Id] = true;
-        array.push(node);
+      hashMap[node.Id] = true;
+      array.push(node);
     }
-}
+  }
 
-  resolverRelation () {
+  resolverRelation() {
     if (this.config.componentType && this.config.componentType.child === true) {
       this._cascadeSubscription = this.cascadeEvents.subscribe(cascadeEvent => {
         // 解析子表消息配置
         if (this.config.relations && this.config.relations.length > 0) {
-            this.config.relations.forEach(relation => {
-                if (relation.relationViewId === cascadeEvent._viewId) {
-                    // 获取当前设置的级联的模式
-                    const mode = BSN_COMPONENT_CASCADE_MODES[relation.cascadeMode];
-                    // 获取传递的消息数据
-                    const option = cascadeEvent.option;
-                    // 解析参数
-                    if (relation.params && relation.params.length > 0) {
-                        relation.params.forEach(param => {
-                            if (!this.tempValue) {this.tempValue = {}; }
-                            this.tempValue[param['cid']] = option.data[param['pid']];
-                        });
-                    }
-                    // 匹配及联模式
-                    switch (mode) {
-                        case BSN_COMPONENT_CASCADE_MODES.REFRESH:
-                            this.load();
-                            break;
-                        case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
-                            this.load();
-                            break;
-                    }
-                }
-            });
+          this.config.relations.forEach(relation => {
+            if (relation.relationViewId === cascadeEvent._viewId) {
+              // 获取当前设置的级联的模式
+              const mode = BSN_COMPONENT_CASCADE_MODES[relation.cascadeMode];
+              // 获取传递的消息数据
+              const option = cascadeEvent.option;
+              // 解析参数
+              if (relation.params && relation.params.length > 0) {
+                relation.params.forEach(param => {
+                  if (!this.tempValue) { this.tempValue = {}; }
+                  this.tempValue[param['cid']] = option.data[param['pid']];
+                });
+              }
+              // 匹配及联模式
+              switch (mode) {
+                case BSN_COMPONENT_CASCADE_MODES.REFRESH:
+                  this.load();
+                  break;
+                case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                  this.load();
+                  break;
+              }
+            }
+          });
         }
-    });
+      });
     }
   }
 
@@ -203,7 +229,7 @@ visitNode(node: any, hashMap: object, array: any[]): void {
         label: 'node 3',
         type: 'parent'
       }
-    ],
+      ],
       edges: [{
         target: 'node2',
         source: 'node1',
@@ -220,24 +246,25 @@ visitNode(node: any, hashMap: object, array: any[]): void {
 
     this.graph = new G6.Graph({
       container: this.dataSteps.nativeElement,
-      width: 600,
-      height: 200,
+      fitView: 'cc',
+      width: this.config.width,
+      height: this.config.height,
       modes: {
         red: ['mouseEnterColor', 'mouseLeaveColor', 'onclick']
       },
       mode: 'red'
     });
-  
+
     this.load();
   }
 
   ngOnDestroy() {
     if (this._statusSubscription) {
-        this._statusSubscription.unsubscribe();
+      this._statusSubscription.unsubscribe();
     }
     if (this._cascadeSubscription) {
-        this._cascadeSubscription.unsubscribe();
+      this._cascadeSubscription.unsubscribe();
     }
-}
+  }
 
 }
