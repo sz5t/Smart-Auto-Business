@@ -39,6 +39,7 @@ import { BsnTableComponent } from '@shared/business/bsn-data-table/bsn-table.com
 import { TabsResolverComponent } from '@shared/resolver/tabs-resolver/tabs-resolver.component';
 import { CnContextMenuComponent } from '@shared/components/cn-context-menu/cn-context-menu.component';
 import { CnFormSelectComponent } from '@shared/components/cn-form-select/cn-form-select.component';
+import { CnFormSelectMultipleComponent } from '@shared/components/cn-form-select-multiple/cn-form-select-multiple.component';
 import { FormResolverDirective } from '@shared/resolver/form-resolver/form-resolver.directive';
 import { GridEditorDirective } from '@shared/resolver/grid-resolver/grid-editor.directive';
 import { SqlEditorComponent } from '@shared/business/sql-editor/sql-editor.component';
@@ -60,6 +61,7 @@ import { CnGridRangePickerComponent } from '@shared/components/cn-grid-range-pic
 import { BsnToolbarComponent } from '@shared/business/bsn-toolbar/bsn-toolbar.component';
 import { BsnStepComponent } from '@shared/business/bsn-step/bsn-step.component';
 import { CnFormSelectTreeComponent } from '@shared/components/cn-form-select-tree/cn-form-select-tree.component';
+import { CnFormSelectTreeMultipleComponent } from '@shared/components/cn-form-select-tree-multiple/cn-form-select-tree-multiple.component';
 import { BtnTableFieldLimit } from '@core/pipe/btn-table-field-limit.pipe';
 import {BsnAccordionComponent} from '@shared/business/bsn-accordion/bsn-accordion.component';
 import {BsnTabsComponent} from '@shared/business/bsn-tabs/bsn-tabs.component';
@@ -96,6 +98,7 @@ const COMPONENTS = [
     CnFormInputComponent,
     CnFormSubmitComponent,
     CnFormSelectComponent,
+    CnFormSelectMultipleComponent,
     CnFormNumberComponent,
     CnDatePickerComponent,
     CnTimePickerComponent,
@@ -135,6 +138,7 @@ const COMPONENTS = [
     LineChartComponent,
     BarChartComponent,
     CnFormSelectTreeComponent,
+    CnFormSelectTreeMultipleComponent,
     BsnAccordionComponent,
     BsnTabsComponent,
     BsnUploadComponent,

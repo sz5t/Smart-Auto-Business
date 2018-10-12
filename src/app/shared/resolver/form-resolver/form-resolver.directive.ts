@@ -18,10 +18,14 @@ import {CnFormSearchComponent} from '@shared/components/cn-form-search/cn-form-s
 import {CnFormSelectTreeComponent} from '@shared/components/cn-form-select-tree/cn-form-select-tree.component';
 import {CnFormTextareaComponent} from '@shared/components/cn-form-textarea/cn-form-textarea.component';
 import { CnFormNumberComponent } from '@shared/components/cn-form-number/cn-form-number.component';
+import { CnFormSelectMultipleComponent } from '@shared/components/cn-form-select-multiple/cn-form-select-multiple.component';
+import { CnFormSelectTreeMultipleComponent } from '@shared/components/cn-form-select-tree-multiple/cn-form-select-tree-multiple.component';
+
 const components: { [type: string]: Type<any> } = {
     input: CnFormInputComponent,
     submit: CnFormSubmitComponent,
     select: CnFormSelectComponent,
+    selectMultiple: CnFormSelectMultipleComponent,
     datePicker: CnDatePickerComponent,
     timePicker: CnTimePickerComponent,
     rangePicker: CnFormRangePickerComponent,
@@ -30,6 +34,7 @@ const components: { [type: string]: Type<any> } = {
     radioGroup: CnFormRadioGroupComponent,
     search: CnFormSearchComponent,
     selectTree: CnFormSelectTreeComponent,
+    selectTreeMultiple: CnFormSelectTreeMultipleComponent,
     textarea: CnFormTextareaComponent,
     hidden: CnFormHiddenComponent,
     number: CnFormNumberComponent

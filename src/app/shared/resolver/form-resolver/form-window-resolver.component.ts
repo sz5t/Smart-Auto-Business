@@ -41,7 +41,7 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
     _cascadeSubscription;
     _isSaving = false;
     changeConfig;
-
+    formconfigcontrol = {}; // liu 表单配置
     constructor(private formBuilder: FormBuilder,
                 private _apiService: ApiService,
                 private cacheService: CacheService,
@@ -77,6 +77,12 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
                 this.load();
             }
         }
+        this.config.forms.forEach((formItem => {
+            formItem.controls.forEach((control => {
+                this.formconfigcontrol[control.name] = control;
+            }));
+
+        }));
         this.caseLoad(); // liu 20180521 测试
     }
 
@@ -614,6 +620,7 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
 
     private _buildParameters(paramsConfig, isBatch) {
         let params;
+        const newValue = this.GetComponentValue();
         if (paramsConfig && isBatch) {
             // 批量数据参数数组
             params = [];
@@ -625,7 +632,7 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
                             params: paramsConfig,
                             tempValue: this.tempValue,
                             item: item,
-                            componentValue: this.value,
+                            componentValue: newValue, // liu this.value,
                             initValue: this.initValue,
                             cacheValue: this.cacheValue
                         });
@@ -638,7 +645,7 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
                 params: paramsConfig,
                 tempValue: this.tempValue,
                 item: {} ,
-                componentValue: this.value,
+                componentValue: newValue, // liu this.value,
                 initValue: this.initValue,
                 cacheValue: this.cacheValue
             });
@@ -683,6 +690,40 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
         return this._apiService.put(url, body).toPromise();
     }
 
+    // 处理参数 liu 
+    private GetComponentValue() {
+        this.formconfigcontrol; // liu 表单配置
+        const ComponentValue = {};
+        // 循环 this.value
+        for (const key in this.value) {
+            if (this.formconfigcontrol[key]) {
+
+                if (this.formconfigcontrol[key]['type'] === 'selectMultiple' || this.formconfigcontrol[key]['type'] === 'selectTreeMultiple' ) {
+                    let ArrayValue = '';
+                   // console.log('数组', this.value[key]);
+                    this.value[key].forEach(element => {
+                        ArrayValue = ArrayValue + element.toString() + ',';
+                    });
+                    if (ArrayValue.length > 0 ) {
+                        ArrayValue = ArrayValue.slice(0 , ArrayValue.length - 1);
+                    }
+                    ComponentValue[key] = ArrayValue;
+                   // console.log('拼接', ArrayValue); 
+                } else {
+                    ComponentValue[key] = this.value[key];
+                }
+
+            } else {
+                ComponentValue[key] = this.value[key];
+            }
+        }
+        return ComponentValue;
+
+    }
+
+    private isArray(obj) { // 判断对象是否是数组
+        return Object.prototype.toString.call(obj) === '[object Array]';
+    }
     private async _executeRequest(url, method, body) {
         return this._apiService[method](url, body).toPromise();
 

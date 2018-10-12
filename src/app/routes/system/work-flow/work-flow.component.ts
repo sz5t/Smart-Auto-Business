@@ -1082,6 +1082,7 @@ export class WorkFlowComponent implements OnInit {
                                   'showSearch': true,
                                   'placeholder': '--请选择--',
                                   'disabled': false,
+                                  'multiple': 'multiple',
                                   'size': 'default',
                                   'options': [
 
@@ -2035,6 +2036,20 @@ export class WorkFlowComponent implements OnInit {
                                       ]
                                     }
                                   }
+                                },
+                                {
+                                  title: '排序', field: 'sort', width: 80,
+                                  showFilter: false, showSort: false,
+                                  editor: {
+                                    type: 'input',
+                                    field: 'sort',
+                                    options: {
+                                      'type': 'input',
+                                      'labelSize': '6',
+                                      'controlSize': '18',
+                                      'inputType': 'text',
+                                    }
+                                  }
                                 }
                               ],
                               'toolbar': [
@@ -2214,12 +2229,12 @@ export class WorkFlowComponent implements OnInit {
                                                 'layout': 'column',
                                                 'span': '12'
                                               },
-                                              {
-                                                'type': 'select',
+                                           /*    {
+                                                'type': 'selectMultiple',
                                                 'labelSize': '6',
                                                 'controlSize': '16',
                                                 'inputType': 'submit',
-                                                'name': 'approverspeple',
+                                                'name': 'approvers',
                                                 'label': '审批人',
                                                 'labelName': 'realName',
                                                 'valueName': 'Id',
@@ -2240,12 +2255,12 @@ export class WorkFlowComponent implements OnInit {
                                                 ],
                                                 'layout': 'column',
                                                 'span': '12'
-                                              },
+                                              }, */
                                               {
-                                                'type': 'selectTree',
+                                                'type': 'selectTreeMultiple',
                                                 'labelSize': '6',
                                                 'controlSize': '16',
-                                                'name': 'approversorg',
+                                                'name': 'approvers',
                                                 'label': '审批组织',
                                                 'notFoundContent': '',
                                                 'selectModel': false,
@@ -2655,105 +2670,128 @@ export class WorkFlowComponent implements OnInit {
                                           // }
 
                                         ],
-                                        'toolbar': {
-                                          'gutter': 24,
-                                          'offset': 6,
-                                          'span': 16,
-                                          'buttons': [
-                                            {
-                                              'name': 'saveForm', 'type': 'primary', 'text': '保存',
-                                              'ajaxConfig': {
-                                                put: {
-                                                  'url': 'common/WfNodes',
-                                                  'ajaxType': 'put',
-                                                  'params': [
-                                                    {
-                                                      name: 'Id',
-                                                      type: 'tempValue',
-                                                      valueName: '_id',
-                                                      value: ''
-                                                    },
-                                                    {
-                                                      name: 'cktype',
-                                                      type: 'componentValue',
-                                                      valueName: 'cktype',
-                                                      value: ''
-                                                    },
-                                                    // {
-                                                    //   name: 'approvers',
-                                                    //   type: 'componentValue',
-                                                    //   valueName: 'approverspeple',
-                                                    //   value: ''
-                                                    // },
-                                                    {
-                                                      name: 'approvaltactics',
-                                                      type: 'componentValue',
-                                                      valueName: 'approvaltactics',
-                                                      value: ''
-                                                    },
-                                                    {
-                                                      name: 'approvalnum',
-                                                      type: 'componentValue',
-                                                      valueName: 'approvalnum',
-                                                      value: ''
-                                                    },
-                                                    {
-                                                      name: 'returntactics',
-                                                      type: 'componentValue',
-                                                      valueName: 'returntactics',
-                                                      value: ''
-                                                    },
-                                                    {
-                                                      name: 'returnttype',
-                                                      type: 'componentValue',
-                                                      valueName: 'returnttype',
-                                                      value: ''
-                                                    },
-                                                    {
-                                                      name: 'returntstep',
-                                                      type: 'componentValue',
-                                                      valueName: 'returntstep',
-                                                      value: ''
-                                                    },
-                                                    {
-                                                      name: 'signtactics',
-                                                      type: 'componentValue',
-                                                      valueName: 'signtactics',
-                                                      value: ''
-                                                    },
-                                                    {
-                                                      name: 'signnum',
-                                                      type: 'componentValue',
-                                                      valueName: 'signnum',
-                                                      value: ''
-                                                    },
-                                                    {
-                                                      name: 'subprocesstactics',
-                                                      type: 'componentValue',
-                                                      valueName: 'subprocesstactics',
-                                                      value: ''
-                                                    },
-                                                    {
-                                                      name: 'subprocess',
-                                                      type: 'componentValue',
-                                                      valueName: 'subprocess',
-                                                      value: ''
-                                                    },
-                                                    {
-                                                      name: 'formresource',
-                                                      type: 'componentValue',
-                                                      valueName: 'formresource',
-                                                      value: ''
-                                                    }
-                                                  ]
-                                                }
-                                              }
-                                            },
-                                            {
-                                              'name': 'cancelRow', 'type': 'default', 'text': '取消'
-                                            }
-                                          ],
-                                        },
+                                        'toolbar': [
+                                          {
+                                              group: [
+                                                  {
+                                                      'name': 'refresh',
+                                                      'action': 'REFRESH',
+                                                      'text': '刷新',
+                                                      'color': 'text-primary'
+                                                  },
+                                                  {
+                                                      'name': 'updateRow',
+                                                      'class': 'editable-add-btn',
+                                                      'text': '修改',
+                                                      'action': 'EDIT',
+                                                      'icon': 'anticon anticon-edit',
+                                                      'color': 'text-success'
+                                                  },
+                                                  {
+                                                      'name': 'updateRow',
+                                                      'class': 'editable-add-btn',
+                                                      'text': '取消',
+                                                      'action': 'CANCEL',
+                                                      'icon': 'anticon anticon-edit',
+                                                      'color': 'text-success'
+                                                  },
+                                                  {
+                                                      'name': 'saveForm',
+                                                      'text': '保存',
+                                                      'icon': 'anticon anticon-save',
+                                                      'color': 'text-primary',
+                                                      'action': 'SAVE',
+                                                      'ajaxConfig': [
+                                                          {
+                                                            'url': 'common/WfNodes',
+                                                            'ajaxType': 'put',
+                                                            'params': [
+                                                              {
+                                                                name: 'Id',
+                                                                type: 'tempValue',
+                                                                valueName: '_id',
+                                                                value: ''
+                                                              },
+                                                              {
+                                                                name: 'cktype',
+                                                                type: 'componentValue',
+                                                                valueName: 'cktype',
+                                                                value: ''
+                                                              },
+                                                              {
+                                                                name: 'approvers',
+                                                                type: 'componentValue',
+                                                                valueName: 'approvers',
+                                                                value: ''
+                                                              },
+                                                              {
+                                                                name: 'approvaltactics',
+                                                                type: 'componentValue',
+                                                                valueName: 'approvaltactics',
+                                                                value: ''
+                                                              },
+                                                              {
+                                                                name: 'approvalnum',
+                                                                type: 'componentValue',
+                                                                valueName: 'approvalnum',
+                                                                value: ''
+                                                              },
+                                                              {
+                                                                name: 'returntactics',
+                                                                type: 'componentValue',
+                                                                valueName: 'returntactics',
+                                                                value: ''
+                                                              },
+                                                              {
+                                                                name: 'returnttype',
+                                                                type: 'componentValue',
+                                                                valueName: 'returnttype',
+                                                                value: ''
+                                                              },
+                                                              {
+                                                                name: 'returntstep',
+                                                                type: 'componentValue',
+                                                                valueName: 'returntstep',
+                                                                value: ''
+                                                              },
+                                                              {
+                                                                name: 'signtactics',
+                                                                type: 'componentValue',
+                                                                valueName: 'signtactics',
+                                                                value: ''
+                                                              },
+                                                              {
+                                                                name: 'signnum',
+                                                                type: 'componentValue',
+                                                                valueName: 'signnum',
+                                                                value: ''
+                                                              },
+                                                              {
+                                                                name: 'subprocesstactics',
+                                                                type: 'componentValue',
+                                                                valueName: 'subprocesstactics',
+                                                                value: ''
+                                                              },
+                                                              {
+                                                                name: 'subprocess',
+                                                                type: 'componentValue',
+                                                                valueName: 'subprocess',
+                                                                value: ''
+                                                              },
+                                                              {
+                                                                name: 'formresource',
+                                                                type: 'componentValue',
+                                                                valueName: 'formresource',
+                                                                value: ''
+                                                              }
+                                                            ]
+                                                          }
+                                                      ]
+                                                  }
+                                                 
+                                              ]
+                                          }
+                                      ],
                                         'dataList': []
                                       },
                                       permissions: {
