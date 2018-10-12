@@ -27,6 +27,8 @@ export class CommonTools {
                       case BSN_PARAMETER_TYPE.TEMP_VALUE:
                           if (model.tempValue && model.tempValue[param['valueName']]) {
                               result[param['name']] = model.tempValue[param['valueName']];
+                          } else {
+                            result[param['name']] = param.value;
                           }
                           break;
                       case BSN_PARAMETER_TYPE.VALUE:
@@ -81,7 +83,8 @@ export class CommonTools {
                           break;
                       case BSN_PARAMETER_TYPE.CACHE_VALUE:
                           if (model.cacheValue) {
-                              result[param['name']] = model.cacheValue.get('userInfo')[param('valueName')];
+                              const cache = model.cacheValue.get('userInfo');
+                              result[param['name']] = cache.value[param['valueName']];
                           }
                           break; 
                   }

@@ -202,7 +202,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                         'children': []
                     }
                 ];
-                //menus[0].children = this.arrayToTree(projModule.data, null);
+                // menus[0].children = this.arrayToTree(projModule.data, null);
                 menus[0].children = user.data.modules;
                 url = '/';
             }

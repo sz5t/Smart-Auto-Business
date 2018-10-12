@@ -1459,54 +1459,6 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                       }
                     ]
                   },
-                  permissions: {
-                    'viewId': 'chartTable',
-                    'columns': [
-                      {
-                        'field': '_serilize',
-                        'hidden': false,
-                        'editable': false
-                      },
-                      {
-                        'field': 'Id',
-                        'hidden': false,
-                        'editable': false
-                      },
-                      {
-                        'field': 'caseName',
-                        'hidden': false,
-                        'editable': false
-                      },
-                      {
-                        'field': 'TypeName',
-                        'hidden': false,
-                        'editable': false
-                      },
-                      {
-                        'field': 'caseLevel',
-                        'hidden': false,
-                        'editable': false
-                      },
-                      {
-                        'field': 'CreateTime',
-                        'hidden': false,
-                        'editable': false
-                      },
-                      {
-                        'field': 'Remark',
-                        'hidden': false,
-                        'editable': false
-                      },
-                      {
-                        'field': 'EnableText',
-                        'hidden': false,
-                        'editable': false
-                      }
-                    ],
-                    'toolbar': [],
-                    'formDialog': [],
-                    'windowDialog': []
-                  },
                   dataList: []
                 }
               ]
@@ -1538,7 +1490,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                       'url': 'common/ShowCase',
                       'ajaxType': 'get',
                       'params': [
-                        { name: 'parentId', type: 'tempValue', valueName: '_parentId'}
+                        { name: 'parentId', type: 'tempValue', valueName: '_parentId' }
                       ]
                     },
                     'componentType': {
@@ -1623,8 +1575,8 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                       'url': 'common/ShowCase',
                       'ajaxType': 'get',
                       'params': [
-                        { name: 'parentId', type: 'tempValue', valueName: '_parentId'},
-                        { name: '_order', type: 'value', value: 'caseName asc'}
+                        { name: 'parentId', type: 'tempValue', valueName: '_parentId' },
+                        { name: '_order', type: 'value', value: 'caseName asc' }
                       ]
                     },
                     'componentType': {
@@ -1714,7 +1666,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                       'url': 'common/ShowCase',
                       'ajaxType': 'get',
                       'params': [
-                        { name: 'parentId', type: 'tempValue', valueName: '_parentId'}
+                        { name: 'parentId', type: 'tempValue', valueName: '_parentId' }
                       ]
                     },
                     'componentType': {
@@ -1798,7 +1750,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                       'url': 'common/ShowCase',
                       'ajaxType': 'get',
                       'params': [
-                        { name: 'parentId', type: 'tempValue', valueName: '_parentId'}
+                        { name: 'parentId', type: 'tempValue', valueName: '_parentId' }
                       ]
                     },
                     'componentType': {
@@ -1859,6 +1811,48 @@ export class TableChartComponent implements OnInit, AfterViewInit {
           ]
         }
       },
+      {
+        row: {
+          cols: [
+            {
+              id: 'dataSteps',
+              span: 12,
+              icon: 'icon-list',
+              size: {
+                nzXs: 12,
+                nzSm: 12,
+                nzMd: 12,
+                nzLg: 12,
+                ngXl: 12
+              },
+              viewCfg: [
+                {
+                  config: {
+                    'viewId': 'chart3',
+                    'component': 'dataSteps',
+                    'stepNum': 50,
+                    'startX': 100,
+                    'startY': 100, 
+                    'textField': 'caseName',
+                    'ajaxConfig': {
+                      'url': 'common/ShowCase',
+                      'ajaxType': 'get',
+                      'params': [
+                        // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
+                      ]
+                    },
+                    'componentType': {
+                      'parent': true,
+                      'child': false,
+                      'sub': false
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
     ]
   };
   constructor(private http: _HttpClient) {
@@ -1866,7 +1860,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-      // console.log(JSON.stringify(this.config));
+    // console.log(JSON.stringify(this.config));
   }
   // region: init
   ngAfterViewInit() {

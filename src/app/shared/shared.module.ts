@@ -75,6 +75,7 @@ import { BsnTransferComponent } from './business/bsn-transfer/bsn-transfer.compo
 import { BsnTreeTableComponent } from '@shared/business/bsn-tree-table/bsn-tree-table.component';
 import { CnFormHiddenComponent } from '@shared/components/cn-form-hidden/cn-form-hidden.component';
 import { CnGridNumberComponent } from '@shared/components/cn-grid-munber/cn-grid-number.component';
+import { BsnDataStepComponent } from './business/bsn-data-step/bsn-data-step.component';
 const THIRDMODULES = [
     NgZorroAntdModule,
     CountdownModule,
@@ -142,7 +143,8 @@ const COMPONENTS = [
     CnFormWindowResolverComponent,
     BsnTransferComponent,
     CnFormHiddenComponent,
-    CnBsnTreeMenuComponent
+    CnBsnTreeMenuComponent,
+    BsnDataStepComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

@@ -1,3 +1,4 @@
+import { BsnDataStepComponent } from './../../business/bsn-data-step/bsn-data-step.component';
 import {LineChartComponent} from '@shared/chart/line-chart/line-chart.component';
 import {BsnStepComponent} from '@shared/business/bsn-step/bsn-step.component';
 import {BsnAsyncTreeComponent} from '@shared/business/bsn-async-tree/bsn-async-tree.component';
@@ -31,7 +32,8 @@ const components: { [type: string]: Type<any> } = {
     barChart: BarChartComponent,
     bsnAccordion: BsnAccordionComponent,
     bsnTabs: BsnTabsComponent,
-    bsnTransfer: BsnTransferComponent
+    bsnTransfer: BsnTransferComponent,
+    dataSteps: BsnDataStepComponent
 };
 @Component({
     selector: 'cn-component-resolver',

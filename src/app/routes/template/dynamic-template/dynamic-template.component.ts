@@ -8,7 +8,9 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class DynamicTemplateComponent implements OnInit, OnDestroy {
     title;
-    config;
+    config = {
+        rows:[]
+    };
     constructor(
         private http: ApiService,
         private route: ActivatedRoute
