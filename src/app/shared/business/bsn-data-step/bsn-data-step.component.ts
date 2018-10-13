@@ -10,7 +10,10 @@ import { initDomAdapter } from '@angular/platform-browser/src/browser';
 import { AdNumberToChineseModule } from '@delon/abc';
 @Component({
   selector: 'bsn-data-step',
-  template: `<nz-spin [nzSpinning]="isLoading" nzTip='加载中...'><div #dataSteps></div></nz-spin>`,
+  template: `
+    <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
+      <div #dataSteps></div>
+    </nz-spin>`,
   styles: [``]
 })
 export class BsnDataStepComponent extends CnComponentBase implements OnInit, AfterViewInit, OnDestroy {
@@ -20,7 +23,9 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
   isLoading = false;
   bNodeColor;
   sNodeColor = '#eee';
-  sNodeEnterColor = '#4B99FD';
+  sNodeEnterColor = '#00B2EE';
+  sNodeClickColor = '#9BCD9B';
+  _lastNode;
   _statusSubscription;
   _cascadeSubscription;
   graph;
@@ -54,8 +59,6 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
     }
   }
 
-
-
   listToAsyncTreeData(data, parentid) {
     const result: any[] = [];
     let temp;
@@ -66,13 +69,21 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
         if (temp.length > 0) {
           temp.forEach(item => {
             item['type'] = 'child';
+            item['size'] = this.config.size - 10;
+            // item['shape'] = 'childNode';
+            item['style'] = { stroke: '#333' };
             temps.push(item);
           });
         } else {
           data[i]['type'] = 'parent';
         }
         data[i]['type'] = 'parent';
+        data[i]['style'] = { stroke: '#333' };
         data[i]['id'] = data[i]['Id'];
+        // data[i]['shape'] = 'customNode';
+        data[i]['labelOffsetX'] = 0;
+        data[i]['labelOffsetY'] = -30;
+        data[i]['size'] = this.config.size;
         result.push(data[i]);
         if (temps.length > 0) {
           result.push(...temps);
@@ -87,7 +98,7 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
     if (rgNodes && rgNodes.length > 0) {
       for (let i = 0, len = rgNodes.length; i < len; i++) {
         rgNodes[i]['x'] = this.config.startX * i === 0 ? this.config.startX : this.config.startX + this.config.startX * i;
-        rgNodes[i]['y'] = this.config.startY;
+        // rgNodes[i]['y'] = this.config.startY + 25;
         rgNodes[i]['label'] = rgNodes[i][this.config.textField];
         if (rgNodes[i]['type'] === 'child') {
           rgNodes[i]['color'] = this.sNodeColor;
@@ -118,8 +129,10 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
         edge['endArrow'] = true;
         if (next.type === 'child') {
           edge['label'] = this.config.subTitle;
+
         } else if (next.type === 'parent') {
           edge['label'] = this.config.mainTitle;
+
         }
         edges.push(edge);
       }
@@ -134,13 +147,6 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
       initValue: this.initValue,
       cacheValue: this._cacheService
     })).toPromise();
-  }
-
-  visitNode(node: any, hashMap: object, array: any[]): void {
-    if (!hashMap[node.Id]) {
-      hashMap[node.Id] = true;
-      array.push(node);
-    }
   }
 
   resolverRelation() {
@@ -178,75 +184,113 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
   }
 
   ngAfterViewInit() {
+
+    G6.registerNode('childNode', {
+      draw: function draw(item) {
+        const group = item.getGraphicGroup();
+        group.addShape('text', {
+          attrs: {
+            x: 0,
+            y: -13,
+            fill: '#333',
+            text: item.model.label
+          }
+        });
+        return group.addShape('rect', {
+          attrs: {
+            x: 0,
+            y: -12,
+            width: 25,
+            height: 25,
+            stroke: '#333',
+            fill: '#eee',
+            label: item.model.label
+          }
+        });
+      }
+    });
+
     G6.registerBehaviour('mouseEnterColor', (graph) => {
       graph.behaviourOn('node:mouseenter', (ev) => {
         this.bNodeColor = ev.item.model.color;
-        graph.update(ev.item, {
-          color: this.sNodeEnterColor
-        });
+        if (ev.item.model.color !== this.sNodeClickColor) {
+          graph.update(ev.item, {
+            color: this.sNodeEnterColor
+          });
+        }
+
       });
     });
 
     G6.registerBehaviour('mouseLeaveColor', (graph) => {
       graph.behaviourOn('node:mouseleave', (ev) => {
-        graph.update(ev.item, {
-          color: this.bNodeColor
-        });
+        if (ev.item.model.color !== this.sNodeClickColor) {
+          graph.update(ev.item, {
+            color: this.bNodeColor
+          });
+        }
       });
     });
 
     G6.registerBehaviour('onclick', (graph) => {
       graph.on('node:click', (ev) => {
+        if (!this._lastNode) {
+          this._lastNode = ev.item;
+        }
+        if (this._lastNode !== ev.item) {
+          graph.update(ev.item, {
+            color: this.sNodeClickColor
+          });
+          if (this._lastNode.model.type === 'parent') {
+            graph.update(this._lastNode, {
+              color: '#4596FC'
+            });
+          } else {
+            graph.update(this._lastNode, {
+              color: this.sNodeColor
+            });
+          }
+        }
+        this._lastNode = ev.item;
+
         if (this.config.componentType && this.config.componentType.child === true) {
 
         }
+        // 注册多界面切换消息
         if (this.config.componentType && this.config.componentType.sub === true) {
-
+          this.after(this, 'clickNode', () => {
+            this.tempValue['_selectedNode'] && this.cascade.next(
+              new BsnComponentMessage(
+                BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
+                this.config.viewId,
+                {
+                  data: this.tempValue['_selectedNode'],
+                  tempValue: this.tempValue,
+                  subViewId: () => {
+                    let id = '';
+                    this.config.subMapping.forEach(sub => {
+                      const mappingVal = this.tempValue['_selectedNode'][sub['field']];
+                      if (sub.mapping) {
+                        sub.mapping.forEach(m => {
+                          if (m.value === mappingVal) {
+                            id = m.subViewId;
+                          }
+                        });
+                      }
+                    });
+                    return id;
+                  }
+                }
+              )
+            );
+          });
         }
-
       });
     });
 
-    const data = {
-      nodes: [{
-        id: 'node1',
-        x: 100,
-        y: 50,
-        label: 'node 3',
-        type: 'parent'
-      }, {
-        id: 'node2',
-        x: 300,
-        y: 50,
-        label: 'node 3',
-        color: '#eee',
-        type: 'child'
-      },
-      {
-        id: 'node3',
-        x: 500,
-        y: 50,
-        label: 'node 3',
-        type: 'parent'
-      }
-      ],
-      edges: [{
-        target: 'node2',
-        source: 'node1',
-        label: '工步',
-        endArrow: true
-      },
-      {
-        target: 'node3',
-        source: 'node2',
-        label: '工艺',
-        endArrow: true
-      }]
-    };
-
     this.graph = new G6.Graph({
       container: this.dataSteps.nativeElement,
-      fitView: 'cc',
+      fitView: 'lc',
       width: this.config.width,
       height: this.config.height,
       modes: {

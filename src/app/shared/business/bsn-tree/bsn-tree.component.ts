@@ -70,8 +70,24 @@ import { CacheService } from '@delon/cache';
             background: #87CEFF;
             color: #FFFFFF;*/
         }
+
+        :host ::ng-deep nz-upload {
+            display: block;
+        }
+    
+        :host ::ng-deep .ant-upload.ant-upload-drag {
+            height: 180px;
+        }
+        :host ::ng-deep .tree {
+            min-height: 300px;
+        }
+        :host ::ng-deep .tree-container {
+            overflow: auto;
+            height:300px
+        }
     ` ]
 })
+
 export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     @Input() config;
     @Input() initData;
@@ -108,6 +124,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
         if (this._cacheService) {
             this.cacheValue = this._cacheService;
         }
+        this.callback = this.load;
         this.resolverRelation();
         if (this.config.componentType) {
             if (this.config.componentType.parent === true) {

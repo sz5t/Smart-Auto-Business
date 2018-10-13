@@ -660,10 +660,10 @@ export class GridBase extends CnComponentBase {
 
         }
         obj = {
+            ...this.selectedItem,
             _id: this.selectedItem[dialog.keyId] ? this.selectedItem[dialog.keyId] : '',
             _parentId: this.tempValue['_parentId'] ? this.tempValue['_parentId'] : ''
         };
-
         const footer = [];
         const modal = this.modalService.create({
             nzTitle: dialog.title,
