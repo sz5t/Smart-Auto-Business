@@ -1,6 +1,6 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {_HttpClient} from '@delon/theme';
-import {SimpleTableColumn, SimpleTableComponent} from '@delon/abc';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { _HttpClient } from '@delon/theme';
+import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
 
 @Component({
     selector: 'tree-and-sub-table',
@@ -17,6 +17,78 @@ export class TreeAndSubTableComponent implements OnInit {
 
     config = {
         rows: [
+            {
+                row: {
+                    cols: [
+                        {
+                            id: 'dataSteps',
+                            span: 24,
+                            icon: 'icon-list',
+                            size: {
+                                nzXs: 24,
+                                nzSm: 24,
+                                nzMd: 24,
+                                nzLg: 24,
+                                ngXl: 24
+                            },
+                            viewCfg: [
+                                {
+                                    config: {
+                                        'viewId': 'chart3',
+                                        'component': 'dataSteps',
+                                        'width': 1400,
+                                        'height': 60,
+                                        'stepNum': 50,
+                                        'startX': 100,
+                                        'startY': 100,
+                                        'textField': 'caseName',
+                                        'mainTitle': '',
+                                        'subTitle': '',
+                                        'size': 40,
+                                        'position': 'lc',
+                                        'direction': 'horizontal',
+                                        'labelOffsetX': 0,
+                                        'labelOffsetY': -30,
+                                        'ajaxConfig': {
+                                            'url': 'common/ShowCase',
+                                            'ajaxType': 'get',
+                                            'params': [
+                                                // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
+                                            ]
+                                        },
+                                        'componentType': {
+                                            'parent': false,
+                                            'child': false,
+                                            'sub': true
+                                        },
+                                        'subMapping': [
+                                            {
+                                                'field': 'caseType', 'mapping': [
+                                                    {
+                                                        'value': '1', 'subViewId': 'tree_and_form_form'
+                                                    },
+                                                    {
+                                                        'value': '2', 'subViewId': 'tree_singleTable'
+                                                    },
+                                                    {
+                                                        'value': '3', 'subViewId': 'tree_and_form_form'
+                                                    },
+                                                    {
+                                                        'value': '4', 'subViewId': 'tree_and_form_form'
+                                                    },
+                                                    {
+                                                        'value': '5', 'subViewId': 'tree_and_form_form'
+                                                    }
+                                                ]
+                                            }
+                                        ],
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
             {
                 row: {
                     cols: [
@@ -44,29 +116,29 @@ export class TreeAndSubTableComponent implements OnInit {
                                         'checkable': false,  //    在节点之前添加一个复选框 false
                                         'showLine': true,  //   显示连接线 fal
                                         'columns': [ // 字段映射，映射成树结构所需
-                                            {title: '主键', field: 'key', valueName: 'Id'},
-                                            {title: '父节点', field: 'parentId', valueName: 'parentId'},
-                                            {title: '标题', field: 'title', valueName: 'caseName'},
+                                            { title: '主键', field: 'key', valueName: 'Id' },
+                                            { title: '父节点', field: 'parentId', valueName: 'parentId' },
+                                            { title: '标题', field: 'title', valueName: 'caseName' },
                                         ],
                                         'subMapping': [
                                             {
                                                 'field': 'caseType', 'mapping': [
-                                                {
-                                                    'value': '1', 'subViewId': 'tree_and_form_form'
-                                                },
-                                                {
-                                                    'value': '2', 'subViewId': 'tree_singleTable'
-                                                },
-                                                {
-                                                    'value': '3', 'subViewId': 'tree_and_form_form'
-                                                },
-                                                {
-                                                    'value': '4', 'subViewId': 'tree_and_form_form'
-                                                },
-                                                {
-                                                    'value': '5', 'subViewId': 'tree_and_form_form'
-                                                }
-                                            ]
+                                                    {
+                                                        'value': '1', 'subViewId': 'tree_and_form_form'
+                                                    },
+                                                    {
+                                                        'value': '2', 'subViewId': 'tree_singleTable'
+                                                    },
+                                                    {
+                                                        'value': '3', 'subViewId': 'tree_and_form_form'
+                                                    },
+                                                    {
+                                                        'value': '4', 'subViewId': 'tree_and_form_form'
+                                                    },
+                                                    {
+                                                        'value': '5', 'subViewId': 'tree_and_form_form'
+                                                    }
+                                                ]
                                             }
                                         ],
                                         'componentType': {
@@ -76,7 +148,7 @@ export class TreeAndSubTableComponent implements OnInit {
                                             'sub': true
                                         },
                                         'parent': [
-                                            {name: 'parentId', type: 'value', valueName: '', value: null}
+                                            { name: 'parentId', type: 'value', valueName: '', value: null }
                                         ],
                                         'ajaxConfig': {
                                             'url': 'common/ShowCase',
@@ -1127,7 +1199,7 @@ export class TreeAndSubTableComponent implements OnInit {
                                                                             ]
                                                                         },
                                                                         {
-                                                                            controls:[
+                                                                            controls: [
                                                                                 {
                                                                                     'type': 'checkboxGroup',
                                                                                     'label': '选项',
@@ -1151,7 +1223,7 @@ export class TreeAndSubTableComponent implements OnInit {
                                                                             ]
                                                                         },
                                                                         {
-                                                                            controls:[
+                                                                            controls: [
                                                                                 {
                                                                                     'type': 'radioGroup',
                                                                                     'label': '选项',
@@ -1383,8 +1455,8 @@ export class TreeAndSubTableComponent implements OnInit {
                                                                                 }]
                                                                             }
                                                                         },
-                                                                        {'name': 'reset', 'text': '重置'},
-                                                                        {'name': 'close', 'text': '关闭'}
+                                                                        { 'name': 'reset', 'text': '重置' },
+                                                                        { 'name': 'close', 'text': '关闭' }
                                                                     ]
                                                                 },
                                                                 {
@@ -1692,8 +1764,8 @@ export class TreeAndSubTableComponent implements OnInit {
                                                                                 }]
                                                                             }
                                                                         },
-                                                                        {'name': 'close', 'class': 'editable-add-btn', 'text': '关闭'},
-                                                                        {'name': 'reset', 'class': 'editable-add-btn', 'text': '重置'}
+                                                                        { 'name': 'close', 'class': 'editable-add-btn', 'text': '关闭' },
+                                                                        { 'name': 'reset', 'class': 'editable-add-btn', 'text': '重置' }
                                                                     ],
                                                                     'dataList': [],
                                                                 }
@@ -1711,7 +1783,7 @@ export class TreeAndSubTableComponent implements OnInit {
                                                                             'class': 'editable-add-btn',
                                                                             'type': 'primary'
                                                                         },
-                                                                        {'name': 'close', 'text': '关闭'}
+                                                                        { 'name': 'close', 'text': '关闭' }
                                                                     ]
                                                                 }
                                                             ],

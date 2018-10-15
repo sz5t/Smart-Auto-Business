@@ -1838,7 +1838,62 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                     'textField': 'caseName',
                     'mainTitle': '',
                     'subTitle': '',
+                    'position': 'lc',
+                    'direction': 'horizontal',
+                    'labelOffsetX': 0,
+                    'labelOffsetY': -30,
                     'size': 40,
+                    'ajaxConfig': {
+                      'url': 'common/ShowCase',
+                      'ajaxType': 'get',
+                      'params': [
+                        // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
+                      ]
+                    },
+                    'componentType': {
+                      'parent': true,
+                      'child': false,
+                      'sub': false
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        row: {
+          cols: [
+            {
+              id: 'dataSteps',
+              span: 3,
+              icon: 'icon-list',
+              size: {
+                nzXs: 3,
+                nzSm: 3,
+                nzMd: 3,
+                nzLg: 3,
+                ngXl: 3
+              },
+              viewCfg: [
+                {
+                  config: {
+                    'viewId': 'chart34',
+                    'component': 'dataSteps',
+                    'width': 120,
+                    'height': 1000,
+                    'stepNum': 50,
+                    'startX': 75,
+                    'startY': 75,
+                    'position': 'tr',
+                    'direction': 'vertical',
+                    'textField': 'caseName',
+                    'mainTitle': '',
+                    'subTitle': '',
+                    'size': 40,
+                    'labelOffsetX': -50,
+                    'labelOffsetY': 1,
                     'ajaxConfig': {
                       'url': 'common/ShowCase',
                       'ajaxType': 'get',

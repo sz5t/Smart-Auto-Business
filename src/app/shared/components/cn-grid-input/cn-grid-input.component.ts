@@ -16,6 +16,12 @@ export class CnGridInputComponent implements OnInit {
     ) { }
     ngOnInit() {
         // console.log('input' , this.casadeData);
+        if (!this.config['disabled']) {
+            this.config['disabled'] = false;
+        }
+        if (!this.config['readonly']) {
+            this.config['readonly'] = null;
+        }
         if (this.value) {
             this._value = this.value.data;
         }

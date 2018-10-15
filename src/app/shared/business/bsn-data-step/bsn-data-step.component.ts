@@ -81,8 +81,8 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
         data[i]['style'] = { stroke: '#333' };
         data[i]['id'] = data[i]['Id'];
         // data[i]['shape'] = 'customNode';
-        data[i]['labelOffsetX'] = 0;
-        data[i]['labelOffsetY'] = -30;
+        data[i]['labelOffsetX'] = this.config.labelOffsetX ? this.config.labelOffsetX : 0;
+        data[i]['labelOffsetY'] = this.config.labelOffsetY ? this.config.labelOffsetY : -30;
         data[i]['size'] = this.config.size;
         result.push(data[i]);
         if (temps.length > 0) {
@@ -97,8 +97,18 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
     const nodes = [];
     if (rgNodes && rgNodes.length > 0) {
       for (let i = 0, len = rgNodes.length; i < len; i++) {
-        rgNodes[i]['x'] = this.config.startX * i === 0 ? this.config.startX : this.config.startX + this.config.startX * i;
-        // rgNodes[i]['y'] = this.config.startY + 25;
+
+        if (this.config.direction === 'horizontal') {
+          rgNodes[i]['x'] = (this.config.startX * i === 0 
+            ? this.config.startX 
+            : this.config.startX + this.config.startX * i);
+          rgNodes[i]['y'] = this.config.startY + 25;
+        } else if (this.config.direction === 'vertical') {
+          rgNodes[i]['y'] = this.config.startY * i === 0 
+            ? this.config.startY
+            : (this.config.startY + this.config.startY * i);
+        }
+        
         rgNodes[i]['label'] = rgNodes[i][this.config.textField];
         if (rgNodes[i]['type'] === 'child') {
           rgNodes[i]['color'] = this.sNodeColor;
@@ -252,45 +262,43 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
           }
         }
         this._lastNode = ev.item;
-
+        this.tempValue['_selectedNode'] = ev.item.model;
         if (this.config.componentType && this.config.componentType.child === true) {
 
         }
         // 注册多界面切换消息
         if (this.config.componentType && this.config.componentType.sub === true) {
-          this.after(this, 'clickNode', () => {
-            this.tempValue['_selectedNode'] && this.cascade.next(
-              new BsnComponentMessage(
-                BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
-                this.config.viewId,
-                {
-                  data: this.tempValue['_selectedNode'],
-                  tempValue: this.tempValue,
-                  subViewId: () => {
-                    let id = '';
-                    this.config.subMapping.forEach(sub => {
-                      const mappingVal = this.tempValue['_selectedNode'][sub['field']];
-                      if (sub.mapping) {
-                        sub.mapping.forEach(m => {
-                          if (m.value === mappingVal) {
-                            id = m.subViewId;
-                          }
-                        });
-                      }
-                    });
-                    return id;
-                  }
+          this.tempValue['_selectedNode'] && this.cascade.next(
+            new BsnComponentMessage(
+              BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
+              this.config.viewId,
+              {
+                data: this.tempValue['_selectedNode'],
+                tempValue: this.tempValue,
+                subViewId: () => {
+                  let id = '';
+                  this.config.subMapping.forEach(sub => {
+                    const mappingVal = this.tempValue['_selectedNode'][sub['field']];
+                    if (sub.mapping) {
+                      sub.mapping.forEach(m => {
+                        if (m.value === mappingVal) {
+                          id = m.subViewId;
+                        }
+                      });
+                    }
+                  });
+                  return id;
                 }
-              )
-            );
-          });
+              }
+            )
+          );
         }
       });
     });
 
     this.graph = new G6.Graph({
       container: this.dataSteps.nativeElement,
-      fitView: 'lc',
+      fitView: this.config.position ? this.config.position : 'cc',
       width: this.config.width,
       height: this.config.height,
       modes: {

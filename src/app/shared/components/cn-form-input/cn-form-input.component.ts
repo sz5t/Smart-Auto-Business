@@ -1,5 +1,5 @@
 import { FormGroup } from '@angular/forms';
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'cn-form-input',
@@ -24,14 +24,19 @@ import {Component, Input, OnInit} from '@angular/core';
   ]
 })
 export class CnFormInputComponent implements OnInit {
-    @Input() config;
-    @Input() formGroup: FormGroup;
-    model;
-    constructor(
-    ) { }
+  @Input() config;
+  @Input() formGroup: FormGroup;
+  model;
+  constructor(
+  ) { }
 
-    ngOnInit() {
-      
+  ngOnInit() {
+    if (!this.config['disabled']) {
+      this.config['disabled'] = false;
     }
+    if (!this.config['readonly']) {
+      this.config['readonly'] = false;
+    }
+  }
 
 }

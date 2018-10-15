@@ -40,7 +40,7 @@ export class TreeAndTableComponent implements OnInit {
                                     config: {
                                         'viewId': 'tree_and_table_tree',
                                         'keyId': 'Id',
-                                        'height': '500px',
+                                        'height': '300px',
                                         'component': 'bsnTree',
                                         'asyncData': true, //
                                         'expandAll': true, //

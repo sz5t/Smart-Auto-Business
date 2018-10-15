@@ -87,7 +87,7 @@ export class DataModelingComponent implements OnInit {
                                                         'type': 'input',
                                                         'labelSize': '6',
                                                         'controlSize': '18',
-                                                        'inputType': 'text',
+                                                        'inputType': 'text'
                                                     }
                                                 }
                                             },
@@ -102,6 +102,7 @@ export class DataModelingComponent implements OnInit {
                                                         'labelSize': '6',
                                                         'controlSize': '18',
                                                         'inputType': 'text',
+                                                        'disabled': false
                                                     }
                                                 }
                                             },
@@ -116,6 +117,7 @@ export class DataModelingComponent implements OnInit {
                                                         'labelSize': '6',
                                                         'controlSize': '18',
                                                         'inputType': 'text',
+                                                        'disabled': false
                                                     }
                                                 }
                                             },
@@ -173,6 +175,7 @@ export class DataModelingComponent implements OnInit {
                                                         'labelSize': '6',
                                                         'controlSize': '18',
                                                         'inputType': 'text',
+                                                        'disabled': false
                                                     }
                                                 }
                                             },
@@ -3211,6 +3214,7 @@ export class DataModelingComponent implements OnInit {
     }
 
     ngOnInit() {
+        // console.log(JSON.stringify(this.config));
     }
 
 }

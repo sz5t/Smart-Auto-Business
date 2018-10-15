@@ -1,3 +1,5 @@
+import { BsnUploadComponent } from '@shared/business/bsn-upload/bsn-upload.component';
+import { BSN_COMPONENT_MODES } from '@core/relative-Service/BsnTableStatus';
 import { CacheService } from '@delon/cache';
 import { CommonTools } from './../../../core/utility/common-tools';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, Inject, OnDestroy } from '@angular/core';
@@ -7,7 +9,6 @@ import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import {
-    BSN_COMPONENT_MODES,
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
     BSN_COMPONENT_CASCADE_MODES, BSN_FORM_STATUS, BSN_OUTPOUT_PARAMETER_TYPE
@@ -149,6 +150,9 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                         break;
                     case BSN_COMPONENT_MODES.FORM:
 
+                        break;
+                    case BSN_COMPONENT_MODES.UPLOAD:
+                        
                         break;
                 }
             }
@@ -885,7 +889,44 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         console.log('初始化参数并load 主子刷新', this.tempValue);
     }
 
+    /**
+     * 弹出上传对话
+     * @param option
+     */
+    uploadDialog(option) {
+        if (this.config.uploadDialog && this.config.uploadDialog.length > 0) {
+            const index = this.config.uploadDialog.findIndex(item => item.name === option.name);
+            this.openUploadDialog(this.config.uploadDialog[index]);
+        }
+    }
 
+
+     /**
+     * 弹出上传表单
+     * @param dialog
+     * @returns {boolean}
+     */
+    private openUploadDialog(dialog) {
+        if (!this.value) {
+            this.message.warning('请选中一条需要添加附件的记录！');
+            return false;
+        }
+        const footer = [];
+        const obj = {
+            _id: this.value[dialog.keyId],
+            _parentId: this.tempValue['_parentId']
+        };
+        const modal = this.modalService.create({
+            nzTitle: dialog.title,
+            nzWidth: dialog.width,
+            nzContent: BsnUploadComponent,
+            nzComponentParams: {
+                config: dialog,
+                refObj: obj
+            },
+            nzFooter: footer
+        });
+    }
     // endregion
 
     cascadeList = {};
