@@ -715,6 +715,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                                         this.changeConfig_new[rowCasade][key]['cascadeValue'][ajaxItem['name']] = data.dataItem[ajaxItem['valueName']];
                                     }
                                 }
+                               
 
                                 // 其他取值【日后扩展部分】value
                             });
@@ -738,6 +739,11 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                             if (caseItem['setValue']['type'] === 'selectObjectValue') { // 选中行对象数据
                                 if (data.dataItem) {
                                     this.changeConfig_new[rowCasade][key]['setValue'] = data.dataItem[caseItem['setValue']['valueName']];
+                                }
+                            }
+                            if (caseItem['setValue']['type']  === 'notsetValue') { // 选中行对象数据
+                                if (this.changeConfig_new[rowCasade][key].hasOwnProperty('setValue')) {
+                                    delete this.changeConfig_new[rowCasade][key]['setValue'];
                                 }
                             }
                         } else {
@@ -840,6 +846,11 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                                 if (caseItem['setValue']['type'] === 'selectObjectValue') { // 选中行对象数据
                                     if (data.dataItem) {
                                         this.changeConfig_new[rowCasade][key]['setValue'] = data.dataItem[caseItem['setValue']['valueName']];
+                                    }
+                                }   
+                                if (caseItem['setValue']['type']  === 'notsetValue') { // 选中行对象数据
+                                    if (this.changeConfig_new[rowCasade][key].hasOwnProperty('setValue')) {
+                                        delete this.changeConfig_new[rowCasade][key]['setValue'];
                                     }
                                 }
                             } else {
