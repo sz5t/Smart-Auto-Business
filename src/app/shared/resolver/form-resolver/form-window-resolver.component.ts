@@ -289,7 +289,25 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
         if (data) {
             for (const d in data) {
                 if (data.hasOwnProperty(d)) {
-                    this.setValue(d, data[d]);
+                    if (this.formconfigcontrol[d]) {
+
+                        if (this.formconfigcontrol[d]['type'] === 'selectMultiple' || this.formconfigcontrol[d]['type'] === 'selectTreeMultiple' ) {
+                            let ArrayValue = [];
+                            if (data[d]) {
+                                if (data[d].length > 0) {
+                                    ArrayValue = data[d].split(',');
+                                }
+                            }
+                            this.setValue(d, ArrayValue);
+                            // console.log('拼接', ArrayValue); 
+                        } else {
+                            this.setValue(d, data[d]);
+                        }
+        
+                    } else {
+                        this.setValue(d, data[d]);
+                    }
+                   
                 }
             }
         }
