@@ -56,7 +56,7 @@ import { CnComponentBase } from '@shared/components/cn-component-base';
 export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDestroy {
     total = 1;
     pageIndex = 1;
-    pageSize = 15;
+    pageSize = 100;
     tableData = [];
     _selectedRow;
     _scriptName;
@@ -262,9 +262,8 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
     // 删除SQL关联表数据
     private async delSqlRelative(id) {
         const params = {
-            RightId: id,
-            LeftId: this._moduleId,
-            LinkNote: 'sql'
+            rightId: id,
+            leftId: this._moduleId
         };
         return this._http.delete('common/SysDataLinks', params).toPromise();
     }

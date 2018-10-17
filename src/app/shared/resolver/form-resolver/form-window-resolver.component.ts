@@ -68,6 +68,7 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
                 this.tempValue[p] = this.ref[p];
             }
         }
+
         if (this.config.ajaxConfig) {
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
@@ -558,8 +559,6 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
         }
         return result;
     }
-
-
     /**
      * ------------------------------------------------------------需要调整异步放回结果
      * @param ajaxConfig

@@ -162,7 +162,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
 
   selectedByLoaded() {
       let selected;
-      if(!this.value) {
+      if (!this.value) {
           this.value = this.config.defaultValue;
       }
       if (this.value && this.value.data) {
@@ -174,7 +174,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
 
       } else {
           this._options.forEach((element => {
-              if(element.value === this.config.defaultValue) {
+              if (element.value === this.config.defaultValue) {
                   selected = element;
               }
           }));

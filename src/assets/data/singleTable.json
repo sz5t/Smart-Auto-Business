@@ -1,243 +1,257 @@
 {
-    "rows": [
-      {
-        "row": {
-          "cols": [
-            {
-              "id": "area2",
-              "title": "组织机构",
-              "bodyStyle": {
-                "height": "800px",
-                "padding": "8px"
-              },
-              "span": 6,
-              "size": {
-                "nzXs": 6,
-                "nzSm": 6,
-                "nzMd": 6,
-                "nzLg": 6,
-                "ngXl": 6
-              },
-              "viewCfg": [
-                {
-                  "config": {
-                    "viewId": "tree_and_table_User2",
-                    "keyId": "Id",
-                    "component": "bsnTree",
-                    "asyncData": true,
-                    "expandAll": true,
-                    "showLine": true,
-                    "columns": [
-                      {
-                        "title": "主键",
-                        "field": "key",
-                        "valueName": "Id"
-                      },
-                      {
-                        "title": "父节点",
-                        "field": "parentId",
-                        "valueName": "parentId"
-                      },
-                      {
-                        "title": "标题",
-                        "field": "title",
-                        "valueName": "name"
-                      }
-                    ],
-                    "componentType": {
-                      "parent": true,
-                      "child": true,
-                      "own": false
-                    },
-                    "toolbar": [],
-                    "parent": [
-                      {
-                        "name": "parentId",
-                        "type": "value",
-                        "valueName": "",
-                        "value": null
-                      }
-                    ],
-                    "ajaxConfig": {
-                      "url": "common/GetDeptTree1",
-                      "ajaxType": "get",
-                      "params": []
-                    }
-                  },
-                  "dataList": []
-                }
-              ]
+  "rows": [
+    {
+      "row": {
+        "cols": [
+          {
+            "id": "area2",
+            "title": "组织机构",
+            "icon": "icon-list",
+            "bodyStyle": {
+            "height": "500px"
             },
-            {
-              "id": "area1",
-              "title": "人员信息表",
-              "span": 18,
-              "icon": "icon-list",
-              "size": {
-                "nzXs": 18,
-                "nzSm": 18,
-                "nzMd": 18,
-                "nzLg": 18,
-                "ngXl": 18
-              },
-              "viewCfg": [
-                {
-                  "config": {
-                    "viewId": "singleTable01",
-                    "component": "bsnTable",
-                    "info": true,
-                    "keyId": "Id",
-                    "pagination": true,
-                    "showCheckBox": true,
-                    "showTotal": true,
-                    "pageSize": 5,
-                    "pageSizeOptions": [
-                      5,
-                      10,
-                      20,
-                      30,
-                      40,
-                      50
+            "span": 12,
+            "size": {
+              "nzXs": 12,
+              "nzSm": 12,
+              "nzMd": 12,
+              "nzLg": 12,
+              "ngXl": 12
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "viewId": "tree_and_table_User2",
+                  "keyId": "Id",
+                  "component": "bsnTree",
+                  "asyncData": true,
+                  "expandAll": true,
+                  "showLine": true,
+                  "height":"470px",
+                  "columns": [
+                    {
+                      "title": "主键",
+                      "field": "key",
+                      "valueName": "Id"
+                    },
+                    {
+                      "title": "父节点",
+                      "field": "parentId",
+                      "valueName": "parentId"
+                    },
+                    {
+                      "title": "标题",
+                      "field": "title",
+                      "valueName": "name"
+                    }
+                  ],
+                  "componentType": {
+                    "parent": true,
+                    "child": true,
+                    "own": false
+                  },
+                  "toolbar": [],
+                  "parent": [
+                    {
+                      "name": "parentId",
+                      "type": "value",
+                      "valueName": "",
+                      "value": null
+                    }
+                  ],
+                  "ajaxConfig": {
+                    "url": "common/GetDeptTree1",
+                    "ajaxType": "get",
+                    "params": []
+                  }
+                },
+                "dataList": []
+              }
+            ]
+          },
+          {
+            "id": "area1",
+            "title": "人员信息表",
+            "span": 12,
+            "icon": "icon-list",
+            "bodyStyle": {
+                "height": "500px"
+            },
+            "size": {
+              "nzXs": 12,
+              "nzSm": 12,
+              "nzMd": 12,
+              "nzLg": 12,
+              "ngXl": 12
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "viewId": "singleTable01",
+                  "component": "bsnTable",
+                  "info": true,
+                  "keyId": "Id",
+                  "pagination": true,
+                  "showCheckBox": true,
+                  "showTotal": true,
+                  "pageSize": 10,
+                  "pageSizeOptions": [
+                    5,
+                    10,
+                    20,
+                    30,
+                    40,
+                    50
+                  ],
+                  "ajaxConfig": {
+                    "url": "common/SysUserShow1",
+                    "ajaxType": "get",
+                    "params": [
+                      {
+                        "name": "loginName",
+                        "valueName": "",
+                        "type": "value",
+                        "value": "!in(admin,developer,normal)"
+                      },
+                      {
+                        "name": "deptId",
+                        "valueName": "_parentId",
+                        "type": "tempValue",
+                        "value": "91a026d238914636a516cb971d640c7c"
+                      },
+                      {
+                        "name": "isDelete",
+                        "valueName": "",
+                        "type": "value",
+                        "value": "0"
+                      },
+                      {
+                         "name": "roleId",
+                          "valueName": "roleId",
+                                    "type": "initValue"
+                                  }
                     ],
-                    "ajaxConfig": {
-                      "url": "common/SysUserShow",
-                      "ajaxType": "get",
+                    "filter": []
+                  },
+                  "columns": [
+                    {
+                      "title": "序号",
+                      "field": "_serilize",
+                      "width": "50px",
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "Id",
+                        "options": {
+                          "type": "input",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "Id",
+                      "field": "Id",
+                      "width": 80,
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "Id",
+                        "options": {
+                          "type": "input",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "姓名",
+                      "field": "realName",
+                      "width": 80,
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "realName",
+                        "options": {
+                          "type": "input",
+                          "labelSize": "6",
+                          "controlSize": "18",
+                          "inputType": "text"
+                        }
+                      }
+                    }
+                  ],
+                  "componentType": {
+                    "parent": true,
+                    "child": true,
+                    "own": true
+                  },
+                   "checkedMapping": [
+                    {
+                      "name": "hasrole",
+                      "value": 1
+                    }
+                  ],
+                  "relations": [
+                    {
+                      "relationViewId": "tree_and_table_User2",
+                      "cascadeMode": "REFRESH_AS_CHILD",
                       "params": [
                         {
-                          "name": "loginName",
-                          "valueName": "",
-                          "type": "value",
-                          "value": "!in(admin,developer,normal)"
-                        },
+                          "pid": "key",
+                          "cid": "_parentId"
+                        }
+                      ]
+                    }
+                  ],
+                  "toolbar": [
+                    {
+                      "group": [
                         {
-                          "name": "deptId",
-                          "valueName": "_parentId",
-                          "type": "tempValue",
-                          "value": "91a026d238914636a516cb971d640c7c"
-                        },
-                        {
-                          "name": "isDelete",
-                          "valueName": "",
-                          "type": "value",
-                          "value": "0"
+                          "name": "save",
+                          "text": "保存",
+                          "icon": "anticon anticon-save",
+                          "color": "text-success-light",
+                          "ajaxConfig": [
+                            {
+                              "url": "common/AddUserToRole",
+                              "ajaxType": "post",
+                              "action": "EXECUTE_CHECKED_ID",
+                              "message": "是否保存选中的人员",
+                              "params": [
+                                 {
+                                    "name": "roleId",
+                                    "valueName": "_roleId",
+                                    "type": "initValue"
+                                  },
+                                {
+                                  "name": "leftId",
+                                  "type": "checkedId",
+                                  "valueName": "",
+                                  "value": ""
+                                }
+                              ]
+                            }
+                          ]
                         }
-                      ],
-                      "filter": []
-                    },
-                    "columns": [
-                      {
-                        "title": "序号",
-                        "field": "_serilize",
-                        "width": "50px",
-                        "hidden": false,
-                        "editor": {
-                          "type": "input",
-                          "field": "Id",
-                          "options": {
-                            "type": "input",
-                            "inputType": "text"
-                          }
-                        }
-                      },
-                      {
-                        "title": "Id",
-                        "field": "Id",
-                        "width": 80,
-                        "hidden": true,
-                        "editor": {
-                          "type": "input",
-                          "field": "Id",
-                          "options": {
-                            "type": "input",
-                            "inputType": "text"
-                          }
-                        }
-                      },
-                      {
-                        "title": "姓名",
-                        "field": "realName",
-                        "width": 80,
-                        "hidden": false,
-                        "editor": {
-                          "type": "input",
-                          "field": "realName",
-                          "options": {
-                            "type": "input",
-                            "labelSize": "6",
-                            "controlSize": "18",
-                            "inputType": "text"
-                          }
-                        }
-                      }
-                    ],
-                    "componentType": {
-                      "parent": true,
-                      "child": true,
-                      "own": true
-                    },
-                    "relations": [
-                      {
-                        "relationViewId": "tree_and_table_User2",
-                        "cascadeMode": "REFRESH_AS_CHILD",
-                        "params": [
-                          {
-                            "pid": "key",
-                            "cid": "_parentId"
-                          }
-                        ]
-                      }
-                    ],
-                    "toolbar": [
-                      {
-                        "group": [
-                          {
-                            "name": "save",
-                            "text": "保存",
-                            "icon": "anticon anticon-save",
-                            "color": "text-success-light",
-                            "ajaxConfig": [
-                              {
-                                "url": "common/AddUserToRole",
-                                "ajaxType": "post",
-                                "action": "EXECUTE_CHECKED_ID",
-                                "title": "",
-                                "message": "是否保存选中结点数据",
-                                "params": [
-                                   {
-                                      "name": "roleId",
-                                      "valueName": "roleId",
-                                      "type": "initValue"
-                                    },
-                                  {
-                                    "name": "leftId",
-                                    "type": "checkedId",
-                                    "valueName": "",
-                                    "value": ""
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ],
-                    "dataSet": [],
-                    "formDialog": [],
-                    "windowDialog": []
-                  },
-                  "permissions": {
-                    "viewId": "singleTable01",
-                    "columns": [],
-                    "toolbar": [],
-                    "formDialog": [],
-                    "windowDialog": []
-                  },
-                  "dataList": []
-                }
-              ]
-            }
-          ]
-        }
+                      ]
+                    }
+                  ],
+                  "dataSet": [],
+                  "formDialog": [],
+                  "windowDialog": []
+                },
+                "permissions": {
+                  "viewId": "singleTable01",
+                  "columns": [],
+                  "toolbar": [],
+                  "formDialog": [],
+                  "windowDialog": []
+                },
+                "dataList": []
+              }
+            ]
+          }
+        ]
       }
-    ]
-  }
+    }
+  ]
+}

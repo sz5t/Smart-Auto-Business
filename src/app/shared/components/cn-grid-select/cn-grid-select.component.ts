@@ -79,7 +79,6 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
             // 加载固定数据
             this._options = this.config.options;
         }
-
         if ( this.cascadeSetValue.hasOwnProperty('setValue')) {
            this. selectedBycascade();
         } else {
@@ -197,9 +196,8 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
 
     }
     selectedByLoaded() {
-    
         let selected;
-        if (this.value && this.value.hasOwnProperty('data')) {
+        if (this.value && this.value.hasOwnProperty('data') && this.value['data'] !== undefined) {
             this._options.forEach(element => {
                 if (element.value === this.value.data) {
                     selected = element;

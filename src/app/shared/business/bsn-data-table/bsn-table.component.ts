@@ -30,7 +30,7 @@ const component: { [type: string]: Type<any> } = {
     styles: [
         `
             .table-operations {
-                margin-bottom: 16px;
+                margin-bottom: 8px;
             }
 
             .table-operations > button {
@@ -305,6 +305,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                                 });
                             }
                         });
+                    } else {
+                        this._selectRow = {};
                     }
 
 
@@ -1025,13 +1027,16 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     private showLayout(dialog) {
         const footer = [];
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
+            const selectedRow = this._selectRow ? this._selectRow : {};
+            const tmpValue = this.tempValue ? this.tempValue : {};
+            console.log({...selectedRow, ...tmpValue});
             const modal = this.modalService.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
                 nzContent: component['layout'],
                 nzComponentParams: {
                     config: data,
-                    initData: this._selectRow
+                    initData: {...selectedRow, ...tmpValue}
                 },
                 nzFooter: footer
             });
@@ -1170,11 +1175,23 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     // 处理输出参数
                     if (c.outputParams) {
                         this._outputParametersResolver(c, response, ajaxConfig, () => {
+                            this.cascade.next(
+                                new BsnComponentMessage(
+                                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                                    this.config.viewId
+                                )
+                            );
                             this.focusIds = this._getFocusIds(response.data);
                             this.load();
                         });
                     } else {// 没有输出参数，进行默认处理
                         this.showAjaxMessage(response, msg, () => {
+                            this.cascade.next(
+                                new BsnComponentMessage(
+                                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                                    this.config.viewId
+                                )
+                            );
                             this.focusIds = this._getFocusIds(response.data);
                             this.load();
                         });
@@ -1630,12 +1647,12 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
      */
     private _getFocusIds(data) {
         const Ids = [];
-        if (Array.isArray(data)) {
+        if (data && Array.isArray(data)) {
             data.forEach(d => {
-                Ids.push(d['$focusedOper$']);
+                d['$focusedOper$'] && Ids.push(d['$focusedOper$']);
             });
-        } else {
-            Ids.push(data['$focusedOper$']);
+        } else if (data) {
+            data['$focusedOper$'] && Ids.push(data['$focusedOper$']);
         }
         return Ids.join(',');
     }
@@ -1880,7 +1897,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         }
         obj = {
             _id: this._selectRow[dialog.keyId] ? this._selectRow[dialog.keyId] : '',
-            _parentId: this.tempValue['_parentId'] ? this.tempValue['_parentId'] : ''
+            // _parentId: this.tempValue['_parentId'] ? this.tempValue['_parentId'] : ''
+            ...this.tempValue
         };
 
         const footer = [];

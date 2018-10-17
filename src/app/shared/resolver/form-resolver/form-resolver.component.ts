@@ -1,3 +1,6 @@
+
+import { LayoutResolverComponent } from './../layout-resolver/layout-resolver.component';
+import { CnFormWindowResolverComponent } from '@shared/resolver/form-resolver/form-window-resolver.component';
 import { BsnUploadComponent } from '@shared/business/bsn-upload/bsn-upload.component';
 import { BSN_COMPONENT_MODES } from '@core/relative-Service/BsnTableStatus';
 import { CacheService } from '@delon/cache';
@@ -142,17 +145,14 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                             this._resolveAjaxConfig(option.ajaxConfig);
                         }
                         break;
-                    case BSN_COMPONENT_MODES.DIALOG:
-
-                        break;
                     case BSN_COMPONENT_MODES.WINDOW:
-
+                        this.windowDialog(option);
                         break;
                     case BSN_COMPONENT_MODES.FORM:
-
+                        this.formDialog(option);
                         break;
                     case BSN_COMPONENT_MODES.UPLOAD:
-                        
+                        this.openUploadDialog(option);
                         break;
                 }
             }
@@ -926,6 +926,235 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
             },
             nzFooter: footer
         });
+    }
+
+    /**
+     * 弹出窗体
+     * @param option
+     */
+    windowDialog(option) {
+        if (this.config.windowDialog && this.config.windowDialog.length > 0) {
+            const index = this.config.windowDialog.findIndex(item => item.name === option.name);
+            this.showLayout(this.config.windowDialog[index]);
+        }
+    }
+
+     /**
+     * 弹出表单
+     * @param option
+     */
+    formDialog(option) {
+        if (this.config.formDialog && this.config.formDialog.length > 0) {
+            const index = this.config.formDialog.findIndex(item => item.name === option.name);
+            this.showForm(this.config.formDialog[index]);
+        }
+    }
+
+        /**
+     * 单条数据表单
+     * @param dialog
+     * @returns {boolean}
+     */
+    private showForm(dialog) {
+        let obj;
+        if (dialog.type === 'add') {
+
+        } else if (dialog.type === 'edit') {
+            if (!this.value) {
+                this.message.warning('请选中一条需要添加附件的记录！');
+                return false;
+            }
+
+        }
+        obj = {
+            _id: this.value[dialog.keyId] ? this.value[dialog.keyId] : '',
+            // _parentId: this.tempValue['_parentId'] ? this.tempValue['_parentId'] : ''
+            ...this.tempValue
+        };
+
+        const footer = [];
+        const modal = this.modalService.create({
+            nzTitle: dialog.title,
+            nzWidth: dialog.width,
+            nzContent: CnFormWindowResolverComponent,
+            nzComponentParams: {
+                config: dialog,
+                ref: obj
+            },
+            nzFooter: footer
+        });
+
+        if (dialog.buttons) {
+            dialog.buttons.forEach(btn => {
+                const button = {};
+                button['label'] = btn.text;
+                button['type'] = btn.type ? btn.type : 'default';
+                button['onClick'] = (componentInstance) => {
+                    if (btn['name'] === 'save') {
+                        (async () => {
+                            console.log(btn);
+                            const result = await componentInstance.buttonAction(btn);
+                            this.showAjaxMessage(result, '保存成功', () => {
+                                modal.close();
+                                this.load();
+                            });
+                        })();
+                    } else if (btn['name'] === 'saveAndKeep') {
+                        (async () => {
+                            const result = await componentInstance.buttonAction(btn);
+                            this.showAjaxMessage(result, '保存成功', () => {
+                                modal.close();
+                                this.load();
+                            });
+                        })();
+                    } else if (btn['name'] === 'close') {
+                        modal.close();
+                    } else if (btn['name'] === 'reset') {
+                        this._resetForm(componentInstance);
+                    }
+
+                };
+                footer.push(button);
+            });
+
+        }
+    }
+      /**
+     * 重置表单
+     * @param comp
+     * @private
+     */
+    private _resetForm(comp: FormResolverComponent) {
+        comp.resetForm();
+    }
+    /**
+     * 弹出批量处理表单
+     * @param option
+     */
+    formBatchDialog(option) {
+        if (this.config.formDialog && this.config.formDialog.length > 0) {
+            const index = this.config.formDialog.findIndex(item => item.name === option.name);
+            this.showBatchForm(this.config.formDialog[index]);
+        }
+    }
+
+      /**
+     * 弹出页面
+     * @param dialog
+     */
+    private showLayout(dialog) {
+        const footer = [];
+        this.apiService.getLocalData(dialog.layoutName).subscribe(data => {
+            const modal = this.modalService.create({
+                nzTitle: dialog.title,
+                nzWidth: dialog.width,
+                nzContent: LayoutResolverComponent,
+                nzComponentParams: {
+                    config: data,
+                    initData: {...this.value, ...this.tempValue}
+                },
+                nzFooter: footer
+            });
+            if (dialog.buttons) {
+                dialog.buttons.forEach(btn => {
+                    const button = {};
+                    button['label'] = btn.text;
+                    button['type'] = btn.type ? btn.type : 'default';
+                    button['show'] = true;
+                    button['onClick'] = (componentInstance) => {
+                        if (btn['name'] === 'save') {
+                            (async () => {
+                                const result = await componentInstance.buttonAction(btn);
+                                if (result) {
+                                    modal.close();
+                                    // todo: 操作完成当前数据后需要定位
+                                    this.load();
+                                }
+                            })();
+                        } else if (btn['name'] === 'saveAndKeep') {
+                            (async () => {
+                                const result = await componentInstance.buttonAction(btn);
+                                if (result) {
+                                    // todo: 操作完成当前数据后需要定位
+                                    this.load();
+                                }
+                            })();
+                        } else if (btn['name'] === 'close') {
+                            modal.close();
+                            this.load();
+                        } else if (btn['name'] === 'reset') {
+                            this._resetForm(componentInstance);
+                        } else if (btn['name'] === 'ok') {
+                            modal.close();
+                            this.load();
+                            //
+                        }
+
+                    };
+                    footer.push(button);
+                });
+
+            }
+        });
+
+    }
+
+       /**
+     * 批量编辑表单
+     * @param dialog
+     */
+    private showBatchForm(dialog) {
+        const footer = [];
+        const checkedItems = [];
+        this.dataList.map(item => {
+            if (item.checked) {
+                checkedItems.push(item);
+            }
+        });
+        if (checkedItems.length > 0) {
+            const obj = {
+                checkedRow: checkedItems
+            };
+            const modal = this.modalService.create({
+                nzTitle: dialog.title,
+                nzWidth: dialog.width,
+                nzContent: CnFormWindowResolverComponent,
+                nzComponentParams: {
+                    config: dialog,
+                    ref: obj
+                },
+                nzFooter: footer
+            });
+
+            if (dialog.buttons) {
+                dialog.buttons.forEach(btn => {
+                    const button = {};
+                    button['label'] = btn.text;
+                    button['type'] = btn.type ? btn.type : 'default';
+                    button['onClick'] = (componentInstance) => {
+                        if (btn['name'] === 'batchSave') {
+                            (async () => {
+                                const result = await componentInstance.buttonAction(btn);
+                                this.showAjaxMessage(result, '保存成功', () => {
+                                    modal.close();
+                                    this.load();
+                                });
+                            })();
+                        } else if (btn['name'] === 'close') {
+                            modal.close();
+                        } else if (btn['name'] === 'reset') {
+                            this._resetForm(componentInstance);
+                        }
+
+                    };
+                    footer.push(button);
+                });
+
+            }
+        } else {
+            this.message.create('warning', '请先选中需要处理的数据');
+        }
+
     }
     // endregion
 

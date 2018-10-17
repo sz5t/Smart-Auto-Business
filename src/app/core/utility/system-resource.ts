@@ -6,7 +6,7 @@ export class SystemResource {
         'AccountId': 'c027570a50c34384b92efd467c3d38f1',
         'CommonCode': '{WEB前端标识}',
          'Server': 'http://192.168.1.111:8081/api.cfg/'
-        //'Server': 'http://192.168.1.252:8081/api.cfg/'
+        // 'Server': 'http://192.168.1.252:8081/api.cfg/'
     };
 
     public static appSystem = {
@@ -22,7 +22,7 @@ export class SystemResource {
 
     public static localResource = {
        //   'url': 'http://192.168.1.111:8084'
-      //  'url': 'http://192.168.1.111:8083'
+       // 'url': 'http://192.168.1.111:8083'
         'url': 'http://localhost:4200'
     };
 }

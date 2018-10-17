@@ -41,7 +41,7 @@ export class CommonTools {
                           break;
                       case BSN_PARAMETER_TYPE.COMPONENT_VALUE:
                           if (model.componentValue) {
-                              if (model.componentValue[param['valueName']]) {
+                              if (model.componentValue[param['valueName']] !== undefined) {
                                 result[param['name']] = model.componentValue[param['valueName']];
                               } else {
                                   if (param['value']) {
