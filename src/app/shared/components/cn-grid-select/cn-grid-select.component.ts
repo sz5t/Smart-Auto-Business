@@ -227,8 +227,8 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
         if (name) {
             this.value.data = name.value;
             // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
-            if (this.resultData) {
-                const index = this.resultData.data.findIndex(item => item['Id'] === name.value);
+            if (this.resultData) { // valueName
+                const index = this.resultData.data.findIndex(item => item[this.config['valueName']] === name.value);
                 this.resultData.data && (this.value['dataItem'] = this.resultData.data[index]);
             }
             this.updateValue.emit(this.value);
