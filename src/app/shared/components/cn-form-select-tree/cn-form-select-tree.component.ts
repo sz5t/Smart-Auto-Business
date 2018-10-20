@@ -15,6 +15,7 @@ export class CnFormSelectTreeComponent implements OnInit {
 
   @Input() config;
     treeData;
+    treeDatalist = [];
     _tempValue = {};
     checkedKeys = [];
     selectedKeys = [];
@@ -24,12 +25,18 @@ export class CnFormSelectTreeComponent implements OnInit {
         load: []
     };
     value;
+    treecolumns = {};
     constructor(
         private _http: ApiService
     ) {
     }
 
     ngOnInit() {
+        if (this.config.columns) {
+            this.config.columns.forEach(element => {
+                this.treecolumns[element.field] = element.valueName;
+            });
+        }
         if (!this.config['multiple']) {
             this.config['multiple'] = false;
           }
@@ -51,6 +58,7 @@ export class CnFormSelectTreeComponent implements OnInit {
             const data = await this.getAsyncTreeData();
             if (data.data && data.status === 200 && data.isSuccess) {
                 const TotreeBefore = data.data;
+                this.treeDatalist = data.data;
                 TotreeBefore.forEach(d => {
                     if (this.config.columns) {
                         this.config.columns.forEach(col => {
@@ -179,6 +187,11 @@ export class CnFormSelectTreeComponent implements OnInit {
 
     onChange($event: NzTreeNode) {
         this.value = $event;
+        // 表单树和列表不一致
+        // let tkey = 'key';
+        // if (this.treecolumns['key']) {
+        //     tkey = this.treecolumns['key'];
+        // }
     }
 
 

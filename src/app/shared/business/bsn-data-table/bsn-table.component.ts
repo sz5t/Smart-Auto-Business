@@ -898,6 +898,11 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 if (!column.editor) {
                     isEditState = true;
                 }
+                if (column.editor) { // 20181020 liu
+                    if (fieldname !== column.editor.field) {
+                        isEditState = true;
+                    }
+                }
             }
         });
         return isEditState;

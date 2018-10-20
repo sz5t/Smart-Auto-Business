@@ -17,6 +17,7 @@ export class CnGridSelectTreeComponent implements OnInit {
     @Output() updateValue = new EventEmitter();
     _selectedValue;
     treeData = [];
+    treeDatalist = [];
     _tempValue = {};
     cascadeValue = {};
     cascadeSetValue = {};
@@ -25,8 +26,15 @@ export class CnGridSelectTreeComponent implements OnInit {
     ) { }
     _selectedMultipleOption;
 
+    treecolumns = {};
+
     async ngOnInit() {
 
+        if (this.config.columns) {
+            this.config.columns.forEach(element => {
+                this.treecolumns[element.field] = element.valueName;
+            });
+        }
         if (this.casadeData) {
             for (const key in this.casadeData) {
                 // 临时变量的整理
@@ -51,12 +59,15 @@ export class CnGridSelectTreeComponent implements OnInit {
         if (this.dataSet) {
             // 加载数据集
             this.treeData = this.dataSet;
+            // ？ 需要 看是否需要格式转换
+            this.treeDatalist = this.dataSet;
         } else if (this.config.ajaxConfig) {
             // 异步加载options
             this.loadTreeData();
         } else {
             // 加载固定数据
             this.treeData = this.config.options;
+            this.treeDatalist =  this.config.options;
         }
 
         if ( this.cascadeSetValue.hasOwnProperty('setValue')) {
@@ -73,6 +84,7 @@ export class CnGridSelectTreeComponent implements OnInit {
         (async () => {
             const data = await this.getAsyncTreeData();
             if (data.data && data.status === 200 && data.isSuccess) {
+                this.treeDatalist = data.data;
                 const TotreeBefore = data.data;
                 TotreeBefore.forEach(d => {
                     if (this.config.columns) {
@@ -210,9 +222,13 @@ export class CnGridSelectTreeComponent implements OnInit {
     valueChange(val?: NzTreeNode) {
         if (val) {
             this.value.data = val;
-            if (this.treeData) {
-                const index = this.treeData.findIndex(item => item['key'] === val);
-                this.treeData && (this.value['dataItem'] = this.treeData[index]['origin']);
+            if (this.treeDatalist) {
+                let tkey = 'key';
+                if (this.treecolumns['key']) {
+                    tkey = this.treecolumns['key'];
+                }
+                const index = this.treeDatalist.findIndex(item => item[tkey] === val);
+                this.treeDatalist && (this.value['dataItem'] = this.treeDatalist[index]);
             }
             this.updateValue.emit(this.value);
         } else {
