@@ -36,7 +36,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
       // cascadeValue
       for (const key in this.config['cascadeValue']) {
         if (this.config['cascadeValue'].hasOwnProperty(key)) {
-          this.cascadeValue['cascadeValue'] = this.config['cascadeValue'][key];
+          this.cascadeValue[key] = this.config['cascadeValue'][key];
 
         }
       }
@@ -141,7 +141,6 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
     if (p.ajaxType === 'get' && tag) {
-      // console.log('get参数', params);
       /*  const dd=await this._http.getProj(APIResource[p.url], params).toPromise();
        if (dd && dd.Status === 200) {
        console.log("服务器返回执行成功返回",dd.Data);
