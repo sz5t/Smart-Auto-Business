@@ -17,6 +17,10 @@ export class CommonTools {
     return s;
   }
 
+  public static deepCopy(data) {
+    return JSON.parse(JSON.stringify(data));
+  }
+
   public static parametersResolver (model: ParametersResolverModel) {
       const result = {};
       if (Array.isArray(model.params)) {

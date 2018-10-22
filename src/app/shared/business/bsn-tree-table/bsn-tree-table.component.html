@@ -40,7 +40,7 @@
     <tbody>
         <ng-template ngFor let-data [ngForOf]="nzTable.data">
             <ng-template ngFor let-item [ngForOf]="expandDataCache[data.key]">
-                <tr *ngIf="(item.parent && item.parent.expand)||!(item.parent)" (click)="selectRow(item, $event)" [ngStyle]="{'background-color':item.selected?'rgb(236, 246, 253)':''}">
+                <tr *ngIf="(item.parent && item.parent.expand)||!(item.parent) && !item.isChild" (click)="selectRow(item, $event)" [ngStyle]="{'background-color':item.selected?'rgb(236, 246, 253)':''}">
                     <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refChecked()">
                     </td>
                     <ng-template ngFor let-col [ngForOf]="config.columns">
@@ -50,7 +50,6 @@
                                 <span *ngIf="!editCache[item.key].edit">
                                     {{item[col.field]}}
                                 </span>
-
                                 <ng-container [bsnData]="tempParameters" [rowData]="item" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
                                     CnGridEditorDirective *ngIf="editCache[item.key].edit" [config]="col.editor.options" [value]="{key:item.key,name:col.editor.field,data:editCache[item.key].data[col.editor.field]}"
                                     (updateValue)="valueChange($event)">
@@ -81,10 +80,10 @@
             </ng-template>
         </ng-template>
     </tbody>
-    <ng-template #footer>
+    <!-- <ng-template #footer>
         已选择
         <strong class="text-primary">{{checkedCount}}</strong> 项&nbsp;&nbsp;
-    </ng-template>
+    </ng-template> -->
     <ng-template #totals let-total>
         共 {{total}} 条
     </ng-template>

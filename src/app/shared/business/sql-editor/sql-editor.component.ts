@@ -237,7 +237,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
             // belongPlatformType: this.scriptModel,
             isImmediateCreate: 1
         };
-        return this._http.post(`common/ComSqlScript`, [params]).toPromise();
+        return this._http.post(`common/ComSqlScript`, params).toPromise();
     }
 
     private async addSqlRelative(sqlId) {
@@ -252,7 +252,7 @@ export class SqlEditorComponent extends CnComponentBase implements OnInit, OnDes
 
 
     private async delSql(id) {
-        return this._http.delete(`common/ComSqlScript`, { Id: id }).toPromise();
+        return this._http.delete(`common/ComSqlScript`, { _ids: id }).toPromise();
     }
 
 

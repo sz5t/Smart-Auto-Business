@@ -1875,7 +1875,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 this._message.error(result.message);
             }
         }
-        if (callback) {
+        if (callback && result.isSuccess) {
             callback();
         }
     }

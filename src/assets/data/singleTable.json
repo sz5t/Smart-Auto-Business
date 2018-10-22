@@ -4,154 +4,62 @@
       "row": {
         "cols": [
           {
-            "id": "area2",
-            "title": "组织机构",
-            "icon": "icon-list",
-            "bodyStyle": {
-            "height": "500px"
-            },
-            "span": 12,
+            "id": "MpmChoosecondition",
+            "title": "",
+            "span": 24,
+
             "size": {
-              "nzXs": 12,
-              "nzSm": 12,
-              "nzMd": 12,
-              "nzLg": 12,
-              "ngXl": 12
+              "nzXs": 24,
+              "nzSm": 24,
+              "nzMd": 24,
+              "nzLg": 24,
+              "ngXl": 24
             },
             "viewCfg": [
               {
                 "config": {
-                  "viewId": "tree_and_table_User2",
-                  "keyId": "Id",
-                  "component": "bsnTree",
-                  "asyncData": true,
-                  "expandAll": true,
-                  "showLine": true,
-                  "height":"470px",
-                  "columns": [
-                    {
-                      "title": "主键",
-                      "field": "key",
-                      "valueName": "Id"
-                    },
-                    {
-                      "title": "父节点",
-                      "field": "parentId",
-                      "valueName": "parentId"
-                    },
-                    {
-                      "title": "标题",
-                      "field": "title",
-                      "valueName": "name"
-                    }
-                  ],
-                  "componentType": {
-                    "parent": true,
-                    "child": true,
-                    "own": false
-                  },
-                  "toolbar": [],
-                  "parent": [
-                    {
-                      "name": "parentId",
-                      "type": "value",
-                      "valueName": "",
-                      "value": null
-                    }
-                  ],
-                  "ajaxConfig": {
-                    "url": "common/GetDeptTree1",
-                    "ajaxType": "get",
-                    "params": []
-                  }
-                },
-                "dataList": []
-              }
-            ]
-          },
-          {
-            "id": "area1",
-            "title": "人员信息表",
-            "span": 12,
-            "icon": "icon-list",
-            "bodyStyle": {
-                "height": "500px"
-            },
-            "size": {
-              "nzXs": 12,
-              "nzSm": 12,
-              "nzMd": 12,
-              "nzLg": 12,
-              "ngXl": 12
-            },
-            "viewCfg": [
-              {
-                "config": {
-                  "viewId": "singleTable01",
+                  "title": "",
+                  "viewId": "MpmChoosecondition",
                   "component": "bsnTable",
                   "info": true,
                   "keyId": "Id",
+                  "size": "small",
                   "pagination": true,
-                  "showCheckBox": true,
                   "showTotal": true,
                   "pageSize": 10,
+                  "showCheckBox": true,
                   "pageSizeOptions": [
                     5,
                     10,
                     20,
                     30,
-                    40,
-                    50
+                    40
                   ],
                   "ajaxConfig": {
-                    "url": "common/SysUserShow1",
+                    "url": "common/GetChooseCondition",
                     "ajaxType": "get",
                     "params": [
                       {
-                        "name": "loginName",
-                        "valueName": "",
-                        "type": "value",
-                        "value": "!in(admin,developer,normal)"
+                        "name":"productid", "type":"initValue","valueName":"productid"
                       },
                       {
-                        "name": "deptId",
-                        "valueName": "_parentId",
-                        "type": "tempValue",
-                        "value": "91a026d238914636a516cb971d640c7c"
-                      },
-                      {
-                        "name": "isDelete",
-                        "valueName": "",
-                        "type": "value",
-                        "value": "0"
-                      },
-                      {
-                         "name": "roleId",
-                          "valueName": "roleId",
-                                    "type": "initValue"
-                                  }
-                    ],
+                        "name":"nodeid", "type":"initValue","valueName":"id"
+                      }
+                  ],
                     "filter": []
                   },
                   "columns": [
                     {
                       "title": "序号",
                       "field": "_serilize",
-                      "width": "50px",
                       "hidden": false,
-                      "editor": {
-                        "type": "input",
-                        "field": "Id",
-                        "options": {
-                          "type": "input",
-                          "inputType": "text"
-                        }
-                      }
+                      "width": "6%",
+                      "titleAlign": "text-center",
+                      "fieldAlign": "text-center"
                     },
                     {
                       "title": "Id",
                       "field": "Id",
-                      "width": 80,
                       "hidden": true,
                       "editor": {
                         "type": "input",
@@ -163,88 +71,352 @@
                       }
                     },
                     {
-                      "title": "姓名",
-                      "field": "realName",
-                      "width": 80,
+                      "title": "产品ID",
+                      "field": "productid",
+                      "hidden": true,
+                      "readonly": true,
+                      "showFilter": false,
+                      "showSort": true,
+                      "width": "15%",
+                      "editor": {
+                        "type": "input",
+                        "field": "checkcode",
+                        "options": {
+                          "type": "input",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "零部组件ID",
+                      "field": "nodeid",
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "dataflag",
+                        "options": {
+                          "type": "input",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "产品特征",
+                      "field": "productfeaturename",
+                      "width": "30%",
+                      "hidden": false,
+                      "showFilter": false,
+                      "showSort": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "productfeature",
+                        "options": {
+                          "type": "select",
+                          "inputType": "submit",
+                          "name": "productfeature",
+                          "notFoundContent": "",
+                          "selectModel": false,
+                          "showSearch": true,
+                          "labelName":"datadictionarytypename",
+                          "valueName":"Id",
+                          "placeholder": "-请选择-",
+                          "disabled": false,
+                          "size": "default",
+                          "clear": true,
+                          "width": "100%",
+                          "ajaxConfig": {
+                            "url": "common/GetFeatureData",
+                            "ajaxType": "get",
+                            "params": [
+
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "title": "特征值",
+                      "field": "featurevaluename",
+                      "showFilter": false,
+                      "showSort": true,
+                      "width": "30%",
                       "hidden": false,
                       "editor": {
                         "type": "input",
-                        "field": "realName",
+                        "field": "featurevalue",
+                        "options": {
+                          "type": "select",
+                          "inputType": "submit",
+                          "name": "featurevalue",
+                          "notFoundContent": "",
+                          "selectModel": false,
+                          "showSearch": true,
+                          "labelName":"valuesname",
+                          "valueName":"Id",
+                          "placeholder": "-请选择-",
+                          "disabled": false,
+                          "size": "default",
+                          "clear": true,
+                          "width": "100%",
+                          "ajaxConfig":{
+                            "url":"common/GetFeatureValueData",
+                            "ajaxType":"get",
+                            "params":[
+                              {
+                                "name":"datadictionarytypeid","type":"cascadeValue", "valueName":"did"
+                              }
+                            ]
+
+                          }
+                        }
+                      }
+                    },
+                    {
+                        "title": "排序码",
+                        "field": "deleteflag",
+                        "hidden": true,
+                        "editor": {
+                          "type": "input",
+                          "field": "deleteflag",
+                          "options": {
+                            "type": "input",
+                            "inputType": "text"
+                          }
+                        }
+                      },
+                    {
+                      "title": "删除标记",
+                      "field": "deleteflag",
+                      "hidden": true,
+                      "editor": {
+                        "type": "input",
+                        "field": "deleteflag",
                         "options": {
                           "type": "input",
-                          "labelSize": "6",
-                          "controlSize": "18",
+                          "inputType": "text"
+                        }
+                      }
+                    },
+                    {
+                      "title": "备注",
+                      "field": "remark",
+                      "width": "25%",
+                      "hidden": false,
+                      "editor": {
+                        "type": "input",
+                        "field": "remark",
+                        "options": {
+                          "type": "input",
                           "inputType": "text"
                         }
                       }
                     }
                   ],
-                  "componentType": {
-                    "parent": true,
-                    "child": true,
-                    "own": true
-                  },
-                   "checkedMapping": [
+                  "cascade":[
                     {
-                      "name": "hasrole",
-                      "value": 1
-                    }
-                  ],
-                  "relations": [
-                    {
-                      "relationViewId": "tree_and_table_User2",
-                      "cascadeMode": "REFRESH_AS_CHILD",
-                      "params": [
-                        {
-                          "pid": "key",
-                          "cid": "_parentId"
-                        }
+                      "name":"productfeature",
+                      "CascadeObjects":[
+                         {
+                           "cascadeName":"featurevalue",
+                           "cascadeValueItems":[
+                           ],
+                           "cascadeDataItems":[
+                             {
+                               "data":{
+                                 "type":"ajax",
+                                 "ajax_data":{
+                                   "option":[
+                                     {
+                                       "name":"did","type":"selectValue", "value":"",  "valueName":"data"
+                                     }
+                                   ]
+                                 }
+
+                               }
+                             }
+                           ]
+                         }
                       ]
                     }
+
                   ],
                   "toolbar": [
                     {
                       "group": [
                         {
-                          "name": "save",
-                          "text": "保存",
-                          "icon": "anticon anticon-save",
-                          "color": "text-success-light",
+                          "name": "refresh",
+                          "class": "editable-add-btn",
+                          "text": "刷新",
+                          "action":"REFRESH",
+                          "icon": "anticon anticon-reload",
+                          "color": "text-primary"
+                        },
+                        {
+                          "name": "addRow",
+                          "class": "editable-add-btn",
+                          "text": "新增",
+                          "action": "CREATE",
+                          "icon": "anticon anticon-plus",
+                          "color": "text-primary"
+                        },
+                        {
+                          "name": "updateRow",
+                          "class": "editable-add-btn",
+                          "text": "修改",
+                          "action": "EDIT",
+                          "icon": "anticon anticon-edit",
+                          "color": "text-success"
+                        },
+                        {
+                          "name": "deleteRow",
+                          "class": "editable-add-btn",
+                          "text": "删除",
+                          "icon": "anticon anticon-delete",
+                          "color": "text-red-light",
                           "ajaxConfig": [
                             {
-                              "url": "common/AddUserToRole",
-                              "ajaxType": "post",
-                              "action": "EXECUTE_CHECKED_ID",
-                              "message": "是否保存选中的人员",
+                              "action": "EXECUTE_CHECKED",
+                              "url": "common/MpmChoosecondition",
+                              "ajaxType": "delete",
+                              "title": "提示",
+                              "message": "确定要删除该选配条件信息吗！",
                               "params": [
-                                 {
-                                    "name": "roleId",
-                                    "valueName": "_roleId",
-                                    "type": "initValue"
-                                  },
                                 {
-                                  "name": "leftId",
-                                  "type": "checkedId",
-                                  "valueName": "",
-                                  "value": ""
+                                  "name": "Id",
+                                  "valueName": "Id",
+                                  "type": "checkedRow"
                                 }
                               ]
                             }
                           ]
+                        },
+                        {
+                          "name": "saveRow",
+                          "class": "editable-add-btn",
+                          "text": "保存",
+                          "icon": "anticon anticon-save",
+                          "color": "text-primary",
+                          "ajaxConfig": [
+                              {
+                                "action": "EXECUTE_SAVE_ROW",
+                                "url": "common/MpmChoosecondition",
+                                "ajaxType": "post",
+                                "params": [
+                                  {
+                                    "name": "productid",
+                                    "type": "initValue",
+                                    "valueName": "productid"
+                                  },
+                                  {
+                                    "name": "nodeid",
+                                    "type": "initValue",
+                                    "valueName": "Id"
+                                  },
+                                  {
+                                    "name": "productfeature",
+                                    "type": "componentValue",
+                                    "valueName": "productfeature"
+                                  },
+                                  {
+                                    "name": "featurevalue",
+                                    "type": "componentValue",
+                                    "valueName": "featurevalue"
+                                  },
+                                  {
+                                    "name": "securitylevel",
+                                    "type": "componentValue",
+                                    "valueName": "securitylevel"
+                                  },
+                                  {
+                                    "name": "sortcode",
+                                    "type": "componentValue",
+                                    "valueName": "sortcode"
+                                  },
+                                  {
+                                    "name": "deleteflag",
+                                    "type": "componentValue",
+                                    "valueName": "deleteflag"
+                                  },
+                                  {
+                                    "name": "remark",
+                                    "type": "componentValue",
+                                    "valueName": "remark"
+                                  }
+                                ]
+                              },
+                              {
+                                "action": "EXECUTE_EDIT_ROW",
+                                "url": "common/MpmChoosecondition",
+                                "ajaxType": "put",
+                                "params": [
+                                  {
+                                    "name": "Id",
+                                    "type": "componentValue",
+                                    "valueName": "Id",
+                                    "value": ""
+                                  },
+                                  {
+                                    "name": "productid",
+                                    "type": "tempValue",
+                                    "valueName": "productid"
+                                  },
+                                  {
+                                    "name": "nodeid",
+                                    "type": "tempValue",
+                                    "valueName": "nodeid"
+                                  },
+                                  {
+                                    "name": "productfeature",
+                                    "type": "componentValue",
+                                    "valueName": "productfeature"
+                                  },
+                                  {
+                                    "name": "featurevalue",
+                                    "type": "componentValue",
+                                    "valueName": "featurevalue"
+                                  },
+                                  {
+                                    "name": "securitylevel",
+                                    "type": "componentValue",
+                                    "valueName": "securitylevel"
+                                  },
+                                  {
+                                    "name": "sortcode",
+                                    "type": "componentValue",
+                                    "valueName": "sortcode"
+                                  },
+                                  {
+                                    "name": "deleteflag",
+                                    "type": "value",
+                                    "valueName": "",
+                                    "value":1
+                                  },
+                                  {
+                                    "name": "remark",
+                                    "type": "componentValue",
+                                    "valueName": "remark"
+                                  }
+                                ]
+                              }
+                            
+                          ]
+                        },
+                        {
+                          "name": "cancelrow",
+                          "class": "editable-add-btn",
+                          "text": "取消",
+                          "action": "CANCEL",
+                          "icon": "anticon anticon-rollback",
+                          "color": "text-grey-darker"
                         }
                       ]
-                    }
+                    }                    
                   ],
-                  "dataSet": [],
-                  "formDialog": [],
-                  "windowDialog": []
-                },
-                "permissions": {
-                  "viewId": "singleTable01",
-                  "columns": [],
-                  "toolbar": [],
-                  "formDialog": [],
-                  "windowDialog": []
+                  "componentType": {
+                    "parent": true,
+                    "child": true,
+                    "own": true
+                  }
                 },
                 "dataList": []
               }

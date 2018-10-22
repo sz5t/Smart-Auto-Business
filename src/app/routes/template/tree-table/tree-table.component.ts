@@ -161,7 +161,7 @@ export class TreeTableComponent implements OnInit {
                               'url': 'common/ShowCase',
                               'ajaxType': 'get',
                               'params': [
-                                // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
+                                // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId'}
                               ]
                             },
                             'layout': 'column',
@@ -247,6 +247,13 @@ export class TreeTableComponent implements OnInit {
                             'name': 'addRow',
                             'text': '新增',
                             'action': 'CREATE',
+                            'icon': 'anticon anticon-plus',
+                            'color': 'text-primary'
+                          },
+                          {
+                            'name': 'addRow',
+                            'text': '新增下级',
+                            'action': 'CREATE_CHILD',
                             'icon': 'anticon anticon-plus',
                             'color': 'text-primary'
                           },
@@ -769,7 +776,7 @@ export class TreeTableComponent implements OnInit {
                                     'url': 'common/ShowCase',
                                     'ajaxType': 'get',
                                     'params': [
-                                      // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
+                                      // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId'}
                                     ]
                                   },
                                   'cascader': [
@@ -952,14 +959,14 @@ export class TreeTableComponent implements OnInit {
                                 post: [{
                                   'url': 'common/ShowCase',
                                   'params': [
-                                    { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
-                                    { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
-                                    { name: 'createTime', type: 'componentValue', valueName: 'createTime', value: '' },
-                                    { name: 'enabled', type: 'componentValue', valueName: 'enabled', value: '' },
-                                    { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
-                                    { name: 'parentId', type: 'tempValue', valueName: '_parentId', value: '' },
-                                    { name: 'remark', type: 'componentValue', valueName: 'remark', value: '' },
-                                    { name: 'caseType', type: 'componentValue', valueName: 'caseType', value: '' }
+                                    { name: 'caseName', type: 'componentValue', valueName: 'caseName'},
+                                    { name: 'caseCount', type: 'componentValue', valueName: 'caseCount'},
+                                    { name: 'createTime', type: 'componentValue', valueName: 'createTime'},
+                                    { name: 'enabled', type: 'componentValue', valueName: 'enabled'},
+                                    { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel'},
+                                    { name: 'parentId', type: 'tempValue', valueName: '_parentId'},
+                                    { name: 'remark', type: 'componentValue', valueName: 'remark'},
+                                    { name: 'caseType', type: 'componentValue', valueName: 'caseType'}
                                   ]
                                 }]
                               }
@@ -970,14 +977,14 @@ export class TreeTableComponent implements OnInit {
                                 post: [{
                                   'url': 'common/ShowCase',
                                   'params': [
-                                    { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
-                                    { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
-                                    { name: 'createTime', type: 'componentValue', valueName: 'createTime', value: '' },
-                                    { name: 'enabled', type: 'componentValue', valueName: 'enabled', value: '' },
-                                    { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel', value: '' },
-                                    { name: 'parentId', type: 'tempValue', valueName: '_parentId', value: '' },
-                                    { name: 'remark', type: 'componentValue', valueName: 'remark', value: '' },
-                                    { name: 'caseType', type: 'componentValue', valueName: 'caseType', value: '' }
+                                    { name: 'caseName', type: 'componentValue', valueName: 'caseName'},
+                                    { name: 'caseCount', type: 'componentValue', valueName: 'caseCount'},
+                                    { name: 'createTime', type: 'componentValue', valueName: 'createTime'},
+                                    { name: 'enabled', type: 'componentValue', valueName: 'enabled'},
+                                    { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel'},
+                                    { name: 'parentId', type: 'tempValue', valueName: '_parentId'},
+                                    { name: 'remark', type: 'componentValue', valueName: 'remark'},
+                                    { name: 'caseType', type: 'componentValue', valueName: 'caseType'}
                                   ]
                                 }]
                               }
@@ -1109,22 +1116,9 @@ export class TreeTableComponent implements OnInit {
                                     'url': 'common/ShowCase',
                                     'ajaxType': 'get',
                                     'params': [
-                                      // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
+                                      // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId'}
                                     ]
                                   },
-                                  'cascader': [
-                                    {
-                                      'name': 'getCaseName',
-                                      'type': 'sender',
-                                      'cascaderData': {
-                                        'params': [
-                                          {
-                                            'pid': 'Id', 'cid': '_typeId'
-                                          }
-                                        ]
-                                      }
-                                    }
-                                  ],
                                   'layout': 'column',
                                   'span': '24'
                                 }
@@ -1211,16 +1205,18 @@ export class TreeTableComponent implements OnInit {
                               'type': 'primary',
                               'ajaxConfig': {
                                 put: [{
+                                  'ajaxType': 'put',
                                   'url': 'common/ShowCase',
                                   'params': [
-                                    { name: 'Id', type: 'tempValue', valueName: '_id', value: '' },
-                                    { name: 'caseName', type: 'componentValue', valueName: 'caseName', value: '' },
-                                    { name: 'caseCount', type: 'componentValue', valueName: 'caseCount', value: '' },
-                                    // { name: 'createTime', type: 'componentValue', valueName: 'createTime', value: '' },
-                                    { name: 'enabled', type: 'componentValue', valueName: 'enabled', value: '' },
-                                    { name: 'level', type: 'componentValue', valueName: 'caseLevel', value: '' },
-                                    { name: 'remark', type: 'componentValue', valueName: 'remark', value: '' },
-                                    { name: 'caseType', type: 'componentValue', valueName: 'caseType', value: '' }
+                                    { name: 'Id', type: 'tempValue', valueName: '_id'},
+                                    { name: 'caseName', type: 'componentValue', valueName: 'caseName'},
+                                    { name: 'caseCount', type: 'componentValue', valueName: 'caseCount'},
+                                    { name: 'parentId', type: 'componentValue', valueName: 'parentId'},
+                                    // { name: 'createTime', type: 'componentValue', valueName: 'createTime'},
+                                    { name: 'enabled', type: 'componentValue', valueName: 'enabled'},
+                                    { name: 'caseLevel', type: 'componentValue', valueName: 'caseLevel'},
+                                    { name: 'remark', type: 'componentValue', valueName: 'remark'},
+                                    { name: 'caseType', type: 'componentValue', valueName: 'caseType'}
                                   ]
                                 }]
                               }
@@ -1462,7 +1458,7 @@ export class TreeTableComponent implements OnInit {
                                     caseValue: { valueName: 'value', regular: '^2$' }, // 哪个字段的值触发，正则表达
                                     //  [
                                     //     { type: 'in', value: '1' },
-                                    //     { type: 'range', fromValue: '1', toValue: '' },
+                                    //     { type: 'range', fromValue: '1', },
                                     // ],
                                     data: {
                                       type: 'option', // option/ajax/setValue
@@ -1493,7 +1489,7 @@ export class TreeTableComponent implements OnInit {
                                     caseValue: { valueName: 'value', regular: '^3$' }, // 哪个字段的值触发，正则表达
                                     //  [
                                     //     { type: 'in', value: '1' },
-                                    //     { type: 'range', fromValue: '1', toValue: '' },
+                                    //     { type: 'range', fromValue: '1', },
                                     // ],
                                     data: {
                                       type: 'show', // option/ajax/setValue
@@ -1526,7 +1522,7 @@ export class TreeTableComponent implements OnInit {
                                     caseValue: { valueName: 'value', regular: '^4$' }, // 哪个字段的值触发，正则表达
                                     //  [
                                     //     { type: 'in', value: '1' },
-                                    //     { type: 'range', fromValue: '1', toValue: '' },
+                                    //     { type: 'range', fromValue: '1', },
                                     // ],
                                     data: {
                                       type: 'show', // option/ajax/setValue
@@ -1570,7 +1566,7 @@ export class TreeTableComponent implements OnInit {
                                     caseValue: { valueName: 'value', regular: '^2$' }, // 哪个字段的值触发，正则表达
                                     //  [
                                     //     { type: 'in', value: '1' },
-                                    //     { type: 'range', fromValue: '1', toValue: '' },
+                                    //     { type: 'range', fromValue: '1', },
                                     // ],
                                     data: {
                                       type: 'option', // option/ajax/setValue

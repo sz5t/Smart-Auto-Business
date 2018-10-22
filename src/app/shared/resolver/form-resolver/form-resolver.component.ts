@@ -992,7 +992,6 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                 button['onClick'] = (componentInstance) => {
                     if (btn['name'] === 'save') {
                         (async () => {
-                            console.log(btn);
                             const result = await componentInstance.buttonAction(btn);
                             this.showAjaxMessage(result, '保存成功', () => {
                                 modal.close();
@@ -1055,6 +1054,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                 },
                 nzFooter: footer
             });
+            debugger;
             if (dialog.buttons) {
                 dialog.buttons.forEach(btn => {
                     const button = {};

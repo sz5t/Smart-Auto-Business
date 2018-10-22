@@ -3,6 +3,7 @@ import { InjectionToken } from '@angular/core';
 export const BSN_COMPONENT_MODES = {
     // grid
     CREATE: 'create',
+    CREATE_CHILD: 'create_child',
     EDIT: 'edit',
     DELETE: 'delete',
     DIALOG: 'dialog',
