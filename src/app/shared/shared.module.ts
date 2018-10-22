@@ -78,6 +78,9 @@ import { BsnTreeTableComponent } from '@shared/business/bsn-tree-table/bsn-tree-
 import { CnFormHiddenComponent } from '@shared/components/cn-form-hidden/cn-form-hidden.component';
 import { CnGridNumberComponent } from '@shared/components/cn-grid-munber/cn-grid-number.component';
 import { BsnDataStepComponent } from './business/bsn-data-step/bsn-data-step.component';
+import { WfDesignComponent } from './work-flow/wf-design/wf-design.component';
+import { WfDashboardComponent } from './work-flow/wf-dashboard/wf-dashboard.component';
+
 const THIRDMODULES = [
     NgZorroAntdModule,
     CountdownModule,
@@ -148,7 +151,8 @@ const COMPONENTS = [
     BsnTransferComponent,
     CnFormHiddenComponent,
     CnBsnTreeMenuComponent,
-    BsnDataStepComponent
+    BsnDataStepComponent,
+    WfDesignComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
@@ -175,7 +179,9 @@ const DIRECTIVES = [
         // your components
         ...COMPONENTS,
         ...DIRECTIVES,
-        BtnTableFieldLimit
+        BtnTableFieldLimit,
+        WfDesignComponent,
+        WfDashboardComponent
     ],
     exports: [
         CommonModule,

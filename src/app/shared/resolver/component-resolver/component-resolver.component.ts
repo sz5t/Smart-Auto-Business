@@ -19,6 +19,7 @@ import {BsnAccordionComponent} from '@shared/business/bsn-accordion/bsn-accordio
 import {BsnTabsComponent} from '@shared/business/bsn-tabs/bsn-tabs.component';
 import {BsnTransferComponent} from '@shared/business/bsn-transfer/bsn-transfer.component';
 import { BsnTreeTableComponent } from '@shared/business/bsn-tree-table/bsn-tree-table.component';
+import { WfDesignComponent } from "@shared/work-flow/wf-design/wf-design.component";
 const components: { [type: string]: Type<any> } = {
     code_edit: CnCodeEditComponent,
     bsnTable: BsnTableComponent,
@@ -33,7 +34,8 @@ const components: { [type: string]: Type<any> } = {
     bsnAccordion: BsnAccordionComponent,
     bsnTabs: BsnTabsComponent,
     bsnTransfer: BsnTransferComponent,
-    dataSteps: BsnDataStepComponent
+    dataSteps: BsnDataStepComponent,
+    wf_design: WfDesignComponent
 };
 @Component({
     selector: 'cn-component-resolver',

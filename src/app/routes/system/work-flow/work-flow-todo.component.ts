@@ -1,4 +1,4 @@
-import { Component, Injectable, OnInit } from '@angular/core';
+import { Component, Injectable, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { APIResource } from '@core/utility/api-resource';
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
@@ -6,6 +6,9 @@ import { CacheService } from '@delon/cache';
 import { AppPermission, FuncResPermission, OpPermission, PermissionValue } from '../../../model/APIModel/AppPermission';
 import { TIMEOUT } from 'dns';
 import { _HttpClient } from '@delon/theme';
+import { TreeNodeInterface } from '../../cn-test/list/list.component';
+import { CommonTools } from '@core/utility/common-tools';
+import { BsnTableComponent } from '@shared/business/bsn-data-table/bsn-table.component';
 
 @Component({
   selector: 'cn-work-flow-todo, [work-flow-todo]',
@@ -14,6 +17,8 @@ import { _HttpClient } from '@delon/theme';
 })
 export class WorkFlowTodoComponent implements OnInit {
 
+  // #table
+  @ViewChild('table') table: BsnTableComponent;
   configold = {
     rows: [
       {
@@ -756,6 +761,154 @@ export class WorkFlowTodoComponent implements OnInit {
     ]
   };
 
+  configtanchu = {
+    'viewId': 'parentTable',
+    'component': 'bsnTable',
+    'keyId': 'Id',
+    'pagination': true, // 是否分页
+    'showTotal': true, // 是否显示总数据量
+    'pageSize': 5, // 默pageSizeOptions认每页数据条数
+    '': [5, 10, 20, 30, 40, 50],
+    'ajaxConfig': {
+      'url': 'common/CfgTable',
+      'ajaxType': 'get',
+      'params': [
+        {
+          name: '_sort', type: 'value', valueName: '', value: 'createDate desc'
+        }
+      ]
+    },
+    'componentType': {
+      'parent': false,
+      'child': false,
+      'own': true
+    },
+    'relations': [{
+      'relationViewId': 'parentTable',
+      'relationSendContent': [
+      ],
+      'relationReceiveContent': []
+    }],
+    'columns': [
+      {
+        title: 'Id', field: 'Id', width: 80, hidden: true,
+        editor: {
+          type: 'input',
+          field: 'Id',
+          options: {
+            'type': 'input',
+            'labelSize': '6',
+            'controlSize': '18',
+            'inputType': 'text',
+          }
+        }
+      },
+      {
+        title: '名称', field: 'name', width: 80,
+        showFilter: false, showSort: false,
+        editor: {
+          type: 'input',
+          field: 'name',
+          options: {
+            'type': 'input',
+            'labelSize': '6',
+            'controlSize': '18',
+            'inputType': 'text',
+          }
+        }
+      },
+      {
+        title: '编号', field: 'code', width: 80,
+        showFilter: false, showSort: false,
+        editor: {
+          type: 'input',
+          field: 'code',
+          options: {
+            'type': 'input',
+            'labelSize': '6',
+            'controlSize': '18',
+            'inputType': 'text',
+          }
+        }
+      },
+      {
+        title: '备注', field: 'remark', width: 80, hidden: false,
+        editor: {
+          type: 'input',
+          field: 'remark',
+          options: {
+            'type': 'input',
+            'labelSize': '6',
+            'controlSize': '18',
+            'inputType': 'text',
+          }
+        }
+      },
+      {
+        title: '创建时间', field: 'createDate', width: 80, hidden: false, showSort: true,
+        editor: {
+          type: 'input',
+          field: 'createDate',
+          options: {
+            'type': 'input',
+            'labelSize': '6',
+            'controlSize': '18',
+            'inputType': 'text',
+          }
+        }
+      }
+
+
+    ],
+    'toolbar': [
+      {
+        group: [
+          {
+            'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
+          },
+          {
+            'name': 'addSearchRow', 'class': 'editable-add-btn', 'text': '查询', 'action': 'SEARCH',
+            'actionType': 'addSearchRow', 'actionName': 'addSearchRow',
+          },
+          {
+            'name': 'cancelSearchRow', 'class': 'editable-add-btn', 'text': '取消查询', 'action': 'SEARCH',
+            'actionType': 'cancelSearchRow', 'actionName': 'cancelSearchRow',
+          },
+        ]
+      }
+    ],     
+    'dataSet': [
+
+    ]
+  };
+  nzWidth = 1024;
+  configtanchuInput = {
+
+      'type': 'input',
+      'labelSize': '6',
+      'controlSize': '18',
+      'inputType': 'text',
+      'width': '160px',
+      'label': '父类别',
+      'labelName': 'caseName',
+      'valueName': 'Id',
+    
+  };
+
+ // 模板配置
+ pz = {
+    title: 'Id', field: 'Id', width: 80, hidden: true,
+    editor: {
+      type: 'selectgrid',
+      field: 'Id',
+      options: {
+        'type': 'input',
+        'labelSize': '6',
+        'controlSize': '18',
+        'inputType': 'text',
+      }
+    }
+  };
 
   config = {
     rows: [
@@ -778,7 +931,7 @@ export class WorkFlowTodoComponent implements OnInit {
                 {
                   config: {
                     'title': '数据网格',
-                    'viewId': 'singleTable',
+                    'viewId': 'singleTable_wf',
                     'component': 'bsnTable',
                     'info': true,
                     'keyId': 'Id',
@@ -1388,8 +1541,8 @@ export class WorkFlowTodoComponent implements OnInit {
 
                     ],
                     'componentType': {
-                      'parent': false,
-                      'child': true,
+                      'parent': true,
+                      'child': false,
                       'own': true
                     },
                     'relations': [{
@@ -3131,6 +3284,195 @@ export class WorkFlowTodoComponent implements OnInit {
                   dataList: []
                 }
               ]
+            },
+            {
+              id: 'area2',
+              title: '设计工作流示例',
+              span: 24,
+              icon: 'icon-list',
+              size: {
+                nzXs: 24,
+                nzSm: 24,
+                nzMd: 24,
+                nzLg: 24,
+                ngXl: 24
+              },
+              viewCfg: [
+                {
+                  config: {
+                    viewId: 'wfeditorid',  // 唯一标识
+                    component: 'wf_design', // 工作流图形编辑组件
+                    loadtype: 'ajax',  // 【新增配置项】ajax、data  当前组件的加载方式【预留，目前以ajax为主】
+                    wfjson: 'configjson', // 当前存储json字段的
+                    ajaxConfig: {   // 图形自加载
+                      'url': 'common/WfInfo',
+                      'ajaxType': 'get',
+                      'params': [
+                        // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
+                      ],
+                      filter: []
+                    },
+                    // 该属性不作简析，目前只作单纯json维护
+                    componentType: {
+                      'parent': false,
+                      'child': true,
+                      'own': true
+                    },
+                    relations: [
+                      {
+                        'relationViewId': 'singleTable_wf',
+                        'cascadeMode': 'REFRESH_AS_CHILD',
+                        'params': [
+                          { pid: 'Id', cid: '_Id' }
+                        ],
+                        'relationReceiveContent': []
+                      }
+                    ],
+                    toolbar: [ // 此处的toolbar 是用户自定义按钮 + 编辑器内置命令按钮，分组  commandtype: 'editorcommand',  // editorcommand 编辑器内置命令，componentcommand 组件内置方法，command 自定义
+                      {
+                        group: [
+                          {
+                            name: 'undo',
+                            commandtype: 'editorcommand',  // editorcommand 编辑器内置命令，componentcommand 组件内置方法，command 自定义
+                            class: 'command iconfont icon-undo',
+                            text: '撤销',
+                            hidden: false
+                          },
+                          {
+                            name: 'redo',
+                            commandtype: 'editorcommand',
+                            class: 'command iconfont icon-redo disable',
+                            text: '重做',
+                            hidden: false
+                          }
+
+                        ]
+                      },
+                      {
+                        group: [
+                          {
+                            name: 'copy',
+                            commandtype: 'editorcommand',
+                            class: 'command iconfont icon-copy-o disable',
+                            text: '复制',
+                            hidden: false
+                          },
+                          {
+                            name: 'paste',
+                            commandtype: 'editorcommand',
+                            class: 'command iconfont icon-paster-o disable',
+                            text: '粘贴',
+                            hidden: false
+                          },
+                          {
+                            name: 'delete',
+                            commandtype: 'editorcommand',
+                            class: 'command iconfont icon-delete-o disable',
+                            text: '删除',
+                            hidden: false
+                          }
+
+                        ]
+                      },
+                      {
+                        group: [
+                          {
+                            name: 'zoomIn',
+                            commandtype: 'editorcommand',
+                            class: 'command iconfont icon-zoom-in-o',
+                            text: '放大',
+                            hidden: false
+                          },
+                          {
+                            name: 'zoomOut',
+                            commandtype: 'editorcommand',
+                            class: 'command iconfont icon-zoom-out-o',
+                            text: '缩小',
+                            hidden: false
+                          },
+                          {
+                            name: 'autoZoom',
+                            commandtype: 'editorcommand',
+                            class: 'command iconfont icon-fit',
+                            text: '适应画布',
+                            hidden: false
+                          },
+                          {
+                            name: 'resetZoom',
+                            commandtype: 'editorcommand',
+                            class: 'command iconfont icon-actual-size-o',
+                            text: '实际尺寸',
+                            hidden: false
+                          }
+
+                        ]
+                      },
+                      {
+                        group: [
+                          {
+                            name: 'toBack',
+                            commandtype: 'editorcommand',
+                            class: 'command iconfont icon-to-back disable',
+                            text: '层级后置',
+                            hidden: false
+                          },
+                          {
+                            name: 'toFront',
+                            commandtype: 'editorcommand',
+                            class: 'command iconfont icon-to-front disable',
+                            text: '层级前置',
+                            hidden: false
+                          }
+
+                        ]
+                      },
+                      {
+                        group: [
+                          {
+                            name: 'multiSelect',
+                            commandtype: 'editorcommand',
+                            class: 'command iconfont icon-select',
+                            text: '多选',
+                            hidden: false
+                          },
+                          {
+                            name: 'addGroup',
+                            commandtype: 'editorcommand',
+                            class: 'command iconfont icon-group disable',
+                            text: '成组',
+                            hidden: false
+                          },
+                          {
+                            name: 'unGroup',
+                            commandtype: 'editorcommand',
+                            class: 'command iconfont icon-ungroup disable',
+                            text: '解组',
+                            hidden: false
+                          }
+
+                        ]
+                      },
+                      {
+                        group: [
+                          {
+                            name: 'saveWF',
+                            commandtype: 'componentcommand',
+                            class: 'command iconfont icon-select',
+                            text: '保存',
+                            hidden: false
+                          }
+                        ]
+                      },
+                    ],
+                    // 节点等的右键事件【目前不实现】
+                    contextmenu: [
+
+                    ]
+
+                  },
+                  dataList: []
+                }
+              ]
             }
           ]
         }
@@ -3141,7 +3483,32 @@ export class WorkFlowTodoComponent implements OnInit {
   };
   constructor(private http: _HttpClient) { }
 
-  ngOnInit() {
+
+  isVisible = false;
+  isConfirmLoading = false;
+  _value;
+  ngOnInit(): void {
+
   }
+
+  showModal(): void {
+    this.isVisible = true;
+  }
+
+  handleOk(): void {
+    console.log('确认');
+    this.isVisible = false;
+    
+    // 此处简析 多选，单选【个人建议两种组件，返回值不相同，单值（ID值），多值（ID数组）】
+    console.log('选中行', this.table.dataList);
+    console.log('选中行', this.table._selectRow);
+    this._value = this.table._selectRow['name'];
+  }
+
+  handleCancel(): void {
+    console.log('点击取消');
+    this.isVisible = false;
+  }
+
 
 }

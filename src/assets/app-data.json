@@ -120,6 +120,12 @@
                             "i18n": "",
                             "icon": "icon-user"
                      },
+                     {
+                            "text": "工作流设计",
+                            "link": "/system/WorkFlow-design-manager",
+                            "i18n": "",
+                            "icon": "icon-user"
+                     },
                     {
                             "text": "工作流构建",
                             "link": "/system/WorkFlow-manager",
