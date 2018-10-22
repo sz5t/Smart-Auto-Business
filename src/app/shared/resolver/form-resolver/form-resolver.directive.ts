@@ -114,6 +114,7 @@ export class FormResolverDirective implements OnInit, OnChanges, OnDestroy {
                 `不支持此类型的组件 (${this.config.type}).可支持的类型为: ${supportedTypes}`
             );
         }
+        this.container.clear();
         const comp = this.resolver.resolveComponentFactory<any>(components[this.config.type]);
         this.component = this.container.createComponent(comp);
         this.component.instance.config = this.config;

@@ -19,11 +19,12 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() updateValue = new EventEmitter();
   _options = [];
   cascadeValue = {};
+  resultData;
   // _selectedMultipleOption:any[];
   constructor(
     private apiService: ApiService
   ) { }
-    _selectedOption;
+  _selectedOption;
 
   ngOnInit() {
     if (!this.config['multiple']) {
@@ -33,12 +34,12 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
     // console.log('select加载固定数据', this.config);
     if (this.config['cascadeValue']) {
       // cascadeValue
-       for (const key in this.config['cascadeValue']) {
-         if (this.config['cascadeValue'].hasOwnProperty(key)) {
-          this. cascadeValue['cascadeValue'] = this.config['cascadeValue'][key];
+      for (const key in this.config['cascadeValue']) {
+        if (this.config['cascadeValue'].hasOwnProperty(key)) {
+          this.cascadeValue[key] = this.config['cascadeValue'][key];
 
-         }
-       }
+        }
+      }
 
     }
 
@@ -51,6 +52,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
       // 异步加载options
       (async () => {
         const result = await this.asyncLoadOptions(this.config.ajaxConfig);
+        this.resultData = result;
         if (this.config.valueType && this.config.valueType === 'list') {
           const labels = this.config.labelName.split('.');
           const values = this.config.valueName.split('.');
@@ -77,7 +79,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
 
   ngOnChanges() {
     // console.log('select加载固定数据ngOnChanges', this.config);
-   // console.log('变化时临时参数' , this.bsnData);
+    // console.log('变化时临时参数' , this.bsnData);
   }
   ngAfterViewInit() {
 
@@ -139,7 +141,6 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
     if (p.ajaxType === 'get' && tag) {
-      // console.log('get参数', params);
       /*  const dd=await this._http.getProj(APIResource[p.url], params).toPromise();
        if (dd && dd.Status === 200) {
        console.log("服务器返回执行成功返回",dd.Data);
@@ -161,37 +162,47 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   selectedByLoaded() {
-      let selected;
-      if (!this.value) {
-          this.value = this.config.defaultValue;
-      }
-      if (this.value && this.value.data) {
-          this._options.forEach(element => {
-              if (element.value === this.value.data) {
-                  selected = element;
-              }
-          });
+    let selected;
+    if (!this.value) {
+      this.value = this.config.defaultValue;
+    }
+    if (this.value && this.value.data) {
+      this._options.forEach(element => {
+        if (element.value === this.value.data) {
+          selected = element;
+        }
+      });
 
-      } else {
-          this._options.forEach((element => {
-              if (element.value === this.config.defaultValue) {
-                  selected = element;
-              }
-          }));
-      }
+    } else {
+      this._options.forEach((element => {
+        if (element.value === this.config.defaultValue) {
+          selected = element;
+        }
+      }));
+    }
 
-      this._selectedOption = selected;
+    this._selectedOption = selected;
   }
 
   valueChange(name?) {
+    // if (name) {
+    //   const backValue = { name: this.config.name, value: name };
+    //   this.updateValue.emit(backValue);
+    // } else {
+    //   const backValue = { name: this.config.name, value: name };
+    //   this.updateValue.emit(backValue);
+    // }
     if (name) {
       const backValue = { name: this.config.name, value: name };
+      if (this.resultData) {
+        const index = this.resultData.data.findIndex(item => item[this.config['valueName']] === name);
+        this.resultData.data && (backValue['dataItem'] = this.resultData.data[index]);
+      }
       this.updateValue.emit(backValue);
     } else {
       const backValue = { name: this.config.name, value: name };
       this.updateValue.emit(backValue);
     }
-
   }
 
   isString(obj) { // 判断对象是否是字符串

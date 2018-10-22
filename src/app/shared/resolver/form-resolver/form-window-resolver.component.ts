@@ -921,34 +921,35 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
                                         // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
                                         // 解析参数
 
-                                        const caseCodeValue = {};
+                                        const cascadeValue = {};
                                         caseItem['ajax'].forEach(ajaxItem => {
                                             if (ajaxItem['type'] === 'value') {
-                                                caseCodeValue[ajaxItem['name']] = ajaxItem['value'];
+                                                cascadeValue[ajaxItem['name']] = ajaxItem['value'];
                                             }
                                             if (ajaxItem['type'] === 'selectValue') { // 选中行数据[这个是单值]
-                                                caseCodeValue[ajaxItem['name']] = data['value'];
+                                                cascadeValue[ajaxItem['name']] = data['value'];
                                             }
                                             if (ajaxItem['type'] === 'selectObjectValue') { // 选中行对象数据
                                                 if ( data.dataItem) {
-                                                    caseCodeValue[ajaxItem['name']] = data.dataItem[ajaxItem['valueName']];
+                                                    cascadeValue[ajaxItem['name']] = data.dataItem[ajaxItem['valueName']];
                                                 }
                                             }
+                                     
                                             // 其他取值【日后扩展部分】
                                         });
+                                    
                                         let Exist = false;
                                         changeConfig_new.forEach(config_new => {
                                             if (config_new.name === control.name) {
                                                 Exist = true;
-                                                config_new['caseCodeValue'] = caseCodeValue;
+                                                config_new['cascadeValue'] = cascadeValue;
                                             }
                                         });
                                         if (!Exist) {
-                                            control['caseCodeValue'] = caseCodeValue;
+                                            control['cascadeValue'] = cascadeValue;
                                             control = JSON.parse(JSON.stringify(control));
                                             changeConfig_new.push(control);
                                         }
-
                                     }
                                     if (caseItem['type'] === 'setValue') {
                                         // console.log('setValueinput' , caseItem['setValue'] );
@@ -1006,30 +1007,32 @@ export class CnFormWindowResolverComponent extends CnComponentBase implements On
                                         }
                                         if (caseItem['type'] === 'ajax') {
                                             // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
-                                            const caseCodeValue = {};
+                                            const cascadeValue = {};
                                             caseItem['ajax'].forEach(ajaxItem => {
+                                               
                                                 if (ajaxItem['type'] === 'value') {
-                                                    caseCodeValue[ajaxItem['name']] = ajaxItem['value'];
+                                                    cascadeValue[ajaxItem['name']] = ajaxItem['value'];
                                                 }
                                                 if (ajaxItem['type'] === 'selectValue') { // 选中行数据[这个是单值]
-                                                    caseCodeValue[ajaxItem['name']] = data['value'];
+                                                    cascadeValue[ajaxItem['name']] = data['value'];
                                                 }
                                                 if (ajaxItem['type'] === 'selectObjectValue') { // 选中行对象数据
                                                     if ( data.dataItem) {
-                                                        caseCodeValue[ajaxItem['name']] = data.dataItem[ajaxItem['valueName']];
+                                                        cascadeValue[ajaxItem['name']] = data.dataItem[ajaxItem['valueName']];
                                                     }
                                                 }
+                                           
                                                 // 其他取值【日后扩展部分】
                                             });
                                             let Exist = false;
                                             changeConfig_new.forEach(config_new => {
                                                 if (config_new.name === control.name) {
                                                     Exist = true;
-                                                    config_new['caseCodeValue'] = caseCodeValue;
+                                                    config_new['cascadeValue'] = cascadeValue;
                                                 }
                                             });
                                             if (!Exist) {
-                                                control['caseCodeValue'] = caseCodeValue;
+                                                control['cascadeValue'] = cascadeValue;
                                                 control = JSON.parse(JSON.stringify(control));
                                                 changeConfig_new.push(control);
                                             }
