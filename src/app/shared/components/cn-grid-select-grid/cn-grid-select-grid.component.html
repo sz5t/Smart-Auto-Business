@@ -1,7 +1,7 @@
 
   <!-- readonly="{{configtanchuInput.readonly}}"
 disabled="{{configtanchuInput.disabled}}" -->
-<nz-modal [(nzVisible)]="isVisible" [nzWidth]="config.select.nzWidth" nzTitle="config.select.title" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+<nz-modal [(nzVisible)]="isVisible" [nzWidth]="config.select.nzWidth" [nzTitle]="config.select.title" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
 
     <cn-bsn-table #table [config]="config.select.selectGrid" [casadeData]="casadeData" [value]="_value"> </cn-bsn-table>
   </nz-modal>
