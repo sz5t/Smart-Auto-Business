@@ -75,6 +75,10 @@ export class CnGridSelectGridComponent implements OnInit {
       this.config.select.nzWidth = 768;
 
      }
+     if (!this.config.select.title) {
+      this.config.select.title = '弹出列表';
+
+     }
     // 修改配置列表配置，修改ajax配置，将配置
 
     if (!this.config.labelName) {

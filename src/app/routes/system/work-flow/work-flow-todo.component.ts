@@ -1282,6 +1282,7 @@ export class WorkFlowTodoComponent implements OnInit {
                         type: 'selectGrid',
                         config: {
                           width: '1024', // 弹出的宽度
+                          title: '弹出表格',
                           selectGrid: {
                             'viewId': 'businesskey_Table',
                             'component': 'bsnTable',
