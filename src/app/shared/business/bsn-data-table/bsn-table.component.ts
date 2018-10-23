@@ -55,6 +55,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     @Input() permissions = [];
     @Input() dataList = []; // 表格数据集合
     @Input() initData;
+    @Input() casadeData; // 级联配置 liu 20181023
+    @Input() value;
     // tempValue = {};
 
     loading = false;
@@ -71,7 +73,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     _columnFilterList = [];
     _focusId;
 
-    _selectRow;
+    _selectRow = {};
 
     _searchParameters = {};
     _relativeResolver;
@@ -88,6 +90,11 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     is_Search = false;
     search_Row = {};
 
+    // 下拉属性 liu 
+    is_Selectgrid = true;
+    cascadeValue = {}; // 级联数据
+    selectGridValueName;
+
     constructor(private _http: ApiService,
         private _message: NzMessageService,
         private modalService: NzModalService,
@@ -100,6 +107,39 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     }
 
     ngOnInit() {
+
+       if (this.config.select) {
+        this.config.select.forEach(selectItem => {
+            this.config.columns.forEach(columnItem => {
+                if (columnItem.editor) {
+                    if (columnItem.editor.field === selectItem.name ) {
+                        // if (selectItem.type === 'selectGrid') {
+                            columnItem.editor.options['select'] = selectItem.config;
+                        // }
+                       
+                    }
+                }
+            });
+            
+        });
+
+       }
+
+        if (this.casadeData) {
+
+            for (const key in this.casadeData) {
+                // 临时变量的整理
+                if (key === 'cascadeValue') {
+                    for (const casekey in this.casadeData['cascadeValue']) {
+                        if (this.casadeData['cascadeValue'].hasOwnProperty(casekey)) {
+                            this.cascadeValue[casekey] = this.casadeData['cascadeValue'][casekey];
+
+                        }
+                    }
+                }
+            }
+        }
+
         this.resolverRelation();
         if (this.initData) {
             this.initValue = this.initData;
@@ -135,6 +175,15 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 }
             })();
         }
+        // liu 20181022 特殊处理行定位
+        if (this.config.is_SelectGrid) {
+            this.is_Selectgrid = false;
+        }
+        if (this.config.selectGridValueName) {
+            this.selectGridValueName = this.config.selectGridValueName;
+        }
+
+
         this.pageSize = this.config.pageSize ? this.config.pageSize : this.pageSize;
         if (this.config.componentType) {
             if (!this.config.componentType.child) {
@@ -163,6 +212,10 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     case BSN_COMPONENT_MODES.CREATE:
                         this.addRow();
                         break;
+                    case BSN_COMPONENT_MODES.CANCEL_SELECTED:
+                        this.cancelSelectRow();
+                        break;
+
                     case BSN_COMPONENT_MODES.EDIT:
                         this.updateRow();
                         break;
@@ -288,8 +341,10 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                     if (loadData.data.rows.length > 0) {
                         loadData.data.rows.forEach((row, index) => {
                             row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
-                            if (row.Id === focusId) {
-                                this.selectRow(row);
+                            if (this.is_Selectgrid) {
+                                if (row.Id === focusId) {
+                                    this.selectRow(row);
+                                }
                             }
                             if (loadData.data.page === 1) {
                                 row['_serilize'] = index + 1;
@@ -305,6 +360,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                                 });
                             }
                         });
+
                     } else {
                         this._selectRow = {};
                     }
@@ -332,6 +388,11 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 if (this.is_Search) {
                     this.createSearchRow();
                 }
+            }
+
+            // liu 
+            if (!this.is_Selectgrid) {
+                this.setSelectRow();
             }
 
             this.loading = false;
@@ -715,7 +776,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                                         this.changeConfig_new[rowCasade][key]['cascadeValue'][ajaxItem['name']] = data.dataItem[ajaxItem['valueName']];
                                     }
                                 }
-                               
+
 
                                 // 其他取值【日后扩展部分】value
                             });
@@ -741,11 +802,15 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                                     this.changeConfig_new[rowCasade][key]['setValue'] = data.dataItem[caseItem['setValue']['valueName']];
                                 }
                             }
-                            if (caseItem['setValue']['type']  === 'notsetValue') { // 选中行对象数据
+                            if (data.data === null) {
+                                this.changeConfig_new[rowCasade][key]['setValue'] = null;
+                            }
+                            if (caseItem['setValue']['type'] === 'notsetValue') { // 选中行对象数据
                                 if (this.changeConfig_new[rowCasade][key].hasOwnProperty('setValue')) {
                                     delete this.changeConfig_new[rowCasade][key]['setValue'];
                                 }
                             }
+
                         } else {
                             if (this.changeConfig_new[rowCasade][key].hasOwnProperty('setValue')) {
                                 delete this.changeConfig_new[rowCasade][key]['setValue'];
@@ -847,8 +912,11 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                                     if (data.dataItem) {
                                         this.changeConfig_new[rowCasade][key]['setValue'] = data.dataItem[caseItem['setValue']['valueName']];
                                     }
-                                }   
-                                if (caseItem['setValue']['type']  === 'notsetValue') { // 选中行对象数据
+                                }
+                                if (data.data === null) {
+                                    this.changeConfig_new[rowCasade][key]['setValue'] = null;
+                                }
+                                if (caseItem['setValue']['type'] === 'notsetValue') { // 选中行对象数据
                                     if (this.changeConfig_new[rowCasade][key].hasOwnProperty('setValue')) {
                                         delete this.changeConfig_new[rowCasade][key]['setValue'];
                                     }
@@ -1045,14 +1113,14 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
             const selectedRow = this._selectRow ? this._selectRow : {};
             const tmpValue = this.tempValue ? this.tempValue : {};
-            console.log({...selectedRow, ...tmpValue});
+            console.log({ ...selectedRow, ...tmpValue });
             const modal = this.modalService.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
                 nzContent: component['layout'],
                 nzComponentParams: {
                     config: data,
-                    initData: {...selectedRow, ...tmpValue}
+                    initData: { ...selectedRow, ...tmpValue }
                 },
                 nzFooter: footer
             });
@@ -1518,6 +1586,33 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         this._selectRow = data;
     }
 
+    // liu 赋值选中
+    private setSelectRow(rowValue?) {
+        // console.log('setSelectRow', this.value);
+        let r_value = this.value;
+        if (rowValue) {
+            r_value = rowValue;
+        }
+        this.dataList && this.dataList.map(row => {
+            row.selected = false;
+
+        });
+        this.dataList.forEach(row => {
+            if (row[this.selectGridValueName] === r_value) {
+                row.selected = true;
+            }
+        });
+    }
+    // 取消选中行 liu20181023
+    private cancelSelectRow() {
+
+        this.dataList && this.dataList.map(row => {
+            row.selected = false;
+        });
+        this._selectRow = {};
+    }
+
+
     searchData(reset: boolean = false) {
         if (reset) {
             this.pageIndex = 1;
@@ -1702,7 +1797,8 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 params: paramsConfig,
                 tempValue: this.tempValue,
                 initValue: this.initValue,
-                cacheValue: this.cacheService
+                cacheValue: this.cacheService,
+                cascadeValue: this.cascadeValue
             });
         }
         return params;
@@ -1912,6 +2008,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
         }
         obj = {
+            ...this._selectRow,
             _id: this._selectRow[dialog.keyId] ? this._selectRow[dialog.keyId] : '',
             // _parentId: this.tempValue['_parentId'] ? this.tempValue['_parentId'] : ''
             ...this.tempValue

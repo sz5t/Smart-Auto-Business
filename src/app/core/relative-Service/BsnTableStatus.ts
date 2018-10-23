@@ -10,6 +10,7 @@ export const BSN_COMPONENT_MODES = {
     WINDOW: 'window',
     SAVE: 'save',
     CANCEL: 'cancel',
+    CANCEL_SELECTED: 'cancel_select',
     FORM: 'form',
     EXECUTE_SELECTED : 'execute_select',
     EXECUTE_CHECKED: 'execute_checked',
@@ -48,7 +49,8 @@ export const BSN_PARAMETER_TYPE = {
     SELECTED: 'selected',
     CHECKED_ID: 'checkedId',
     INIT_VALUE: 'initValue',
-    CACHE_VALUE: 'cacheValue'
+    CACHE_VALUE: 'cacheValue',
+    CASCADE_VALUE: 'cascadeValue'
 };
 
 export const BSN_EXECUTE_ACTION = {

@@ -80,6 +80,8 @@ import { CnGridNumberComponent } from '@shared/components/cn-grid-munber/cn-grid
 import { BsnDataStepComponent } from './business/bsn-data-step/bsn-data-step.component';
 import { WfDesignComponent } from './work-flow/wf-design/wf-design.component';
 import { WfDashboardComponent } from './work-flow/wf-dashboard/wf-dashboard.component';
+import { CnFormSelectGridComponent } from './components/cn-form-select-grid/cn-form-select-grid.component';
+import { CnGridSelectGridComponent } from './components/cn-grid-select-grid/cn-grid-select-grid.component';
 
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -152,7 +154,10 @@ const COMPONENTS = [
     CnFormHiddenComponent,
     CnBsnTreeMenuComponent,
     BsnDataStepComponent,
-    WfDesignComponent
+    WfDesignComponent,
+    WfDashboardComponent,
+    CnFormSelectGridComponent,
+    CnGridSelectGridComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
@@ -179,9 +184,7 @@ const DIRECTIVES = [
         // your components
         ...COMPONENTS,
         ...DIRECTIVES,
-        BtnTableFieldLimit,
-        WfDesignComponent,
-        WfDashboardComponent
+        BtnTableFieldLimit
     ],
     exports: [
         CommonModule,
