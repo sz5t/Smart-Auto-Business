@@ -14,6 +14,7 @@ export class CnFormSelectTreeComponent implements OnInit {
   formGroup: FormGroup;
 
   @Input() config;
+  @Input() bsnData;
     treeData;
     treeDatalist = [];
     _tempValue = {};
@@ -32,6 +33,7 @@ export class CnFormSelectTreeComponent implements OnInit {
     }
 
     ngOnInit() {
+       
         if (this.config.columns) {
             this.config.columns.forEach(element => {
                 this.treecolumns[element.field] = element.valueName;
@@ -56,47 +58,50 @@ export class CnFormSelectTreeComponent implements OnInit {
     loadTreeData() {
         (async () => {
             const data = await this.getAsyncTreeData();
-            if (data.data && data.status === 200 && data.isSuccess) {
-                const TotreeBefore = data.data;
-                this.treeDatalist = data.data;
-                TotreeBefore.forEach(d => {
-                    if (this.config.columns) {
-                        this.config.columns.forEach(col => {
-                            d[col['field']] = d[col['valueName']];
-                        });
-                    }
-                });
-
-                let parent = null;
-                // 解析出 parentid ,一次性加载目前只考虑一个值
-                if (this.config.parent) {
-                    this.config.parent.forEach(param => {
-                        if (param.type === 'tempValue') {
-                            parent = this._tempValue[param.valueName];
-
-                        } else if (param.type === 'value') {
-                            if (param.value === 'null') {
-                                param.value = null;
-                            }
-                            parent = param.value;
-
-                        } else if (param.type === 'GUID') {
-                            const fieldIdentity = CommonTools.uuID(10);
-                            parent = fieldIdentity;
+            if (data) {
+                if (data.data && data.status === 200 && data.isSuccess) {
+                    const TotreeBefore = data.data;
+                    this.treeDatalist = data.data;
+                    TotreeBefore.forEach(d => {
+                        if (this.config.columns) {
+                            this.config.columns.forEach(col => {
+                                d[col['field']] = d[col['valueName']];
+                            });
                         }
                     });
+    
+                    let parent = null;
+                    // 解析出 parentid ,一次性加载目前只考虑一个值
+                    if (this.config.parent) {
+                        this.config.parent.forEach(param => {
+                            if (param.type === 'tempValue') {
+                                parent = this._tempValue[param.valueName];
+    
+                            } else if (param.type === 'value') {
+                                if (param.value === 'null') {
+                                    param.value = null;
+                                }
+                                parent = param.value;
+    
+                            } else if (param.type === 'GUID') {
+                                const fieldIdentity = CommonTools.uuID(10);
+                                parent = fieldIdentity;
+                            }
+                        });
+                    }
+                    // const result = [new NzTreeNode({
+                    //     title: '根节点',
+                    //     key: 'null',
+                    //     isLeaf: false,
+                    //     children: []
+                    // })];
+    
+                    // result[0].children.push(...);
+                    this.treeData = this.listToAsyncTreeData(TotreeBefore, parent);
                 }
-                // const result = [new NzTreeNode({
-                //     title: '根节点',
-                //     key: 'null',
-                //     isLeaf: false,
-                //     children: []
-                // })];
-
-                // result[0].children.push(...);
-                this.treeData = this.listToAsyncTreeData(TotreeBefore, parent);
+    
             }
-
+           
 
         })();
     }
@@ -133,18 +138,21 @@ export class CnFormSelectTreeComponent implements OnInit {
                 if (param.type === 'tempValue') {
                     if (type) {
                         if (type === 'load') {
-                            if (this._tempValue[param.valueName]) {
-                                params[param.name] = this._tempValue[param.valueName];
+                            if (this.bsnData[param.valueName]) {
+                               // params[param.name] = this._tempValue[param.valueName];
+                                params[param.name] = this.bsnData[param.valueName];
                             } else {
                                 // console.log('参数不全不能加载');
                                 tag = false;
                                 return;
                             }
                         } else {
-                            params[param.name] = this._tempValue[param.valueName];
+                          //  params[param.name] = this._tempValue[param.valueName];
+                            params[param.name] = this.bsnData[param.valueName];
                         }
                     } else {
-                        params[param.name] = this._tempValue[param.valueName];
+                       // params[param.name] = this._tempValue[param.valueName];
+                        params[param.name] = this.bsnData[param.valueName];
                     }
                 } else if (param.type === 'value') {
 
@@ -170,12 +178,14 @@ export class CnFormSelectTreeComponent implements OnInit {
                     } else if (param.type === 'componentValue') {
                         pc = componentValue.value;
                     } else if (param.type === 'tempValue') {
-                        pc = this._tempValue[param.valueName];
+                       // pc = this._tempValue[param.valueName];
+                        pc = this.bsnData[param.valueName];
                     }
                 });
                 url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
             }
         }
+      
         if (p.ajaxType === 'get' && tag) {
             return this._http.get(url, params).toPromise();
         }
