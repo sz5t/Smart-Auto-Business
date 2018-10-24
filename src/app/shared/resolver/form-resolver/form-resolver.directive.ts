@@ -57,9 +57,9 @@ export class FormResolverDirective implements OnInit, OnChanges, OnDestroy {
         if (this.component) {
             this.component.instance.config = this.config;
             this.component.instance.formGroup = this.formGroup;
-            if (this.component.instance.bsnData) {
+           // if (this.component.instance.bsnData) {
                 this.component.instance.bsnData = this.tempValue;
-            }
+           // }
         }
         if (this.changeConfig) {
             // 判断是否是自己的级联对象
@@ -77,9 +77,9 @@ export class FormResolverDirective implements OnInit, OnChanges, OnDestroy {
                     const comp = this.resolver.resolveComponentFactory<any>(components[this.config.type]);
                     this.component = this.container.createComponent(comp);
                     this.component.instance.config = this.config;
-                    if (this.component.instance.bsnData) {
+                  //  if (this.component.instance.bsnData) {
                         this.component.instance.bsnData = this.tempValue;
-                    }
+                   // }
 
                     if (this.config.type !== 'submit' || this.config.type !== 'button') {
                         this.component.instance.formGroup = this.formGroup;
@@ -118,9 +118,9 @@ export class FormResolverDirective implements OnInit, OnChanges, OnDestroy {
         const comp = this.resolver.resolveComponentFactory<any>(components[this.config.type]);
         this.component = this.container.createComponent(comp);
         this.component.instance.config = this.config;
-        if (this.component.instance.bsnData) {
+       // if (this.component.instance.bsnData) {
             this.component.instance.bsnData = this.tempValue;
-        }
+       // }
         if (this.config.type !== 'submit' || this.config.type !== 'button' || this.config.type !== 'search') {
             this.component.instance.formGroup = this.formGroup;
         }

@@ -1,0 +1,19 @@
+<input nz-input
+(ngModelChange)="valueChange($event)"
+[ngStyle]="{'width':configtanchuInput.width}"
+type="{{configtanchuInput.inputType}}"
+[nzSize]="configtanchuInput.size"
+placeholder="{{configtanchuInput.placeholder}}"
+
+[(ngModel)]="_value">
+<!-- readonly="{{configtanchuInput.readonly}}"
+disabled="{{configtanchuInput.disabled}}" -->
+
+<button nz-button class="anticon-class" [nzType]="'primary'" (click)="showModal()">
+        <span><strong><i class="anticon anticon-edit"></i></strong></span>
+</button>
+<nz-modal [(nzVisible)]="isVisible" [nzWidth]="nzWidth"
+nzTitle="测试弹出表格" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+
+  <cn-bsn-table #table [config]="configtanchu"> </cn-bsn-table>
+</nz-modal>

@@ -21,6 +21,7 @@ import { CnGridSelectComponent } from '@shared/components/cn-grid-select/cn-grid
 import { CnGridSelectTreeComponent } from '@shared/components/cn-grid-select-tree/cn-grid-select-tree.component';
 import { CnGridDatePickerComponent } from '@shared/components/cn-grid-date-picker/cn-grid-date-picker.component';
 import { CnGridNumberComponent } from '@shared/components/cn-grid-munber/cn-grid-number.component';
+import { CnGridSelectGridComponent } from '@shared/components/cn-grid-select-grid/cn-grid-select-grid.component';
 const components: { [type: string]: Type<any> } = {
     input: CnGridInputComponent,
     select: CnGridSelectComponent,
@@ -32,7 +33,8 @@ const components: { [type: string]: Type<any> } = {
     radioGroup: NzRadioComponent,
     selectTree: CnGridSelectTreeComponent,
     datePicker: CnGridDatePickerComponent,
-    number: CnGridNumberComponent
+    number: CnGridNumberComponent,
+    selectGrid: CnGridSelectGridComponent
 
 };
 export const EXE_COUNTER_VALUE_ACCESSOR: any = {

@@ -6,6 +6,7 @@ export interface ParametersResolverModel {
     componentValue?;
     initValue?;
     cacheValue?;
+    cascadeValue?;
 }
 export class CommonTools {
   public static uuID(w) {
