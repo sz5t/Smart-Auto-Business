@@ -44,6 +44,7 @@ const components: { [type: string]: Type<any> } = {
 })
 export class ComponentResolverComponent implements OnInit, OnChanges, OnDestroy {
     @Input() config;
+    @Input() permissions;
     @Input() blockId;
     @Input() layoutId;
     @Input() tempValue;
@@ -92,7 +93,7 @@ export class ComponentResolverComponent implements OnInit, OnChanges, OnDestroy 
             //     this.componentRef.instance.editable = this.editable;
             // }
             if (this.componentRef.instance.permissions) {
-                this.componentRef.instance.permissions = this.config.permissions;
+                this.componentRef.instance.permissions = this.permissions;
             }
             if (this.componentRef.instance.dataList) {
                 this.componentRef.instance.dataList = this.config.dataList;

@@ -441,7 +441,7 @@ export class TreeTableComponent implements OnInit {
                             'color': 'text-primary',
                             'ajaxConfig': [
                               {
-                                'action': 'EXECUTE_SAVE_ROW',
+                                'action': 'EXECUTE_SAVE_TREE_ROW',
                                 'url': 'common/ShowCase',
                                 'ajaxType': 'post',
                                 'params': [
@@ -502,7 +502,7 @@ export class TreeTableComponent implements OnInit {
                                 ]
                               },
                               {
-                                'action': 'EXECUTE_EDIT_ROW',
+                                'action': 'EXECUTE_EDIT_TREE_ROW',
                                 'url': 'common/ShowCase',
                                 'ajaxType': 'put',
                                 'params': [
