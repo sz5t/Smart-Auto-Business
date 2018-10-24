@@ -550,21 +550,24 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'name': 'refresh',
                                                         'action': 'REFRESH',
                                                         'text': '刷新',
-                                                        'color': 'text-primary'
+                                                        'color': 'text-primary',
+                                                        'cancelPermission': true
                                                     },
                                                     {
                                                         'name': 'addRow',
                                                         'text': '新增',
                                                         'action': 'CREATE',
                                                         'icon': 'anticon anticon-plus',
-                                                        'color': 'text-primary'
+                                                        'color': 'text-primary',
+                                                        'cancelPermission': true
                                                     },
                                                     {
                                                         'name': 'updateRow',
                                                         'text': '修改',
                                                         'action': 'EDIT',
                                                         'icon': 'anticon anticon-edit',
-                                                        'color': 'text-success'
+                                                        'color': 'text-success',
+                                                        'cancelPermission': true
                                                     },
                                                     {
                                                         'name': 'deleteRow',
@@ -572,6 +575,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'action': 'DELETE',
                                                         'icon': 'anticon anticon-delete',
                                                         'color': 'text-red-light',
+                                                        'cancelPermission': true,
                                                         'ajaxConfig': {
                                                             delete: [
                                                                 {
@@ -589,6 +593,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'text': '删除2',
                                                         'icon': 'anticon anticon-delete',
                                                         'color': 'text-warning',
+                                                        'cancelPermission': true,
                                                         'ajaxConfig': [
                                                             {
                                                                 'action': 'EXECUTE_CHECKED_ID',
@@ -615,6 +620,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'color': 'text-red-light',
                                                         'actionType': 'post',
                                                         'actionName': 'execChecked',
+                                                        'cancelPermission': true,
                                                         'ajaxConfig': [
                                                             {
                                                                 'name': 'checkDeleteShowCase',
@@ -683,6 +689,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'color': 'text-red-light',
                                                         'actionType': 'post',
                                                         'actionName': 'execChecked',
+                                                        'cancelPermission': true,
                                                         'ajaxConfig': [
                                                             {
                                                                 'name': 'checkDeleteShowCase',
@@ -719,6 +726,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'icon': 'anticon anticon-delete',
                                                         'actionType': 'post',
                                                         'actionName': 'execSelected',
+                                                        'cancelPermission': true,
                                                         'ajaxConfig': [
                                                             {
                                                                 'action': 'EXECUTE_SELECTED',
@@ -753,6 +761,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'icon': 'anticon anticon-save',
                                                         'type': 'default',
                                                         'color': 'text-primary',
+                                                        'cancelPermission': true,
                                                         'ajaxConfig': [
                                                             {
                                                                 'action': 'EXECUTE_SAVE_ROW',
@@ -883,6 +892,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'class': 'editable-add-btn',
                                                         'text': '取消',
                                                         'action': 'CANCEL',
+                                                        'cancelPermission': true,
                                                         'icon': 'anticon anticon-rollback',
                                                         'color': 'text-grey-darker',
                                                     }
@@ -897,7 +907,8 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'action': 'FORM',
                                                         'actionType': 'formDialog',
                                                         'actionName': 'addShowCase',
-                                                        'type': 'showForm'
+                                                        'type': 'showForm',
+                                                        'cancelPermission': true
                                                     },
                                                     {
                                                         'name': 'editForm',
@@ -906,7 +917,8 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'action': 'FORM',
                                                         'actionType': 'formDialog',
                                                         'actionName': 'updateShowCase',
-                                                        'type': 'showForm'
+                                                        'type': 'showForm',
+                                                        'cancelPermission': true
                                                     },
                                                     {
                                                         'name': 'batchEditForm',
@@ -915,6 +927,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'actionName': 'batchUpdateShowCase',
                                                         'icon': 'anticon anticon-form',
                                                         'type': 'showBatchForm',
+                                                        'cancelPermission': true
                                                     },
                                                     {
                                                         'name': 'showDialogPage',
@@ -922,7 +935,8 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'action': 'WINDOW',
                                                         'actionType': 'windowDialog',
                                                         'actionName': 'ShowCaseWindow',
-                                                        'type': 'showLayout'
+                                                        'type': 'showLayout',
+                                                        'cancelPermission': true
                                                     },
                                                     {
                                                         'name': 'upload',
@@ -931,7 +945,8 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'action': 'UPLOAD',
                                                         'actionType': 'uploadDialog',
                                                         'actionName': 'uploadCase',
-                                                        'type': 'uploadDialog'
+                                                        'type': 'uploadDialog',
+                                                        'cancelPermission': true
                                                     },
                                                     {
                                                         'name': 'addFormcascade',
@@ -940,7 +955,8 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         'action': 'FORM',
                                                         'actionType': 'formDialog',
                                                         'actionName': 'addShowCasecascade',
-                                                        'type': 'showForm'
+                                                        'type': 'showForm',
+                                                        'cancelPermission': true
                                                     }
                                                 ]
                                             },
@@ -953,19 +969,22 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 'name': 'refresh',
                                                                 'class': 'editable-add-btn',
                                                                 'text': ' 刷新',
-                                                                'icon': 'icon-list'
+                                                                'icon': 'icon-list',
+                                                                'cancelPermission': true
                                                             },
                                                             {
                                                                 'name': 'addRow',
                                                                 'class': 'editable-add-btn',
                                                                 'text': '新增',
-                                                                'icon': 'icon-add'
+                                                                'icon': 'icon-add',
+                                                                'cancelPermission': true
                                                             },
                                                             {
                                                                 'name': 'updateRow',
                                                                 'class': 'editable-add-btn',
                                                                 'text': '修改',
-                                                                'icon': 'icon-edit'
+                                                                'icon': 'icon-edit',
+                                                                'cancelPermission': true
                                                             }
                                                         ]
                                                     }

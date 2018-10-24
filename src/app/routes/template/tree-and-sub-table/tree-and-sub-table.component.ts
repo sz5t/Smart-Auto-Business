@@ -12,7 +12,7 @@ export class TreeAndSubTableComponent implements OnInit {
     }
 
     ngOnInit() {
-        // console.log(JSON.stringify(this.config));
+       // console.log(JSON.stringify(this.config));
     }
 
     config = {
@@ -36,9 +36,9 @@ export class TreeAndSubTableComponent implements OnInit {
                                     config: {
                                         'viewId': 'chart3',
                                         'component': 'dataSteps',
-                                        'width': 1400,
-                                        'height': 60,
-                                        'stepNum': 50,
+                                        'width': 1600,
+                                        'height': 80,
+                                        'stepNum': 200,
                                         'startX': 100,
                                         'startY': 100,
                                         'textField': 'caseName',
@@ -1823,6 +1823,4 @@ export class TreeAndSubTableComponent implements OnInit {
 
         ]
     };
-
-
 }

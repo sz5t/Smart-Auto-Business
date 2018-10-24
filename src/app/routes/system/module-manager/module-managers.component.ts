@@ -373,10 +373,13 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                             {
                                                 group: [
                                                     {
-                                                        'name': 'refresh', 'text': '刷新'
+                                                        'name': 'refresh', 'text': '刷新',
                                                     },
                                                     {
                                                         'name': 'addRow', 'text': '新增', 'action': 'CREATE'
+                                                    },
+                                                    {
+                                                        'name': 'addRow', 'text': '新增下级模块', 'action': 'CREATE_CHILD'
                                                     },
                                                     {
                                                         'name': 'updateRow', 'text': '编辑', 'action': 'EDIT'
@@ -395,11 +398,11 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                         }
                                                     },
                                                     {
-                                                        'name': 'saveRow', 'text': '保存', 'action': 'SAVE',
-                                                        'type': 'method/action',
-                                                        'ajaxConfig': {
-                                                            post: [{
-                                                                'actionName': 'add',
+                                                        'name': 'saveRow', 'text': '保存', 'icon': 'anticon anticon-save',
+                                                        'ajaxConfig': [
+                                                            
+                                                                {
+                                                                'action': 'EXECUTE_SAVE_TREE_ROW',
                                                                 'url': 'common/ComProjectModule',
                                                                 'ajaxType': 'post',
                                                                 'params': [
@@ -464,15 +467,9 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                                         value: ''
                                                                     }
                                                                 ],
-                                                                'output': [
-                                                                    {
-                                                                        name: '_id',
-                                                                        type: '',
-                                                                        dataName: 'Id'
-                                                                    }
-                                                                ]
-                                                            }],
-                                                            put: [{
+                                                            },
+                                                            {
+                                                                'action': 'EXECUTE_EDIT_TREE_ROW',
                                                                 'url': 'common/ComProjectModule',
                                                                 'ajaxType': 'put',
                                                                 'params': [
@@ -543,8 +540,10 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                                         value: ''
                                                                     }
                                                                 ]
-                                                            }]
-                                                        }
+                                                            }
+                                                        ]
+                                                        
+                                                        
                                                     },
                                                     {
                                                         'name': 'cancelRow',

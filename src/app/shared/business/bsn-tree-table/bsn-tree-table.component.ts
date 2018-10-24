@@ -1,3 +1,4 @@
+import { CnFormSelectComponent } from './../../components/cn-form-select/cn-form-select.component';
 import { GridBase } from './../grid.base';
 import { Component, OnInit, ViewChild, Input, OnDestroy, Type, Inject, AfterViewChecked } from '@angular/core';
 import { ApiService } from '@core/utility/api-service';
@@ -31,7 +32,7 @@ const component: { [type: string]: Type<any> } = {
         `
     ]
 })
-export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy, AfterViewChecked {
+export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy {
     @Input() config;
     @Input() permissions = [];
 
@@ -92,7 +93,10 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         if (this.initData) {
             this.initValue = this.initData;
         }
-        this.callback = this.load;
+        this.callback = (focusId) => {
+            this._cancelEditRows();
+            this.load();
+        };
     }
 
     // 生命周期事件
@@ -161,10 +165,10 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                         this._addNewChildRow();
                         break;
                     case BSN_COMPONENT_MODES.EDIT:
-                        this.updateRow();
+                        this._editRowData();
                         break;
                     case BSN_COMPONENT_MODES.CANCEL:
-                        this.cancelRow();
+                        this._cancelEditRows();
                         break;
                     case BSN_COMPONENT_MODES.SAVE:
                         this.saveRow();
@@ -176,6 +180,9 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                         this.dialog(option);
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE:
+                        // 查找编辑行
+                        // 查找新增行
+                        this._getAddedAndUpdatingRows();
                         this.resolver(option.ajaxConfig);
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE_SELECTED:
@@ -332,17 +339,25 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         this.editCache[key]['edit'] = true;
     }
 
-    _createNewRowData() {
+    /**
+     * 创建新行数据
+     */
+    _createNewRowData(parentId?) {
         const newRow = { ...this.rowContent };
         const fieldIdentity = CommonTools.uuID(6);
         newRow['key'] = fieldIdentity;
         newRow['Id'] = fieldIdentity;
         newRow['checked'] = true;
         newRow['row_status'] = 'adding';
-
+        if (parentId) {
+            newRow['parentId'] = parentId;
+        }
         return newRow;
     }
 
+    /**
+     * 添加根节点行
+     */
     private _addNewRow() {
         // 初始化新行数据
         const newRow = this._createNewRowData();
@@ -359,41 +374,25 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         this._startRowEdit(newRow['Id']);
 
         return true;
-
-        // // 针对查询和新增行处理
-        // if (this.is_Search) {
-        //     this.dataList.splice(1, 0, rowContentNew);
-        // } else {
-        //     this.expandDataCache[fieldIdentity] = [rowContentNew];
-        //     this.dataList = [rowContentNew, ...this.dataList];
-        //     this.treeData = [rowContentNew, ...this.treeData];
-        //     // this.dataList = [rowContentNew, ...this.dataList];
-        //     // this.treeData.map(row => {
-        //     //     row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
-        //     //     this.expandDataCache[row.Id] = this.convertTreeToList(row);
-        //     // });
-        // }
-        // // 需要特殊处理层级问题
-        // // this.dataList.push(this.rowContent);
-        // this._addEditCache();
-        // this._startAdd(fieldIdentity);
-        // return true;
     }
 
+    /**
+     * 添加子节点行
+     */
     private _addNewChildRow() {
-        debugger;
         if (this.selectedItem) {
-            const newRow = this._createNewRowData();
-            const parentId = this.selectedItem[this.config.keyId ? this.config.keyId : 'Id'];
-            const rootId = this.findRootId(this.treeData, parentId);
-            // 数据添加到树结构中
-            this.treeData = JSON.parse(JSON.stringify(this._addTreeData(parentId, newRow, this.treeData)));
 
-            // 数据添加到数据列表中
-            this.expandDataCache[rootId] = this.convertTreeToList(this.treeData.filter(item => item.Id === rootId));
+            const parentId = this.selectedItem[this.config.keyId ? this.config.keyId : 'Id'];
+            const newRow = this._createNewRowData(parentId);
             // 数据添加到具体选中行的下方
             this.dataList = this._setChildRow(this.dataList, newRow, parentId);
+            const rootId = this.findRootId(this.dataList, parentId);
+            // 数据添加到树结构中
+            const newTreeData = this._addTreeData(parentId, newRow, this.treeData);
+            this.treeData = JSON.parse(JSON.stringify(newTreeData));
 
+            // 数据添加到数据列表中
+            this.expandDataCache[rootId] = this.convertTreeToList(this.treeData.filter(item => item.Id === rootId)[0]);
 
             this._updateEditCache();
             this._startRowEdit(newRow['Id']);
@@ -405,74 +404,128 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
 
     }
 
+    /**
+     * 递归向数据源中添加新行数据
+     * @param parentId 
+     * @param newRowData 
+     * @param parent 
+     */
     private _addTreeData(parentId, newRowData, parent) {
         if (parentId) { // 子节点数据
-            parent.map(item => {
-                if (parentId === item.parentId) {
-                    if (!item['children']) {
-                        item['children'] = [];
+            for (let i = 0, len = parent.length; i < len; i++) {
+                if (parentId === parent[i].Id) {
+                    if (!parent[i]['children']) {
+                        parent[i]['children'] = [];
                     }
-                    item['children'].push(newRowData);
-                    return;
+                    parent[i]['children'].push(newRowData);
+                    return parent;
                 } else {
-                    if (item['children'] && item['children'].length > 0) {
-                        this._addTreeData(parentId, newRowData, item['children']);
+                    if (parent[i]['children'] && parent[i]['children'].length > 0) {
+                        this._addTreeData(parentId, newRowData, parent[i]['children']);
                     }
                 }
-            });
+            }
+
         }
         return parent;
     }
 
-    private findRootId(treeData, Id) {
-        let rootId;
-        treeData.map(item => {
-            if (item.Id === Id) {
-                rootId = Id;
-                return rootId;
-            } else {
-                if (item['children'] && item['children'].length > 0) {
-                    rootId = this.findRootId(item['children'], Id);
-                }
+    /**
+     * 查找根节点ID
+     * @param dataList 
+     * @param Id 
+     */
+    private findRootId(dataList, Id) {
+        for (let i = 0, len = dataList.length; i < len; i++) {
+            if (dataList[i].Id === Id) {
+                return dataList[i]['rootId'] ? dataList[i]['rootId'] : dataList[i]['Id'];
             }
-        });
-        return rootId;
+        }
     }
 
-
-
-    // private _setExpandDataCache() {
-
-    // }
-
+    /**
+     * 重新排列数据列表(将添加的新行追加到父节点下的位置)
+     * @param dataList 
+     * @param newRowData 
+     * @param parentId 
+     */
     private _setChildRow(dataList, newRowData, parentId) {
+        const list = [];
         if (dataList) {
             for (let i = 0, len = dataList.length; i < len; i++) {
+                list.push(dataList[i]);
                 if (dataList[i]['Id'] && dataList[i]['Id'] === parentId) {
-                    if (!dataList[i]['children']) {
-                        dataList[i]['children'] = [];
-                    }
-                    dataList[i]['children'].push(newRowData);
-                    return dataList;
-                } else {
-                    if (dataList[i]['children'] && dataList[i]['children'].length > 0) {
-                        this._setChildRow(dataList[i]['children'], newRowData, parentId);
-                    }
+                    list.push(newRowData);
                 }
             }
         }
-        return dataList;
+        return list;
     }
 
+    private _getAddedAndUpdatingRows() {
+        const checkedRows = this._getCheckedRowStatusMap();
+        this.addedTreeRows = [];
+        this.editTreeRows = [];
+        checkedRows.forEach(item => {
+            if (item.status === 'adding') {
+                this.addedTreeRows.push(this.editCache[item.key].data);
+            } else if (item.status === 'updating') {
+                this.editTreeRows.push(this.editCache[item.key].data);
+            }
+        });
+    }
 
-    /** --------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+    private _cancelEditRows() {
+        const cancelRowMap = this._getCheckedRowStatusMap();
+
+        // 删除dataList中数据
+        for (let i = 0, len = this.dataList.length; i < len; i++) {
+            const key = this.dataList[i].key;
+            const checkedRowStatus = cancelRowMap.get(key);
+            if (checkedRowStatus && checkedRowStatus.status === 'adding') {
+                if (this.editCache[key]) {
+                    delete this.editCache[key];
+                }
+                this.dataList.splice(i, 1);
+                // 删除treeData中数据的临时数据或者更改原始数据中的编辑状态
+                this._cancelTreeDataByKey(this.treeData, key);
+                i--;
+                len--;
+            } else if (checkedRowStatus && checkedRowStatus.status === 'updating') {
+                this._cancelEdit(key);
+            }
+        }
+
+        // 刷新数据
+        this.treeData.map(row => {
+            row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
+            this.expandDataCache[row.Id] = this.convertTreeToList(row);
+        });
+
+        this.refChecked();
+        return true;
+    }
+
+    private _cancelTreeDataByKey(treeData, key) {
+        for (let j = 0, jlen = treeData.length; j < jlen; j++) {
+            if (treeData[j]['Id'] === key) {
+                treeData.splice(j, 1);
+                j--;
+                jlen--;
+                return;
+            } else {
+                if (treeData[j]['children'] && treeData[j]['children'].length > 0) {
+                    this._cancelTreeDataByKey(treeData[j]['children'], key);
+                }
+            }
+        }
+    }
+
     private selectRow(data, $event) {
         if ($event.srcElement.type === 'checkbox' || $event.target.type === 'checkbox') {
             return;
         }
         $event.stopPropagation();
-
-
         for (const r in this.expandDataCache) {
             this.expandDataCache[r].map(row => {
                 row['selected'] = false;
@@ -481,6 +534,44 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         data['selected'] = true;
         this.selectedItem = data;
     }
+
+    private _getCheckedRowStatusMap(): Map<string, { key: string, status: string }> {
+        const cancelRowMap: Map<string, { key: string, status: string }> = new Map();
+        this.treeData.map(dataItem => {
+            this.expandDataCache[dataItem.Id].map(item => {
+                if (item['checked']) {
+                    cancelRowMap.set(item.Id, { key: item.Id, status: item['row_status'] ? item['row_status'] : 'updating' });
+                }
+            });
+        });
+        return cancelRowMap;
+    }
+
+    private _editRowData() {
+        // debugger;
+        const checkedRowStatusMap = this._getCheckedRowStatusMap();
+        checkedRowStatusMap.forEach(item => {
+            if (item.status === 'updating') {
+                this._startRowEdit(item.key);
+            }
+        });
+
+
+        // this.dataList.forEach(item => {
+        //     if (item.checked) {
+        //         if (item['row_status'] && item['row_status'] === 'adding') {
+
+        //         } else if (item['row_status'] && item['row_status'] === 'search') {
+
+        //         } else {
+        //             item['row_status'] = 'updating';
+        //         }
+        //         this._startRowEdit(item.key);
+        //     }
+        // });
+        return true;
+    }
+    /** --------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
     searchData(reset: boolean = false) {
         if (reset) {
@@ -1164,7 +1255,6 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                     }
                     this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
                     // 删除数结果集中的数据
-                    debugger;
                     this._cancelTreeDataByKey(this.treeData, __key);
 
                     i--;
@@ -1214,19 +1304,19 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         return true;
     }
 
-    private _cancelTreeDataByKey(treeData, key) {
-        for (let j = 0, jlen = treeData.length; j < jlen; j++) {
-            if (treeData[j]['key'] === key) {
-                treeData = treeData.splice(treeData.indexOf(treeData[j], 1));
-                j--;
-                jlen--;
-            } else {
-                if (treeData[j]['children'] && treeData[j]['children'].length > 0) {
-                    this._cancelTreeDataByKey(treeData[j]['children'], key);
-                }
-            }
-        }
-    }
+    // private _cancelTreeDataByKey(treeData, key) {
+    //     for (let j = 0, jlen = treeData.length; j < jlen; j++) {
+    //         if (treeData[j]['key'] === key) {
+    //             treeData = treeData.splice(treeData.indexOf(treeData[j], 1));
+    //             j--;
+    //             jlen--;
+    //         } else {
+    //             if (treeData[j]['children'] && treeData[j]['children'].length > 0) {
+    //                 this._cancelTreeDataByKey(treeData[j]['children'], key);
+    //             }
+    //         }
+    //     }
+    // }
 
     private _cancelEdit(key: string): void {
         const itemList = this.dataList;
@@ -1263,10 +1353,6 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         return true;
     }
 
-    ngAfterViewChecked() {
-        //console.log(this.expandDataCache);
-    }
-
     addChildRow() {
         const rowContentNew = { ...this.rowContent };
         const fieldIdentity = CommonTools.uuID(6);
@@ -1293,7 +1379,6 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
             this.expandDataCache[row.Id] = this.convertTreeToList(row);
         });
         this.dataList = [...this._setDataList(this.expandDataCache)];
-        debugger;
         this._updateChildRowEditCache();
         this._startChildRowAdd(fieldIdentity);
         return true;
@@ -1388,7 +1473,6 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
 
     private _startAdd(key: string): void {
         this.editCache[key]['edit'] = true;
-        //this.editCache = this.editCache;
     }
 
 

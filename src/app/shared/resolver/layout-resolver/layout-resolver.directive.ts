@@ -16,6 +16,7 @@ import {IBlockExclusionDescriptor} from 'tslint/lib/rules/completed-docs/blockEx
 export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
     @Input() config;
     @Input() layoutId;
+    @Input() permissions;
     component: ComponentRef<any>;
     _statusSubscription: Subscription;
     _cascadeSubscription: Subscription;

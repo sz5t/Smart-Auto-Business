@@ -13,6 +13,7 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class LayoutResolverComponent implements OnInit {
     @Input() config;
+    @Input() permissions;
     @Input() layoutId;
     @Input() initData;
     constructor() {

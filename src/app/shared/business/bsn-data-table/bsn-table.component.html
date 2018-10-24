@@ -1,4 +1,4 @@
-<bsn-toolbar *ngIf="config.toolbar" [config]="config.toolbar" [viewId]="config.viewId"></bsn-toolbar>
+<bsn-toolbar *ngIf="config.toolbar" [permissions] = "permissions ? permissions : []" [config]="config.toolbar" [viewId]="config.viewId"></bsn-toolbar>
 <nz-table #nzTable
     [nzData]="dataList"
     [nzSize]="config.size"

@@ -156,6 +156,21 @@ export class GridBase extends CnComponentBase {
         this._columnFilterList = value;
     }
 
+    private _editTreeRows;
+    public get editTreeRows() {
+        return this._editTreeRows ? this._editTreeRows : [];
+    }
+    public set editTreeRows(value) {
+        this._editTreeRows = value;
+    }
+
+    private _addedTreeRows;
+    public get addedTreeRows() {
+        return this._addedTreeRows ? this._addedTreeRows : [];
+    }
+    public set addedTreeRows(value) {
+        this._addedTreeRows = value;
+    }
 
     constructor() {
         super();
@@ -207,7 +222,23 @@ export class GridBase extends CnComponentBase {
                 break;
                 case BSN_EXECUTE_ACTION.EXECUTE_SAVE_ROW:
                     // 获取更新状态的数据
+                    
                     handleData = this.getAddedRows();
+                    msg = '新增数据保存成功';
+                    if (handleData && handleData.length <= 0) {
+                        return ;
+                    }
+                break;
+                case BSN_EXECUTE_ACTION.EXECUTE_EDIT_TREE_ROW:
+                    handleData = this._getTreeEditRows();
+                    msg = '编辑数据保存成功';
+                    if (handleData && handleData.length <= 0) {
+                        return ;
+                    }
+                break;
+                case BSN_EXECUTE_ACTION.EXECUTE_SAVE_TREE_ROW:
+                    // 获取更新状态的数据
+                    handleData = this._getTreeAddedRows();
                     msg = '新增数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return ;
@@ -216,6 +247,14 @@ export class GridBase extends CnComponentBase {
             }
             this.buildConfirm(c, ajaxConfigs, handleData, msg);
         }
+    }
+
+    private _getTreeEditRows() {
+        return this.editTreeRows;
+    }
+
+    private _getTreeAddedRows() {
+        return this.addedTreeRows;
     }
 
     protected buildConfirm(c, ajaxConfigs, handleData, msg) {
@@ -399,10 +438,10 @@ export class GridBase extends CnComponentBase {
         const Ids = [];
         if (Array.isArray(data)) {
             data.forEach(d => {
-                Ids.push(d['$focusedOper$']);
+                Ids.push(d['$focusedOper$'] ? d['$focusedOper$'] : '');
             });
         } else {
-            Ids.push(data['$focusedOper$']);
+            Ids.push(data['$focusedOper$'] ? data['$focusedOper$'] : '');
         }
         return Ids.join(',');
     }
@@ -527,7 +566,7 @@ export class GridBase extends CnComponentBase {
                 this._message.error(result.message);
             }
         }
-        if (callback) {
+        if (result.isSuccess && callback) {
             callback();
         }
     }
@@ -659,9 +698,10 @@ export class GridBase extends CnComponentBase {
             }
 
         }
+        const sItem = this.selectedItem ? this.selectedItem : {};
         obj = {
-            ...this.selectedItem,
-            _id: this.selectedItem[dialog.keyId] ? this.selectedItem[dialog.keyId] : '',
+            ...sItem,
+            _id: sItem[dialog.keyId] ? sItem[dialog.keyId] : '',
             _parentId: this.tempValue['_parentId'] ? this.tempValue['_parentId'] : ''
         };
         const footer = [];

@@ -1,5 +1,5 @@
 import { BsnComponentMessage } from '@core/relative-Service/BsnTableStatus';
-import { Observable ,  Observer } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 import { BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODES } from '@core/relative-Service/BsnTableStatus';
 import { Component, OnInit, Input, OnDestroy, Type, Inject, ViewEncapsulation } from '@angular/core';
 @Component({
@@ -23,7 +23,7 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
     @Input() size;
     @Input() permissions = [];
     @Input() viewId;
-    toolbarConfig;
+    toolbarConfig = [];
     model;
     _cascadeState;
     constructor(
@@ -31,51 +31,83 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        // if (this.permissions.length > 0) {
-        //     this.toolbarConfig = this.getPermissions();
-        // } else {
-        //     this.toolbarConfig = this.config;
-        // }
-        // this.toolbarConfig = this.config;
-
+        //this.toolbarConfig = this.config;//this.getPermissions();
+        this.getPermissions();
     }
 
     getPermissions() {
-        const stack = JSON.parse(JSON.stringify(this.config));
-        const array = [];
-        while (stack.length !== 0) {
-            const s = stack.shift();
-            if (s.type === 'group') {
-                const groupBtn = JSON.parse(JSON.stringify(s));
-                groupBtn.group = [];
-                s.group.forEach(g => {
-                    this.permissions.forEach(p => {
-                        if (g.name === p.name) {
-                            if (!p.hidden) {
-                                if (p.disabled) {
-                                    g['disabled'] = p.disabled;
-                                }
-                                groupBtn.group.push(g);
-                            }
+        const permissionMap = new Map();
+        this.permissions.forEach(item => {
+            permissionMap.set(item.code, item);
+        });
+
+        this.config.forEach(item => {
+            if (item.group) {
+                const groups = [];
+                item.group.forEach(g => {
+                    if (permissionMap.has(g.name)) {
+                        groups.push({ ...g });
+                    } else if (g['cancelPermission']) {
+                        groups.push({ ...g });
+                    }
+                });
+                this.toolbarConfig.push({ group: groups });
+            } else if (item.dropdown) {
+                const dropdown = [];
+                item.dropdown.forEach(b => {
+                    const down = {};
+                    const { name, text, icon } = b;
+                    down['name'] = name;
+                    down['text'] = text;
+                    down['icon'] = icon;
+                    down['buttons'] = [];
+                    b.buttons.forEach(btn => {
+                        if (permissionMap.has(b.name)) {
+                            down['buttons'].push({ ...btn });
+                        } else if (btn['cancelPermission']) {
+                            down['buttons'].push({ ...btn });
                         }
                     });
+                    dropdown.push(down);
                 });
-                array.push(groupBtn);
-            } else {
-                for (let i = 0, len = this.permissions.length; i < len; i++) {
-                    if (this.permissions[i].name === s.name) {
-                        if (!this.permissions[i].hidden) {
-                            if (this.permissions[i].disabled) {
-                                s['disabled'] = this.permissions[i].disabled;
-                            }
-                            array.push(s);
-                        }
-                    }
-                }
+                this.toolbarConfig.push({ dropdown: dropdown });
             }
+        });
+        console.log(this.toolbarConfig);
+        // const array = [];
+        // while (stack.length !== 0) {
+        //     const s = stack.shift();
+        //     if (s.type === 'group') {
+        //         const groupBtn = JSON.parse(JSON.stringify(s));
+        //         groupBtn.group = [];
+        //         s.group.forEach(g => {
+        //             this.permissions.forEach(p => {
+        //                 if (g.name === p.name) {
+        //                     if (!p.hidden) {
+        //                         if (p.disabled) {
+        //                             g['disabled'] = p.disabled;
+        //                         }
+        //                         groupBtn.group.push(g);
+        //                     }
+        //                 }
+        //             });
+        //         });
+        //         array.push(groupBtn);
+        //     } else {
+        //         for (let i = 0, len = this.permissions.length; i < len; i++) {
+        //             if (this.permissions[i].name === s.name) {
+        //                 if (!this.permissions[i].hidden) {
+        //                     if (this.permissions[i].disabled) {
+        //                         s['disabled'] = this.permissions[i].disabled;
+        //                     }
+        //                     array.push(s);
+        //                 }
+        //             }
+        //         }
+        //     }
 
-        }
-        return array;
+        // }
+        // return array;
     }
 
     toolbarAction(btn) {
