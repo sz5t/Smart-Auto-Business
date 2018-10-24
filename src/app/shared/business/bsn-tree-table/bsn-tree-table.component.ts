@@ -36,6 +36,8 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
     @Input() permissions = [];
 
     @Input() initData;
+    @Input() casadeData; // 级联配置 liu 20181023
+    @Input() value;
 
     //  分页默认参数
     loading = false;
@@ -75,6 +77,10 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
     _statusSubscription: Subscription;
     _cascadeSubscription: Subscription;
 
+    // 下拉属性 liu 
+    is_Selectgrid = true;
+    cascadeValue = {}; // 级联数据
+    selectGridValueName;
 
     constructor(
         private _api: ApiService,
@@ -97,6 +103,24 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
 
     // 生命周期事件
     ngOnInit() {
+        if (this.casadeData) {
+
+            for (const key in this.casadeData) {
+                // 临时变量的整理
+                if (key === 'cascadeValue') {
+                    for (const casekey in this.casadeData['cascadeValue']) {
+                        if (this.casadeData['cascadeValue'].hasOwnProperty(casekey)) {
+                            this.cascadeValue[casekey] = this.casadeData['cascadeValue'][casekey];
+
+                        }
+                    }
+                }
+            }
+        }
+        // liu 20181022 特殊处理行定位
+        if (this.config.is_SelectGrid) {
+            this.is_Selectgrid = false;
+        }
         this.resolverRelation();
         if (this._cacheService) {
             this.cacheValue = this._cacheService;
@@ -302,7 +326,10 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                     this.createSearchRow();
                 }
             }
-
+            // liu 
+            if (!this.is_Selectgrid) {
+                this.setSelectRow();
+            }
             this.loading = false;
         })();
     }
@@ -405,6 +432,33 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
 
     }
 
+    // 定位行选中 liu 20181024
+
+    setSelectRow() {
+
+       // console.log('setSelectRow', this.value);
+    
+        // 遍历  
+        for (const key in this.expandDataCache) {
+            if (this.expandDataCache.hasOwnProperty(key)) {
+                
+                if (this.expandDataCache[key]) {
+                    this.expandDataCache[key].forEach(element => {
+                        element.selected = false; // 取消行选中 
+                    });
+                    this.expandDataCache[key].forEach(element => {
+                        if (element['Id'] === this.value) {
+                            element.selected = true; // 有值行选中
+                        }
+                    });
+                }
+                
+            }
+        }
+
+       
+    }
+
     private _addTreeData(parentId, newRowData, parent) {
         if (parentId) { // 子节点数据
             parent.map(item => {
@@ -480,6 +534,10 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         }
         data['selected'] = true;
         this.selectedItem = data;
+        // liu  子组件
+        if (!this.is_Selectgrid) {
+           this.value = this.selectedItem[this.config.selectGridValueName ? this.config.selectGridValueName : 'Id']; 
+        }
     }
 
     searchData(reset: boolean = false) {

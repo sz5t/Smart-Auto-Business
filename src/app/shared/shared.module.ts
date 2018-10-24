@@ -82,6 +82,7 @@ import { WfDesignComponent } from './work-flow/wf-design/wf-design.component';
 import { WfDashboardComponent } from './work-flow/wf-dashboard/wf-dashboard.component';
 import { CnFormSelectGridComponent } from './components/cn-form-select-grid/cn-form-select-grid.component';
 import { CnGridSelectGridComponent } from './components/cn-grid-select-grid/cn-grid-select-grid.component';
+import { CnGridSelectTreegridComponent } from './components/cn-grid-select-treegrid/cn-grid-select-treegrid.component';
 
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -157,7 +158,8 @@ const COMPONENTS = [
     WfDesignComponent,
     WfDashboardComponent,
     CnFormSelectGridComponent,
-    CnGridSelectGridComponent
+    CnGridSelectGridComponent,
+    CnGridSelectTreegridComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

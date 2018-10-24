@@ -1380,18 +1380,18 @@ export class WorkFlowTodoComponent implements OnInit {
                               {
                                 group: [
                                   {
-                                    'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
+                                    'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新', 'enablePermission': true
                                   },
                                   {
                                     'name': 'addSearchRow', 'class': 'editable-add-btn', 'text': '查询', 'action': 'SEARCH',
-                                    'actionType': 'addSearchRow', 'actionName': 'addSearchRow',
+                                    'actionType': 'addSearchRow', 'actionName': 'addSearchRow', 'enablePermission': true
                                   },
                                   {
                                     'name': 'cancelSearchRow', 'class': 'editable-add-btn', 'text': '取消查询', 'action': 'SEARCH',
-                                    'actionType': 'cancelSearchRow', 'actionName': 'cancelSearchRow',
+                                    'actionType': 'cancelSearchRow', 'actionName': 'cancelSearchRow', 'enablePermission': true
                                   },
                                   {
-                                    'name': 'cancelSelectRow', 'class': 'editable-add-btn', 'text': '取消选中', 'action': 'CANCEL_SELECTED',
+                                    'name': 'cancelSelectRow', 'class': 'editable-add-btn', 'text': '取消选中', 'action': 'CANCEL_SELECTED', 'enablePermission': true
                                   },
 
 
