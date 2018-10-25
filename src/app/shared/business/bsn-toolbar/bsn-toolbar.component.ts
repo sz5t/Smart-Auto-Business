@@ -31,7 +31,7 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        //this.toolbarConfig = this.config;//this.getPermissions();
+        // this.toolbarConfig = this.config;//this.getPermissions();
         this.getPermissions();
     }
 
@@ -40,7 +40,6 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
         this.permissions.forEach(item => {
             permissionMap.set(item.code, item);
         });
-
         this.config.forEach(item => {
             if (item.group) {
                 const groups = [];
@@ -51,10 +50,21 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
                         groups.push({ ...g });
                     }
                 });
+
+               
                 this.toolbarConfig.push({ group: groups });
             } else if (item.dropdown) {
                 const dropdown = [];
                 item.dropdown.forEach(b => {
+                    let is_dropdown = true;
+                    if (permissionMap.has(b.name)) {
+                        is_dropdown = false;
+                    } else if (b['cancelPermission']) {
+                        is_dropdown = false;
+                    }
+                    if (is_dropdown) {
+                        return true;
+                    }
                     const down = {};
                     const { name, text, icon } = b;
                     down['name'] = name;
@@ -62,7 +72,7 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
                     down['icon'] = icon;
                     down['buttons'] = [];
                     b.buttons.forEach(btn => {
-                        if (permissionMap.has(b.name)) {
+                        if (permissionMap.has(btn.name)) {
                             down['buttons'].push({ ...btn });
                         } else if (btn['cancelPermission']) {
                             down['buttons'].push({ ...btn });
@@ -73,7 +83,7 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
                 this.toolbarConfig.push({ dropdown: dropdown });
             }
         });
-        console.log(this.toolbarConfig);
+       // console.log(this.toolbarConfig);
         // const array = [];
         // while (stack.length !== 0) {
         //     const s = stack.shift();

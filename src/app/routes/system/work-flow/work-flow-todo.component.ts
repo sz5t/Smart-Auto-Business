@@ -1108,7 +1108,7 @@ export class WorkFlowTodoComponent implements OnInit {
                             }
                           }
                         },
-                        editor: {
+                        editor2: {
                           type: 'selectGrid',
                           field: 'businesskey',
                           options: {
@@ -1117,6 +1117,18 @@ export class WorkFlowTodoComponent implements OnInit {
                             'width': '90px',
                             'name': 'businesskey',
                             'labelName': 'name',
+                            'valueName': 'Id',
+                          }
+                        },
+                        editor: {
+                          type: 'selectTreeGrid',
+                          field: 'businesskey',
+                          options: {
+                            'type': 'selectTreeGrid',
+                            'inputType': 'text',
+                            'width': '90px',
+                            'name': 'businesskey',
+                            'labelName': 'caseName',
                             'valueName': 'Id',
                           }
                         }
@@ -1169,16 +1181,16 @@ export class WorkFlowTodoComponent implements OnInit {
                       {
                         group: [
                           {
-                            'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
+                            'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新', 'cancelPermission': true
                           },
                           {
-                            'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增', 'action': 'CREATE'
+                            'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增', 'action': 'CREATE', 'cancelPermission': true
                           },
                           {
-                            'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改', 'action': 'EDIT'
+                            'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改', 'action': 'EDIT', 'cancelPermission': true
                           },
                           {
-                            'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除', 'action': 'DELETE',
+                            'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除', 'action': 'DELETE','cancelPermission': true,
                             'ajaxConfig': {
                               delete: [{
                                 'actionName': 'delete',
@@ -1188,7 +1200,7 @@ export class WorkFlowTodoComponent implements OnInit {
                             }
                           },
                           {
-                            'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存', 'action': 'SAVE',
+                            'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存', 'action': 'SAVE', 'cancelPermission': true,
                             'type': 'method/action',
                             'ajaxConfig': {
                               post: [{
@@ -1234,7 +1246,7 @@ export class WorkFlowTodoComponent implements OnInit {
                             }
                           },
                           {
-                            'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'action': 'CANCEL',
+                            'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'action': 'CANCEL', 'cancelPermission': true,
                           },
                           {
                             'name': 'addRow', 'class': 'editable-add-btn', 'text': '启用', 'action': 'CREATE'
@@ -1265,7 +1277,7 @@ export class WorkFlowTodoComponent implements OnInit {
                                       name: 'value',
                                       type: 'selectObjectValue',
                                       value: '1',
-                                      valueName: 'name'
+                                      valueName: 'caseName'
                                     }
                                   },
                                 }
@@ -1380,18 +1392,18 @@ export class WorkFlowTodoComponent implements OnInit {
                               {
                                 group: [
                                   {
-                                    'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新', 'enablePermission': true
+                                    'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新', 'cancelPermission': true
                                   },
                                   {
                                     'name': 'addSearchRow', 'class': 'editable-add-btn', 'text': '查询', 'action': 'SEARCH',
-                                    'actionType': 'addSearchRow', 'actionName': 'addSearchRow', 'enablePermission': true
+                                    'actionType': 'addSearchRow', 'actionName': 'addSearchRow', 'cancelPermission': true
                                   },
                                   {
                                     'name': 'cancelSearchRow', 'class': 'editable-add-btn', 'text': '取消查询', 'action': 'SEARCH',
-                                    'actionType': 'cancelSearchRow', 'actionName': 'cancelSearchRow', 'enablePermission': true
+                                    'actionType': 'cancelSearchRow', 'actionName': 'cancelSearchRow', 'cancelPermission': true
                                   },
                                   {
-                                    'name': 'cancelSelectRow', 'class': 'editable-add-btn', 'text': '取消选中', 'action': 'CANCEL_SELECTED', 'enablePermission': true
+                                    'name': 'cancelSelectRow', 'class': 'editable-add-btn', 'text': '取消选中', 'action': 'CANCEL_SELECTED', 'cancelPermission': true
                                   },
 
 
@@ -1399,6 +1411,301 @@ export class WorkFlowTodoComponent implements OnInit {
                               }
                             ]
                           }
+                        }
+                      },
+                      {
+
+                        'name': 'businesskey',
+                        'type': 'selectTreeGrid',
+                        config: {
+                          nzWidth: 768,
+                          title: '弹出树',
+                          selectTreeGrid: {
+                              is_SelectGrid: true,
+                              'selectGridValueName': 'Id',  // 【弹出表格时用】指定绑定的value值
+                              // 'title': '树表网格',
+                              'viewId': 'bsnTreeTable',
+                              'component': 'bsnTreeTable',
+                              'info': true,
+                              'keyId': 'Id',
+                              'pagination': true,
+                              'showTotal': true,
+                              'pageSize': 5,
+                              'pageSizeOptions': [
+                                5,
+                                18,
+                                20,
+                                30,
+                                40,
+                                50
+                              ],
+                              'ajaxConfig': {
+                                'url': 'common/GetCase/null/GetCase',
+                                'ajaxType': 'get',
+                                'params': [],
+                                'filter': []
+                              },
+                              'columns': [
+                                {
+                                  'title': 'Id',
+                                  'field': 'Id',
+                                  'width': 80,
+                                  'hidden': true,
+                                  'editor': {
+                                    'type': 'input',
+                                    'field': 'Id',
+                                    'options': {
+                                      'type': 'input',
+                                      'inputType': 'text'
+                                    }
+                                  }
+                                },
+                                {
+                                  'title': '名称',
+                                  'field': 'caseName',
+                                  'width': '90px',
+                                  'expand': true,
+                                  'showFilter': false,
+                                  'showSort': false,
+                                  'editor': {
+                                    'type': 'input',
+                                    'field': 'caseName',
+                                    'options': {
+                                      'type': 'input',
+                                      'inputType': 'text',
+                                      'width': '100px'
+                                    }
+                                  }
+                                },
+                                {
+                                  'title': '类别',
+                                  'field': 'caseTypeText',
+                                  'width': '100px',
+                                  'hidden': false,
+                                  'showFilter': true,
+                                  'showSort': true,
+                                  'editor': {
+                                    'type': 'select',
+                                    'field': 'caseType',
+                                    'options': {
+                                      'type': 'select',
+                                      'name': 'caseType',
+                                      'label': 'Type',
+                                      'notFoundContent': '',
+                                      'selectModel': false,
+                                      'showSearch': true,
+                                      'placeholder': '-请选择数据-',
+                                      'disabled': false,
+                                      'size': 'default',
+                                      'clear': true,
+                                      'width': '150px',
+                                      'options': [
+                                        {
+                                          'label': '表格',
+                                          'value': '1',
+                                          'disabled': false
+                                        },
+                                        {
+                                          'label': '树组件',
+                                          'value': '2',
+                                          'disabled': false
+                                        },
+                                        {
+                                          'label': '树表',
+                                          'value': '3',
+                                          'disabled': false
+                                        },
+                                        {
+                                          'label': '表单',
+                                          'value': '4',
+                                          'disabled': false
+                                        },
+                                        {
+                                          'label': '标签页',
+                                          'value': '5',
+                                          'disabled': false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                },
+                                {
+                                  'title': '数量',
+                                  'field': 'caseCount',
+                                  'width': 80,
+                                  'hidden': false,
+                                  'editor': {
+                                    'type': 'input',
+                                    'field': 'caseCount',
+                                    'options': {
+                                      'type': 'input',
+                                      'inputType': 'text'
+                                    }
+                                  }
+                                },
+                                {
+                                  'title': '级别',
+                                  'field': 'caseLevel',
+                                  'width': 80,
+                                  'hidden': false,
+                                  'showFilter': false,
+                                  'showSort': false,
+                                  'editor': {
+                                    'type': 'input',
+                                    'field': 'caseLevel',
+                                    'options': {
+                                      'type': 'input',
+                                      'inputType': 'text'
+                                    }
+                                  }
+                                },
+                                {
+                                  'title': '父类别',
+                                  'field': 'parentName',
+                                  'width': 80,
+                                  'hidden': false,
+                                  'showFilter': false,
+                                  'showSort': false,
+                                  'editor': {
+                                    'type': 'input',
+                                    'field': 'parentId',
+                                    'options': {
+                                      'type': 'selectTree',
+                                      'name': 'parentId',
+                                      'label': '父类别',
+                                      'notFoundContent': '',
+                                      'selectModel': false,
+                                      'showSearch': true,
+                                      'placeholder': '--请选择--',
+                                      'disabled': false,
+                                      'size': 'default',
+                                      'columns': [
+                                        {
+                                          'title': '主键',
+                                          'field': 'key',
+                                          'valueName': 'Id'
+                                        },
+                                        {
+                                          'title': '父节点',
+                                          'field': 'parentId',
+                                          'valueName': 'parentId'
+                                        },
+                                        {
+                                          'title': '标题',
+                                          'field': 'title',
+                                          'valueName': 'caseName'
+                                        }
+                                      ],
+                                      'ajaxConfig': {
+                                        'url': 'common/ShowCase',
+                                        'ajaxType': 'get',
+                                        'params': []
+                                      },
+                                      'layout': 'column',
+                                      'span': '24'
+                                    }
+                                  }
+                                },
+                                {
+                                  'title': '创建时间',
+                                  'field': 'createDate',
+                                  'width': 80,
+                                  'hidden': false,
+                                  'dataType': 'date',
+                                  'editor': {
+                                    'type': 'input',
+                                    'pipe': 'datetime',
+                                    'field': 'createDate',
+                                    'options': {
+                                      'type': 'input',
+                                      'inputType': 'datetime'
+                                    }
+                                  }
+                                },
+                                {
+                                  'title': '备注',
+                                  'field': 'remark',
+                                  'width': 80,
+                                  'hidden': false,
+                                  'editor': {
+                                    'type': 'input',
+                                    'field': 'remark',
+                                    'options': {
+                                      'type': 'input',
+                                      'inputType': 'text'
+                                    }
+                                  }
+                                },
+                                {
+                                  'title': '状态',
+                                  'field': 'enabledText',
+                                  'width': 80,
+                                  'hidden': false,
+                                  'formatter': [
+                                    {
+                                      'value': '启用',
+                                      'bgcolor': '',
+                                      'fontcolor': 'text-blue',
+                                      'valueas': '启用'
+                                    },
+                                    {
+                                      'value': '禁用',
+                                      'bgcolor': '',
+                                      'fontcolor': 'text-red',
+                                      'valueas': '禁用'
+                                    }
+                                  ],
+                                  'editor': {
+                                    'type': 'select',
+                                    'field': 'enabled',
+                                    'options': {
+                                      'type': 'select',
+                                      'inputType': 'submit',
+                                      'name': 'enabled',
+                                      'notFoundContent': '',
+                                      'selectModel': false,
+                                      'showSearch': true,
+                                      'placeholder': '-请选择-',
+                                      'disabled': false,
+                                      'size': 'default',
+                                      'clear': true,
+                                      'width': '80px',
+                                      'options': [
+                                        {
+                                          'label': '启用',
+                                          'value': true,
+                                          'disabled': false
+                                        },
+                                        {
+                                          'label': '禁用',
+                                          'value': false,
+                                          'disabled': false
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ],
+                              'componentType': {
+                                'parent': true,
+                                'child': false,
+                                'own': true
+                              },
+                              'toolbar': [
+                                {
+                                  'group': [
+                                    {
+                                      'name': 'refresh',
+                                      'action': 'REFRESH',
+                                      'text': '刷新',
+                                      'color': 'text-primary',
+                                       'cancelPermission': true
+                                    }
+                                  ]
+                                }
+                              ]
+                      
+                            }
                         }
                       }
                     ],
@@ -2470,24 +2777,28 @@ export class WorkFlowTodoComponent implements OnInit {
                         dropdown: [
                           {
                             'name': 'btnGroup', 'text': ' 分组操作', 'icon': 'icon-plus',
+                            'cancelPermission': true,
                             'buttons': [
                               {
                                 'name': 'refresh',
                                 'class': 'editable-add-btn',
                                 'text': ' 刷新',
-                                'icon': 'icon-list'
+                                'icon': 'icon-list',
+                                 'cancelPermission': true
                               },
                               {
                                 'name': 'addRow',
                                 'class': 'editable-add-btn',
                                 'text': '新增',
-                                'icon': 'icon-add'
+                                'icon': 'icon-add',
+                                'cancelPermission': true
                               },
                               {
                                 'name': 'updateRow',
                                 'class': 'editable-add-btn',
                                 'text': '修改',
-                                'icon': 'icon-edit'
+                                'icon': 'icon-edit',
+                                'cancelPermission': true
                               }
                             ]
                           }

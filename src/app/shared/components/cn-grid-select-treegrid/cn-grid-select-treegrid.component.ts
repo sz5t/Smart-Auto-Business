@@ -7,8 +7,8 @@ import { BsnTreeTableComponent } from '@shared/business/bsn-tree-table/bsn-tree-
   styleUrls: ['./cn-grid-select-treegrid.component.css']
 })
 export class CnGridSelectTreegridComponent implements OnInit {
-  @Input() config1;
-  @Input() value1;
+  @Input() config;
+  @Input() value;
   @Input() bsnData;
   @Input() rowData;
   @Input() dataSet;
@@ -26,10 +26,10 @@ export class CnGridSelectTreegridComponent implements OnInit {
   _value = '4185d8182048482980cbcc10a19f6b55';
   _valuetext = '资源保养明细记录';
   constructor() { }
-  value = {};
+  value1 = {};
 
  // 弹出树的配置模板
- config = {
+ config1 = {
   'type': 'selectTreeGrid',
   'inputType': 'text',
   'width': '90px',
@@ -317,7 +317,8 @@ export class CnGridSelectTreegridComponent implements OnInit {
                 'name': 'refresh',
                 'action': 'REFRESH',
                 'text': '刷新',
-                'color': 'text-primary'
+                'color': 'text-primary',
+                'enablePermission': true
               }
             ]
           }
@@ -329,6 +330,56 @@ export class CnGridSelectTreegridComponent implements OnInit {
  };
 
   ngOnInit() {
+    console.log('treegrid', this.config);
+    this._value = null;
+    // console.log('被级联数据', this.casadeData);
+    if (this.casadeData) {
+
+      for (const key in this.casadeData) {
+        // 临时变量的整理
+        if (key === 'cascadeValue') {
+          for (const casekey in this.casadeData['cascadeValue']) {
+            if (this.casadeData['cascadeValue'].hasOwnProperty(casekey)) {
+              this.cascadeValue[casekey] = this.casadeData['cascadeValue'][casekey];
+
+            }
+          }
+        } else if (key === 'options') { // 目前版本，静态数据集 优先级低
+          this.config.options = this.casadeData['options'];
+        } else if (key === 'setValue') {
+          this.cascadeSetValue['setValue'] = JSON.parse(JSON.stringify(this.casadeData['setValue']));
+          delete this.casadeData['setValue'];
+
+        }
+
+
+      }
+    }
+
+     if (!this.config.select.nzWidth) {
+      this.config.select.nzWidth = 768;
+
+     }
+     if (!this.config.select.title) {
+      this.config.select.title = '弹出列表';
+
+     }
+    // 修改配置列表配置，修改ajax配置，将配置
+
+    if (!this.config.labelName) {
+      this.config.labelName = 'name';
+    }
+    if (!this.config.valueName) {
+      this.config.labelName = 'Id';
+    }
+   //  console.log('ngOnInit this.value:', this.value);
+    this.config.width = this.config.width - 30;
+    if (this.cascadeSetValue.hasOwnProperty('setValue')) {
+      this.selectedBycascade();
+    } else {
+
+      this.selectedByLoaded();
+    }
   }
 
   showModal(): void {
@@ -361,6 +412,51 @@ export class CnGridSelectTreegridComponent implements OnInit {
 
   handleCancel(): void {
     this.isVisible = false;
+  }
+  selectedByLoaded() {
+    let selected;
+    if (this.value && this.value.hasOwnProperty('data') && this.value['data'] !== undefined) {
+      // this._options.forEach(element => {
+      //     if (element.value === this.value.data) {
+      //         selected = element;
+      //     }
+      // });
+      selected = this.value.data;
+    } else {
+      // this._options.forEach((element => {
+      //     if (element.value === this.config.defaultValue) {
+      //         selected = element;
+      //     }
+      // }));
+      selected = this.config.defaultValue;
+    }
+    // this._selectedOption = selected;
+    this._value = selected;
+    // if (this._selectedOption) {
+    //     this.valueChange(this._selectedOption);
+    // }
+
+    // this.table.selectRow();
+    if (this.value && this.value.hasOwnProperty('dataText') && this.value['dataText'] !== undefined) {
+      this._valuetext = this.value['dataText'];
+    }
+    if (this._value) {
+      this.valueChange(this._value);
+    }
+  }
+
+  // 级联赋值
+  selectedBycascade() {
+    // 假如有级联赋值，则需要取文本值
+    let selected;
+    if (this.cascadeSetValue.hasOwnProperty('setValue')) {
+      selected = this.cascadeSetValue['setValue'];
+      this._value = selected;
+      delete this.cascadeSetValue['setValue'];
+    }
+
+    this.valueChange(this._value);
+
   }
 
   valueChange(name?) {

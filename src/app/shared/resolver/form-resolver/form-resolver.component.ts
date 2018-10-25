@@ -30,7 +30,7 @@ import { Observer } from 'rxjs';
 export class FormResolverComponent extends CnComponentBase implements OnInit, OnChanges, OnDestroy {
 
     @Input() config;
-    @Input() permissions;
+    @Input() permissions = [];
     @Input() dataList;
     @Input() ref;
     @Input() initData;

@@ -106,8 +106,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
     }
 
-    ngOnInit() {
-
+    ngOnInit() { 
        if (this.config.select) {
         this.config.select.forEach(selectItem => {
             this.config.columns.forEach(columnItem => {

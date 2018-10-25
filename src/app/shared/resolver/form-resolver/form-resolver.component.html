@@ -1,6 +1,6 @@
 
 <nz-spin [nzSpinning]="isSpinning" [nzDelay]="300" nzTip='加载中...'>
-    <bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId"></bsn-toolbar>
+    <bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId" [permissions] = "permissions ? permissions : []" ></bsn-toolbar>
     <nz-card>
         <form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form" (ngSubmit)="save($event)">
             <ng-container *ngFor="let formItem of config.forms">

@@ -1,6 +1,4 @@
-<p>
-  cn-grid-select-treegrid 测试弹出树表
-</p>
+
 <nz-modal [(nzVisible)]="isVisible" [nzWidth]="config.select.nzWidth" [nzTitle]="config.select.title" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
 
   <bsn-tree-table #table [config]="config.select.selectTreeGrid"   [value]="_value" > </bsn-tree-table>

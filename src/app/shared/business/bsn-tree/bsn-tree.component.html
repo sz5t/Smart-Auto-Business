@@ -1,7 +1,9 @@
 <bsn-toolbar 
     *ngIf="config.toolbar" 
     [config]="config.toolbar" 
-    [viewId]="config.viewId"></bsn-toolbar>
+    [viewId]="config.viewId"
+    [permissions] = "permissions ? permissions : []" 
+    ></bsn-toolbar>
     
     <nz-card [nzBodyStyle]="{padding: '0px'}">
         <div 

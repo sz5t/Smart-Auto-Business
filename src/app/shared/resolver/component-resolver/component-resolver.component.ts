@@ -92,9 +92,9 @@ export class ComponentResolverComponent implements OnInit, OnChanges, OnDestroy 
             // if(this.componentRef.instance.editable) {
             //     this.componentRef.instance.editable = this.editable;
             // }
-            if (this.componentRef.instance.permissions) {
+            if (this.componentRef.instance.hasOwnProperty('permissions')) {
                 this.componentRef.instance.permissions = this.permissions;
-            }
+             }
             if (this.componentRef.instance.dataList) {
                 this.componentRef.instance.dataList = this.config.dataList;
             }

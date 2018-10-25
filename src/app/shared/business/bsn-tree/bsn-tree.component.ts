@@ -91,6 +91,7 @@ import { CacheService } from '@delon/cache';
 export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     @Input() config;
     @Input() initData;
+    @Input() permissions = [];
     treeData;
     _relativeResolver;
     checkedKeys = [];

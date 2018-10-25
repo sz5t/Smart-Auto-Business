@@ -1,4 +1,4 @@
-<bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId"></bsn-toolbar>
+<bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId"  [permissions] = "permissions ? permissions : []" ></bsn-toolbar>
 <nz-table #nzTable [nzData]="dataList" [nzSize]="'small'" [nzFrontPagination]="false" [nzShowSizeChanger]="true" [nzTotal]="total"
     [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzShowTotal]="totals" [nzPageSizeOptions]="this.config.pageSizeOptions"
     [nzLoading]="loading" (nzPageIndexChange)="searchData()" (nzPageSizeChange)="searchData(true)" [nzTitle]="tableTitle" [nzFooter]="footer"

@@ -9,11 +9,12 @@ import {Component, OnInit, Input, OnDestroy, Type, Inject} from '@angular/core';
 export class BsnTabsComponent implements OnInit {
     @Input() config;
     @Input() viewId;
+    @Input() permissions = [];
     constructor() {
 
     }
 
     ngOnInit() {
-
+      // console.log('tab_permissions:', this.permissions);
     }
 }
