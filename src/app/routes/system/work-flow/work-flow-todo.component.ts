@@ -9,7 +9,7 @@ import { _HttpClient } from '@delon/theme';
 import { TreeNodeInterface } from '../../cn-test/list/list.component';
 import { CommonTools } from '@core/utility/common-tools';
 import { BsnTableComponent } from '@shared/business/bsn-data-table/bsn-table.component';
-
+import { NzFormatEmitEvent, NzTreeNode, NzTreeNodeOptions } from 'ng-zorro-antd';
 @Component({
   selector: 'cn-work-flow-todo, [work-flow-todo]',
   templateUrl: './work-flow-todo.component.html',
@@ -1190,7 +1190,7 @@ export class WorkFlowTodoComponent implements OnInit {
                             'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改', 'action': 'EDIT', 'cancelPermission': true
                           },
                           {
-                            'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除', 'action': 'DELETE','cancelPermission': true,
+                            'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除', 'action': 'DELETE', 'cancelPermission': true,
                             'ajaxConfig': {
                               delete: [{
                                 'actionName': 'delete',
@@ -1290,7 +1290,7 @@ export class WorkFlowTodoComponent implements OnInit {
                     ],
                     'select': [
                       {
-                        name: 'businesskey',
+                        name: 'businesskey1',
                         type: 'selectGrid',
                         config: {
                           width: '1024', // 弹出的宽度
@@ -1302,7 +1302,7 @@ export class WorkFlowTodoComponent implements OnInit {
                             'pagination': true, // 是否分页
                             'showTotal': true, // 是否显示总数据量
                             'pageSize': 5, // 默pageSizeOptions认每页数据条数
-                            'is_SelectGrid': true,  // 【弹出表格时用】弹出表格值为true
+                            'isSelectGrid': true,  // 【弹出表格时用】弹出表格值为true
                             'selectGridValueName': 'Id',  // 【弹出表格时用】指定绑定的value值
                             '': [5, 10, 20, 30, 40, 50],
                             'ajaxConfig': {
@@ -1421,291 +1421,291 @@ export class WorkFlowTodoComponent implements OnInit {
                           nzWidth: 768,
                           title: '弹出树',
                           selectTreeGrid: {
-                              is_SelectGrid: true,
-                              'selectGridValueName': 'Id',  // 【弹出表格时用】指定绑定的value值
-                              // 'title': '树表网格',
-                              'viewId': 'bsnTreeTable',
-                              'component': 'bsnTreeTable',
-                              'info': true,
-                              'keyId': 'Id',
-                              'pagination': true,
-                              'showTotal': true,
-                              'pageSize': 5,
-                              'pageSizeOptions': [
-                                5,
-                                18,
-                                20,
-                                30,
-                                40,
-                                50
-                              ],
-                              'ajaxConfig': {
-                                'url': 'common/GetCase/null/GetCase',
-                                'ajaxType': 'get',
-                                'params': [],
-                                'filter': []
-                              },
-                              'columns': [
-                                {
-                                  'title': 'Id',
+                            isSelectGrid: true,
+                            'selectGridValueName': 'Id',  // 【弹出表格时用】指定绑定的value值
+                            // 'title': '树表网格',
+                            'viewId': 'bsnTreeTable',
+                            'component': 'bsnTreeTable',
+                            'info': true,
+                            'keyId': 'Id',
+                            'pagination': true,
+                            'showTotal': true,
+                            'pageSize': 5,
+                            'pageSizeOptions': [
+                              5,
+                              18,
+                              20,
+                              30,
+                              40,
+                              50
+                            ],
+                            'ajaxConfig': {
+                              'url': 'common/GetCase/null/GetCase',
+                              'ajaxType': 'get',
+                              'params': [],
+                              'filter': []
+                            },
+                            'columns': [
+                              {
+                                'title': 'Id',
+                                'field': 'Id',
+                                'width': 80,
+                                'hidden': true,
+                                'editor': {
+                                  'type': 'input',
                                   'field': 'Id',
-                                  'width': 80,
-                                  'hidden': true,
-                                  'editor': {
+                                  'options': {
                                     'type': 'input',
-                                    'field': 'Id',
-                                    'options': {
-                                      'type': 'input',
-                                      'inputType': 'text'
-                                    }
-                                  }
-                                },
-                                {
-                                  'title': '名称',
-                                  'field': 'caseName',
-                                  'width': '90px',
-                                  'expand': true,
-                                  'showFilter': false,
-                                  'showSort': false,
-                                  'editor': {
-                                    'type': 'input',
-                                    'field': 'caseName',
-                                    'options': {
-                                      'type': 'input',
-                                      'inputType': 'text',
-                                      'width': '100px'
-                                    }
-                                  }
-                                },
-                                {
-                                  'title': '类别',
-                                  'field': 'caseTypeText',
-                                  'width': '100px',
-                                  'hidden': false,
-                                  'showFilter': true,
-                                  'showSort': true,
-                                  'editor': {
-                                    'type': 'select',
-                                    'field': 'caseType',
-                                    'options': {
-                                      'type': 'select',
-                                      'name': 'caseType',
-                                      'label': 'Type',
-                                      'notFoundContent': '',
-                                      'selectModel': false,
-                                      'showSearch': true,
-                                      'placeholder': '-请选择数据-',
-                                      'disabled': false,
-                                      'size': 'default',
-                                      'clear': true,
-                                      'width': '150px',
-                                      'options': [
-                                        {
-                                          'label': '表格',
-                                          'value': '1',
-                                          'disabled': false
-                                        },
-                                        {
-                                          'label': '树组件',
-                                          'value': '2',
-                                          'disabled': false
-                                        },
-                                        {
-                                          'label': '树表',
-                                          'value': '3',
-                                          'disabled': false
-                                        },
-                                        {
-                                          'label': '表单',
-                                          'value': '4',
-                                          'disabled': false
-                                        },
-                                        {
-                                          'label': '标签页',
-                                          'value': '5',
-                                          'disabled': false
-                                        }
-                                      ]
-                                    }
-                                  }
-                                },
-                                {
-                                  'title': '数量',
-                                  'field': 'caseCount',
-                                  'width': 80,
-                                  'hidden': false,
-                                  'editor': {
-                                    'type': 'input',
-                                    'field': 'caseCount',
-                                    'options': {
-                                      'type': 'input',
-                                      'inputType': 'text'
-                                    }
-                                  }
-                                },
-                                {
-                                  'title': '级别',
-                                  'field': 'caseLevel',
-                                  'width': 80,
-                                  'hidden': false,
-                                  'showFilter': false,
-                                  'showSort': false,
-                                  'editor': {
-                                    'type': 'input',
-                                    'field': 'caseLevel',
-                                    'options': {
-                                      'type': 'input',
-                                      'inputType': 'text'
-                                    }
-                                  }
-                                },
-                                {
-                                  'title': '父类别',
-                                  'field': 'parentName',
-                                  'width': 80,
-                                  'hidden': false,
-                                  'showFilter': false,
-                                  'showSort': false,
-                                  'editor': {
-                                    'type': 'input',
-                                    'field': 'parentId',
-                                    'options': {
-                                      'type': 'selectTree',
-                                      'name': 'parentId',
-                                      'label': '父类别',
-                                      'notFoundContent': '',
-                                      'selectModel': false,
-                                      'showSearch': true,
-                                      'placeholder': '--请选择--',
-                                      'disabled': false,
-                                      'size': 'default',
-                                      'columns': [
-                                        {
-                                          'title': '主键',
-                                          'field': 'key',
-                                          'valueName': 'Id'
-                                        },
-                                        {
-                                          'title': '父节点',
-                                          'field': 'parentId',
-                                          'valueName': 'parentId'
-                                        },
-                                        {
-                                          'title': '标题',
-                                          'field': 'title',
-                                          'valueName': 'caseName'
-                                        }
-                                      ],
-                                      'ajaxConfig': {
-                                        'url': 'common/ShowCase',
-                                        'ajaxType': 'get',
-                                        'params': []
-                                      },
-                                      'layout': 'column',
-                                      'span': '24'
-                                    }
-                                  }
-                                },
-                                {
-                                  'title': '创建时间',
-                                  'field': 'createDate',
-                                  'width': 80,
-                                  'hidden': false,
-                                  'dataType': 'date',
-                                  'editor': {
-                                    'type': 'input',
-                                    'pipe': 'datetime',
-                                    'field': 'createDate',
-                                    'options': {
-                                      'type': 'input',
-                                      'inputType': 'datetime'
-                                    }
-                                  }
-                                },
-                                {
-                                  'title': '备注',
-                                  'field': 'remark',
-                                  'width': 80,
-                                  'hidden': false,
-                                  'editor': {
-                                    'type': 'input',
-                                    'field': 'remark',
-                                    'options': {
-                                      'type': 'input',
-                                      'inputType': 'text'
-                                    }
-                                  }
-                                },
-                                {
-                                  'title': '状态',
-                                  'field': 'enabledText',
-                                  'width': 80,
-                                  'hidden': false,
-                                  'formatter': [
-                                    {
-                                      'value': '启用',
-                                      'bgcolor': '',
-                                      'fontcolor': 'text-blue',
-                                      'valueas': '启用'
-                                    },
-                                    {
-                                      'value': '禁用',
-                                      'bgcolor': '',
-                                      'fontcolor': 'text-red',
-                                      'valueas': '禁用'
-                                    }
-                                  ],
-                                  'editor': {
-                                    'type': 'select',
-                                    'field': 'enabled',
-                                    'options': {
-                                      'type': 'select',
-                                      'inputType': 'submit',
-                                      'name': 'enabled',
-                                      'notFoundContent': '',
-                                      'selectModel': false,
-                                      'showSearch': true,
-                                      'placeholder': '-请选择-',
-                                      'disabled': false,
-                                      'size': 'default',
-                                      'clear': true,
-                                      'width': '80px',
-                                      'options': [
-                                        {
-                                          'label': '启用',
-                                          'value': true,
-                                          'disabled': false
-                                        },
-                                        {
-                                          'label': '禁用',
-                                          'value': false,
-                                          'disabled': false
-                                        }
-                                      ]
-                                    }
+                                    'inputType': 'text'
                                   }
                                 }
-                              ],
-                              'componentType': {
-                                'parent': true,
-                                'child': false,
-                                'own': true
                               },
-                              'toolbar': [
-                                {
-                                  'group': [
-                                    {
-                                      'name': 'refresh',
-                                      'action': 'REFRESH',
-                                      'text': '刷新',
-                                      'color': 'text-primary',
-                                       'cancelPermission': true
-                                    }
-                                  ]
+                              {
+                                'title': '名称',
+                                'field': 'caseName',
+                                'width': '90px',
+                                'expand': true,
+                                'showFilter': false,
+                                'showSort': false,
+                                'editor': {
+                                  'type': 'input',
+                                  'field': 'caseName',
+                                  'options': {
+                                    'type': 'input',
+                                    'inputType': 'text',
+                                    'width': '100px'
+                                  }
                                 }
-                              ]
-                      
-                            }
+                              },
+                              {
+                                'title': '类别',
+                                'field': 'caseTypeText',
+                                'width': '100px',
+                                'hidden': false,
+                                'showFilter': true,
+                                'showSort': true,
+                                'editor': {
+                                  'type': 'select',
+                                  'field': 'caseType',
+                                  'options': {
+                                    'type': 'select',
+                                    'name': 'caseType',
+                                    'label': 'Type',
+                                    'notFoundContent': '',
+                                    'selectModel': false,
+                                    'showSearch': true,
+                                    'placeholder': '-请选择数据-',
+                                    'disabled': false,
+                                    'size': 'default',
+                                    'clear': true,
+                                    'width': '150px',
+                                    'options': [
+                                      {
+                                        'label': '表格',
+                                        'value': '1',
+                                        'disabled': false
+                                      },
+                                      {
+                                        'label': '树组件',
+                                        'value': '2',
+                                        'disabled': false
+                                      },
+                                      {
+                                        'label': '树表',
+                                        'value': '3',
+                                        'disabled': false
+                                      },
+                                      {
+                                        'label': '表单',
+                                        'value': '4',
+                                        'disabled': false
+                                      },
+                                      {
+                                        'label': '标签页',
+                                        'value': '5',
+                                        'disabled': false
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                'title': '数量',
+                                'field': 'caseCount',
+                                'width': 80,
+                                'hidden': false,
+                                'editor': {
+                                  'type': 'input',
+                                  'field': 'caseCount',
+                                  'options': {
+                                    'type': 'input',
+                                    'inputType': 'text'
+                                  }
+                                }
+                              },
+                              {
+                                'title': '级别',
+                                'field': 'caseLevel',
+                                'width': 80,
+                                'hidden': false,
+                                'showFilter': false,
+                                'showSort': false,
+                                'editor': {
+                                  'type': 'input',
+                                  'field': 'caseLevel',
+                                  'options': {
+                                    'type': 'input',
+                                    'inputType': 'text'
+                                  }
+                                }
+                              },
+                              {
+                                'title': '父类别',
+                                'field': 'parentName',
+                                'width': 80,
+                                'hidden': false,
+                                'showFilter': false,
+                                'showSort': false,
+                                'editor': {
+                                  'type': 'input',
+                                  'field': 'parentId',
+                                  'options': {
+                                    'type': 'selectTree',
+                                    'name': 'parentId',
+                                    'label': '父类别',
+                                    'notFoundContent': '',
+                                    'selectModel': false,
+                                    'showSearch': true,
+                                    'placeholder': '--请选择--',
+                                    'disabled': false,
+                                    'size': 'default',
+                                    'columns': [
+                                      {
+                                        'title': '主键',
+                                        'field': 'key',
+                                        'valueName': 'Id'
+                                      },
+                                      {
+                                        'title': '父节点',
+                                        'field': 'parentId',
+                                        'valueName': 'parentId'
+                                      },
+                                      {
+                                        'title': '标题',
+                                        'field': 'title',
+                                        'valueName': 'caseName'
+                                      }
+                                    ],
+                                    'ajaxConfig': {
+                                      'url': 'common/ShowCase',
+                                      'ajaxType': 'get',
+                                      'params': []
+                                    },
+                                    'layout': 'column',
+                                    'span': '24'
+                                  }
+                                }
+                              },
+                              {
+                                'title': '创建时间',
+                                'field': 'createDate',
+                                'width': 80,
+                                'hidden': false,
+                                'dataType': 'date',
+                                'editor': {
+                                  'type': 'input',
+                                  'pipe': 'datetime',
+                                  'field': 'createDate',
+                                  'options': {
+                                    'type': 'input',
+                                    'inputType': 'datetime'
+                                  }
+                                }
+                              },
+                              {
+                                'title': '备注',
+                                'field': 'remark',
+                                'width': 80,
+                                'hidden': false,
+                                'editor': {
+                                  'type': 'input',
+                                  'field': 'remark',
+                                  'options': {
+                                    'type': 'input',
+                                    'inputType': 'text'
+                                  }
+                                }
+                              },
+                              {
+                                'title': '状态',
+                                'field': 'enabledText',
+                                'width': 80,
+                                'hidden': false,
+                                'formatter': [
+                                  {
+                                    'value': '启用',
+                                    'bgcolor': '',
+                                    'fontcolor': 'text-blue',
+                                    'valueas': '启用'
+                                  },
+                                  {
+                                    'value': '禁用',
+                                    'bgcolor': '',
+                                    'fontcolor': 'text-red',
+                                    'valueas': '禁用'
+                                  }
+                                ],
+                                'editor': {
+                                  'type': 'select',
+                                  'field': 'enabled',
+                                  'options': {
+                                    'type': 'select',
+                                    'inputType': 'submit',
+                                    'name': 'enabled',
+                                    'notFoundContent': '',
+                                    'selectModel': false,
+                                    'showSearch': true,
+                                    'placeholder': '-请选择-',
+                                    'disabled': false,
+                                    'size': 'default',
+                                    'clear': true,
+                                    'width': '80px',
+                                    'options': [
+                                      {
+                                        'label': '启用',
+                                        'value': true,
+                                        'disabled': false
+                                      },
+                                      {
+                                        'label': '禁用',
+                                        'value': false,
+                                        'disabled': false
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            ],
+                            'componentType': {
+                              'parent': true,
+                              'child': false,
+                              'own': true
+                            },
+                            'toolbar': [
+                              {
+                                'group': [
+                                  {
+                                    'name': 'refresh',
+                                    'action': 'REFRESH',
+                                    'text': '刷新',
+                                    'color': 'text-primary',
+                                    'cancelPermission': true
+                                  }
+                                ]
+                              }
+                            ]
+
+                          }
                         }
                       }
                     ],
@@ -2784,7 +2784,7 @@ export class WorkFlowTodoComponent implements OnInit {
                                 'class': 'editable-add-btn',
                                 'text': ' 刷新',
                                 'icon': 'icon-list',
-                                 'cancelPermission': true
+                                'cancelPermission': true
                               },
                               {
                                 'name': 'addRow',
@@ -4302,7 +4302,473 @@ export class WorkFlowTodoComponent implements OnInit {
     ]
 
   };
+
+  permissions = [];
+
+  //   ajaxConfig: {
+  //     'url': 'common/ShowCase',
+  //     'ajaxType': 'getById',
+  //     'params': [
+  //         { name: 'Id', type: 'value', valueName: '_id', value: '1' }
+  //     ]
+  // },
+  config_bd = {
+    permissions: [{ code: 'Tab1_GYGC_addRow' }],
+    'viewId': 'tree_and_form_form',
+    'component': 'form_view',
+    'keyId': 'Id',
+    ajaxConfig: {
+      'url': 'common/ShowCase',
+      'ajaxType': 'getById',
+      'params': [
+        { name: 'Id', type: 'value', valueName: '_id', value: '1' }
+      ]
+    },
+    componentType: {
+      'parent': false,
+      'child': true,
+      'own': false
+    },
+    'forms': [
+      {
+        controls: [
+          {
+            'type': 'select',
+            'labelSize': '6',
+            'controlSize': '16',
+            'inputType': 'submit',
+            'name': 'enabled',
+            'label': '状态',
+            'notFoundContent': '',
+            'selectModel': false,
+            'showSearch': true,
+            'placeholder': '--请选择--',
+            'disabled': false,
+            'size': 'default',
+            'options': [
+              {
+                'label': '启用',
+                'value': true,
+                'disabled': false
+              },
+              {
+                'label': '禁用',
+                'value': false,
+                'disabled': false
+              }
+            ],
+            'layout': 'column',
+            'span': '24'
+          },
+        ]
+      },
+      {
+        controls: [
+          {
+            'type': 'select',
+            'labelSize': '6',
+            'controlSize': '16',
+            'inputType': 'submit',
+            'name': 'caseType',
+            'label': '类别',
+            'notFoundContent': '',
+            'selectModel': false,
+            'showSearch': true,
+            'placeholder': '--请选择--',
+            'disabled': false,
+            'size': 'default',
+            'options': [
+              {
+                'label': '表',
+                'value': '1',
+                'disabled': false
+              },
+              {
+                'label': '树',
+                'value': '2',
+                'disabled': false
+              },
+              {
+                'label': '树表',
+                'value': '3',
+                'disabled': false
+              },
+              {
+                'label': '表单',
+                'value': '4',
+                'disabled': false
+              },
+              {
+                'label': '标签页',
+                'value': '5',
+                'disabled': false
+              }
+            ],
+            'layout': 'column',
+            'span': '24'
+          }
+        ]
+      },
+      {
+        controls: [
+          {
+            'type': 'input',
+            'labelSize': '6',
+            'controlSize': '16',
+            'inputType': 'text',
+            'name': 'caseName',
+            'label': '名称',
+            'placeholder': '',
+            'disabled': false,
+            'readonly': false,
+            'size': 'default',
+            'layout': 'column',
+            'span': '24'
+          },
+        ]
+      },
+      {
+        controls: [
+          {
+            'type': 'input',
+            'labelSize': '6',
+            'controlSize': '16',
+            'inputType': 'text',
+            'name': 'caseLevel',
+            'label': '级别',
+            'placeholder': '',
+            'disabled': false,
+            'readonly': false,
+            'size': 'default',
+            'layout': 'column',
+            'span': '24'
+          },
+        ]
+      },
+      {
+        controls: [
+          {
+            'type': 'input',
+            'labelSize': '6',
+            'controlSize': '16',
+            'inputType': 'text',
+            'name': 'caseCount',
+            'label': '数量',
+            'placeholder': '',
+            'disabled': false,
+            'readonly': false,
+            'size': 'default',
+            'layout': 'column',
+            'span': '24'
+          },
+
+        ]
+      },
+      {
+        controls: [
+          {
+            'type': 'input',
+            'labelSize': '6',
+            'controlSize': '16',
+            'inputType': 'text',
+            'name': 'remark',
+            'label': '备注',
+            'placeholder': '',
+            'disabled': false,
+            'readonly': false,
+            'size': 'default',
+            'layout': 'column',
+            'span': '24'
+          }
+        ]
+      }
+    ],
+    'toolbar': [
+      {
+        'gutter': 24,
+        'offset': 12,
+        'span': 10,
+        'position': 'right',
+        'group': [
+          {
+            'name': 'Tab1_GYGC_refresh',
+            'class': 'editable-add-btn',
+            'text': '刷新',
+            'icon': 'anticon anticon-reload',
+            'color': 'text-primary'
+          },
+          {
+            'name': 'Tab1_GYGC_addRow',
+            'class': 'editable-add-btn',
+            'text': '新增',
+            'action': 'CREATE',
+            'icon': 'anticon anticon-plus',
+            'color': 'text-primary'
+          },
+          {
+            'name': 'Tab1_GYGC_updateRow',
+            'class': 'editable-add-btn',
+            'text': '修改',
+            'action': 'EDIT',
+            'icon': 'anticon anticon-edit',
+            'color': 'text-success'
+          },
+          {
+            'name': 'Tab1_GYGC_DeleteChecked',
+            'class': 'editable-add-btn',
+            'text': '删除',
+            'action': 'DELETE',
+            'icon': 'anticon anticon-delete',
+            'color': 'text-red-light',
+            'ajaxConfig': {
+              'delete': [
+                {
+                  'actionName': 'delete',
+                  'url': 'common/MpmMpf',
+                  'ajaxType': 'delete',
+                  'title': '提示',
+                  'message': '是否将选中的数据执行当前操作？',
+                  'params': [
+                    {
+                      'name': 'Id',
+                      'valueName': '_id',
+                      'type': 'tempValue'
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            'name': 'Tab1_GYGC_DeleteCheckedAll',
+            'class': 'editable-add-btn',
+            'text': '删除明细',
+            'icon': 'anticon anticon-delete',
+            'color': 'text-red-light',
+            'actionType': 'post',
+            'actionName': 'execChecked',
+            'ajaxConfig': [
+              {
+                'action': 'EXECUTE_CHECKED',
+                'url': 'common/DeleteMpfData',
+                'ajaxType': 'post',
+                'title': '提示',
+                'message': '确认要删除该工艺版本信息吗？删除后对应的详细信息全部删除！',
+                'params': [
+                  {
+                    'name': 'Id',
+                    'valueName': 'Id',
+                    'type': 'tempValue'
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            'name': 'Tab1_GYGC_saveForm',
+            'class': 'editable-add-btn',
+            'text': '保存',
+            'action': 'SAVE',
+            'icon': 'anticon anticon-save',
+            'type': 'default',
+            'color': 'text-primary',
+            'ajaxConfig': [
+              {
+                'url': 'common/procInsertMpmMpf',
+                'ajaxType': 'post',
+                'params': [
+                  {
+                    'name': 'mpfcode',
+                    'type': 'componentValue',
+                    'valueName': 'mpfcode'
+                  },
+                  {
+                    'name': 'mpfname',
+                    'type': 'componentValue',
+                    'valueName': 'mpfname'
+                  },
+                  {
+                    'name': 'version',
+                    'type': 'componentValue',
+                    'valueName': 'version'
+                  },
+                  {
+                    'name': 'productcode',
+                    'type': 'componentValue',
+                    'valueName': 'productcode'
+                  },
+                  {
+                    'name': 'stage',
+                    'type': 'componentValue',
+                    'valueName': 'stage'
+                  },
+                  {
+                    'name': 'serialnumber',
+                    'type': 'componentValue',
+                    'valueName': 'serialnumber'
+                  },
+                  {
+                    'name': 'dataflag',
+                    'type': 'tempValue',
+                    'valueName': '_Vnodetype'
+                  },
+
+                  {
+                    'name': 'productid',
+                    'type': 'tempValue',
+                    'valueName': '_VparentId'
+                  },
+                  {
+                    'name': 'isdefault',
+                    'type': 'componentValue',
+                    'valueName': 'isdefault'
+                  },
+                  {
+                    'name': 'depid',
+                    'type': 'componentValue',
+                    'valueName': 'depid'
+                  },
+                  {
+                    'name': 'empid',
+                    'type': 'componentValue',
+                    'valueName': 'empid'
+                  },
+                  {
+                    'name': 'recordstatus',
+                    'type': 'value',
+                    'valueName': '',
+                    'value': 1
+                  },
+                  {
+                    'name': 'deleteflag',
+                    'type': 'value',
+                    'valueName': '',
+                    'value': 1
+                  },
+                  {
+                    'name': 'securitylevel',
+                    'type': 'componentValue',
+                    'valueName': 'securitylevel'
+                  },
+                  {
+                    'name': 'remark',
+                    'type': 'componentValue',
+                    'valueName': 'remark'
+                  },
+                  {
+                    'name': 'customerid',
+                    'type': 'cacheValue',
+                    'valueName': 'customerId'
+                  },
+                  {
+                    'name': 'projectid',
+                    'type': 'cacheValue',
+                    'valueName': 'projectId'
+                  },
+                  {
+                    'name': 'user',
+                    'type': 'cacheValue',
+                    'valueName': 'accountId'
+                  },
+                  {
+                    'name': 'date',
+                    'type': 'cacheValue',
+                    'valueName': 'loginDate'
+                  },
+                  {
+                    'name': 'num',
+                    'type': 'value',
+                    'valueName': '',
+                    'value': 0
+                  }
+                ]
+              },
+              {
+                'url': 'common/MpmMpf',
+                'ajaxType': 'put',
+                'params': [
+                  {
+                    'name': 'Id',
+                    'type': 'tempValue',
+                    'valueName': '_id'
+                  },
+                  {
+                    'name': 'mpfcode',
+                    'type': 'componentValue',
+                    'valueName': 'mpfcode'
+                  },
+                  {
+                    'name': 'mpfname',
+                    'type': 'componentValue',
+                    'valueName': 'mpfname'
+                  },
+                  {
+                    'name': 'version',
+                    'type': 'componentValue',
+                    'valueName': 'version'
+                  },
+                  {
+                    'name': 'isdefault',
+                    'type': 'componentValue',
+                    'valueName': 'isdefault'
+                  },
+                  {
+                    'name': 'productcode',
+                    'type': 'componentValue',
+                    'valueName': 'productcode'
+                  },
+                  {
+                    'name': 'stage',
+                    'type': 'componentValue',
+                    'valueName': 'stage'
+                  },
+                  {
+                    'name': 'serialnumber',
+                    'type': 'componentValue',
+                    'valueName': 'serialnumber'
+                  },
+                  {
+                    'name': 'depid',
+                    'type': 'componentValue',
+                    'valueName': 'depid'
+                  },
+                  {
+                    'name': 'empid',
+                    'type': 'componentValue',
+                    'valueName': 'empid'
+                  },
+                  {
+                    'name': 'securitylevel',
+                    'type': 'componentValue',
+                    'valueName': 'securitylevel'
+                  },
+                  {
+                    'name': 'remark',
+                    'type': 'componentValue',
+                    'valueName': 'remark'
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            'name': 'Tab1_GYGC_cancelRow',
+            'class': 'editable-add-btn',
+            'text': '取消',
+            'action': 'CANCEL',
+            'icon': 'anticon anticon-rollback',
+            'color': 'text-grey-darker'
+          }
+        ]
+      }
+    ],
+    'dataList': [],
+    'relations': [],
+
+  };
+
   constructor(private http: _HttpClient) { }
+
 
 
   isVisible = false;
@@ -4330,6 +4796,13 @@ export class WorkFlowTodoComponent implements OnInit {
     console.log('点击取消');
     this.isVisible = false;
   }
+
+
+
+
+
+
+
 
 
 }

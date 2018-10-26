@@ -122,7 +122,7 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
             }
         }
         // liu 20181022 特殊处理行定位
-        if (this.config.is_SelectGrid) {
+        if (this.config.isSelectGrid) {
             this.is_Selectgrid = false;
         }
         this.resolverRelation();

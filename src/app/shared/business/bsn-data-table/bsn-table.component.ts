@@ -175,7 +175,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
             })();
         }
         // liu 20181022 特殊处理行定位
-        if (this.config.is_SelectGrid) {
+        if (this.config.isSelectGrid) {
             this.is_Selectgrid = false;
         }
         if (this.config.selectGridValueName) {
@@ -396,6 +396,39 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
             this.loading = false;
         })();
+    }
+
+    // 获取当前选中的值 liu 扩展部分，目前不实现，原因是会多请求数据（主要是对级联赋值的扩充）
+    selectload(selectparams?: any[], selectvalue? ) {
+        const url = this._buildURL(this.config.ajaxConfig.url);
+        const params = {
+            ...this._buildParameters(this.config.ajaxConfig.params),
+           // ...selectparams
+        };
+
+        (async () => {
+            const loadData = await this._load(url, params);
+            if (loadData && loadData.status === 200 && loadData.isSuccess) {
+                if (loadData.data && loadData.data.rows) {
+                    console.log('loadData.data', loadData.data);
+
+                    if (loadData.data.rows.length > 0) {
+                        // loadData.data.rows.forEach((row, index) => {
+                        //     row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
+                            
+                        // });
+
+                    } else {
+                       
+                    }
+                } else {
+                  
+                }
+            } else {
+               
+            }
+        })();
+
     }
 
 
@@ -1118,6 +1151,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 nzWidth: dialog.width,
                 nzContent: component['layout'],
                 nzComponentParams: {
+                    permissions: this.permissions,
                     config: data,
                     initData: { ...selectedRow, ...tmpValue }
                 },
@@ -1583,6 +1617,9 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
         });
         data['selected'] = true;
         this._selectRow = data;
+        if (!this.is_Selectgrid) {
+            this.value = this._selectRow[this.config.selectGridValueName ? this.config.selectGridValueName : 'Id']; 
+         }
     }
 
     // liu 赋值选中

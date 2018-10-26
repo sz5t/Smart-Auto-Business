@@ -320,7 +320,7 @@ export class GridBase extends CnComponentBase {
                     const newParam = CommonTools.parametersResolver({
                         params: ajaxConfigObj.params,
                         tempValue: this.tempValue,
-                        item: {},
+                        item: handleData,
                         componentValue: dataItem,
                         initValue: this.initValue,
                         cacheValue: this.cacheValue
@@ -332,7 +332,7 @@ export class GridBase extends CnComponentBase {
             executeParams.push(CommonTools.parametersResolver({
                 params: ajaxConfigObj.params,
                 tempValue: this.tempValue,
-                item: {} ,
+                item: handleData ,
                 componentValue: handleData,
                 initValue: this.initValue,
                 cacheValue: this.cacheValue

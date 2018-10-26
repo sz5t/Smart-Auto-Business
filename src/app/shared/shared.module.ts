@@ -83,6 +83,7 @@ import { WfDashboardComponent } from './work-flow/wf-dashboard/wf-dashboard.comp
 import { CnFormSelectGridComponent } from './components/cn-form-select-grid/cn-form-select-grid.component';
 import { CnGridSelectGridComponent } from './components/cn-grid-select-grid/cn-grid-select-grid.component';
 import { CnGridSelectTreegridComponent } from './components/cn-grid-select-treegrid/cn-grid-select-treegrid.component';
+import { CnFormSelectTreegridComponent } from './components/cn-form-select-treegrid/cn-form-select-treegrid.component';
 
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -186,7 +187,8 @@ const DIRECTIVES = [
         // your components
         ...COMPONENTS,
         ...DIRECTIVES,
-        BtnTableFieldLimit
+        BtnTableFieldLimit,
+        CnFormSelectTreegridComponent
     ],
     exports: [
         CommonModule,

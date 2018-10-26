@@ -1,19 +1,20 @@
-<input nz-input
-(ngModelChange)="valueChange($event)"
-[ngStyle]="{'width':configtanchuInput.width}"
-type="{{configtanchuInput.inputType}}"
-[nzSize]="configtanchuInput.size"
-placeholder="{{configtanchuInput.placeholder}}"
+<nz-modal [(nzVisible)]="isVisible" [nzWidth]="config.select.nzWidth" [nzTitle]="config.select.title" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
 
-[(ngModel)]="_value">
-<!-- readonly="{{configtanchuInput.readonly}}"
-disabled="{{configtanchuInput.disabled}}" -->
-
-<button nz-button class="anticon-class" [nzType]="'primary'" (click)="showModal()">
-        <span><strong><i class="anticon anticon-edit"></i></strong></span>
-</button>
-<nz-modal [(nzVisible)]="isVisible" [nzWidth]="nzWidth"
-nzTitle="测试弹出表格" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
-
-  <cn-bsn-table #table [config]="configtanchu"> </cn-bsn-table>
+  <cn-bsn-table #table [config]="config.select.selectGrid" [casadeData]="casadeData" [value]="_value"> </cn-bsn-table>
 </nz-modal>
+
+<div>
+  <nz-input-group nzSearch  [nzSuffix]="suffixIconButton">
+    <input nz-input style=" padding-right: 30px;"  [ngStyle]="{'width':config.width}" type="{{config.inputType}}" [nzSize]="config.size"
+    placeholder="{{config.placeholder}}" [(ngModel)]="_valuetext">
+
+    <input nz-input  (ngModelChange)="valueChange($event)" type="hidden"
+    placeholder="{{config.placeholder}}" [(ngModel)]="_value">
+
+  </nz-input-group>
+  <ng-template #suffixIconButton>
+      <button nz-button nzSearch [nzType]="'default'" (click)="showModal()">
+          <i class="anticon anticon-edit"></i>
+      </button>
+  </ng-template>
+</div>

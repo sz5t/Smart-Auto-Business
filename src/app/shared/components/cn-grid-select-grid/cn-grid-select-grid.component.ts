@@ -102,6 +102,7 @@ export class CnGridSelectGridComponent implements OnInit {
 
   showModal(): void {
     this.isVisible = true;
+    this.table.value = this._value ;
   }
 
   handleOk(): void {
@@ -158,6 +159,8 @@ export class CnGridSelectGridComponent implements OnInit {
     }
     if (this._value) {
       this.valueChange(this._value);
+      // console.log('调用selectload');
+      //  this.table.selectload();
     }
   }
 

@@ -40,7 +40,7 @@ export class CnGridSelectTreegridComponent implements OnInit {
     nzWidth: 768,
     title: '弹出树',
     selectTreeGrid: {
-        is_SelectGrid: true,
+        isSelectGrid: true,
         'selectGridValueName': 'Id',  // 【弹出表格时用】指定绑定的value值
         // 'title': '树表网格',
         'viewId': 'bsnTreeTable',
@@ -473,11 +473,11 @@ export class CnGridSelectTreegridComponent implements OnInit {
 
       }
       this.value['dataText'] = this._valuetext;
-     // this.updateValue.emit(this.value);
+      this.updateValue.emit(this.value);
     } else {
       this.value['data'] = null;
       this.value['dataText'] = null;
-     // this.updateValue.emit(this.value);
+      this.updateValue.emit(this.value);
     }
    console.log('弹出表格返回数据', this.value);
   }

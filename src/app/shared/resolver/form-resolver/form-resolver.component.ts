@@ -58,6 +58,23 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
     // region: 组件生命周期事件
     ngOnInit() {
+        // 做参数简析
+        if (this.config.select) {
+            this.config.select.forEach(selectItem => {
+                this.config.forms.forEach(formItem => {
+                    formItem.controls.forEach((control => {
+                        if (control) {
+                            if (control.name === selectItem.name) {
+                                control['select'] = selectItem.config;
+                            }
+                        }
+                    }));
+                });
+
+            });
+
+        }
+
         if (this.initData) {
             this.initValue = this.initData;
         }
@@ -312,7 +329,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                 if (data.hasOwnProperty(d)) {
                     if (this.formconfigcontrol[d]) {
 
-                        if (this.formconfigcontrol[d]['type'] === 'selectMultiple' || this.formconfigcontrol[d]['type'] === 'selectTreeMultiple' ) {
+                        if (this.formconfigcontrol[d]['type'] === 'selectMultiple' || this.formconfigcontrol[d]['type'] === 'selectTreeMultiple') {
                             let ArrayValue = [];
                             if (data[d]) {
                                 if (data[d].length > 0) {
@@ -324,11 +341,11 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                         } else {
                             this.setValue(d, data[d]);
                         }
-        
+
                     } else {
                         this.setValue(d, data[d]);
                     }
-                   
+
                 }
             }
         }
@@ -788,17 +805,17 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         for (const key in this.value) {
             if (this.formconfigcontrol[key]) {
 
-                if (this.formconfigcontrol[key]['type'] === 'selectMultiple' || this.formconfigcontrol[key]['type'] === 'selectTreeMultiple' ) {
+                if (this.formconfigcontrol[key]['type'] === 'selectMultiple' || this.formconfigcontrol[key]['type'] === 'selectTreeMultiple') {
                     let ArrayValue = '';
-                   // console.log('数组', this.value[key]);
+                    // console.log('数组', this.value[key]);
                     this.value[key].forEach(element => {
                         ArrayValue = ArrayValue + element.toString() + ',';
                     });
-                    if (ArrayValue.length > 0 ) {
-                        ArrayValue = ArrayValue.slice(0 , ArrayValue.length - 1);
+                    if (ArrayValue.length > 0) {
+                        ArrayValue = ArrayValue.slice(0, ArrayValue.length - 1);
                     }
                     ComponentValue[key] = ArrayValue;
-                   // console.log('拼接', ArrayValue); 
+                    // console.log('拼接', ArrayValue); 
                 } else {
                     ComponentValue[key] = this.value[key];
                 }
@@ -901,11 +918,11 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
     }
 
 
-     /**
-     * 弹出上传表单
-     * @param dialog
-     * @returns {boolean}
-     */
+    /**
+    * 弹出上传表单
+    * @param dialog
+    * @returns {boolean}
+    */
     private openUploadDialog(dialog) {
         if (!this.value) {
             this.message.warning('请选中一条需要添加附件的记录！');
@@ -939,10 +956,10 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         }
     }
 
-     /**
-     * 弹出表单
-     * @param option
-     */
+    /**
+    * 弹出表单
+    * @param option
+    */
     formDialog(option) {
         if (this.config.formDialog && this.config.formDialog.length > 0) {
             const index = this.config.formDialog.findIndex(item => item.name === option.name);
@@ -950,11 +967,11 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         }
     }
 
-        /**
-     * 单条数据表单
-     * @param dialog
-     * @returns {boolean}
-     */
+    /**
+ * 单条数据表单
+ * @param dialog
+ * @returns {boolean}
+ */
     private showForm(dialog) {
         let obj;
         if (dialog.type === 'add') {
@@ -1018,11 +1035,11 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
         }
     }
-      /**
-     * 重置表单
-     * @param comp
-     * @private
-     */
+    /**
+   * 重置表单
+   * @param comp
+   * @private
+   */
     private _resetForm(comp: FormResolverComponent) {
         comp.resetForm();
     }
@@ -1037,10 +1054,10 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
         }
     }
 
-      /**
-     * 弹出页面
-     * @param dialog
-     */
+    /**
+   * 弹出页面
+   * @param dialog
+   */
     private showLayout(dialog) {
         const footer = [];
         this.apiService.getLocalData(dialog.layoutName).subscribe(data => {
@@ -1050,7 +1067,7 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
                 nzContent: LayoutResolverComponent,
                 nzComponentParams: {
                     config: data,
-                    initData: {...this.value, ...this.tempValue}
+                    initData: { ...this.value, ...this.tempValue }
                 },
                 nzFooter: footer
             });
@@ -1099,10 +1116,10 @@ export class FormResolverComponent extends CnComponentBase implements OnInit, On
 
     }
 
-       /**
-     * 批量编辑表单
-     * @param dialog
-     */
+    /**
+  * 批量编辑表单
+  * @param dialog
+  */
     private showBatchForm(dialog) {
         const footer = [];
         const checkedItems = [];
