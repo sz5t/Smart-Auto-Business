@@ -47,3 +47,4 @@ package.json
 
 #vendor
 /src/assets/vendor
+/src/assets/data

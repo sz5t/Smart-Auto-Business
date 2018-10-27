@@ -1,20 +1,30 @@
-import { Component, OnInit, Input, AfterViewInit, Output, EventEmitter, OnChanges } from '@angular/core';
-import { _HttpClient } from '@delon/theme';
-import { ApiService } from '@core/utility/api-service';
-import { APIResource } from '@core/utility/api-resource';
-import { FormGroup } from '@angular/forms';
-import { NzTreeNode } from 'ng-zorro-antd';
-import { CommonTools } from '@core/utility/common-tools';
+import {
+    Component,
+    OnInit,
+    Input,
+    AfterViewInit,
+    Output,
+    EventEmitter,
+    OnChanges
+} from "@angular/core";
+import { _HttpClient } from "@delon/theme";
+import { ApiService } from "@core/utility/api-service";
+import { APIResource } from "@core/utility/api-resource";
+import { FormGroup } from "@angular/forms";
+import { NzTreeNode } from "ng-zorro-antd";
+import { CommonTools } from "@core/utility/common-tools";
 
 @Component({
-  selector: 'cn-form-select-tree',
-  templateUrl: './cn-form-select-tree.component.html',
+    selector: "cn-form-select-tree",
+    templateUrl: "./cn-form-select-tree.component.html"
 })
 export class CnFormSelectTreeComponent implements OnInit {
-  formGroup: FormGroup;
+    formGroup: FormGroup;
 
-  @Input() config;
-  @Input() bsnData;
+    @Input()
+    config;
+    @Input()
+    bsnData;
     treeData;
     treeDatalist = [];
     _tempValue = {};
@@ -27,33 +37,27 @@ export class CnFormSelectTreeComponent implements OnInit {
     };
     value;
     treecolumns = {};
-    constructor(
-        private _http: ApiService
-    ) {
-    }
+    constructor(private _http: ApiService) {}
 
     ngOnInit() {
-       
         if (this.config.columns) {
             this.config.columns.forEach(element => {
                 this.treecolumns[element.field] = element.valueName;
             });
         }
-        if (!this.config['multiple']) {
-            this.config['multiple'] = false;
-          }
-          if (!this.config['Checkable']) {
-            this.config['Checkable'] = false;
-          }
-          
-          
-      this.loadTreeData();
+        if (!this.config["multiple"]) {
+            this.config["multiple"] = false;
+        }
+        if (!this.config["Checkable"]) {
+            this.config["Checkable"] = false;
+        }
+
+        this.loadTreeData();
     }
 
     async getAsyncTreeData(nodeValue = null) {
-        return await this.execAjax(this.config.ajaxConfig, nodeValue, 'load');
+        return await this.execAjax(this.config.ajaxConfig, nodeValue, "load");
     }
-
 
     loadTreeData() {
         (async () => {
@@ -65,25 +69,23 @@ export class CnFormSelectTreeComponent implements OnInit {
                     TotreeBefore.forEach(d => {
                         if (this.config.columns) {
                             this.config.columns.forEach(col => {
-                                d[col['field']] = d[col['valueName']];
+                                d[col["field"]] = d[col["valueName"]];
                             });
                         }
                     });
-    
+
                     let parent = null;
                     // 解析出 parentid ,一次性加载目前只考虑一个值
                     if (this.config.parent) {
                         this.config.parent.forEach(param => {
-                            if (param.type === 'tempValue') {
+                            if (param.type === "tempValue") {
                                 parent = this._tempValue[param.valueName];
-    
-                            } else if (param.type === 'value') {
-                                if (param.value === 'null') {
+                            } else if (param.type === "value") {
+                                if (param.value === "null") {
                                     param.value = null;
                                 }
                                 parent = param.value;
-    
-                            } else if (param.type === 'GUID') {
+                            } else if (param.type === "GUID") {
                                 const fieldIdentity = CommonTools.uuID(10);
                                 parent = fieldIdentity;
                             }
@@ -95,14 +97,16 @@ export class CnFormSelectTreeComponent implements OnInit {
                     //     isLeaf: false,
                     //     children: []
                     // })];
-    
-                    // result[0].children.push(...);
-                    this.treeData = this.listToAsyncTreeData(TotreeBefore, parent);
-                }
-    
-            }
-           
 
+                    // result[0].children.push(...);
+                    this.treeData = this.listToAsyncTreeData(
+                        TotreeBefore,
+                        parent
+                    );
+
+                    console.log(this.treeData);
+                }
+            }
         })();
     }
 
@@ -113,12 +117,12 @@ export class CnFormSelectTreeComponent implements OnInit {
             if (data[i].parentId === parentid) {
                 temp = this.listToAsyncTreeData(data, data[i].key);
                 if (temp.length > 0) {
-                    data[i]['children'] = temp;
-                    data[i]['isLeaf'] = false;
+                    data[i]["children"] = temp;
+                    data[i]["isLeaf"] = false;
                 } else {
-                    data[i]['isLeaf'] = false;
+                    data[i]["isLeaf"] = false;
                 }
-                data[i].level = '';
+                data[i].level = "";
                 result.push(new NzTreeNode(data[i]));
             }
         }
@@ -126,8 +130,7 @@ export class CnFormSelectTreeComponent implements OnInit {
     }
 
     async execAjax(p?, componentValue?, type?) {
-        const params = {
-        };
+        const params = {};
         let url;
         let tag = true;
         /*  if (!this._tempValue)  {
@@ -135,58 +138,58 @@ export class CnFormSelectTreeComponent implements OnInit {
          } */
         if (p) {
             p.params.forEach(param => {
-                if (param.type === 'tempValue') {
+                if (param.type === "tempValue") {
                     if (type) {
-                        if (type === 'load') {
+                        if (type === "load") {
                             if (this.bsnData[param.valueName]) {
-                               // params[param.name] = this._tempValue[param.valueName];
-                                params[param.name] = this.bsnData[param.valueName];
+                                // params[param.name] = this._tempValue[param.valueName];
+                                params[param.name] = this.bsnData[
+                                    param.valueName
+                                ];
                             } else {
                                 // console.log('参数不全不能加载');
                                 tag = false;
                                 return;
                             }
                         } else {
-                          //  params[param.name] = this._tempValue[param.valueName];
+                            //  params[param.name] = this._tempValue[param.valueName];
                             params[param.name] = this.bsnData[param.valueName];
                         }
                     } else {
-                       // params[param.name] = this._tempValue[param.valueName];
+                        // params[param.name] = this._tempValue[param.valueName];
                         params[param.name] = this.bsnData[param.valueName];
                     }
-                } else if (param.type === 'value') {
-
+                } else if (param.type === "value") {
                     params[param.name] = param.value;
-
-                } else if (param.type === 'GUID') {
+                } else if (param.type === "GUID") {
                     const fieldIdentity = CommonTools.uuID(10);
                     params[param.name] = fieldIdentity;
-                } else if (param.type === 'componentValue') {
+                } else if (param.type === "componentValue") {
                     params[param.name] = componentValue;
                 }
             });
             if (this.isString(p.url)) {
                 url = p.url;
             } else {
-                let pc = 'null';
+                let pc = "null";
                 p.url.params.forEach(param => {
-                    if (param['type'] === 'value') {
+                    if (param["type"] === "value") {
                         pc = param.value;
-                    } else if (param.type === 'GUID') {
+                    } else if (param.type === "GUID") {
                         const fieldIdentity = CommonTools.uuID(10);
                         pc = fieldIdentity;
-                    } else if (param.type === 'componentValue') {
+                    } else if (param.type === "componentValue") {
                         pc = componentValue.value;
-                    } else if (param.type === 'tempValue') {
-                       // pc = this._tempValue[param.valueName];
+                    } else if (param.type === "tempValue") {
+                        // pc = this._tempValue[param.valueName];
                         pc = this.bsnData[param.valueName];
                     }
                 });
-                url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
+                url = p.url["parent"] + "/" + pc + "/" + p.url["child"];
             }
         }
-      
-        if (p.ajaxType === 'get' && tag) {
+
+        if (p.ajaxType === "get" && tag) {
             return this._http.get(url, params).toPromise();
         }
     }
@@ -204,34 +207,39 @@ export class CnFormSelectTreeComponent implements OnInit {
         // }
     }
 
-
-    expandNode = (e) => {
+    expandNode = e => {
         (async () => {
             if (e.node.getChildren().length === 0 && e.node.isExpanded) {
-
-                const s = await Promise.all(this.config.expand
-                .filter(p => p.type === e.node.isLeaf)
-                .map(async expand => {
-                    const  data =  await this.execAjax(expand.ajaxConfig, e.node.key, 'load');
-                    if (data.data.length > 0 && data.status === 200) {
-                    data.data.forEach(item => {
-                        item['isLeaf'] = false;
-                        item['children'] = [];
-                        if (this.config.columns) {
-                            this.config.columns.forEach(col => {
-                                item[col['field']] = item[col['valueName']];
-                            });
-                        }
-                    });
-                    e.node.addChildren(data.data);
-                }
-                }));
+                const s = await Promise.all(
+                    this.config.expand
+                        .filter(p => p.type === e.node.isLeaf)
+                        .map(async expand => {
+                            const data = await this.execAjax(
+                                expand.ajaxConfig,
+                                e.node.key,
+                                "load"
+                            );
+                            if (data.data.length > 0 && data.status === 200) {
+                                data.data.forEach(item => {
+                                    item["isLeaf"] = false;
+                                    item["children"] = [];
+                                    if (this.config.columns) {
+                                        this.config.columns.forEach(col => {
+                                            item[col["field"]] =
+                                                item[col["valueName"]];
+                                        });
+                                    }
+                                });
+                                e.node.addChildren(data.data);
+                            }
+                        })
+                );
             }
         })();
-    }
+    };
 
-    isString(obj) { // 判断对象是否是字符串
-        return Object.prototype.toString.call(obj) === '[object String]';
+    isString(obj) {
+        // 判断对象是否是字符串
+        return Object.prototype.toString.call(obj) === "[object String]";
     }
-
 }

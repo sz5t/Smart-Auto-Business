@@ -1,0 +1,92 @@
+{
+    "rows": [
+
+        {
+            "row": {
+                "cols": [
+                    {
+                        "id": "area33",
+                        "title": "折叠面板",
+                        "span": 24,
+                        "icon": "icon-list",
+                        "size": {
+                            "nzXs": 24,
+                            "nzSm": 24,
+                            "nzMd": 24,
+                            "nzLg": 24,
+                            "ngXl": 24
+                        },
+                        "viewCfg": [
+                            {
+                                "config": {
+
+                                    "viewId": "panels",
+                                    "component": "bsnAccordion",
+                                    "info": true,
+                                    "keyId": "Id",
+                                    "size": "default",
+                                    "panels": [
+                                        {
+                                            "title": "组件配置",
+                                            "size": "small",
+                                            "icon": "icon icon-pencil text-grey-darker",
+                                            "active": true,
+                                            "showArrow": true,
+                                            "viewCfg": [
+                                                {
+                                                    "config": {
+                                                        "viewId": "search_form",
+                                                        "component": "search_view",
+                                                        "keyId": "Id",
+                                                        "layout": "horizontal",
+                                                        "componentType": {
+                                                            "parent": true,
+                                                            "child": false,
+                                                            "own": true
+                                                        },
+                                                        "forms": [
+
+                                                        ],
+                                                        "dataList": [],
+                                                        "relations": [
+                                                            {
+                                                                "relationViewId": "search_form",
+                                                                "relationSendContent": [
+                                                                    {
+                                                                        "name": "searchFormByValue",
+                                                                        "sender": "search_form",
+                                                                        "aop": "after",
+                                                                        "receiver": "singleTable",
+                                                                        "relationData": {
+                                                                            "name": "refreshAsChild",
+                                                                            "params": [
+                                                                                {
+                                                                                    "pid": "caseName",
+                                                                                    "cid": "_caseName"
+                                                                                },
+                                                                                {
+                                                                                    "pid": "caseType",
+                                                                                    "cid": "_type"
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ],
+                                                                "relationReceiveContent": []
+                                                            }
+                                                        ]
+                                                    },
+                                                    "dataList": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

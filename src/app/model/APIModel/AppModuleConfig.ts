@@ -3,18 +3,17 @@
  */
 import construct = Reflect.construct;
 
-export class AppModuleConfig{
-  ParentId;
-  Order;
-  CategoryId;
-  ApplyId;
-  ConfigData;
-  Children;
-  Name;
-  ShareScope;
-  Remark;
-  ProjId;
-  PlatCustomerId;
-  Id;
+export class AppModuleConfig {
+    ParentId;
+    Order;
+    CategoryId;
+    ApplyId;
+    ConfigData;
+    Children;
+    Name;
+    ShareScope;
+    Remark;
+    ProjId;
+    PlatCustomerId;
+    Id;
 }
-

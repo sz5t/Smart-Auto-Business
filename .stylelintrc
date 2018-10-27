@@ -19,6 +19,9 @@
     "value-list-max-empty-lines": null,
     "string-no-newline": null,
     "selector-type-no-unknown": null,
+    "value-list-comma-newline-after": null,
+    "declaration-colon-newline-after": null,
+    "value-list-comma-newline-before": null,
     "selector-pseudo-element-no-unknown": [
         true,
         {

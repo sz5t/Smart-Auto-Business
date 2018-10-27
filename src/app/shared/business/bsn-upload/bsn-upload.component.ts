@@ -1,12 +1,12 @@
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
-import {NzMessageService, UploadFile} from 'ng-zorro-antd';
-import {ApiService} from '@core/utility/api-service';
+import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
+import { NzMessageService, UploadFile } from "ng-zorro-antd";
+import { ApiService } from "@core/utility/api-service";
 
 @Component({
-    selector: 'bsn-upload',
-    templateUrl: './bsn-upload.component.html',
+    selector: "bsn-upload",
+    templateUrl: "./bsn-upload.component.html",
     styles: [
-            `
+        `
             :host ::ng-deep nz-upload {
                 display: block;
             }
@@ -25,8 +25,10 @@ import {ApiService} from '@core/utility/api-service';
     ]
 })
 export class BsnUploadComponent implements OnInit, AfterViewInit {
-    @Input() config;
-    @Input() refObj;
+    @Input()
+    config;
+    @Input()
+    refObj;
     uploading = false;
     fileList: UploadFile[] = [];
     uploadList = [];
@@ -36,39 +38,36 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
     constructor(
         private _message: NzMessageService,
         private _apiService: ApiService
-    ) {
-    }
+    ) {}
 
-    ngOnInit() {
-
-    }
+    ngOnInit() {}
 
     ngAfterViewInit() {
-
         this.loadUploadList();
     }
 
     loadUploadList() {
         this.loading = true;
-        this._apiService.get(this.config.ajaxConfig.listUrl, {refDataId: this.refObj._id}).subscribe(
-            result => {
-                this.uploadList = result.data;
-                this.loading = false;
-            },
-            error => {
-                this.loading = false;
-            }
-        );
+        this._apiService
+            .get(this.config.ajaxConfig.listUrl, { refDataId: this.refObj._id })
+            .subscribe(
+                result => {
+                    this.uploadList = result.data;
+                    this.loading = false;
+                },
+                error => {
+                    this.loading = false;
+                }
+            );
     }
 
-    handleChange({file, fileList}): void {
+    handleChange({ file, fileList }): void {
         const status = file.status;
-        if (status !== 'uploading') {
-
+        if (status !== "uploading") {
         }
-        if (status === 'done') {
+        if (status === "done") {
             this._message.success(`文件 ${file.name} 上传成功！`);
-        } else if (status === 'error') {
+        } else if (status === "error") {
             this._message.error(`文件 ${file.name} 上传失败！`);
         }
     }
@@ -94,39 +93,41 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
             formData.append(`file_${index}`, file);
             formData.append(`secretLevel_${index}`, this.securityLevel);
         });
-        formData.append('refDataId', this.refObj._id);
+        formData.append("refDataId", this.refObj._id);
         this.uploading = true;
         this._apiService.post(this.config.ajaxConfig.url, formData).subscribe(
             result => {
                 this.uploading = false;
-                this._message.success('上传成功！');
+                this._message.success("上传成功！");
                 this.loadUploadList();
             },
             error => {
                 this.uploading = false;
-                this._message.error('上传失败！');
+                this._message.error("上传失败！");
             }
         );
     }
 
     download(id) {
-        this._apiService.get(this.config.ajaxConfig.downloadUrl, {_ids: id}).subscribe(
-            result => {
-                this._message.success('下载成功');
-            }
-        );
+        this._apiService
+            .get(this.config.ajaxConfig.downloadUrl, { _ids: id })
+            .subscribe(result => {
+                this._message.success("下载成功");
+            });
     }
 
     delete(id) {
-        this._apiService.delete(this.config.ajaxConfig.deleteUrl, {_ids: id}).subscribe(
-            result => {
-                this._message.success('附件删除成功');
-                this.loadUploadList();
-            },
-            error => {
-                this._message.success('附件删除失败！');
-            }
-        );
+        this._apiService
+            .delete(this.config.ajaxConfig.deleteUrl, { _ids: id })
+            .subscribe(
+                result => {
+                    this._message.success("附件删除成功");
+                    this.loadUploadList();
+                },
+                error => {
+                    this._message.success("附件删除失败！");
+                }
+            );
     }
 
     cancel() {

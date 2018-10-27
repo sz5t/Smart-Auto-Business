@@ -1,16 +1,16 @@
-export enum PermissionValue{
-    NotSet,     // 未设置，可设定系统策略来确定默认值
-    Invisible,  // 不可见
-    Disabled,   // 不可用
-    Permitted   // 可用、可见
+export enum PermissionValue {
+    NotSet, // 未设置，可设定系统策略来确定默认值
+    Invisible, // 不可见
+    Disabled, // 不可用
+    Permitted // 可用、可见
 }
 
-export class OpPermission{
+export class OpPermission {
     Name: string = null;
     Permission: PermissionValue;
     PermissionExpText: string = null;
 
-    constructor(name: string, permission: PermissionValue){
+    constructor(name: string, permission: PermissionValue) {
         this.Name = name;
         this.Permission = permission;
     }
@@ -19,17 +19,17 @@ export class OpPermission{
 export class ObjectPermission {
     Id: string = null;
     Name: string = null;
-    constructor(id: string, name: string){
+    constructor(id: string, name: string) {
         this.Id = id;
         this.Name = name;
     }
     OpPermissions: OpPermission[] = [];
 }
 
-export class ResourceTypePermission extends ObjectPermission{
-    DeleteFilter: string  = null;
-    QueryFilter: string  = null;
-    UpdateFilter: string  = null;
+export class ResourceTypePermission extends ObjectPermission {
+    DeleteFilter: string = null;
+    QueryFilter: string = null;
+    UpdateFilter: string = null;
     PropPermissions: ObjectPermission[] = [];
     RowPermissions: ObjectPermission[] = [];
 }
@@ -37,7 +37,7 @@ export class ResourceTypePermission extends ObjectPermission{
 /// <summary>
 /// 数据资源访问许可
 /// </summary>
-export class DataResPermission  extends ObjectPermission{
+export class DataResPermission extends ObjectPermission {
     OpPermissions: OpPermission[] = [];
     ResourceTypePermissions: ResourceTypePermission[] = [];
 }
@@ -45,7 +45,7 @@ export class DataResPermission  extends ObjectPermission{
 /// <summary>
 /// 一般功能性资源访问许可。可用于前端粗粒度的模块访问许可设置，
 /// </summary>
-export class FuncResPermission extends ObjectPermission{
+export class FuncResPermission extends ObjectPermission {
     constructor(id?: string, name?: string) {
         super(id, name);
     }
