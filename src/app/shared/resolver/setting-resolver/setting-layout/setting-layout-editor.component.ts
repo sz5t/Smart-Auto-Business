@@ -273,7 +273,6 @@ export class SettingLayoutEditorComponent
                             this.componentRef = this.container.createComponent(
                                 comp
                             );
-                            console.log(this.config.config);
                             this.componentRef.instance.config = this.config.config;
                             this.componentRef.instance.dataList = this.config.dataList;
                             this.componentRef.instance.layoutId = this.layoutId;

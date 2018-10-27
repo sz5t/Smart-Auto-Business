@@ -11,7 +11,7 @@
                         (click)="toolbarAction(btn)"
                         [attr.disabled]="btn.disabled">
                             <!-- <strong><i class="{{btn.icon}} {{btn.color}}"></i> {{btn.text}}</strong> -->
-                            <i nz-icon type="btn.icon" [theme]="btn.theme ? btn.theme : 'twotone'"></i> {{btn.text}}
+                            <i nz-icon [type]="btn.icon" [theme]="btn.theme ? btn.theme : 'outline'"></i>{{btn.text}}
                     </button>
                 </nz-button-group>
         </span>
@@ -25,7 +25,7 @@
                         <ul nz-menu>
                             <li nz-menu-item *ngFor="let b of btn.buttons">
                                 <strong>
-                                        <a (click)="toolbarAction(b)" [attr.disabled]="b.disabled"><i class="{{b.icon}}"></i> {{b.text}}</a>
+                                        <a (click)="toolbarAction(b)" [attr.disabled]="b.disabled"> <i nz-icon type="btn.icon" [theme]="btn.theme ? btn.theme : 'outline'"></i>{{b.text}}</a>
                                 </strong>
                             </li>
                         </ul>

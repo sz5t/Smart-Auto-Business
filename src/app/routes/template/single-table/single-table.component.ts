@@ -32,7 +32,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                             id: "area2",
                             title: "查询123",
                             span: 8,
-                            icon: "anticon anticon-right-circle text-primary",
+                            icon: "right-circle text-primary",
                             size: {
                                 nzXs: 24,
                                 nzSm: 24,
@@ -145,8 +145,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         controlSize: "18",
                                                         inputType: "text",
                                                         name: "caseName",
-                                                        perfix:
-                                                            "anticon anticon-edit",
+                                                        perfix: "edit",
                                                         label: "名称",
                                                         placeholder: "",
                                                         disabled: false,
@@ -204,8 +203,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         controlSize: "21",
                                                         inputType: "text",
                                                         name: "caseName",
-                                                        perfix:
-                                                            "anticon anticon-edit",
+                                                        perfix: "edit",
                                                         label: "备注",
                                                         placeholder: "",
                                                         disabled: false,
@@ -625,8 +623,8 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         text: "刷新",
                                                         color: "text-primary",
                                                         cancelPermission: true,
-                                                        icon: "refresh",
-                                                        theme: "twotone"
+                                                        icon: "sync",
+                                                        theme: "outline"
                                                     },
                                                     {
                                                         name: "addRow",
@@ -635,14 +633,13 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         icon: "plus",
                                                         color: "text-primary",
                                                         cancelPermission: true,
-                                                        theme: "twotone"
+                                                        theme: "outline"
                                                     },
                                                     {
                                                         name: "updateRow",
                                                         text: "修改",
                                                         action: "EDIT",
-                                                        icon:
-                                                            "anticon anticon-edit",
+                                                        icon: "edit",
                                                         color: "text-success",
                                                         cancelPermission: true
                                                     },
@@ -650,8 +647,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         name: "deleteRow",
                                                         text: "删除1",
                                                         action: "DELETE",
-                                                        icon:
-                                                            "anticon anticon-delete",
+                                                        icon: "delete",
                                                         color: "text-red-light",
                                                         cancelPermission: true,
                                                         ajaxConfig: {
@@ -674,8 +670,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     {
                                                         name: "deleteRow",
                                                         text: "删除2",
-                                                        icon:
-                                                            "anticon anticon-delete",
+                                                        icon: "delete",
                                                         color: "text-warning",
                                                         cancelPermission: true,
                                                         ajaxConfig: [
@@ -711,8 +706,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                             "executeCheckedRow",
                                                         text:
                                                             "多选删除(确认+提示操作)",
-                                                        icon:
-                                                            "anticon anticon-delete",
+                                                        icon: "delete",
                                                         color: "text-red-light",
                                                         actionType: "post",
                                                         actionName:
@@ -818,8 +812,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                             "executeCheckedRow1",
                                                         text:
                                                             "多选删除(验证+提示)",
-                                                        icon:
-                                                            "anticon anticon-delete",
+                                                        icon: "delete",
                                                         color: "text-red-light",
                                                         actionType: "post",
                                                         actionName:
@@ -875,8 +868,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         class:
                                                             "editable-add-btn",
                                                         text: "选中删除",
-                                                        icon:
-                                                            "anticon anticon-delete",
+                                                        icon: "delete",
                                                         actionType: "post",
                                                         actionName:
                                                             "execSelected",
@@ -926,8 +918,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         class:
                                                             "editable-add-btn",
                                                         text: "保存",
-                                                        icon:
-                                                            "anticon anticon-save",
+                                                        icon: "save",
                                                         type: "default",
                                                         color: "text-primary",
                                                         cancelPermission: true,
@@ -1140,8 +1131,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         text: "取消",
                                                         action: "CANCEL",
                                                         cancelPermission: true,
-                                                        icon:
-                                                            "anticon anticon-rollback",
+                                                        icon: "rollback",
                                                         color:
                                                             "text-grey-darker"
                                                     }
@@ -1152,8 +1142,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     {
                                                         name: "addForm",
                                                         text: "弹出新增表单",
-                                                        icon:
-                                                            "anticon anticon-form",
+                                                        icon: "form",
                                                         action: "FORM",
                                                         actionType:
                                                             "formDialog",
@@ -1165,8 +1154,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     {
                                                         name: "editForm",
                                                         text: "弹出编辑表单",
-                                                        icon:
-                                                            "anticon anticon-form",
+                                                        icon: "form",
                                                         action: "FORM",
                                                         actionType:
                                                             "formDialog",
@@ -1182,8 +1170,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         action: "FORM_BATCH",
                                                         actionName:
                                                             "batchUpdateShowCase",
-                                                        icon:
-                                                            "anticon anticon-form",
+                                                        icon: "form",
                                                         type: "showBatchForm",
                                                         cancelPermission: true
                                                     },
@@ -1200,8 +1187,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     },
                                                     {
                                                         name: "upload",
-                                                        icon:
-                                                            "anticon anticon-upload",
+                                                        icon: "upload",
                                                         text: "附件上传",
                                                         action: "UPLOAD",
                                                         actionType:
@@ -1214,8 +1200,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     {
                                                         name: "addFormcascade",
                                                         text: "级联例子",
-                                                        icon:
-                                                            "anticon anticon-form",
+                                                        icon: "form",
                                                         action: "FORM",
                                                         actionType:
                                                             "formDialog",
@@ -1418,8 +1403,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 isRequired: true,
                                                                 placeholder:
                                                                     "请输入Case名称",
-                                                                perfix:
-                                                                    "anticon anticon-edit",
+                                                                perfix: "edit",
                                                                 disabled: false,
                                                                 readonly: false,
                                                                 size: "default",
@@ -1990,8 +1974,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 isRequired: true,
                                                                 placeholder:
                                                                     "请输入Case名称",
-                                                                perfix:
-                                                                    "anticon anticon-edit",
+                                                                perfix: "edit",
                                                                 suffix: "",
                                                                 disabled: false,
                                                                 readonly: false,
@@ -3829,8 +3812,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         name: "deleteRow",
                                                         text: "删除1",
                                                         action: "DELETE",
-                                                        icon:
-                                                            "anticon anticon-delete",
+                                                        icon: "delete",
                                                         color: "text-red-light",
                                                         ajaxConfig: {
                                                             delete: [
@@ -3852,8 +3834,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     {
                                                         name: "deleteRow",
                                                         text: "删除2",
-                                                        icon:
-                                                            "anticon anticon-delete",
+                                                        icon: "delete",
                                                         color: "text-warning",
                                                         ajaxConfig: [
                                                             {
@@ -3888,8 +3869,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                             "executeCheckedRow",
                                                         text:
                                                             "多选删除(确认+提示操作)",
-                                                        icon:
-                                                            "anticon anticon-delete",
+                                                        icon: "delete",
                                                         color: "text-red-light",
                                                         actionType: "post",
                                                         actionName:
@@ -3994,8 +3974,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                             "executeCheckedRow1",
                                                         text:
                                                             "多选删除(验证+提示)",
-                                                        icon:
-                                                            "anticon anticon-delete",
+                                                        icon: "delete",
                                                         color: "text-red-light",
                                                         actionType: "post",
                                                         actionName:
@@ -4050,8 +4029,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         class:
                                                             "editable-add-btn",
                                                         text: "选中删除",
-                                                        icon:
-                                                            "anticon anticon-delete",
+                                                        icon: "delete",
                                                         actionType: "post",
                                                         actionName:
                                                             "execSelected",
@@ -4100,8 +4078,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         class:
                                                             "editable-add-btn",
                                                         text: "保存",
-                                                        icon:
-                                                            "anticon anticon-save",
+                                                        icon: "save",
                                                         type: "default",
                                                         color: "text-primary",
                                                         ajaxConfig: [
@@ -4312,8 +4289,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                             "editable-add-btn",
                                                         text: "取消",
                                                         action: "CANCEL",
-                                                        icon:
-                                                            "anticon anticon-rollback",
+                                                        icon: "rollback",
                                                         color:
                                                             "text-grey-darker"
                                                     }
@@ -4324,8 +4300,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     {
                                                         name: "addForm",
                                                         text: "弹出新增表单",
-                                                        icon:
-                                                            "anticon anticon-form",
+                                                        icon: "form",
                                                         action: "FORM",
                                                         actionType:
                                                             "formDialog",
@@ -4336,8 +4311,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     {
                                                         name: "editForm",
                                                         text: "弹出编辑表单",
-                                                        icon:
-                                                            "anticon anticon-form",
+                                                        icon: "form",
                                                         action: "FORM",
                                                         actionType:
                                                             "formDialog",
@@ -4352,8 +4326,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         action: "FORM_BATCH",
                                                         actionName:
                                                             "batchUpdateShowCase",
-                                                        icon:
-                                                            "anticon anticon-form",
+                                                        icon: "form",
                                                         type: "showBatchForm"
                                                     },
                                                     {
@@ -4368,8 +4341,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     },
                                                     {
                                                         name: "upload",
-                                                        icon:
-                                                            "anticon anticon-upload",
+                                                        icon: "upload",
                                                         text: "附件上传",
                                                         action: "UPLOAD",
                                                         actionType:
@@ -4381,8 +4353,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     {
                                                         name: "addFormcascade",
                                                         text: "级联例子",
-                                                        icon:
-                                                            "anticon anticon-form",
+                                                        icon: "form",
                                                         action: "FORM",
                                                         actionType:
                                                             "formDialog",
@@ -4580,8 +4551,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 isRequired: true,
                                                                 placeholder:
                                                                     "请输入Case名称",
-                                                                perfix:
-                                                                    "anticon anticon-edit",
+                                                                perfix: "edit",
                                                                 disabled: false,
                                                                 readonly: false,
                                                                 size: "default",
@@ -5153,8 +5123,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 isRequired: true,
                                                                 placeholder:
                                                                     "请输入Case名称",
-                                                                perfix:
-                                                                    "anticon anticon-edit",
+                                                                perfix: "edit",
                                                                 suffix: "",
                                                                 disabled: false,
                                                                 readonly: false,
@@ -6691,7 +6660,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                             name:
                                                                                 "caseName",
                                                                             addOnBeforeIcon:
-                                                                                "anticon anticon-setting",
+                                                                                "setting",
                                                                             label:
                                                                                 "名称",
                                                                             placeholder:
@@ -6717,7 +6686,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                             name:
                                                                                 "caseLevel",
                                                                             addOnAfterIcon:
-                                                                                "anticon anticon-setting",
+                                                                                "setting",
                                                                             label:
                                                                                 "级别",
                                                                             placeholder:
@@ -6957,7 +6926,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                             name:
                                                                                 "caseName",
                                                                             addOnBeforeIcon:
-                                                                                "anticon anticon-setting",
+                                                                                "setting",
                                                                             label:
                                                                                 "名称",
                                                                             placeholder:
@@ -6983,7 +6952,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                             name:
                                                                                 "caseLevel",
                                                                             addOnAfterIcon:
-                                                                                "anticon anticon-setting",
+                                                                                "setting",
                                                                             label:
                                                                                 "级别",
                                                                             placeholder:
@@ -7072,8 +7041,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 size: "default", // small ,default,
                                                 active: false,
                                                 showArrow: true,
-                                                icon:
-                                                    "anticon anticon-setting text-success",
+                                                icon: "setting text-success",
                                                 viewCfg: [
                                                     {
                                                         config: {
@@ -7223,7 +7191,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                             name:
                                                                                 "caseName",
                                                                             addOnBeforeIcon:
-                                                                                "anticon anticon-setting",
+                                                                                "setting",
                                                                             label:
                                                                                 "名称",
                                                                             placeholder:
@@ -7249,7 +7217,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                             name:
                                                                                 "caseLevel",
                                                                             addOnAfterIcon:
-                                                                                "anticon anticon-setting",
+                                                                                "setting",
                                                                             label:
                                                                                 "级别",
                                                                             placeholder:

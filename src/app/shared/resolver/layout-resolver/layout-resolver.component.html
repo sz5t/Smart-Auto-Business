@@ -1,31 +1,29 @@
 <ng-container *ngIf="config.rows">
-    <div nz-row [nzGutter]="6" *ngFor="let row of config.rows">
+        <div nz-row [nzGutter]="6" *ngFor="let row of config.rows">
+                <div nz-col *ngFor="let c of row.row.cols" [nzSpan]="c.span" [nzSm]="c.size.nzSm" [nzXs]="c.size.nzXs"
+                         [nzMd]="c.size.nzMd"
+                         [nzLg]="c.size.nzLg" [nzXl]="c.size.nzXl">
+                        <cn-layout-resolver [initData]="initData" [layoutId]="layoutId" [permissions]="permissions" [config]="c"></cn-layout-resolver>
+                        <nz-card *ngIf="c.viewCfg" [nzTitle]="c.title ? cardTitle : false"
+                                         [nzBodyStyle]="c.bodyStyle ? c.bodyStyle : { padding: '8px' }">
+                                <ng-template #cardTitle>
+                                        <i nz-icon [type]="c.icon" [theme]="c.theme ? c.theme : 'outline'"></i>{{c.title}}
+                                </ng-template>
+                                <div *ngIf="c.handle && c.handle === 'single'; else elseTemplate">
+                                        <ng-container cnLayoutResolverDirective [layoutId]="layoutId" [config]="c" [permissions]="permissions"></ng-container>
+                                </div>
+                                <ng-template #elseTemplate>
+                                        <cn-component-resolver *ngFor="let cfg of c.viewCfg" [layoutId]="layoutId" [permissions]="permissions"
+                                                                                [config]="cfg" [initData]="initData"></cn-component-resolver>
+                                </ng-template>
 
-        <div nz-col *ngFor="let c of row.row.cols" [nzSpan]="c.span" [nzSm]="c.size.nzSm" [nzXs]="c.size.nzXs"
-             [nzMd]="c.size.nzMd"
-             [nzLg]="c.size.nzLg" [nzXl]="c.size.nzXl">
-            <cn-layout-resolver [initData]="initData" [layoutId]="layoutId" [permissions]="permissions" [config]="c"></cn-layout-resolver>
-            <nz-card *ngIf="c.viewCfg" [nzTitle]="c.title ? cardTitle : false"
-                     [nzBodyStyle]="c.bodyStyle ? c.bodyStyle : { padding: '8px' }">
-                <ng-template #cardTitle>
-                    <i class="{{c.icon}}"></i>
-                    {{c.title}}
-                </ng-template>
-                <div *ngIf="c.handle && c.handle === 'single'; else elseTemplate">
-                    <ng-container cnLayoutResolverDirective [layoutId]="layoutId" [config]="c" [permissions]="permissions"></ng-container>
+                        </nz-card>
                 </div>
-                <ng-template #elseTemplate>
-                    <cn-component-resolver *ngFor="let cfg of c.viewCfg" [layoutId]="layoutId" [permissions]="permissions"
-                                        [config]="cfg" [initData]="initData"></cn-component-resolver>
-                </ng-template>
-
-            </nz-card>
         </div>
-    </div>
 </ng-container>
 <!-- <cn-component-resolver *ngIf="!config.rows && !config.tabs && !config.viewCfg"
-                       [layoutId]="layoutId"
-                       [blockId]="config.id"
-                       [initData]="initData"
-                       [config]="config">
+                                             [layoutId]="layoutId"
+                                             [blockId]="config.id"
+                                             [initData]="initData"
+                                             [config]="config">
 </cn-component-resolver> -->
