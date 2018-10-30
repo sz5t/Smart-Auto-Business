@@ -71,6 +71,13 @@ export class TreeAndTableComponent implements OnInit {
                                         defaultSelection: {
                                             selected: [
                                                 {
+                                                    level: 1,
+                                                    field: "",
+                                                    index: 2,
+                                                    reg: "",
+                                                    type: ""
+                                                },
+                                                {
                                                     level: 2,
                                                     field: "",
                                                     index: 1,
@@ -86,17 +93,16 @@ export class TreeAndTableComponent implements OnInit {
                                                         name: "refresh",
                                                         text: "刷新",
                                                         action: "REFRESH",
-                                                        icon:
-                                                            "anticon anticon-sync",
+                                                        icon: "sync",
                                                         color:
                                                             "text-success-light",
+                                                        theme: "outline",
                                                         cancelPermission: true
                                                     },
                                                     {
                                                         name: "save",
                                                         text: "保存",
-                                                        icon:
-                                                            "anticon anticon-save",
+                                                        icon: "save",
                                                         color:
                                                             "text-success-light",
                                                         cancelPermission: true,
@@ -138,8 +144,7 @@ export class TreeAndTableComponent implements OnInit {
                                                         name: "refresh",
                                                         action: "REFRESH",
                                                         text: "刷新",
-                                                        icon:
-                                                            "anticon anticon-sync",
+                                                        icon: "sync",
                                                         color:
                                                             "text-success-light"
                                                     },
@@ -149,8 +154,7 @@ export class TreeAndTableComponent implements OnInit {
                                                             "editable-add-btn",
                                                         text: "新增",
                                                         action: "CREATE",
-                                                        icon:
-                                                            "anticon anticon-plus",
+                                                        icon: "plus",
                                                         color:
                                                             "text-success-light"
                                                     },
@@ -160,8 +164,7 @@ export class TreeAndTableComponent implements OnInit {
                                                             "editable-add-btn",
                                                         text: "修改",
                                                         action: "EDIT",
-                                                        icon:
-                                                            "anticon anticon-edit",
+                                                        icon: "edit",
                                                         color: "text-success"
                                                     },
                                                     {
@@ -170,15 +173,13 @@ export class TreeAndTableComponent implements OnInit {
                                                             "editable-add-btn",
                                                         text: "取消",
                                                         action: "CANCEL",
-                                                        icon:
-                                                            "anticon anticon-edit",
+                                                        icon: "edit",
                                                         color: "text-success"
                                                     },
                                                     {
                                                         name: "saveForm",
                                                         text: "保存",
-                                                        icon:
-                                                            "anticon anticon-save",
+                                                        icon: "save",
                                                         color: "text-primary",
                                                         action: "SAVE",
                                                         ajaxConfig: [
@@ -363,8 +364,7 @@ export class TreeAndTableComponent implements OnInit {
                                                             "editable-add-btn",
                                                         text: "删除",
                                                         action: "DELETE",
-                                                        icon:
-                                                            "anticon anticon-delete",
+                                                        icon: "delete",
                                                         color: "text-red-light",
                                                         ajaxConfig: [
                                                             {
@@ -394,8 +394,7 @@ export class TreeAndTableComponent implements OnInit {
                                                     {
                                                         name: "addForm",
                                                         text: "弹出新增表单",
-                                                        icon:
-                                                            "anticon anticon-form",
+                                                        icon: "form",
                                                         action: "FORM",
                                                         actionType:
                                                             "formDialog",
@@ -406,8 +405,7 @@ export class TreeAndTableComponent implements OnInit {
                                                     {
                                                         name: "editForm",
                                                         text: "弹出编辑表单",
-                                                        icon:
-                                                            "anticon anticon-form",
+                                                        icon: "form",
                                                         action: "FORM",
                                                         actionType:
                                                             "formDialog",
@@ -422,8 +420,7 @@ export class TreeAndTableComponent implements OnInit {
                                                         action: "FORM_BATCH",
                                                         actionName:
                                                             "batchUpdateShowCase",
-                                                        icon:
-                                                            "anticon anticon-form",
+                                                        icon: "form",
                                                         type: "showBatchForm"
                                                     },
                                                     {
@@ -438,8 +435,7 @@ export class TreeAndTableComponent implements OnInit {
                                                     },
                                                     {
                                                         name: "upload",
-                                                        icon:
-                                                            "anticon anticon-upload",
+                                                        icon: "upload",
                                                         text: "附件上传",
                                                         action: "UPLOAD",
                                                         actionType:
@@ -451,8 +447,7 @@ export class TreeAndTableComponent implements OnInit {
                                                     {
                                                         name: "addFormcascade",
                                                         text: "级联例子",
-                                                        icon:
-                                                            "anticon anticon-form",
+                                                        icon: "form",
                                                         action: "FORM",
                                                         actionType:
                                                             "formDialog",
@@ -615,8 +610,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                 isRequired: true,
                                                                 placeholder:
                                                                     "请输入Case名称",
-                                                                perfix:
-                                                                    "anticon anticon-edit",
+                                                                perfix: "edit",
                                                                 disabled: false,
                                                                 readonly: false,
                                                                 size: "default",
@@ -1188,8 +1182,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                 isRequired: true,
                                                                 placeholder:
                                                                     "请输入Case名称",
-                                                                perfix:
-                                                                    "anticon anticon-edit",
+                                                                perfix: "edit",
                                                                 suffix: "",
                                                                 disabled: false,
                                                                 readonly: false,
@@ -2170,7 +2163,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             action:
                                                                                 "CREATE",
                                                                             icon:
-                                                                                "anticon anticon-plus",
+                                                                                "plus",
                                                                             color:
                                                                                 "text-primary",
                                                                             cancelPermission: true
@@ -2185,7 +2178,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             action:
                                                                                 "EDIT",
                                                                             icon:
-                                                                                "anticon anticon-edit",
+                                                                                "edit",
                                                                             color:
                                                                                 "text-success",
                                                                             cancelPermission: true
@@ -2200,7 +2193,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             action:
                                                                                 "CANCEL",
                                                                             icon:
-                                                                                "anticon anticon-edit",
+                                                                                "edit",
                                                                             color:
                                                                                 "text-success",
                                                                             cancelPermission: true
@@ -2211,7 +2204,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             text:
                                                                                 "保存",
                                                                             icon:
-                                                                                "anticon anticon-save",
+                                                                                "save",
                                                                             color:
                                                                                 "text-primary",
                                                                             action:
@@ -2404,7 +2397,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             action:
                                                                                 "DELETE",
                                                                             icon:
-                                                                                "anticon anticon-delete",
+                                                                                "delete",
                                                                             color:
                                                                                 "text-red-light",
                                                                             cancelPermission: true,
@@ -2909,7 +2902,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             action:
                                                                                 "CREATE",
                                                                             icon:
-                                                                                "anticon anticon-plus",
+                                                                                "plus",
                                                                             color:
                                                                                 "text-primary",
                                                                             cancelPermission: true
@@ -2924,7 +2917,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             action:
                                                                                 "EDIT",
                                                                             icon:
-                                                                                "anticon anticon-edit",
+                                                                                "edit",
                                                                             color:
                                                                                 "text-success",
                                                                             cancelPermission: true
@@ -2939,7 +2932,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             action:
                                                                                 "DELETE",
                                                                             icon:
-                                                                                "anticon anticon-delete",
+                                                                                "delete",
                                                                             color:
                                                                                 "text-red-light",
                                                                             cancelPermission: true,
@@ -2980,7 +2973,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             action:
                                                                                 "EXECUTE_CHECKED",
                                                                             icon:
-                                                                                "anticon anticon-delete",
+                                                                                "delete",
                                                                             color:
                                                                                 "text-red-light",
                                                                             actionType:
@@ -3021,7 +3014,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             action:
                                                                                 "EXECUTE_SELECTED",
                                                                             icon:
-                                                                                "anticon anticon-delete",
+                                                                                "delete",
                                                                             actionType:
                                                                                 "post",
                                                                             actionName:
@@ -3060,7 +3053,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             action:
                                                                                 "SAVE",
                                                                             icon:
-                                                                                "anticon anticon-save",
+                                                                                "save",
                                                                             type:
                                                                                 "default",
                                                                             color:
@@ -3261,7 +3254,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             action:
                                                                                 "CANCEL",
                                                                             icon:
-                                                                                "anticon anticon-rollback",
+                                                                                "rollback",
                                                                             color:
                                                                                 "text-grey-darker",
                                                                             cancelPermission: true
@@ -3276,7 +3269,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             text:
                                                                                 "弹出新增表单",
                                                                             icon:
-                                                                                "anticon anticon-form",
+                                                                                "form",
                                                                             action:
                                                                                 "FORM",
                                                                             actionType:
@@ -3293,7 +3286,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             text:
                                                                                 "弹出编辑表单",
                                                                             icon:
-                                                                                "anticon anticon-form",
+                                                                                "form",
                                                                             action:
                                                                                 "FORM",
                                                                             actionType:
@@ -3310,7 +3303,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             text:
                                                                                 "弹出批量处理表单",
                                                                             icon:
-                                                                                "anticon anticon-form",
+                                                                                "form",
                                                                             type:
                                                                                 "showBatchForm",
                                                                             cancelPermission: true
@@ -3334,7 +3327,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                             name:
                                                                                 "upload",
                                                                             icon:
-                                                                                "anticon anticon-upload",
+                                                                                "upload",
                                                                             text:
                                                                                 "附件上传",
                                                                             action:
@@ -3579,7 +3572,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                                     placeholder:
                                                                                         "请输入Case名称",
                                                                                     perfix:
-                                                                                        "anticon anticon-edit",
+                                                                                        "edit",
                                                                                     disabled: false,
                                                                                     readonly: false,
                                                                                     size:
@@ -4218,7 +4211,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                                     placeholder:
                                                                                         "请输入Case名称",
                                                                                     perfix:
-                                                                                        "anticon anticon-edit",
+                                                                                        "edit",
                                                                                     suffix:
                                                                                         "",
                                                                                     disabled: false,

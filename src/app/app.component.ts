@@ -29,7 +29,9 @@ export class AppComponent implements OnInit {
         private router: Router,
         private titleSrv: TitleService
     ) {
-        if (typeof G2 !== "undefined") G2.track(false);
+        if (typeof G2 !== "undefined") {
+            G2.track(false);
+        }
         this.iconService.addIcon(ApartmentOutline);
         this.iconService.twoToneColor = { primaryColor: "#1890ff" };
     }

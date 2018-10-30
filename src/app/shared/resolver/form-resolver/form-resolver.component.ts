@@ -46,8 +46,6 @@ export class FormResolverComponent extends CnComponentBase
     @Input()
     dataList;
     @Input()
-    ref;
-    @Input()
     initData;
     _editable = BSN_FORM_STATUS.TEXT;
 
@@ -103,11 +101,13 @@ export class FormResolverComponent extends CnComponentBase
         }
         this.form = this.createGroup();
         this.resolverRelation();
-        if (this.ref) {
-            for (const p in this.ref) {
-                this.tempValue[p] = this.ref[p];
-            }
-        }
+
+        // if (this.ref) {
+        //     for (const p in this.ref) {
+        //         this.tempValue[p] = this.ref[p];
+        //     }
+        // }
+
         if (this.config.ajaxConfig) {
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {

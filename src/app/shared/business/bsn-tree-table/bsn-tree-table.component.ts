@@ -1,23 +1,32 @@
-import { CnFormSelectComponent } from './../../components/cn-form-select/cn-form-select.component';
-import { GridBase } from './../grid.base';
-import { Component, OnInit, ViewChild, Input, OnDestroy, Type, Inject, AfterViewChecked } from '@angular/core';
-import { ApiService } from '@core/utility/api-service';
-import { CommonTools } from '@core/utility/common-tools';
-import { NzModalService, NzMessageService } from 'ng-zorro-antd';
-import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
-import { CnComponentBase } from '@shared/components/cn-component-base';
-import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
-import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
-import { BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
-import { Observable, Observer, Subscription } from 'rxjs';
-import { CacheService } from '@delon/cache';
+import {
+    Component,
+    Inject,
+    Input,
+    OnDestroy,
+    OnInit,
+    Type
+} from "@angular/core";
+import {
+    BsnComponentMessage,
+    BSN_COMPONENT_CASCADE,
+    BSN_COMPONENT_CASCADE_MODES,
+    BSN_COMPONENT_MODES
+} from "@core/relative-Service/BsnTableStatus";
+import { ApiService } from "@core/utility/api-service";
+import { CommonTools } from "@core/utility/common-tools";
+import { CacheService } from "@delon/cache";
+import { FormResolverComponent } from "@shared/resolver/form-resolver/form-resolver.component";
+import { LayoutResolverComponent } from "@shared/resolver/layout-resolver/layout-resolver.component";
+import { NzMessageService, NzModalService } from "ng-zorro-antd";
+import { Observable, Observer, Subscription } from "rxjs";
+import { GridBase } from "./../grid.base";
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: FormResolverComponent
 };
 @Component({
-    selector: 'bsn-tree-table,[bsn-tree-table]',
-    templateUrl: './bsn-tree-table.component.html',
+    selector: "bsn-tree-table,[bsn-tree-table]",
+    templateUrl: "./bsn-tree-table.component.html",
     styles: [
         `
             .table-operations {
@@ -26,19 +35,25 @@ const component: { [type: string]: Type<any> } = {
             .table-operations > button {
                 margin-right: 8px;
             }
-            .selectedRow{
+            .selectedRow {
                 color: blue;
             }
         `
     ]
 })
-export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy {
-    @Input() config;
-    @Input() permissions = [];
-
-    @Input() initData;
-    @Input() casadeData; // 级联配置 liu 20181023
-    @Input() value;
+export class BsnTreeTableComponent extends GridBase
+    implements OnInit, OnDestroy {
+    @Input()
+    config;
+    @Input()
+    permissions = [];
+    // @Input() ref;
+    @Input()
+    initData;
+    @Input()
+    casadeData; // 级联配置 liu 20181023
+    @Input()
+    value;
 
     //  分页默认参数
     loading = false;
@@ -53,7 +68,7 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
     /**
      * 数据源
      */
-    // dataList = []; 
+    // dataList = [];
     /**
      * 展开数据行
      */
@@ -78,7 +93,7 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
     _statusSubscription: Subscription;
     _cascadeSubscription: Subscription;
 
-    // 下拉属性 liu 
+    // 下拉属性 liu
     is_Selectgrid = true;
     cascadeValue = {}; // 级联数据
     selectGridValueName;
@@ -88,9 +103,12 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         private _msg: NzMessageService,
         private _modal: NzModalService,
         private _cacheService: CacheService,
-        @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
-        @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
-        @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
+        @Inject(BSN_COMPONENT_MODES)
+        private stateEvents: Observable<BsnComponentMessage>,
+        @Inject(BSN_COMPONENT_CASCADE)
+        private cascade: Observer<BsnComponentMessage>,
+        @Inject(BSN_COMPONENT_CASCADE)
+        private cascadeEvents: Observable<BsnComponentMessage>
     ) {
         super();
         this.apiService = this._api;
@@ -99,7 +117,7 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         if (this.initData) {
             this.initValue = this.initData;
         }
-        this.callback = (focusId) => {
+        this.callback = focusId => {
             this._cancelEditRows();
             this.load();
         };
@@ -108,14 +126,18 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
     // 生命周期事件
     ngOnInit() {
         if (this.casadeData) {
-
             for (const key in this.casadeData) {
                 // 临时变量的整理
-                if (key === 'cascadeValue') {
-                    for (const casekey in this.casadeData['cascadeValue']) {
-                        if (this.casadeData['cascadeValue'].hasOwnProperty(casekey)) {
-                            this.cascadeValue[casekey] = this.casadeData['cascadeValue'][casekey];
-
+                if (key === "cascadeValue") {
+                    for (const casekey in this.casadeData["cascadeValue"]) {
+                        if (
+                            this.casadeData["cascadeValue"].hasOwnProperty(
+                                casekey
+                            )
+                        ) {
+                            this.cascadeValue[casekey] = this.casadeData[
+                                "cascadeValue"
+                            ][casekey];
                         }
                     }
                 }
@@ -132,9 +154,17 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         this._getContent();
         if (this.config.dataSet) {
             (async () => {
-                for (let i = 0, len = this.config.dataSet.length; i < len; i++) {
-                    const url = this.buildURL(this.config.dataSet[i].ajaxConfig.url);
-                    const params = this.buildParameters(this.config.dataSet[i].ajaxConfig.params);
+                for (
+                    let i = 0, len = this.config.dataSet.length;
+                    i < len;
+                    i++
+                ) {
+                    const url = this.buildURL(
+                        this.config.dataSet[i].ajaxConfig.url
+                    );
+                    const params = this.buildParameters(
+                        this.config.dataSet[i].ajaxConfig.params
+                    );
                     const data = await this.get(url, params);
                     if (data.length > 0 && data.status === 200) {
                         if (this.config.dataSet[i].fields) {
@@ -143,21 +173,26 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                                 const setObj = {};
                                 this.config.dataSet[i].fields.map(fieldItem => {
                                     if (d[fieldItem.field]) {
-                                        setObj[fieldItem.name] = d[fieldItem.field];
+                                        setObj[fieldItem.name] =
+                                            d[fieldItem.field];
                                     }
                                 });
                                 dataSetObjs.push(setObj);
                             });
-                            this.dataSet[this.config.dataSet[i].name] = dataSetObjs;
+                            this.dataSet[
+                                this.config.dataSet[i].name
+                            ] = dataSetObjs;
                         } else {
-                            this.dataSet[this.config.dataSet[i].name] = data.Data;
+                            this.dataSet[this.config.dataSet[i].name] =
+                                data.Data;
                         }
-
                     }
                 }
             })();
         }
-        this.pageSize = this.config.pageSize ? this.config.pageSize : this.pageSize;
+        this.pageSize = this.config.pageSize
+            ? this.config.pageSize
+            : this.pageSize;
         if (this.config.componentType) {
             if (!this.config.componentType.child) {
                 this.load();
@@ -238,51 +273,76 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         });
         // 通过配置中的组件关系类型设置对应的事件接受者
         // 表格内部状态触发接收器console.log(this.config);
-        if (this.config.componentType && this.config.componentType.parent === true) {
+        if (
+            this.config.componentType &&
+            this.config.componentType.parent === true
+        ) {
             // 注册消息发送方法
             // 注册行选中事件发送消息
-            this.after(this, 'selectRow', () => {
-                this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
-                    data: this._selectRow
-                }));
+            this.after(this, "selectRow", () => {
+                this.cascade.next(
+                    new BsnComponentMessage(
+                        BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                        this.config.viewId,
+                        {
+                            data: this._selectRow
+                        }
+                    )
+                );
             });
         }
-        if (this.config.componentType && this.config.componentType.child === true) {
-            this._cascadeSubscription = this.cascadeEvents.subscribe(cascadeEvent => {
-                // 解析子表消息配置
-                if (this.config.relations && this.config.relations.length > 0) {
-                    this.config.relations.forEach(relation => {
-                        if (relation.relationViewId === cascadeEvent._viewId) {
-                            // 获取当前设置的级联的模式
-                            const mode = BSN_COMPONENT_CASCADE_MODES[relation.cascadeMode];
-                            // 获取传递的消息数据
-                            const option = cascadeEvent.option;
-                            // 解析参数
-                            if (relation.params && relation.params.length > 0) {
-                                relation.params.forEach(param => {
-                                    this.tempValue[param['cid']] = option.data[param['pid']];
-                                });
+        if (
+            this.config.componentType &&
+            this.config.componentType.child === true
+        ) {
+            this._cascadeSubscription = this.cascadeEvents.subscribe(
+                cascadeEvent => {
+                    // 解析子表消息配置
+                    if (
+                        this.config.relations &&
+                        this.config.relations.length > 0
+                    ) {
+                        this.config.relations.forEach(relation => {
+                            if (
+                                relation.relationViewId === cascadeEvent._viewId
+                            ) {
+                                // 获取当前设置的级联的模式
+                                const mode =
+                                    BSN_COMPONENT_CASCADE_MODES[
+                                        relation.cascadeMode
+                                    ];
+                                // 获取传递的消息数据
+                                const option = cascadeEvent.option;
+                                // 解析参数
+                                if (
+                                    relation.params &&
+                                    relation.params.length > 0
+                                ) {
+                                    relation.params.forEach(param => {
+                                        this.tempValue[param["cid"]] =
+                                            option.data[param["pid"]];
+                                    });
+                                }
+                                // 匹配及联模式
+                                switch (mode) {
+                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH:
+                                        this.load();
+                                        break;
+                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                                        this.load();
+                                        break;
+                                    case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
+                                        break;
+                                    case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
+                                        break;
+                                }
                             }
-                            // 匹配及联模式
-                            switch (mode) {
-                                case BSN_COMPONENT_CASCADE_MODES.REFRESH:
-                                    this.load();
-                                    break;
-                                case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
-                                    this.load();
-                                    break;
-                                case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
-                                    break;
-                                case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
-                                    break;
-                            }
-                        }
-                    });
+                        });
+                    }
                 }
-            });
+            );
         }
     }
-
 
     //  功能实现
     private load() {
@@ -308,8 +368,12 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                     this.treeDataOrigin = loadData.data.rows;
                     this.treeData = CommonTools.deepCopy(loadData.data.rows);
                     this.treeData.map(row => {
-                        row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
-                        this.expandDataCache[row.Id] = this.convertTreeToList(row);
+                        row["key"] = row[this.config.keyId]
+                            ? row[this.config.keyId]
+                            : "Id";
+                        this.expandDataCache[row.Id] = this.convertTreeToList(
+                            row
+                        );
                     });
                     this.dataList = this._getAllItemList();
                     this._updateEditCache();
@@ -333,7 +397,7 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                     this.createSearchRow();
                 }
             }
-            // liu 
+            // liu
             if (!this.is_Selectgrid) {
                 this.setSelectRow();
             }
@@ -353,17 +417,16 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                         data: { ...item }
                     };
                 }
-
             }
         });
     }
 
     /**
      * 设置数据状态为编辑
-     * @param key 
+     * @param key
      */
     private _startRowEdit(key: string): void {
-        this.editCache[key]['edit'] = true;
+        this.editCache[key]["edit"] = true;
     }
 
     /**
@@ -372,16 +435,15 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
     _createNewRowData(parentId?) {
         const newRow = { ...this.rowContent };
         const fieldIdentity = CommonTools.uuID(6);
-        newRow['key'] = fieldIdentity;
-        newRow['Id'] = fieldIdentity;
-        newRow['checked'] = true;
-        newRow['row_status'] = 'adding';
+        newRow["key"] = fieldIdentity;
+        newRow["Id"] = fieldIdentity;
+        newRow["checked"] = true;
+        newRow["row_status"] = "adding";
         if (parentId) {
-            newRow['parentId'] = parentId;
+            newRow["parentId"] = parentId;
         }
         return newRow;
     }
-
     /**
      * 添加根节点行
      */
@@ -389,7 +451,7 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         // 初始化新行数据
         const newRow = this._createNewRowData();
 
-        this.expandDataCache[newRow['Id']] = [newRow];
+        this.expandDataCache[newRow["Id"]] = [newRow];
         // 数据添加到数据列表中
         this.dataList = [newRow, ...this.dataList];
         // 数据添加到树结构数据中
@@ -398,7 +460,7 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         // 更新编辑行对象
         this._updateEditCache();
         // 打开行编辑状态
-        this._startRowEdit(newRow['Id']);
+        this._startRowEdit(newRow["Id"]);
 
         return true;
     }
@@ -408,107 +470,122 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
      */
     private _addNewChildRow() {
         if (this.selectedItem) {
-
-            const parentId = this.selectedItem[this.config.keyId ? this.config.keyId : 'Id'];
+            const parentId = this.selectedItem[
+                this.config.keyId ? this.config.keyId : "Id"
+            ];
             const newRow = this._createNewRowData(parentId);
             // 数据添加到具体选中行的下方
             this.dataList = this._setChildRow(this.dataList, newRow, parentId);
             const rootId = this.findRootId(this.dataList, parentId);
             // 数据添加到树结构中
-            const newTreeData = this._addTreeData(parentId, newRow, this.treeData);
+            const newTreeData = this._addTreeData(
+                parentId,
+                newRow,
+                this.treeData
+            );
             this.treeData = JSON.parse(JSON.stringify(newTreeData));
 
             // 数据添加到数据列表中
-            this.expandDataCache[rootId] = this.convertTreeToList(this.treeData.filter(item => item.Id === rootId)[0]);
+            this.expandDataCache[rootId] = this.convertTreeToList(
+                this.treeData.filter(item => item.Id === rootId)[0]
+            );
 
             this._updateEditCache();
-            this._startRowEdit(newRow['Id']);
+            this._startRowEdit(newRow["Id"]);
+
+            for (const r in this.expandDataCache) {
+                this.expandDataCache[r].map(row => {
+                    row["selected"] = false;
+                });
+            }
         } else {
-            console.log('未选择任何行,无法添加下级');
+            console.log("未选择任何行,无法添加下级");
             return false;
         }
-
-
     }
 
     // 定位行选中 liu 20181024
 
     setSelectRow() {
+        // console.log('setSelectRow', this.value);
 
-       // console.log('setSelectRow', this.value);
-    
-        // 遍历  
+        // 遍历
         for (const key in this.expandDataCache) {
             if (this.expandDataCache.hasOwnProperty(key)) {
-                
                 if (this.expandDataCache[key]) {
                     this.expandDataCache[key].forEach(element => {
-                        element.selected = false; // 取消行选中 
+                        element.selected = false; // 取消行选中
                     });
                     this.expandDataCache[key].forEach(element => {
-                        if (element['Id'] === this.value) {
+                        if (element["Id"] === this.value) {
                             element.selected = true; // 有值行选中
                         }
                     });
                 }
-                
             }
         }
-
-       
     }
 
     /**
      * 递归向数据源中添加新行数据
-     * @param parentId 
-     * @param newRowData 
-     * @param parent 
+     * @param parentId
+     * @param newRowData
+     * @param parent
      */
     private _addTreeData(parentId, newRowData, parent) {
-        if (parentId) { // 子节点数据
+        if (parentId) {
+            // 子节点数据
             for (let i = 0, len = parent.length; i < len; i++) {
                 if (parentId === parent[i].Id) {
-                    if (!parent[i]['children']) {
-                        parent[i]['children'] = [];
+                    if (!parent[i]["children"]) {
+                        parent[i]["children"] = [];
                     }
-                    parent[i]['children'].push(newRowData);
+                    parent[i]["children"].push(newRowData);
                     return parent;
                 } else {
-                    if (parent[i]['children'] && parent[i]['children'].length > 0) {
-                        this._addTreeData(parentId, newRowData, parent[i]['children']);
+                    if (
+                        parent[i]["children"] &&
+                        parent[i]["children"].length > 0
+                    ) {
+                        this._addTreeData(
+                            parentId,
+                            newRowData,
+                            parent[i]["children"]
+                        );
                     }
                 }
             }
-
         }
         return parent;
     }
 
     /**
      * 查找根节点ID
-     * @param dataList 
-     * @param Id 
+     * @param dataList
+     * @param Id
      */
     private findRootId(dataList, Id) {
         for (let i = 0, len = dataList.length; i < len; i++) {
             if (dataList[i].Id === Id) {
-                return dataList[i]['rootId'] ? dataList[i]['rootId'] : dataList[i]['Id'];
+                return dataList[i]["rootId"]
+                    ? dataList[i]["rootId"]
+                    : dataList[i]["Id"];
             }
         }
     }
 
     /**
      * 重新排列数据列表(将添加的新行追加到父节点下的位置)
-     * @param dataList 
-     * @param newRowData 
-     * @param parentId 
+     * @param dataList
+     * @param newRowData
+     * @param parentId
      */
     private _setChildRow(dataList, newRowData, parentId) {
         const list = [];
         if (dataList) {
             for (let i = 0, len = dataList.length; i < len; i++) {
                 list.push(dataList[i]);
-                if (dataList[i]['Id'] && dataList[i]['Id'] === parentId) {
+                if (dataList[i]["Id"] && dataList[i]["Id"] === parentId) {
                     list.push(newRowData);
                 }
             }
@@ -521,9 +598,9 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         this.addedTreeRows = [];
         this.editTreeRows = [];
         checkedRows.forEach(item => {
-            if (item.status === 'adding') {
+            if (item.status === "adding") {
                 this.addedTreeRows.push(this.editCache[item.key].data);
-            } else if (item.status === 'updating') {
+            } else if (item.status === "updating") {
                 this.editTreeRows.push(this.editCache[item.key].data);
             }
         });
@@ -536,7 +613,7 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         for (let i = 0, len = this.dataList.length; i < len; i++) {
             const key = this.dataList[i].key;
             const checkedRowStatus = cancelRowMap.get(key);
-            if (checkedRowStatus && checkedRowStatus.status === 'adding') {
+            if (checkedRowStatus && checkedRowStatus.status === "adding") {
                 if (this.editCache[key]) {
                     delete this.editCache[key];
                 }
@@ -545,14 +622,17 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                 this._cancelTreeDataByKey(this.treeData, key);
                 i--;
                 len--;
-            } else if (checkedRowStatus && checkedRowStatus.status === 'updating') {
+            } else if (
+                checkedRowStatus &&
+                checkedRowStatus.status === "updating"
+            ) {
                 this._cancelEdit(key);
             }
         }
 
         // 刷新数据
         this.treeData.map(row => {
-            row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
+            row["key"] = row[this.config.keyId] ? row[this.config.keyId] : "Id";
             this.expandDataCache[row.Id] = this.convertTreeToList(row);
         });
 
@@ -562,43 +642,64 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
 
     private _cancelTreeDataByKey(treeData, key) {
         for (let j = 0, jlen = treeData.length; j < jlen; j++) {
-            if (treeData[j]['Id'] === key) {
+            if (treeData[j]["Id"] === key) {
                 treeData.splice(j, 1);
                 j--;
                 jlen--;
                 return;
             } else {
-                if (treeData[j]['children'] && treeData[j]['children'].length > 0) {
-                    this._cancelTreeDataByKey(treeData[j]['children'], key);
+                if (
+                    treeData[j]["children"] &&
+                    treeData[j]["children"].length > 0
+                ) {
+                    this._cancelTreeDataByKey(treeData[j]["children"], key);
                 }
             }
         }
     }
 
     private selectRow(data, $event) {
-        if ($event.srcElement.type === 'checkbox' || $event.target.type === 'checkbox') {
+        if (
+            $event.srcElement.type === "checkbox" ||
+            $event.target.type === "checkbox"
+        ) {
             return;
         }
         $event.stopPropagation();
         for (const r in this.expandDataCache) {
             this.expandDataCache[r].map(row => {
-                row['selected'] = false;
+                row["selected"] = false;
             });
         }
-        data['selected'] = true;
+        data["selected"] = true;
         this.selectedItem = data;
         // liu  子组件
         if (!this.is_Selectgrid) {
-           this.value = this.selectedItem[this.config.selectGridValueName ? this.config.selectGridValueName : 'Id']; 
+            this.value = this.selectedItem[
+                this.config.selectGridValueName
+                    ? this.config.selectGridValueName
+                    : "Id"
+            ];
         }
     }
 
-    private _getCheckedRowStatusMap(): Map<string, { key: string, status: string }> {
-        const cancelRowMap: Map<string, { key: string, status: string }> = new Map();
+    private _getCheckedRowStatusMap(): Map<
+        string,
+        { key: string; status: string }
+    > {
+        const cancelRowMap: Map<
+            string,
+            { key: string; status: string }
+        > = new Map();
         this.treeData.map(dataItem => {
             this.expandDataCache[dataItem.Id].map(item => {
-                if (item['checked']) {
-                    cancelRowMap.set(item.Id, { key: item.Id, status: item['row_status'] ? item['row_status'] : 'updating' });
+                if (item["checked"]) {
+                    cancelRowMap.set(item.Id, {
+                        key: item.Id,
+                        status: item["row_status"]
+                            ? item["row_status"]
+                            : "updating"
+                    });
                 }
             });
         });
@@ -609,11 +710,10 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         // debugger;
         const checkedRowStatusMap = this._getCheckedRowStatusMap();
         checkedRowStatusMap.forEach(item => {
-            if (item.status === 'updating') {
+            if (item.status === "updating") {
                 this._startRowEdit(item.key);
             }
         });
-
 
         // this.dataList.forEach(item => {
         //     if (item.checked) {
@@ -659,10 +759,9 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         return this.apiService.get(url, params).toPromise();
     }
 
-
     //  格式化单元格
     setCellFont(value, format) {
-        let fontColor = '';
+        let fontColor = "";
         if (format) {
             format.map(color => {
                 if (color.value === value) {
@@ -675,9 +774,9 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
     }
 
     searchRow(option) {
-        if (option['type'] === 'addSearchRow') {
+        if (option["type"] === "addSearchRow") {
             this.addSearchRow();
-        } else if (option['type'] === 'cancelSearchRow') {
+        } else if (option["type"] === "cancelSearchRow") {
             this.cancelSearchRow();
         }
     }
@@ -685,7 +784,7 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
     addSearchRow() {
         let isSearch = true;
         for (let i = 0; i < this.dataList.length; i++) {
-            if (this.dataList[i]['row_status'] === 'search') {
+            if (this.dataList[i]["row_status"] === "search") {
                 isSearch = false;
             }
         }
@@ -693,14 +792,16 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
             this.createSearchRow();
             this.is_Search = true;
         } else {
-
             // 执行行查询
             this.load(); // 查询后将页面置1
             // 执行行查询
             let len = this.dataList.length;
             for (let i = 0; i < len; i++) {
-                if (this.dataList[i]['row_status'] === 'search') {
-                    this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                if (this.dataList[i]["row_status"] === "search") {
+                    this.dataList.splice(
+                        this.dataList.indexOf(this.dataList[i]),
+                        1
+                    );
                     i--;
                     len--;
                 }
@@ -716,13 +817,15 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
             this.dataList = [this.search_Row, ...this.dataList];
             // this.dataList.push(this.rowContent);
             this._updateEditCache();
-            this._startRowEdit(this.search_Row['key'].toString());
+            this._startRowEdit(this.search_Row["key"].toString());
         } else {
-            const newSearchContent = JSON.parse(JSON.stringify(this.rowContent));
+            const newSearchContent = JSON.parse(
+                JSON.stringify(this.rowContent)
+            );
             const fieldIdentity = CommonTools.uuID(6);
-            newSearchContent['key'] = fieldIdentity;
-            newSearchContent['checked'] = false;
-            newSearchContent['row_status'] = 'search';
+            newSearchContent["key"] = fieldIdentity;
+            newSearchContent["checked"] = false;
+            newSearchContent["row_status"] = "search";
 
             this.expandDataCache[fieldIdentity] = [newSearchContent];
             this.dataList = [newSearchContent, ...this.dataList];
@@ -737,17 +840,23 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
     // 取消查询
     cancelSearchRow() {
         for (let i = 0, len = this.dataList.length; i < len; i++) {
-            if (this.dataList[i]['row_status'] === 'search') {
+            if (this.dataList[i]["row_status"] === "search") {
                 delete this.editCache[this.dataList[i].key];
-                this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                this.dataList.splice(
+                    this.dataList.indexOf(this.dataList[i]),
+                    1
+                );
                 i--;
                 len--;
             }
         }
 
         for (let i = 0, len = this.dataList.length; i < len; i++) {
-            if (this.dataList[i]['row_status'] === 'search') {
-                this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+            if (this.dataList[i]["row_status"] === "search") {
+                this.dataList.splice(
+                    this.dataList.indexOf(this.dataList[i]),
+                    1
+                );
                 i--;
                 len--;
             }
@@ -758,9 +867,6 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         this.load(); // 查询后将页面置1
         return true;
     }
-
-
-
 
     //  表格操作
     _getAllItemList() {
@@ -776,25 +882,24 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
     checkAll(value) {
         for (const r in this.expandDataCache) {
             this.expandDataCache[r].map(data => {
-                if (!data['disabled']) {
-                    data['checked'] = value;
+                if (!data["disabled"]) {
+                    data["checked"] = value;
                 }
             });
         }
-
-
 
         this.refChecked();
     }
 
     refChecked() {
-
         let allCount = 0;
         // parent count
         this.checkedCount = 0; // = this.dataList.filter(w => w.checked).length;
         // child count
         for (const r in this.expandDataCache) {
-            this.checkedCount += this.expandDataCache[r].filter(c => c.checked).length;
+            this.checkedCount += this.expandDataCache[r].filter(
+                c => c.checked
+            ).length;
             allCount += this.expandDataCache[r].length;
         }
 
@@ -807,21 +912,21 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         const updateRows = [];
         let isSuccess = false;
         this.dataList.map(item => {
-            delete item['$type'];
-            if (item.checked && item['row_status'] === 'adding') {
+            delete item["$type"];
+            if (item.checked && item["row_status"] === "adding") {
                 addRows.push(item);
-            } else if (item.checked && item['row_status'] === 'updating') {
+            } else if (item.checked && item["row_status"] === "updating") {
                 updateRows.push(item);
             }
         });
         if (addRows.length > 0) {
             // save add;
-            isSuccess = await this.executeSave(addRows, 'post');
+            isSuccess = await this.executeSave(addRows, "post");
         }
 
         if (updateRows.length > 0) {
             // update
-            isSuccess = await this.executeSave(updateRows, 'put');
+            isSuccess = await this.executeSave(updateRows, "put");
         }
         return isSuccess;
     }
@@ -834,24 +939,29 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                 rowsData.map(rowData => {
                     const submitItem = {};
                     postConfig[i].params.map(param => {
-                        if (param.type === 'tempValue') {
-                            submitItem[param['name']] = this.tempValue[param['valueName']];
-                        } else if (param.type === 'componentValue') {
-                            submitItem[param['name']] = rowData[param['valueName']];
-                        } else if (param.type === 'GUID') {
-
-                        } else if (param.type === 'value') {
-                            submitItem[param['name']] = param.value;
+                        if (param.type === "tempValue") {
+                            submitItem[param["name"]] = this.tempValue[
+                                param["valueName"]
+                            ];
+                        } else if (param.type === "componentValue") {
+                            submitItem[param["name"]] =
+                                rowData[param["valueName"]];
+                        } else if (param.type === "GUID") {
+                        } else if (param.type === "value") {
+                            submitItem[param["name"]] = param.value;
                         }
                     });
                     submitData.push(submitItem);
                 });
-                const response = await this[method](postConfig[i].url, submitData);
+                const response = await this[method](
+                    postConfig[i].url,
+                    submitData
+                );
                 if (response && response.status === 200 && response.isSuccess) {
-                    this.message.create('success', '保存成功');
+                    this.message.create("success", "保存成功");
                     isSuccess = true;
                 } else {
-                    this.message.create('error', response.message);
+                    this.message.create("error", response.message);
                 }
             }
             if (isSuccess) {
@@ -877,26 +987,31 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         let result;
         this.config.toolbar.forEach(bar => {
             if (bar.group && bar.group.length > 0) {
-                const index = bar.group.findIndex(item => item.name === 'saveRow');
+                const index = bar.group.findIndex(
+                    item => item.name === "saveRow"
+                );
                 if (index !== -1) {
                     const postConfig = bar.group[index].ajaxConfig[method];
                     result = this._execute(rowsData, method, postConfig);
                 }
-
             }
-            if (bar.dropdown && bar.dropdown.buttons && bar.dropdown.buttons.length > 0) {
-                const index = bar.dropdown.buttons.findIndex(item => item.name === 'saveRow');
+            if (
+                bar.dropdown &&
+                bar.dropdown.buttons &&
+                bar.dropdown.buttons.length > 0
+            ) {
+                const index = bar.dropdown.buttons.findIndex(
+                    item => item.name === "saveRow"
+                );
                 if (index !== -1) {
-                    const postConfig = bar.dropdown.buttons[index].ajaxConfig[method];
+                    const postConfig =
+                        bar.dropdown.buttons[index].ajaxConfig[method];
                     result = this._execute(rowsData, method, postConfig);
                 }
-
             }
         });
 
         return result;
-
-
     }
 
     async executeDelete(ids) {
@@ -904,20 +1019,28 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         if (ids && ids.length > 0) {
             this.config.toolbar.forEach(bar => {
                 if (bar.group && bar.group.length > 0) {
-                    const index = bar.group.findIndex(item => item.name === 'deleteRow');
+                    const index = bar.group.findIndex(
+                        item => item.name === "deleteRow"
+                    );
                     if (index !== -1) {
-                        const deleteConfig = bar.group[index].ajaxConfig['delete'];
+                        const deleteConfig =
+                            bar.group[index].ajaxConfig["delete"];
                         result = this._executeDelete(deleteConfig, ids);
                     }
-
                 }
-                if (bar.dropdown && bar.dropdown.buttons && bar.dropdown.buttons.length > 0) {
-                    const index = bar.dropdown.buttons.findIndex(item => item.name === 'deleteRow');
+                if (
+                    bar.dropdown &&
+                    bar.dropdown.buttons &&
+                    bar.dropdown.buttons.length > 0
+                ) {
+                    const index = bar.dropdown.buttons.findIndex(
+                        item => item.name === "deleteRow"
+                    );
                     if (index !== -1) {
-                        const deleteConfig = bar.dropdown.buttons[index].ajaxConfig['delete'];
+                        const deleteConfig =
+                            bar.dropdown.buttons[index].ajaxConfig["delete"];
                         result = this._executeDelete(deleteConfig, ids);
                     }
-
                 }
             });
         }
@@ -930,14 +1053,17 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         if (deleteConfig) {
             for (let i = 0, len = deleteConfig.length; i < len; i++) {
                 const params = {
-                    _ids: ids.join(',')
+                    _ids: ids.join(",")
                 };
-                const response = await this['delete'](deleteConfig[i].url, params);
+                const response = await this["delete"](
+                    deleteConfig[i].url,
+                    params
+                );
                 if (response && response.status === 200 && response.isSuccess) {
-                    this.message.create('success', '删除成功');
+                    this.message.create("success", "删除成功");
                     isSuccess = true;
                 } else {
-                    this.message.create('error', response.message);
+                    this.message.create("error", response.message);
                 }
             }
             if (isSuccess) {
@@ -958,33 +1084,32 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
 
     executeSelectedRow(option) {
         if (!this._selectRow) {
-            this.message.create('info', '请选选择要执行的数据');
+            this.message.create("info", "请选选择要执行的数据");
             return false;
         }
         this.modalService.confirm({
-            nzTitle: '是否将选中的数据执行当前操作？',
-            nzContent: '',
+            nzTitle: "是否将选中的数据执行当前操作？",
+            nzContent: "",
             nzOnOk: () => {
-                if (this._selectRow['row_status'] === 'adding') {
-                    this.message.create('info', '当前数据未保存无法进行处理');
+                if (this._selectRow["row_status"] === "adding") {
+                    this.message.create("info", "当前数据未保存无法进行处理");
                     return false;
                 }
 
                 this.executeSelectedAction(this._selectRow, option);
             },
-            nzOnCancel() {
-            }
+            nzOnCancel() {}
         });
     }
 
     executeCheckedRow(option) {
         if (this.dataList.filter(item => item.checked === true).length <= 0) {
-            this.message.create('info', '请选择要执行的数据');
+            this.message.create("info", "请选择要执行的数据");
             return false;
         }
         this.modalService.confirm({
-            nzTitle: '是否将选中的数据执行当前操作？',
-            nzContent: '',
+            nzTitle: "是否将选中的数据执行当前操作？",
+            nzContent: "",
             nzOnOk: () => {
                 const newData = [];
                 const serverData = [];
@@ -993,10 +1118,11 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                     //     // 删除新增临时数据
                     //     newData.push(item.key);
                     // }
-                    if (item.checked === true
-                        && item['row_status'] !== 'adding'
-                        && item['row_status'] !== 'updating'
-                        && item['row_status'] !== 'search'
+                    if (
+                        item.checked === true &&
+                        item["row_status"] !== "adding" &&
+                        item["row_status"] !== "updating" &&
+                        item["row_status"] !== "search"
                     ) {
                         // 删除服务端数据
                         serverData.push(item);
@@ -1011,8 +1137,7 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                     this.executeCheckedAction(serverData, option);
                 }
             },
-            nzOnCancel() {
-            }
+            nzOnCancel() {}
         });
     }
 
@@ -1021,28 +1146,44 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         if (selectedRow) {
             this.config.toolbar.forEach(bar => {
                 if (bar.group && bar.group.length > 0) {
-                    const execButtons = bar.group.findIndex(item => item.action === 'EXECUTE_SELECTED');
-                    const index = execButtons.findIndex(item => item.actionName = option.name);
+                    const execButtons = bar.group.findIndex(
+                        item => item.action === "EXECUTE_SELECTED"
+                    );
+                    const index = execButtons.findIndex(
+                        item => (item.actionName = option.name)
+                    );
                     if (index !== -1) {
                         const cfg = execButtons[index].ajaxConfig[option.type];
-                        isSuccess = this._executeCheckedAction(selectedRow, option, cfg);
+                        isSuccess = this._executeCheckedAction(
+                            selectedRow,
+                            option,
+                            cfg
+                        );
                     }
-
                 }
-                if (bar.dropdown && bar.dropdown.buttons && bar.dropdown.buttons.length > 0) {
-
-                    const execButtons = bar.dropdown.button.findIndex(item => item.action === 'EXECUTE_SELECTED');
-                    const index = execButtons.findIndex(item => item.actionName = option.name);
+                if (
+                    bar.dropdown &&
+                    bar.dropdown.buttons &&
+                    bar.dropdown.buttons.length > 0
+                ) {
+                    const execButtons = bar.dropdown.button.findIndex(
+                        item => item.action === "EXECUTE_SELECTED"
+                    );
+                    const index = execButtons.findIndex(
+                        item => (item.actionName = option.name)
+                    );
                     if (index !== -1) {
                         const cfg = execButtons[index].ajaxConfig[option.type];
-                        isSuccess = this._executeCheckedAction(selectedRow, option, cfg);
+                        isSuccess = this._executeCheckedAction(
+                            selectedRow,
+                            option,
+                            cfg
+                        );
                     }
-
                 }
             });
         }
         return isSuccess;
-
     }
 
     async _executeSelectedAction(selectedRow, option, cfg) {
@@ -1051,14 +1192,14 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
             for (let i = 0, len = cfg.length; i < len; i++) {
                 const newParam = {};
                 cfg[i].params.forEach(param => {
-                    newParam[param['name']] = selectedRow[param['valueName']];
+                    newParam[param["name"]] = selectedRow[param["valueName"]];
                 });
                 const response = await this[option.type](cfg[i].url, newParam);
                 if (response && response.status === 200 && response.isSuccess) {
-                    this.message.create('success', '执行成功');
+                    this.message.create("success", "执行成功");
                     isSuccess = true;
                 } else {
-                    this.message.create('error', response.message);
+                    this.message.create("error", response.message);
                 }
             }
             if (isSuccess) {
@@ -1080,23 +1221,40 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         if (items && items.length > 0) {
             this.config.toolbar.forEach(bar => {
                 if (bar.group && bar.group.length > 0) {
-                    const execButtons = bar.group.findIndex(item => item.action === 'EXECUTE_CHECKED');
-                    const index = execButtons.findIndex(item => item.actionName = option.name);
+                    const execButtons = bar.group.findIndex(
+                        item => item.action === "EXECUTE_CHECKED"
+                    );
+                    const index = execButtons.findIndex(
+                        item => (item.actionName = option.name)
+                    );
                     if (index !== -1) {
                         const cfg = execButtons[index].ajaxConfig[option.type];
-                        isSuccess = this._executeCheckedAction(items, option, cfg);
+                        isSuccess = this._executeCheckedAction(
+                            items,
+                            option,
+                            cfg
+                        );
                     }
-
                 }
-                if (bar.dropdown && bar.dropdown.buttons && bar.dropdown.buttons.length > 0) {
-
-                    const execButtons = bar.dropdown.button.findIndex(item => item.action === 'EXECUTE_CHECKED');
-                    const index = execButtons.findIndex(item => item.actionName = option.name);
+                if (
+                    bar.dropdown &&
+                    bar.dropdown.buttons &&
+                    bar.dropdown.buttons.length > 0
+                ) {
+                    const execButtons = bar.dropdown.button.findIndex(
+                        item => item.action === "EXECUTE_CHECKED"
+                    );
+                    const index = execButtons.findIndex(
+                        item => (item.actionName = option.name)
+                    );
                     if (index !== -1) {
                         const cfg = execButtons[index].ajaxConfig[option.type];
-                        isSuccess = this._executeCheckedAction(items, option, cfg);
+                        isSuccess = this._executeCheckedAction(
+                            items,
+                            option,
+                            cfg
+                        );
                     }
-
                 }
             });
         }
@@ -1113,17 +1271,17 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                     items.forEach(item => {
                         const newParam = {};
                         cfg[i].params.forEach(param => {
-                            newParam[param['name']] = item[param['valueName']];
+                            newParam[param["name"]] = item[param["valueName"]];
                         });
                         params.push(newParam);
                     });
                 }
                 const response = await this[option.type](cfg[i].url, params);
                 if (response && response.status === 200 && response.isSuccess) {
-                    this.message.create('success', '执行成功');
+                    this.message.create("success", "执行成功");
                     isSuccess = true;
                 } else {
-                    this.message.create('error', response.message);
+                    this.message.create("error", response.message);
                 }
             }
             if (isSuccess) {
@@ -1142,8 +1300,8 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
 
     deleteRow() {
         this.modalService.confirm({
-            nzTitle: '确认删除选中的记录？',
-            nzContent: '',
+            nzTitle: "确认删除选中的记录？",
+            nzContent: "",
             nzOnOk: () => {
                 const newData = [];
                 const serverData = [];
@@ -1151,7 +1309,10 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                 const d = this.editCache;
 
                 for (let i = 0, len = this.dataList.length; i < len; i++) {
-                    if (this.dataList[i].checked && this.dataList[i]['row_status'] === 'adding') {
+                    if (
+                        this.dataList[i].checked &&
+                        this.dataList[i]["row_status"] === "adding"
+                    ) {
                         if (this.editCache[this.dataList[i].key]) {
                             delete this.editCache[this.dataList[i].key];
                         }
@@ -1162,13 +1323,21 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                 }
 
                 for (let i = 0, len = this.dataList.length; i < len; i++) {
-                    if (this.dataList[i]['checked']) {
-                        if (this.dataList[i]['row_status'] === 'adding') {
-                            this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                    if (this.dataList[i]["checked"]) {
+                        if (this.dataList[i]["row_status"] === "adding") {
+                            this.dataList.splice(
+                                this.dataList.indexOf(this.dataList[i]),
+                                1
+                            );
                             i--;
                             len--;
-                        } else if (this.dataList[i]['row_status'] === 'search') {
-                            this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                        } else if (
+                            this.dataList[i]["row_status"] === "search"
+                        ) {
+                            this.dataList.splice(
+                                this.dataList.indexOf(this.dataList[i]),
+                                1
+                            );
                             this.is_Search = false;
                             this.search_Row = {};
                             i--;
@@ -1199,8 +1368,7 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                     this.executeDelete(serverData);
                 }
             },
-            nzOnCancel() {
-            }
+            nzOnCancel() {}
         });
     }
 
@@ -1212,14 +1380,12 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
 
     // 获取行内编辑是行填充数据
     private _getContent() {
-        this.rowContent['key'] = null;
+        this.rowContent["key"] = null;
         this.config.columns.forEach(element => {
             const colsname = element.field.toString();
-            this.rowContent[colsname] = '';
+            this.rowContent[colsname] = "";
         });
     }
-
-
 
     // 初始化可编辑的数据结构
     private _initEditDataCache() {
@@ -1240,15 +1406,15 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
 
     // 将选中行改变为编辑状态
     updateRow() {
-
         this.dataList.forEach(item => {
             if (item.checked) {
-                if (item['row_status'] && item['row_status'] === 'adding') {
-
-                } else if (item['row_status'] && item['row_status'] === 'search') {
-
+                if (item["row_status"] && item["row_status"] === "adding") {
+                } else if (
+                    item["row_status"] &&
+                    item["row_status"] === "search"
+                ) {
                 } else {
-                    item['row_status'] = 'updating';
+                    item["row_status"] = "updating";
                 }
                 this._startRowEdit(item.key);
             }
@@ -1297,8 +1463,8 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         const cancelKeys = [];
         this.treeData.map(dataItem => {
             this.expandDataCache[dataItem.Id].map(item => {
-                if (item['checked']) {
-                    cancelKeys.push(item['key']);
+                if (item["checked"]) {
+                    cancelKeys.push(item["key"]);
                 }
             });
         });
@@ -1307,18 +1473,24 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         for (let i = 0, len = this.dataList.length; i < len; i++) {
             const __key = this.dataList[i].key;
             if (cancelKeys.findIndex(key => key === __key) > -1) {
-                if (this.dataList[i]['row_status'] === 'adding') {
+                if (this.dataList[i]["row_status"] === "adding") {
                     if (this.editCache[__key]) {
                         delete this.editCache[__key];
                     }
-                    this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                    this.dataList.splice(
+                        this.dataList.indexOf(this.dataList[i]),
+                        1
+                    );
                     // 删除数结果集中的数据
                     this._cancelTreeDataByKey(this.treeData, __key);
 
                     i--;
                     len--;
-                } else if (this.dataList[i]['row_status'] === 'search') {
-                    this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+                } else if (this.dataList[i]["row_status"] === "search") {
+                    this.dataList.splice(
+                        this.dataList.indexOf(this.dataList[i]),
+                        1
+                    );
                     this.is_Search = false;
                     this.search_Row = {};
                     i--;
@@ -1327,7 +1499,6 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                     this._cancelEdit(this.dataList[i].key);
                 }
             }
-
 
             // if (this.dataList[i]['checked']) {
             //     // // const key = this.dataList[i].key;
@@ -1354,7 +1525,9 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         }
         if (cancelKeys.length > 0) {
             this.treeData.map(row => {
-                row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
+                row["key"] = row[this.config.keyId]
+                    ? row[this.config.keyId]
+                    : "Id";
                 this.expandDataCache[row.Id] = this.convertTreeToList(row);
             });
         }
@@ -1387,10 +1560,10 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
     addRow() {
         const rowContentNew = { ...this.rowContent };
         const fieldIdentity = CommonTools.uuID(6);
-        rowContentNew['key'] = fieldIdentity;
-        rowContentNew['Id'] = fieldIdentity;
-        rowContentNew['checked'] = true;
-        rowContentNew['row_status'] = 'adding';
+        rowContentNew["key"] = fieldIdentity;
+        rowContentNew["Id"] = fieldIdentity;
+        rowContentNew["checked"] = true;
+        rowContentNew["row_status"] = "adding";
         // 针对查询和新增行处理
         if (this.is_Search) {
             this.dataList.splice(1, 0, rowContentNew);
@@ -1415,16 +1588,16 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         const rowContentNew = { ...this.rowContent };
         const fieldIdentity = CommonTools.uuID(6);
         let parentId;
-        if (this.selectedItem['Id']) {
-            parentId = this.selectedItem['Id'];
+        if (this.selectedItem["Id"]) {
+            parentId = this.selectedItem["Id"];
         } else {
-            console.log('未获取父节点数据');
+            console.log("未获取父节点数据");
             return;
         }
-        rowContentNew['key'] = fieldIdentity;
-        rowContentNew['checked'] = true;
-        rowContentNew['row_status'] = 'adding';
-        rowContentNew['Id'] = fieldIdentity;
+        rowContentNew["key"] = fieldIdentity;
+        rowContentNew["checked"] = true;
+        rowContentNew["row_status"] = "adding";
+        rowContentNew["Id"] = fieldIdentity;
 
         // 向数据集中添加子节点数据
         this._setChildRow(this.treeData, rowContentNew, parentId);
@@ -1433,7 +1606,7 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         // 重新生成树表的数据格式
         // 查找添加节点的数据根节点
         this.treeData.map(row => {
-            row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
+            row["key"] = row[this.config.keyId] ? row[this.config.keyId] : "Id";
             this.expandDataCache[row.Id] = this.convertTreeToList(row);
         });
         this.dataList = [...this._setDataList(this.expandDataCache)];
@@ -1447,17 +1620,24 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
             for (const p in cacheData) {
                 if (cacheData[p] && cacheData[p].length > 0) {
                     for (let i = 0, len = cacheData[p].length; i < len; i++) {
-                        if (cacheData[p][i]['Id'] === parentId) {
+                        if (cacheData[p][i]["Id"] === parentId) {
                             // 向该节点下添加下级节点
-                            if (!cacheData[p][i]['children']) {
-                                cacheData[p][i]['children'] = [];
+                            if (!cacheData[p][i]["children"]) {
+                                cacheData[p][i]["children"] = [];
                             }
-                            newRowData['parent'] = cacheData[p][i];
-                            cacheData[p][i]['children'].push(newRowData);
+                            newRowData["parent"] = cacheData[p][i];
+                            cacheData[p][i]["children"].push(newRowData);
                             return cacheData;
                         } else {
-                            if (cacheData[p][i]['children'] && cacheData[p][i].length > 0) {
-                                this._setExpandChildData(cacheData[p][i]['children'], newRowData, parentId);
+                            if (
+                                cacheData[p][i]["children"] &&
+                                cacheData[p][i].length > 0
+                            ) {
+                                this._setExpandChildData(
+                                    cacheData[p][i]["children"],
+                                    newRowData,
+                                    parentId
+                                );
                             }
                         }
                     }
@@ -1468,17 +1648,24 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
     }
     private _setExpandChildData(parentRowData, newRowData, parentId) {
         for (let i = 0, len = parentRowData.length; i < len; i++) {
-            if (parentRowData['Id'] === parentId) {
+            if (parentRowData["Id"] === parentId) {
                 // 向该节点下添加下级节点
-                if (!parentRowData[i]['children']) {
-                    parentRowData[i]['children'] = [];
+                if (!parentRowData[i]["children"]) {
+                    parentRowData[i]["children"] = [];
                 }
-                newRowData['parent'] = parentRowData[i];
-                parentRowData[i]['children'].push(newRowData);
+                newRowData["parent"] = parentRowData[i];
+                parentRowData[i]["children"].push(newRowData);
                 return parentRowData;
             } else {
-                if (parentRowData[i]['children'] && parentRowData[i].length > 0) {
-                    this._setExpandChildData(parentRowData[i]['children'], newRowData, parentId);
+                if (
+                    parentRowData[i]["children"] &&
+                    parentRowData[i].length > 0
+                ) {
+                    this._setExpandChildData(
+                        parentRowData[i]["children"],
+                        newRowData,
+                        parentId
+                    );
                 }
             }
         }
@@ -1495,8 +1682,15 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                     //     }
                     // }
                     resultList.push({ ...cacheData[p][0] });
-                    if (cacheData[p][0]['children'] && cacheData[p][0]['children'].length > 0) {
-                        resultList.push(...this._setChildDataList(cacheData[p][0]['children']));
+                    if (
+                        cacheData[p][0]["children"] &&
+                        cacheData[p][0]["children"].length > 0
+                    ) {
+                        resultList.push(
+                            ...this._setChildDataList(
+                                cacheData[p][0]["children"]
+                            )
+                        );
                     }
                 }
             }
@@ -1507,8 +1701,10 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         const childResultList = [];
         for (let i = 0, len = parentRowData.length; i < len; i++) {
             childResultList.push({ ...parentRowData[i] });
-            if (parentRowData[i]['children'] && parentRowData[i].length > 0) {
-                childResultList.push(...this._setChildDataList(parentRowData[i]['children']));
+            if (parentRowData[i]["children"] && parentRowData[i].length > 0) {
+                childResultList.push(
+                    ...this._setChildDataList(parentRowData[i]["children"])
+                );
             }
         }
         return childResultList;
@@ -1523,17 +1719,14 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                         data: { ...item }
                     };
                 }
-
             }
         });
         this.editCache = this.editCache;
     }
 
     private _startAdd(key: string): void {
-        this.editCache[key]['edit'] = true;
+        this.editCache[key]["edit"] = true;
     }
-
-
 
     private _updateChildRowEditCache() {
         this.dataList.forEach(item => {
@@ -1544,22 +1737,17 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
                         data: { ...item }
                     };
                 }
-
             }
         });
     }
 
     private _startChildRowAdd(key: string) {
-        this.editCache[key]['edit'] = true;
+        this.editCache[key]["edit"] = true;
     }
 
-    private _startChildRowAddRecurse() {
+    private _startChildRowAddRecurse() {}
 
-    }
-
-    private _startChildRowaddRecurse_2() {
-
-    }
+    private _startChildRowaddRecurse_2() {}
 
     valueChange(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
@@ -1570,13 +1758,14 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
         if ($event === false) {
             if (data.children) {
                 data.children.forEach(d => {
-                    d['key'] = d[this.config.keyId];
-                    const target = array.find(a => a[this.config.keyId] === d['key']);
+                    d["key"] = d[this.config.keyId];
+                    const target = array.find(
+                        a => a[this.config.keyId] === d["key"]
+                    );
                     if (target) {
-                        target['expand'] = false;
+                        target["expand"] = false;
                         this.expandChange(array, target, false);
                     }
-
                 });
             } else {
                 return;
@@ -1622,15 +1811,14 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
             this.visitNode(node, hashMap, array);
             if (node.children) {
                 for (let i = node.children.length - 1; i >= 0; i--) {
-                    stack.push(
-                        {
-                            ...node.children[i],
-                            level: node.level + 1,
-                            expand: true,
-                            parent: node,
-                            key: node.children[i][this.config.keyId],
-                            rootId: root['Id']
-                        });
+                    stack.push({
+                        ...node.children[i],
+                        level: node.level + 1,
+                        expand: true,
+                        parent: node,
+                        key: node.children[i][this.config.keyId],
+                        rootId: root["Id"]
+                    });
                 }
             }
         }
@@ -1646,21 +1834,27 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
 
     dialog(option) {
         if (this.config.dialog && this.config.dialog.length > 0) {
-            const index = this.config.dialog.findIndex(item => item.name === option.name);
+            const index = this.config.dialog.findIndex(
+                item => item.name === option.name
+            );
             this.showForm(this.config.dialog[index]);
         }
     }
 
     windowDialog(option) {
         if (this.config.windowDialog && this.config.windowDialog.length > 0) {
-            const index = this.config.windowDialog.findIndex(item => item.name === option.name);
+            const index = this.config.windowDialog.findIndex(
+                item => item.name === option.name
+            );
             this.showLayout(this.config.windowDialog[index]);
         }
     }
 
     formDialog(option) {
         if (this.config.formDialog && this.config.formDialog.length > 0) {
-            const index = this.config.formDialog.findIndex(item => item.name === option.name);
+            const index = this.config.formDialog.findIndex(
+                item => item.name === option.name
+            );
             this.showForm(this.config.formDialog[index]);
         }
     }
@@ -1670,7 +1864,9 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
      */
     formBatchDialog(option) {
         if (this.config.formDialog && this.config.formDialog.length > 0) {
-            const index = this.config.formDialog.findIndex(item => item.name === option.name);
+            const index = this.config.formDialog.findIndex(
+                item => item.name === option.name
+            );
             this.showBatchForm(this.config.formDialog[index]);
         }
     }
@@ -1680,9 +1876,10 @@ export class BsnTreeTableComponent extends GridBase implements OnInit, OnDestroy
      */
     uploadDialog(option) {
         if (this.config.uploadDialog && this.config.uploadDialog.length > 0) {
-            const index = this.config.uploadDialog.findIndex(item => item.name === option.name);
+            const index = this.config.uploadDialog.findIndex(
+                item => item.name === option.name
+            );
             this.openUploadDialog(this.config.uploadDialog[index]);
         }
     }
-
 }

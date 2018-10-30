@@ -1,20 +1,30 @@
-import {Component, OnInit, Input, OnDestroy, Type, Inject} from '@angular/core';
+import { CnComponentBase } from "./../../components/cn-component-base";
+import {
+    Component,
+    OnInit,
+    Input,
+    OnDestroy,
+    Type,
+    Inject
+} from "@angular/core";
 @Component({
-    selector: 'bsn-tabs',
-    templateUrl: './bsn-tabs.component.html',
-    styles: [
-            ``
-    ]
+    selector: "bsn-tabs",
+    templateUrl: "./bsn-tabs.component.html",
+    styles: [``]
 })
-export class BsnTabsComponent implements OnInit {
-    @Input() config;
-    @Input() viewId;
-    @Input() permissions = [];
+export class BsnTabsComponent extends CnComponentBase implements OnInit {
+    @Input()
+    config;
+    @Input()
+    viewId;
+    @Input()
+    permissions = [];
     constructor() {
-
+        super();
     }
 
     ngOnInit() {
-      // console.log('tab_permissions:', this.permissions);
+        console.log(this.tempValue);
+        // console.log('tab_permissions:', this.permissions);
     }
 }

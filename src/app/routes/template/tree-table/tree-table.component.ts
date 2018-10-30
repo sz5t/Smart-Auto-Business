@@ -14,7 +14,8 @@ export class TreeTableComponent implements OnInit {
                             id: "area1",
                             title: "数据网格",
                             span: 24,
-                            icon: "icon-list",
+                            theme: "fill",
+                            icon: "right-square",
                             size: {
                                 nzXs: 24,
                                 nzSm: 24,
@@ -25,7 +26,7 @@ export class TreeTableComponent implements OnInit {
                             viewCfg: [
                                 {
                                     config: {
-                                        title: "树表网格",
+                                        title: "",
                                         viewId: "bsnTreeTable",
                                         component: "bsnTreeTable",
                                         info: true,
@@ -315,38 +316,39 @@ export class TreeTableComponent implements OnInit {
                                                         name: "refresh",
                                                         action: "REFRESH",
                                                         text: "刷新",
-                                                        color: "text-primary"
+                                                        color: "text-primary",
+                                                        cancelPermission: true
                                                     },
                                                     {
                                                         name: "addRow",
                                                         text: "新增",
                                                         action: "CREATE",
-                                                        icon:
-                                                            "anticon anticon-plus",
-                                                        color: "text-primary"
+                                                        icon: "plus",
+                                                        color: "text-primary",
+                                                        cancelPermission: true
                                                     },
                                                     {
                                                         name: "addRow",
                                                         text: "新增下级",
                                                         action: "CREATE_CHILD",
-                                                        icon:
-                                                            "anticon anticon-plus",
-                                                        color: "text-primary"
+                                                        icon: "plus",
+                                                        color: "text-primary",
+                                                        cancelPermission: true
                                                     },
                                                     {
                                                         name: "updateRow",
                                                         text: "修改",
                                                         action: "EDIT",
-                                                        icon:
-                                                            "anticon anticon-edit",
-                                                        color: "text-success"
+                                                        icon: "edit",
+                                                        color: "text-success",
+                                                        cancelPermission: true
                                                     },
                                                     {
                                                         name: "deleteRow",
                                                         text: "删除1",
                                                         action: "DELETE",
-                                                        icon:
-                                                            "anticon anticon-delete",
+                                                        cancelPermission: true,
+                                                        icon: "delete",
                                                         color: "text-red-light",
                                                         ajaxConfig: {
                                                             delete: [
@@ -368,9 +370,9 @@ export class TreeTableComponent implements OnInit {
                                                     {
                                                         name: "deleteRow",
                                                         text: "删除2",
-                                                        icon:
-                                                            "anticon anticon-delete",
+                                                        icon: "delete",
                                                         color: "text-warning",
+                                                        cancelPermission: true,
                                                         ajaxConfig: [
                                                             {
                                                                 action:
@@ -404,9 +406,9 @@ export class TreeTableComponent implements OnInit {
                                                             "executeCheckedRow_1",
                                                         text:
                                                             "多选删除(确认+提示操作)",
-                                                        icon:
-                                                            "anticon anticon-delete",
+                                                        icon: "delete",
                                                         color: "text-red-light",
+                                                        cancelPermission: true,
                                                         ajaxConfig: [
                                                             {
                                                                 name:
@@ -507,12 +509,12 @@ export class TreeTableComponent implements OnInit {
                                                             "executeCheckedRow1",
                                                         text:
                                                             "多选删除(验证+提示)",
-                                                        icon:
-                                                            "anticon anticon-delete",
+                                                        icon: "delete",
                                                         color: "text-red-light",
                                                         actionType: "post",
                                                         actionName:
                                                             "execChecked",
+                                                        cancelPermission: true,
                                                         ajaxConfig: [
                                                             {
                                                                 name:
@@ -563,11 +565,11 @@ export class TreeTableComponent implements OnInit {
                                                         class:
                                                             "editable-add-btn",
                                                         text: "选中删除",
-                                                        icon:
-                                                            "anticon anticon-delete",
+                                                        icon: "delete",
                                                         actionType: "post",
                                                         actionName:
                                                             "execSelected",
+                                                        cancelPermission: true,
                                                         ajaxConfig: [
                                                             {
                                                                 action:
@@ -597,10 +599,10 @@ export class TreeTableComponent implements OnInit {
                                                         class:
                                                             "editable-add-btn",
                                                         text: "保存",
-                                                        icon:
-                                                            "anticon anticon-save",
+                                                        icon: "save",
                                                         type: "default",
                                                         color: "text-primary",
+                                                        cancelPermission: true,
                                                         ajaxConfig: [
                                                             {
                                                                 action:
@@ -809,10 +811,10 @@ export class TreeTableComponent implements OnInit {
                                                             "editable-add-btn",
                                                         text: "取消",
                                                         action: "CANCEL",
-                                                        icon:
-                                                            "anticon anticon-rollback",
+                                                        icon: "rollback",
                                                         color:
-                                                            "text-grey-darker"
+                                                            "text-grey-darker",
+                                                        cancelPermission: true
                                                     }
                                                 ]
                                             },
@@ -821,26 +823,26 @@ export class TreeTableComponent implements OnInit {
                                                     {
                                                         name: "addForm",
                                                         text: "弹出新增表单",
-                                                        icon:
-                                                            "anticon anticon-form",
+                                                        icon: "form",
                                                         action: "FORM",
                                                         actionType:
                                                             "formDialog",
                                                         actionName:
                                                             "addShowCase",
-                                                        type: "showForm"
+                                                        type: "showForm",
+                                                        cancelPermission: true
                                                     },
                                                     {
                                                         name: "editForm",
                                                         text: "弹出编辑表单",
-                                                        icon:
-                                                            "anticon anticon-form",
+                                                        icon: "form",
                                                         action: "FORM",
                                                         actionType:
                                                             "formDialog",
                                                         actionName:
                                                             "updateShowCase",
-                                                        type: "showForm"
+                                                        type: "showForm",
+                                                        cancelPermission: true
                                                     },
                                                     {
                                                         name: "batchEditForm",
@@ -849,9 +851,9 @@ export class TreeTableComponent implements OnInit {
                                                         action: "FORM_BATCH",
                                                         actionName:
                                                             "batchUpdateShowCase",
-                                                        icon:
-                                                            "anticon anticon-form",
-                                                        type: "showBatchForm"
+                                                        icon: "form",
+                                                        type: "showBatchForm",
+                                                        cancelPermission: true
                                                     },
                                                     {
                                                         name: "showDialogPage",
@@ -861,31 +863,32 @@ export class TreeTableComponent implements OnInit {
                                                             "windowDialog",
                                                         actionName:
                                                             "ShowCaseWindow",
-                                                        type: "showLayout"
+                                                        type: "showLayout",
+                                                        cancelPermission: true
                                                     },
                                                     {
                                                         name: "upload",
-                                                        icon:
-                                                            "anticon anticon-upload",
+                                                        icon: "upload",
                                                         text: "附件上传",
                                                         action: "UPLOAD",
                                                         actionType:
                                                             "uploadDialog",
                                                         actionName:
                                                             "uploadCase",
-                                                        type: "uploadDialog"
+                                                        type: "uploadDialog",
+                                                        cancelPermission: true
                                                     },
                                                     {
                                                         name: "addFormcascade",
                                                         text: "级联例子",
-                                                        icon:
-                                                            "anticon anticon-form",
+                                                        icon: "form",
                                                         action: "FORM",
                                                         actionType:
                                                             "formDialog",
                                                         actionName:
                                                             "addShowCasecascade",
-                                                        type: "showForm"
+                                                        type: "showForm",
+                                                        cancelPermission: true
                                                     }
                                                 ]
                                             },
@@ -894,22 +897,23 @@ export class TreeTableComponent implements OnInit {
                                                     {
                                                         name: "btnGroup",
                                                         text: " 分组操作",
-                                                        icon: "icon-plus",
+                                                        icon: "plus",
                                                         buttons: [
                                                             {
                                                                 name: "refresh",
                                                                 class:
                                                                     "editable-add-btn",
                                                                 text: " 刷新",
-                                                                icon:
-                                                                    "icon-list"
+                                                                icon: "list",
+                                                                cancelPermission: true
                                                             },
                                                             {
                                                                 name: "addRow",
                                                                 class:
                                                                     "editable-add-btn",
                                                                 text: "新增",
-                                                                icon: "icon-add"
+                                                                icon: "plus",
+                                                                cancelPermission: true
                                                             },
                                                             {
                                                                 name:
@@ -917,8 +921,8 @@ export class TreeTableComponent implements OnInit {
                                                                 class:
                                                                     "editable-add-btn",
                                                                 text: "修改",
-                                                                icon:
-                                                                    "icon-edit"
+                                                                icon: "edit",
+                                                                cancelPermission: true
                                                             }
                                                         ]
                                                     }
@@ -1135,8 +1139,7 @@ export class TreeTableComponent implements OnInit {
                                                                 isRequired: true,
                                                                 placeholder:
                                                                     "请输入Case名称",
-                                                                perfix:
-                                                                    "anticon anticon-edit",
+                                                                perfix: "edit",
                                                                 suffix: "",
                                                                 disabled: false,
                                                                 readonly: false,

@@ -39,7 +39,6 @@ export class CommonTools {
                                     model.tempValue[param["valueName"]];
                             } else {
                                 if (
-                                    param["value"] ||
                                     param["value"] === null ||
                                     param["value"] === "" ||
                                     param["value"] === 0
@@ -65,7 +64,11 @@ export class CommonTools {
                                             param["valueName"]
                                         ];
                                 } else {
-                                    if (param["value"]) {
+                                    if (
+                                        param["value"] === null ||
+                                        param["value"] === "" ||
+                                        param["value"] === 0
+                                    ) {
                                         result[param["name"]] = param["value"];
                                     }
                                 }

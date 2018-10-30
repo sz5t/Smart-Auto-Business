@@ -106,12 +106,12 @@ export class ComponentResolverComponent
             if (this.tempValue && this.componentRef.instance.tempValue) {
                 this.componentRef.instance.tempValue = this.tempValue;
             }
+            //   if (this.componentRef.instance.ref) {
+            //     this.componentRef.instance.ref = this.tempValue;
+            //   }
             if (this.initData) {
                 this.componentRef.instance.initData = this.initData;
             }
-            // if(this.componentRef.instance.editable) {
-            //     this.componentRef.instance.editable = this.editable;
-            // }
             if (this.componentRef.instance.hasOwnProperty("permissions")) {
                 this.componentRef.instance.permissions = this.permissions;
             }
