@@ -1,20 +1,28 @@
-<nz-modal [(nzVisible)]="isVisible" [nzWidth]="config.select.nzWidth" [nzTitle]="config.select.title" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
-
-  <cn-bsn-table #table [config]="config.select.selectGrid" [casadeData]="casadeData" [value]="_value"> </cn-bsn-table>
+<nz-modal [(nzVisible)]="isVisible" [nzWidth]="config.select.nzWidth" [nzTitle]="config.select.title" (nzOnCancel)="handleCancel()"
+    (nzOnOk)="handleOk()">
+    <cn-bsn-table #table [config]="config.select.selectGrid" [bsnData]="bsnData" [casadeData]="casadeData" [value]="_value" [permissions]="permissions"> </cn-bsn-table>
 </nz-modal>
+<nz-form-label [nzSpan]="config.labelSize">
+    {{config.label}}
+</nz-form-label>
 
-<div>
-  <nz-input-group nzSearch  [nzSuffix]="suffixIconButton">
-    <input nz-input style=" padding-right: 30px;"  [ngStyle]="{'width':config.width}" type="{{config.inputType}}" [nzSize]="config.size"
-    placeholder="{{config.placeholder}}" [(ngModel)]="_valuetext">
+<nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize" style="display:none" > <!-- style="display:none"  type="hidden" -->
+    <input nz-input (ngModelChange)="valueChange($event)" formControlName="{{config.name}}"  type="{{config.inputType}}"  placeholder="{{config.placeholder}}"
+        [(ngModel)]="_value">
+</nz-form-control>
 
-    <input nz-input  (ngModelChange)="valueChange($event)" type="hidden"
-    placeholder="{{config.placeholder}}" [(ngModel)]="_value">
+<nz-form-control [nzSpan]="config.controlSize">
+        <nz-input-group nzSearch [nzSuffix]="suffixIconButton">
+                <input nz-input style=" padding-right: 30px;" [ngStyle]="{'width':config.width}" type="{{config.inputType}}" [nzSize]="config.size"
+                    placeholder="{{config.placeholder}}" [(ngModel)]="_valuetext">
+            </nz-input-group>
+            <ng-template #suffixIconButton>
+                <button nz-button nzSearch [nzType]="'default'" (click)="showModal()">
+                    <i class="anticon anticon-edit"></i>
+                </button>
+            </ng-template>
+</nz-form-control>
 
-  </nz-input-group>
-  <ng-template #suffixIconButton>
-      <button nz-button nzSearch [nzType]="'default'" (click)="showModal()">
-          <i class="anticon anticon-edit"></i>
-      </button>
-  </ng-template>
-</div>
+
+
+

@@ -45,7 +45,8 @@ const components: { [type: string]: Type<any> } = {
     selectTreeMultiple: CnFormSelectTreeMultipleComponent,
     textarea: CnFormTextareaComponent,
     hidden: CnFormHiddenComponent,
-    number: CnFormNumberComponent
+    number: CnFormNumberComponent,
+    selectGrid: CnFormSelectGridComponent
 };
 @Directive({
     selector: "[cnFormResolverDirective]"

@@ -2,7 +2,7 @@
 <nz-spin [nzSpinning]="isSpinning" [nzDelay]="300" nzTip='加载中...'>
     <bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId" [permissions] = "permissions ? permissions : []" ></bsn-toolbar>
     <nz-card>
-        <form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form" (ngSubmit)="save($event)">
+        <form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form" >
             <ng-container *ngFor="let formItem of config.forms">
                 <div nz-row [nzGutter]="24">
                     <ng-container *ngFor="let control of formItem.controls">
