@@ -907,5 +907,12 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
             this.showBatchForm(this.config.formDialog[index]);
         }
     }
+
+    /**
+     * 操作前置判断
+     */
+    beforeSelectedRowOperation(option) {}
+
+    beforeCheckedRowOperation(option) {}
     // endregion
 }

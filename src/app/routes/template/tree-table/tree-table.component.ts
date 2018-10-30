@@ -259,20 +259,6 @@ export class TreeTableComponent implements OnInit {
                                                 field: "enabledText",
                                                 width: 80,
                                                 hidden: false,
-                                                formatter: [
-                                                    {
-                                                        value: "启用",
-                                                        bgcolor: "",
-                                                        fontcolor: "text-blue",
-                                                        valueas: "启用"
-                                                    },
-                                                    {
-                                                        value: "禁用",
-                                                        bgcolor: "",
-                                                        fontcolor: "text-red",
-                                                        valueas: "禁用"
-                                                    }
-                                                ],
                                                 editor: {
                                                     type: "select",
                                                     field: "enabled",
@@ -309,6 +295,56 @@ export class TreeTableComponent implements OnInit {
                                             child: false,
                                             own: true
                                         },
+                                        beforeOperation: [
+                                            {
+                                                name: "editForm",
+                                                status: [
+                                                    {
+                                                        conditions: [
+                                                            [
+                                                                {
+                                                                    name:
+                                                                        "enabled",
+                                                                    value: true,
+                                                                    checkType:
+                                                                        "value"
+                                                                }
+                                                            ]
+                                                        ],
+                                                        action: {
+                                                            type: "info",
+                                                            message:
+                                                                "启用状态无法删除",
+                                                            execute: "prevent"
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                name: "deleteRow",
+                                                status: [
+                                                    {
+                                                        conditions: [
+                                                            [
+                                                                {
+                                                                    name:
+                                                                        "enabled",
+                                                                    value: true,
+                                                                    checkType:
+                                                                        "value"
+                                                                }
+                                                            ]
+                                                        ],
+                                                        action: {
+                                                            type: "confirm",
+                                                            message:
+                                                                "启用状态是否确认删除",
+                                                            execute: "prevent"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ],
                                         toolbar: [
                                             {
                                                 group: [

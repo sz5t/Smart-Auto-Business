@@ -117,7 +117,8 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
         this._cascadeState = this.state.next(
             new BsnComponentMessage(action, this.viewId, {
                 type: btn.actionType ? btn.actionType : null,
-                name: btn.actionName ? btn.actionName : null,
+                name: btn.name ? btn.name : "",
+                actionName: btn.actionName ? btn.actionName : null,
                 ajaxConfig: btn.ajaxConfig ? btn.ajaxConfig : null
             })
         );

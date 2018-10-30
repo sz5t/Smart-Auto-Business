@@ -1251,6 +1251,56 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 ]
                                             }
                                         ],
+                                        beforeOperation: [
+                                            {
+                                                name: "editForm",
+                                                status: [
+                                                    {
+                                                        conditions: [
+                                                            [
+                                                                {
+                                                                    name:
+                                                                        "enabled",
+                                                                    value: true,
+                                                                    checkType:
+                                                                        "value"
+                                                                }
+                                                            ]
+                                                        ],
+                                                        action: {
+                                                            type: "info",
+                                                            message:
+                                                                "启用状态无法删除",
+                                                            execute: "prevent"
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                name: "deleteRow",
+                                                status: [
+                                                    {
+                                                        conditions: [
+                                                            [
+                                                                {
+                                                                    name:
+                                                                        "enabled",
+                                                                    value: true,
+                                                                    checkType:
+                                                                        "value"
+                                                                }
+                                                            ]
+                                                        ],
+                                                        action: {
+                                                            type: "confirm",
+                                                            message:
+                                                                "启用状态是否确认删除",
+                                                            execute: "prevent"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ],
                                         dataSet: [
                                             {
                                                 name: "getCaseName",
