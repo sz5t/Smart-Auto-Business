@@ -69,6 +69,8 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
     dataSet;
     @Input()
     changeConfig;
+    @Input()
+    initData;
     @Output()
     updateValue = new EventEmitter();
     component: ComponentRef<any>;
@@ -109,6 +111,7 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
             this.component.instance.value = this.value;
             this.component.instance.bsnData = this.bsnData;
             this.component.instance.rowData = this.rowData;
+            this.component.instance.initData = this.initData;
             // if (this.component.instance.casadeData) {
             //  console.log('ngOnInit', this.changeConfig);
 
@@ -149,6 +152,7 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
             this.component.instance.value = this.value;
             this.component.instance.bsnData = this.bsnData;
             this.component.instance.rowData = this.rowData;
+            this.component.instance.initData = this.initData;
             if (this.component.instance.casadeData) {
                 const c_changeConfig = JSON.parse(
                     JSON.stringify(this.changeConfig)
@@ -180,6 +184,7 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
             this.component.instance.value = this.value;
             this.component.instance.bsnData = this.bsnData;
             this.component.instance.rowData = this.rowData;
+            this.component.instance.initData = this.initData;
             // if (this.component.instance.casadeData) {
             //  console.log('ngOnInit', this.changeConfig);
 

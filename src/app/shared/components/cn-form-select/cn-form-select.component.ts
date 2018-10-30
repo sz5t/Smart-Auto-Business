@@ -76,7 +76,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
   }
-
+  
   ngOnChanges() {
     // console.log('select加载固定数据ngOnChanges', this.config);
     // console.log('变化时临时参数' , this.bsnData);

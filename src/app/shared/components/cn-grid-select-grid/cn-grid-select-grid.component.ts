@@ -15,6 +15,8 @@ export class CnGridSelectGridComponent implements OnInit {
   @Input() rowData;
   @Input() dataSet;
   @Input() casadeData;
+  @Input() initData;
+
   @Output() updateValue = new EventEmitter();
 
   @ViewChild('table') table: BsnTableComponent;

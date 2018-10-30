@@ -20,6 +20,7 @@ import {CnFormTextareaComponent} from '@shared/components/cn-form-textarea/cn-fo
 import { CnFormNumberComponent } from '@shared/components/cn-form-number/cn-form-number.component';
 import { CnFormSelectMultipleComponent } from '@shared/components/cn-form-select-multiple/cn-form-select-multiple.component';
 import { CnFormSelectTreeMultipleComponent } from '@shared/components/cn-form-select-tree-multiple/cn-form-select-tree-multiple.component';
+import { CnFormSelectGridComponent } from '@shared/components/cn-form-select-grid/cn-form-select-grid.component';
 
 const components: { [type: string]: Type<any> } = {
     input: CnFormInputComponent,
@@ -37,7 +38,8 @@ const components: { [type: string]: Type<any> } = {
     selectTreeMultiple: CnFormSelectTreeMultipleComponent,
     textarea: CnFormTextareaComponent,
     hidden: CnFormHiddenComponent,
-    number: CnFormNumberComponent
+    number: CnFormNumberComponent,
+    selectGrid: CnFormSelectGridComponent
 };
 @Directive({
     selector: '[cnFormResolverDirective]'

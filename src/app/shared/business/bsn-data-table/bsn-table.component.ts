@@ -57,6 +57,7 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
     @Input() initData;
     @Input() casadeData; // 级联配置 liu 20181023
     @Input() value;
+    @Input() bsnData;
     // tempValue = {};
 
     loading = false;
@@ -138,7 +139,15 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
                 }
             }
         }
-
+        // 当前作为子组件出现 临时变量值
+        if (this.bsnData) {
+           for (const key in this.bsnData) {
+               if (this.bsnData.hasOwnProperty(key)) {
+                   this.tempValue[key] = this.bsnData[key];
+                   
+               }
+           }
+        }
         this.resolverRelation();
         if (this.initData) {
             this.initValue = this.initData;
@@ -396,6 +405,40 @@ export class BsnTableComponent extends CnComponentBase implements OnInit, OnDest
 
             this.loading = false;
         })();
+    }
+
+    // 获取 文本值，当前选中行数据
+    async loadByselect( ajaxConfig, componentValue?, selecttempValue ?, cascadeValue?) {
+        const url = this._buildURL(ajaxConfig.url); 
+        const params = {
+            ...this._buildParametersByselect(ajaxConfig.params, componentValue, selecttempValue, cascadeValue),
+        };
+        let selectrowdata = {};
+        const loadData = await this._load(url, params);
+        if (loadData && loadData.status === 200 && loadData.isSuccess) {
+            if (loadData.data) {
+                if (loadData.data.length > 0 ) {
+                    selectrowdata = loadData.data[0];
+                }
+            }
+        }
+        console.log('异步获取当前值:', selectrowdata);
+        return selectrowdata;
+    }
+    // 构建获取文本值参数
+    private _buildParametersByselect(paramsConfig , componentValue?, selecttempValue?, cascadeValue?) {
+        let params = {};
+        if (paramsConfig) {
+            params = CommonTools.parametersResolver({
+                params: paramsConfig,
+                tempValue: selecttempValue,
+                componentValue: componentValue,
+                initValue: this.initValue,
+                cacheValue: this.cacheService,
+                cascadeValue: cascadeValue
+            });
+        }
+        return params;
     }
 
     // 获取当前选中的值 liu 扩展部分，目前不实现，原因是会多请求数据（主要是对级联赋值的扩充）

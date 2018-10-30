@@ -59,7 +59,7 @@ export class FormResolverComponent extends CnComponentBase
     _statusSubscription;
     _cascadeSubscription;
     _isSaving = false;
-    changeConfig;
+    changeConfig = [];
     formconfigcontrol = {}; // liu 表单配置
     constructor(
         private formBuilder: FormBuilder,

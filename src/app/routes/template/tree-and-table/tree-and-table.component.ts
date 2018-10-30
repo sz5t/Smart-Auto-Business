@@ -7,7 +7,7 @@ import { SimpleTableColumn, SimpleTableComponent } from "@delon/abc";
     templateUrl: "./tree-and-table.component.html"
 })
 export class TreeAndTableComponent implements OnInit {
-    constructor(private http: _HttpClient) {}
+    constructor(private http: _HttpClient) { }
 
     ngOnInit() {
         // console.log(JSON.stringify(this.config));
@@ -2045,7 +2045,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                     controls: [
                                                                         {
                                                                             type:
-                                                                                "input",
+                                                                                "selectGrid",
                                                                             labelSize:
                                                                                 "4",
                                                                             controlSize:
@@ -2065,7 +2065,16 @@ export class TreeAndTableComponent implements OnInit {
                                                                             layout:
                                                                                 "column",
                                                                             span:
-                                                                                "12"
+                                                                                "12",
+                                                                                'valueName': 'Id',
+            'lableName': 'name',
+             ajaxConfig: {
+              'url': 'common/CfgTable',
+              'ajaxType': 'get',
+              'params': [
+                { name: 'Id', type: 'componentValue', valueName: 'Id', value: '63fc58ae67604ae0912a93c81ddcb3ca' }
+              ]
+            },
                                                                         },
                                                                         {
                                                                             type:
@@ -2431,6 +2440,427 @@ export class TreeAndTableComponent implements OnInit {
                                                                 }
                                                             ],
                                                             dataList: [],
+                                                            'select': [
+                                                                {
+                                                                  name: 'caseName',
+                                                                  type: 'selectGrid',
+                                                                  config: {
+                                                                    width: '1024', // 弹出的宽度
+                                                                    title: '弹出表格',
+                                                                    selectGrid: {
+                                                                      'viewId': 'businesskey_Table',
+                                                                      'component': 'bsnTable',
+                                                                      'keyId': 'Id',
+                                                                      'pagination': true, // 是否分页
+                                                                      'showTotal': true, // 是否显示总数据量
+                                                                      'pageSize': 5, // 默pageSizeOptions认每页数据条数
+                                                                      'isSelectGrid': true,  // 【弹出表格时用】弹出表格值为true
+                                                                      'selectGridValueName': 'Id',  // 【弹出表格时用】指定绑定的value值
+                                                                      '': [5, 10, 20, 30, 40, 50],
+                                                                      'ajaxConfig': {
+                                                                        'url': 'common/CfgTable',
+                                                                        'ajaxType': 'get',
+                                                                        'params': [
+                                                                          {
+                                                                            name: '_sort', type: 'value', valueName: '', value: 'createDate desc'
+                                                                          }
+                                                                        ]
+                                                                      },
+                                                                      'componentType': {
+                                                                        'parent': false,
+                                                                        'child': false,
+                                                                        'own': true
+                                                                      },
+                                                                      'columns': [
+                                                                        {
+                                                                          title: 'Id', field: 'Id', width: 80, hidden: true,
+                                                                          editor: {
+                                                                            type: 'input',
+                                                                            field: 'Id',
+                                                                            options: {
+                                                                              'type': 'input',
+                                                                              'labelSize': '6',
+                                                                              'controlSize': '18',
+                                                                              'inputType': 'text',
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        {
+                                                                          title: '名称', field: 'name', width: 80,
+                                                                          showFilter: false, showSort: false,
+                                                                          editor: {
+                                                                            type: 'input',
+                                                                            field: 'name',
+                                                                            options: {
+                                                                              'type': 'input',
+                                                                              'labelSize': '6',
+                                                                              'controlSize': '18',
+                                                                              'inputType': 'text',
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        {
+                                                                          title: '编号', field: 'code', width: 80,
+                                                                          showFilter: false, showSort: false,
+                                                                          editor: {
+                                                                            type: 'input',
+                                                                            field: 'code',
+                                                                            options: {
+                                                                              'type': 'input',
+                                                                              'labelSize': '6',
+                                                                              'controlSize': '18',
+                                                                              'inputType': 'text',
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        {
+                                                                          title: '备注', field: 'remark', width: 80, hidden: false,
+                                                                          editor: {
+                                                                            type: 'input',
+                                                                            field: 'remark',
+                                                                            options: {
+                                                                              'type': 'input',
+                                                                              'labelSize': '6',
+                                                                              'controlSize': '18',
+                                                                              'inputType': 'text',
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        {
+                                                                          title: '创建时间', field: 'createDate', width: 80, hidden: false, showSort: true,
+                                                                          editor: {
+                                                                            type: 'input',
+                                                                            field: 'createDate',
+                                                                            options: {
+                                                                              'type': 'input',
+                                                                              'labelSize': '6',
+                                                                              'controlSize': '18',
+                                                                              'inputType': 'text',
+                                                                            }
+                                                                          }
+                                                                        }
+                                                                      ],
+                                                                      'toolbar': [
+                                                                        {
+                                                                          group: [
+                                                                            {
+                                                                              'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新', 'cancelPermission': true
+                                                                            },
+                                                                            {
+                                                                              'name': 'addSearchRow', 'class': 'editable-add-btn', 'text': '查询', 'action': 'SEARCH',
+                                                                              'actionType': 'addSearchRow', 'actionName': 'addSearchRow', 'cancelPermission': true
+                                                                            },
+                                                                            {
+                                                                              'name': 'cancelSearchRow', 'class': 'editable-add-btn', 'text': '取消查询', 'action': 'SEARCH',
+                                                                              'actionType': 'cancelSearchRow', 'actionName': 'cancelSearchRow', 'cancelPermission': true
+                                                                            },
+                                                                            {
+                                                                              'name': 'cancelSelectRow', 'class': 'editable-add-btn', 'text': '取消选中', 'action': 'CANCEL_SELECTED', 'cancelPermission': true
+                                                                            },
+                                                          
+                                                          
+                                                                          ]
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  }
+                                                                },
+                                                                {
+                                                          
+                                                                  'name': 'businesskey',
+                                                                  'type': 'selectTreeGrid',
+                                                                  config: {
+                                                                    nzWidth: 768,
+                                                                    title: '弹出树',
+                                                                    selectTreeGrid: {
+                                                                      isSelectGrid: true,
+                                                                      'selectGridValueName': 'Id',  // 【弹出表格时用】指定绑定的value值
+                                                                      // 'title': '树表网格',
+                                                                      'viewId': 'bsnTreeTable',
+                                                                      'component': 'bsnTreeTable',
+                                                                      'info': true,
+                                                                      'keyId': 'Id',
+                                                                      'pagination': true,
+                                                                      'showTotal': true,
+                                                                      'pageSize': 5,
+                                                                      'pageSizeOptions': [
+                                                                        5,
+                                                                        18,
+                                                                        20,
+                                                                        30,
+                                                                        40,
+                                                                        50
+                                                                      ],
+                                                                      'ajaxConfig': {
+                                                                        'url': 'common/GetCase/null/GetCase',
+                                                                        'ajaxType': 'get',
+                                                                        'params': [],
+                                                                        'filter': []
+                                                                      },
+                                                                      'columns': [
+                                                                        {
+                                                                          'title': 'Id',
+                                                                          'field': 'Id',
+                                                                          'width': 80,
+                                                                          'hidden': true,
+                                                                          'editor': {
+                                                                            'type': 'input',
+                                                                            'field': 'Id',
+                                                                            'options': {
+                                                                              'type': 'input',
+                                                                              'inputType': 'text'
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        {
+                                                                          'title': '名称',
+                                                                          'field': 'caseName',
+                                                                          'width': '90px',
+                                                                          'expand': true,
+                                                                          'showFilter': false,
+                                                                          'showSort': false,
+                                                                          'editor': {
+                                                                            'type': 'input',
+                                                                            'field': 'caseName',
+                                                                            'options': {
+                                                                              'type': 'input',
+                                                                              'inputType': 'text',
+                                                                              'width': '100px'
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        {
+                                                                          'title': '类别',
+                                                                          'field': 'caseTypeText',
+                                                                          'width': '100px',
+                                                                          'hidden': false,
+                                                                          'showFilter': true,
+                                                                          'showSort': true,
+                                                                          'editor': {
+                                                                            'type': 'select',
+                                                                            'field': 'caseType',
+                                                                            'options': {
+                                                                              'type': 'select',
+                                                                              'name': 'caseType',
+                                                                              'label': 'Type',
+                                                                              'notFoundContent': '',
+                                                                              'selectModel': false,
+                                                                              'showSearch': true,
+                                                                              'placeholder': '-请选择数据-',
+                                                                              'disabled': false,
+                                                                              'size': 'default',
+                                                                              'clear': true,
+                                                                              'width': '150px',
+                                                                              'options': [
+                                                                                {
+                                                                                  'label': '表格',
+                                                                                  'value': '1',
+                                                                                  'disabled': false
+                                                                                },
+                                                                                {
+                                                                                  'label': '树组件',
+                                                                                  'value': '2',
+                                                                                  'disabled': false
+                                                                                },
+                                                                                {
+                                                                                  'label': '树表',
+                                                                                  'value': '3',
+                                                                                  'disabled': false
+                                                                                },
+                                                                                {
+                                                                                  'label': '表单',
+                                                                                  'value': '4',
+                                                                                  'disabled': false
+                                                                                },
+                                                                                {
+                                                                                  'label': '标签页',
+                                                                                  'value': '5',
+                                                                                  'disabled': false
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        {
+                                                                          'title': '数量',
+                                                                          'field': 'caseCount',
+                                                                          'width': 80,
+                                                                          'hidden': false,
+                                                                          'editor': {
+                                                                            'type': 'input',
+                                                                            'field': 'caseCount',
+                                                                            'options': {
+                                                                              'type': 'input',
+                                                                              'inputType': 'text'
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        {
+                                                                          'title': '级别',
+                                                                          'field': 'caseLevel',
+                                                                          'width': 80,
+                                                                          'hidden': false,
+                                                                          'showFilter': false,
+                                                                          'showSort': false,
+                                                                          'editor': {
+                                                                            'type': 'input',
+                                                                            'field': 'caseLevel',
+                                                                            'options': {
+                                                                              'type': 'input',
+                                                                              'inputType': 'text'
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        {
+                                                                          'title': '父类别',
+                                                                          'field': 'parentName',
+                                                                          'width': 80,
+                                                                          'hidden': false,
+                                                                          'showFilter': false,
+                                                                          'showSort': false,
+                                                                          'editor': {
+                                                                            'type': 'input',
+                                                                            'field': 'parentId',
+                                                                            'options': {
+                                                                              'type': 'selectTree',
+                                                                              'name': 'parentId',
+                                                                              'label': '父类别',
+                                                                              'notFoundContent': '',
+                                                                              'selectModel': false,
+                                                                              'showSearch': true,
+                                                                              'placeholder': '--请选择--',
+                                                                              'disabled': false,
+                                                                              'size': 'default',
+                                                                              'columns': [
+                                                                                {
+                                                                                  'title': '主键',
+                                                                                  'field': 'key',
+                                                                                  'valueName': 'Id'
+                                                                                },
+                                                                                {
+                                                                                  'title': '父节点',
+                                                                                  'field': 'parentId',
+                                                                                  'valueName': 'parentId'
+                                                                                },
+                                                                                {
+                                                                                  'title': '标题',
+                                                                                  'field': 'title',
+                                                                                  'valueName': 'caseName'
+                                                                                }
+                                                                              ],
+                                                                              'ajaxConfig': {
+                                                                                'url': 'common/ShowCase',
+                                                                                'ajaxType': 'get',
+                                                                                'params': []
+                                                                              },
+                                                                              'layout': 'column',
+                                                                              'span': '24'
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        {
+                                                                          'title': '创建时间',
+                                                                          'field': 'createDate',
+                                                                          'width': 80,
+                                                                          'hidden': false,
+                                                                          'dataType': 'date',
+                                                                          'editor': {
+                                                                            'type': 'input',
+                                                                            'pipe': 'datetime',
+                                                                            'field': 'createDate',
+                                                                            'options': {
+                                                                              'type': 'input',
+                                                                              'inputType': 'datetime'
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        {
+                                                                          'title': '备注',
+                                                                          'field': 'remark',
+                                                                          'width': 80,
+                                                                          'hidden': false,
+                                                                          'editor': {
+                                                                            'type': 'input',
+                                                                            'field': 'remark',
+                                                                            'options': {
+                                                                              'type': 'input',
+                                                                              'inputType': 'text'
+                                                                            }
+                                                                          }
+                                                                        },
+                                                                        {
+                                                                          'title': '状态',
+                                                                          'field': 'enabledText',
+                                                                          'width': 80,
+                                                                          'hidden': false,
+                                                                          'formatter': [
+                                                                            {
+                                                                              'value': '启用',
+                                                                              'bgcolor': '',
+                                                                              'fontcolor': 'text-blue',
+                                                                              'valueas': '启用'
+                                                                            },
+                                                                            {
+                                                                              'value': '禁用',
+                                                                              'bgcolor': '',
+                                                                              'fontcolor': 'text-red',
+                                                                              'valueas': '禁用'
+                                                                            }
+                                                                          ],
+                                                                          'editor': {
+                                                                            'type': 'select',
+                                                                            'field': 'enabled',
+                                                                            'options': {
+                                                                              'type': 'select',
+                                                                              'inputType': 'submit',
+                                                                              'name': 'enabled',
+                                                                              'notFoundContent': '',
+                                                                              'selectModel': false,
+                                                                              'showSearch': true,
+                                                                              'placeholder': '-请选择-',
+                                                                              'disabled': false,
+                                                                              'size': 'default',
+                                                                              'clear': true,
+                                                                              'width': '80px',
+                                                                              'options': [
+                                                                                {
+                                                                                  'label': '启用',
+                                                                                  'value': true,
+                                                                                  'disabled': false
+                                                                                },
+                                                                                {
+                                                                                  'label': '禁用',
+                                                                                  'value': false,
+                                                                                  'disabled': false
+                                                                                }
+                                                                              ]
+                                                                            }
+                                                                          }
+                                                                        }
+                                                                      ],
+                                                                      'componentType': {
+                                                                        'parent': true,
+                                                                        'child': false,
+                                                                        'own': true
+                                                                      },
+                                                                      'toolbar': [
+                                                                        {
+                                                                          'group': [
+                                                                            {
+                                                                              'name': 'refresh',
+                                                                              'action': 'REFRESH',
+                                                                              'text': '刷新',
+                                                                              'color': 'text-primary',
+                                                                              'cancelPermission': true
+                                                                            }
+                                                                          ]
+                                                                        }
+                                                                      ]
+                                                          
+                                                                    }
+                                                                  }
+                                                                }
+                                                              ],                                                          
                                                             relations: [
                                                                 {
                                                                     relationViewId:
