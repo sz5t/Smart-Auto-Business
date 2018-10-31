@@ -133,8 +133,9 @@ export class CnFormSelectGridComponent implements OnInit {
 
     async valueChange(name?) {
         // console.log('valueChange' , name);
-        this.resultData = this.table.dataList;
-
+        this.resultData = this.table.dataList ? this.table.dataList : [];
+        const labelName = this.config.labelName ? this.config.labelName : 'name';
+        const valueName = this.config["valueName"] ? this.config["valueName"] : "Id";
         if (name) {
             const backValue = { name: this.config.name, value: name };
             // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
@@ -142,24 +143,18 @@ export class CnFormSelectGridComponent implements OnInit {
             if (this.resultData) {
                 // valueName
                 const index = this.resultData.findIndex(
-                    item => item[this.config["valueName"]] === name
+                    item => item[valueName] === name
                 );
                 if (this.resultData) {
                     if (index >= 0) {
-                        if (this.resultData[index][this.config["lableName"]]) {
-                            this._valuetext = this.resultData[index][
-                                this.config["lableName"]
-                            ];
+                        if (this.resultData[index][labelName]) {
+                            this._valuetext = this.resultData[index][labelName];
                         }
                         backValue["dataItem"] = this.resultData[index];
                     } else {
                         // 取值
                         const componentvalue = {};
-                        componentvalue[
-                            this.config["valueName"]
-                                ? this.config["valueName"]
-                                : "Id"
-                        ] = name;
+                        componentvalue[valueName] = name;
                         if (this.config.ajaxConfig) {
                             const backselectdata = await this.table.loadByselect(
                                 this.config.ajaxConfig,
@@ -167,19 +162,8 @@ export class CnFormSelectGridComponent implements OnInit {
                                 this.bsnData,
                                 this.casadeData
                             );
-                            if (
-                                backselectdata.hasOwnProperty(
-                                    this.config["lableName"]
-                                        ? this.config["lableName"]
-                                        : "name"
-                                )
-                            ) {
-                                this._valuetext =
-                                    backselectdata[
-                                        this.config["lableName"]
-                                            ? this.config["lableName"]
-                                            : "name"
-                                    ];
+                            if ( backselectdata.hasOwnProperty( labelName )) {
+                                this._valuetext = backselectdata[labelName];
                             } else {
                                 this._valuetext = this._value;
                             }

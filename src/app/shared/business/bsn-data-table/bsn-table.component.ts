@@ -2460,7 +2460,7 @@ export class BsnTableComponent extends CnComponentBase
             nzContent: component["form"],
             nzComponentParams: {
                 config: dialog,
-                ref: obj
+                tempValue: obj
             },
             nzFooter: footer
         });

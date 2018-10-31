@@ -6371,7 +6371,8 @@ export class WorkFlowTodoComponent implements OnInit {
             {
                 controls: [
                     {
-                        type: "selectTreeGrid",
+                        type: "selectGrid",
+                        selectTreeGrids: 'selectTreeGrid caseName',
                         labelSize: "6",
                         controlSize: "16",
                         inputType: "text",
@@ -6384,8 +6385,8 @@ export class WorkFlowTodoComponent implements OnInit {
                         layout: "column",
                         span: "24",
                         valueName: "Id",
-                        labelName: "caseName",
-                        ajaxConfig1: {
+                        labelName: "name",
+                        ajaxConfig: {
                             url: "common/CfgTable",
                             ajaxType: "get",
                             params: [
@@ -6619,7 +6620,7 @@ export class WorkFlowTodoComponent implements OnInit {
         ],
         dataList: [],
         relations: [],
-        cascade: [
+        cascade1: [
             {
                 name: "caseType", // 发出级联请求的小组件（就是配置里的name 字段名称）
                 CascadeObjects: [
@@ -6648,7 +6649,7 @@ export class WorkFlowTodoComponent implements OnInit {
         ],
         select: [
             {
-                name: "caseName1",
+                name: "caseName",
                 type: "selectGrid",
                 config: {
                     width: "1024", // 弹出的宽度
@@ -6806,7 +6807,7 @@ export class WorkFlowTodoComponent implements OnInit {
                 }
             },
             {
-                name: "caseName",
+                name: "caseName1",
                 type: "selectTreeGrid",
                 config: {
                     nzWidth: 768,

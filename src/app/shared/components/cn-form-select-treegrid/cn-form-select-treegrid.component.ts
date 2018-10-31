@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, ViewChild, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, ViewChild, EventEmitter, OnChanges, AfterViewInit, AfterContentInit, AfterViewChecked, AfterContentChecked } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BsnTreeTableComponent } from '@shared/business/bsn-tree-table/bsn-tree-table.component';
 
@@ -7,7 +7,7 @@ import { BsnTreeTableComponent } from '@shared/business/bsn-tree-table/bsn-tree-
   templateUrl: './cn-form-select-treegrid.component.html',
   styleUrls: ['./cn-form-select-treegrid.component.css']
 })
-export class CnFormSelectTreegridComponent implements OnInit {
+export class CnFormSelectTreegridComponent implements OnInit, OnChanges {
   @Input() config;
   @Input() value;
   @Input() bsnData;
@@ -24,7 +24,8 @@ export class CnFormSelectTreegridComponent implements OnInit {
 
   isVisible = false;
   isConfirmLoading = false;
-  _value;
+  isAfterContentChecked = true;
+  _value = null;
   _valuetext;
   permissions = [];
   constructor() { }
@@ -32,7 +33,7 @@ export class CnFormSelectTreegridComponent implements OnInit {
   // 模板配置
 
   ngOnInit() {
-    console.log('config:  ', this.config);
+   // console.log('config:  ', this.config);
     if (this.casadeData) {
       for (const key in this.casadeData) {
         // 临时变量的整理
@@ -70,7 +71,7 @@ export class CnFormSelectTreegridComponent implements OnInit {
     }
 
     // 修改配置列表配置，修改ajax配置，将配置
-   
+
     if (!this.config.labelName) {
       this.config.labelName = "name";
     }
@@ -82,15 +83,33 @@ export class CnFormSelectTreegridComponent implements OnInit {
     this.resultData = this.table.dataList;
   }
 
+  ngOnChanges() {
 
+    console.log('ngOnChanges :', this._value);
+
+  }
+
+  // ngAfterContentChecked() {
+  //   if (this.isAfterContentChecked) {
+  //     if (this._value) {
+  //       console.log('ngAfterContentChecked :', this._value);
+  //       // this.valueChange(this._value);
+  //       this.isAfterContentChecked = false;
+  //     }
+  //   }
+  // }
+  ngOnDestory() {
+    console.log('ngOnDestory :', this._value);
+  }
   showModal(): void {
     this.isVisible = true;
     this.table.value = this._value;
+    console.log('showModal _value :', this._value);
   }
 
   handleOk(): void {
     this.isVisible = false;
-     console.log('选中行' , this.table.selectedItem);
+    console.log('选中行', this.table.selectedItem);
     // 此处简析 多选，单选【个人建议两种组件，返回值不相同，单值（ID值），多值（ID数组）】
     if (this.table.selectedItem) {
       this._valuetext = this.table.selectedItem[this.config.labelName];
@@ -100,7 +119,7 @@ export class CnFormSelectTreegridComponent implements OnInit {
       this._value = null;
     }
     console.log('数据labelName valueName ', this.config.labelName, this.config.valueName);
-     console.log('数据',  this._valuetext , this._value);
+    console.log('数据', this._valuetext, this._value);
   }
 
   handleCancel(): void {
@@ -109,8 +128,10 @@ export class CnFormSelectTreegridComponent implements OnInit {
   }
 
   async valueChange(name?) {
-    // console.log('valueChange' , name);
-    this.resultData = this.table.dataList;
+
+    const labelName = this.config.labelName ? this.config.labelName : 'name';
+    const valueName = this.config["valueName"] ? this.config["valueName"] : "Id";
+    this.resultData = this.table.dataList ? this.table.dataList : [];
 
     if (name) {
       const backValue = { name: this.config.name, value: name };
@@ -119,24 +140,18 @@ export class CnFormSelectTreegridComponent implements OnInit {
       if (this.resultData) {
         // valueName
         const index = this.resultData.findIndex(
-          item => item[this.config["valueName"]] === name
+          item => item[valueName] === name
         );
         if (this.resultData) {
           if (index >= 0) {
-            if (this.resultData[index][this.config["lableName"]]) {
-              this._valuetext = this.resultData[index][
-                this.config["lableName"]
-              ];
+            if (this.resultData[index][labelName]) {
+              this._valuetext = this.resultData[index][labelName];
             }
             backValue["dataItem"] = this.resultData[index];
           } else {
             // 取值
             const componentvalue = {};
-            componentvalue[
-              this.config["valueName"]
-                ? this.config["valueName"]
-                : "Id"
-            ] = name;
+            componentvalue[valueName] = name;
             if (this.config.ajaxConfig) {
               const backselectdata = await this.table.loadByselect(
                 this.config.ajaxConfig,
@@ -144,19 +159,8 @@ export class CnFormSelectTreegridComponent implements OnInit {
                 this.bsnData,
                 this.casadeData
               );
-              if (
-                backselectdata.hasOwnProperty(
-                  this.config["lableName"]
-                    ? this.config["lableName"]
-                    : "name"
-                )
-              ) {
-                this._valuetext =
-                  backselectdata[
-                  this.config["lableName"]
-                    ? this.config["lableName"]
-                    : "name"
-                  ];
+              if (backselectdata.hasOwnProperty(labelName)) {
+                this._valuetext = backselectdata[labelName];
               } else {
                 this._valuetext = this._value;
               }
@@ -164,18 +168,18 @@ export class CnFormSelectTreegridComponent implements OnInit {
             } else {
               this._valuetext = this._value;
             }
-             console.log('_valuetext: ',  this._valuetext) ;
+           // console.log('_valuetext: ', this._valuetext);
           }
         }
 
-         console.log('iftrue弹出表格返回数据', backValue);
-      }
+        console.log('iftrue弹出表格返回数据', backValue);
+      } 
       // this.value['dataText'] = this._valuetext;
       this.updateValue.emit(backValue);
     } else {
       const backValue = { name: this.config.name, value: name };
       this.updateValue.emit(backValue);
-       console.log('iffalse弹出表格返回数据', backValue);
+      console.log('iffalse弹出表格返回数据', backValue);
     }
   }
 
