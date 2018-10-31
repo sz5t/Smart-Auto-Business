@@ -74,6 +74,7 @@ export class BsnTableComponent extends CnComponentBase
     casadeData; // 级联配置 liu 20181023
     @Input()
     value;
+    @Input() bsnData;
     @Input()
     ref;
     // tempValue = {};

@@ -55,7 +55,7 @@ export class BsnTreeTableComponent extends GridBase
     casadeData; // 级联配置 liu 20181023
     @Input()
     value;
-
+    @Input() bsnData;
     //  分页默认参数
     loading = false;
     total = 1;
@@ -119,6 +119,7 @@ export class BsnTreeTableComponent extends GridBase
         if (this.initData) {
             this.initValue = this.initData;
         }
+    
         this.callback = focusId => {
             this._cancelEditRows();
             this.load();
@@ -127,6 +128,7 @@ export class BsnTreeTableComponent extends GridBase
 
     // 生命周期事件
     ngOnInit() {
+        this.permission = this.permissions;
         if (this.casadeData) {
             for (const key in this.casadeData) {
                 // 临时变量的整理
@@ -405,7 +407,54 @@ export class BsnTreeTableComponent extends GridBase
             this.loading = false;
         })();
     }
-
+    // 获取 文本值，当前选中行数据
+    async loadByselect(
+        ajaxConfig,
+        componentValue?,
+        selecttempValue?,
+        cascadeValue?
+    ) {
+        const url = this.buildURL(ajaxConfig.url);
+        const params = {
+            ...this._buildParametersByselect(
+                ajaxConfig.params,
+                componentValue,
+                selecttempValue,
+                cascadeValue
+            )
+        };
+        let selectrowdata = {};
+        const loadData = await this._load(url, params);
+        if (loadData && loadData.status === 200 && loadData.isSuccess) {
+            if (loadData.data) {
+                if (loadData.data.length > 0) {
+                    selectrowdata = loadData.data[0];
+                }
+            }
+        }
+        console.log("异步获取当前值:", selectrowdata);
+        return selectrowdata;
+    }
+    // 构建获取文本值参数
+    private _buildParametersByselect(
+        paramsConfig,
+        componentValue?,
+        selecttempValue?,
+        cascadeValue?
+    ) {
+        let params = {};
+        if (paramsConfig) {
+            params = CommonTools.parametersResolver({
+                params: paramsConfig,
+                tempValue: selecttempValue,
+                componentValue: componentValue,
+                initValue: this.initValue,
+               // cacheValue: this.cacheService,
+                cascadeValue: cascadeValue
+            });
+        }
+        return params;
+    }
     /**
      * 更新编辑数据,并设置为取消状态
      */
@@ -520,6 +569,7 @@ export class BsnTreeTableComponent extends GridBase
                     this.expandDataCache[key].forEach(element => {
                         if (element["Id"] === this.value) {
                             element.selected = true; // 有值行选中
+                            this.selectedItem = element;
                         }
                     });
                 }
@@ -1843,9 +1893,10 @@ export class BsnTreeTableComponent extends GridBase
     }
 
     windowDialog(option) {
+        console.log('option:', option);
         if (this.config.windowDialog && this.config.windowDialog.length > 0) {
             const index = this.config.windowDialog.findIndex(
-                item => item.name === option.name
+                item => item.name === option.actionName
             );
             this.showLayout(this.config.windowDialog[index]);
         }

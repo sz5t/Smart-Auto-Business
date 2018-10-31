@@ -6371,7 +6371,7 @@ export class WorkFlowTodoComponent implements OnInit {
             {
                 controls: [
                     {
-                        type: "selectGrid",
+                        type: "selectTreeGrid",
                         labelSize: "6",
                         controlSize: "16",
                         inputType: "text",
@@ -6384,8 +6384,8 @@ export class WorkFlowTodoComponent implements OnInit {
                         layout: "column",
                         span: "24",
                         valueName: "Id",
-                        lableName: "name",
-                        ajaxConfig: {
+                        labelName: "caseName",
+                        ajaxConfig1: {
                             url: "common/CfgTable",
                             ajaxType: "get",
                             params: [
@@ -6648,7 +6648,7 @@ export class WorkFlowTodoComponent implements OnInit {
         ],
         select: [
             {
-                name: "caseName",
+                name: "caseName1",
                 type: "selectGrid",
                 config: {
                     width: "1024", // 弹出的宽度
@@ -6806,7 +6806,7 @@ export class WorkFlowTodoComponent implements OnInit {
                 }
             },
             {
-                name: "businesskey",
+                name: "caseName",
                 type: "selectTreeGrid",
                 config: {
                     nzWidth: 768,

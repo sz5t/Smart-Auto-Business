@@ -370,7 +370,7 @@ export class CnGridSelectTreegridComponent implements OnInit {
       this.config.labelName = 'name';
     }
     if (!this.config.valueName) {
-      this.config.labelName = 'Id';
+      this.config.valueName = 'Id';
     }
    //  console.log('ngOnInit this.value:', this.value);
     this.config.width = this.config.width - 30;

@@ -176,6 +176,15 @@ export class GridBase extends CnComponentBase {
         this._addedTreeRows = value;
     }
 
+
+    
+    private _permissions;
+    public get permission() {
+        return this._permissions ? this._permissions : [];
+    }
+    public set permission(value) {
+        this._permissions = value;
+    }
     constructor() {
         super();
     }
@@ -641,6 +650,7 @@ export class GridBase extends CnComponentBase {
                 nzContent: LayoutResolverComponent,
                 nzComponentParams: {
                     config: data,
+                    permissions: this.permission,
                     initData: { ...this.selectedItem, ...this.tempValue }
                 },
                 nzFooter: footer

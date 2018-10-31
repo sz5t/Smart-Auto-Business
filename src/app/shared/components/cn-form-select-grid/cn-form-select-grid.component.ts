@@ -93,7 +93,7 @@ export class CnFormSelectGridComponent implements OnInit {
             this.config.labelName = "name";
         }
         if (!this.config.valueName) {
-            this.config.labelName = "Id";
+            this.config.valueName = "Id";
         }
         //  console.log('ngOnInit this.value:', this.value);
         this.resultData = this.table.dataList;

@@ -62,7 +62,8 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
             // 异步加载options
             (async () => {
                 const result = await this.asyncLoadOptions(
-                    this.config.ajaxConfig
+                    this.config.ajaxConfig,
+                    this.formGroup.value
                 );
                 this.resultData = result;
                 if (this.config.valueType && this.config.valueType === "list") {
@@ -100,7 +101,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
     ngAfterViewInit() {}
 
     async asyncLoadOptions(p?, componentValue?, type?) {
-        // console.log('select load 异步加载'); // liu
+        // console.log('select load 异步加载', componentValue); // liu
         const params = {};
         let tag = true;
         let url;

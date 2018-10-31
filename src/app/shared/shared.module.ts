@@ -160,7 +160,8 @@ const COMPONENTS = [
     WfDashboardComponent,
     CnFormSelectGridComponent,
     CnGridSelectGridComponent,
-    CnGridSelectTreegridComponent
+    CnGridSelectTreegridComponent,
+    CnFormSelectTreegridComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
@@ -187,8 +188,7 @@ const DIRECTIVES = [
         // your components
         ...COMPONENTS,
         ...DIRECTIVES,
-        BtnTableFieldLimit,
-        CnFormSelectTreegridComponent
+        BtnTableFieldLimit
     ],
     exports: [
         CommonModule,
