@@ -55,7 +55,8 @@ export class BsnTreeTableComponent extends GridBase
     casadeData; // 级联配置 liu 20181023
     @Input()
     value;
-    @Input() bsnData;
+    @Input()
+    bsnData;
     //  分页默认参数
     loading = false;
     total = 1;
@@ -119,7 +120,7 @@ export class BsnTreeTableComponent extends GridBase
         if (this.initData) {
             this.initValue = this.initData;
         }
-    
+
         this.callback = focusId => {
             this._cancelEditRows();
             this.load();
@@ -147,6 +148,7 @@ export class BsnTreeTableComponent extends GridBase
                 }
             }
         }
+        this.resolverBeforeOperation();
         // liu 20181022 特殊处理行定位
         if (this.config.isSelectGrid) {
             this.is_Selectgrid = false;
@@ -449,7 +451,7 @@ export class BsnTreeTableComponent extends GridBase
                 tempValue: selecttempValue,
                 componentValue: componentValue,
                 initValue: this.initValue,
-               // cacheValue: this.cacheService,
+                // cacheValue: this.cacheService,
                 cascadeValue: cascadeValue
             });
         }
@@ -1893,7 +1895,7 @@ export class BsnTreeTableComponent extends GridBase
     }
 
     windowDialog(option) {
-        console.log('option:', option);
+        console.log("option:", option);
         if (this.config.windowDialog && this.config.windowDialog.length > 0) {
             const index = this.config.windowDialog.findIndex(
                 item => item.name === option.actionName
