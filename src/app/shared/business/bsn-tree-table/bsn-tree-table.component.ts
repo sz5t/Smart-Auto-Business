@@ -2031,7 +2031,7 @@ export class BsnTreeTableComponent extends GridBase
         if (action) {
             switch (action.execute) {
                 case "prevent":
-                    if (actionResult.any(item => (item = true))) {
+                    if (actionResult.some(item => (item = true))) {
                         this.beforeOperationMessage(action);
                         result = true;
                     } else {
@@ -2085,7 +2085,7 @@ export class BsnTreeTableComponent extends GridBase
             Array.isArray(this.config.beforeOperation) &&
             this.config.beforeOperation.length > 0
         ) {
-            this.config.forEach(element => {
+            this.config.beforeOperation.forEach(element => {
                 this._beforeOperationMap.set(element.name, element.status);
             });
         }
