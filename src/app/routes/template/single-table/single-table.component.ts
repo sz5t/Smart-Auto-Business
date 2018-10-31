@@ -1619,7 +1619,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         controls: [
                                                             {
                                                                 type:
-                                                                    "datePicker",
+                                                                    "monthPicker",
                                                                 labelSize: "6",
                                                                 controlSize:
                                                                     "16",
@@ -1636,8 +1636,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 layout:
                                                                     "column",
                                                                 showTime: true,
-                                                                format:
-                                                                    "yyyy-MM-dd",
+                                                                format: "yyyy",
                                                                 showToday: true,
                                                                 span: "24"
                                                             }

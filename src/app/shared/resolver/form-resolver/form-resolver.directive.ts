@@ -1,3 +1,6 @@
+import { CnMonthPickerComponent } from "./../../components/cn-date-picker/cn-month-picker.component";
+import { CnYearPickerComponent } from "./../../components/cn-date-picker/cn-year-picker.component";
+import { CnWeekPickerComponent } from "./../../components/cn-date-picker/cn-week-picker.component";
 import { CnComponentBase } from "@shared/components/cn-component-base";
 import { CnFormHiddenComponent } from "@shared/components/cn-form-hidden/cn-form-hidden.component";
 import {
@@ -49,7 +52,10 @@ const components: { [type: string]: Type<any> } = {
     hidden: CnFormHiddenComponent,
     number: CnFormNumberComponent,
     selectGrid: CnFormSelectGridComponent,
-    selectTreeGrid: CnFormSelectTreegridComponent
+    selectTreeGrid: CnFormSelectTreegridComponent,
+    yearPicker: CnYearPickerComponent,
+    monthPicker: CnMonthPickerComponent,
+    weekPicker: CnWeekPickerComponent
 };
 @Directive({
     selector: "[cnFormResolverDirective]"

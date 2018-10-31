@@ -74,7 +74,8 @@ export class BsnTableComponent extends CnComponentBase
     casadeData; // 级联配置 liu 20181023
     @Input()
     value;
-    @Input() bsnData;
+    @Input()
+    bsnData;
     @Input()
     ref;
     // tempValue = {};
@@ -2541,7 +2542,7 @@ export class BsnTableComponent extends CnComponentBase
     dialog(option) {
         if (this.config.dialog && this.config.dialog.length > 0) {
             const index = this.config.dialog.findIndex(
-                item => item.name === option.name
+                item => item.name === option.actionName
             );
             this.showForm(this.config.dialog[index]);
         }
@@ -2553,7 +2554,7 @@ export class BsnTableComponent extends CnComponentBase
     windowDialog(option) {
         if (this.config.windowDialog && this.config.windowDialog.length > 0) {
             const index = this.config.windowDialog.findIndex(
-                item => item.name === option.name
+                item => item.name === option.actionName
             );
             this.showLayout(this.config.windowDialog[index]);
         }
@@ -2565,7 +2566,7 @@ export class BsnTableComponent extends CnComponentBase
     uploadDialog(option) {
         if (this.config.uploadDialog && this.config.uploadDialog.length > 0) {
             const index = this.config.uploadDialog.findIndex(
-                item => item.name === option.name
+                item => item.name === option.actionName
             );
             this.openUploadDialog(this.config.uploadDialog[index]);
         }
@@ -2577,7 +2578,7 @@ export class BsnTableComponent extends CnComponentBase
     formDialog(option) {
         if (this.config.formDialog && this.config.formDialog.length > 0) {
             const index = this.config.formDialog.findIndex(
-                item => item.name === option.name
+                item => item.name === option.actionName
             );
             this.showForm(this.config.formDialog[index]);
         }
@@ -2589,7 +2590,7 @@ export class BsnTableComponent extends CnComponentBase
     formBatchDialog(option) {
         if (this.config.formDialog && this.config.formDialog.length > 0) {
             const index = this.config.formDialog.findIndex(
-                item => item.name === option.name
+                item => item.name === option.actionName
             );
             this.showBatchForm(this.config.formDialog[index]);
         }

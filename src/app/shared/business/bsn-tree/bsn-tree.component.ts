@@ -356,163 +356,185 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
         (async () => {
             const data = await this.getTreeData();
             if (data.data && data.isSuccess) {
-                this._toTreeBefore = data.data;
-                for (let i = 0, len = this._toTreeBefore.length; i < len; i++) {
-                    if (this.config.columns) {
-                        this.config.columns.forEach((col, index) => {
-                            this._toTreeBefore[i][
-                                col["field"]
-                            ] = this._toTreeBefore[i][col["valueName"]];
-                        });
-                    }
-                    if (this.config.checkable && this.config.checkedMapping) {
-                        this.config.checkedMapping.forEach(m => {
-                            if (
-                                this._toTreeBefore[i][m.name] &&
-                                this._toTreeBefore[i][m.name] === m.value
-                            ) {
-                                this._toTreeBefore[i]["checked"] = true;
-                            }
-                        });
-                    }
-                }
-                let parent = "";
-                // 解析出 parentid ,一次性加载目前只考虑一个值
-                if (this.config.parent) {
-                    this.config.parent.forEach(param => {
-                        if (param.type === "tempValue") {
-                            parent = this.tempValue[param.valueName];
-                        } else if (param.type === "value") {
-                            if (param.value === "null") {
-                                param.value = null;
-                            }
-                            parent = param.value;
-                        } else if (param.type === "GUID") {
-                            const fieldIdentity = CommonTools.uuID(10);
-                            parent = fieldIdentity;
+                if (data.data.length > 0) {
+                    this._toTreeBefore = data.data;
+                    for (
+                        let i = 0, len = this._toTreeBefore.length;
+                        i < len;
+                        i++
+                    ) {
+                        if (this.config.columns) {
+                            this.config.columns.forEach((col, index) => {
+                                this._toTreeBefore[i][
+                                    col["field"]
+                                ] = this._toTreeBefore[i][col["valueName"]];
+                            });
                         }
-                    });
-                }
-
-                const d = this._setDataToNzTreeNodes(
-                    this._toTreeBefore,
-                    parent,
-                    this.config.currentRoot
-                );
-
-                // 设置树初始化选中第一个节点
-                if (!this.tempValue["_selectedNode"]) {
-                    if (d && d.length > 0) {
-                        // 根据配置指定选中节点
-                        if (this.config.defaultSelection) {
-                            let selectedStatus = 0;
-                            if (this.config.defaultSelection.selected) {
-                                const defaultSelection = this.config
-                                    .defaultSelection.selected;
-                                let allData = d;
-
-                                let j = 1;
-                                for (let i = 0; i < defaultSelection.length; ) {
-                                    let index = defaultSelection[i].index;
-                                    let level = defaultSelection[i].level;
-                                    if (level === j) {
-                                        // level = level - 1;
-                                        index = index - 1;
-                                        i++;
-                                    } else {
-                                        level = j;
-                                        index = 0;
-                                    }
-                                    if (
-                                        this._checkDefaultSelection(
-                                            allData,
-                                            level,
-                                            index
-                                        )
-                                    ) {
-                                        allData = this._setDefaultSelection(
-                                            allData,
-                                            level,
-                                            index
-                                        );
-                                        selectedStatus = 0;
-                                    } else {
-                                        selectedStatus = 1;
-                                        break;
-                                    }
-                                    if (
-                                        level ===
-                                        defaultSelection[
-                                            defaultSelection.length - 1
-                                        ]["level"]
-                                    ) {
-                                        allData["selected"] = true;
-                                        this.selectedItem = allData;
-                                        this.tempValue[
-                                            "_selectedNode"
-                                        ] = allData;
-                                    }
-                                    j++;
+                        if (
+                            this.config.checkable &&
+                            this.config.checkedMapping
+                        ) {
+                            this.config.checkedMapping.forEach(m => {
+                                if (
+                                    this._toTreeBefore[i][m.name] &&
+                                    this._toTreeBefore[i][m.name] === m.value
+                                ) {
+                                    this._toTreeBefore[i]["checked"] = true;
                                 }
-                            }
-                            if (selectedStatus === 1) {
-                                d[0]["selected"] = true;
-                                this.selectedItem = d[0];
-                                this.tempValue["_selectedNode"] = d[0];
-                            }
+                            });
                         }
                     }
-                }
-                this.treeData = d;
-                // 发送消息
-                if (
-                    this.config.componentType &&
-                    this.config.componentType.parent === true
-                ) {
-                    this.tempValue["_selectedNode"] &&
-                        this.cascade.next(
-                            new BsnComponentMessage(
-                                BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
-                                this.config.viewId,
-                                {
-                                    data: this.tempValue["_selectedNode"]
+                    let parent = "";
+                    // 解析出 parentid ,一次性加载目前只考虑一个值
+                    if (this.config.parent) {
+                        this.config.parent.forEach(param => {
+                            if (param.type === "tempValue") {
+                                parent = this.tempValue[param.valueName];
+                            } else if (param.type === "value") {
+                                if (param.value === "null") {
+                                    param.value = null;
                                 }
-                            )
-                        );
-                }
-                if (
-                    this.config.componentType &&
-                    this.config.componentType.sub === true
-                ) {
-                    this.tempValue["_selectedNode"] &&
-                        this.cascade.next(
-                            new BsnComponentMessage(
-                                BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
-                                this.config.viewId,
-                                {
-                                    data: this.tempValue["_selectedNode"],
-                                    tempValue: this.tempValue,
-                                    subViewId: () => {
-                                        let id = "";
-                                        this.config.subMapping.forEach(sub => {
-                                            const mappingVal = this.tempValue[
+                                parent = param.value;
+                            } else if (param.type === "GUID") {
+                                const fieldIdentity = CommonTools.uuID(10);
+                                parent = fieldIdentity;
+                            }
+                        });
+                    }
+
+                    const d = this._setDataToNzTreeNodes(
+                        this._toTreeBefore,
+                        parent,
+                        this.config.currentRoot
+                    );
+
+                    // 设置树初始化选中第一个节点
+                    if (!this.tempValue["_selectedNode"]) {
+                        if (d && d.length > 0) {
+                            // 根据配置指定选中节点
+                            if (this.config.defaultSelection) {
+                                let selectedStatus = 0;
+                                if (this.config.defaultSelection.selected) {
+                                    const defaultSelection = this.config
+                                        .defaultSelection.selected;
+                                    let allData = d;
+
+                                    let j = 1;
+                                    for (
+                                        let i = 0;
+                                        i < defaultSelection.length;
+
+                                    ) {
+                                        let index = defaultSelection[i].index;
+                                        let level = defaultSelection[i].level;
+                                        if (level === j) {
+                                            // level = level - 1;
+                                            index = index - 1;
+                                            i++;
+                                        } else {
+                                            level = j;
+                                            index = 0;
+                                        }
+                                        if (
+                                            this._checkDefaultSelection(
+                                                allData,
+                                                level,
+                                                index
+                                            )
+                                        ) {
+                                            allData = this._setDefaultSelection(
+                                                allData,
+                                                level,
+                                                index
+                                            );
+                                            selectedStatus = 0;
+                                        } else {
+                                            selectedStatus = 1;
+                                            break;
+                                        }
+                                        if (
+                                            level ===
+                                            defaultSelection[
+                                                defaultSelection.length - 1
+                                            ]["level"]
+                                        ) {
+                                            allData["selected"] = true;
+                                            this.selectedItem = allData;
+                                            this.tempValue[
                                                 "_selectedNode"
-                                            ][sub["field"]];
-                                            if (sub.mapping) {
-                                                sub.mapping.forEach(m => {
-                                                    if (
-                                                        m.value === mappingVal
-                                                    ) {
-                                                        id = m.subViewId;
-                                                    }
-                                                });
-                                            }
-                                        });
-                                        return id;
+                                            ] = allData;
+                                        }
+                                        j++;
                                     }
                                 }
-                            )
-                        );
+                                if (selectedStatus === 1) {
+                                    d[0]["selected"] = true;
+                                    this.selectedItem = d[0];
+                                    this.tempValue["_selectedNode"] = d[0];
+                                }
+                            }
+                        }
+                    }
+                    this.treeData = d;
+                    // 发送消息
+                    if (
+                        this.config.componentType &&
+                        this.config.componentType.parent === true
+                    ) {
+                        this.tempValue["_selectedNode"] &&
+                            this.cascade.next(
+                                new BsnComponentMessage(
+                                    BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                                    this.config.viewId,
+                                    {
+                                        data: this.tempValue["_selectedNode"]
+                                    }
+                                )
+                            );
+                    }
+                    if (
+                        this.config.componentType &&
+                        this.config.componentType.sub === true
+                    ) {
+                        this.tempValue["_selectedNode"] &&
+                            this.cascade.next(
+                                new BsnComponentMessage(
+                                    BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
+                                    this.config.viewId,
+                                    {
+                                        data: this.tempValue["_selectedNode"],
+                                        tempValue: this.tempValue,
+                                        subViewId: () => {
+                                            let id = "";
+                                            this.config.subMapping.forEach(
+                                                sub => {
+                                                    const mappingVal = this
+                                                        .tempValue[
+                                                        "_selectedNode"
+                                                    ][sub["field"]];
+                                                    if (sub.mapping) {
+                                                        sub.mapping.forEach(
+                                                            m => {
+                                                                if (
+                                                                    m.value ===
+                                                                    mappingVal
+                                                                ) {
+                                                                    id =
+                                                                        m.subViewId;
+                                                                }
+                                                            }
+                                                        );
+                                                    }
+                                                }
+                                            );
+                                            return id;
+                                        }
+                                    }
+                                )
+                            );
+                    }
+                } else {
+                    this.treeData = [];
                 }
             }
         })();
