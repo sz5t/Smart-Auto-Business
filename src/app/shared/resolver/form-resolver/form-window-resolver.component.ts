@@ -76,6 +76,19 @@ export class CnFormWindowResolverComponent extends CnComponentBase
 
     // region: 组件生命周期事件
     ngOnInit() {
+        if (this.config.select) {
+            this.config.select.forEach(selectItem => {
+                this.config.forms.forEach(formItem => {
+                    formItem.controls.forEach(control => {
+                        if (control) {
+                            if (control.name === selectItem.name) {
+                                control["select"] = selectItem.config;
+                            }
+                        }
+                    });
+                });
+            });
+        }
         if (this.initData) {
             this.initValue = this.initData;
         }
@@ -84,12 +97,6 @@ export class CnFormWindowResolverComponent extends CnComponentBase
         }
         this.form = this.createGroup();
         this.resolverRelation();
-        // if (this.ref) {
-        //     for (const p in this.ref) {
-        //         this.tempValue[p] = this.ref[p];
-        //     }
-        // }
-
         if (this.config.ajaxConfig) {
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
@@ -672,13 +679,13 @@ export class CnFormWindowResolverComponent extends CnComponentBase
      * @returns {Promise<Array>}
      */
     private async batchSave(ajaxConfig) {
-        const result = [];
         if (ajaxConfig && Array.isArray(ajaxConfig)) {
-            ajaxConfig.map(async ajaxConfigObj => {
-                result.push(await this._executeAjax(ajaxConfigObj));
-            });
+            return Promise.all(
+                ajaxConfig.map(ajaxConfigObj =>
+                    this._executeAjax(ajaxConfigObj)
+                )
+            );
         }
-        return result;
     }
 
     // private async post(postConfig) {
@@ -837,7 +844,7 @@ export class CnFormWindowResolverComponent extends CnComponentBase
         // 判断对象是否是数组
         return Object.prototype.toString.call(obj) === "[object Array]";
     }
-    private async _executeRequest(url, method, body) {
+    private _executeRequest(url, method, body) {
         return this._apiService[method](url, body).toPromise();
     }
 

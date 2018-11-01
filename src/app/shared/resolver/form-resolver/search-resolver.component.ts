@@ -76,47 +76,9 @@ export class SearchResolverComponent extends CnComponentBase
     ngOnInit() {
         this.form = this.createGroup();
         this.resolverRelation();
-        // if (this.config.relations) {
-        //   this._relativeResolver = new RelativeResolver();
-        //   this._relativeResolver.reference = this;
-        //   this._relativeResolver.relativeService = this._messageService;
-        //   this._relativeResolver.initParameter = [this.load];
-        //   this._relativeResolver.initParameterEvents = [this.load];
-        //   this._relativeResolver.relations = this.config.relations;
-        //   this._relativeResolver.resolverRelation();
-        //   this._tempParameters = this._relativeResolver._tempParameter;
-        // }
-        // if (this.ref) {
-        //   for (const p in this.ref) {
-        //     this._tempParameters[p] = this.ref[p];
-        //   }
-        // }
-        // if (this.config.ajaxConfig) {
-        //   if (this.config.componentType) {
-        //     if (!this.config.componentType.child) {
-        //       this.load();
-        //     }
-        //   } else {
-        //     this.load();
-        //   }
-        // }
     }
 
-    ngOnChanges() {
-        // if (this.form) {
-        //   const controls = Object.keys(this.form.controls);
-        //   const configControls = this.controls.map(item => item.name);
-        //   controls
-        //     .filter(control => !configControls.includes(control))
-        //     .forEach(control => this.form.removeControl(control));
-        //   configControls
-        //     .filter(control => !controls.includes(control))
-        //     .forEach(name => {
-        //       const config = this.controls.find(control => control.name === name);
-        //       this.form.addControl(name, this.createControl(config));
-        //     });
-        // }
-    }
+    ngOnChanges() {}
 
     ngOnDestroy() {
         if (this._statusSubscription) {

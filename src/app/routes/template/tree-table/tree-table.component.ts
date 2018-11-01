@@ -256,7 +256,13 @@ export class TreeTableComponent implements OnInit {
                                             },
                                             {
                                                 title: "状态",
-                                                field: "enabledText",
+                                                field: "enabled",
+                                                width: 80,
+                                                hidden: true
+                                            },
+                                            {
+                                                title: "状态",
+                                                field: "enableText",
                                                 width: 80,
                                                 hidden: false,
                                                 editor: {
@@ -305,7 +311,7 @@ export class TreeTableComponent implements OnInit {
                                                                 {
                                                                     name:
                                                                         "enabled",
-                                                                    value: true,
+                                                                    value: "1",
                                                                     checkType:
                                                                         "value"
                                                                 }

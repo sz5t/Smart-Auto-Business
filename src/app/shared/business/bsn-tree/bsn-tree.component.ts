@@ -876,7 +876,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     dialog(option) {
         if (this.config.dialog && this.config.dialog.length > 0) {
             const index = this.config.dialog.findIndex(
-                item => item.name === option.name
+                item => item.name === option.actionName
             );
             this.showForm(this.config.dialog[index]);
         }
@@ -888,7 +888,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     windowDialog(option) {
         if (this.config.windowDialog && this.config.windowDialog.length > 0) {
             const index = this.config.windowDialog.findIndex(
-                item => item.name === option.name
+                item => item.name === option.actionName
             );
             this.showLayout(this.config.windowDialog[index]);
         }
@@ -900,7 +900,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     uploadDialog(option) {
         if (this.config.uploadDialog && this.config.uploadDialog.length > 0) {
             const index = this.config.uploadDialog.findIndex(
-                item => item.name === option.name
+                item => item.name === option.actionName
             );
             this.openUploadDialog(this.config.uploadDialog[index]);
         }
@@ -912,7 +912,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     formDialog(option) {
         if (this.config.formDialog && this.config.formDialog.length > 0) {
             const index = this.config.formDialog.findIndex(
-                item => item.name === option.name
+                item => item.name === option.actionName
             );
             this.showForm(this.config.formDialog[index]);
         }
@@ -924,7 +924,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     formBatchDialog(option) {
         if (this.config.formDialog && this.config.formDialog.length > 0) {
             const index = this.config.formDialog.findIndex(
-                item => item.name === option.name
+                item => item.name === option.actionName
             );
             this.showBatchForm(this.config.formDialog[index]);
         }

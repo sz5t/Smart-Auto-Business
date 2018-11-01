@@ -2354,7 +2354,8 @@ export class BsnTableComponent extends CnComponentBase
         });
         if (checkedItems.length > 0) {
             const obj = {
-                checkedRow: checkedItems
+                checkedRow: checkedItems,
+                ...this.tempValue
             };
             const modal = this.modalService.create({
                 nzTitle: dialog.title,
@@ -2362,7 +2363,7 @@ export class BsnTableComponent extends CnComponentBase
                 nzContent: component["form"],
                 nzComponentParams: {
                     config: dialog,
-                    ref: obj
+                    tempValue: obj
                 },
                 nzFooter: footer
             });
@@ -2416,18 +2417,21 @@ export class BsnTableComponent extends CnComponentBase
             });
             if (rs.success) {
                 this._message.success(message);
+                if (callback) {
+                    callback();
+                }
             } else {
                 this._message.error(rs.msg.join("<br/>"));
             }
         } else {
             if (result.isSuccess) {
                 this._message.success(message);
+                if (callback) {
+                    callback();
+                }
             } else {
                 this._message.error(result.message);
             }
-        }
-        if (callback && result.isSuccess) {
-            callback();
         }
     }
     /**

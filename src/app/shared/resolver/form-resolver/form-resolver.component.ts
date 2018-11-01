@@ -101,13 +101,6 @@ export class FormResolverComponent extends CnComponentBase
         }
         this.form = this.createGroup();
         this.resolverRelation();
-
-        // if (this.ref) {
-        //     for (const p in this.ref) {
-        //         this.tempValue[p] = this.ref[p];
-        //     }
-        // }
-
         if (this.config.ajaxConfig) {
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
@@ -674,6 +667,7 @@ export class FormResolverComponent extends CnComponentBase
             success: true,
             msg: []
         };
+        let suc = false;
         if (result && Array.isArray(result)) {
             result.forEach(res => {
                 rs["success"] = rs["success"] && res.isSuccess;
@@ -683,17 +677,19 @@ export class FormResolverComponent extends CnComponentBase
             });
             if (rs.success) {
                 this.message.success(message);
+                suc = true;
             } else {
                 this.message.error(rs.msg.join("<br/>"));
             }
         } else {
             if (result.isSuccess) {
                 this.message.success(message);
+                suc = true;
             } else {
                 this.message.error(result.message);
             }
         }
-        if (callback) {
+        if (callback && suc) {
             callback();
             if (
                 this.config.componentType &&
@@ -1029,7 +1025,7 @@ export class FormResolverComponent extends CnComponentBase
     uploadDialog(option) {
         if (this.config.uploadDialog && this.config.uploadDialog.length > 0) {
             const index = this.config.uploadDialog.findIndex(
-                item => item.name === option.name
+                item => item.name === option.actionName
             );
             this.openUploadDialog(this.config.uploadDialog[index]);
         }
@@ -1069,7 +1065,7 @@ export class FormResolverComponent extends CnComponentBase
     windowDialog(option) {
         if (this.config.windowDialog && this.config.windowDialog.length > 0) {
             const index = this.config.windowDialog.findIndex(
-                item => item.name === option.name
+                item => item.name === option.actionName
             );
             this.showLayout(this.config.windowDialog[index]);
         }
@@ -1082,7 +1078,7 @@ export class FormResolverComponent extends CnComponentBase
     formDialog(option) {
         if (this.config.formDialog && this.config.formDialog.length > 0) {
             const index = this.config.formDialog.findIndex(
-                item => item.name === option.name
+                item => item.name === option.actionName
             );
             this.showForm(this.config.formDialog[index]);
         }
@@ -1115,7 +1111,8 @@ export class FormResolverComponent extends CnComponentBase
             nzContent: CnFormWindowResolverComponent,
             nzComponentParams: {
                 config: dialog,
-                ref: obj
+                tempValue: obj,
+                permissions: this.permissions
             },
             nzFooter: footer
         });
@@ -1171,7 +1168,7 @@ export class FormResolverComponent extends CnComponentBase
     formBatchDialog(option) {
         if (this.config.formDialog && this.config.formDialog.length > 0) {
             const index = this.config.formDialog.findIndex(
-                item => item.name === option.name
+                item => item.name === option.actionName
             );
             this.showBatchForm(this.config.formDialog[index]);
         }
@@ -1190,7 +1187,8 @@ export class FormResolverComponent extends CnComponentBase
                 nzContent: LayoutResolverComponent,
                 nzComponentParams: {
                     config: data,
-                    initData: { ...this.value, ...this.tempValue }
+                    initData: { ...this.value, ...this.tempValue },
+                    permissions: this.permissions
                 },
                 nzFooter: footer
             });
@@ -1253,7 +1251,8 @@ export class FormResolverComponent extends CnComponentBase
         });
         if (checkedItems.length > 0) {
             const obj = {
-                checkedRow: checkedItems
+                checkedRow: checkedItems,
+                ...this.tempValue
             };
             const modal = this.modalService.create({
                 nzTitle: dialog.title,
@@ -1261,7 +1260,8 @@ export class FormResolverComponent extends CnComponentBase
                 nzContent: CnFormWindowResolverComponent,
                 nzComponentParams: {
                     config: dialog,
-                    ref: obj
+                    tempValue: obj,
+                    permissions: this.permissions
                 },
                 nzFooter: footer
             });

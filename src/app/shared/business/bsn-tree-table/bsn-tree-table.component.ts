@@ -48,7 +48,6 @@ export class BsnTreeTableComponent extends GridBase
     config;
     @Input()
     permissions = [];
-    // @Input() ref;
     @Input()
     initData;
     @Input()
@@ -2031,7 +2030,7 @@ export class BsnTreeTableComponent extends GridBase
         if (action) {
             switch (action.execute) {
                 case "prevent":
-                    if (actionResult.some(item => (item = true))) {
+                    if (actionResult.some(item => item === true)) {
                         this.beforeOperationMessage(action);
                         result = true;
                     } else {

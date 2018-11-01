@@ -106,9 +106,7 @@ export class ComponentResolverComponent
             if (this.tempValue && this.componentRef.instance.tempValue) {
                 this.componentRef.instance.tempValue = this.tempValue;
             }
-            //   if (this.componentRef.instance.ref) {
-            //     this.componentRef.instance.ref = this.tempValue;
-            //   }
+
             if (this.initData) {
                 this.componentRef.instance.initData = this.initData;
             }

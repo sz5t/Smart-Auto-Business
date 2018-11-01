@@ -176,8 +176,6 @@ export class GridBase extends CnComponentBase {
         this._addedTreeRows = value;
     }
 
-
-    
     private _permissions;
     public get permission() {
         return this._permissions ? this._permissions : [];
@@ -625,18 +623,21 @@ export class GridBase extends CnComponentBase {
             });
             if (rs.success) {
                 this._message.success(message);
+                if (callback) {
+                    callback();
+                }
             } else {
                 this._message.error(rs.msg.join("<br/>"));
             }
         } else {
             if (result.isSuccess) {
                 this._message.success(message);
+                if (callback) {
+                    callback();
+                }
             } else {
                 this._message.error(result.message);
             }
-        }
-        if (result.isSuccess && callback) {
-            callback();
         }
     }
 
@@ -720,7 +721,8 @@ export class GridBase extends CnComponentBase {
                 nzContent: CnFormWindowResolverComponent,
                 nzComponentParams: {
                     config: dialog,
-                    tempValue: obj
+                    tempValue: obj,
+                    permissions: this.permission
                 },
                 nzFooter: footer
             });
@@ -783,7 +785,8 @@ export class GridBase extends CnComponentBase {
             nzContent: CnFormWindowResolverComponent,
             nzComponentParams: {
                 config: dialog,
-                ref: obj
+                tempValue: obj,
+                permissions: this.permission
             },
             nzFooter: footer
         });
@@ -801,7 +804,7 @@ export class GridBase extends CnComponentBase {
                             );
                             this.showAjaxMessage(result, "保存成功", () => {
                                 modal.close();
-                                this.callback();
+                                this._callback();
                             });
                         })();
                     } else if (btn["name"] === "saveAndKeep") {
@@ -811,7 +814,7 @@ export class GridBase extends CnComponentBase {
                             );
                             this.showAjaxMessage(result, "保存成功", () => {
                                 modal.close();
-                                this.callback();
+                                this._callback();
                             });
                         })();
                     } else if (btn["name"] === "close") {
