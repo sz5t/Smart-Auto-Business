@@ -23,8 +23,8 @@ export class CnGridSelectTreegridComponent implements OnInit {
 
   isVisible = false;
   isConfirmLoading = false;
-  _value = '4185d8182048482980cbcc10a19f6b55';
-  _valuetext = '资源保养明细记录';
+  _value;
+  _valuetext;
   constructor() { }
   value1 = {};
 
@@ -459,7 +459,7 @@ export class CnGridSelectTreegridComponent implements OnInit {
 
   }
 
-  valueChange(name?) {
+  valueChangebf(name?) {
 
      console.log('值变化', name);
     this.resultData = this.table.dataList;
@@ -480,6 +480,64 @@ export class CnGridSelectTreegridComponent implements OnInit {
       this.updateValue.emit(this.value);
     }
    console.log('弹出表格返回数据', this.value);
+  }
+
+
+  async valueChange(name?) {
+
+    const labelName = this.config.labelName ? this.config.labelName : 'name';
+    const valueName = this.config["valueName"] ? this.config["valueName"] : "Id";
+    this.resultData = this.table.dataList ? this.table.dataList : [];
+
+    if (name) {
+      this.value['data'] = name;
+      // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
+      // console.log('this.resultData:', this.resultData);
+      if (this.resultData) {
+        // valueName
+        const index = this.resultData.findIndex(
+          item => item[valueName] === name
+        );
+        if (this.resultData) {
+          if (index >= 0) {
+            if (this.resultData[index][labelName]) {
+              this._valuetext = this.resultData[index][labelName];
+            }
+            this.value["dataItem"] = this.resultData[index];
+          } else {
+            // 取值
+            const componentvalue = {};
+            componentvalue[valueName] = name;
+            if (this.config.ajaxConfig) {
+              const backselectdata = await this.table.loadByselect(
+                this.config.ajaxConfig,
+                componentvalue,
+                this.bsnData,
+                this.casadeData
+              );
+              if (backselectdata.hasOwnProperty(labelName)) {
+                this._valuetext = backselectdata[labelName];
+              } else {
+                this._valuetext = this._value;
+              }
+              this.value["dataItem"] = backselectdata;
+            } else {
+              this._valuetext = this._value;
+            }
+           // console.log('_valuetext: ', this._valuetext);
+          }
+        }
+
+       // console.log('iftrue弹出表格返回数据', backValue);
+      } 
+      // this.value['dataText'] = this._valuetext;
+      this.updateValue.emit(this.value);
+    } else {
+      this.value['data'] = null;
+      this.value['dataText'] = null;
+      this.updateValue.emit(this.value);
+     // console.log('iffalse弹出表格返回数据', backValue);
+    }
   }
 
 
