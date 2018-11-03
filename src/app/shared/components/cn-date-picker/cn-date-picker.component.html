@@ -9,6 +9,7 @@
      [nzFormat]="config.format"
      [nzShowToday]="config.showToday"
      [nzAllowClear]="true"
+     (ngModelChange)="valueChange($event)"
      ></nz-date-picker>
     <nz-form-explain *ngIf="formGroup.get(config.name).dirty && formGroup.get(config.name).errors || formGroup.get(config.name).pending ">
         <ng-container *ngFor="let valid of config.validations">

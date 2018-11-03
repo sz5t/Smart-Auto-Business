@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { getMonth } from "date-fns";
 
@@ -9,6 +9,9 @@ import { getMonth } from "date-fns";
 export class CnMonthPickerComponent implements OnInit {
     @Input()
     config;
+    @Input() value;
+    @Output()
+    updateValue = new EventEmitter();
     formGroup: FormGroup;
     month;
     constructor() {}
@@ -17,5 +20,7 @@ export class CnMonthPickerComponent implements OnInit {
 
     monthChange(date: Date) {
         this.month = getMonth(this.month);
+        const backValue = { name: this.config.name, value: this.month };
+        this.updateValue.emit(backValue);
     }
 }

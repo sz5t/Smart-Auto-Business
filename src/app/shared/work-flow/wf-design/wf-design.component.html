@@ -1,203 +1,192 @@
 <div id="mountNode" style="width: 100%; height: 100%;">
-  <div id="editor" style="width: 100%; height: 100%;">
-      <div  #minimap></div>
-      <!-- 缩略图 DOM 结构规约参考 Minimap API -->
-      <div id="toolbar" #toolbar >
-          <!-- <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_598462_3xve1872wizzolxr.css"> -->
-          <i data-command="undo" class="command iconfont icon-undo" title="撤销"></i>
-          <i data-command="redo" class="command iconfont icon-redo disable" title="重做"></i>
-          <span class="separator"></span>
-          <i data-command="copy" class="command iconfont icon-copy-o disable" title="复制"></i>
-          <i data-command="paste" class="command iconfont icon-paster-o disable" title="粘贴"></i>
-          <i data-command="delete" class="command iconfont icon-delete-o disable" title="删除"></i>
-          <span class="separator"></span>
-          <i data-command="zoomIn" class="command iconfont icon-zoom-in-o" title="放大"></i>
-          <i data-command="zoomOut" class="command iconfont icon-zoom-out-o" title="缩小"></i>
-          <i data-command="autoZoom" class="command iconfont icon-fit" title="适应画布"></i>
-          <i data-command="resetZoom" class="command iconfont icon-actual-size-o" title="实际尺寸"></i>
-          <span class="separator"></span>
-          <i data-command="toBack" class="command iconfont icon-to-back disable" title="层级后置"></i>
-          <i data-command="toFront" class="command iconfont icon-to-front disable" title="层级前置"></i>
-          <span class="separator"></span>
-          <i data-command="multiSelect" class="command iconfont icon-select" title="多选"></i>
-          <i data-command="addGroup" class="command iconfont icon-group disable" title="成组"></i>
-          <i data-command="unGroup" class="command iconfont icon-ungroup disable" title="解组"></i>
-          <span class="separator"></span>
-          <button (click)="save()" class="ant-btn ng-star-inserted ant-btn-default" title="保存">
-            <span><strong><i class="anticon anticon-save text-primary"></i> 保存</strong></span>
-          </button>
-      </div>
-      <!-- 42px -->
-      <div style="height: 42px;"></div>
-      <div class="bottom-container">
-          <!-- 工具栏 DOM 结构规约参考 Toolbar API -->
-          <div id="itempannel"  #itempannel>
-              <img draggable="false" src="../../../../assets/img/workflow/ZnPxbVjKYADMYxkTQXRi.svg" data-type="node" data-shape="flow-circle"
-                  data-size="72*72" data-color="#FA8C16" data-label="开始节点" class="getItem">
-              <img draggable="false" src="../../../../assets/img/workflow/ZnPxbVjKYADMYxkTQXED.svg" data-type="node" data-shape="flow-circle"
-                  data-size="72*72" data-color="#FA8C16" data-label="结束节点" class="getItem">
-              <img draggable="false" src="../../../../assets/img/workflow/wHcJakkCXDrUUlNkNzSy.svg" data-type="node" data-shape="flow-rect"
-                  data-size="80*48" data-color="#1890FF" data-label="常规节点" class="getItem">
-              <img draggable="false" src="../../../../assets/img/workflow/SnWIktArriZRWdGCnGfK.svg" data-type="node" data-shape="flow-rhombus"
-                  data-size="80*72" data-color="#13C2C2" data-label="分叉节点" class="getItem">
-              <!--                 <img draggable="false" src="../../../../assets/img/workflow/rQMUhHHSqwYsPwjXxcfP.svg" data-type="node" data-shape="flow-capsule"
+    <div id="editor" style="width: 100%; height: 100%;">
+        <!-- 缩略图 DOM 结构规约参考 Minimap API -->
+        <div id="toolbar" #toolbar>
+            <!-- <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_598462_3xve1872wizzolxr.css"> -->
+            <i data-command="undo" class="command iconfont icon-undo" title="撤销"></i>
+            <i data-command="redo" class="command iconfont icon-redo disable" title="重做"></i>
+            <span class="separator"></span>
+            <i data-command="copy" class="command iconfont icon-copy-o disable" title="复制"></i>
+            <i data-command="paste" class="command iconfont icon-paster-o disable" title="粘贴"></i>
+            <i data-command="delete" class="command iconfont icon-delete-o disable" title="删除"></i>
+            <span class="separator"></span>
+            <i data-command="zoomIn" class="command iconfont icon-zoom-in-o" title="放大"></i>
+            <i data-command="zoomOut" class="command iconfont icon-zoom-out-o" title="缩小"></i>
+            <i data-command="autoZoom" class="command iconfont icon-fit" title="适应画布"></i>
+            <i data-command="resetZoom" class="command iconfont icon-actual-size-o" title="实际尺寸"></i>
+            <span class="separator"></span>
+            <i data-command="toBack" class="command iconfont icon-to-back disable" title="层级后置"></i>
+            <i data-command="toFront" class="command iconfont icon-to-front disable" title="层级前置"></i>
+            <span class="separator"></span>
+            <i data-command="multiSelect" class="command iconfont icon-select" title="多选"></i>
+            <i data-command="addGroup" class="command iconfont icon-group disable" title="成组"></i>
+            <i data-command="unGroup" class="command iconfont icon-ungroup disable" title="解组"></i>
+            <span class="separator"></span>
+            <button (click)="save()" class="ant-btn ng-star-inserted ant-btn-default" title="保存">
+                <span>
+                    <strong>保存</strong>
+                </span>
+            </button>
+        </div>
+        <!-- 42px -->
+        <div style="height: 42px;"></div>
+        <div class="bottom-container">
+            <!-- 工具栏 DOM 结构规约参考 Toolbar API -->
+            <div id="itempannel" #itempannel>
+                <img draggable="false" src="../../../../assets/img/workflow/ZnPxbVjKYADMYxkTQXRi.svg" data-type="node" data-shape="flow-circle"
+                    data-size="72*72" data-color="#FA8C16" data-label="开始节点" class="getItem">
+                <img draggable="false" src="../../../../assets/img/workflow/ZnPxbVjKYADMYxkTQXED.svg" data-type="node" data-shape="flow-circle"
+                    data-size="72*72" data-color="#FA8C16" data-label="结束节点" class="getItem">
+                <img draggable="false" src="../../../../assets/img/workflow/wHcJakkCXDrUUlNkNzSy.svg" data-type="node" data-shape="flow-rect"
+                    data-size="80*48" data-color="#1890FF" data-label="常规节点" class="getItem">
+                <img draggable="false" src="../../../../assets/img/workflow/SnWIktArriZRWdGCnGfK.svg" data-type="node" data-shape="flow-rhombus"
+                    data-size="80*72" data-color="#13C2C2" data-label="分叉节点" class="getItem">
+                <!--                 <img draggable="false" src="../../../../assets/img/workflow/rQMUhHHSqwYsPwjXxcfP.svg" data-type="node" data-shape="flow-capsule"
                   data-size="80*48" data-color="#722ED1" data-label="模型节点" class="getItem"> -->
 
-          </div>
+            </div>
 
-          <!-- 元素面板栏 DOM 结构规约参考 Itempannel API -->
-          <div  id="detailpannel"  #detailpannel>
-              <div data-status="node-selected" class="pannel" id="node_detailpannel" style="display: none;">
-                  <div class="pannel-title">节点</div>
-                  <div class="block-container">
-                      <nz-collapse>
-                          <nz-collapse-panel [nzHeader]="node_panels[0].name" [nzActive]="node_panels[0].active" [nzDisabled]="node_panels[0].disabled">
-                              <form nz-form>
-                                  <nz-form-item>
-                                      <nz-form-label [nzSpan]="7" nzFor="id">id</nz-form-label>
-                                      <nz-form-control [nzSpan]="16">
-                                          <input nz-input name="id" type="text" id="id" [(ngModel)]="nodeinfo.id" readonly="readonly">
-                                      </nz-form-control>
-                                  </nz-form-item>
-                                  <nz-form-item>
-                                      <nz-form-label [nzSpan]="7" nzFor="label">名称：</nz-form-label>
-                                      <nz-form-control [nzSpan]="16">
-                                          <input nz-input name="label" type="text" id="label" [(ngModel)]="nodeinfo.label" (ngModelChange)="valueChange()">
-                                      </nz-form-control>
-                                  </nz-form-item>
-                              </form>
-                              <!-- <cn-form-resolver [config]="from_config"></cn-form-resolver> -->
-                          </nz-collapse-panel>
-                          <nz-collapse-panel [nzHeader]="node_panels[1].name" [nzActive]="node_panels[1].active" [nzDisabled]="node_panels[1].disabled">
-                              <p>ceshi</p>
-                          </nz-collapse-panel>
-                      </nz-collapse>
-                  </div>
-              </div>
-              <div data-status="edge-selected" class="pannel" id="edge_detailpannel" style="display: none;">
-                  <div class="pannel-title">边属性栏</div>
-                  <div class="block-container">
-                      <nz-collapse>
-                          <nz-collapse-panel [nzHeader]="edge_panels[0].name" [nzActive]="edge_panels[0].active" [nzDisabled]="edge_panels[0].disabled">
-                              <form nz-form>
-                                  <nz-form-item>
-                                      <nz-form-label [nzSpan]="7" nzFor="id">id</nz-form-label>
-                                      <nz-form-control [nzSpan]="16">
-                                          <input nz-input name="id" type="text" id="id" [(ngModel)]="edgeinfo.id" readonly="readonly">
-                                      </nz-form-control>
-                                  </nz-form-item>
-                                  <!--   <nz-form-item>
+            <!-- 元素面板栏 DOM 结构规约参考 Itempannel API -->
+            <div id="detailpannel" #detailpannel>
+                <div data-status="node-selected" class="pannel" id="node_detailpannel" style="display: none;">
+                    <div class="pannel-title">节点</div>
+                    <div class="block-container">
+                        <nz-collapse>
+                            <nz-collapse-panel [nzHeader]="node_panels[0].name" [nzActive]="node_panels[0].active" [nzDisabled]="node_panels[0].disabled">
+                                <form nz-form>
+                                    <nz-form-item>
+                                        <nz-form-label [nzSpan]="7" nzFor="id">id</nz-form-label>
+                                        <nz-form-control [nzSpan]="16">
+                                            <input nz-input name="id" type="text" id="id" [(ngModel)]="nodeinfo.id" readonly="readonly">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                    <nz-form-item>
+                                        <nz-form-label [nzSpan]="7" nzFor="label">名称：</nz-form-label>
+                                        <nz-form-control [nzSpan]="16">
+                                            <input nz-input name="label" type="text" id="label" [(ngModel)]="nodeinfo.label" (ngModelChange)="valueChange()">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                </form>
+                                <!-- <cn-form-resolver [config]="from_config"></cn-form-resolver> -->
+                            </nz-collapse-panel>
+                            <nz-collapse-panel [nzHeader]="node_panels[1].name" [nzActive]="node_panels[1].active" [nzDisabled]="node_panels[1].disabled">
+                                <p>ceshi</p>
+                            </nz-collapse-panel>
+                        </nz-collapse>
+                    </div>
+                </div>
+                <div data-status="edge-selected" class="pannel" id="edge_detailpannel" style="display: none;">
+                    <div class="pannel-title">边属性栏</div>
+                    <div class="block-container">
+                        <nz-collapse>
+                            <nz-collapse-panel [nzHeader]="edge_panels[0].name" [nzActive]="edge_panels[0].active" [nzDisabled]="edge_panels[0].disabled">
+                                <form nz-form>
+                                    <nz-form-item>
+                                        <nz-form-label [nzSpan]="7" nzFor="id">id</nz-form-label>
+                                        <nz-form-control [nzSpan]="16">
+                                            <input nz-input name="id" type="text" id="id" [(ngModel)]="edgeinfo.id" readonly="readonly">
+                                        </nz-form-control>
+                                    </nz-form-item>
+                                    <!--   <nz-form-item>
                                       <nz-form-label [nzSpan]="7" nzFor="label">名称：</nz-form-label>
                                       <nz-form-control [nzSpan]="16">
                                           <input nz-input name="label" type="text" id="label"  [(ngModel)]="edgeinfo.label" (ngModelChange)="edgevalueChange()" >
                                       </nz-form-control>
                                   </nz-form-item> -->
-                              </form>
-                          </nz-collapse-panel>
-                          <nz-collapse-panel [nzHeader]="edge_panels[1].name" [nzActive]="edge_panels[1].active" [nzDisabled]="edge_panels[1].disabled">
-                              <p>ceshi</p>
-                          </nz-collapse-panel>
-                      </nz-collapse>
-                  </div>
-              </div>
-              <div data-status="group-selected" class="pannel" id="group_detailpannel" style="display: none;">
-                  <div class="pannel-title">群组属性栏</div>
-              </div>
-              <div data-status="canvas-selected" class="pannel" id="canvas_detailpannel" style="display: none;">
-                  <div class="pannel-title">画布属性栏</div>
-              </div>
-              <div data-status="multi-selected" class="pannel" id="multi_detailpannel" style="display: none;">
-                  <div class="pannel-title">多选时属性栏</div>
-              </div>
+                                </form>
+                            </nz-collapse-panel>
+                            <nz-collapse-panel [nzHeader]="edge_panels[1].name" [nzActive]="edge_panels[1].active" [nzDisabled]="edge_panels[1].disabled">
+                                <p>ceshi</p>
+                            </nz-collapse-panel>
+                        </nz-collapse>
+                    </div>
+                </div>
+                <div data-status="group-selected" class="pannel" id="group_detailpannel" style="display: none;">
+                    <div class="pannel-title">群组属性栏</div>
+                </div>
+                <div data-status="canvas-selected" class="pannel" id="canvas_detailpannel" style="display: none;">
+                    <div class="pannel-title">画布属性栏</div>
+                </div>
+                <div data-status="multi-selected" class="pannel" id="multi_detailpannel" style="display: none;">
+                    <div class="pannel-title">多选时属性栏</div>
+                </div>
 
-          </div>
-          <!--           <div id="navigator">
-              <div class="pannel-title">导航器</div>
-              <div id="minimap">
-                  <div class="g6-editor-minimap-container" style="background: rgb(255, 255, 255); position: relative; overflow: hidden; width: 200px; height: 120px;">
-                      <div class="g6-editor-minimap-control-layer" style="width: 100%; height: 100%; cursor: move; position: absolute; z-index: 2;"></div>
-                      <div class="g6-editor-minimap-viewport" style="height: 100%; position: absolute; margin: auto; left: 0px; right: 0px; z-index: 1;">
-                          <canvas id="canvas_2" width="200" height="120" style="width: 200px; height: 120px;"></canvas>
-                      </div>
-                      <div class="g6-editor-minimap-background" style="height: 120px; position: relative; margin: auto; left: 0px; right: 0px; z-index: 0; width: 200px;">
-                          <canvas id="canvas_1" width="200" height="120" style="width: 200px; height: 120px;"></canvas>
-                      </div>
-                  </div>
-              </div>
-              <div id="zoom-slider">
-                  <div class="ant-slider slider">
-                     
-                  </div>
-              </div>
-          </div> -->
-          <!-- 详情面板栏 DOM 结构规约参考 Detailpannel API -->
-          <div id="contextmenu"  #contextmenu>
-              <div data-status="node-selected" class="menu" style="display:block;">
-                  <div data-command="copy" class="command">
-                      <span>复制</span>
-                      <span>copy</span>
-                  </div>
-                  <div data-command="delete" class="command">
-                      <span>删除</span>
-                      <span>delete</span>
-                  </div>
-              </div>
-              <div data-status="edge-selected" class="menu">
-                  <div data-command="delete" class="command">
-                      <span>删除</span>
-                      <span>delete</span>
-                  </div>
-              </div>
-              <div data-status="group-selected" class="menu">
-                  <div data-command="copy" class="command">
-                      <span>复制</span>
-                      <span>copy</span>
-                  </div>
-                  <div data-command="paste" class="command">
-                      <span>粘贴</span>
-                      <span>paste</span>
-                  </div>
-                  <div data-command="unGroup" class="command">
-                      <span>解组</span>
-                      <span>unGroup</span>
-                  </div>
-                  <div data-command="delete" class="command">
-                      <span>删除</span>
-                      <span>delete</span>
-                  </div>
-              </div>
-              <div data-status="canvas-selected" class="menu">
-                  <div data-command="paste" class="command">
-                      <span>粘贴</span>
-                      <span>paste</span>
-                  </div>
-                  <div data-command="undo" class="command">
-                      <span>插销</span>
-                      <span>undo</span>
-                  </div>
-                  <div data-command="redo" class="command">
-                      <span>重做</span>
-                      <span>redo</span>
-                  </div>
-              </div>
-              <div data-status="multi-selected" class="menu">
-                  <div data-command="copy" class="command">
-                      <span>复制</span>
-                      <span>copy</span>
-                  </div>
-                  <div data-command="paste" class="command">
-                      <span>粘贴</span>
-                      <span>paste</span>
-                  </div>
-                  <div data-command="addGroup" class="command">
-                      <span>归组</span>
-                      <span>addGroup</span>
-                  </div>
-              </div>
-          </div>
-          <!-- 右键菜单栏 DOM 结构规约参考 Contextmenu API -->
-          <div id="page" #page></div>
-          <!-- 参考 Flow、Mind API -->
-      </div>
-  </div>
+            </div>
+            <div id="navigator">
+                <div class="pannel-title">导航器</div>
+                <div #minimap id="minimap">
+                </div>
+                <div #zoomslider id="zoom-slider">
+                </div>
+            </div>
+            <!-- 详情面板栏 DOM 结构规约参考 Detailpannel API -->
+            <div id="contextmenu" #contextmenu>
+                <div data-status="node-selected" class="menu" style="display:block;">
+                    <div data-command="copy" class="command">
+                        <span>复制</span>
+                        <span>copy</span>
+                    </div>
+                    <div data-command="delete" class="command">
+                        <span>删除</span>
+                        <span>delete</span>
+                    </div>
+                </div>
+                <div data-status="edge-selected" class="menu">
+                    <div data-command="delete" class="command">
+                        <span>删除</span>
+                        <span>delete</span>
+                    </div>
+                </div>
+                <div data-status="group-selected" class="menu">
+                    <div data-command="copy" class="command">
+                        <span>复制</span>
+                        <span>copy</span>
+                    </div>
+                    <div data-command="paste" class="command">
+                        <span>粘贴</span>
+                        <span>paste</span>
+                    </div>
+                    <div data-command="unGroup" class="command">
+                        <span>解组</span>
+                        <span>unGroup</span>
+                    </div>
+                    <div data-command="delete" class="command">
+                        <span>删除</span>
+                        <span>delete</span>
+                    </div>
+                </div>
+                <div data-status="canvas-selected" class="menu">
+                    <div data-command="paste" class="command">
+                        <span>粘贴</span>
+                        <span>paste</span>
+                    </div>
+                    <div data-command="undo" class="command">
+                        <span>插销</span>
+                        <span>undo</span>
+                    </div>
+                    <div data-command="redo" class="command">
+                        <span>重做</span>
+                        <span>redo</span>
+                    </div>
+                </div>
+                <div data-status="multi-selected" class="menu">
+                    <div data-command="copy" class="command">
+                        <span>复制</span>
+                        <span>copy</span>
+                    </div>
+                    <div data-command="paste" class="command">
+                        <span>粘贴</span>
+                        <span>paste</span>
+                    </div>
+                    <div data-command="addGroup" class="command">
+                        <span>归组</span>
+                        <span>addGroup</span>
+                    </div>
+                </div>
+            </div>
+            <!-- 右键菜单栏 DOM 结构规约参考 Contextmenu API -->
+            <div id="page" #page></div>
+            <!-- 参考 Flow、Mind API -->
+        </div>
+    </div>
 </div>

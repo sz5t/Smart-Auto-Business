@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { getISOYear } from "date-fns";
 
@@ -9,6 +9,9 @@ import { getISOYear } from "date-fns";
 export class CnYearPickerComponent implements OnInit {
     @Input()
     config;
+    @Input() value;
+    @Output()
+    updateValue = new EventEmitter();
     formGroup: FormGroup;
     year;
     constructor() {}
@@ -17,5 +20,7 @@ export class CnYearPickerComponent implements OnInit {
 
     changeYear(date: Date) {
         this.year = getISOYear(date);
+        const backValue = { name: this.config.name, value: this.year };
+        this.updateValue.emit(backValue);
     }
 }

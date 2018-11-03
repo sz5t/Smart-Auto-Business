@@ -1764,6 +1764,21 @@ export class FormResolverComponent extends CnComponentBase
         }
 
         // console.log('变更后的', this.config.forms);
+        // console.log('form: ', this.config.viewId, data, this.form.value);
+        // // 此处有消息级联的则发值
+        // // 级联值= 表单数据+当前触发级联的值组合；
+        // const sendData = this.value;
+        // sendData[data.name] = data.value;
+        // this.cascade.next(
+        //     new BsnComponentMessage(
+        //         BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+        //         this.config.viewId,
+        //         {
+        //             data: sendData
+        //         }
+        //     )
+        // );
+        // console.log('send', sendData);
     }
 
     // 级联变化，情况大致分为三种

@@ -1,4 +1,20 @@
 <page-header [title]=""></page-header>
+
+<nz-mention
+[nzSuggestions]="suggestions"
+(nzOnSelect)="onSelect($event)"
+[nzPrefix]="_nzPrefix"
+>
+<input
+  placeholder="input here"
+  nzMentionTrigger
+  nz-input
+  [(ngModel)]="inputValue"
+  (ngModelChange)="onChange($event)"
+  (onSearchChange) ="onSearchChange($event)"
+>
+</nz-mention>
+
 <cn-form-resolver  [config]="config_bd" [permissions]="permissions"></cn-form-resolver>
 
 <cn-layout-resolver [config]="config"></cn-layout-resolver>

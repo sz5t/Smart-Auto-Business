@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 
@@ -8,12 +8,21 @@ import { FormGroup } from '@angular/forms';
 })
 export class CnDatePickerComponent implements OnInit {
   @Input() config;
+  @Input() value;
+  @Output()
+  updateValue = new EventEmitter();
   formGroup: FormGroup;
   date;
   constructor(
   ) { }
 
   ngOnInit() {
+  }
+
+  valueChange(name?) {
+    const backValue = { name: this.config.name, value: name };
+    this.updateValue.emit(backValue);
+
   }
 
 }
