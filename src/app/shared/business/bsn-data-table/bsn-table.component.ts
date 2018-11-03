@@ -1543,12 +1543,12 @@ export class BsnTableComponent extends CnComponentBase
     private _resolveAjaxConfig(option) {
         if (option.ajaxConfig && option.ajaxConfig.length > 0) {
             option.ajaxConfig.filter(c => !c.parentName).map(c => {
-                this._getAjaxConfig(c, option.ajaxConfig);
+                this._getAjaxConfig(c, option);
             });
         }
     }
 
-    private _getAjaxConfig(c, ajaxConfig) {
+    private _getAjaxConfig(c, option) {
         let msg;
         if (c.action) {
             let handleData;
@@ -1621,7 +1621,7 @@ export class BsnTableComponent extends CnComponentBase
                                 this._outputParametersResolver(
                                     c,
                                     response,
-                                    ajaxConfig,
+                                    option.ajaxConfig,
                                     () => {
                                         this.focusIds = this._getFocusIds(
                                             response.data
@@ -1653,7 +1653,7 @@ export class BsnTableComponent extends CnComponentBase
                         this._outputParametersResolver(
                             c,
                             response,
-                            ajaxConfig,
+                            option.ajaxConfig,
                             () => {
                                 this.cascade.next(
                                     new BsnComponentMessage(
@@ -2533,7 +2533,7 @@ export class BsnTableComponent extends CnComponentBase
             nzWidth: dialog.width,
             nzContent: component["upload"],
             nzComponentParams: {
-                config: dialog,
+                config: dialog.ajaxConfig,
                 refObj: obj
             },
             nzFooter: footer

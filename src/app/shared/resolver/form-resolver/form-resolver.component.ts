@@ -47,7 +47,7 @@ export class FormResolverComponent extends CnComponentBase
     dataList;
     @Input()
     initData;
-    _editable = BSN_FORM_STATUS.TEXT;
+    _editable = BSN_FORM_STATUS.CREATE;
 
     form: FormGroup;
     @Output()
@@ -78,6 +78,9 @@ export class FormResolverComponent extends CnComponentBase
 
     // region: 组件生命周期事件
     ngOnInit() {
+        if (this.config.editable) {
+            this._editable = this.config.editable;
+        }
         // 做参数简析
         if (this.config.select) {
             this.config.select.forEach(selectItem => {
@@ -179,7 +182,7 @@ export class FormResolverComponent extends CnComponentBase
                         this.formDialog(option);
                         break;
                     case BSN_COMPONENT_MODES.UPLOAD:
-                        this.openUploadDialog(option);
+                        this.uploadDialog(option);
                         break;
                 }
             }
@@ -1044,14 +1047,16 @@ export class FormResolverComponent extends CnComponentBase
         const footer = [];
         const obj = {
             _id: this.value[dialog.keyId],
-            _parentId: this.tempValue["_parentId"]
+            _parentId: this.tempValue["_parentId"],
+            ...this.value,
+            ...this.tempValue
         };
         const modal = this.modalService.create({
             nzTitle: dialog.title,
-            nzWidth: dialog.width,
+            nzWidth: dialog.width ? dialog.width : 400,
             nzContent: BsnUploadComponent,
             nzComponentParams: {
-                config: dialog,
+                config: dialog.ajaxConfig,
                 refObj: obj
             },
             nzFooter: footer

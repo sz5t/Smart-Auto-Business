@@ -1877,6 +1877,7 @@ export class TreeAndTableComponent implements OnInit {
                                                             component:
                                                                 "form_view",
                                                             keyId: "Id",
+                                                            editable: "post",
                                                             ajaxConfig: {
                                                                 url:
                                                                     "common/GetCase",

@@ -55,23 +55,40 @@ export class CommonTools {
                             break;
                         case BSN_PARAMETER_TYPE.COMPONENT_VALUE:
                             if (model.componentValue) {
+                                // 判断组件取值是否为null
                                 if (
-                                    model.componentValue[param["valueName"]] !==
-                                    undefined
+                                    model.componentValue[param["valueName"]] ===
+                                        null ||
+                                    model.componentValue[param["valueName"]] ===
+                                        undefined
                                 ) {
+                                    if (param["value"] !== undefined) {
+                                        result[param["name"]] = param["value"];
+                                    }
+                                } else {
                                     result[param["name"]] =
                                         model.componentValue[
                                             param["valueName"]
                                         ];
-                                } else {
-                                    if (
-                                        param["value"] === null ||
-                                        param["value"] === "" ||
-                                        param["value"] === 0
-                                    ) {
-                                        result[param["name"]] = param["value"];
-                                    }
                                 }
+
+                                // if (
+                                //     model.componentValue[param["valueName"]] !==
+                                //     undefined
+                                // ) {
+                                //     result[param["name"]] =
+                                //         model.componentValue[
+                                //             param["valueName"]
+                                //         ];
+                                // } else {
+                                //     if (
+                                //         param["value"] === null ||
+                                //         param["value"] === "" ||
+                                //         param["value"] === 0
+                                //     ) {
+                                //         result[param["name"]] = param["value"];
+                                //     }
+                                // }
                             }
                             break;
                         case BSN_PARAMETER_TYPE.GUID:

@@ -2984,7 +2984,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     ajaxType: "post",
                                                     params: [
                                                         {
-                                                            name: "Id",
+                                                            name: "refDataId",
                                                             type: "tempValue",
                                                             valueName: "_id"
                                                         }

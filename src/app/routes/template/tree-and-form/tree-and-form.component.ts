@@ -121,6 +121,7 @@ export class TreeAndFormComponent implements OnInit {
                                         viewId: "tree_and_form_form",
                                         component: "form_view",
                                         keyId: "Id",
+                                        editable: "post",
                                         ajaxConfig: {
                                             url: "common/ShowCase",
                                             ajaxType: "getById",

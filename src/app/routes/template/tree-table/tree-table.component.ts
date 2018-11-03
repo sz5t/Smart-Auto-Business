@@ -327,7 +327,7 @@ export class TreeTableComponent implements OnInit {
                                                 ]
                                             },
                                             {
-                                                name: "deleteRow",
+                                                name: "deleteRow2",
                                                 status: [
                                                     {
                                                         conditions: [
@@ -335,7 +335,7 @@ export class TreeTableComponent implements OnInit {
                                                                 {
                                                                     name:
                                                                         "enabled",
-                                                                    value: true,
+                                                                    value: "1",
                                                                     checkType:
                                                                         "value"
                                                                 }
@@ -345,7 +345,7 @@ export class TreeTableComponent implements OnInit {
                                                             type: "confirm",
                                                             message:
                                                                 "启用状态是否确认删除",
-                                                            execute: "prevent"
+                                                            execute: "continue"
                                                         }
                                                     }
                                                 ]
@@ -386,7 +386,7 @@ export class TreeTableComponent implements OnInit {
                                                         cancelPermission: true
                                                     },
                                                     {
-                                                        name: "deleteRow",
+                                                        name: "deleteRow1",
                                                         text: "删除1",
                                                         action: "DELETE",
                                                         cancelPermission: true,
@@ -410,7 +410,7 @@ export class TreeTableComponent implements OnInit {
                                                         }
                                                     },
                                                     {
-                                                        name: "deleteRow",
+                                                        name: "deleteRow2",
                                                         text: "删除2",
                                                         icon: "delete",
                                                         color: "text-warning",

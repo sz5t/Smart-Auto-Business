@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
 import { NzMessageService, UploadFile } from "ng-zorro-antd";
 import { ApiService } from "@core/utility/api-service";
+import { CommonTools } from "@core/utility/common-tools";
 
 @Component({
     selector: "bsn-upload",
@@ -15,11 +16,11 @@ import { ApiService } from "@core/utility/api-service";
                 height: 180px;
             }
             :host ::ng-deep .file-list {
-                min-height: 350px;
+                min-height: 250px;
             }
             :host ::ng-deep .uploadList-container {
                 overflow: auto;
-                height: 300px;
+                height: 200px;
             }
         `
     ]
@@ -34,6 +35,7 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
     uploadList = [];
     loading = false;
     securityLevel;
+    remark;
 
     constructor(
         private _message: NzMessageService,
@@ -49,7 +51,13 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
     loadUploadList() {
         this.loading = true;
         this._apiService
-            .get(this.config.ajaxConfig.listUrl, { refDataId: this.refObj._id })
+            .get(
+                this.config.listUrl,
+                CommonTools.parametersResolver({
+                    params: this.config.params,
+                    tempValue: this.refObj
+                })
+            )
             .subscribe(
                 result => {
                     this.uploadList = result.data;
@@ -92,10 +100,11 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
         this.fileList.forEach((file: any, index) => {
             formData.append(`file_${index}`, file);
             formData.append(`secretLevel_${index}`, this.securityLevel);
+            formData.append(`remark_${index}`, this.remark);
         });
         formData.append("refDataId", this.refObj._id);
         this.uploading = true;
-        this._apiService.post(this.config.ajaxConfig.url, formData).subscribe(
+        this._apiService.post(this.config.url, formData).subscribe(
             result => {
                 this.uploading = false;
                 this._message.success("上传成功！");
@@ -110,24 +119,22 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
 
     download(id) {
         this._apiService
-            .get(this.config.ajaxConfig.downloadUrl, { _ids: id })
+            .get(this.config.downloadUrl, { _ids: id })
             .subscribe(result => {
                 this._message.success("下载成功");
             });
     }
 
     delete(id) {
-        this._apiService
-            .delete(this.config.ajaxConfig.deleteUrl, { _ids: id })
-            .subscribe(
-                result => {
-                    this._message.success("附件删除成功");
-                    this.loadUploadList();
-                },
-                error => {
-                    this._message.success("附件删除失败！");
-                }
-            );
+        this._apiService.delete(this.config.deleteUrl, { _ids: id }).subscribe(
+            result => {
+                this._message.success("附件删除成功");
+                this.loadUploadList();
+            },
+            error => {
+                this._message.success("附件删除失败！");
+            }
+        );
     }
 
     cancel() {

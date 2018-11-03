@@ -4,7 +4,7 @@
     // https://github.com/cipchk/ng-zorro-vscode
     "editor.snippetSuggestions": "top",
     "editor.fontSize": 14,
-    "prettier.printWidth": 140,
+    "prettier.printWidth": 300,
     "prettier.proseWrap": "never",
     "prettier.semi": false,
     "prettier.tslintIntegration": true

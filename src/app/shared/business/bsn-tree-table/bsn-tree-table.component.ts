@@ -98,7 +98,6 @@ export class BsnTreeTableComponent extends GridBase
     is_Selectgrid = true;
     cascadeValue = {}; // 级联数据
     selectGridValueName;
-    _beforeOperationMap: Map<string, any[]>;
 
     constructor(
         private _api: ApiService,
@@ -128,6 +127,7 @@ export class BsnTreeTableComponent extends GridBase
 
     // 生命周期事件
     ngOnInit() {
+        this.cfg = this.config;
         this.permission = this.permissions;
         if (this.casadeData) {
             for (const key in this.casadeData) {
@@ -245,13 +245,14 @@ export class BsnTreeTableComponent extends GridBase
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE:
                         this._getAddedAndUpdatingRows();
-                        this.resolver(option.ajaxConfig);
+                        this.resolver(option);
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE_SELECTED:
                         this.executeSelectedRow(option);
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE_CHECKED:
-                        this.executeCheckedRow(option);
+                        !this.beforeCheckedRowsOperation(option) &&
+                            this.executeCheckedRow(option);
                         break;
                     case BSN_COMPONENT_MODES.WINDOW:
                         this.windowDialog(option);
@@ -1933,160 +1934,6 @@ export class BsnTreeTableComponent extends GridBase
                 item => item.name === option.actionName
             );
             this.openUploadDialog(this.config.uploadDialog[index]);
-        }
-    }
-
-    /**
-     * 操作前置判断
-     * option: type, name, actionName, ajaxConfig
-     */
-    beforeSelectedRowOperation(option) {
-        let result = false;
-        if (this._beforeOperationMap.has(option.name)) {
-            const op_status = this._beforeOperationMap.get(option.name);
-            op_status.forEach(statusItem => {
-                const conditionResult = this.handleOperationConditions(
-                    statusItem.conditions
-                );
-                const actionResult = this.handleOperationAction(
-                    conditionResult,
-                    statusItem.action
-                );
-                if (actionResult) {
-                    result = true;
-                    return true;
-                }
-                result = actionResult;
-            });
-        }
-        return result;
-    }
-
-    handleOperationConditions(conditions) {
-        const orResult = [];
-        conditions.forEach(elements => {
-            // 解析‘与’的关系条件
-            elements.forEach(item => {
-                let andResult = true;
-                // 选中行的解析处理
-                switch (item.checkType) {
-                    case "value":
-                        andResult = this.matchValueCondition(
-                            this.selectedItem,
-                            item
-                        );
-                        break;
-                    case "regexp":
-                        andResult = this.matchRegexpCondition(
-                            this.selectedItem,
-                            item
-                        );
-                        break;
-                }
-                orResult.push(andResult);
-            });
-            // 解析’或‘的关系条件
-        });
-        return orResult;
-    }
-
-    /**
-     * 值匹配验证
-     * @param dataItem 待比较数据
-     * @param statusItem 匹配条件对象
-     */
-    matchValueCondition(dataItem, statusItem) {
-        let result = true;
-        if (dataItem) {
-            if (dataItem[statusItem["name"]] === statusItem["value"]) {
-                result = true;
-            } else {
-                result = false;
-            }
-        }
-        return result;
-    }
-
-    /**
-     * 正则表达匹配验证
-     * @param dataItem 待比较数据
-     * @param statusItem 匹配条件对象
-     */
-    matchRegexpCondition(dataItem, statusItem) {
-        let result = true;
-        if (dataItem) {
-            const reg = new RegExp(statusItem.value ? statusItem.value : "");
-            if (reg.test(dataItem[statusItem["name"]])) {
-                result = true;
-            } else {
-                result = false;
-            }
-        }
-        return result;
-    }
-
-    handleOperationAction(actionResult, action) {
-        let result = true;
-        if (action) {
-            switch (action.execute) {
-                case "prevent":
-                    if (actionResult.some(item => item === true)) {
-                        this.beforeOperationMessage(action);
-                        result = true;
-                    } else {
-                        result = false;
-                    }
-                    break;
-                case "continue":
-                    if (actionResult.every(false)) {
-                        result = false;
-                    } else {
-                        this.beforeOperationMessage(action);
-                        result = true;
-                    }
-                    break;
-            }
-        }
-
-        return result;
-    }
-
-    beforeOperationMessage(action) {
-        if (action["type"] === "confirm") {
-            this.modalService.confirm({
-                nzTitle: action["title"],
-                nzContent: action["message"],
-                nzOnOk: () => {
-                    // 调用后续操作
-                },
-                nzOnCancel() {}
-            });
-        } else {
-            this.message[action["type"]](action.message);
-        }
-    }
-
-    beforeCheckedRowOperation(conditions) {
-        conditions.forEach(elements => {
-            // 解析‘与’的关系条件
-            elements.forEach(item => {
-                // 勾选中行的解析处理
-            });
-
-            // 解析’或‘的关系条件
-        });
-    }
-
-    resolverBeforeOperation() {
-        this._beforeOperationMap = new Map();
-        if (
-            this.config.beforeOperation &&
-            Array.isArray(this.config.beforeOperation) &&
-            this.config.beforeOperation.length > 0
-        ) {
-            this.config.beforeOperation.forEach(element => {
-                this._beforeOperationMap.set(element.name, element.status);
-            });
         }
     }
 }

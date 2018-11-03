@@ -28,6 +28,7 @@ import { BsnTabsComponent } from "@shared/business/bsn-tabs/bsn-tabs.component";
 import { BsnTransferComponent } from "@shared/business/bsn-transfer/bsn-transfer.component";
 import { BsnTreeTableComponent } from "@shared/business/bsn-tree-table/bsn-tree-table.component";
 import { WfDesignComponent } from "@shared/work-flow/wf-design/wf-design.component";
+import { BsnCarouselComponent } from "@shared/business/bsn-carousel/bsn-carousel";
 const components: { [type: string]: Type<any> } = {
     code_edit: CnCodeEditComponent,
     bsnTable: BsnTableComponent,
@@ -43,7 +44,8 @@ const components: { [type: string]: Type<any> } = {
     bsnTabs: BsnTabsComponent,
     bsnTransfer: BsnTransferComponent,
     dataSteps: BsnDataStepComponent,
-    wf_design: WfDesignComponent
+    wf_design: WfDesignComponent,
+    bsnCarousel: BsnCarouselComponent
 };
 @Component({
     selector: "cn-component-resolver",
