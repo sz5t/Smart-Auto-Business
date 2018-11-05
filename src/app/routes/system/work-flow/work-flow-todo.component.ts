@@ -1605,18 +1605,18 @@ export class WorkFlowTodoComponent implements OnInit {
                                         },
                                         componentType: {
                                             parent: true,
-                                            child: false,
+                                            child: true,
                                             own: false
                                         },
                                         relations: [
-                                            //   {
-                                            //   'relationViewId': 'wfdesign_wf_parentTable',
-                                            //   'cascadeMode': 'REFRESH_AS_CHILD',
-                                            //   'params': [
-                                            //     { pid: 'Id', cid: '_parentId' }
-                                            //   ],
-                                            //   'relationReceiveContent': []
-                                            // }
+                                            {
+                                                'relationViewId': 'tree_and_form_form',
+                                                'cascadeMode': 'REFRESH_AS_CHILD',
+                                                'params': [
+                                                    { pid: 'caseName', cid: '_parentId' }
+                                                ],
+                                                'relationReceiveContent': []
+                                            }
                                         ],
                                         columns: [
                                             {
@@ -1805,7 +1805,7 @@ export class WorkFlowTodoComponent implements OnInit {
                                                         }
                                                     }
                                                 },
-                                                editor2: {
+                                                editor: {
                                                     type: "selectGrid",
                                                     field: "businesskey",
                                                     options: {
@@ -1817,7 +1817,7 @@ export class WorkFlowTodoComponent implements OnInit {
                                                         valueName: "Id"
                                                     }
                                                 },
-                                                editor: {
+                                                editor2: {
                                                     type: "selectTreeGrid",
                                                     field: "businesskey",
                                                     options: {
@@ -2215,8 +2215,52 @@ export class WorkFlowTodoComponent implements OnInit {
                                                                             value:
                                                                                 "1",
                                                                             valueName:
-                                                                                "caseName"
+                                                                                "name"
                                                                         }
+                                                                    }
+                                                                }
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        cascadeName:
+                                                            "remark",
+                                                        cascadeValueItems: [],
+                                                        cascadeDataItems: [
+                                                            {
+                                                                data: {
+                                                                    type:
+                                                                        "setValue", // option/ajax/setValue
+                                                                    setValue_data: {
+                                                                        // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
+                                                                        option: {
+                                                                            name:
+                                                                                "value",
+                                                                            type:
+                                                                                "selectObjectValue",
+                                                                            value:
+                                                                                "1",
+                                                                            valueName:
+                                                                                "name"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        cascadeName: "sendrelation",
+                                                        cascadeValueItems: [],
+                                                        cascadeDataItems: [
+                                                            {
+                                                                data: {
+                                                                    type: "relation", // option/ajax/setValue/relation
+                                                                    relation_data: {
+                                                                        option: [
+                                                                            {
+                                                                                cascadeMode: "REFRESH_AS_CHILD"
+                                                                            }
+                                                                        ]
                                                                     }
                                                                 }
                                                             }
@@ -2227,7 +2271,7 @@ export class WorkFlowTodoComponent implements OnInit {
                                         ],
                                         select: [
                                             {
-                                                name: "businesskey1",
+                                                name: "businesskey",
                                                 type: "selectGrid",
                                                 config: {
                                                     width: "1024", // 弹出的宽度
@@ -2449,7 +2493,7 @@ export class WorkFlowTodoComponent implements OnInit {
                                                 }
                                             },
                                             {
-                                                name: "businesskey",
+                                                name: "businesskey1",
                                                 type: "selectTreeGrid",
                                                 config: {
                                                     nzWidth: 768,
@@ -7095,12 +7139,12 @@ export class WorkFlowTodoComponent implements OnInit {
         ]
     };
 
-    constructor(private http: _HttpClient) {}
+    constructor(private http: _HttpClient) { }
 
     isVisible = false;
     isConfirmLoading = false;
     _value;
-    ngOnInit(): void {}
+    ngOnInit(): void { }
 
     showModal(): void {
         this.isVisible = true;
@@ -7120,4 +7164,60 @@ export class WorkFlowTodoComponent implements OnInit {
         console.log("点击取消");
         this.isVisible = false;
     }
+
+
+
+    inputValue;
+    suggestions = [];
+    _nzPrefix = [];
+    onChange(value: string): void {
+
+
+        if (this._nzPrefix.length > 0) {
+            if (this.inputValue.length > 0) {
+                this._nzPrefix[0] = this.inputValue.substring(0, 1);
+            }
+        } else {
+            if (this.inputValue.length > 0) {
+                this._nzPrefix.push(this.inputValue.substring(0, 1));
+            }
+        }
+        if (this.suggestions.length > 0) {
+            this.suggestions[0] = this.inputValue;
+        } else {
+            this.suggestions.push(this.inputValue);
+        }
+        console.log('_nzPrefix', this._nzPrefix);
+        console.log(value);
+        console.log('suggestions', this.suggestions)
+    }
+
+    onSelect(suggestion: string): void {
+        console.log(`onSelect ${suggestion}`);
+    }
+    onSearchChange(suggestion: string): void {
+        console.log(`onSearchChange ${suggestion}`);
+    }
+
+
+
+    // 实现小组件 【消息结构配置】
+
+    // 接受参数也是新的数据类型，级联类型
+    relationConfig = {
+        relation_data: {
+            option: [
+                {
+                    // 接受页面viewID
+                    relationViewId: 'viewID',
+                    cascadeMode: "REFRESH_AS_CHILD"
+                }
+            ]
+        }
+    }
+
+
+
+
+
 }

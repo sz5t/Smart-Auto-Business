@@ -1327,6 +1327,7 @@ export class FormResolverComponent extends CnComponentBase
                         if (item["caseValue"]) {
                             // 取值， 解析 正则表达式
                             // item.case.regular; 正则
+                            dataTypeItem["regularType"] = item.caseValue.type;
                             dataTypeItem["valueName"] =
                                 item.caseValue.valueName;
                             dataTypeItem["regular"] = item.caseValue.regular;
@@ -1379,6 +1380,7 @@ export class FormResolverComponent extends CnComponentBase
                         if (item.caseValue) {
                             // 取值， 解析 正则表达式
                             // item.case.regular; 正则
+                            valueTypeItem["regularType"] = item.caseValue.type;
                             valueTypeItem["valueName"] =
                                 item.caseValue.valueName;
                             valueTypeItem["regular"] = item.caseValue.regular;
@@ -1602,8 +1604,24 @@ export class FormResolverComponent extends CnComponentBase
                                 ].forEach(caseItem => {
                                     // region: 解析开始  正则表达
                                     const reg1 = new RegExp(caseItem.regular);
-                                    const regularflag = reg1.test(data.value);
-                                    console.log("正则结果：", regularflag);
+                                    let regularData;
+                                    if (caseItem.regularType) {
+                                        if (
+                                            caseItem.regularType === "selectObjectValue"
+                                        ) {
+                                            if (data["dataItem"]) {
+                                                regularData = data["dataItem"][caseItem["valueName"]];
+                                            } else {
+                                                regularData = data.data;
+                                            }
+                                        } else {
+                                            regularData = data.data;
+                                        }
+                                    } else {
+                                        regularData = data.data;
+                                    }
+                                    const regularflag = reg1.test(regularData);
+                                   // console.log("正则结果：", regularflag);
                                     // endregion  解析结束 正则表达
                                     if (regularflag) {
                                         // region: 解析开始 根据组件类型组装新的配置【静态option组装】
@@ -1767,6 +1785,41 @@ export class FormResolverComponent extends CnComponentBase
         }
 
         // console.log('变更后的', this.config.forms);
+        // console.log('form: ', this.config.viewId, data, this.form.value);
+        // // 此处有消息级联的则发值
+        // // 级联值= 表单数据+当前触发级联的值组合；
+        // const sendData = this.value;
+        // sendData[data.name] = data.value;
+        // this.cascade.next(
+        //     new BsnComponentMessage(
+        //         BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+        //         this.config.viewId,
+        //         {
+        //             data: sendData
+        //         }
+        //     )
+        // );
+        // console.log('send', sendData);
+        const sendData = this.value;
+        sendData[data.name] = data.value;
+       
+        if ( this.config.cascadeRelation) {
+
+            this.config.cascadeRelation.forEach(element => {
+                if ( element.name === data.name) {
+                    this.cascade.next(
+                        new BsnComponentMessage(
+                            BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],
+                            this.config.viewId,
+                            {
+                                data: sendData
+                            }
+                        )
+                    );
+                }
+            });
+           
+        }
     }
 
     // 级联变化，情况大致分为三种

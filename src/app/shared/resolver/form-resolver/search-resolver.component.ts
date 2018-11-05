@@ -53,7 +53,8 @@ export class SearchResolverComponent extends CnComponentBase
     _tempParameters = {};
     isSpinning = false;
     expandForm = false;
-
+    changeConfig = [];
+    formconfigcontrol = {}; // liu 表单配置
     _statusSubscription: Subscription;
     _cascadeSubscription: Subscription;
     loading = false;
@@ -74,8 +75,24 @@ export class SearchResolverComponent extends CnComponentBase
 
     // region: 组件生命周期事件
     ngOnInit() {
+          // 做参数简析
+          if (this.config.select) {
+            this.config.select.forEach(selectItem => {
+                this.config.forms.forEach(formItem => {
+                    formItem.controls.forEach(control => {
+                        if (control) {
+                            if (control.name === selectItem.name) {
+                                control["select"] = selectItem.config;
+                            }
+                        }
+                    });
+                });
+            });
+        }
+
         this.form = this.createGroup();
         this.resolverRelation();
+        this.caseLoad(); // liu 20181103
     }
 
     ngOnChanges() {}
@@ -500,4 +517,516 @@ export class SearchResolverComponent extends CnComponentBase
     }
 
     // endregion
+    cascadeList = {};
+
+    caseLoad() {
+        this.cascadeList = {};
+        // region: 解析开始
+        if (this.config.cascade)
+            this.config.cascade.forEach(c => {
+                this.cascadeList[c.name] = {}; // 将关系维护到一个对象中
+                // region: 解析具体对象开始
+                c.CascadeObjects.forEach(cobj => {
+                    // 具体对象
+                    this.cascadeList[c.name][cobj.cascadeName] = {};
+
+                    const dataType = [];
+                    const valueType = [];
+                    cobj["cascadeDataItems"].forEach(item => {
+                        // 数据关联 （只是单纯的数据关联，内容只有ajax）
+                        // cobj.data
+                        const dataTypeItem = {};
+                        if (item["caseValue"]) {
+                            // 取值， 解析 正则表达式
+                            // item.case.regular; 正则
+                            dataTypeItem["regularType"] = item.caseValue.type;
+                            dataTypeItem["valueName"] =
+                                item.caseValue.valueName;
+                            dataTypeItem["regular"] = item.caseValue.regular;
+                        }
+                        this.cascadeList[c.name][cobj.cascadeName]["type"] =
+                            item.data.type;
+                        dataTypeItem["type"] = item.data.type;
+                        if (item.data.type === "option") {
+                            // 静态数据集
+                            this.cascadeList[c.name][cobj.cascadeName][
+                                "option"
+                            ] = item.data.option_data.option;
+                            dataTypeItem["option"] =
+                                item.data.option_data.option;
+                        }
+                        if (item.data.type === "ajax") {
+                            // 异步请求参数取值
+                            this.cascadeList[c.name][cobj.cascadeName]["ajax"] =
+                                item.data.ajax_data.option;
+                            dataTypeItem["ajax"] = item.data.ajax_data.option;
+                        }
+                        if (item.data.type === "setValue") {
+                            // 组件赋值
+                            this.cascadeList[c.name][cobj.cascadeName][
+                                "setValue"
+                            ] = item.data.setValue_data.option;
+                            dataTypeItem["setValue"] =
+                                item.data.setValue_data.option;
+                        }
+                        if (item.data.type === "show") {
+                            // 页面显示控制
+                            this.cascadeList[c.name][cobj.cascadeName]["show"] =
+                                item.data.show_data.option;
+                            dataTypeItem["show"] = item.data.show_data.option;
+                        }
+                        if (item.data.type === "relation") {
+                            // 消息交互
+                            this.cascadeList[c.name][cobj.cascadeName][
+                                "relation"
+                            ] = item.data.relation_data.option;
+                            dataTypeItem["relation"] =
+                                item.data.relation_data.option;
+                        }
+
+                        dataType.push(dataTypeItem);
+                    });
+
+                    cobj["cascadeValueItems"].forEach(item => {
+                        const valueTypeItem = {};
+                        if (item.caseValue) {
+                            // 取值， 解析 正则表达式
+                            // item.case.regular; 正则
+                            valueTypeItem["regularType"] = item.caseValue.type;
+                            valueTypeItem["valueName"] =
+                                item.caseValue.valueName;
+                            valueTypeItem["regular"] = item.caseValue.regular;
+                        }
+                        this.cascadeList[c.name][cobj.cascadeName]["type"] =
+                            item.data.type;
+                        valueTypeItem["type"] = item.data.type;
+                        if (item.data.type === "option") {
+                            // 静态数据集
+                            this.cascadeList[c.name][cobj.cascadeName][
+                                "option"
+                            ] = item.data.option_data.option;
+                            valueTypeItem["option"] =
+                                item.data.option_data.option;
+                        }
+                        if (item.data.type === "ajax") {
+                            // 异步请求参数取值
+                            this.cascadeList[c.name][cobj.cascadeName]["ajax"] =
+                                item.data.ajax_data.option;
+                            valueTypeItem["ajax"] = item.data.ajax_data.option;
+                        }
+                        if (item.data.type === "setValue") {
+                            // 组件赋值
+                            this.cascadeList[c.name][cobj.cascadeName][
+                                "setValue"
+                            ] = item.data.setValue_data.option;
+                            valueTypeItem["setValue"] =
+                                item.data.setValue_data.option;
+                        }
+                        if (item.data.type === "show") {
+                            // 页面显示控制
+                            this.cascadeList[c.name][cobj.cascadeName]["show"] =
+                                item.data.show_data.option;
+                            valueTypeItem["show"] = item.data.show_data.option;
+                        }
+                        if (item.data.type === "relation") {
+                            // 消息交互
+                            this.cascadeList[c.name][cobj.cascadeName][
+                                "relation"
+                            ] = item.data.relation_data.option;
+                            valueTypeItem["relation"] =
+                                item.data.relation_data.option;
+                        }
+                        valueType.push(valueTypeItem);
+                    });
+
+                    this.cascadeList[c.name][cobj.cascadeName][
+                        "dataType"
+                    ] = dataType;
+                    this.cascadeList[c.name][cobj.cascadeName][
+                        "valueType"
+                    ] = valueType;
+                });
+                // endregion: 解析对象结束
+            });
+        // endregion： 解析结束
+    }
+
+    valueChange(data?) {
+        // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
+        // { name: this.config.name, value: name }
+        const sendCasade = data.name;
+        const receiveCasade = " ";
+
+        // 第二步，根据配置，和返回值，来构建应答数据集合
+        // 第三步，
+        if (this.cascadeList[sendCasade]) {
+            // 判断当前组件是否有级联
+
+            // const items = formItem.controls.filter(({ type }) => {
+            //   return type !== 'button' && type !== 'submit';
+            // });
+
+            const changeConfig_new = [];
+
+            for (const key in this.cascadeList[sendCasade]) {
+                // console.log('for in 配置' , key);
+                this.config.forms.forEach(formsItems => {
+                    formsItems.controls.forEach(control => {
+                        if (control.name === key) {
+                            if (this.cascadeList[sendCasade][key]["dataType"]) {
+                                this.cascadeList[sendCasade][key][
+                                    "dataType"
+                                ].forEach(caseItem => {
+                                    console.log('dataType', caseItem);
+                                    // region: 解析开始 根据组件类型组装新的配置【静态option组装】
+                                    if (caseItem["type"] === "option") {
+                                        // 在做判断前，看看值是否存在，如果在，更新，值不存在，则创建新值
+                                        let Exist = false;
+                                        changeConfig_new.forEach(config_new => {
+                                            if (
+                                                config_new.name === control.name
+                                            ) {
+                                                Exist = true;
+                                                config_new["options"] =
+                                                    caseItem["option"];
+                                            }
+                                        });
+                                        if (!Exist) {
+                                            control.options =
+                                                caseItem["option"];
+                                            control = JSON.parse(
+                                                JSON.stringify(control)
+                                            );
+                                            changeConfig_new.push(control);
+                                        }
+                                    }
+                                    if (caseItem["type"] === "ajax") {
+                                        // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
+                                        // 解析参数
+
+                                        const cascadeValue = {};
+                                        caseItem["ajax"].forEach(ajaxItem => {
+                                            if (ajaxItem["type"] === "value") {
+                                                cascadeValue[ajaxItem["name"]] =
+                                                    ajaxItem["value"];
+                                            }
+                                            if (
+                                                ajaxItem["type"] ===
+                                                "selectValue"
+                                            ) {
+                                                // 选中行数据[这个是单值]
+                                                cascadeValue[ajaxItem["name"]] =
+                                                    data["value"];
+                                            }
+                                            if (
+                                                ajaxItem["type"] ===
+                                                "selectObjectValue"
+                                            ) {
+                                                // 选中行对象数据
+                                                if (data.dataItem) {
+                                                    cascadeValue[
+                                                        ajaxItem["name"]
+                                                    ] =
+                                                        data.dataItem[
+                                                            ajaxItem[
+                                                                "valueName"
+                                                            ]
+                                                        ];
+                                                }
+                                            }
+                                            // 其他取值【日后扩展部分】
+                                        });
+                                        let Exist = false;
+                                        changeConfig_new.forEach(config_new => {
+                                            if (
+                                                config_new.name === control.name
+                                            ) {
+                                                Exist = true;
+                                                config_new[
+                                                    "cascadeValue"
+                                                ] = cascadeValue;
+                                            }
+                                        });
+                                        if (!Exist) {
+                                            control[
+                                                "cascadeValue"
+                                            ] = cascadeValue;
+                                            control = JSON.parse(
+                                                JSON.stringify(control)
+                                            );
+                                            changeConfig_new.push(control);
+                                        }
+                                    }
+                                    if (caseItem["type"] === "setValue") {
+                                        // console.log('setValueinput' , caseItem['setValue'] );
+
+                                        const setValuedata = {};
+                                        if (
+                                            caseItem["setValue"]["type"] ===
+                                            "value"
+                                        ) {
+                                            // 静态数据
+                                            setValuedata["data"] =
+                                                caseItem["setValue"]["value"];
+                                        }
+                                        if (
+                                            caseItem["setValue"]["type"] ===
+                                            "selectValue"
+                                        ) {
+                                            // 选中行数据[这个是单值]
+                                            setValuedata["data"] =
+                                                data[
+                                                    caseItem["setValue"][
+                                                        "valueName"
+                                                    ]
+                                                ];
+                                        }
+                                        if (
+                                            caseItem["setValue"]["type"] ===
+                                            "selectObjectValue"
+                                        ) {
+                                            // 选中行对象数据
+                                            if (data.dataItem) {
+                                                setValuedata["data"] =
+                                                    data.dataItem[
+                                                        caseItem["setValue"][
+                                                            "valueName"
+                                                        ]
+                                                    ];
+                                            }
+                                        }
+                                        // 手动给表单赋值，将值
+                                        if (
+                                            setValuedata.hasOwnProperty("data")
+                                        ) {
+                                            this.setValue(
+                                                key,
+                                                setValuedata["data"]
+                                            );
+                                        }
+                                    }
+
+                                    // endregion  解析结束
+                                });
+                            }
+                            if (
+                                this.cascadeList[sendCasade][key]["valueType"]
+                            ) {
+                                this.cascadeList[sendCasade][key][
+                                    "valueType"
+                                ].forEach(caseItem => {
+                                    // region: 解析开始  正则表达
+                                    const reg1 = new RegExp(caseItem.regular);
+                                    let regularData;
+                                    if (caseItem.regularType) {
+                                        if (
+                                            caseItem.regularType === "selectObjectValue"
+                                        ) {
+                                            if (data["dataItem"]) {
+                                                regularData = data["dataItem"][caseItem["valueName"]];
+                                            } else {
+                                                regularData = data.data;
+                                            }
+                                        } else {
+                                            regularData = data.data;
+                                        }
+                                    } else {
+                                        regularData = data.data;
+                                    }
+                                    const regularflag = reg1.test(regularData);
+                                   // console.log("正则结果：", caseItem, regularflag , regularData);
+                                    // endregion  解析结束 正则表达
+                                    if (regularflag) {
+                                        // region: 解析开始 根据组件类型组装新的配置【静态option组装】
+                                        if (caseItem["type"] === "option") {
+                                            let Exist = false;
+                                            changeConfig_new.forEach(
+                                                config_new => {
+                                                    if (
+                                                        config_new.name ===
+                                                        control.name
+                                                    ) {
+                                                        Exist = true;
+                                                        config_new["options"] =
+                                                            caseItem["option"];
+                                                    }
+                                                }
+                                            );
+                                            if (!Exist) {
+                                                control.options =
+                                                    caseItem["option"];
+                                                control = JSON.parse(
+                                                    JSON.stringify(control)
+                                                );
+                                                changeConfig_new.push(control);
+                                            }
+                                        }
+                                        if (caseItem["type"] === "ajax") {
+                                            // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
+                                            const cascadeValue = {};
+                                            caseItem["ajax"].forEach(
+                                                ajaxItem => {
+                                                    if (
+                                                        ajaxItem["type"] ===
+                                                        "value"
+                                                    ) {
+                                                        cascadeValue[
+                                                            ajaxItem["name"]
+                                                        ] = ajaxItem["value"];
+                                                    }
+                                                    if (
+                                                        ajaxItem["type"] ===
+                                                        "selectValue"
+                                                    ) {
+                                                        // 选中行数据[这个是单值]
+                                                        cascadeValue[
+                                                            ajaxItem["name"]
+                                                        ] = data["value"];
+                                                    }
+                                                    if (
+                                                        ajaxItem["type"] ===
+                                                        "selectObjectValue"
+                                                    ) {
+                                                        // 选中行对象数据
+                                                        if (data.dataItem) {
+                                                            cascadeValue[
+                                                                ajaxItem["name"]
+                                                            ] =
+                                                                data.dataItem[
+                                                                    ajaxItem[
+                                                                        "valueName"
+                                                                    ]
+                                                                ];
+                                                        }
+                                                    }
+                                                    // 其他取值【日后扩展部分】
+                                                }
+                                            );
+                                            let Exist = false;
+                                            changeConfig_new.forEach(
+                                                config_new => {
+                                                    if (
+                                                        config_new.name ===
+                                                        control.name
+                                                    ) {
+                                                        Exist = true;
+                                                        config_new[
+                                                            "cascadeValue"
+                                                        ] = cascadeValue;
+                                                    }
+                                                }
+                                            );
+                                            if (!Exist) {
+                                                control[
+                                                    "cascadeValue"
+                                                ] = cascadeValue;
+                                                control = JSON.parse(
+                                                    JSON.stringify(control)
+                                                );
+                                                changeConfig_new.push(control);
+                                            }
+                                        }
+                                        if (caseItem["type"] === "show") {
+                                            if (caseItem["show"]) {
+                                                //
+                                                control["hidden"] =
+                                                    caseItem["show"]["hidden"];
+                                            }
+                                        }
+                                        if (caseItem["type"] === "setValue") {
+                                            // console.log('setValueinput' , caseItem['setValue'] );
+
+                                            const setValuedata = {};
+                                            if (
+                                                caseItem["setValue"]["type"] ===
+                                                "value"
+                                            ) {
+                                                // 静态数据
+                                                setValuedata["data"] =
+                                                    caseItem["setValue"][
+                                                        "value"
+                                                    ];
+                                            }
+                                            if (
+                                                caseItem["setValue"]["type"] ===
+                                                "selectValue"
+                                            ) {
+                                                // 选中行数据[这个是单值]
+                                                setValuedata["data"] =
+                                                    data[
+                                                        caseItem["setValue"][
+                                                            "valueName"
+                                                        ]
+                                                    ];
+                                            }
+                                            if (
+                                                caseItem["setValue"]["type"] ===
+                                                "selectObjectValue"
+                                            ) {
+                                                // 选中行对象数据
+                                                if (data.dataItem) {
+                                                    setValuedata["data"] =
+                                                        data.dataItem[
+                                                            caseItem[
+                                                                "setValue"
+                                                            ]["valueName"]
+                                                        ];
+                                                }
+                                            }
+                                            // 手动给表单赋值，将值
+                                            if (
+                                                setValuedata.hasOwnProperty(
+                                                    "data"
+                                                )
+                                            ) {
+                                                this.setValue(
+                                                    key,
+                                                    setValuedata["data"]
+                                                );
+                                            }
+                                        }
+                                    }
+                                    // endregion  解析结束
+                                });
+                            }
+                        }
+                    });
+                });
+            }
+
+            this.changeConfig = JSON.parse(JSON.stringify(changeConfig_new));
+        }
+
+        // console.log('变更后的', this.config.forms);
+       // console.log('form: ', this.config.viewId, data, this.form.value, this.cascadeList);
+        // 此处有消息级联的则发值
+        // 级联值= 表单数据+当前触发级联的值组合；
+        const sendData = this.value;
+        sendData[data.name] = data.value;
+       
+        if ( this.config.cascadeRelation) {
+
+            this.config.cascadeRelation.forEach(element => {
+                if ( element.name === data.name) {
+                    this.cascade.next(
+                        new BsnComponentMessage(
+                            BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],
+                            this.config.viewId,
+                            {
+                                data: sendData
+                            }
+                        )
+                    );
+                }
+            });
+           
+        }
+
+      
+       // console.log('send', sendData);
+    }
+
+
+
+
 }

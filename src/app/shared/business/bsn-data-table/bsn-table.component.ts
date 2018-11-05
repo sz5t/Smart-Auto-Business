@@ -1118,7 +1118,11 @@ export class BsnTableComponent extends CnComponentBase
                                 if (
                                     caseItem.regularType === "selectObjectValue"
                                 ) {
-                                    regularData = data[caseItem["valueName"]];
+                                    if (data["dataItem"]) {
+                                        regularData = data["dataItem"][caseItem["valueName"]];
+                                    } else {
+                                        regularData = data.data;
+                                    }
                                 } else {
                                     regularData = data.data;
                                 }

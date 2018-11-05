@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Inject, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import { ApiService } from '@core/utility/api-service';
 import { _HttpClient } from '@delon/theme';
 import Editor from '@antv/g6-editor';
@@ -12,20 +12,22 @@ import { NzMessageService } from 'ng-zorro-antd';
 @Component({
   selector: 'wf-design,[wf-design]',
   templateUrl: './wf-design.component.html',
-  styleUrls: ['./wf-design.component.css']
+  styleUrls: ['./wf-design.component.css' , '../../../../../node_modules/@antv/g6-editor/build/base.css'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class WfDesignComponent extends CnComponentBase implements OnInit {
   @Input() config; // dataTables 的配置参数
   @Input() permissions = [];
   @Input() dataList = []; // 表格数据集合
   @Input() initData;
-
+  // './node_modules/@antv/g6-editor/build/base.css'
   @ViewChild('minimap') minimap: ElementRef;
   @ViewChild('toolbar') toolbar: ElementRef;
   @ViewChild('contextmenu') contextmenu: ElementRef;
   @ViewChild('itempannel') itempannel: ElementRef;
   @ViewChild('detailpannel') detailpannel: ElementRef;
   @ViewChild('page') rpage: ElementRef;
+  @ViewChild('zoomslider') zoomslider: ElementRef;
   _statusSubscription: Subscription;
   _cascadeSubscription: Subscription;
   tempValue = {};
@@ -234,9 +236,16 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
         console.log('back');
       }
     });
+    // 小地图
     const minimap = new Editor.Minimap({
       container: this.minimap.nativeElement,
+      width: 200,
+      height: 120,
     });
+    // const zoomslider = new Editor.slider({
+    //   container: this.zoomslider.nativeElement,
+    // });
+    // zoomslider.render();
     const toolbar = new Editor.Toolbar({
       container: this.toolbar.nativeElement,
     });
