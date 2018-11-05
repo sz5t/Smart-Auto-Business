@@ -1858,7 +1858,7 @@ export class BsnTreeTableComponent extends GridBase
         const stack = [];
         const array = [];
         const hashMap = {};
-        stack.push({ ...root, level: 0, expand: true });
+        stack.push({ ...root, level: 0, expand: false });
         while (stack.length !== 0) {
             const node = stack.pop();
             this.visitNode(node, hashMap, array);
@@ -1867,7 +1867,7 @@ export class BsnTreeTableComponent extends GridBase
                     stack.push({
                         ...node.children[i],
                         level: node.level + 1,
-                        expand: true,
+                        expand: false,
                         parent: node,
                         key: node.children[i][this.config.keyId],
                         rootId: root["Id"]

@@ -88,6 +88,8 @@ import { CnGridSelectGridComponent } from "./components/cn-grid-select-grid/cn-g
 import { CnGridSelectTreegridComponent } from "./components/cn-grid-select-treegrid/cn-grid-select-treegrid.component";
 import { CnFormSelectTreegridComponent } from "./components/cn-form-select-treegrid/cn-form-select-treegrid.component";
 import { BsnCarouselComponent } from "./business/bsn-carousel/bsn-carousel";
+import { BsnCardListComponent } from "./business/bsn-card-list/bsn-card-list.component";
+import { BsnCardListItemComponent } from "./business/bsn-card-list/bsn-card-list-item.component";
 
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -169,7 +171,9 @@ const COMPONENTS = [
     CnYearPickerComponent,
     CnMonthPickerComponent,
     CnWeekPickerComponent,
-    BsnCarouselComponent
+    BsnCarouselComponent,
+    BsnCardListComponent,
+    BsnCardListItemComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

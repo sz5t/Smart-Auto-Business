@@ -815,6 +815,219 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                         }
                     ]
                 }
+            },
+            {
+                row: {
+                    cols: [
+                        {
+                            id: "area2",
+                            title: "右表单",
+                            span: 24,
+                            size: {
+                                nzXs: 24,
+                                nzSm: 24,
+                                nzMd: 24,
+                                nzLg: 24,
+                                ngXl: 24
+                            },
+                            viewCfg: [
+                                {
+                                    config: {
+                                        viewId: "tree_and_form_forms",
+                                        component: "bsnCardList",
+                                        keyId: "Id",
+                                        ajaxConfig: {
+                                            url: "common/ShowCase",
+                                            ajaxType: "get"
+                                            // params: [
+                                            //     {
+                                            //         name: "Id",
+                                            //         type: "tempValue",
+                                            //         valueName: "_id",
+                                            //         value: ""
+                                            //     }
+                                            // ]
+                                        },
+                                        componentType: {
+                                            parent: false,
+                                            child: true,
+                                            own: true
+                                        },
+                                        forms: [
+                                            {
+                                                controls: [
+                                                    {
+                                                        type: "select",
+                                                        labelSize: "6",
+                                                        controlSize: "16",
+                                                        inputType: "submit",
+                                                        name: "enabled",
+                                                        label: "状态",
+                                                        notFoundContent: "",
+                                                        selectModel: false,
+                                                        showSearch: true,
+                                                        placeholder:
+                                                            "--请选择--",
+                                                        disabled: false,
+                                                        size: "default",
+                                                        options: [
+                                                            {
+                                                                label: "启用",
+                                                                value: true,
+                                                                disabled: false
+                                                            },
+                                                            {
+                                                                label: "禁用",
+                                                                value: false,
+                                                                disabled: false
+                                                            }
+                                                        ],
+                                                        layout: "column",
+                                                        span: "24"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                controls: [
+                                                    {
+                                                        type: "select",
+                                                        labelSize: "6",
+                                                        controlSize: "16",
+                                                        inputType: "submit",
+                                                        name: "caseType",
+                                                        label: "类别",
+                                                        notFoundContent: "",
+                                                        selectModel: false,
+                                                        showSearch: true,
+                                                        placeholder:
+                                                            "--请选择--",
+                                                        disabled: false,
+                                                        size: "default",
+                                                        options: [
+                                                            {
+                                                                label: "表",
+                                                                value: "1",
+                                                                disabled: false
+                                                            },
+                                                            {
+                                                                label: "树",
+                                                                value: "2",
+                                                                disabled: false
+                                                            },
+                                                            {
+                                                                label: "树表",
+                                                                value: "3",
+                                                                disabled: false
+                                                            },
+                                                            {
+                                                                label: "表单",
+                                                                value: "4",
+                                                                disabled: false
+                                                            },
+                                                            {
+                                                                label: "标签页",
+                                                                value: "5",
+                                                                disabled: false
+                                                            }
+                                                        ],
+                                                        layout: "column",
+                                                        span: "24"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                controls: [
+                                                    {
+                                                        type: "input",
+                                                        labelSize: "6",
+                                                        controlSize: "16",
+                                                        inputType: "text",
+                                                        name: "caseName",
+                                                        label: "名称",
+                                                        placeholder: "",
+                                                        disabled: false,
+                                                        readonly: false,
+                                                        size: "default",
+                                                        layout: "column",
+                                                        span: "24"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                controls: [
+                                                    {
+                                                        type: "input",
+                                                        labelSize: "6",
+                                                        controlSize: "16",
+                                                        inputType: "text",
+                                                        name: "caseLevel",
+                                                        label: "级别",
+                                                        placeholder: "",
+                                                        disabled: false,
+                                                        readonly: false,
+                                                        size: "default",
+                                                        layout: "column",
+                                                        span: "24"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                controls: [
+                                                    {
+                                                        type: "input",
+                                                        labelSize: "6",
+                                                        controlSize: "16",
+                                                        inputType: "text",
+                                                        name: "caseCount",
+                                                        label: "数量",
+                                                        placeholder: "",
+                                                        disabled: false,
+                                                        readonly: false,
+                                                        size: "default",
+                                                        layout: "column",
+                                                        span: "24"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                controls: [
+                                                    {
+                                                        type: "input",
+                                                        labelSize: "6",
+                                                        controlSize: "16",
+                                                        inputType: "text",
+                                                        name: "remark",
+                                                        label: "备注",
+                                                        placeholder: "",
+                                                        disabled: false,
+                                                        readonly: false,
+                                                        size: "default",
+                                                        layout: "column",
+                                                        span: "24"
+                                                    }
+                                                ]
+                                            }
+                                        ],
+                                        relations: [
+                                            {
+                                                relationViewId:
+                                                    "tree_and_form_tree",
+                                                cascadeMode: "REFRESH_AS_CHILD",
+                                                params: [
+                                                    {
+                                                        pid: "Id",
+                                                        cid: "_id"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    dataList: []
+                                }
+                            ]
+                        }
+                    ]
+                }
             }
         ]
     };

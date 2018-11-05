@@ -1,0 +1,17 @@
+<form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form" >
+    <ng-container *ngFor="let formItem of config.forms">
+        <div nz-row [nzGutter]="24">
+            <ng-container *ngFor="let control of formItem.controls">
+                <ng-container *ngIf="!control.hidden">
+
+                </ng-container>
+            </ng-container>
+        </div>
+    </ng-container>
+</form>
+
+
+
+<!-- <nz-card style="width:300px;" [nzCover]="coverTemplate" [nzActions]="[actionSetting,actionEdit,actionEllipsis]">
+    <nz-card-meta nzTitle="Card title" nzDescription="This is the description" [nzAvatar]="avatarTemplate"></nz-card-meta>
+</nz-card> -->

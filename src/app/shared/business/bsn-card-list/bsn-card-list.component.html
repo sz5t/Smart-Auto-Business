@@ -1,0 +1,11 @@
+<nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
+    <nz-list [nzDataSource]="data" [nzRenderItem]="item" [nzGrid]="{gutter: 16, xs: 24, sm: 12, md: 6, lg: 6, xl: 4 }">
+        <ng-template #item let-item index>
+            <nz-list-item [nzContent]="nzContent">
+                <ng-template #nzContent>
+                    <cn-form-resolver [config]="config" [formTitle]="item.title"></cn-form-resolver>
+                </ng-template>
+            </nz-list-item>
+        </ng-template>
+    </nz-list>
+</nz-spin>

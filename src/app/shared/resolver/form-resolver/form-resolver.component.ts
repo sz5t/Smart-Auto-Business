@@ -47,6 +47,9 @@ export class FormResolverComponent extends CnComponentBase
     dataList;
     @Input()
     initData;
+    @Input()
+    formTitle;
+    @Input()
     _editable = BSN_FORM_STATUS.CREATE;
 
     form: FormGroup;
