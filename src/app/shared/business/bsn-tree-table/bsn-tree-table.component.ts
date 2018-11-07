@@ -20,7 +20,6 @@ import { LayoutResolverComponent } from "@shared/resolver/layout-resolver/layout
 import { NzMessageService, NzModalService } from "ng-zorro-antd";
 import { Observable, Observer, Subscription } from "rxjs";
 import { GridBase } from "./../grid.base";
-import { stringify } from "querystring";
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: FormResolverComponent
@@ -1858,7 +1857,7 @@ export class BsnTreeTableComponent extends GridBase
         const stack = [];
         const array = [];
         const hashMap = {};
-        stack.push({ ...root, level: 0, expand: true });
+        stack.push({ ...root, level: 0, expand: false });
         while (stack.length !== 0) {
             const node = stack.pop();
             this.visitNode(node, hashMap, array);
@@ -1867,7 +1866,7 @@ export class BsnTreeTableComponent extends GridBase
                     stack.push({
                         ...node.children[i],
                         level: node.level + 1,
-                        expand: true,
+                        expand: false,
                         parent: node,
                         key: node.children[i][this.config.keyId],
                         rootId: root["Id"]

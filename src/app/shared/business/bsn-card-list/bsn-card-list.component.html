@@ -1,0 +1,19 @@
+<nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
+    <nz-list [nzItemLayout]="'vertical'" [nzDataSource]="data" [nzRenderItem]="item" [nzGrid]="{gutter: 16, xs: 24, sm: 12, md: 6, lg: 6, xl: 4 }">
+        <ng-template #item let-item>
+            <nz-list-item
+            [nzContent]="nzContent"
+            (click)="selectItem(item)"
+            [nzActions]="[checkedStatus]"
+            [ngClass]="{selectedItem: item.selected, unselectedItem: !item.selected, listItem: true}">
+                <ng-template #nzContent>
+                        <cn-form-resolver  [config]="formConfig" [formValue]="item" [formTitle]="getFormTitle(item)"></cn-form-resolver>
+                </ng-template>
+                <ng-template #checkedStatus>
+                    <label nz-checkbox [(ngModel)]="item.selected" name="item.Id"></label>
+                </ng-template>
+            </nz-list-item>
+        </ng-template>
+
+    </nz-list>
+</nz-spin>

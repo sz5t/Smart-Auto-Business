@@ -12,7 +12,8 @@ import {
     OnInit,
     Output,
     Inject,
-    OnDestroy
+    OnDestroy,
+    AfterViewInit
 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ApiService } from "@core/utility/api-service";
@@ -38,7 +39,7 @@ import { Observer } from "rxjs";
     styles: [``]
 })
 export class FormResolverComponent extends CnComponentBase
-    implements OnInit, OnChanges, OnDestroy {
+    implements OnInit, OnChanges, OnDestroy, AfterViewInit {
     @Input()
     config;
     @Input()
@@ -47,7 +48,12 @@ export class FormResolverComponent extends CnComponentBase
     dataList;
     @Input()
     initData;
-    _editable = BSN_FORM_STATUS.CREATE;
+    @Input()
+    formTitle;
+    @Input()
+    formValue;
+    @Input()
+    editable = BSN_FORM_STATUS.CREATE;
 
     form: FormGroup;
     @Output()
@@ -76,10 +82,25 @@ export class FormResolverComponent extends CnComponentBase
         super();
     }
 
+    ngAfterViewInit() {
+        if (this.config.ajaxConfig) {
+            if (this.config.componentType) {
+                if (!this.config.componentType.child) {
+                    this.load();
+                }
+            } else {
+                this.load();
+            }
+        } else if (this.formValue) {
+            // 表单加载初始化数据
+            this.setFormValue(this.formValue);
+        }
+    }
+
     // region: 组件生命周期事件
     ngOnInit() {
         if (this.config.editable) {
-            this._editable = this.config.editable;
+            this.editable = this.config.editable;
         }
         // 做参数简析
         if (this.config.select) {
@@ -104,21 +125,13 @@ export class FormResolverComponent extends CnComponentBase
         }
         this.form = this.createGroup();
         this.resolverRelation();
-        if (this.config.ajaxConfig) {
-            if (this.config.componentType) {
-                if (!this.config.componentType.child) {
-                    this.load();
-                }
-            } else {
-                this.load();
-            }
-        }
 
         this.config.forms.forEach(formItem => {
             formItem.controls.forEach(control => {
                 this.formconfigcontrol[control.name] = control;
             });
         });
+
         this.caseLoad(); // liu 20180521 测试
     }
 
@@ -142,16 +155,16 @@ export class FormResolverComponent extends CnComponentBase
                         this.load();
                         break;
                     case BSN_COMPONENT_MODES.CREATE:
-                        this._editable = BSN_FORM_STATUS.CREATE;
+                        this.editable = BSN_FORM_STATUS.CREATE;
                         this.form.reset();
                         break;
                     case BSN_COMPONENT_MODES.EDIT:
                         this.load();
-                        this._editable = BSN_FORM_STATUS.EDIT;
+                        this.editable = BSN_FORM_STATUS.EDIT;
                         break;
                     case BSN_COMPONENT_MODES.CANCEL:
                         this.load();
-                        this._editable = BSN_FORM_STATUS.TEXT;
+                        this.editable = BSN_FORM_STATUS.TEXT;
                         break;
                     case BSN_COMPONENT_MODES.SAVE:
                         if (option.ajaxConfig) {
@@ -470,7 +483,7 @@ export class FormResolverComponent extends CnComponentBase
 
     async saveForm_2(ajaxConfigs) {
         let result;
-        const method = this._editable;
+        const method = this.editable;
         if (method === BSN_FORM_STATUS.TEXT) {
             this.message.warning("请在编辑数据后进行保存！");
             return false;
@@ -836,7 +849,7 @@ export class FormResolverComponent extends CnComponentBase
         const res = await this.execute(url, postConfig.ajaxType, params);
         if (res.isSuccess) {
             this.message.create("success", "操作成功");
-            this._editable = BSN_FORM_STATUS.TEXT;
+            this.editable = BSN_FORM_STATUS.TEXT;
             this.load();
             // 发送消息 刷新其他界面
             if (
@@ -879,7 +892,7 @@ export class FormResolverComponent extends CnComponentBase
             const res = await this.execute(url, putConfig.ajaxType, params);
             if (res.isSuccess) {
                 this.message.create("success", "保存成功");
-                this._editable = BSN_FORM_STATUS.TEXT;
+                this.editable = BSN_FORM_STATUS.TEXT;
                 this.load();
                 // 发送消息 刷新其他界面
                 if (
@@ -962,7 +975,7 @@ export class FormResolverComponent extends CnComponentBase
                 );
                 if (res.isSuccess) {
                     this.message.create("success", "删除成功");
-                    this._editable = BSN_FORM_STATUS.TEXT;
+                    this.editable = BSN_FORM_STATUS.TEXT;
                     this.form.reset();
                     // 发送消息 刷新其他界面
                     if (
@@ -1604,10 +1617,14 @@ export class FormResolverComponent extends CnComponentBase
                                     let regularData;
                                     if (caseItem.regularType) {
                                         if (
-                                            caseItem.regularType === "selectObjectValue"
+                                            caseItem.regularType ===
+                                            "selectObjectValue"
                                         ) {
                                             if (data["dataItem"]) {
-                                                regularData = data["dataItem"][caseItem["valueName"]];
+                                                regularData =
+                                                    data["dataItem"][
+                                                        caseItem["valueName"]
+                                                    ];
                                             } else {
                                                 regularData = data.data;
                                             }
@@ -1618,7 +1635,7 @@ export class FormResolverComponent extends CnComponentBase
                                         regularData = data.data;
                                     }
                                     const regularflag = reg1.test(regularData);
-                                   // console.log("正则结果：", regularflag);
+                                    // console.log("正则结果：", regularflag);
                                     // endregion  解析结束 正则表达
                                     if (regularflag) {
                                         // region: 解析开始 根据组件类型组装新的配置【静态option组装】
@@ -1799,11 +1816,10 @@ export class FormResolverComponent extends CnComponentBase
         // console.log('send', sendData);
         const sendData = this.value;
         sendData[data.name] = data.value;
-       
-        if ( this.config.cascadeRelation) {
 
+        if (this.config.cascadeRelation) {
             this.config.cascadeRelation.forEach(element => {
-                if ( element.name === data.name) {
+                if (element.name === data.name) {
                     this.cascade.next(
                         new BsnComponentMessage(
                             BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],
@@ -1815,7 +1831,6 @@ export class FormResolverComponent extends CnComponentBase
                     );
                 }
             });
-           
         }
     }
 

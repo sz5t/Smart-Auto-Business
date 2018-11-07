@@ -311,6 +311,22 @@ export class TreeTableComponent implements OnInit {
                                                                 {
                                                                     name:
                                                                         "enabled",
+                                                                    value: "0",
+                                                                    checkType:
+                                                                        "value"
+                                                                },
+                                                                {
+                                                                    name:
+                                                                        "caseLevel",
+                                                                    value: 1,
+                                                                    checkType:
+                                                                        "value"
+                                                                }
+                                                            ],
+                                                            [
+                                                                {
+                                                                    name:
+                                                                        "enabled",
                                                                     value: "1",
                                                                     checkType:
                                                                         "value"

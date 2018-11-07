@@ -1,15 +1,12 @@
-import { CnComponentBase } from "./../../components/cn-component-base";
 import {
     Component,
     OnInit,
-    ViewChild,
-    ElementRef,
-    AfterViewInit,
     Input,
+    OnDestroy,
+    Type,
     Inject,
-    OnDestroy
+    AfterViewInit
 } from "@angular/core";
-import G6 from "@antv/g6";
 import { ApiService } from "@core/utility/api-service";
 import { CacheService } from "@delon/cache";
 import {
@@ -19,44 +16,43 @@ import {
     BSN_COMPONENT_CASCADE_MODES
 } from "@core/relative-Service/BsnTableStatus";
 import { Observable, Observer } from "rxjs";
-import { CommonTools } from "@core/utility/common-tools";
+import { CnComponentBase } from "@shared/components/cn-component-base";
 import { initDomAdapter } from "@angular/platform-browser/src/browser";
-import { AdNumberToChineseModule } from "@delon/abc";
+import { CommonTools } from "@core/utility/common-tools";
+import { FormGroup } from "@angular/forms";
 @Component({
-    selector: "bsn-carousel",
-    template: `
-  <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
-    <nz-carousel [nzEffect]="'scrollx'" >
-    <div nz-carousel-content *ngFor="let img of imgList">
-        <img alt="{{img.alt}}" src="{{img.src}}"/></div>
-    </nz-carousel>
-  </nz-spin>
-  
-    `,
+    selector: "bsn-card-list",
+    templateUrl: "./bsn-card-list.component.html",
     styles: [
         `
-            [nz-carousel-content] {
-                text-align: center;
-                height: 400px;
-                min-height: 300px;
-                line-height: 400px;
-                background: #364d79;
-                color: #fff;
-                overflow: hidden;
+            .selectedItem {
+                background-color: #ddd;
+            }
+            .unselectedItem {
+                background-color: #fff;
+            }
+            .listItem {
+                padding: 6px;
             }
         `
     ]
 })
-export class BsnCarouselComponent extends CnComponentBase
-    implements OnInit, AfterViewInit, OnDestroy {
+export class BsnCardListComponent extends CnComponentBase
+    implements OnInit, AfterViewInit {
     @Input()
     config;
     @Input()
+    viewId;
+    @Input()
     initData;
+    count = 0;
+    formConfig = {};
     isLoading = true;
-    imgList = [];
+    data;
     _statusSubscription;
     _cascadeSubscription;
+
+    _lastItem;
     constructor(
         private _apiService: ApiService,
         private _cacheService: CacheService,
@@ -71,39 +67,9 @@ export class BsnCarouselComponent extends CnComponentBase
     }
 
     ngOnInit() {
-        if (this.initData) {
-            this.initValue = this.initValue;
-        }
+        this.formConfig["forms"] = this.config.forms;
+        this.formConfig["editable"] = "text";
         this.resolverRelation();
-    }
-
-    async load() {
-        const response = await this.get();
-        if (response.isSuccess) {
-            // 构建数据源
-            response.data.forEach(d => {
-                const imgItem = {};
-                this.config.dataMapping.forEach(element => {
-                    imgItem[d["name"]] = element[d["field"]];
-                    this.imgList.push(imgItem);
-                });
-            });
-            this.isLoading = false;
-        }
-    }
-
-    async get() {
-        return this._apiService
-            .get(
-                this.config.ajaxConfig.url,
-                CommonTools.parametersResolver({
-                    params: this.config.ajaxConfig.params,
-                    tempValue: this.tempValue,
-                    initValue: this.initValue,
-                    cacheValue: this._cacheService
-                })
-            )
-            .toPromise();
     }
 
     resolverRelation() {
@@ -159,16 +125,52 @@ export class BsnCarouselComponent extends CnComponentBase
         }
     }
 
-    ngAfterViewInit() {
-        this.load();
+    async load() {
+        const response = await this.get();
+        if (response.isSuccess) {
+            // 构建数据源
+            response.data.forEach(item => {
+                item["checked"] = false;
+                item["selected"] = false;
+            });
+            this.data = response.data;
+            this.isLoading = false;
+        } else {
+            this.isLoading = false;
+        }
     }
 
-    ngOnDestroy() {
-        if (this._statusSubscription) {
-            this._statusSubscription.unsubscribe();
+    async get() {
+        return this._apiService
+            .get(
+                this.config.ajaxConfig.url,
+                CommonTools.parametersResolver({
+                    params: this.config.ajaxConfig.params,
+                    tempValue: this.tempValue,
+                    initValue: this.initValue,
+                    cacheValue: this._cacheService
+                })
+            )
+            .toPromise();
+    }
+
+    getFormTitle(item) {
+        return item[this.config.titleField]
+            ? item[this.config.titleField]
+            : null;
+    }
+
+    selectItem(item) {
+        if (!this._lastItem) {
+            this._lastItem = item;
+        } else {
+            this._lastItem["selected"] = false;
         }
-        if (this._cascadeSubscription) {
-            this._cascadeSubscription.unsubscribe();
-        }
+        item["selected"] = !item["selected"];
+        this._lastItem = item;
+    }
+
+    ngAfterViewInit() {
+        this.load();
     }
 }

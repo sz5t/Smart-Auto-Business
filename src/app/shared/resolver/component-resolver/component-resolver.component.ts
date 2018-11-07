@@ -1,3 +1,4 @@
+import { BsnCardListComponent } from "./../../business/bsn-card-list/bsn-card-list.component";
 import { BsnDataStepComponent } from "./../../business/bsn-data-step/bsn-data-step.component";
 import { LineChartComponent } from "@shared/chart/line-chart/line-chart.component";
 import { BsnStepComponent } from "@shared/business/bsn-step/bsn-step.component";
@@ -45,7 +46,8 @@ const components: { [type: string]: Type<any> } = {
     bsnTransfer: BsnTransferComponent,
     dataSteps: BsnDataStepComponent,
     wf_design: WfDesignComponent,
-    bsnCarousel: BsnCarouselComponent
+    bsnCarousel: BsnCarouselComponent,
+    bsnCardList: BsnCardListComponent
 };
 @Component({
     selector: "cn-component-resolver",
@@ -108,16 +110,15 @@ export class ComponentResolverComponent
             if (this.tempValue && this.componentRef.instance.tempValue) {
                 this.componentRef.instance.tempValue = this.tempValue;
             }
-
             if (this.initData) {
                 this.componentRef.instance.initData = this.initData;
             }
             if (this.componentRef.instance.hasOwnProperty("permissions")) {
                 this.componentRef.instance.permissions = this.permissions;
             }
-            if (this.componentRef.instance.dataList) {
-                this.componentRef.instance.dataList = this.config.dataList;
-            }
+            // if (this.componentRef.instance.dataList) {
+            //     this.componentRef.instance.dataList = this.config.dataList;
+            // }
 
             this.componentRef.instance.layoutId = this.layoutId;
             this.componentRef.instance.blockId = this.blockId;

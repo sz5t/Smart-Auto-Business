@@ -378,7 +378,7 @@ export class GridBase extends CnComponentBase {
                     const newParam = CommonTools.parametersResolver({
                         params: ajaxConfigObj.params,
                         tempValue: this.tempValue,
-                        item: handleData,
+                        item: dataItem,
                         componentValue: dataItem,
                         initValue: this.initValue,
                         cacheValue: this.cacheValue
@@ -1109,6 +1109,7 @@ export class GridBase extends CnComponentBase {
         const orResult = [];
         conditions.forEach(elements => {
             // 解析‘与’的关系条件
+            const andResults = [];
             elements.forEach(item => {
                 let andResult = true;
                 // 选中行的解析处理
@@ -1138,11 +1139,14 @@ export class GridBase extends CnComponentBase {
                         );
                         break;
                 }
-                orResult.push(andResult);
+                andResults.push(andResult);
             });
+            const and = andResults.every(s => s === true);
+            orResult.push(and);
             // 解析’或‘的关系条件
         });
-        return orResult;
+
+        return orResult.some(s => s === true);
     }
 
     /**
@@ -1154,6 +1158,7 @@ export class GridBase extends CnComponentBase {
         const checkedRows = this.getCheckedItems();
         conditions.forEach(elements => {
             // 解析‘与’的关系条件
+            const andResults = [];
             elements.forEach(item => {
                 let andResult = true;
                 // 选中行的解析处理
@@ -1187,11 +1192,13 @@ export class GridBase extends CnComponentBase {
                         );
                         break;
                 }
-                orResult.push(andResult);
+                andResults.push(andResult);
             });
             // 解析’或‘的关系条件
+            const and = andResults.every(s => s === true);
+            orResult.push(and);
         });
-        return orResult;
+        return orResult.some(s => s === true);
     }
 
     /**
@@ -1278,7 +1285,7 @@ export class GridBase extends CnComponentBase {
         if (action) {
             switch (action.execute) {
                 case "prevent":
-                    if (actionResult.some(item => item === true)) {
+                    if (actionResult) {
                         this.beforeOperationMessage(action, result);
                         // result = true;
                     } else {
@@ -1286,7 +1293,7 @@ export class GridBase extends CnComponentBase {
                     }
                     break;
                 case "continue":
-                    if (actionResult.every(item => item === false)) {
+                    if (!actionResult) {
                         result = false;
                     } else {
                         this.beforeOperationMessage(action, result);
