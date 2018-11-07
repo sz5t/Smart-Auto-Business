@@ -85,6 +85,7 @@ export const BSN_COMPONENT_CASCADE_MODES = {
     // grid
     SELECTED_ROW: 'selectRow',
     CHECKED_ROWS: 'checkRow',
+    Scan_Code_ROW: 'ScanCodeROW',
 
     // tree
     CLICK_NODE : 'clickNode',
