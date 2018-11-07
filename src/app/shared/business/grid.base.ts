@@ -675,7 +675,7 @@ export class GridBase extends CnComponentBase {
                 nzComponentParams: {
                     config: data,
                     permissions: this.permission,
-                    initData: { ...this.selectedItem, ...this.tempValue }
+                    initData: { ...this.tempValue, ...this.selectedItem }
                 },
                 nzFooter: footer
             });
@@ -795,6 +795,7 @@ export class GridBase extends CnComponentBase {
         }
         const sItem = this.selectedItem ? this.selectedItem : {};
         obj = {
+            ...this.tempValue,
             ...sItem,
             _id: sItem[dialog.keyId] ? sItem[dialog.keyId] : "",
             _parentId: this.tempValue["_parentId"]
@@ -1134,7 +1135,7 @@ export class GridBase extends CnComponentBase {
                         break;
                     case "initValue":
                         andResult = this.matchValueCondition(
-                            this.tempValue,
+                            this.initValue,
                             item
                         );
                         break;
@@ -1187,7 +1188,7 @@ export class GridBase extends CnComponentBase {
                     case "initValue":
                         andResult = this.matchValueCondition(
                             // 勾选的行
-                            this.tempValue,
+                            this.initValue,
                             item
                         );
                         break;

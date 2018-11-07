@@ -225,13 +225,13 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
             this.config.componentType.parent === true
         ) {
             this.after(this, "clickNode", () => {
-                this.tempValue["_selectedNode"] &&
+                this.selectedItem &&
                     this.cascade.next(
                         new BsnComponentMessage(
                             BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
                             this.config.viewId,
                             {
-                                data: this.tempValue["_selectedNode"]
+                                data: this.selectedItem
                             }
                         )
                     );
@@ -263,7 +263,10 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                             BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
                             this.config.viewId,
                             {
-                                data: this.tempValue["_selectedNode"],
+                                data: {
+                                    ...this.initValue,
+                                    ...this.tempValue["_selectedNode"]
+                                },
                                 tempValue: this.tempValue,
                                 subViewId: () => {
                                     let id = "";
@@ -709,8 +712,8 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
         this.activedNode = e.node;
         // 从节点的列表中查找选中的数据对象
         this.tempValue["_selectedNode"] = {
-            ...this._toTreeBefore.find(n => n.key === e.node.key),
-            ...this.initValue
+            ...this.initValue,
+            ...this._toTreeBefore.find(n => n.key === e.node.key)
         };
         this.selectedItem = this.tempValue["_selectedNode"];
     };
