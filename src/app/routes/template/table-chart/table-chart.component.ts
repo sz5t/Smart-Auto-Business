@@ -754,7 +754,8 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                             url: "common/ShowCase",
                                             ajaxType: "get",
                                             params: [
-                                                // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
+                                                // { name: 'enabled', type: 'value', value: '0' },
+                                                // { name: 'parentId', type: 'value', value: null }
                                             ]
                                         },
                                         componentType: {
@@ -836,17 +837,22 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                         viewId: "tree_and_form_forms",
                                         component: "bsnCardList",
                                         keyId: "Id",
+                                        titleField: "caseName",
                                         ajaxConfig: {
                                             url: "common/ShowCase",
-                                            ajaxType: "get"
-                                            // params: [
-                                            //     {
-                                            //         name: "Id",
-                                            //         type: "tempValue",
-                                            //         valueName: "_id",
-                                            //         value: ""
-                                            //     }
-                                            // ]
+                                            ajaxType: "get",
+                                            params: [
+                                                {
+                                                    name: "enabled",
+                                                    type: "value",
+                                                    value: "0"
+                                                },
+                                                {
+                                                    name: "parentId",
+                                                    type: "value",
+                                                    value: null
+                                                }
+                                            ]
                                         },
                                         componentType: {
                                             parent: false,

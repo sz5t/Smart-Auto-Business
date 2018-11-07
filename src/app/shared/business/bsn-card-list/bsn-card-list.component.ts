@@ -23,7 +23,19 @@ import { FormGroup } from "@angular/forms";
 @Component({
     selector: "bsn-card-list",
     templateUrl: "./bsn-card-list.component.html",
-    styles: [``]
+    styles: [
+        `
+            .selectedItem {
+                background-color: #ddd;
+            }
+            .unselectedItem {
+                background-color: #fff;
+            }
+            .listItem {
+                padding: 6px;
+            }
+        `
+    ]
 })
 export class BsnCardListComponent extends CnComponentBase
     implements OnInit, AfterViewInit {
@@ -33,12 +45,14 @@ export class BsnCardListComponent extends CnComponentBase
     viewId;
     @Input()
     initData;
-
-    formConfig;
+    count = 0;
+    formConfig = {};
     isLoading = true;
     data;
     _statusSubscription;
     _cascadeSubscription;
+
+    _lastItem;
     constructor(
         private _apiService: ApiService,
         private _cacheService: CacheService,
@@ -53,7 +67,8 @@ export class BsnCardListComponent extends CnComponentBase
     }
 
     ngOnInit() {
-        this.formConfig = this.config.forms;
+        this.formConfig["forms"] = this.config.forms;
+        this.formConfig["editable"] = "text";
         this.resolverRelation();
     }
 
@@ -114,15 +129,11 @@ export class BsnCardListComponent extends CnComponentBase
         const response = await this.get();
         if (response.isSuccess) {
             // 构建数据源
-            // response.data.forEach(d => {
-            //     const imgItem = {};
-            //     this.config.dataMapping.forEach(element => {
-            //         imgItem[d["name"]] = element[d["field"]];
-            //         this.imgList.push(imgItem);
-            //     });
-            // });
+            response.data.forEach(item => {
+                item["checked"] = false;
+                item["selected"] = false;
+            });
             this.data = response.data;
-
             this.isLoading = false;
         } else {
             this.isLoading = false;
@@ -141,6 +152,22 @@ export class BsnCardListComponent extends CnComponentBase
                 })
             )
             .toPromise();
+    }
+
+    getFormTitle(item) {
+        return item[this.config.titleField]
+            ? item[this.config.titleField]
+            : null;
+    }
+
+    selectItem(item) {
+        if (!this._lastItem) {
+            this._lastItem = item;
+        } else {
+            this._lastItem["selected"] = false;
+        }
+        item["selected"] = !item["selected"];
+        this._lastItem = item;
     }
 
     ngAfterViewInit() {

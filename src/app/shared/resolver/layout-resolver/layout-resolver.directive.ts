@@ -79,6 +79,7 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
         this.component = this.container.createComponent(comp);
         this.component.instance.config = config;
         this.component.instance.tempValue = data;
+        this.component.instance.initData = data;
         this.component.instance.permissions = this.permissions;
     }
 

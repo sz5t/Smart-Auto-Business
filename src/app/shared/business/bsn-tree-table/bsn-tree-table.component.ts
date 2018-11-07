@@ -20,7 +20,6 @@ import { LayoutResolverComponent } from "@shared/resolver/layout-resolver/layout
 import { NzMessageService, NzModalService } from "ng-zorro-antd";
 import { Observable, Observer, Subscription } from "rxjs";
 import { GridBase } from "./../grid.base";
-import { stringify } from "querystring";
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: FormResolverComponent
