@@ -1,3 +1,4 @@
+import { BeforeOperation } from "./../../business/before-operation.base";
 import { LayoutResolverComponent } from "./../layout-resolver/layout-resolver.component";
 import { CnFormWindowResolverComponent } from "@shared/resolver/form-resolver/form-window-resolver.component";
 import { BsnUploadComponent } from "@shared/business/bsn-upload/bsn-upload.component";
@@ -65,6 +66,7 @@ export class FormResolverComponent extends CnComponentBase
     _isSaving = false;
     changeConfig = [];
     formconfigcontrol = {}; // liu 表单配置
+    beforeOperation: BeforeOperation;
     constructor(
         private formBuilder: FormBuilder,
         private apiService: ApiService,
@@ -95,6 +97,17 @@ export class FormResolverComponent extends CnComponentBase
             // 表单加载初始化数据
             this.setFormValue(this.formValue);
         }
+        // 初始化前置条件验证对象
+        this.beforeOperation = new BeforeOperation({
+            config: this.config,
+            message: this.message,
+            modal: this.modalService,
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            cacheValue: this.cacheValue.get("userInfo").value
+                ? this.cacheValue.get("userInfo").value
+                : {}
+        });
     }
 
     // region: 组件生命周期事件
@@ -150,57 +163,62 @@ export class FormResolverComponent extends CnComponentBase
         this._statusSubscription = this.stateEvents.subscribe(updateState => {
             if (updateState._viewId === this.config.viewId) {
                 const option = updateState.option;
-                switch (updateState._mode) {
-                    case BSN_COMPONENT_MODES.REFRESH:
-                        this.load();
-                        break;
-                    case BSN_COMPONENT_MODES.CREATE:
-                        this.editable = BSN_FORM_STATUS.CREATE;
-                        this.form.reset();
-                        break;
-                    case BSN_COMPONENT_MODES.EDIT:
-                        this.load();
-                        this.editable = BSN_FORM_STATUS.EDIT;
-                        break;
-                    case BSN_COMPONENT_MODES.CANCEL:
-                        this.load();
-                        this.editable = BSN_FORM_STATUS.TEXT;
-                        break;
-                    case BSN_COMPONENT_MODES.SAVE:
-                        if (option.ajaxConfig) {
-                            this.saveForm_2(option.ajaxConfig);
-                        }
-                        break;
-                    case BSN_COMPONENT_MODES.DELETE:
-                        if (option.ajaxConfig) {
-                            this.modalService.confirm({
-                                nzTitle: "确认删除当前数据？",
-                                nzContent: "",
-                                nzOnOk: () => {
-                                    this.delete(option.ajaxConfig);
-                                },
-                                nzOnCancel() {}
-                            });
-                        }
-                        break;
-                    case BSN_COMPONENT_MODES.EXECUTE:
-                        if (option.ajaxConfig) {
-                            // 根据表单状态进行具体配置操作
-                            this._resolveAjaxConfig(
-                                option.ajaxConfig,
-                                this.editable
-                            );
-                        }
-                        break;
-                    case BSN_COMPONENT_MODES.WINDOW:
-                        this.windowDialog(option);
-                        break;
-                    case BSN_COMPONENT_MODES.FORM:
-                        this.formDialog(option);
-                        break;
-                    case BSN_COMPONENT_MODES.UPLOAD:
-                        this.uploadDialog(option);
-                        break;
+                this.beforeOperation.operationItemData = this.value;
+                if (!this.beforeOperation.beforeItemDataOperation(option)) {
+                    switch (updateState._mode) {
+                        case BSN_COMPONENT_MODES.REFRESH:
+                            this.load();
+                            break;
+                        case BSN_COMPONENT_MODES.CREATE:
+                            this.editable = BSN_FORM_STATUS.CREATE;
+                            this.form.reset();
+                            break;
+                        case BSN_COMPONENT_MODES.EDIT:
+                            this.load();
+                            this.editable = BSN_FORM_STATUS.EDIT;
+                            break;
+                        case BSN_COMPONENT_MODES.CANCEL:
+                            this.load();
+                            this.editable = BSN_FORM_STATUS.TEXT;
+                            break;
+                        case BSN_COMPONENT_MODES.SAVE:
+                            if (option.ajaxConfig) {
+                                this.saveForm_2(option.ajaxConfig);
+                            } else {
+                                this.message.info("未配置任何操作!");
+                            }
+                            break;
+                        case BSN_COMPONENT_MODES.DELETE:
+                            if (option.ajaxConfig) {
+                                this.modalService.confirm({
+                                    nzTitle: "确认删除当前数据？",
+                                    nzContent: "",
+                                    nzOnOk: () => {
+                                        this.delete(option.ajaxConfig);
+                                    },
+                                    nzOnCancel() {}
+                                });
+                            }
+                            break;
+                        case BSN_COMPONENT_MODES.EXECUTE:
+                            if (option.ajaxConfig) {
+                                // 根据表单状态进行具体配置操作
+                                this._resolveAjaxConfig(
+                                    option.ajaxConfig,
+                                    this.editable
+                                );
+                            }
+                            break;
+                        case BSN_COMPONENT_MODES.WINDOW:
+                            this.windowDialog(option);
+                            break;
+                        case BSN_COMPONENT_MODES.FORM:
+                            this.formDialog(option);
+                            break;
+                        case BSN_COMPONENT_MODES.UPLOAD:
+                            this.uploadDialog(option);
+                            break;
+                    }
                 }
             }
         });

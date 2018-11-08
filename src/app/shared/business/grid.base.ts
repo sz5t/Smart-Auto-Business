@@ -1,3 +1,4 @@
+import { BeforeOperation } from "./before-operation.base";
 import { BsnUploadComponent } from "./bsn-upload/bsn-upload.component";
 import { CnComponentBase } from "@shared/components/cn-component-base";
 import {
@@ -183,12 +184,12 @@ export class GridBase extends CnComponentBase {
     public set permission(value) {
         this._permissions = value;
     }
-    private _beforeOperationMap;
-    public get beforeOperationMap() {
-        return this._beforeOperationMap;
+    private _beforeOperation;
+    public get beforeOperation() {
+        return this._beforeOperation;
     }
-    public set beforeOperationMap(value) {
-        this._beforeOperationMap = value;
+    public set beforeOperation(value) {
+        this._beforeOperation = value;
     }
     constructor() {
         super();
@@ -216,10 +217,12 @@ export class GridBase extends CnComponentBase {
                         return false;
                     }
                     // 目前还未解决confirm确认操作后的后续执行问题
-                    if (this.beforeCheckedRowsOperation(option)) {
+                    handleData = this.getCheckedItems();
+                    this.beforeOperation.operationItemsData = handleData;
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
                         return false;
                     }
-                    handleData = this.getCheckedItems();
+
                     msg = "操作完成";
                     this.buildConfirm(c, option.ajaxConfig, handleData, msg);
                     break;
@@ -231,10 +234,12 @@ export class GridBase extends CnComponentBase {
                         );
                         return false;
                     }
-                    if (this.beforeSelectedRowOperation(option)) {
+                    handleData = this.getSelectedItem();
+                    this.beforeOperation.operationItemData = handleData;
+                    if (this.beforeOperation.beforeItemDataOperation(option)) {
                         return false;
                     }
-                    handleData = this.getSelectedItem();
+
                     msg = "操作完成";
                     this.buildConfirm(c, option.ajaxConfig, handleData, msg);
                     break;
@@ -246,10 +251,12 @@ export class GridBase extends CnComponentBase {
                         this._message.create("info", "请选择要执行的数据");
                         return false;
                     }
-                    if (this.beforeCheckedRowsOperation(option)) {
+                    handleData = this.getCheckItemsId();
+                    this.beforeOperation.operationItemsData = this.getCheckedItems();
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
                         return false;
                     }
-                    handleData = this.getCheckItemsId();
+
                     msg = "操作完成";
                     this.buildConfirm(c, option.ajaxConfig, handleData, msg);
                     break;
@@ -1049,300 +1056,300 @@ export class GridBase extends CnComponentBase {
         this.callback();
     }
 
-    /**
-     * 操作选中行前置判断
-     * @option  {type, name, actionName, ajaxConfig}
-     */
-    beforeSelectedRowOperation(option) {
-        let result = false;
-        if (this._beforeOperationMap.has(option.name)) {
-            const op_status = this._beforeOperationMap.get(option.name);
-            op_status.forEach(statusItem => {
-                const conditionResult = this.handleOperationConditions(
-                    statusItem.conditions
-                );
-                const actionResult = this.handleOperationAction(
-                    conditionResult,
-                    statusItem.action
-                );
-                if (actionResult) {
-                    result = true;
-                    return true;
-                }
-                result = actionResult;
-            });
-        }
-        return result;
-    }
+    // /**
+    //  * 操作选中行前置判断
+    //  * @option  {type, name, actionName, ajaxConfig}
+    //  */
+    // beforeSelectedRowOperation(option) {
+    //     let result = false;
+    //     if (this._beforeOperationMap.has(option.name)) {
+    //         const op_status = this._beforeOperationMap.get(option.name);
+    //         op_status.forEach(statusItem => {
+    //             const conditionResult = this.handleOperationConditions(
+    //                 statusItem.conditions
+    //             );
+    //             const actionResult = this.handleOperationAction(
+    //                 conditionResult,
+    //                 statusItem.action
+    //             );
+    //             if (actionResult) {
+    //                 result = true;
+    //                 return true;
+    //             }
+    //             result = actionResult;
+    //         });
+    //     }
+    //     return result;
+    // }
 
-    /**
-     * 操作勾选行前置判断
-     * @param option
-     */
-    beforeCheckedRowsOperation(option) {
-        let result = false;
-        if (this._beforeOperationMap.has(option.name)) {
-            const op_status = this._beforeOperationMap.get(option.name);
-            op_status.forEach(statusItem => {
-                const conditionResult = this.handleCheckedRowsOperationConditions(
-                    statusItem.conditions
-                );
-                const actionResult = this.handleOperationAction(
-                    conditionResult,
-                    statusItem.action
-                );
-                if (actionResult) {
-                    result = true;
-                    // 跳出循环
-                    return true;
-                }
-                result = actionResult;
-            });
-        }
-        return result;
-    }
+    // /**
+    //  * 操作勾选行前置判断
+    //  * @param option
+    //  */
+    // beforeCheckedRowsOperation(option) {
+    //     let result = false;
+    //     if (this._beforeOperationMap.has(option.name)) {
+    //         const op_status = this._beforeOperationMap.get(option.name);
+    //         op_status.forEach(statusItem => {
+    //             const conditionResult = this.handleCheckedRowsOperationConditions(
+    //                 statusItem.conditions
+    //             );
+    //             const actionResult = this.handleOperationAction(
+    //                 conditionResult,
+    //                 statusItem.action
+    //             );
+    //             if (actionResult) {
+    //                 result = true;
+    //                 // 跳出循环
+    //                 return true;
+    //             }
+    //             result = actionResult;
+    //         });
+    //     }
+    //     return result;
+    // }
 
-    /**
-     * 处理选中前置操作条件
-     * @param conditions
-     */
-    handleOperationConditions(conditions) {
-        const orResult = [];
-        conditions.forEach(elements => {
-            // 解析‘与’的关系条件
-            const andResults = [];
-            elements.forEach(item => {
-                let andResult = true;
-                // 选中行的解析处理
-                switch (item.checkType) {
-                    case "value":
-                        andResult = this.matchValueCondition(
-                            this.selectedItem,
-                            item
-                        );
-                        break;
-                    case "regexp":
-                        andResult = this.matchRegexpCondition(
-                            this.selectedItem,
-                            item
-                        );
-                        break;
-                    case "tempValue":
-                        andResult = this.matchValueCondition(
-                            this.tempValue,
-                            item
-                        );
-                        break;
-                    case "initValue":
-                        andResult = this.matchValueCondition(
-                            this.initValue,
-                            item
-                        );
-                        break;
-                }
-                andResults.push(andResult);
-            });
-            const and = andResults.every(s => s === true);
-            orResult.push(and);
-            // 解析’或‘的关系条件
-        });
+    // /**
+    //  * 处理选中前置操作条件
+    //  * @param conditions
+    //  */
+    // handleOperationConditions(conditions) {
+    //     const orResult = [];
+    //     conditions.forEach(elements => {
+    //         // 解析‘与’的关系条件
+    //         const andResults = [];
+    //         elements.forEach(item => {
+    //             let andResult = true;
+    //             // 选中行的解析处理
+    //             switch (item.checkType) {
+    //                 case "value":
+    //                     andResult = this.matchValueCondition(
+    //                         this.selectedItem,
+    //                         item
+    //                     );
+    //                     break;
+    //                 case "regexp":
+    //                     andResult = this.matchRegexpCondition(
+    //                         this.selectedItem,
+    //                         item
+    //                     );
+    //                     break;
+    //                 case "tempValue":
+    //                     andResult = this.matchValueCondition(
+    //                         this.tempValue,
+    //                         item
+    //                     );
+    //                     break;
+    //                 case "initValue":
+    //                     andResult = this.matchValueCondition(
+    //                         this.initValue,
+    //                         item
+    //                     );
+    //                     break;
+    //             }
+    //             andResults.push(andResult);
+    //         });
+    //         const and = andResults.every(s => s === true);
+    //         orResult.push(and);
+    //         // 解析’或‘的关系条件
+    //     });
 
-        return orResult.some(s => s === true);
-    }
+    //     return orResult.some(s => s === true);
+    // }
 
-    /**
-     * 处理勾选前置操作条件
-     * @param conditions
-     */
-    handleCheckedRowsOperationConditions(conditions) {
-        const orResult = [];
-        const checkedRows = this.getCheckedItems();
-        conditions.forEach(elements => {
-            // 解析‘与’的关系条件
-            const andResults = [];
-            elements.forEach(item => {
-                let andResult = true;
-                // 选中行的解析处理
-                switch (item.checkType) {
-                    case "value":
-                        andResult = this.matchCheckedValueCondition(
-                            // 勾选的行
-                            checkedRows,
-                            item
-                        );
-                        break;
-                    case "regexp":
-                        andResult = this.matchCheckedRegexpCondition(
-                            // 勾选的行
-                            checkedRows,
-                            item
-                        );
-                        break;
-                    case "tempValue":
-                        andResult = this.matchValueCondition(
-                            // 勾选的行
-                            this.tempValue,
-                            item
-                        );
-                        break;
-                    case "initValue":
-                        andResult = this.matchValueCondition(
-                            // 勾选的行
-                            this.initValue,
-                            item
-                        );
-                        break;
-                }
-                andResults.push(andResult);
-            });
-            // 解析’或‘的关系条件
-            const and = andResults.every(s => s === true);
-            orResult.push(and);
-        });
-        return orResult.some(s => s === true);
-    }
+    // /**
+    //  * 处理勾选前置操作条件
+    //  * @param conditions
+    //  */
+    // handleCheckedRowsOperationConditions(conditions) {
+    //     const orResult = [];
+    //     const checkedRows = this.getCheckedItems();
+    //     conditions.forEach(elements => {
+    //         // 解析‘与’的关系条件
+    //         const andResults = [];
+    //         elements.forEach(item => {
+    //             let andResult = true;
+    //             // 选中行的解析处理
+    //             switch (item.checkType) {
+    //                 case "value":
+    //                     andResult = this.matchCheckedValueCondition(
+    //                         // 勾选的行
+    //                         checkedRows,
+    //                         item
+    //                     );
+    //                     break;
+    //                 case "regexp":
+    //                     andResult = this.matchCheckedRegexpCondition(
+    //                         // 勾选的行
+    //                         checkedRows,
+    //                         item
+    //                     );
+    //                     break;
+    //                 case "tempValue":
+    //                     andResult = this.matchValueCondition(
+    //                         // 勾选的行
+    //                         this.tempValue,
+    //                         item
+    //                     );
+    //                     break;
+    //                 case "initValue":
+    //                     andResult = this.matchValueCondition(
+    //                         // 勾选的行
+    //                         this.initValue,
+    //                         item
+    //                     );
+    //                     break;
+    //             }
+    //             andResults.push(andResult);
+    //         });
+    //         // 解析’或‘的关系条件
+    //         const and = andResults.every(s => s === true);
+    //         orResult.push(and);
+    //     });
+    //     return orResult.some(s => s === true);
+    // }
 
-    /**
-     * 值匹配验证
-     * @param dataItem 待比较数据
-     * @param statusItem 匹配条件对象
-     */
-    matchValueCondition(dataItem, statusItem) {
-        let result = true;
-        if (dataItem) {
-            if (dataItem[statusItem["name"]] === statusItem["value"]) {
-                result = true;
-            } else {
-                result = false;
-            }
-        }
-        return result;
-    }
+    // /**
+    //  * 值匹配验证
+    //  * @param dataItem 待比较数据
+    //  * @param statusItem 匹配条件对象
+    //  */
+    // matchValueCondition(dataItem, statusItem) {
+    //     let result = true;
+    //     if (dataItem) {
+    //         if (dataItem[statusItem["name"]] === statusItem["value"]) {
+    //             result = true;
+    //         } else {
+    //             result = false;
+    //         }
+    //     }
+    //     return result;
+    // }
 
-    /**
-     * 匹配勾选行值条件
-     * @param checkedRows
-     * @param statusItem
-     */
-    matchCheckedValueCondition(checkedRows, statusItem) {
-        let result = true;
-        if (checkedRows.length > 0) {
-            checkedRows.forEach(row => {
-                if (row[statusItem["name"]] === statusItem["value"]) {
-                    result = true;
-                } else {
-                    result = false;
-                }
-            });
-        }
-        return result;
-    }
+    // /**
+    //  * 匹配勾选行值条件
+    //  * @param checkedRows
+    //  * @param statusItem
+    //  */
+    // matchCheckedValueCondition(checkedRows, statusItem) {
+    //     let result = true;
+    //     if (checkedRows.length > 0) {
+    //         checkedRows.forEach(row => {
+    //             if (row[statusItem["name"]] === statusItem["value"]) {
+    //                 result = true;
+    //             } else {
+    //                 result = false;
+    //             }
+    //         });
+    //     }
+    //     return result;
+    // }
 
-    /**
-     * 匹配勾选行的正则条件
-     * @param checkedRows
-     * @param statusItem
-     */
-    matchCheckedRegexpCondition(checkedRows, statusItem) {
-        let result = true;
-        if (checkedRows.length > 0) {
-            const reg = new RegExp(statusItem.value ? statusItem.value : "");
-            checkedRows.forEach(row => {
-                if (reg.test(row[statusItem["name"]])) {
-                    result = true;
-                } else {
-                    result = false;
-                }
-            });
-        }
-        return result;
-    }
+    // /**
+    //  * 匹配勾选行的正则条件
+    //  * @param checkedRows
+    //  * @param statusItem
+    //  */
+    // matchCheckedRegexpCondition(checkedRows, statusItem) {
+    //     let result = true;
+    //     if (checkedRows.length > 0) {
+    //         const reg = new RegExp(statusItem.value ? statusItem.value : "");
+    //         checkedRows.forEach(row => {
+    //             if (reg.test(row[statusItem["name"]])) {
+    //                 result = true;
+    //             } else {
+    //                 result = false;
+    //             }
+    //         });
+    //     }
+    //     return result;
+    // }
 
-    /**
-     * 正则表达匹配验证
-     * @param dataItem 待比较数据
-     * @param statusItem 匹配条件对象
-     */
-    matchRegexpCondition(dataItem, statusItem) {
-        let result = true;
-        if (dataItem) {
-            const reg = new RegExp(statusItem.value ? statusItem.value : "");
-            if (reg.test(dataItem[statusItem["name"]])) {
-                result = true;
-            } else {
-                result = false;
-            }
-        }
-        return result;
-    }
+    // /**
+    //  * 正则表达匹配验证
+    //  * @param dataItem 待比较数据
+    //  * @param statusItem 匹配条件对象
+    //  */
+    // matchRegexpCondition(dataItem, statusItem) {
+    //     let result = true;
+    //     if (dataItem) {
+    //         const reg = new RegExp(statusItem.value ? statusItem.value : "");
+    //         if (reg.test(dataItem[statusItem["name"]])) {
+    //             result = true;
+    //         } else {
+    //             result = false;
+    //         }
+    //     }
+    //     return result;
+    // }
 
-    /**
-     * 处理验证结果
-     * @param actionResult
-     * @param action
-     */
-    handleOperationAction(actionResult, action) {
-        let result = true;
-        if (action) {
-            switch (action.execute) {
-                case "prevent":
-                    if (actionResult) {
-                        this.beforeOperationMessage(action, result);
-                        // result = true;
-                    } else {
-                        result = false;
-                    }
-                    break;
-                case "continue":
-                    if (!actionResult) {
-                        result = false;
-                    } else {
-                        this.beforeOperationMessage(action, result);
-                        // result = true;
-                    }
-                    break;
-            }
-        }
+    // /**
+    //  * 处理验证结果
+    //  * @param actionResult
+    //  * @param action
+    //  */
+    // handleOperationAction(actionResult, action) {
+    //     let result = true;
+    //     if (action) {
+    //         switch (action.execute) {
+    //             case "prevent":
+    //                 if (actionResult) {
+    //                     this.beforeOperationMessage(action, result);
+    //                     // result = true;
+    //                 } else {
+    //                     result = false;
+    //                 }
+    //                 break;
+    //             case "continue":
+    //                 if (!actionResult) {
+    //                     result = false;
+    //                 } else {
+    //                     this.beforeOperationMessage(action, result);
+    //                     // result = true;
+    //                 }
+    //                 break;
+    //         }
+    //     }
 
-        return result;
-    }
+    //     return result;
+    // }
 
-    /**
-     * 构建验证消息
-     * @param action
-     */
-    beforeOperationMessage(action, result) {
-        if (action["type"] === "confirm") {
-            this.modalService.confirm({
-                nzTitle: action["title"],
-                nzContent: action["message"],
-                nzOnOk: () => {
-                    result = false;
-                    // 调用后续操作
-                },
-                nzOnCancel() {
-                    result = true;
-                }
-            });
-        } else {
-            this.message[action["type"]](action.message);
-            result = action.execute === "prevent" ? true : false;
-        }
-    }
+    // /**
+    //  * 构建验证消息
+    //  * @param action
+    //  */
+    // beforeOperationMessage(action, result) {
+    //     if (action["type"] === "confirm") {
+    //         this.modalService.confirm({
+    //             nzTitle: action["title"],
+    //             nzContent: action["message"],
+    //             nzOnOk: () => {
+    //                 result = false;
+    //                 // 调用后续操作
+    //             },
+    //             nzOnCancel() {
+    //                 result = true;
+    //             }
+    //         });
+    //     } else {
+    //         this.message[action["type"]](action.message);
+    //         result = action.execute === "prevent" ? true : false;
+    //     }
+    // }
 
-    /**
-     * 解析前作动作配置条件
-     */
-    resolverBeforeOperation() {
-        this.beforeOperationMap = new Map();
-        if (
-            this.cfg.beforeOperation &&
-            Array.isArray(this.cfg.beforeOperation) &&
-            this.cfg.beforeOperation.length > 0
-        ) {
-            this.cfg.beforeOperation.forEach(element => {
-                this._beforeOperationMap.set(element.name, element.status);
-            });
-        }
-    }
+    // /**
+    //  * 解析前作动作配置条件
+    //  */
+    // resolverBeforeOperation() {
+    //     this.beforeOperationMap = new Map();
+    //     if (
+    //         this.cfg.beforeOperation &&
+    //         Array.isArray(this.cfg.beforeOperation) &&
+    //         this.cfg.beforeOperation.length > 0
+    //     ) {
+    //         this.cfg.beforeOperation.forEach(element => {
+    //             this._beforeOperationMap.set(element.name, element.status);
+    //         });
+    //     }
+    // }
 }
