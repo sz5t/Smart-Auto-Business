@@ -185,7 +185,11 @@ export class FormResolverComponent extends CnComponentBase
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE:
                         if (option.ajaxConfig) {
-                            this._resolveAjaxConfig(option.ajaxConfig);
+                            // 根据表单状态进行具体配置操作
+                            this._resolveAjaxConfig(
+                                option.ajaxConfig,
+                                this.editable
+                            );
                         }
                         break;
                     case BSN_COMPONENT_MODES.WINDOW:
@@ -495,10 +499,14 @@ export class FormResolverComponent extends CnComponentBase
         }
     }
 
-    private _resolveAjaxConfig(ajaxConfigs) {
-        const index = ajaxConfigs.findIndex(item => item.ajaxType === "post");
+    private _resolveAjaxConfig(ajaxConfigs, editable) {
+        const index = ajaxConfigs.findIndex(item => item.ajaxType === editable);
         const c = ajaxConfigs[index];
-        this._getAjaxConfig(c, ajaxConfigs);
+        if (c) {
+            this._getAjaxConfig(c, ajaxConfigs);
+        } else {
+            console.log("表单状态,无法执行此操作!");
+        }
     }
 
     private _getAjaxConfig(c, ajaxConfigs) {

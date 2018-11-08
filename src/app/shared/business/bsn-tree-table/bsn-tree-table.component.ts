@@ -1894,7 +1894,6 @@ export class BsnTreeTableComponent extends GridBase
     }
 
     windowDialog(option) {
-        console.log("option:", option);
         if (this.config.windowDialog && this.config.windowDialog.length > 0) {
             const index = this.config.windowDialog.findIndex(
                 item => item.name === option.actionName

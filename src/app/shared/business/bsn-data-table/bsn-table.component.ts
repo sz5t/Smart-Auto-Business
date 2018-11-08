@@ -1498,7 +1498,6 @@ export class BsnTableComponent extends CnComponentBase
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
             const selectedRow = this._selectRow ? this._selectRow : {};
             const tmpValue = this.tempValue ? this.tempValue : {};
-            console.log({ ...selectedRow, ...tmpValue });
             const modal = this.modalService.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
@@ -1506,7 +1505,7 @@ export class BsnTableComponent extends CnComponentBase
                 nzComponentParams: {
                     permissions: this.permissions,
                     config: data,
-                    initData: { ...selectedRow, ...tmpValue }
+                    initData: { ...tmpValue, ...selectedRow }
                 },
                 nzFooter: footer
             });

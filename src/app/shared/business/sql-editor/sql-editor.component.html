@@ -27,13 +27,10 @@
                 <nz-row nzGutter="8">
                         <nz-col nzSpan="24" class="example-input">
                                 脚本名称: <input nz-input type="text" [(ngModel)]="_scriptName" nzSize="default"/>
-                                脚本名称: <input nz-input type="text" [(ngModel)]="_resourceName" nzSize="default"/>
-                                脚本模式:
-                                <nz-select style="width: 120px" [nzSize]="'default'" [(ngModel)]="scriptModel" nzPlaceHolder="请选择发布平台">
+                                资源(API)名称: <input nz-input type="text" [(ngModel)]="_resourceName" nzSize="default"/>
+                                执行动作:
+                                <nz-select style="width: 280px" nzMode="multiple" [nzSize]="'default'" [(ngModel)]="scriptModel" nzPlaceHolder="请选择发布平台">
                                         <nz-option *ngFor="let item of scriptModelList" [nzValue]="item.value" [nzLabel]="item.name"></nz-option>
-                                        <nz-option *ngIf="isModelloading" nzDisabled nzCustomContent>
-                                                <i class="anticon anticon-loading anticon-spin loading-icon"></i>   加载数据...
-                                            </nz-option>
                                 </nz-select>
                                 <nz-divider></nz-divider>
                                 <cn-code-edit #editor [config]="codeMirrorConfig"></cn-code-edit>
@@ -63,10 +60,9 @@
                                                 <th>标题</th>
                                                 <th>资源名称</th>
                                                 <th>脚本内容</th>
-                                                <th>是否启用</th>
-                                                <th>是否发布</th>
-                                                <th>发布平台</th>
-                                                <th> </th>
+                                                <th>操作类型</th>
+                                                <!-- <th>是否启用</th>
+                                                <th>是否发布</th> -->
                                         </tr>
                                 </thead>
                                 <tbody>
@@ -76,16 +72,14 @@
                                                         <td>{{data.sqlScriptCaption}}</td>
                                                         <td>{{data.sqlScriptResourceName}}</td>
                                                         <td>{{data.sqlScriptContent | stringLimit: 14}}</td>
-                                                        <td>{{data.isEnabled}}</td>
-                                                        <td>{{data.isNeedDeploy}}</td>
-                                                        <td>{{data.belongPlatformType}}</td>
+                                                        <td>{{data.requestMethod}}</td>
+                                                        <!-- <td>{{setEnabledText(data.isEnabled)}}</td>
+                                                        <td>{{setPublishText(data.isNeedDeploy)}}</td> -->
                                                         <td>
                                                                         <nz-popconfirm [nzTitle]="'确认删除当前记录?'" (nzOnConfirm)="delete(data.Id)" (nzOnCancel)="cancel()" [nzPlacement]="'top'">
                                                                                         <button nz-popconfirm nz-button [nzType]="'danger'" [nzSize]="'small'">
                                                                                                         <i class="anticon anticon-delete"></i> 删除</button>
                                                                         </nz-popconfirm>
-
-
                                                         </td>
                                                 </tr>
                                                 <tr [nzExpand]="data.expand">

@@ -87,9 +87,10 @@ export class SqlEditorComponent extends CnComponentBase
     _scriptName;
     loading = false;
     scriptModelList = [
-        { value: 1, name: "配置平台" },
-        { value: 2, name: "应用平台" },
-        { value: 3, name: "通用" }
+        { value: "get", name: "get" },
+        { value: "post", name: "post" },
+        { value: "put", name: "put" },
+        { value: "delete", name: "delete" }
     ];
     scriptModel;
     isModelloading = false;
@@ -264,7 +265,7 @@ export class SqlEditorComponent extends CnComponentBase
             sqlScriptResourceName: this._resourceName,
             isEnabled: 1,
             isNeedDeploy: 1,
-            // belongPlatformType: this.scriptModel,
+            requestMethod: this.scriptModel.join(","),
             isImmediateCreate: 1
         };
         return this._http.post(`common/ComSqlScript`, params).toPromise();
@@ -304,11 +305,19 @@ export class SqlEditorComponent extends CnComponentBase
             sqlScriptResourceName: this._resourceName,
             isEnabled: 1,
             isNeedDeploy: 1,
-            // belongPlatformType: this.scriptModel,
+            requestMethod: this.scriptModel.join(","),
             isAnalysisParameters: 1,
             isImmediateCreate: 1
         };
         return this._http.put(`common/ComSqlScript`, params).toPromise();
+    }
+
+    setEnabledText(val) {
+        return val === 1 ? "启用" : "禁用";
+    }
+
+    setPublishText(val) {
+        return val === 1 ? "已发布" : "未发布";
     }
 
     ngOnDestroy() {}
