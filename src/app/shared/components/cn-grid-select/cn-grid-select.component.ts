@@ -197,7 +197,7 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
     }
     selectedByLoaded() {
         let selected;
-        if (this.value && this.value.hasOwnProperty('data') && this.value['data'] !== undefined) {
+        if (this.value &&  this.value['data'] !== undefined) {
             this._options.forEach(element => {
                 if (element.value === this.value.data) {
                     selected = element;

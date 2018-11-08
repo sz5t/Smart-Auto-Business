@@ -394,6 +394,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                                     case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.Scan_Code_ROW:
+                                        // ScanCodeObject
                                         this.scanCodeROW();
                                         break;
 
@@ -534,7 +535,28 @@ export class BsnStaticTableComponent extends CnComponentBase
         rowContentNew["key"] = fieldIdentity;
         rowContentNew["checked"] = true;
         rowContentNew["row_status"] = "adding";
-        rowContentNew["name"] = this.tempValue["_ScanCode"];
+        if (this.config.ScanCode.addRow) {
+
+            this.config.ScanCode.addRow.columns.forEach(column => {
+                if (column.type === "tempValue") {
+                    if (column.valueType === "value") {
+                        rowContentNew[column.field] = this.tempValue[column.valueName];
+                    } else if (column.valueType === "array") {
+                        if (column.arrayName) {
+                            if (this.tempValue[column.arrayName].length > 0) {
+                                rowContentNew[column.field] = this.tempValue[column.arrayName][0][column.valueName];
+                            }
+                        }
+                    }
+                } else if (column.type === "value") {
+                    rowContentNew[column.field] = column["value"];
+                }
+            });
+        }
+        // rowContentNew["code"] = this.tempValue["_ScanCode"];
+        // if (this.tempValue["_ScanCodeObject"].length > 0) {
+        //     rowContentNew["name"] = this.tempValue["_ScanCodeObject"][0]["name"];
+        // }
         // 针对查询和新增行处理
         if (this.is_Search) {
             this.dataList.splice(1, 0, rowContentNew);
