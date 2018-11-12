@@ -1,6 +1,7 @@
-
- <input #ceshi nz-input (ngModelChange)="valueChange($event)"   type="{{config.inputType}}"  placeholder="{{config.placeholder}}"
- [(ngModel)]="_value" (keyup)="onKeyPress($event)">
- <input nz-input  type="{{config.inputType}}"  placeholder="{{config.placeholder}}"
- >
-<cn-bsn-static-table [config]="config1"></cn-bsn-static-table>
+<nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize" style="display:none" > <!-- style="display:none"  type="hidden" -->
+    <input nz-input (ngModelChange)="valueChange($event)" formControlName="{{config.name}}"  type="{{config.inputType}}"  placeholder="{{config.placeholder}}"
+        [(ngModel)]="_value">
+</nz-form-control>
+ <ng-container *ngIf="config !== undefined">
+    <cn-bsn-static-table [config]="config.select.datagrid"></cn-bsn-static-table>
+</ng-container> 

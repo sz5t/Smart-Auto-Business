@@ -135,20 +135,42 @@ export class BsnStaticTableComponent extends CnComponentBase
         rows: [],
         total: 0
     };
-    ngOnInit() {
+    async ngOnInit() {
 
-        for (let i = 0; i < 46; i++) {
-            this.loadData.rows.push({
-                Id: `${i}`,
-                key: `${i}`,
-                name: `Edward King ${i}`,
-                age: 32,
-                address: `London, Park Lane no. ${i}`,
-                checked: false
+        // for (let i = 0; i < 46; i++) {
+        //     this.loadData.rows.push({
+        //         Id: `${i}`,
+        //         key: `${i}`,
+        //         code: `${i}`,
+        //         name: `Edward King ${i}`,
+        //         age: 32,
+        //         address: `London, Park Lane no. ${i}`,
+        //         checked: false
+        //     });
+        // }
+        // this.Initload();
+        const url = this._buildURL(this.config.ajaxConfig.url);
+        const params = {
+            ...this._buildParameters(this.config.ajaxConfig.params),
+            // ...this._buildPaging(),
+            ...this._buildFilter(this.config.ajaxConfig.filter),
+            ...this._buildSort(),
+            ...this._buildColumnFilter(),
+            ...this._buildFocusId(),
+            ...this._buildSearch()
+        };
+
+        const aloadData = await this._load(url, params);
+        if (aloadData && aloadData.status === 200 && aloadData.isSuccess) {
+            this.loadData.rows = aloadData.data;
+            const keyIdCode = this.config.keyId ? this.config.keyId : 'Id';
+            aloadData.data.forEach(element => {
+                element['key'] = element[keyIdCode];
             });
         }
         this.loadData.total = this.loadData.rows.length;
         this.total = this.loadData.total;
+        console.log("this.loadData:", this.loadData);
         if (this.config.select) {
             this.config.select.forEach(selectItem => {
                 this.config.columns.forEach(columnItem => {
@@ -356,10 +378,12 @@ export class BsnStaticTableComponent extends CnComponentBase
                                 relation.relationViewId === cascadeEvent._viewId
                             ) {
                                 // 获取当前设置的级联的模式
-                                const mode =
+                                const modeold =
                                     BSN_COMPONENT_CASCADE_MODES[
                                     relation.cascadeMode
                                     ];
+                                    const mode = cascadeEvent._mode;
+                                   
                                 // 获取传递的消息数据
                                 const option = cascadeEvent.option;
                                 if (option) {
@@ -377,7 +401,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                                         });
                                     }
                                 }
-
+console.log('匹配及联模式:', mode , cascadeEvent);
                                 // 匹配及联模式
                                 switch (mode) {
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH:
@@ -396,6 +420,10 @@ export class BsnStaticTableComponent extends CnComponentBase
                                     case BSN_COMPONENT_CASCADE_MODES.Scan_Code_ROW:
                                         // ScanCodeObject
                                         this.scanCodeROW();
+                                        break;
+                                    case BSN_COMPONENT_CASCADE_MODES.Scan_Code_Locate_ROW:
+                                        // ScanCodeObject
+                                        this.locateRow();
                                         break;
 
                                 }
@@ -503,6 +531,52 @@ export class BsnStaticTableComponent extends CnComponentBase
             this.loading = false;
         })();
     }
+
+    async Initload() {
+        this.changeConfig_new = {};
+        this.loading = true;
+        this.allChecked = false;
+        this.checkedCount = 0;
+        const url = this._buildURL(this.config.ajaxConfig.url);
+        const params = {
+            ...this._buildParameters(this.config.ajaxConfig.params),
+            // ...this._buildPaging(),
+            ...this._buildFilter(this.config.ajaxConfig.filter),
+            ...this._buildSort(),
+            ...this._buildColumnFilter(),
+            ...this._buildFocusId(),
+            ...this._buildSearch()
+        };
+
+        const loadData = await this._load(url, params);
+        console.log('Initload:', loadData);
+        if (loadData && loadData.status === 200 && loadData.isSuccess) {
+            if (loadData.data) {
+                // 设置聚焦ID
+                // 默认第一行选中，如果操作后有focusId则聚焦ID为FocusId
+                if (loadData.data.length > 0) {
+                    this.loadData.rows = loadData.data;
+                    this.loadData.total = this.loadData.rows.length;
+                    this.total = this.loadData.total;
+                } else {
+                    this.loadData.rows = [];
+                    this.loadData.total = this.loadData.rows.length;
+                    this.total = this.loadData.total;
+                }
+            } else {
+                this.loadData.rows = [];
+                this.loadData.total = this.loadData.rows.length;
+                this.total = this.loadData.total;
+            }
+        } else {
+            this.loadData.rows = [];
+            this.loadData.total = this.loadData.rows.length;
+            this.total = this.loadData.total;
+        }
+        this.loading = false;
+        console.log(' this.loadData.rows:', this.loadData.rows);
+    }
+
     load() {
         if (typeof this.pageIndex !== 'undefined') {
             this.pageIndex = this.pageIndex || 1;
@@ -527,6 +601,40 @@ export class BsnStaticTableComponent extends CnComponentBase
 
         console.log('_ScanCode', this.tempValue["_ScanCode"]);
         this.scanCodeaddRow();
+    }
+
+    locateRow() {
+        // 定位行
+        // this.loadData.rows.push(rowContentNew);
+        const code = this.config.ScanCode.locateRow.columns[0]['field'];
+        const codeName = this.config.ScanCode.locateRow.columns[0]['valueName'];
+        const codeValue = this.tempValue[codeName];
+
+        const index = this.loadData.rows.findIndex(item => item[code] === codeValue);
+        if (index !== -1) {
+            const rowValue = this.loadData.rows[index]['key'];
+            this.pageIndex = Math.ceil((index + 1) / this.pageSize);
+            this.load();
+            this.scanCodeSetSelectRow(rowValue);
+            // 如果有操作，再选中行后执行
+            console.log('执行方法！，调用后执行load方法，并且定位到当前数据');
+        } else {
+            this._message.info('当前扫码未能匹配到数据！');
+        }
+    }
+
+    // 行定位，先计算出行数据的索引，定位到页面，然后选中数据
+    private scanCodeSetSelectRow(rowValue?) {
+
+        this.dataList &&
+            this.dataList.map(row => {
+                row.selected = false;
+            });
+        this.dataList.forEach(row => {
+            if (row['key'] === rowValue) {
+                row.selected = true;
+            }
+        });
     }
 
     scanCodeaddRow() {

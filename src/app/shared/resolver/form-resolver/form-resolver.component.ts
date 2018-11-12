@@ -1828,6 +1828,13 @@ export class FormResolverComponent extends CnComponentBase
         if (this.config.cascadeRelation) {
             this.config.cascadeRelation.forEach(element => {
                 if (element.name === data.name) {
+                    if (element.cascadeField) {
+                        element.cascadeField.forEach(feild => {
+                            if (data[feild.valueName]) {
+                                sendData[feild.name] = data[feild.valueName];
+                            }
+                        });
+                    }
                     this.cascade.next(
                         new BsnComponentMessage(
                             BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],

@@ -1001,13 +1001,27 @@ export class SearchResolverComponent extends CnComponentBase
        // console.log('form: ', this.config.viewId, data, this.form.value, this.cascadeList);
         // 此处有消息级联的则发值
         // 级联值= 表单数据+当前触发级联的值组合；
+        // "cascadeRelation":[
+        //     {"name":"Id","cascadeMode":"REFRESH_AS_CHILD",cascadeField:[{name:"item", valueName:"dataItem"}] },
+        //     {"name":"valuesid1","cascadeMode":"REFRESH_AS_CHILD" },
+        //     {"name":"valuesid2","cascadeMode":"REFRESH_AS_CHILD" },
+        //     {"name":"valuesid3","cascadeMode":"REFRESH_AS_CHILD" }
+        //   ],
         const sendData = this.value;
         sendData[data.name] = data.value;
-       
+
+        
         if ( this.config.cascadeRelation) {
 
             this.config.cascadeRelation.forEach(element => {
                 if ( element.name === data.name) {
+                    if (element.cascadeField) {
+                        element.cascadeField.forEach(feild => {
+                            if (data[feild.valueName]) {
+                                sendData[feild.name] = data[feild.valueName];
+                            }
+                        });
+                    }
                     this.cascade.next(
                         new BsnComponentMessage(
                             BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],

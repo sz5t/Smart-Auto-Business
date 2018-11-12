@@ -92,6 +92,7 @@ import { CnFormGridComponent } from './components/cn-form-grid/cn-form-grid.comp
 import { BsnStaticTableComponent } from "@shared/business/bsn-data-table/bsn-static-table.component";
 import { BsnCardListComponent } from "./business/bsn-card-list/bsn-card-list.component";
 import { BsnCardListItemComponent } from "./business/bsn-card-list/bsn-card-list-item.component";
+import { CnFormScancodeComponent } from './components/cn-form-scancode/cn-form-scancode.component';
 
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -177,7 +178,8 @@ const COMPONENTS = [
     CnFormGridComponent,
     BsnStaticTableComponent,
     BsnCardListComponent,
-    BsnCardListItemComponent
+    BsnCardListItemComponent,
+    CnFormScancodeComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
@@ -205,6 +207,7 @@ const DIRECTIVES = [
         ...COMPONENTS,
         ...DIRECTIVES,
         BtnTableFieldLimit
+        
     ],
     exports: [
         CommonModule,
