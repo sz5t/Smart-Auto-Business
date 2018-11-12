@@ -197,7 +197,7 @@ export class SqlEditorComponent extends CnComponentBase
         row.selected = true;
         this.editor.setValue(row.sqlScriptContent);
         this._scriptName = row.sqlScriptCaption;
-        this._resourceName = row.sqlScriptResourceName;
+        this._resourceName = row.resourceName;
         this._selectedRow = row;
     }
 
@@ -262,7 +262,7 @@ export class SqlEditorComponent extends CnComponentBase
             isAnalysisParameters: 1,
             sqlScriptContent: sql,
             sqlScriptCaption: this._scriptName,
-            sqlScriptResourceName: this._resourceName,
+            resourceName: this._resourceName,
             isEnabled: 1,
             isNeedDeploy: 1,
             requestMethod: this.scriptModel.join(","),
@@ -302,7 +302,7 @@ export class SqlEditorComponent extends CnComponentBase
             Id: this._selectedRow["Id"],
             sqlScriptContent: sql,
             sqlScriptCaption: this._scriptName,
-            sqlScriptResourceName: this._resourceName,
+            resourceName: this._resourceName,
             isEnabled: 1,
             isNeedDeploy: 1,
             requestMethod: this.scriptModel.join(","),

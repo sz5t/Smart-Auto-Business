@@ -4,7 +4,8 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    Type
+    Type,
+    AfterViewInit
 } from "@angular/core";
 import {
     BsnComponentMessage,
@@ -20,6 +21,7 @@ import { LayoutResolverComponent } from "@shared/resolver/layout-resolver/layout
 import { NzMessageService, NzModalService } from "ng-zorro-antd";
 import { Observable, Observer, Subscription } from "rxjs";
 import { GridBase } from "./../grid.base";
+import { BeforeOperation } from "../before-operation.base";
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: FormResolverComponent
@@ -42,7 +44,7 @@ const component: { [type: string]: Type<any> } = {
     ]
 })
 export class BsnTreeTableComponent extends GridBase
-    implements OnInit, OnDestroy {
+    implements OnInit, AfterViewInit, OnDestroy {
     @Input()
     config;
     @Input()
@@ -98,6 +100,7 @@ export class BsnTreeTableComponent extends GridBase
     cascadeValue = {}; // 级联数据
     selectGridValueName;
 
+    beforeOperation;
     constructor(
         private _api: ApiService,
         private _msg: NzMessageService,
@@ -146,7 +149,6 @@ export class BsnTreeTableComponent extends GridBase
                 }
             }
         }
-        this.resolverBeforeOperation();
         // liu 20181022 特殊处理行定位
         if (this.config.isSelectGrid) {
             this.is_Selectgrid = false;
@@ -205,6 +207,19 @@ export class BsnTreeTableComponent extends GridBase
             this.load();
         }
     }
+    ngAfterViewInit() {
+        // 初始化前置条件验证对象
+        this.beforeOperation = new BeforeOperation({
+            config: this.config,
+            message: this.message,
+            modal: this.modalService,
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            cacheValue: this.cacheValue.get("userInfo").value
+                ? this.cacheValue.get("userInfo").value
+                : {}
+        });
+    }
     ngOnDestroy() {
         if (this._statusSubscription) {
             this._statusSubscription.unsubscribe();
@@ -225,39 +240,59 @@ export class BsnTreeTableComponent extends GridBase
                         this._addNewRow();
                         break;
                     case BSN_COMPONENT_MODES.CREATE_CHILD:
-                        this._addNewChildRow();
+                        this.beforeOperation.operationItemData = this.selectedItem;
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
+                            this._addNewChildRow();
                         break;
                     case BSN_COMPONENT_MODES.EDIT:
-                        this._editRowData();
+                        this.beforeOperation.operationItemData = [
+                            ...this.getAddedRows(),
+                            ...this.getEditedRows()
+                        ];
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
+                            this._editRowData();
                         break;
                     case BSN_COMPONENT_MODES.CANCEL:
                         this._cancelEditRows();
                         break;
                     case BSN_COMPONENT_MODES.SAVE:
-                        this.saveRow();
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
+                            this.saveRow();
                         break;
                     case BSN_COMPONENT_MODES.DELETE:
-                        this.deleteRow();
+                        this.beforeOperation.operationItemsData = this.getCheckedItems();
+                        !this.beforeOperation.beforeItemsDataOperation(
+                            option
+                        ) && this.deleteRow();
                         break;
                     case BSN_COMPONENT_MODES.DIALOG:
-                        this.dialog(option);
+                        this.beforeOperation.operationItemData = this.selectedItem;
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
+                            this.dialog(option);
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE:
                         this._getAddedAndUpdatingRows();
                         this.resolver(option);
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE_SELECTED:
-                        this.executeSelectedRow(option);
+                        this.beforeOperation.operationItemData = this.selectedItem;
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
+                            this.executeSelectedRow(option);
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE_CHECKED:
-                        !this.beforeCheckedRowsOperation(option) &&
-                            this.executeCheckedRow(option);
+                        this.beforeOperation.operationItemsData = this.getCheckedItems();
+                        !this.beforeOperation.beforeItemsDataOperation(
+                            option
+                        ) && this.executeCheckedRow(option);
                         break;
                     case BSN_COMPONENT_MODES.WINDOW:
-                        this.windowDialog(option);
+                        this.beforeOperation.operationItemData = this.selectedItem;
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
+                            this.windowDialog(option);
                         break;
                     case BSN_COMPONENT_MODES.FORM:
-                        !this.beforeSelectedRowOperation(option) &&
+                        this.beforeOperation.operationItemData = this.selectedItem;
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
                             this.formDialog(option);
                         break;
                     case BSN_COMPONENT_MODES.SEARCH:
@@ -267,10 +302,15 @@ export class BsnTreeTableComponent extends GridBase
                         this.searchRow(option);
                         break;
                     case BSN_COMPONENT_MODES.UPLOAD:
-                        this.uploadDialog(option);
+                        this.beforeOperation.operationItemData = this.selectedItem;
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
+                            this.uploadDialog(option);
                         break;
                     case BSN_COMPONENT_MODES.FORM_BATCH:
-                        this.formBatchDialog(option);
+                        this.beforeOperation.operationItemsData = this.getCheckedItems();
+                        !this.beforeOperation.beforeItemsDataOperation(
+                            option
+                        ) && this.formBatchDialog(option);
                         break;
                 }
             }
