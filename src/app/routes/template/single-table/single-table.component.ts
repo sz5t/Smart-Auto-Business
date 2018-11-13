@@ -1261,7 +1261,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 {
                                                                     name:
                                                                         "enabled",
-                                                                    value: true,
+                                                                    value: "1",
                                                                     checkType:
                                                                         "value"
                                                                 }
@@ -1270,7 +1270,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         action: {
                                                             type: "info",
                                                             message:
-                                                                "启用状态无法删除",
+                                                                "启用状态无法编辑",
                                                             execute: "prevent"
                                                         }
                                                     }
@@ -1292,7 +1292,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                             ]
                                                         ],
                                                         action: {
-                                                            type: "confirm",
+                                                            type: "warning",
                                                             message:
                                                                 "启用状态是否确认删除",
                                                             execute: "prevent"

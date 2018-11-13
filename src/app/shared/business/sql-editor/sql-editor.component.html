@@ -1,36 +1,36 @@
 <div nz-row [nzGutter]="8">
         <div nz-col [nzSpan]="24">
-            <nz-card>
-                    <form nz-form [nzLayout]="'inline'">
-                            <nz-form-item>
-                                <nz-form-label>
-                                        功能模块
-                                </nz-form-label>
-                                <nz-form-control>
-                                    <nz-cascader
-                                        [ngModelOptions]="{standalone: true}"
-                                        [class.class123]="true"
-                                        [nzOptions]="_funcOptions"
-                                        [(ngModel)]="_funcValue"
-                                        (nzChange)="_changeModuleValue($event)"
-                                        [nzPlaceHolder]="'请选择功能模块'"
-                                        [nzExpandTrigger]="'hover'">
-                                    </nz-cascader>
-                                </nz-form-control>
-                            </nz-form-item>
+                <nz-card>
+                        <form nz-form [nzLayout]="'inline'">
+                                <nz-form-item>
+                                        <nz-form-label> 功能模块 </nz-form-label>
+                                        <nz-form-control>
+                                                <nz-cascader [ngModelOptions]="{ standalone: true }" [class.class123]="true" [nzOptions]="_funcOptions" [(ngModel)]="_funcValue" (nzChange)="_changeModuleValue($event)" [nzPlaceHolder]="'请选择功能模块'" [nzExpandTrigger]="'hover'"> </nz-cascader>
+                                        </nz-form-control>
+                                </nz-form-item>
                         </form>
-            </nz-card>
+                </nz-card>
         </div>
-    </div>
+</div>
 <nz-card>
         <nz-card>
                 <nz-row nzGutter="8">
+                        <nz-col nzSpan="24" class="example-input"> 脚本名称: <input nz-input type="text" [(ngModel)]="_scriptName" nzSize="default" /> 资源(API)名称: <input nz-input type="text" [(ngModel)]="_resourceName" nzSize="default" /> </nz-col>
+                </nz-row>
+                <nz-row nzGutter="24">
                         <nz-col nzSpan="24" class="example-input">
-                                脚本名称: <input nz-input type="text" [(ngModel)]="_scriptName" nzSize="default"/>
-                                资源(API)名称: <input nz-input type="text" [(ngModel)]="_resourceName" nzSize="default"/>
                                 执行动作:
-                                <nz-select style="width: 280px" nzMode="multiple" [nzSize]="'default'" [(ngModel)]="scriptModel" nzPlaceHolder="请选择发布平台">
-                                        <nz-option *ngFor="let item of scriptModelList" [nzValue]="item.value" [nzLabel]="item.name"></nz-option>
+                                <nz-select style="width: 280px" nzMode="multiple" [nzSize]="'default'" [(ngModel)]="scriptModel" nzPlaceHolder="请选择发布平台"> <nz-option *ngFor="let item of scriptModelList" [nzValue]="item.value" [nzLabel]="item.name"></nz-option> </nz-select>
+                                解析参数:
+                                <nz-select style="width: 100px" [nzSize]="'default'" [(ngModel)]="isAnalysisModel">
+                                        <nz-option [nzValue]="1" [nzLabel]="'是'"></nz-option>
+                                        <nz-option [nzValue]="0" [nzLabel]="'否'"></nz-option>
+                                </nz-select>
+                                业务类型:
+                                <nz-select style="width: 100px" [nzSize]="'default'" [(ngModel)]="bsnTypeMode">
+                                        <nz-option [nzValue]="'insert'" [nzLabel]="'新增数据'"></nz-option>
+                                        <nz-option [nzValue]="'update'" [nzLabel]="'更新数据'"></nz-option>
+                                        <nz-option [nzValue]="'delete'" [nzLabel]="'删除数据'"></nz-option>
                                 </nz-select>
                                 <nz-divider></nz-divider>
                                 <cn-code-edit #editor [config]="codeMirrorConfig"></cn-code-edit>
@@ -39,21 +39,12 @@
         </nz-card>
         <nz-card>
                 <nz-row nzGutter="8">
-                        <nz-col nzSpan="24" class="table-operations">
-                                <button nz-button nzType="primary" (click)="add()" [nzSize]="'default'">新增</button>
-                                <button nz-button nzType="default" (click)="save()" [nzSize]="'default'">保存</button>
-                        </nz-col>
+                        <nz-col nzSpan="24" class="table-operations"> <button nz-button nzType="primary" (click)="add()" [nzSize]="'default'">新增</button> <button nz-button nzType="default" (click)="save()" [nzSize]="'default'">保存</button> </nz-col>
                 </nz-row>
         </nz-card>
         <nz-row [nzGutter]="8">
                 <nz-col nzSpan="24">
-                        <nz-table #sqlTable
-                        [nzData]="tableData"
-                        [nzSize]="'small'"
-                        [nzLoading]="loading"
-                        [nzTotal]="total"
-                        [(nzPageIndex)]="pageIndex"
-                        [(nzPageSize)]="pageSize">
+                        <nz-table #sqlTable [nzData]="tableData" [nzSize]="'small'" [nzLoading]="loading" [nzTotal]="total" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize">
                                 <thead>
                                         <tr>
                                                 <th nzShowExpand></th>
@@ -61,25 +52,28 @@
                                                 <th>资源名称</th>
                                                 <th>脚本内容</th>
                                                 <th>操作类型</th>
-                                                <!-- <th>是否启用</th>
-                                                <th>是否发布</th> -->
+                                                <!--
+                                                        <th>是否启用</th>
+                                                        <th>是否发布</th>
+                                                -->
                                         </tr>
                                 </thead>
                                 <tbody>
                                         <ng-template ngFor let-data [ngForOf]="tableData">
-                                                <tr (click)="selectRow(data)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
+                                                <tr (click)="selectRow(data)" [ngStyle]="{ 'background-color': data.selected ? 'rgb(236, 246, 253)' : '' }">
                                                         <td nzShowExpand [(nzExpand)]="data.expand"></td>
-                                                        <td>{{data.sqlScriptCaption}}</td>
-                                                        <td>{{data.sqlScriptResourceName}}</td>
-                                                        <td>{{data.sqlScriptContent | stringLimit: 14}}</td>
-                                                        <td>{{data.requestMethod}}</td>
-                                                        <!-- <td>{{setEnabledText(data.isEnabled)}}</td>
-                                                        <td>{{setPublishText(data.isNeedDeploy)}}</td> -->
+                                                        <td>{{ data.caption }}</td>
+                                                        <td>{{ data.resourceName }}</td>
+                                                        <td>{{ data.contents | stringLimit: 14 }}</td>
+                                                        <td>{{ data.requestMethod }}</td>
+                                                        <!--
+                                                                <td>{{setEnabledText(data.isEnabled)}}</td>
+                                                                <td>{{setPublishText(data.isNeedDeploy)}}</td>
+                                                        -->
                                                         <td>
-                                                                        <nz-popconfirm [nzTitle]="'确认删除当前记录?'" (nzOnConfirm)="delete(data.Id)" (nzOnCancel)="cancel()" [nzPlacement]="'top'">
-                                                                                        <button nz-popconfirm nz-button [nzType]="'danger'" [nzSize]="'small'">
-                                                                                                        <i class="anticon anticon-delete"></i> 删除</button>
-                                                                        </nz-popconfirm>
+                                                                <nz-popconfirm [nzTitle]="'确认删除当前记录?'" (nzOnConfirm)="delete(data.Id)" (nzOnCancel)="cancel()" [nzPlacement]="'top'">
+                                                                        <button nz-popconfirm nz-button [nzType]="'danger'" [nzSize]="'small'"><i class="anticon anticon-delete"></i> 删除</button>
+                                                                </nz-popconfirm>
                                                         </td>
                                                 </tr>
                                                 <tr [nzExpand]="data.expand">
@@ -88,34 +82,99 @@
                                                                 <nz-table #innerTable [nzData]="data.parameterList" nzSize="middle" [nzShowPagination]="false">
                                                                         <thead>
                                                                                 <tr>
-                                                                                        <th style="display: block">Id</th>
+                                                                                        <!-- <th style="display: block">Id</th> -->
                                                                                         <th>参数名称</th>
                                                                                         <th>长度</th>
+                                                                                        <th>精度</th>
                                                                                         <th>数据类型</th>
+                                                                                        <th>是否可空</th>
                                                                                         <th>默认值</th>
-                                                                                        <th>参数类型</th>
+                                                                                        <th>描述名</th>
                                                                                         <th>参数来源</th>
-
-                                                                                        <th></th>
+                                                                                        <th>操作</th>
                                                                                 </tr>
                                                                         </thead>
                                                                         <tbody>
                                                                                 <tr *ngFor="let data of innerTable.data">
-                                                                                        <td style="display: block">{{data.Id}}</td>
-                                                                                        <td>{{data.parameterName}}</td>
-                                                                                        <td>{{data.length}}</td>
-                                                                                        <td>{{data.parameterDataType}}</td>
-                                                                                        <td>{{data.dfaultValue}}</td>
-                                                                                        <td>{{data.inOut}}</td>
-                                                                                        <td>{{data.parameterFrom}}</td>
-                                                                                        <td>{{data.orderCode}}</td>
+                                                                                        <!-- <td style="display: block">{{data.Id}}</td> -->
+                                                                                        <td>
+                                                                                                <span>{{ data.name }}</span>
 
-                                                                                        <!-- <td>
-                                                                                                <nz-popconfirm [nzTitle]="'确认删除当前记录?'" (nzOnConfirm)="deleteParam(data.Id)" (nzOnCancel)="cancel()" [nzPlacement]="'top'">
-                                                                                                        <button nz-popconfirm nz-button [nzType]="'danger'" [nzSize]="'small'">
-                                                                                                                        <i class="anticon anticon-delete"></i> 删除</button>
-                                                                                        </nz-popconfirm>
-                                                                                        </td>       -->
+                                                                                        </td>
+                                                                                        <td >
+                                                                                                <span *ngIf="!data.edit">{{ data.length }}</span>
+                                                                                                <input *ngIf="data.edit" style="width:100px" nz-input [(ngModel)]="data.length"/>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                                        <span *ngIf="!data.edit">{{ data.precision }}</span>
+                                                                                                        <input *ngIf="data.edit" style="width:100px" nz-input [(ngModel)]="data.precision"/>
+                                                                                                </td>
+                                                                                        <td>
+                                                                                                <span *ngIf="!data.edit">{{ data.dataType }}</span>
+                                                                                                <nz-select *ngIf="data.edit" [(ngModel)]="data.dataType" name="value" nzPlaceHolder="" nzAllowClear>
+                                                                                                                <nz-option
+                                                                                                                    [nzLabel]="'字符串'"
+                                                                                                                    [nzValue]="'string'">
+                                                                                                                </nz-option>
+                                                                                                                <nz-option
+                                                                                                                    [nzLabel]="'布尔值'"
+                                                                                                                    [nzValue]="'boolean'">
+                                                                                                                </nz-option>
+                                                                                                                <nz-option
+                                                                                                                    [nzLabel]="'整型'"
+                                                                                                                    [nzValue]="'integer'">
+                                                                                                                </nz-option>
+                                                                                                                <nz-option
+                                                                                                                    [nzLabel]="'浮点'"
+                                                                                                                    [nzValue]="'double'">
+                                                                                                                </nz-option>
+                                                                                                                <nz-option
+                                                                                                                    [nzLabel]="'单字符'"
+                                                                                                                    [nzValue]="'char'">
+                                                                                                                </nz-option>
+                                                                                                                <nz-option
+                                                                                                                    [nzLabel]="'日期'"
+                                                                                                                    [nzValue]="'date'">
+                                                                                                                </nz-option>
+                                                                                                            </nz-select>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                                <span *ngIf="!data.edit">{{ data.isNullabled }}</span>
+                                                                                                <nz-select *ngIf="data.edit" [(ngModel)]="data.isNullabled" name="value" nzPlaceHolder="" nzAllowClear>
+                                                                                                    <nz-option
+                                                                                                        [nzLabel]="'是'"
+                                                                                                        [nzValue]="1">
+                                                                                                    </nz-option>
+                                                                                                    <nz-option
+                                                                                                        [nzLabel]="'否'"
+                                                                                                        [nzValue]="0">
+                                                                                                    </nz-option>
+                                                                                                </nz-select>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                                <span *ngIf="!data.edit">{{ data.defaultValue }}</span>
+                                                                                                <input *ngIf="data.edit" style="width:100px" nz-input [(ngModel)]="data.defaultValue" />
+                                                                                        </td>
+                                                                                        <td>
+                                                                                                        <span *ngIf="!data.edit">{{ data.remark }}</span>
+                                                                                                        <input *ngIf="data.edit" style="width:100px" nz-input [(ngModel)]="data.remark" />
+                                                                                                </td>
+
+                                                                                        <td>{{ data.valueFrom}}</td>
+
+                                                                                        <td>
+                                                                                                <a *ngIf="!data.edit" (click)="changeEdit(data, true)"><i nz-icon type="edit" theme="outline"></i> 编辑</a>
+                                                                                                <a *ngIf="data.edit" (click)="saveParams(data)"><i nz-icon type="save" theme="outline"></i> 保存</a> |
+                                                                                                <a *ngIf="data.edit" (click)="changeEdit(data, false)" ><i nz-icon type="cancel" theme="outline"></i> 取消</a>
+                                                                                        </td>
+                                                                                        <!--
+                                                                                                <td>
+                                                                                                                <nz-popconfirm [nzTitle]="'确认删除当前记录?'" (nzOnConfirm)="deleteParam(data.Id)" (nzOnCancel)="cancel()" [nzPlacement]="'top'">
+                                                                                                                                <button nz-popconfirm nz-button [nzType]="'danger'" [nzSize]="'small'">
+                                                                                                                                                                <i class="anticon anticon-delete"></i> 删除</button>
+                                                                                                </nz-popconfirm>
+                                                                                                </td>
+                                                                                        -->
                                                                                 </tr>
                                                                         </tbody>
                                                                 </nz-table>

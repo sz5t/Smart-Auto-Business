@@ -53,7 +53,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                         ],
                                         ajaxConfig: {
                                             url:
-                                                "common/ComProjectModule/_root/ComProjectModule",
+                                                "common/CfgProjectModule/_root/CfgProjectModule",
                                             ajaxType: "get",
                                             params: [
                                                 {
@@ -222,7 +222,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                         ],
                                                         ajaxConfig: {
                                                             url:
-                                                                "common/ComProjectModule",
+                                                                "common/CfgProjectModule",
                                                             ajaxType: "get",
                                                             params: [
                                                                 // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
@@ -475,7 +475,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                                     actionName:
                                                                         "delete",
                                                                     url:
-                                                                        "common/ComProjectModule",
+                                                                        "common/CfgProjectModule",
                                                                     ajaxType:
                                                                         "delete"
                                                                 }
@@ -493,7 +493,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                                 action:
                                                                     "EXECUTE_SAVE_TREE_ROW",
                                                                 url:
-                                                                    "common/ComProjectModule",
+                                                                    "common/CfgProjectModule",
                                                                 ajaxType:
                                                                     "post",
                                                                 params: [
@@ -603,7 +603,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                                 action:
                                                                     "EXECUTE_EDIT_TREE_ROW",
                                                                 url:
-                                                                    "common/ComProjectModule",
+                                                                    "common/CfgProjectModule",
                                                                 ajaxType: "put",
                                                                 params: [
                                                                     {
@@ -839,7 +839,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                             ],
                                                             ajaxConfig: {
                                                                 url:
-                                                                    "common/ComProjectModule",
+                                                                    "common/CfgProjectModule",
                                                                 ajaxType: "get",
                                                                 params: []
                                                             },
@@ -1106,7 +1106,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                         post: [
                                                             {
                                                                 url:
-                                                                    "common/ComProjectModule",
+                                                                    "common/CfgProjectModule",
                                                                 params: [
                                                                     {
                                                                         name:
@@ -1338,7 +1338,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                             title: "编辑模块",
                                             width: "600",
                                             ajaxConfig: {
-                                                url: "common/ComProjectModule",
+                                                url: "common/CfgProjectModule",
                                                 ajaxType: "getById",
                                                 params: [
                                                     {
@@ -1431,7 +1431,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                             ],
                                                             ajaxConfig: {
                                                                 url:
-                                                                    "common/ComProjectModule",
+                                                                    "common/CfgProjectModule",
                                                                 ajaxType: "get",
                                                                 params: []
                                                             },
@@ -1698,7 +1698,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                         put: [
                                                             {
                                                                 url:
-                                                                    "common/ComProjectModule",
+                                                                    "common/CfgProjectModule",
                                                                 params: [
                                                                     {
                                                                         name:
@@ -2106,15 +2106,15 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
     }
 
     private async getProjectData() {
-        const params = { _select: "Id,projName" };
-        return this.apiService.get("common/ComProject", params).toPromise();
+        const params = { _select: "Id,name" };
+        return this.apiService.get("common/CfgProject", params).toPromise();
     }
 
     private arrayToTree(data) {
         const result = [];
         for (let i = 0; i < data.length; i++) {
             const obj = {
-                label: data[i].projName,
+                label: data[i].name,
                 value: data[i].Id,
                 isLeaf: true
             };

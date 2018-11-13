@@ -1,7 +1,5 @@
 import { CommonTools } from "@core/utility/common-tools";
 import { Component, OnInit, ViewChild, Input, OnDestroy } from "@angular/core";
-import { _HttpClient } from "@delon/theme";
-import { SimpleTableColumn, SimpleTableComponent } from "@delon/abc";
 import { ApiService } from "@core/utility/api-service";
 import { CnCodeEditComponent } from "@shared/components/cn-code-edit/cn-code-edit.component";
 import {
@@ -71,7 +69,7 @@ import { CnComponentBase } from "@shared/components/cn-component-base";
             }
 
             .example-input .ant-input {
-                width: 200px;
+                width: 100px;
                 margin: 0 8px 8px 0;
             }
         `
@@ -98,6 +96,8 @@ export class SqlEditorComponent extends CnComponentBase
     _funcValue;
     _moduleId;
     _resourceName;
+    isAnalysisModel = 1;
+    bsnTypeMode;
     @Input()
     config;
     codeMirrorConfig = { type: "text/x-sql" };
@@ -127,7 +127,7 @@ export class SqlEditorComponent extends CnComponentBase
     // 获取模块信息
     async getModuleData(params) {
         return this._http
-            .getProj("common/ComProjectModule", params)
+            .getProj("common/CfgProjectModule", params)
             .toPromise();
     }
 
@@ -163,7 +163,7 @@ export class SqlEditorComponent extends CnComponentBase
         let param = {
             _page: this.pageIndex,
             _rows: this.pageSize,
-            _subResourceName: "ComSqlScriptParameter",
+            _subResourceName: "CfgSqlParameter",
             _subListRefPropName: "sqlScriptId",
             _subSort: "orderCode"
         };
@@ -174,7 +174,7 @@ export class SqlEditorComponent extends CnComponentBase
 
         const pid = this._moduleId ? this._moduleId : null;
         const response = await this._http
-            .get(`common/ComProjectModule/${pid}/ComSqlScript`, param)
+            .get(`common/CfgProjectModule/${pid}/CfgSql`, param)
             .toPromise();
         if (response.isSuccess) {
             this.tableData = response.data.rows;
@@ -184,6 +184,9 @@ export class SqlEditorComponent extends CnComponentBase
                 d["selected"] = false;
                 if (d.children && d.children.length > 0) {
                     d["parameterList"] = d.children;
+                    d["parameterList"].forEach(p => {
+                        p["edit"] = false;
+                    });
                 }
             });
         }
@@ -195,9 +198,12 @@ export class SqlEditorComponent extends CnComponentBase
             d.selected = false;
         });
         row.selected = true;
-        this.editor.setValue(row.sqlScriptContent);
-        this._scriptName = row.sqlScriptCaption;
+        this.editor.setValue(row.contents);
+        this._scriptName = row.caption;
         this._resourceName = row.resourceName;
+        this.isAnalysisModel = row.isAnalysisParameters;
+        this.bsnTypeMode = row.confType;
+        this.scriptModel = row.requestMethod.split(",");
         this._selectedRow = row;
     }
 
@@ -233,6 +239,9 @@ export class SqlEditorComponent extends CnComponentBase
     }
 
     clearInfo() {
+        this.isAnalysisModel = 1;
+        this.bsnTypeMode = null;
+        this.scriptModel = null;
         this._selectedRow = null;
         this._scriptName = null;
         this._resourceName = null;
@@ -259,32 +268,31 @@ export class SqlEditorComponent extends CnComponentBase
 
     private async addSql(sql) {
         const params = {
-            isAnalysisParameters: 1,
-            sqlScriptContent: sql,
-            sqlScriptCaption: this._scriptName,
+            confType: this.bsnTypeMode ? this.bsnTypeMode : "", // 业务类型
+            isAnalysisParameters: this.isAnalysisModel, // 需要添加下拉列表 1, 0
+            contents: sql,
+            caption: this._scriptName,
             resourceName: this._resourceName,
             isEnabled: 1,
-            isNeedDeploy: 1,
+            // isNeedDeploy: 1,
             requestMethod: this.scriptModel.join(","),
             isImmediateCreate: 1
         };
-        return this._http.post(`common/ComSqlScript`, params).toPromise();
+        return this._http.post(`common/CfgSql`, params).toPromise();
     }
 
     private async addSqlRelative(sqlId) {
         const params = {
             leftId: this._moduleId,
             rightId: sqlId,
-            leftResourceName: "ComProjectModule",
-            rightResourceName: "ComSqlScript"
+            leftResourceName: "CfgProjectModule",
+            rightResourceName: "CfgSql"
         };
         return this._http.post("common/SysDataLinks", params).toPromise();
     }
 
     private async delSql(id) {
-        return this._http
-            .delete(`common/ComSqlScript`, { _ids: id })
-            .toPromise();
+        return this._http.delete(`common/CfgSql`, { _ids: id }).toPromise();
     }
 
     private async delSqlParam(id) {}
@@ -300,16 +308,34 @@ export class SqlEditorComponent extends CnComponentBase
     private async updateSql(sql) {
         const params = {
             Id: this._selectedRow["Id"],
-            sqlScriptContent: sql,
-            sqlScriptCaption: this._scriptName,
+            confType: this.bsnTypeMode ? this.bsnTypeMode : "",
+            contents: sql,
+            caption: this._scriptName,
             resourceName: this._resourceName,
             isEnabled: 1,
-            isNeedDeploy: 1,
+            // isNeedDeploy: 1,
             requestMethod: this.scriptModel.join(","),
-            isAnalysisParameters: 1,
+            isAnalysisParameters: this.isAnalysisModel, // 需要添加下拉列表 1, 0
             isImmediateCreate: 1
         };
-        return this._http.put(`common/ComSqlScript`, params).toPromise();
+        return this._http.put(`common/CfgSql`, params).toPromise();
+    }
+
+    changeEdit(data, flag) {
+        data["edit"] = flag;
+    }
+
+    saveParams(data) {
+        this._http
+            .put("common/sql_parameter/update", data)
+            .subscribe(result => {
+                if (result.isSuccess) {
+                    this.changeEdit(data, false);
+                    console.log("保存成功");
+                } else {
+                    console.log("保存异常");
+                }
+            });
     }
 
     setEnabledText(val) {
@@ -323,4 +349,6 @@ export class SqlEditorComponent extends CnComponentBase
     ngOnDestroy() {}
 
     cancel() {}
+
+    // 添加参数修改: 数据类型, 是否可为空, 默认值 调用更新参数接口
 }

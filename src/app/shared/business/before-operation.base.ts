@@ -194,7 +194,7 @@ export class BeforeOperation {
      */
     private handleCheckedRowsOperationConditions(conditions) {
         const orResult = [];
-        const checkedRows = this.operationItemsData();
+        const checkedRows = this.operationItemsData;
         conditions.forEach(elements => {
             // 解析‘与’的关系条件
             const andResults = [];
