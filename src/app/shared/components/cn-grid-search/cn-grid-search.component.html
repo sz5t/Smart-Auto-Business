@@ -1,0 +1,37 @@
+<p>
+  cn-grid-search works!
+</p>
+<div style="margin-bottom: 16px;">
+  <nz-input-group  [nzAddOnAfter]="addOnAfterTemplate">
+    <input type="text" nz-input [(ngModel)]="inputValue" (blur)="onblur($event)">
+  </nz-input-group>
+  <!-- <ng-template #addOnBeforeTemplate>  [nzAddOnBefore]="addOnBeforeTemplate"
+    <nz-select [ngModel]="'Http://'">
+      <nz-option [nzLabel]="'Http://'" [nzValue]="'Http://'"></nz-option>
+      <nz-option [nzLabel]="'Https://'" [nzValue]="'Https://'"></nz-option>
+    </nz-select>
+  </ng-template> -->
+  <ng-template #addOnAfterTemplate>
+    <nz-select [ngModel]="AfterValue" (ngModelChange)="AftervalueChange($event)">
+      <nz-option [nzLabel]="'='" [nzValue]="'eq'"></nz-option>
+      <nz-option [nzLabel]="'like'" [nzValue]="'ctn'"></nz-option>
+      <nz-option [nzLabel]="'包含'" [nzValue]="'in'"></nz-option>
+      <nz-option [nzLabel]="'区间'" [nzValue]="'btn'"></nz-option>
+      <!-- <nz-option [nzLabel]="'!='" [nzValue]="'ne'"></nz-option>
+      <nz-option [nzLabel]="'>='" [nzValue]="'ge'"></nz-option>
+      <nz-option [nzLabel]="'>'" [nzValue]="'gt'"></nz-option>
+      <nz-option [nzLabel]="'<='" [nzValue]="'le'"></nz-option>
+      <nz-option [nzLabel]="'<'" [nzValue]="'lt'"></nz-option> -->
+    </nz-select>
+  </ng-template>
+</div>
+
+<nz-input-group nzCompact>
+  <nz-select [ngModel]="'Between'"  >
+    <nz-option [nzLabel]="'Between'" [nzValue]="'Between'"></nz-option>
+    <nz-option [nzLabel]="'Except'" [nzValue]="'Except'"></nz-option>
+  </nz-select>
+  <input type="text" nz-input placeholder="Minimum" style="width:100px; text-align: center;">
+  <input type="text" disabled nz-input placeholder="~" style="width: 30px; border-left: 0px; pointer-events: none; background-color: rgb(255, 255, 255);">
+  <input type="text" nz-input placeholder="Maximum" style="width: 100px; text-align: center; border-left: 0px;">
+</nz-input-group>

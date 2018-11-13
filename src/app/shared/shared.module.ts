@@ -93,6 +93,7 @@ import { BsnStaticTableComponent } from "@shared/business/bsn-data-table/bsn-sta
 import { BsnCardListComponent } from "./business/bsn-card-list/bsn-card-list.component";
 import { BsnCardListItemComponent } from "./business/bsn-card-list/bsn-card-list-item.component";
 import { CnFormScancodeComponent } from './components/cn-form-scancode/cn-form-scancode.component';
+import { CnGridSearchComponent } from './components/cn-grid-search/cn-grid-search.component';
 
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -179,7 +180,8 @@ const COMPONENTS = [
     BsnStaticTableComponent,
     BsnCardListComponent,
     BsnCardListItemComponent,
-    CnFormScancodeComponent
+    CnFormScancodeComponent,
+    CnGridSearchComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

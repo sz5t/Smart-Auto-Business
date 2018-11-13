@@ -231,13 +231,13 @@ export class BsnStaticTableComponent extends CnComponentBase
                     i < len;
                     i++
                 ) {
-                    const url = this._buildURL(
+                    const urlset = this._buildURL(
                         this.config.dataSet[i].ajaxConfig.url
                     );
-                    const params = this._buildParameters(
+                    const paramsset = this._buildParameters(
                         this.config.dataSet[i].ajaxConfig.params
                     );
-                    const data = await this.get(url, params);
+                    const data = await this.get(urlset, paramsset);
                     if (data.isSuccess) {
                         if (this.config.dataSet[i].fields) {
                             const dataSetObjs = [];
