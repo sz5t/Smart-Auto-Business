@@ -65,7 +65,7 @@ export class CnGridSelectGridComponent implements OnInit {
 
     ngOnInit(): void {
         this._value = null;
-        // console.log('被级联数据', this.casadeData);
+         console.log('被级联数据', this.casadeData);
         if (this.casadeData) {
             for (const key in this.casadeData) {
                 // 临时变量的整理

@@ -136,6 +136,14 @@ export class CommonTools {
                                     cache.value[param["valueName"]];
                             }
                             break;
+                        case BSN_PARAMETER_TYPE.CASCADE_VALUE:
+                            if (model.cascadeValue) {
+                                result[param["name"]] =
+                                model.cascadeValue[param["valueName"]];
+                            }
+                            break;
+
+                            
                     }
                 }
             });

@@ -1,0 +1,3 @@
+<input  type="text" nz-input placeholder="最小值" style="width:40%; text-align: center;"  [(ngModel)]="beginValue" (blur)="onblur($event,'begin')" (keyup)="onKeyPress($event,'begin')">
+<input  type="text" disabled nz-input placeholder="~" style="width: 30px; border-left: 0px; pointer-events: none; background-color: rgb(255, 255, 255);">
+<input  type="text" nz-input placeholder="最大值" style="width:40%; text-align: center; border-left: 0px;"  [(ngModel)]="endValue" (blur)="onblur($event,'end')" (keyup)="onKeyPress($event,'end')">

@@ -1550,9 +1550,29 @@ export class CnFormWindowResolverComponent extends CnComponentBase
                 if (element.name === data.name) {
                     if (element.cascadeField) {
                         element.cascadeField.forEach(feild => {
-                            if (data[feild.valueName]) {
-                                sendData[feild.name] = data[feild.valueName];
+                            if (!feild['type']) {
+                                if (data[feild.valueName]) {
+                                    sendData[feild.name] = data[feild.valueName];
+                                }
+                            } else {
+                                if (feild['type'] === 'selectObject') {
+                                    if (data[feild.valueName]) {
+                                        sendData[feild.name] = data[feild.valueName];
+                                    }
+                                } else if (feild['type'] === 'tempValueObject') {
+
+                                    sendData[feild.name] = this.tempValue;
+
+                                } else if (feild['type'] === 'tempValue') {
+                                    if (this.tempValue[feild.valueName]) {
+                                        sendData[feild.name] = this.tempValue[feild.valueName];
+                                    }
+                                } else if (feild['type'] === 'value') {  
+                                        sendData[feild.name] = feild.value;
+                                }
+                                 
                             }
+                            
                         });
                     }
                     this.cascade.next(
