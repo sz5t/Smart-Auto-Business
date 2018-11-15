@@ -62,7 +62,7 @@
                                         <ng-template ngFor let-data [ngForOf]="tableData">
                                                 <tr (click)="selectRow(data)" [ngStyle]="{ 'background-color': data.selected ? 'rgb(236, 246, 253)' : '' }">
                                                         <td nzShowExpand [(nzExpand)]="data.expand"></td>
-                                                        <td>{{ data.caption }}</td>
+                                                        <td>{{ data.name }}</td>
                                                         <td>{{ data.resourceName }}</td>
                                                         <td>{{ data.contents | stringLimit: 14 }}</td>
                                                         <td>{{ data.requestMethod }}</td>

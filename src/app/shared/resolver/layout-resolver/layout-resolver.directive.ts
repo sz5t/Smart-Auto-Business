@@ -83,9 +83,19 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
                                     cfg.config.subMapping["field"]
                                 ] === cfg.config.subMapping["value"]
                             ) {
+                                const data = option.data.mappingData
+                                    ? option.data.mappingData
+                                    : {};
+                                const tempValue = option.data.tempValueData
+                                    ? option.data.tempValueData
+                                    : {};
+                                const initValue = option.data.initValueData
+                                    ? option.data.initValueData
+                                    : {};
                                 this.buildComponent(
                                     cfg,
-                                    option.data.mappingData
+                                    { ...data, ...tempValue },
+                                    initValue
                                 );
                             }
                         }
@@ -95,7 +105,7 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
         );
     }
 
-    buildComponent(config, data) {
+    buildComponent(config, data?, initValue?) {
         const comp = this.resolver.resolveComponentFactory<any>(
             ComponentResolverComponent
         );
@@ -103,7 +113,7 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
         this.component = this.container.createComponent(comp);
         this.component.instance.config = config;
         this.component.instance.tempValue = data;
-        this.component.instance.initData = data;
+        this.component.instance.initData = initValue ? initValue : data;
         this.component.instance.permissions = this.permissions;
     }
 
