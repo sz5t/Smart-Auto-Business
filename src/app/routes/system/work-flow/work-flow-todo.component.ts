@@ -7278,6 +7278,29 @@ export class WorkFlowTodoComponent implements OnInit {
                                     }
                                 }
                             },
+                            
+                            {
+                                title: "备注",
+                                field: "remark1",
+                                width: 80,
+                                hidden: false,
+                                editor: {
+                                    type:
+                                        "search",
+                                    field:
+                                        "remark1",
+                                    options: {
+                                        type:
+                                            "search",
+                                        labelSize:
+                                            "6",
+                                        controlSize:
+                                            "18",
+                                        inputType:
+                                            "text"
+                                    }
+                                }
+                            },
                             {
                                 title: "备注",
                                 field: "remark",

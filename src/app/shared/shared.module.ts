@@ -94,6 +94,7 @@ import { BsnCardListComponent } from "./business/bsn-card-list/bsn-card-list.com
 import { BsnCardListItemComponent } from "./business/bsn-card-list/bsn-card-list-item.component";
 import { CnFormScancodeComponent } from './components/cn-form-scancode/cn-form-scancode.component';
 import { CnGridSearchComponent } from './components/cn-grid-search/cn-grid-search.component';
+import { CnGridBetweenInputComponent } from './components/cn-grid-between-input/cn-grid-between-input.component';
 
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -181,7 +182,8 @@ const COMPONENTS = [
     BsnCardListComponent,
     BsnCardListItemComponent,
     CnFormScancodeComponent,
-    CnGridSearchComponent
+    CnGridSearchComponent,
+    CnGridBetweenInputComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

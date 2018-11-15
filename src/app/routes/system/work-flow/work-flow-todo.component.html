@@ -14,11 +14,33 @@
   (onSearchChange) ="onSearchChange($event)"
 >
 </nz-mention> -->
+
+<br>
+<br>
+<div style="width: 500px;">
+    <nz-input-group nzSearch  [nzSuffix]="suffixIconButton">
+        <input type="text" nz-input placeholder="Search name" [(ngModel)]="searchValue">
+
+    </nz-input-group>
+    <ng-template #suffixIconButton>
+            <!-- <button nz-button nzSearch [nzType]="'default'" (click)="showModal()">
+                    <i class="anticon anticon-edit"></i>
+                    
+            </button> -->
+            <nz-dropdown nzTrigger="click" [nzClickHide]="false" #dropdown>
+                <i nz-icon type="down" class="ant-table-filter-icon" [class.ant-table-filter-open]="dropdown.nzVisible" nz-dropdown></i>
+                <div class="custom-filter-dropdown">
+                  <cn-form-resolver  [config]="config_bd" [permissions]="permissions"></cn-form-resolver>
+                  <button nz-button [nzType]="'primary'" (click)="search()">Search</button>
+                </div>
+              </nz-dropdown>
+    </ng-template>
+</div>
+
 <cn-grid-search></cn-grid-search>
 <cn-form-resolver  [config]="config_bd" [permissions]="permissions"></cn-form-resolver>
 
 <cn-layout-resolver [config]="config"></cn-layout-resolver>
-
 
 
 
