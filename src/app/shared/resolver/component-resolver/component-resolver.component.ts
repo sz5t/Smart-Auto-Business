@@ -1,3 +1,4 @@
+import { BsnToolbarComponent } from "./../../business/bsn-toolbar/bsn-toolbar.component";
 import { BsnCardListComponent } from "./../../business/bsn-card-list/bsn-card-list.component";
 import { BsnDataStepComponent } from "./../../business/bsn-data-step/bsn-data-step.component";
 import { LineChartComponent } from "@shared/chart/line-chart/line-chart.component";
@@ -47,7 +48,8 @@ const components: { [type: string]: Type<any> } = {
     dataSteps: BsnDataStepComponent,
     wf_design: WfDesignComponent,
     bsnCarousel: BsnCarouselComponent,
-    bsnCardList: BsnCardListComponent
+    bsnCardList: BsnCardListComponent,
+    BsnToolbarComponent
 };
 @Component({
     selector: "cn-component-resolver",

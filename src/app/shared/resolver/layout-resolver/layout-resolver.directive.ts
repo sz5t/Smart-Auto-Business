@@ -67,6 +67,30 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
                         }
                     });
                 }
+                if (
+                    viewCfg &&
+                    cascadeEvent._mode ===
+                        BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_SUBMAPPING
+                ) {
+                    const option = cascadeEvent.option;
+                    const sendViewId = cascadeEvent._viewId;
+                    viewCfg.forEach(cfg => {
+                        if (cfg.config.subMapping) {
+                            if (
+                                cfg.config.subMapping["sendViewId"] ===
+                                    sendViewId &&
+                                option.data.mappingData[
+                                    cfg.config.subMapping["field"]
+                                ] === cfg.config.subMapping["value"]
+                            ) {
+                                this.buildComponent(
+                                    cfg,
+                                    option.data.mappingData
+                                );
+                            }
+                        }
+                    });
+                }
             }
         );
     }

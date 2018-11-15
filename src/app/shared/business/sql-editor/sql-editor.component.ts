@@ -83,7 +83,7 @@ export class SqlEditorComponent extends CnComponentBase
     tableData = [];
     _selectedRow;
     _scriptName;
-    loading = false;
+    loading = true;
     scriptModelList = [
         { value: "get", name: "get" },
         { value: "post", name: "post" },
@@ -199,7 +199,7 @@ export class SqlEditorComponent extends CnComponentBase
         });
         row.selected = true;
         this.editor.setValue(row.contents);
-        this._scriptName = row.caption;
+        this._scriptName = row.name;
         this._resourceName = row.resourceName;
         this.isAnalysisModel = row.isAnalysisParameters;
         this.bsnTypeMode = row.confType;
@@ -271,7 +271,7 @@ export class SqlEditorComponent extends CnComponentBase
             confType: this.bsnTypeMode ? this.bsnTypeMode : "", // 业务类型
             isAnalysisParameters: this.isAnalysisModel, // 需要添加下拉列表 1, 0
             contents: sql,
-            caption: this._scriptName,
+            name: this._scriptName,
             resourceName: this._resourceName,
             isEnabled: 1,
             // isNeedDeploy: 1,
@@ -310,7 +310,7 @@ export class SqlEditorComponent extends CnComponentBase
             Id: this._selectedRow["Id"],
             confType: this.bsnTypeMode ? this.bsnTypeMode : "",
             contents: sql,
-            caption: this._scriptName,
+            name: this._scriptName,
             resourceName: this._resourceName,
             isEnabled: 1,
             // isNeedDeploy: 1,

@@ -6472,9 +6472,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 icon: ""
                                             }
                                         ]
-                                    },
-                                    dataList: [],
-                                    permissions: []
+                                    }
                                 }
                             ]
                         }

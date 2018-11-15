@@ -89,20 +89,34 @@ export class BeforeOperation {
         let result = false;
         if (this._beforeOperationMap.has(option.name)) {
             const op_status = this._beforeOperationMap.get(option.name);
-            op_status.forEach(statusItem => {
+            for (let i = 0, len = op_status.length; i < len; i++) {
                 const conditionResult = this.handleOperationConditions(
-                    statusItem.conditions
+                    op_status[i].conditions
                 );
                 const actionResult = this.handleOperationAction(
                     conditionResult,
-                    statusItem.action
+                    op_status[i].action
                 );
                 if (actionResult) {
                     result = true;
-                    return true;
+                    break;
                 }
                 result = actionResult;
-            });
+            }
+            // op_status.forEach(statusItem => {
+            //     const conditionResult = this.handleOperationConditions(
+            //         statusItem.conditions
+            //     );
+            //     const actionResult = this.handleOperationAction(
+            //         conditionResult,
+            //         statusItem.action
+            //     );
+            //     if (actionResult) {
+            //         result = true;
+            //         return true;
+            //     }
+            //     result = actionResult;
+            // });
         }
         return result;
     }
@@ -115,21 +129,36 @@ export class BeforeOperation {
         let result = false;
         if (this._beforeOperationMap.has(option.name)) {
             const op_status = this._beforeOperationMap.get(option.name);
-            op_status.forEach(statusItem => {
+            for (let i = 0, len = op_status.length; i < len; i++) {
                 const conditionResult = this.handleCheckedRowsOperationConditions(
-                    statusItem.conditions
+                    op_status[i].conditions
                 );
                 const actionResult = this.handleOperationAction(
                     conditionResult,
-                    statusItem.action
+                    op_status[i].action
                 );
                 if (actionResult) {
                     result = true;
                     // 跳出循环
-                    return true;
+                    break;
                 }
                 result = actionResult;
-            });
+            }
+            //   op_status.forEach(statusItem => {
+            //     const conditionResult = this.handleCheckedRowsOperationConditions(
+            //       statusItem.conditions
+            //     );
+            //     const actionResult = this.handleOperationAction(
+            //       conditionResult,
+            //       statusItem.action
+            //     );
+            //     if (actionResult) {
+            //       result = true;
+            //       // 跳出循环
+            //       return true;
+            //     }
+            //     result = actionResult;
+            //   });
         }
         return result;
     }
@@ -252,7 +281,7 @@ export class BeforeOperation {
      * @param statusItem 匹配条件对象
      */
     private matchValueCondition(dataItem, statusItem) {
-        let result = true;
+        let result = false;
         if (dataItem) {
             if (dataItem[statusItem["name"]] === statusItem["value"]) {
                 result = true;
@@ -269,15 +298,11 @@ export class BeforeOperation {
      * @param statusItem
      */
     private matchCheckedValueCondition(checkedRows, statusItem) {
-        let result = true;
+        let result = false;
         if (checkedRows.length > 0) {
-            checkedRows.forEach(row => {
-                if (row[statusItem["name"]] === statusItem["value"]) {
-                    result = true;
-                } else {
-                    result = false;
-                }
-            });
+            result = checkedRows.some(
+                row => row[statusItem["name"]] === statusItem["value"]
+            );
         }
         return result;
     }
@@ -288,16 +313,10 @@ export class BeforeOperation {
      * @param statusItem
      */
     private matchCheckedRegexpCondition(checkedRows, statusItem) {
-        let result = true;
+        let result = false;
         if (checkedRows.length > 0) {
             const reg = new RegExp(statusItem.value ? statusItem.value : "");
-            checkedRows.forEach(row => {
-                if (reg.test(row[statusItem["name"]])) {
-                    result = true;
-                } else {
-                    result = false;
-                }
-            });
+            result = checkedRows.some(row => reg.test(row[statusItem["name"]]));
         }
         return result;
     }
@@ -308,7 +327,7 @@ export class BeforeOperation {
      * @param statusItem 匹配条件对象
      */
     private matchRegexpCondition(dataItem, statusItem) {
-        let result = true;
+        let result = false;
         if (dataItem) {
             const reg = new RegExp(statusItem.value ? statusItem.value : "");
             if (reg.test(dataItem[statusItem["name"]])) {

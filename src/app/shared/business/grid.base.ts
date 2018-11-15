@@ -802,6 +802,7 @@ export class GridBase extends CnComponentBase {
         }
         const sItem = this.selectedItem ? this.selectedItem : {};
         obj = {
+            ...this.initValue,
             ...this.tempValue,
             ...sItem,
             _id: sItem[dialog.keyId] ? sItem[dialog.keyId] : "",
@@ -828,6 +829,19 @@ export class GridBase extends CnComponentBase {
                 button["label"] = btn.text;
                 button["type"] = btn.type ? btn.type : "default";
                 button["onClick"] = componentInstance => {
+                    if (btn["name"] === "save2") {
+                        (async () => {
+                            const result = await componentInstance.buttonAction(
+                                btn
+                            );
+                            if (result) {
+                                this.showAjaxMessage(result, "保存成功", () => {
+                                    modal.close();
+                                    this._callback();
+                                });
+                            }
+                        })();
+                    }
                     if (btn["name"] === "save") {
                         (async () => {
                             const result = await componentInstance.buttonAction(

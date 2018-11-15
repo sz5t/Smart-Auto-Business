@@ -284,7 +284,7 @@ export class BsnTableComponent extends CnComponentBase
                         this.cancelSelectRow();
                         break;
                     case BSN_COMPONENT_MODES.EDIT:
-                        this.beforeOperation.operationItemsData = this._getEditedRows();
+                        this.beforeOperation.operationItemsData = this._getCheckedItems();
                         !this.beforeOperation.beforeItemsDataOperation(
                             option
                         ) && this.updateRow();
@@ -1644,7 +1644,7 @@ export class BsnTableComponent extends CnComponentBase
                         return false;
                     }
                     handleData = this._getCheckItemsId();
-                    this.beforeOperation.operationItemsData = handleData;
+                    this.beforeOperation.operationItemsData = this._getCheckedItems();
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
                         return false;
                     }
@@ -2199,6 +2199,7 @@ export class BsnTableComponent extends CnComponentBase
     private _cancelEdit(key: string): void {
         const index = this.dataList.findIndex(item => item.key === key);
         this.dataList[index].checked = false;
+        this.dataList[index]["row_status"] = "";
         this.editCache[key].edit = false;
         this.editCache[key].data = JSON.parse(
             JSON.stringify(this.dataList[index])

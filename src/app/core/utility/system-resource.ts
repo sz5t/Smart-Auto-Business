@@ -22,8 +22,8 @@ export class SystemResource {
 
     public static localResource = {
         //   'url': 'http://192.168.1.111:8084'
-        url: "http://192.168.1.111:8083"
-        // url: "http://localhost:4200"
+        // url: "http://192.168.1.111:8083"
+        url: "http://localhost:4200"
     };
 }
 

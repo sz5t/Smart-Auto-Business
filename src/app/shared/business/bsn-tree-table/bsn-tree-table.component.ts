@@ -237,7 +237,8 @@ export class BsnTreeTableComponent extends GridBase
                 const option = updateState.option;
                 switch (updateState._mode) {
                     case BSN_COMPONENT_MODES.CREATE:
-                        this._addNewRow();
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
+                            this._addNewRow();
                         break;
                     case BSN_COMPONENT_MODES.CREATE_CHILD:
                         this.beforeOperation.operationItemData = this.selectedItem;
