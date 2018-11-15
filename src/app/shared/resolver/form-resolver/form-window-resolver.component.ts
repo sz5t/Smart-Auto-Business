@@ -1567,6 +1567,14 @@ export class CnFormWindowResolverComponent extends CnComponentBase
                                     if (this.tempValue[feild.valueName]) {
                                         sendData[feild.name] = this.tempValue[feild.valueName];
                                     }
+                                } else if (feild['type'] === 'initValueObject') {
+
+                                    sendData[feild.name] = this.initValue;
+
+                                } else if (feild['type'] === 'initValue') {
+                                    if (this.initValue[feild.valueName]) {
+                                        sendData[feild.name] = this.initValue[feild.valueName];
+                                    }
                                 } else if (feild['type'] === 'value') {  
                                         sendData[feild.name] = feild.value;
                                 }
