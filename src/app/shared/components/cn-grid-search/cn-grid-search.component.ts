@@ -6,10 +6,22 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./cn-grid-search.component.css']
 })
 export class CnGridSearchComponent implements OnInit {
-  @Input() config;
-  @Output() updateValue = new EventEmitter();
-  @Input() value;
-  @Input() casadeData;
+  @Input()
+  config;
+  @Input()
+  value;
+  @Input()
+  rowData;
+  @Input()
+  bsnData;
+  @Input()
+  dataSet;
+  @Input()
+  changeConfig;
+  @Input()
+  initData;
+  @Output()
+  updateValue = new EventEmitter();
   constructor() { }
   inputValue;
   AfterValue;
@@ -101,13 +113,13 @@ export class CnGridSearchComponent implements OnInit {
   CreateSearchChange(inputValue?) {
     let strQ = "";
     if (!inputValue) {
-      return strQ;
+      // return strQ;
     }
     switch (this.AfterValue) {
       case 'eq': // =
         strQ = strQ + "eq (" + inputValue + ")";
         break;
-      case 'neq': // =
+      case 'neq': // !=
         strQ = strQ + "!eq (" + inputValue + ")";
         break;
       case 'ctn': // like
@@ -119,22 +131,41 @@ export class CnGridSearchComponent implements OnInit {
       case 'in': // in  如果是input 是这样取值，其他则是多选取值
         strQ = strQ + "in(" + inputValue + ")";
         break;
-      case 'nin': // in  如果是input 是这样取值，其他则是多选取值
+      case 'nin': // not in  如果是input 是这样取值，其他则是多选取值
         strQ = strQ + "!in(" + inputValue + ")";
+        break;
+      case 'btn': // between  
+        strQ = strQ + "btn(" + inputValue + ")";
+        break;
+      case 'ge': // >=  
+        strQ = strQ + "ge(" + inputValue + ")";
+        break;
+      case 'gt': // >  
+        strQ = strQ + "gt(" + inputValue + ")";
+        break;
+      case 'le': // <=  
+        strQ = strQ + "le(" + inputValue + ")";
+        break;
+      case 'lt': // <  
+        strQ = strQ + "lt(" + inputValue + ")";
         break;
       default:
         strQ = strQ + "default(" + inputValue + ")";
         break;
     }
     console.log('查询参数：', strQ);
-    return strQ;
+    if (!inputValue) {
+      strQ = null;
+    }
+    this.value.data = strQ;
+    this.updateValue.emit(this.value);
 
   }
   // 触发条件，光标离开、回车、下拉选择触发
   tempValue;
-  initData;
-  rowData = { edit: true };
-  dataSet;
+  // initData;
+  // rowData = { edit: true };
+  // dataSet;
   options = {
     type:
       "input",
@@ -157,31 +188,31 @@ export class CnGridSearchComponent implements OnInit {
 
   searchValue;
 
- 
+
   onClick(name?) {
-    console.log('onClick', name);
+    // console.log('onClick', name);
 
     const id = name.hostElement.nativeElement.id;
     // const index =   name.nzMenuDirective.menuItems.findIndex(
     //   item => item._selected === true
     // );
-    const index = this.op.findIndex( item => item.value === id);
-    const ck =  this.op[index].value;
+    const index = this.op.findIndex(item => item.value === id);
+    const ck = this.op[index].value;
     this.op.forEach(element => {
       element.select = false;
     });
     this.op[index].select = true;
     this.AfterValue = ck;
-    if ( ck === 'btn') {
+    if (ck === 'btn') {
       this.searchType = ck;
     } else {
       this.searchType = 'input';
     }
     this.CreateSearch();
-    console.log('最终选择：', ck, this.op);
+     console.log('最终选择：', ck, this.op);
   }
   op = [
-    { lable: '=', value: 'eq', select: false },
+    { lable: '=', value: 'eq', select: true },
     { lable: '!=', value: 'neq', select: false },
     { lable: '部分一致', value: 'ctn', select: false },
     { lable: '不属于', value: 'nctn', select: false },
@@ -191,7 +222,7 @@ export class CnGridSearchComponent implements OnInit {
     { lable: '>=', value: 'ge', select: false },
     { lable: '>', value: 'gt', select: false },
     { lable: '<=', value: 'le', select: false },
-    { lable: '<', value: 'lt', select: false } 
+    { lable: '<', value: 'lt', select: false }
     // { lable: '自定义', value: 'zdy', select: false }
   ];
 

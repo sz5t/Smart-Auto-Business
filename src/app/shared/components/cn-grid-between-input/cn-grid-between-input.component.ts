@@ -19,13 +19,13 @@ export class CnGridBetweenInputComponent implements OnInit {
 
 
   onblur(e?, type?) {
-    console.log('onblur：', type, 'beginValue', this.beginValue, 'endValue', this.endValue);
+   // console.log('onblur：', type, 'beginValue', this.beginValue, 'endValue', this.endValue);
      this.assemblyValue();
 
   }
   onKeyPress(e?, type?) {
     if (e.code === 'Enter') {
-      console.log('Enter', type, 'beginValue', this.beginValue, 'endValue', this.endValue);
+    //  console.log('Enter', type, 'beginValue', this.beginValue, 'endValue', this.endValue);
        this.assemblyValue();
     }
   }
@@ -46,7 +46,7 @@ export class CnGridBetweenInputComponent implements OnInit {
     if (!this.beginValue && !this.endValue) {
       value = null;
     }
-    console.log('组装值:' , value);
+   // console.log('组装值:' , value);
     this.updateValue.emit(value);
     return value;
   }

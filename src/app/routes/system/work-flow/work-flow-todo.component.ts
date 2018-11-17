@@ -1761,7 +1761,7 @@ export class WorkFlowTodoComponent implements OnInit {
                                                                     type:
                                                                         "value",
                                                                     valueName:
-                                                                        "",
+                                                                         "",
                                                                     value: "1"
                                                                 },
                                                                 {

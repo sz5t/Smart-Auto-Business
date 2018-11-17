@@ -18,7 +18,9 @@ import {
     Input,
     OnDestroy,
     Type,
-    Inject
+    Inject,
+    Output,
+    EventEmitter
 } from "@angular/core";
 import { NzMessageService, NzModalService } from "ng-zorro-antd";
 import { CommonTools } from "@core/utility/common-tools";
@@ -78,6 +80,8 @@ export class BsnStaticTableComponent extends CnComponentBase
     bsnData;
     @Input()
     ref;
+    @Output()
+    updateValue = new EventEmitter();
     // tempValue = {};
 
     loading = false;
@@ -382,8 +386,8 @@ export class BsnStaticTableComponent extends CnComponentBase
                                     BSN_COMPONENT_CASCADE_MODES[
                                     relation.cascadeMode
                                     ];
-                                    const mode = cascadeEvent._mode;
-                                   
+                                const mode = cascadeEvent._mode;
+
                                 // 获取传递的消息数据
                                 const option = cascadeEvent.option;
                                 if (option) {
@@ -401,7 +405,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                                         });
                                     }
                                 }
-console.log('匹配及联模式:', mode , cascadeEvent);
+                                console.log('匹配及联模式:', mode, cascadeEvent);
                                 // 匹配及联模式
                                 switch (mode) {
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH:
@@ -643,6 +647,103 @@ console.log('匹配及联模式:', mode , cascadeEvent);
         rowContentNew["key"] = fieldIdentity;
         rowContentNew["checked"] = true;
         rowContentNew["row_status"] = "adding";
+        rowContentNew["$operDataType$"] = "add";
+        let isback = false;
+        if (this.config.ScanCode.addRow.type) {
+            if (this.config.ScanCode.addRow.type === 'distinct') {
+                let distinctValue = null;
+                if (this.config.ScanCode.addRow.distinct.type === "tempValue") {
+                    if (this.config.ScanCode.addRow.distinct.valueType === "value") {
+                        distinctValue = this.tempValue[this.config.ScanCode.addRow.distinct.valueName];
+                    } else if (this.config.ScanCode.addRow.distinct.valueType === "array") {
+                        if (this.config.ScanCode.addRow.distinct.arrayName) {
+                            if (this.tempValue[this.config.ScanCode.addRow.distinct.arrayName].length > 0) {
+                                distinctValue = this.tempValue[this.config.ScanCode.addRow.distinct.arrayName][0][this.config.ScanCode.addRow.distinct.valueName];
+                            }
+                        }
+                    }
+                } else if (this.config.ScanCode.addRow.distinct.type === "value") {
+                    distinctValue = this.config.ScanCode.addRow.distinct["value"];
+                }
+                const index = this.loadData.rows.findIndex(
+                    item => item[this.config.ScanCode.addRow.distinct['field']] === distinctValue
+                );
+                if (index !== -1) {
+                    isback = true;
+                    if (this.config.ScanCode.addRow.superposition) {
+                        this.config.ScanCode.addRow.superposition.forEach(element => {
+                            let superpositionValue = null;
+                            if (element.superpositionType === 'identity') {
+                                superpositionValue = element.superpositionNumber;
+                            } else {
+                                if (element.type === "tempValue") {
+                                    if (element.valueType === "value") {
+                                        superpositionValue = this.tempValue[element.valueName];
+                                    } else if (element.valueType === "array") {
+                                        if (element.arrayName) {
+                                            if (this.tempValue[element.arrayName].length > 0) {
+                                                superpositionValue = this.tempValue[element.arrayName][0][element.valueName];
+                                            }
+                                        }
+                                    }
+                                } else if (this.config.ScanCode.addRow.distinct.type === "value") {
+                                    superpositionValue = this.config.ScanCode.addRow.distinct["value"];
+                                }
+                            }
+                            if ( element.dataType === 'number') {
+                               if (! this.loadData.rows[index][element.field]) {
+                                this.loadData.rows[index][element.field] = element.defaultValue;
+                               }
+                            }
+                            this.loadData.rows[index][element.field] = this.loadData.rows[index][element.field] + superpositionValue;
+                        });
+                    }
+                    // this.pageIndex = Math.ceil((index + 1) / this.pageSize);
+                    // this.load();
+                    // this.scanCodeSetSelectRow(this.loadData.rows[index]["key"] ? this.loadData.rows[index]["key"] : this.loadData.rows[index][this.config["keyId"]] );
+                    // this._updateEditCache();
+                    // this._startEdit(this.loadData.rows[index]["key"] ? this.loadData.rows[index]["key"] : this.loadData.rows[index][this.config["keyId"]] );
+
+                } else {
+                    if (this.config.ScanCode.addRow.superposition) {
+                        this.config.ScanCode.addRow.superposition.forEach(element => {
+                            let superpositionValue = null;
+                            if (element.superpositionType === 'identity') {
+                                superpositionValue = element.superpositionNumber;
+                            } else {
+                                if (element.type === "tempValue") {
+                                    if (element.valueType === "value") {
+                                        superpositionValue = this.tempValue[element.valueName];
+                                    } else if (element.valueType === "array") {
+                                        if (element.arrayName) {
+                                            if (this.tempValue[element.arrayName].length > 0) {
+                                                superpositionValue = this.tempValue[element.arrayName][0][element.valueName];
+                                            }
+                                        }
+                                    }
+                                } else if (this.config.ScanCode.addRow.distinct.type === "value") {
+                                    superpositionValue = this.config.ScanCode.addRow.distinct["value"];
+                                }
+                            }
+                            if ( element.dataType === 'number') {
+                               if (! rowContentNew[element.field]) {
+                                rowContentNew[element.field] = element.defaultValue;
+                               }
+                            }
+                            rowContentNew[element.field] =  superpositionValue;
+                            console.log(element.field, rowContentNew[element.field]);
+                        });
+                    }
+
+                } 
+            }
+        }
+
+        if (isback) {
+            this._message.info('重复扫码！');
+            return true;
+        }
+
         if (this.config.ScanCode.addRow) {
 
             this.config.ScanCode.addRow.columns.forEach(column => {
@@ -681,6 +782,7 @@ console.log('匹配及联模式:', mode , cascadeEvent);
         this.loadData.rows.push(rowContentNew);
         this.loadData.total = this.loadData.rows.length;
         this.total = this.loadData.total;
+        this.updateValue.emit(this.loadData.rows);
         return true;
     }
 
@@ -1519,6 +1621,14 @@ console.log('匹配及联模式:', mode , cascadeEvent);
         // console.log('当前编辑缓存行内容', this.editCache[data.key].data);
     }
 
+    valueChangeSearch(data) {
+        // const index = this.dataList.findIndex(item => item.key === data.key);
+        console.log('值变化valueChangeSearch', data);
+        // console.log('级联结果数据集', this.changeConfig_new[rowCasade]);
+        // this.changeConfig_new = JSON.parse(JSON.stringify(this.changeConfig_new));
+        // console.log('当前编辑缓存行内容', this.editCache[data.key].data);
+    }
+
     isEdit(fieldname) {
         let isEditState = false;
         this.config.columns.forEach(column => {
@@ -2192,7 +2302,7 @@ console.log('匹配及联模式:', mode , cascadeEvent);
         dataList.forEach(item => {
             if (!this.editCache[item.key]) {
                 this.editCache[item.key] = {
-                    edit: false,
+                    edit: false, // liu 20181117 false
                     data: JSON.parse(JSON.stringify(item))
                 };
             }

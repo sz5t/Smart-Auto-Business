@@ -3,5 +3,5 @@
         [(ngModel)]="_value">
 </nz-form-control>
  <ng-container *ngIf="config !== undefined">
-    <cn-bsn-static-table [config]="config.select.datagrid"></cn-bsn-static-table>
+    <cn-bsn-static-table #table [config]="config.select.datagrid"  (updateValue)="valueChangeTable($event)" ></cn-bsn-static-table>
 </ng-container> 

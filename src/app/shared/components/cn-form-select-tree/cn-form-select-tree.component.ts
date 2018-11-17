@@ -30,6 +30,7 @@ export class CnFormSelectTreeComponent implements OnInit {
     _tempValue = {};
     checkedKeys = [];
     selectedKeys = [];
+    cascadeValue = {};
     selfEvent = {
         clickNode: [],
         expandNode: [],
@@ -50,6 +51,14 @@ export class CnFormSelectTreeComponent implements OnInit {
         }
         if (!this.config["Checkable"]) {
             this.config["Checkable"] = false;
+        }
+        if (this.config["cascadeValue"]) {
+            // cascadeValue
+            for (const key in this.config["cascadeValue"]) {
+                if (this.config["cascadeValue"].hasOwnProperty(key)) {
+                    this.cascadeValue[key] = this.config["cascadeValue"][key];
+                }
+            }
         }
 
         this.loadTreeData();
@@ -88,6 +97,8 @@ export class CnFormSelectTreeComponent implements OnInit {
                             } else if (param.type === "GUID") {
                                 const fieldIdentity = CommonTools.uuID(10);
                                 parent = fieldIdentity;
+                            } else if (param.type === "cascadeValue") {
+                                parent = this.cascadeValue[param.valueName];
                             }
                         });
                     }
@@ -166,6 +177,8 @@ export class CnFormSelectTreeComponent implements OnInit {
                     params[param.name] = fieldIdentity;
                 } else if (param.type === "componentValue") {
                     params[param.name] = componentValue;
+                } else if (param.type === "cascadeValue") {
+                    params[param.name] = this.cascadeValue[param.valueName];
                 }
             });
             if (this.isString(p.url)) {
