@@ -130,6 +130,7 @@ export class FormResolverComponent extends CnComponentBase
             });
         }
         if (this.initData) {
+            console.log("initValue", this.initValue);
             this.initValue = this.initData;
         }
         if (this.cacheService) {
@@ -1474,6 +1475,7 @@ export class FormResolverComponent extends CnComponentBase
     }
 
     valueChange(data?) {
+        console.log("valueChange", this.initValue);
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
         const sendCasade = data.name;
@@ -1883,6 +1885,7 @@ export class FormResolverComponent extends CnComponentBase
                             }
                         });
                     }
+                    console.log(this.initValue);
                     this.cascade.next(
                         new BsnComponentMessage(
                             BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],

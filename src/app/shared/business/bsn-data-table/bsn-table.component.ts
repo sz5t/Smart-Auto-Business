@@ -280,6 +280,10 @@ export class BsnTableComponent extends CnComponentBase
                         !this.beforeOperation.beforeItemDataOperation(option) &&
                             this.addRow();
                         break;
+                    // case BSN_COMPONENT_MODES.ADD_ROW_DATA:
+                    //     !this.beforeOperation.beforeItemDataOperation(option) &&
+                    //     this._resolveAjaxConfig(option);
+                    //     break;
                     case BSN_COMPONENT_MODES.CANCEL_SELECTED:
                         this.cancelSelectRow();
                         break;
@@ -1603,6 +1607,12 @@ export class BsnTableComponent extends CnComponentBase
             // 使用时可以通过临时变量定义的固定属性访问
             // 使用时乐意通过内置的参数类型进行访问
             switch (c.action) {
+                case BSN_EXECUTE_ACTION.EXECUTE_ADD_ROW_DATA:
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return false;
+                    }
+                    handleData = {};
+                    break;
                 case BSN_EXECUTE_ACTION.EXECUTE_CHECKED:
                     if (
                         this.dataList.filter(item => item.checked === true)

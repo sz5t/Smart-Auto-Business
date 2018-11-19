@@ -149,6 +149,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
 
     ngOnInit() {
         if (this.initData) {
+            console.log("tree initValue", this.initData);
             this.initValue = this.initData;
         }
         if (this._cacheService) {
@@ -257,6 +258,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
             this.config.componentType.sub === true
         ) {
             this.after(this, "clickNode", () => {
+                console.log("send tree initValue", this.initValue);
                 this.tempValue["_selectedNode"] &&
                     this.cascade.next(
                         new BsnComponentMessage(
@@ -267,7 +269,8 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                                     ...this.initValue,
                                     ...this.tempValue["_selectedNode"]
                                 },
-                                tempValue: this.tempValue,
+                                initValue: this.initValue ? this.initValue : {},
+                                tempValue: this.tempValue ? this.tempValue : {},
                                 subViewId: () => {
                                     let id = "";
                                     this.config.subMapping.forEach(sub => {
@@ -499,6 +502,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                         this.config.componentType &&
                         this.config.componentType.sub === true
                     ) {
+                        console.log("send tree initValue", this.initValue);
                         this.tempValue["_selectedNode"] &&
                             this.cascade.next(
                                 new BsnComponentMessage(
@@ -506,10 +510,15 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                                     this.config.viewId,
                                     {
                                         data: {
-                                            ...this.tempValue["_selectedNode"],
-                                            ...this.initValue
+                                            ...this.initValue,
+                                            ...this.tempValue["_selectedNode"]
                                         },
-                                        tempValue: this.tempValue,
+                                        initValue: this.initValue
+                                            ? this.initValue
+                                            : {},
+                                        tempValue: this.tempValue
+                                            ? this.tempValue
+                                            : {},
                                         subViewId: () => {
                                             let id = "";
                                             this.config.subMapping.forEach(

@@ -126,9 +126,7 @@ export class SqlEditorComponent extends CnComponentBase
 
     // 获取模块信息
     async getModuleData(params) {
-        return this._http
-            .getProj("common/CfgProjectModule", params)
-            .toPromise();
+        return this._http.get("common/CfgProjectModule", params).toPromise();
     }
 
     // 改变模块选项

@@ -63,7 +63,13 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
                         const option = cascadeEvent.option;
                         const subViewId = option.subViewId();
                         if (option && cfg.config.viewId === subViewId) {
-                            this.buildComponent(cfg, option.data);
+                            console.log("option", option);
+                            this.buildComponent(
+                                cfg,
+                                option.data,
+                                option["tempValue"] ? option["tempValue"] : {},
+                                option["initValue"] ? option["initValue"] : {}
+                            );
                         }
                     });
                 }
@@ -95,6 +101,7 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
                                 this.buildComponent(
                                     cfg,
                                     { ...data, ...tempValue },
+                                    tempValue,
                                     initValue
                                 );
                             }
@@ -105,7 +112,7 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
         );
     }
 
-    buildComponent(config, data?, initValue?) {
+    buildComponent(config, data?, tempValue?, initValue?) {
         const comp = this.resolver.resolveComponentFactory<any>(
             ComponentResolverComponent
         );

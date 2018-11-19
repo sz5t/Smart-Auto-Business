@@ -988,20 +988,20 @@ export class LayoutSettingComponent implements OnInit {
     // 获取模块信息
     async getModuleData(params) {
         return this.apiService
-            .getProj(APIResource.AppModuleConfig, params)
+            .get(APIResource.AppModuleConfig, params)
             .toPromise();
     }
 
     // 获取布局设置列表
     async getLayoutConfigData(params) {
         return this.apiService
-            .getProj(APIResource.LayoutSetting, params)
+            .get(APIResource.LayoutSetting, params)
             .toPromise();
     }
 
     async getBlockConfigData(layoutId) {
         return this.apiService
-            .getProj(APIResource.BlockSetting, { LayoutId: layoutId })
+            .get(APIResource.BlockSetting, { LayoutId: layoutId })
             .toPromise();
     }
 
@@ -1140,14 +1140,12 @@ export class LayoutSettingComponent implements OnInit {
 
     async addSettingLayout(data) {
         return this.apiService
-            .postProj(APIResource.LayoutSetting, data)
+            .post(APIResource.LayoutSetting, data)
             .toPromise();
     }
 
     async addBlockSetting(data) {
-        return this.apiService
-            .postProj(APIResource.BlockSetting, data)
-            .toPromise();
+        return this.apiService.post(APIResource.BlockSetting, data).toPromise();
     }
 
     private uuID(w) {

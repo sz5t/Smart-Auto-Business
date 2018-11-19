@@ -1,32 +1,37 @@
-import { SysResource } from '@core/utility/sys-resource';
+import { SysResource } from "@core/utility/sys-resource";
 
-import { SettingsService, TitleService, MenuService } from '@delon/theme';
-import { Component, OnDestroy, Inject, Optional, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { SocialService, TokenService, DA_SERVICE_TOKEN, ITokenModel } from '@delon/auth';
-import { ReuseTabService } from '@delon/abc';
-import { environment } from '@env/environment';
-import { OnlineUser, UserLogin } from '../../../model/APIModel/OnlineUser';
-import { AppUser, CacheInfo } from '../../../model/APIModel/AppUser';
-import { APIResource } from '@core/utility/api-resource';
-import { CacheService } from '@delon/cache';
-import { ApiService } from '@core/utility/api-service';
+import { SettingsService, TitleService, MenuService } from "@delon/theme";
+import { Component, OnDestroy, Inject, Optional, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { NzMessageService, NzModalService } from "ng-zorro-antd";
+import {
+    SocialService,
+    TokenService,
+    DA_SERVICE_TOKEN,
+    ITokenModel
+} from "@delon/auth";
+import { ReuseTabService } from "@delon/abc";
+import { environment } from "@env/environment";
+import { OnlineUser, UserLogin } from "../../../model/APIModel/OnlineUser";
+import { AppUser, CacheInfo } from "../../../model/APIModel/AppUser";
+import { APIResource } from "@core/utility/api-resource";
+import { CacheService } from "@delon/cache";
+import { ApiService } from "@core/utility/api-service";
 // import { Md5 } from 'ts-md5/dist/md5';
-import { HttpClient } from '@angular/common/http';
-import { SystemResource } from '@core/utility/system-resource';
+import { HttpClient } from "@angular/common/http";
+import { SystemResource } from "@core/utility/system-resource";
 
 @Component({
-    selector: 'passport-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.less'],
+    selector: "passport-login",
+    templateUrl: "./login.component.html",
+    styleUrls: ["./login.component.less"],
     providers: [SocialService]
 })
 export class UserLoginComponent implements OnInit, OnDestroy {
     form: FormGroup;
-    error = '';
-    errorApp = '';
+    error = "";
+    errorApp = "";
     // 登录配置/解析系统的标识：0配置平台，1解析平台
     type = 0;
     loading = false;
@@ -45,8 +50,11 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         private socialService: SocialService,
         private titleService: TitleService,
         private menuService: MenuService,
-        @Optional() @Inject(ReuseTabService) private reuseTabService: ReuseTabService,
-        @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService) {
+        @Optional()
+        @Inject(ReuseTabService)
+        private reuseTabService: ReuseTabService,
+        @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService
+    ) {
         this.form = fb.group({
             userName: [null, [Validators.required, Validators.minLength(1)]],
             password: [null, Validators.required],
@@ -61,26 +69,33 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-
-        this.titleService.setTitle('SmartOne');
-        this.cacheService.set('AppName', 'SmartOne');
+        this.titleService.setTitle("SmartOne");
+        this.cacheService.set("AppName", "SmartOne");
     }
     // region: fields
 
-    get userName() { return this.form.controls.userName; }
-    get password() { return this.form.controls.password; }
-    get uName() { return this.form.controls.uName; }
-    get uPassword() { return this.form.controls.uPassword; }
+    get userName() {
+        return this.form.controls.userName;
+    }
+    get password() {
+        return this.form.controls.password;
+    }
+    get uName() {
+        return this.form.controls.uName;
+    }
+    get uPassword() {
+        return this.form.controls.uPassword;
+    }
 
     // endregion
 
     switchLogin(ret: any) {
         this.type = ret.index;
         if (ret.index === 0) {
-            this.titleService.setTitle('SmartOne配置平台');
+            this.titleService.setTitle("SmartOne配置平台");
         } else {
-            this.titleService.setTitle('SmartOne运行平台');
-            this.cacheService.set('AppName', 'SmartOne');
+            this.titleService.setTitle("SmartOne运行平台");
+            this.cacheService.set("AppName", "SmartOne");
         }
     }
 
@@ -101,8 +116,8 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     // endregion
 
     submit() {
-        this.error = '';
-        this.errorApp = '';
+        this.error = "";
+        this.errorApp = "";
         this.loading = true;
         this.reuseTabService.clear();
 
@@ -158,7 +173,6 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         //         }
         //     }
 
-
         //     const appPermissionResult = await this._getAppPermission();
         //     if (appPermissionResult.Data && appPermissionResult.Status === 200) {
         //         if (this.type === 0) {
@@ -181,33 +195,35 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         const user = await this._userLogin(userLogin);
         if (user && user.status === 200 && user.isSuccess) {
             console.log(user.data);
-            this.cacheService.set('userInfo', user.data);
-            const token: ITokenModel = {token: user.data.token};
+            this.cacheService.set("userInfo", user.data);
+            const token: ITokenModel = { token: user.data.token };
             this.tokenService.set(token); // 后续projectId需要进行动态获取
 
             let menus;
             let url;
-            if (this.type === 0) { // 配置平台
+            if (this.type === 0) {
+                // 配置平台
                 const localAppDataResult = await this._getLocalAppData();
                 menus = localAppDataResult.menu;
-                url = '/dashboard/v1';
-            } else { // 解析平台
+                url = "/dashboard/v1";
+            } else {
+                // 解析平台
                 // const projModule = await this._loadProjectModule();
                 menus = [
                     {
-                        'text': '主导航',
-                        'i18n': 'main_navigation',
-                        'group': true,
-                        'hideInBreadcrumb': true,
-                        'children': []
+                        text: "主导航",
+                        i18n: "main_navigation",
+                        group: true,
+                        hideInBreadcrumb: true,
+                        children: []
                     }
                 ];
                 // menus[0].children = this.arrayToTree(projModule.data, null);
                 menus[0].children = user.data.modules;
-                url = '/';
+                url = "/";
             }
 
-            this.cacheService.set('Menus', menus);
+            this.cacheService.set("Menus", menus);
             this.menuService.add(menus);
 
             this.router.navigate([`${url}`]);
@@ -218,43 +234,66 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     }
 
     async _loadProjectModule() {
-        return this.apiService.get('common/ComProjectModule/null/ComProjectModule?refProjectId=7fe971700f21d3a796d2017398812dcd&_recursive=true&_deep=3').toPromise();
+        return this.apiService
+            .get(
+                "common/ComProjectModule/null/ComProjectModule?refProjectId=7fe971700f21d3a796d2017398812dcd&_recursive=true&_deep=3"
+            )
+            .toPromise();
     }
 
-    async _userLogin (userLogin) {
-        return this.apiService.post('common/login', userLogin).toPromise();
+    async _userLogin(userLogin) {
+        return this.apiService.post("common/login", userLogin).toPromise();
     }
 
     async _getOnlineUser(onlineUser) {
-        return this.apiService.post(APIResource.OnlineUser, onlineUser).toPromise();
+        return this.apiService
+            .post(APIResource.OnlineUser, onlineUser)
+            .toPromise();
     }
 
     async _getAppUser(userId) {
-        return this.apiService.get(APIResource.AppUser + '/' + userId).toPromise();
+        return this.apiService
+            .get(APIResource.AppUser + "/" + userId)
+            .toPromise();
     }
 
     async _getSysCommonCode() {
-        return this.apiService.get(APIResource.SysCommonCode, {
-            name: environment.COMMONCODE,
-            ApplyId: 'ApplyId'
-        }).toPromise();
+        return this.apiService
+            .get(APIResource.SysCommonCode, {
+                name: environment.COMMONCODE,
+                ApplyId: "ApplyId"
+            })
+            .toPromise();
     }
     async _getAppModule(applyId) {
-        return this.apiService.getProj(`${APIResource.AppModuleConfig}/_root/${APIResource.AppModuleConfig}?_recursive=true&_deep=4&_root.ApplyId=${applyId}&_root.parentid=in("",null)`, {
-            _orderBy: 'order asc'
-        }).toPromise();
+        return this.apiService
+            .get(
+                `${APIResource.AppModuleConfig}/_root/${
+                    APIResource.AppModuleConfig
+                }?_recursive=true&_deep=4&_root.ApplyId=${applyId}&_root.parentid=in("",null)`,
+                {
+                    _orderBy: "order asc"
+                }
+            )
+            .toPromise();
     }
 
     async _getLocalAppData() {
-        return this.httpClient.get<any>(APIResource.localUrl + '/app-data.json').toPromise();
+        return this.httpClient
+            .get<any>(
+                SystemResource.localResource.url + "/assets/app-data.json"
+            )
+            .toPromise();
     }
 
     async _getAppPermission() {
-        return this.apiService.get(APIResource.AppPermission + '/Func.SinoForceWeb前端').toPromise();
+        return this.apiService
+            .get(APIResource.AppPermission + "/Func.SinoForceWeb前端")
+            .toPromise();
     }
 
     async _getAppConfig() {
-        return this.httpClient.get('assets/app-config.json').toPromise();
+        return this.httpClient.get("assets/app-config.json").toPromise();
     }
 
     _buildOnlineUser(onlineUser: UserLogin) {
@@ -265,17 +304,19 @@ export class UserLoginComponent implements OnInit, OnDestroy {
             // environment.SERVER_URL = APIResource.SettingUrl;
             // environment.COMMONCODE = APIResource.SettingCommonCode;
 
-            this.cacheService.set('currentConfig', SystemResource.settingSystem);
+            this.cacheService.set(
+                "currentConfig",
+                SystemResource.settingSystem
+            );
         } else {
             onlineUser.loginName = this.uName.value;
             onlineUser.loginPwd = this.uPassword.value;
             // Md5.hashStr(this.uPassword.value).toString().toUpperCase();
             // environment.SERVER_URL = APIResource.LoginUrl;
             // environment.COMMONCODE = APIResource.LoginCommonCode;
-            this.cacheService.set('currentConfig', SystemResource.appSystem);
+            this.cacheService.set("currentConfig", SystemResource.appSystem);
         }
     }
-
 
     _remarkLoginForm() {
         if (this.type === 0) {
@@ -296,17 +337,18 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     }
 
     appPerMerge(data) {
-        const menus: any[] = this.cacheService.getNone('Menus');
-        if (data['FuncResPermission']) {
-            const permis = data['FuncResPermission'].SubFuncResPermissions[0].SubFuncResPermissions;
+        const menus: any[] = this.cacheService.getNone("Menus");
+        if (data["FuncResPermission"]) {
+            const permis =
+                data["FuncResPermission"].SubFuncResPermissions[0]
+                    .SubFuncResPermissions;
             this.seachModule(menus, permis);
-            this.cacheService.set('Menus', menus);
-
+            this.cacheService.set("Menus", menus);
 
             this.menuService.add(menus);
-            this.router.navigate(['/dashboard/analysis']);
+            this.router.navigate(["/dashboard/analysis"]);
         } else {
-            this.showError('该用户没有任何权限');
+            this.showError("该用户没有任何权限");
         }
     }
 
@@ -314,16 +356,19 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         menus.forEach(item => {
             const strPer = JSON.stringify(this.searchAppper(item.id, data));
 
-            const subStr = strPer.substring(strPer.indexOf('[{'), strPer.lastIndexOf('}]') + 2);
+            const subStr = strPer.substring(
+                strPer.indexOf("[{"),
+                strPer.lastIndexOf("}]") + 2
+            );
             if (subStr.length > 5) {
                 const Perer = JSON.parse(subStr);
                 switch (Perer[0].Permission) {
-                    case 'Invisible':
+                    case "Invisible":
                         // console.log(111, item.hide);
                         item.hide = true;
                         // console.log(222, item.hide);
                         break;
-                    case 'Permitted':
+                    case "Permitted":
                         // console.log(333, item.hide);
                         item.hide = false;
                         // console.log(444, item.hide);
@@ -347,17 +392,20 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                 if (item.Id === moduleId) {
                     OpPer.push(item.OpPermissions);
                 } else {
-                    const getAppper = this.searchAppper(moduleId, item.SubFuncResPermissions);
+                    const getAppper = this.searchAppper(
+                        moduleId,
+                        item.SubFuncResPermissions
+                    );
                     if (getAppper && item.Name.length > 0)
                         OpPer.push(getAppper);
                 }
             });
-        } return OpPer;
+        }
+        return OpPer;
     }
 
     showError(errmsg) {
-        if (this.type === 0)
-            this.error = errmsg;
+        if (this.type === 0) this.error = errmsg;
         else this.errorApp = errmsg;
     }
 
@@ -374,15 +422,15 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                     text: data[i].name,
                     id: data[i].Id,
                     // group: JSON.parse(data[i].ConfigData).group,
-                    link: data[i].url ? data[i].url :  '',
+                    link: data[i].url ? data[i].url : "",
                     icon: data[i].icon,
                     hide: data[i].isEnabled ? false : true
                 };
                 temp = this.arrayToTree(data[i].children, data[i].Id);
                 if (temp.length > 0) {
-                    obj['children'] = temp;
+                    obj["children"] = temp;
                 } else {
-                    obj['isLeaf'] = true;
+                    obj["isLeaf"] = true;
                 }
                 result.push(obj);
             }

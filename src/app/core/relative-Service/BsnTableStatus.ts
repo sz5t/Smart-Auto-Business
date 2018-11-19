@@ -17,6 +17,7 @@ export const BSN_COMPONENT_MODES = {
     SEARCH: "Search",
     UPLOAD: "upload",
     REFRESH: "refresh",
+    ADD_ROW_DATA: "add_row_data",
     FORM_BATCH: "formBatch",
     // tree
     ADD_NODE: "addNode",
@@ -53,6 +54,7 @@ export const BSN_PARAMETER_TYPE = {
 };
 
 export const BSN_EXECUTE_ACTION = {
+    EXECUTE_ADD_ROW_DATA: "EXECUTE_ADD_ROW_DATA",
     EXECUTE_SAVE_ROW: "EXECUTE_SAVE_ROW",
     EXECUTE_EDIT_ROW: "EXECUTE_EDIT_ROW",
     EXECUTE_SELECTED: "EXECUTE_SELECTED",

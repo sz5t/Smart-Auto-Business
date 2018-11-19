@@ -1482,20 +1482,20 @@ export class LayoutStepSettingComponent implements OnInit {
     // 获取模块信息
     async getModuleData(params) {
         return this.apiService
-            .getProj("common/ComProjectModule", params)
+            .get("common/ComProjectModule", params)
             .toPromise();
     }
 
     // 获取布局设置列表
     async getLayoutConfigData(params) {
         return this.apiService
-            .getProj("common/LayoutSettingBuffer", params)
+            .get("common/LayoutSettingBuffer", params)
             .toPromise();
     }
 
     async getBlockConfigData(layoutId, moduleId) {
         return this.apiService
-            .getProj("common/BlockSettingBuffer", {
+            .get("common/BlockSettingBuffer", {
                 layoutId: layoutId,
                 parentId: moduleId
             })

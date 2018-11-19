@@ -1,36 +1,39 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { _HttpClient } from '@delon/theme';
-import { NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { CommonTools } from '@core/utility/common-tools';
-import { ApiService } from '@core/utility/api-service';
-import { APIResource } from '@core/utility/api-resource';
-import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
-import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
-import { CnComponentBase } from '@shared/components/cn-component-base';
+import { Component, OnInit, Input } from "@angular/core";
+import { _HttpClient } from "@delon/theme";
+import { NzMessageService, NzModalService } from "ng-zorro-antd";
+import { CommonTools } from "@core/utility/common-tools";
+import { ApiService } from "@core/utility/api-service";
+import { APIResource } from "@core/utility/api-resource";
+import {
+    RelativeService,
+    RelativeResolver
+} from "@core/relative-Service/relative-service";
+import { LayoutResolverComponent } from "@shared/resolver/layout-resolver/layout-resolver.component";
+import { CnComponentBase } from "@shared/components/cn-component-base";
 
 @Component({
-    selector: 'bsn-data-table,[bsn-data-table]',
-    templateUrl: './bsn-data-table.component.html',
+    selector: "bsn-data-table,[bsn-data-table]",
+    templateUrl: "./bsn-data-table.component.html",
     styles: [
         `
-.table-operations {
-  margin-bottom: 16px;
-}
+            .table-operations {
+                margin-bottom: 16px;
+            }
 
-.table-operations > button {
-  margin-right: 8px;
-}
-.selectedRow{
-    color:blue;
-}
-`
+            .table-operations > button {
+                margin-right: 8px;
+            }
+            .selectedRow {
+                color: blue;
+            }
+        `
     ]
 })
 export class BsnDataTableComponent extends CnComponentBase implements OnInit {
-
-    @Input() config; // dataTables 的配置参数
-    @Input() dataList = []; //  表格数据集合
-
+    @Input()
+    config; // dataTables 的配置参数
+    @Input()
+    dataList = []; //  表格数据集合
 
     pi = 1;
     ps = 10;
@@ -42,8 +45,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
     events: any[] = [];
     rowContent = {}; //  行填充
 
-    tempParameters = {
-    }; //  临时参数，如从外部进出值，均从此处走
+    tempParameters = {}; //  临时参数，如从外部进出值，均从此处走
 
     /**
      * 当前组件属性【作为主表、作为子表、单表】优先级：子表-》主表-》单表；
@@ -66,7 +68,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
      */
     _toolbar = {};
     async load(type?, pi?: number) {
-        if (typeof pi !== 'undefined') {
+        if (typeof pi !== "undefined") {
             this.pi = pi || 1;
         }
 
@@ -88,14 +90,20 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
             this.dataList = data.results;
         });
         */
-        if (type === 'load') {
-            const ajaxData = await this.execAjax(this.config.ajaxConfig, null, 'load');
+        if (type === "load") {
+            const ajaxData = await this.execAjax(
+                this.config.ajaxConfig,
+                null,
+                "load"
+            );
             if (ajaxData) {
-                console.log('异步加载表数据load', ajaxData);
+                console.log("异步加载表数据load", ajaxData);
                 this.loading = true;
                 if (ajaxData.Data.length > 0) {
                     if (ajaxData.Data[0].Metadata) {
-                        this.updateEditCacheByLoad(JSON.parse(ajaxData.Data[0].Metadata));
+                        this.updateEditCacheByLoad(
+                            JSON.parse(ajaxData.Data[0].Metadata)
+                        );
                         this.dataList = JSON.parse(ajaxData.Data[0].Metadata);
                         this.total = this.dataList.length;
                     } else {
@@ -103,14 +111,14 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                         this.updateEditCacheByLoad([]);
                         this.total = this.dataList.length;
                     }
-                    this.tempParameters['_id'] = ajaxData.Data[0].Id;
+                    this.tempParameters["_id"] = ajaxData.Data[0].Id;
                 } else {
                     this.dataList = [];
                     this.updateEditCacheByLoad([]);
-                    this.tempParameters['_id'] && delete this.tempParameters['_id'];
-
+                    this.tempParameters["_id"] &&
+                        delete this.tempParameters["_id"];
                 }
-                console.log('当前记录id', this.tempParameters['_id']);
+                console.log("当前记录id", this.tempParameters["_id"]);
             } else {
                 this.dataList = [];
                 this.updateEditCacheByLoad([]);
@@ -125,10 +133,10 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
               // this.dataList = data.Data.Metadata;
               // this.total=data.Data.Metadata.length;
           }); */
-
     }
-    isString(obj) { // 判断对象是否是字符串
-        return Object.prototype.toString.call(obj) === '[object String]';
+    isString(obj) {
+        // 判断对象是否是字符串
+        return Object.prototype.toString.call(obj) === "[object String]";
     }
     /**
      * 执行异步数据
@@ -137,8 +145,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
      * @param componentValue
      */
     async execAjax(p?, componentValue?, type?) {
-        const params = {
-        };
+        const params = {};
         /*   p = {
               url: 'AppConfigPack',
               ajaxType:'post',
@@ -152,67 +159,74 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         let tag = true;
         if (p) {
             p.params.forEach(param => {
-                if (param.type === 'tempValue') {
+                if (param.type === "tempValue") {
                     if (type) {
-                        if (type === 'load') {
+                        if (type === "load") {
                             if (this.tempParameters[param.valueName]) {
-                                params[param.name] = this.tempParameters[param.valueName];
+                                params[param.name] = this.tempParameters[
+                                    param.valueName
+                                ];
                             } else {
-                                console.log('参数不全不能加载');
+                                console.log("参数不全不能加载");
                                 tag = false;
                                 return;
                             }
                         } else {
-                            params[param.name] = this.tempParameters[param.valueName];
+                            params[param.name] = this.tempParameters[
+                                param.valueName
+                            ];
                         }
                     } else {
-                        params[param.name] = this.tempParameters[param.valueName];
+                        params[param.name] = this.tempParameters[
+                            param.valueName
+                        ];
                     }
-
-                } else if (param.type === 'value') {
-
+                } else if (param.type === "value") {
                     params[param.name] = param.value;
-
-                } else if (param.type === 'GUID') {
+                } else if (param.type === "GUID") {
                     const fieldIdentity = CommonTools.uuID(10);
                     params[param.name] = fieldIdentity;
-                } else if (param.type === 'componentValue') {
+                } else if (param.type === "componentValue") {
                     console.log(componentValue);
                     params[param.name] = componentValue.value;
                 }
             });
 
-
             if (this.isString(p.url)) {
                 url = APIResource[p.url];
             } else {
-                let pc = 'null';
+                let pc = "null";
                 p.url.params.forEach(param => {
-                    if (param['type'] === 'value') {
+                    if (param["type"] === "value") {
                         pc = param.value;
-                    } else if (param.type === 'GUID') {
+                    } else if (param.type === "GUID") {
                         const fieldIdentity = CommonTools.uuID(10);
                         pc = fieldIdentity;
-                    } else if (param.type === 'componentValue') {
+                    } else if (param.type === "componentValue") {
                         pc = componentValue.value;
-                    } else if (param.type === 'tempValue') {
+                    } else if (param.type === "tempValue") {
                         pc = this.tempParameters[param.valueName];
                     }
                 });
 
-                url = APIResource[p.url['parent']] + '/' + pc + '/' + APIResource[p.url['child']];
+                url =
+                    APIResource[p.url["parent"]] +
+                    "/" +
+                    pc +
+                    "/" +
+                    APIResource[p.url["child"]];
             }
         }
-        if (p.ajaxType === 'get' && tag) {
-            console.log('get参数', params);
+        if (p.ajaxType === "get" && tag) {
+            console.log("get参数", params);
 
-            return this._http.getProj(url, params).toPromise();
-        } else if (p.ajaxType === 'put') {
-            console.log('put参数', params);
-            return this._http.putProj(url, params).toPromise();
-        } else if (p.ajaxType === 'post') {
-            console.log('post参数', params);
-            return this._http.postProj(url, params).toPromise();
+            return this._http.get(url, params).toPromise();
+        } else if (p.ajaxType === "put") {
+            console.log("put参数", params);
+            return this._http.put(url, params).toPromise();
+        } else if (p.ajaxType === "post") {
+            console.log("post参数", params);
+            return this._http.post(url, params).toPromise();
         } else {
             return null;
         }
@@ -220,11 +234,11 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
 
     clear() {
         this.args = {};
-        this.load('', 1);
+        this.load("", 1);
     }
 
     _checkAll($event?) {
-        this.dataList.forEach(item => item.checked = this._allChecked);
+        this.dataList.forEach(item => (item.checked = this._allChecked));
         this.refChecked();
     }
     refChecked() {
@@ -233,8 +247,11 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         this._indeterminate = this._allChecked ? false : checkedCount > 0;
     }
     // private _randomUser: RandomUserService,
-    constructor(private http: _HttpClient, private _http: ApiService,
-        private message: NzMessageService, private modalService: NzModalService,
+    constructor(
+        private http: _HttpClient,
+        private _http: ApiService,
+        private message: NzMessageService,
+        private modalService: NzModalService,
         private relativeMessage: RelativeService,
         private _relativeResolver: RelativeResolver
     ) {
@@ -242,14 +259,14 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
     }
     async ngOnInit() {
         this.analysisRelation(this.config);
-        this.toolbarEnables('load');
+        this.toolbarEnables("load");
         if (this.config.ajaxConfig) {
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
-                    this.load('load');
+                    this.load("load");
                 }
             } else {
-                this.load('load');
+                this.load("load");
             }
         } else {
             this.updateEditCache();
@@ -264,8 +281,6 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         console.log(this._relativeResolver);
         //   this.http.get('/chart/visit').subscribe((res: any) => this.events = res);
         this.getContent();
-
-
     }
 
     showMsg(msg: string) {
@@ -279,7 +294,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
      */
     toolbarEnables(type?, name?) {
         if (type) {
-            if (type === 'load') {
+            if (type === "load") {
                 if (this.config.toolbar) {
                     this.config.toolbar.forEach(bar => {
                         if (bar.enable === false) {
@@ -288,7 +303,6 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                             this._toolbar[bar.name] = true;
                         }
                     });
-
                 }
             } else {
                 this.config.toolbar.forEach(bar => {
@@ -303,7 +317,6 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                         }
                     }
                 });
-
             }
         }
     }
@@ -321,7 +334,9 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
     cancelEdit(key: string): void {
         const index = this.dataList.findIndex(item => item.key === key);
         this.editCache[key].edit = false;
-        this.editCache[key].data = JSON.parse(JSON.stringify(this.dataList[index]));
+        this.editCache[key].data = JSON.parse(
+            JSON.stringify(this.dataList[index])
+        );
     }
 
     saveEdit(key: string): void {
@@ -392,42 +407,42 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
      * 查询
      */
     search() {
-
-        this.dataList = [...this.dataList.sort((a, b) => {
-            if (a[this.sortName] > b[this.sortName]) {
-                return (this.sortValue === 'ascend') ? 1 : -1;
-            } else if (a[this.sortName] < b[this.sortName]) {
-                return (this.sortValue === 'ascend') ? -1 : 1;
-            } else {
-                return 0;
-            }
-        })];
+        this.dataList = [
+            ...this.dataList.sort((a, b) => {
+                if (a[this.sortName] > b[this.sortName]) {
+                    return this.sortValue === "ascend" ? 1 : -1;
+                } else if (a[this.sortName] < b[this.sortName]) {
+                    return this.sortValue === "ascend" ? -1 : 1;
+                } else {
+                    return 0;
+                }
+            })
+        ];
     }
 
     getContent() {
-        this.rowContent['key'] = null;
+        this.rowContent["key"] = null;
         this.config.columns.forEach(element => {
             const colsname = element.field.toString();
-            this.rowContent[colsname] = '';
+            this.rowContent[colsname] = "";
         });
     }
 
     /**新增 */
     addRow(): void {
-        this.toolbarEnables('action', 'addRow');
+        this.toolbarEnables("action", "addRow");
         const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
         const fieldIdentity = CommonTools.uuID(6);
-        rowContentNew['key'] = fieldIdentity;
-        rowContentNew['checked'] = true;
+        rowContentNew["key"] = fieldIdentity;
+        rowContentNew["checked"] = true;
         this.dataList = [...this.dataList, rowContentNew];
         // this.dataList.push(this.rowContent);
         this.updateEditCache();
         this.startEdit(fieldIdentity.toString());
-
     }
     /**修改 */
     updateRow(): void {
-        this.toolbarEnables('action', 'updateRow');
+        this.toolbarEnables("action", "updateRow");
         this.dataList.forEach(item => {
             if (item.checked === true) {
                 this.startEdit(item.key);
@@ -452,9 +467,8 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         //  });
     }
     /**保存 */
-    async  saveRow() {
-
-        this.toolbarEnables('action', 'saveRow');
+    async saveRow() {
+        this.toolbarEnables("action", "saveRow");
         this.dataList.forEach(item => {
             if (item.checked === true) {
                 this.saveEdit(item.key);
@@ -465,44 +479,53 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         dataList.forEach(element => {
             const row = {};
             for (const d in element) {
-                if (d !== 'checked' && d !== 'selected') {
+                if (d !== "checked" && d !== "selected") {
                     row[d] = element[d];
                 }
             }
             newdataList.push(row);
         });
-        this.tempParameters['dataList'] = JSON.stringify(newdataList);
-        this.tempParameters['arrayDataList'] = newdataList;
-        console.log(this.tempParameters['dataList']);
+        this.tempParameters["dataList"] = JSON.stringify(newdataList);
+        this.tempParameters["arrayDataList"] = newdataList;
+        console.log(this.tempParameters["dataList"]);
         if (this.config.toolbar) {
-            const index = this.config.toolbar.findIndex(item => item.name === 'saveRow');
+            const index = this.config.toolbar.findIndex(
+                item => item.name === "saveRow"
+            );
             if (this.config.toolbar[index].ajaxConfig) {
-                const pconfig = JSON.parse(JSON.stringify(this.config.toolbar[index].ajaxConfig));
-                if (this.tempParameters['_id']) {
+                const pconfig = JSON.parse(
+                    JSON.stringify(this.config.toolbar[index].ajaxConfig)
+                );
+                if (this.tempParameters["_id"]) {
                     // 修改保存
-                    const ajaxData = await this.execAjax(pconfig['update'], null);
+                    const ajaxData = await this.execAjax(
+                        pconfig["update"],
+                        null
+                    );
                     if (ajaxData) {
-                        console.log('修改保存成功', ajaxData);
-                        this.dataList = JSON.parse(JSON.stringify(this.dataList));
+                        console.log("修改保存成功", ajaxData);
+                        this.dataList = JSON.parse(
+                            JSON.stringify(this.dataList)
+                        );
                     }
                 } else {
                     // 新增保存
-                    console.log(pconfig['add']);
-                    const ajaxData = await this.execAjax(pconfig['add'], null);
+                    console.log(pconfig["add"]);
+                    const ajaxData = await this.execAjax(pconfig["add"], null);
                     if (ajaxData) {
-                        console.log('新增保存成功', ajaxData);
-                        this.dataList = JSON.parse(JSON.stringify(this.dataList));
+                        console.log("新增保存成功", ajaxData);
+                        this.dataList = JSON.parse(
+                            JSON.stringify(this.dataList)
+                        );
                     }
                 }
             }
-
-
         }
-        console.log('需要保存的数据', newdataList);
+        console.log("需要保存的数据", newdataList);
     }
     /**取消 */
     cancelRow(): void {
-        this.toolbarEnables('action', 'cancelRow');
+        this.toolbarEnables("action", "cancelRow");
         this.dataList.forEach(item => {
             if (item.checked === true) {
                 this.cancelEdit(item.key);
@@ -515,7 +538,6 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
      * @param edit
      */
     selectRow(data?, edit?) {
-
         this.dataList.forEach(item => {
             item.selected = false;
         });
@@ -525,37 +547,50 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         //  多选（check=select），如果是未勾选，第一次点击选中，再次点击取消选中
         //  多勾选单选中行（check》select）勾选和行选中各自独立，互不影响
 
-        console.log('注册api事件', this.selfEvent);
-        console.log('行选中selectRowdata', data);
-        this.selfEvent['selectRow'].forEach(sendEvent => {
+        console.log("注册api事件", this.selfEvent);
+        console.log("行选中selectRowdata", data);
+        this.selfEvent["selectRow"].forEach(sendEvent => {
             if (sendEvent.isRegister === true) {
-
-                console.log('关系描述', sendEvent);
+                console.log("关系描述", sendEvent);
                 const parent = {};
                 sendEvent.data.params.forEach(element => {
-                    parent[element['cid']] = data[element['pid']];
+                    parent[element["cid"]] = data[element["pid"]];
                 });
 
-                console.log('主子关系字段', parent);
-                const receiver = { name: 'refreshAsChild', receiver: sendEvent.receiver, parent: parent };
-                console.log('选中行发消息事件', receiver);
-                this.relativeMessage.sendMessage({ type: 'relation' }, receiver);
-                console.log('选中行发消息事件over');
+                console.log("主子关系字段", parent);
+                const receiver = {
+                    name: "refreshAsChild",
+                    receiver: sendEvent.receiver,
+                    parent: parent
+                };
+                console.log("选中行发消息事件", receiver);
+                this.relativeMessage.sendMessage(
+                    { type: "relation" },
+                    receiver
+                );
+                console.log("选中行发消息事件over");
             }
         });
-        this.selfEvent['selectRowBySetValue'].forEach(sendEvent => {
+        this.selfEvent["selectRowBySetValue"].forEach(sendEvent => {
             if (sendEvent.isRegister === true) {
-                console.log('关系描述', sendEvent);
+                console.log("关系描述", sendEvent);
                 const parent = {};
                 sendEvent.data.params.forEach(element => {
-                    parent[element['cid']] = data[element['pid']];
+                    parent[element["cid"]] = data[element["pid"]];
                 });
 
-                console.log('主子关系字段', parent);
-                const receiver = { name: 'initComponentValue', receiver: sendEvent.receiver, parent: parent };
-                console.log('选中行发消息事件', receiver);
-                this.relativeMessage.sendMessage({ type: 'relation' }, receiver);
-                console.log('选中行发消息事件over');
+                console.log("主子关系字段", parent);
+                const receiver = {
+                    name: "initComponentValue",
+                    receiver: sendEvent.receiver,
+                    parent: parent
+                };
+                console.log("选中行发消息事件", receiver);
+                this.relativeMessage.sendMessage(
+                    { type: "relation" },
+                    receiver
+                );
+                console.log("选中行发消息事件over");
             }
         });
     }
@@ -572,25 +607,25 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
      */
     execFun(name?) {
         switch (name) {
-            case 'refresh':
+            case "refresh":
                 this.refresh();
                 break;
-            case 'addRow':
+            case "addRow":
                 this.addRow();
                 break;
-            case 'updateRow':
+            case "updateRow":
                 this.updateRow();
                 break;
-            case 'deleteRow':
+            case "deleteRow":
                 this.deleteRow();
                 break;
-            case 'saveRow':
+            case "saveRow":
                 this.saveRow();
                 break;
-            case 'cancelRow':
+            case "cancelRow":
                 this.cancelRow();
                 break;
-            case 'showDialog':
+            case "showDialog":
                 this.showDialog();
                 break;
 
@@ -603,24 +638,23 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
      * 刷新
      */
     refresh() {
-        this.toolbarEnables('action', 'refresh');
+        this.toolbarEnables("action", "refresh");
         // 测试生成方法
-        console.log(' 测试生成方法 begin');
+        console.log(" 测试生成方法 begin");
         this.createMethod();
-        console.log(' 测试生成方法', this.CRUD);
-        this.CRUD['add']();
-        console.log(' 调用生成方法');
+        console.log(" 测试生成方法", this.CRUD);
+        this.CRUD["add"]();
+        console.log(" 调用生成方法");
     }
-
 
     /** 刷新，作为子表的刷新*/
     refreshAsChild(parentId?) {
-        console.log('刷新，作为子表的刷新', parentId);
+        console.log("刷新，作为子表的刷新", parentId);
         for (const d in parentId) {
             this.tempParameters[d] = parentId[d];
         }
-        this.load('load'); // 调用子表的刷新
-        console.log('子表刷新是取到主表的值', this.tempParameters);
+        this.load("load"); // 调用子表的刷新
+        console.log("子表刷新是取到主表的值", this.tempParameters);
     }
 
     // 初始化参数列表，参数列表初始化后load（当前参数的取值）
@@ -628,14 +662,14 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         for (const d in data) {
             this.tempParameters[d] = data[d];
         }
-        console.log('初始化参数', this.tempParameters);
-        this.load('load'); // 参数完成后加载刷新
+        console.log("初始化参数", this.tempParameters);
+        this.load("load"); // 参数完成后加载刷新
     }
 
     // 初始化组件值
     initComponentValue(data?) {
         for (const d in data) {
-            if (d === 'dataList') {
+            if (d === "dataList") {
                 if (!data[d]) {
                     this.dataList = [];
                     this.updateEditCacheByLoad([]);
@@ -643,7 +677,7 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                     const _dataList = data[d];
                     _dataList.forEach(item => {
                         const fieldIdentity = CommonTools.uuID(6);
-                        item['key'] = fieldIdentity;
+                        item["key"] = fieldIdentity;
                     });
                     this.updateEditCacheByLoad(_dataList);
                     this.dataList = _dataList;
@@ -656,27 +690,30 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         }
     }
 
-
     formSendMessage(data?) {
         if (data) {
             if (this.selfEvent[data.name]) {
-                this.selfEvent[data.name].push({ isRegister: true, receiver: data.receiver, data: data.relationData });
+                this.selfEvent[data.name].push({
+                    isRegister: true,
+                    receiver: data.receiver,
+                    data: data.relationData
+                });
             }
         }
     }
 
     //  接收消息
     formReceiveMessage(data?) {
-        console.log('表单接收消息', data);
+        console.log("表单接收消息", data);
         if (data) {
             switch (data.name) {
-                case 'refreshAsChild':
+                case "refreshAsChild":
                     this.refreshAsChild(data.parent);
                     break;
-                case 'initParameters':
+                case "initParameters":
                     this.initParameters(data.parent);
                     break;
-                case 'initComponentValue':
+                case "initComponentValue":
                     this.initComponentValue(data.parent);
                     break;
             }
@@ -693,34 +730,40 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                     });
                 }
                 if (relation.relationReceiveContent) {
-
-                    const subMessage = this.relativeMessage.getMessage().subscribe(value => {
-                        switch (value.type.type) {
-                            case 'relation':
-                                if (value.data.receiver === this.config.viewId) {
-                                    this.formReceiveMessage(value.data);
-                                }
-                                break;
-                            case 'initParameters':
-                                console.log(value.data.receiver, this.config);
-                                if (value.data.receiver === this.config.viewId) {
-                                    this.formReceiveMessage(value.data);
-                                }
-                                break;
-                        }
-                    });
+                    const subMessage = this.relativeMessage
+                        .getMessage()
+                        .subscribe(value => {
+                            switch (value.type.type) {
+                                case "relation":
+                                    if (
+                                        value.data.receiver ===
+                                        this.config.viewId
+                                    ) {
+                                        this.formReceiveMessage(value.data);
+                                    }
+                                    break;
+                                case "initParameters":
+                                    console.log(
+                                        value.data.receiver,
+                                        this.config
+                                    );
+                                    if (
+                                        value.data.receiver ===
+                                        this.config.viewId
+                                    ) {
+                                        this.formReceiveMessage(value.data);
+                                    }
+                                    break;
+                            }
+                        });
                     if (subMessage) {
                         this._subscribArr.push(subMessage);
                     }
                 }
-
             });
-
         }
 
-
-        console.log('解析关系信息', data);
-
+        console.log("解析关系信息", data);
     }
 
     //  销毁
@@ -738,170 +781,187 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
     isVisible = false;
     modal = {
         nzConfirmLoading: true,
-        nzTitle: '标题',
+        nzTitle: "标题",
         nzClosable: true,
-        nzBody: '这是内容',
-        nzWidth: '520',
+        nzBody: "这是内容",
+        nzWidth: "520",
         nzContent: null, // 'modalContent'
-        nzOkText: '确定',
-        nzCancelText: '取消',
+        nzOkText: "确定",
+        nzCancelText: "取消",
         nzMaskClosable: true,
-        nzZIndex: '1000',
+        nzZIndex: "1000",
         //  [nzStyle]='{}'
         //  [nzWrapClassName]=''''
         //  (nzOnCancel)='handleCancel($event)'
         //  (nzOnOk)='handleOk($event)'
         config: {
-            'viewId': 'operation_sqlColumns1',
-            'component': 'bsnDataTable',
-            'config': {
-                'viewId': 'operation_sqlColumns1',
-                'keyId': 'key',
-                'nzIsPagination': false, //  是否分页
-                'nzShowTotal': true, //  是否显示总数据量
-                'pageSize': 5, // 默认每页数据条数
-                'nzPageSizeSelectorValues': [5, 10, 20, 30, 40, 50],
-                'nzLoading': false, //  是否显示加载中
-                'nzBordered': false, //  是否显示边框
-                'columns': [
+            viewId: "operation_sqlColumns1",
+            component: "bsnDataTable",
+            config: {
+                viewId: "operation_sqlColumns1",
+                keyId: "key",
+                nzIsPagination: false, //  是否分页
+                nzShowTotal: true, //  是否显示总数据量
+                pageSize: 5, // 默认每页数据条数
+                nzPageSizeSelectorValues: [5, 10, 20, 30, 40, 50],
+                nzLoading: false, //  是否显示加载中
+                nzBordered: false, //  是否显示边框
+                columns: [
                     {
-                        title: '主键', field: 'key', width: 80, hidden: true, editor: {
-                            type: 'input',
-                            field: 'key',
+                        title: "主键",
+                        field: "key",
+                        width: 80,
+                        hidden: true,
+                        editor: {
+                            type: "input",
+                            field: "key",
                             options: {
-                                'type': 'input',
-                                'labelSize': '6',
-                                'controlSize': '10',
-                                'inputType': 'text',
+                                type: "input",
+                                labelSize: "6",
+                                controlSize: "10",
+                                inputType: "text"
                             }
                         }
                     },
                     {
-                        title: '字段名称', field: 'fieldName', width: 80,
+                        title: "字段名称",
+                        field: "fieldName",
+                        width: 80,
                         editor: {
-                            type: 'input',
-                            field: 'fieldName',
+                            type: "input",
+                            field: "fieldName",
                             options: {
-                                'type': 'input',
-                                'labelSize': '6',
-                                'controlSize': '10',
-                                'inputType': 'text',
+                                type: "input",
+                                labelSize: "6",
+                                controlSize: "10",
+                                inputType: "text"
                             }
                         }
                     },
                     {
-                        title: '标题', field: 'title', width: 80,
+                        title: "标题",
+                        field: "title",
+                        width: 80,
                         editor: {
-                            type: 'input',
-                            field: 'title',
+                            type: "input",
+                            field: "title",
                             options: {
-                                'type': 'input',
-                                'labelSize': '6',
-                                'controlSize': '10',
-                                'inputType': 'text',
+                                type: "input",
+                                labelSize: "6",
+                                controlSize: "10",
+                                inputType: "text"
                             }
                         }
                     },
                     {
-                        title: '数据类型', field: 'dataTypeName', width: 80, hidden: false,
+                        title: "数据类型",
+                        field: "dataTypeName",
+                        width: 80,
+                        hidden: false,
                         editor: {
-                            type: 'select',
-                            field: 'dataType',
+                            type: "select",
+                            field: "dataType",
                             options: {
-                                'type': 'select',
-                                'labelSize': '6',
-                                'controlSize': '10',
-                                'inputType': 'submit',
-                                'name': 'sex',
-                                'label': '性别',
-                                'notFoundContent': '',
-                                'selectModel': false,
-                                'showSearch': true,
-                                'placeholder': '-请选择-',
-                                'disabled': false,
-                                'size': 'default',
-                                'clear': true,
-                                'width': '60px',
-                                'options': [
+                                type: "select",
+                                labelSize: "6",
+                                controlSize: "10",
+                                inputType: "submit",
+                                name: "sex",
+                                label: "性别",
+                                notFoundContent: "",
+                                selectModel: false,
+                                showSearch: true,
+                                placeholder: "-请选择-",
+                                disabled: false,
+                                size: "default",
+                                clear: true,
+                                width: "60px",
+                                options: [
                                     {
-                                        'label': '字符',
-                                        'value': '字符'
+                                        label: "字符",
+                                        value: "字符"
                                     },
                                     {
-                                        'label': '数值',
-                                        'value': '数值'
+                                        label: "数值",
+                                        value: "数值"
                                     },
                                     {
-                                        'label': '时间',
-                                        'value': '时间'
+                                        label: "时间",
+                                        value: "时间"
                                     }
                                 ]
                             }
                         }
                     },
                     {
-                        title: '展示样式', field: 'displayStyleName', width: 80, hidden: false,
+                        title: "展示样式",
+                        field: "displayStyleName",
+                        width: 80,
+                        hidden: false,
                         editor: {
-                            type: 'select',
-                            field: 'displayStyle',
+                            type: "select",
+                            field: "displayStyle",
                             options: {
-                                'type': 'select',
-                                'labelSize': '6',
-                                'controlSize': '10',
-                                'inputType': 'submit',
-                                'notFoundContent': '',
-                                'selectModel': false,
-                                'showSearch': true,
-                                'placeholder': '-请选择-',
-                                'disabled': false,
-                                'size': 'default',
-                                'clear': true,
-                                'width': '60px',
-                                'options': [
+                                type: "select",
+                                labelSize: "6",
+                                controlSize: "10",
+                                inputType: "submit",
+                                notFoundContent: "",
+                                selectModel: false,
+                                showSearch: true,
+                                placeholder: "-请选择-",
+                                disabled: false,
+                                size: "default",
+                                clear: true,
+                                width: "60px",
+                                options: [
                                     {
-                                        'label': '居中',
-                                        'value': '居中'
+                                        label: "居中",
+                                        value: "居中"
                                     },
                                     {
-                                        'label': '左对齐',
-                                        'value': '左对齐'
+                                        label: "左对齐",
+                                        value: "左对齐"
                                     },
                                     {
-                                        'label': '右对齐',
-                                        'value': '右对齐'
+                                        label: "右对齐",
+                                        value: "右对齐"
                                     }
                                 ]
                             }
                         }
                     },
                     {
-                        title: '是否显示', field: 'isShowName', width: 80, hidden: false,
+                        title: "是否显示",
+                        field: "isShowName",
+                        width: 80,
+                        hidden: false,
                         editor: {
-                            type: 'select',
-                            field: 'isShow',
+                            type: "select",
+                            field: "isShow",
                             options: {
-                                'type': 'select',
-                                'labelSize': '6',
-                                'controlSize': '10',
-                                'inputType': 'submit',
-                                'notFoundContent': '',
-                                'selectModel': false,
-                                'showSearch': true,
-                                'placeholder': '-请选择-',
-                                'disabled': false,
-                                'size': 'default',
-                                'clear': true,
-                                'width': '60px',
-                                'options': [
+                                type: "select",
+                                labelSize: "6",
+                                controlSize: "10",
+                                inputType: "submit",
+                                notFoundContent: "",
+                                selectModel: false,
+                                showSearch: true,
+                                placeholder: "-请选择-",
+                                disabled: false,
+                                size: "default",
+                                clear: true,
+                                width: "60px",
+                                options: [
                                     {
-                                        'label': '显示',
-                                        'value': '1',
-                                        'disabled': false
+                                        label: "显示",
+                                        value: "1",
+                                        disabled: false
                                     },
                                     {
-                                        'label': '隐藏',
-                                        'value': '2',
-                                        'disabled': false
+                                        label: "隐藏",
+                                        value: "2",
+                                        disabled: false
                                     }
                                 ]
                             }
@@ -909,36 +969,72 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                     },
 
                     {
-                        title: '排序', field: 'order', width: 80, hidden: false,
+                        title: "排序",
+                        field: "order",
+                        width: 80,
+                        hidden: false,
                         editor: {
-                            type: 'input',
-                            field: 'order',
+                            type: "input",
+                            field: "order",
                             options: {
-                                'type': 'input',
-                                'labelSize': '6',
-                                'controlSize': '10',
-                                'inputType': 'text',
+                                type: "input",
+                                labelSize: "6",
+                                controlSize: "10",
+                                inputType: "text"
                             }
                         }
                     },
-                    { title: '数据类型', field: 'dataType', width: 80, hidden: true, },
-                    { title: '展示样式', field: 'displayStyle', width: 80, hidden: true, },
-                    { title: '是否显示', field: 'isShow', width: 80, hidden: true, },
-
+                    {
+                        title: "数据类型",
+                        field: "dataType",
+                        width: 80,
+                        hidden: true
+                    },
+                    {
+                        title: "展示样式",
+                        field: "displayStyle",
+                        width: 80,
+                        hidden: true
+                    },
+                    {
+                        title: "是否显示",
+                        field: "isShow",
+                        width: 80,
+                        hidden: true
+                    }
                 ],
-                'toolbar': [
-                    { 'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新' },
-                    { 'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增' },
-                    { 'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改' },
-                    { 'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除' },
-                    { 'name': 'saveRow', 'class': 'editable-add-btn', 'text': '保存' },
-                    { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' }
+                toolbar: [
+                    {
+                        name: "refresh",
+                        class: "editable-add-btn",
+                        text: "刷新"
+                    },
+                    { name: "addRow", class: "editable-add-btn", text: "新增" },
+                    {
+                        name: "updateRow",
+                        class: "editable-add-btn",
+                        text: "修改"
+                    },
+                    {
+                        name: "deleteRow",
+                        class: "editable-add-btn",
+                        text: "删除"
+                    },
+                    {
+                        name: "saveRow",
+                        class: "editable-add-btn",
+                        text: "保存"
+                    },
+                    {
+                        name: "cancelRow",
+                        class: "editable-add-btn",
+                        text: "取消"
+                    }
                 ]
             },
-            'dataList': []
+            dataList: []
         }
     };
-
 
     _editorConfig = {
         rows: [
@@ -956,218 +1052,214 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
                             },
 
                             //  'title': '基本属性',
-                            'viewId': 'opt_base',
-                            'component': 'form_view',
-                            'config': [
+                            viewId: "opt_base",
+                            component: "form_view",
+                            config: [
                                 {
-                                    'type': 'input',
-                                    'labelSize': '6',
-                                    'controlSize': '10',
-                                    'inputType': 'text',
-                                    'name': 'operationName',
-                                    'label': '操作名称',
-                                    'placeholder': '',
-                                    'disabled': false,
-                                    'readonly': false,
-                                    'size': 'default'
+                                    type: "input",
+                                    labelSize: "6",
+                                    controlSize: "10",
+                                    inputType: "text",
+                                    name: "operationName",
+                                    label: "操作名称",
+                                    placeholder: "",
+                                    disabled: false,
+                                    readonly: false,
+                                    size: "default"
                                 },
                                 {
-                                    'type': 'input',
-                                    'labelSize': '6',
-                                    'controlSize': '10',
-                                    'inputType': 'text',
-                                    'name': 'operationIcon',
-                                    'label': '操作图标',
-                                    'placeholder': '',
-                                    'disabled': false,
-                                    'readonly': false,
-                                    'size': 'default'
+                                    type: "input",
+                                    labelSize: "6",
+                                    controlSize: "10",
+                                    inputType: "text",
+                                    name: "operationIcon",
+                                    label: "操作图标",
+                                    placeholder: "",
+                                    disabled: false,
+                                    readonly: false,
+                                    size: "default"
                                 },
                                 {
-                                    'type': 'select',
-                                    'labelSize': '6',
-                                    'controlSize': '10',
-                                    'inputType': 'submit',
-                                    'name': 'operationType',
-                                    'label': '操作类型',
-                                    'notFoundContent': '',
-                                    'selectModel': false,
-                                    'showSearch': true,
-                                    'placeholder': '--请选择--',
-                                    'disabled': false,
-                                    'size': 'default',
-                                    'options': [
+                                    type: "select",
+                                    labelSize: "6",
+                                    controlSize: "10",
+                                    inputType: "submit",
+                                    name: "operationType",
+                                    label: "操作类型",
+                                    notFoundContent: "",
+                                    selectModel: false,
+                                    showSearch: true,
+                                    placeholder: "--请选择--",
+                                    disabled: false,
+                                    size: "default",
+                                    options: [
                                         {
-                                            'label': '无',
-                                            'value': 'none'
+                                            label: "无",
+                                            value: "none"
                                         },
                                         {
-                                            'label': '刷新数据',
-                                            'value': 'refresh'
+                                            label: "刷新数据",
+                                            value: "refresh"
                                         },
                                         {
-                                            'label': '执行SQL',
-                                            'value': 'exec_sql'
+                                            label: "执行SQL",
+                                            value: "exec_sql"
                                         },
                                         {
-                                            'label': '执行SQL后刷新',
-                                            'value': 'after_sql'
+                                            label: "执行SQL后刷新",
+                                            value: "after_sql"
                                         },
                                         {
-                                            'label': '弹出确认框',
-                                            'value': 'confirm'
+                                            label: "弹出确认框",
+                                            value: "confirm"
                                         },
                                         {
-                                            'label': '弹出窗体',
-                                            'value': 'dialog'
+                                            label: "弹出窗体",
+                                            value: "dialog"
                                         },
                                         {
-                                            'label': '弹出表单',
-                                            'value': 'form'
+                                            label: "弹出表单",
+                                            value: "form"
                                         },
                                         {
-                                            'label': '执行SQL后刷新主界面',
-                                            'value': 'refresh_parent'
+                                            label: "执行SQL后刷新主界面",
+                                            value: "refresh_parent"
                                         }
                                     ]
                                 },
                                 {
-                                    'type': 'select',
-                                    'labelSize': '6',
-                                    'controlSize': '10',
-                                    'inputType': 'submit',
-                                    'name': 'operationActionType',
-                                    'label': '动作类型',
-                                    'notFoundContent': '',
-                                    'selectModel': false,
-                                    'showSearch': true,
-                                    'placeholder': '--请选择--',
-                                    'disabled': false,
-                                    'size': 'default',
-                                    'options': [
+                                    type: "select",
+                                    labelSize: "6",
+                                    controlSize: "10",
+                                    inputType: "submit",
+                                    name: "operationActionType",
+                                    label: "动作类型",
+                                    notFoundContent: "",
+                                    selectModel: false,
+                                    showSearch: true,
+                                    placeholder: "--请选择--",
+                                    disabled: false,
+                                    size: "default",
+                                    options: [
                                         {
-                                            'label': '操作',
-                                            'value': 'operation'
+                                            label: "操作",
+                                            value: "operation"
                                         },
                                         {
-                                            'label': '动作',
-                                            'value': 'action'
+                                            label: "动作",
+                                            value: "action"
                                         }
                                     ]
                                 },
                                 {
-                                    'type': 'select',
-                                    'labelSize': '6',
-                                    'controlSize': '10',
-                                    'inputType': 'submit',
-                                    'name': 'operationStatus',
-                                    'label': '操作后状态',
-                                    'notFoundContent': '',
-                                    'selectModel': false,
-                                    'showSearch': true,
-                                    'placeholder': '--请选择--',
-                                    'disabled': false,
-                                    'size': 'default',
-                                    'options': [
+                                    type: "select",
+                                    labelSize: "6",
+                                    controlSize: "10",
+                                    inputType: "submit",
+                                    name: "operationStatus",
+                                    label: "操作后状态",
+                                    notFoundContent: "",
+                                    selectModel: false,
+                                    showSearch: true,
+                                    placeholder: "--请选择--",
+                                    disabled: false,
+                                    size: "default",
+                                    options: [
                                         {
-                                            'label': '浏览状态',
-                                            'value': 'normal'
+                                            label: "浏览状态",
+                                            value: "normal"
                                         },
                                         {
-                                            'label': '新增状态',
-                                            'value': 'new'
+                                            label: "新增状态",
+                                            value: "new"
                                         },
                                         {
-                                            'label': '编辑状态',
-                                            'value': 'edit'
+                                            label: "编辑状态",
+                                            value: "edit"
                                         }
                                     ]
                                 },
                                 {
-                                    'type': 'select',
-                                    'labelSize': '6',
-                                    'controlSize': '10',
-                                    'inputType': 'submit',
-                                    'name': 'operationNullData',
-                                    'label': '空数据状态',
-                                    'notFoundContent': '',
-                                    'selectModel': false,
-                                    'showSearch': true,
-                                    'placeholder': '--请选择--',
-                                    'disabled': false,
-                                    'size': 'default',
-                                    'options': [
+                                    type: "select",
+                                    labelSize: "6",
+                                    controlSize: "10",
+                                    inputType: "submit",
+                                    name: "operationNullData",
+                                    label: "空数据状态",
+                                    notFoundContent: "",
+                                    selectModel: false,
+                                    showSearch: true,
+                                    placeholder: "--请选择--",
+                                    disabled: false,
+                                    size: "default",
+                                    options: [
                                         {
-                                            'label': '启用',
-                                            'value': true
+                                            label: "启用",
+                                            value: true
                                         },
                                         {
-                                            'label': '禁用',
-                                            'value': false
+                                            label: "禁用",
+                                            value: false
                                         }
                                     ]
                                 },
                                 {
-                                    'type': 'select',
-                                    'labelSize': '6',
-                                    'controlSize': '10',
-                                    'inputType': 'submit',
-                                    'name': 'operationDefaultStatus',
-                                    'label': '默认状态',
-                                    'notFoundContent': '',
-                                    'selectModel': false,
-                                    'showSearch': true,
-                                    'placeholder': '--请选择--',
-                                    'disabled': false,
-                                    'size': 'default',
-                                    'options': [
+                                    type: "select",
+                                    labelSize: "6",
+                                    controlSize: "10",
+                                    inputType: "submit",
+                                    name: "operationDefaultStatus",
+                                    label: "默认状态",
+                                    notFoundContent: "",
+                                    selectModel: false,
+                                    showSearch: true,
+                                    placeholder: "--请选择--",
+                                    disabled: false,
+                                    size: "default",
+                                    options: [
                                         {
-                                            'label': '启用',
-                                            'value': true
+                                            label: "启用",
+                                            value: true
                                         },
                                         {
-                                            'label': '禁用',
-                                            'value': false
+                                            label: "禁用",
+                                            value: false
                                         }
                                     ]
                                 },
                                 {
-                                    'type': 'input',
-                                    'labelSize': '6',
-                                    'controlSize': '10',
-                                    'inputType': 'text',
-                                    'name': 'operationOrder',
-                                    'label': '顺序',
-                                    'placeholder': '',
-                                    'disabled': false,
-                                    'readonly': false,
-                                    'size': 'default'
+                                    type: "input",
+                                    labelSize: "6",
+                                    controlSize: "10",
+                                    inputType: "text",
+                                    name: "operationOrder",
+                                    label: "顺序",
+                                    placeholder: "",
+                                    disabled: false,
+                                    readonly: false,
+                                    size: "default"
                                 },
                                 {
-                                    'type': 'submit',
-                                    'offsetSize': '6',
-                                    'controlSize': '10',
-                                    'name': 'submit'
+                                    type: "submit",
+                                    offsetSize: "6",
+                                    controlSize: "10",
+                                    name: "submit"
                                 }
                             ],
-                            'dataList': []
-
+                            dataList: []
                         }
-
-
                     ]
                 }
-            },
+            }
         ]
     };
 
     /**
      * 弹出
-     * @param data 
+     * @param data
      */
     showDialog(data?) {
         this.showModalForComponent();
-
     }
 
     showModalForComponent() {
@@ -1195,21 +1287,21 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
         //  })
 
         const modal = this.modalService.create({
-            nzTitle: 'Modal Title',
+            nzTitle: "Modal Title",
             nzContent: LayoutResolverComponent,
             nzComponentParams: {
                 config: this._editorConfig
             },
-            nzFooter: [{
-                label: 'change component tilte from outside',
-                onClick: (componentInstance) => {
-                    // componentInstance.title = 'title in inner component is changed';
+            nzFooter: [
+                {
+                    label: "change component tilte from outside",
+                    onClick: componentInstance => {
+                        // componentInstance.title = 'title in inner component is changed';
+                    }
                 }
-            }]
+            ]
         });
     }
-
-
 
     /**
      * 存储方法的变量
@@ -1219,27 +1311,24 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
      * 生成方法（自定义方法）
      */
     createMethod() {
-
         // 每个方法，有自定义变量，对变量的操作，执行异步请求
         // 将数据集 格式化，json 生成，或者格式转化
         // 方法名称，取toolbar name
         // 参数 ， 拼装成json对象传递进去
         // 创建的方法，也可以直接调用
-        // 方法返回，返回值也存储在临时变量 
+        // 方法返回，返回值也存储在临时变量
         //     好处，不处理各种返回传递；
         //     不好处，业务对象数据，比较复杂，各种数据混在一起，可能会串数据，对命名，等都有要求，日后优化力度大
         // 消息，内置的合理，动态生成的可能会有执行成功后发消息，类似这种，将消息单独出来，在方法完成后或异步请求执行成功后调用
-        this.CRUD['add'] = function (params?) {
-            console.log('createMethod，add');
+        this.CRUD["add"] = function(params?) {
+            console.log("createMethod，add");
         };
-
     }
 
     methodItem() {
-
         this.config.toolbar.forEach(bar => {
-            this.CRUD[bar.name] = function (params?) {
-                console.log('createMethod', bar.name);
+            this.CRUD[bar.name] = function(params?) {
+                console.log("createMethod", bar.name);
                 // 1.解析动作前
                 // 2. 当前动作
                 // 2.1 异步请求
@@ -1257,8 +1346,4 @@ export class BsnDataTableComponent extends CnComponentBase implements OnInit {
             };
         });
     }
-
-
-
-
 }

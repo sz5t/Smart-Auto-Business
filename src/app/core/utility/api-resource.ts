@@ -218,14 +218,6 @@ export class APIResource {
     // public static LoginUrl = 'http://39.108.141.68:8016/eb43/Res/';
 
     /**
-     * 本地URL
-     * @type {string}
-     */
-    // public static localUrl = "http://192.168.1.111:8083/assets";
-    //  public static localUrl =  'http://192.168.1.111:8084/assets';
-    public static localUrl = "http://localhost:4200/assets";
-
-    /**
      * 配置系统客户ID
      * @type {string}
      */
@@ -241,37 +233,4 @@ export class APIResource {
      * @type {string}
      */
     public static SysApplyId = "b9743e6da0b940beb34345fe09240c2f";
-
-    // ---------------------------------------------------------------------------------
-
-    /**
-     * 业务系统客户ID
-     * @type {string}
-     */
-    public static AppPlatCustomerId = "eb4332bbb4d01a4289457a891b6a0333";
-
-    /**
-     * 业务系统项目ID
-     * @type {string}
-     */
-    public static AppProjId = "002905c7bf57c54c9e5e65ec0e5fafe8";
-
-    /**
-     * 业务系统ApplyId
-     * @type {string}
-     */
-    public static AppApplyId = "3935eb43532d435398d5189d5ece0f5d";
-
-    /**
-     * 运行平台资源所属ID
-     * @type {string}
-     */
-
-    public static AppDrmId = "57e76ec4a882334c85532f3a5f561a12";
-
-    /**
-     * 运行平台资源所属模块
-     * @type {string}
-     */
-    public static AppOwnerAssembly = "SinoForce.AppData";
 }

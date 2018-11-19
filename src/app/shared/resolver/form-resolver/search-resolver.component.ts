@@ -75,8 +75,8 @@ export class SearchResolverComponent extends CnComponentBase
 
     // region: 组件生命周期事件
     ngOnInit() {
-          // 做参数简析
-          if (this.config.select) {
+        // 做参数简析
+        if (this.config.select) {
             this.config.select.forEach(selectItem => {
                 this.config.forms.forEach(formItem => {
                     formItem.controls.forEach(control => {
@@ -262,13 +262,13 @@ export class SearchResolverComponent extends CnComponentBase
         }
         if (p.ajaxType === "get" && tag) {
             // console.log('get参数', params);
-            return this.apiService.getProj(url, params).toPromise();
+            return this.apiService.get(url, params).toPromise();
         } else if (p.ajaxType === "put") {
             // console.log('put参数', params);
-            return this.apiService.putProj(url, params).toPromise();
+            return this.apiService.put(url, params).toPromise();
         } else if (p.ajaxType === "post") {
             // console.log('post参数', params);
-            return this.apiService.postProj(url, params).toPromise();
+            return this.apiService.post(url, params).toPromise();
         } else {
             return null;
         }
@@ -494,11 +494,11 @@ export class SearchResolverComponent extends CnComponentBase
     private setParamsValue(params) {}
 
     private async _post(url, body) {
-        return this.apiService.postProj(url, body).toPromise();
+        return this.apiService.post(url, body).toPromise();
     }
 
     private async _put(url, body) {
-        return this.apiService.putProj(url, body).toPromise();
+        return this.apiService.put(url, body).toPromise();
     }
 
     initParameters(data?) {
@@ -677,7 +677,7 @@ export class SearchResolverComponent extends CnComponentBase
                                 this.cascadeList[sendCasade][key][
                                     "dataType"
                                 ].forEach(caseItem => {
-                                    console.log('dataType', caseItem);
+                                    console.log("dataType", caseItem);
                                     // region: 解析开始 根据组件类型组装新的配置【静态option组装】
                                     if (caseItem["type"] === "option") {
                                         // 在做判断前，看看值是否存在，如果在，更新，值不存在，则创建新值
@@ -820,10 +820,14 @@ export class SearchResolverComponent extends CnComponentBase
                                     let regularData;
                                     if (caseItem.regularType) {
                                         if (
-                                            caseItem.regularType === "selectObjectValue"
+                                            caseItem.regularType ===
+                                            "selectObjectValue"
                                         ) {
                                             if (data["dataItem"]) {
-                                                regularData = data["dataItem"][caseItem["valueName"]];
+                                                regularData =
+                                                    data["dataItem"][
+                                                        caseItem["valueName"]
+                                                    ];
                                             } else {
                                                 regularData = data.data;
                                             }
@@ -834,7 +838,7 @@ export class SearchResolverComponent extends CnComponentBase
                                         regularData = data.data;
                                     }
                                     const regularflag = reg1.test(regularData);
-                                   // console.log("正则结果：", caseItem, regularflag , regularData);
+                                    // console.log("正则结果：", caseItem, regularflag , regularData);
                                     // endregion  解析结束 正则表达
                                     if (regularflag) {
                                         // region: 解析开始 根据组件类型组装新的配置【静态option组装】
@@ -998,7 +1002,7 @@ export class SearchResolverComponent extends CnComponentBase
         }
 
         // console.log('变更后的', this.config.forms);
-       // console.log('form: ', this.config.viewId, data, this.form.value, this.cascadeList);
+        // console.log('form: ', this.config.viewId, data, this.form.value, this.cascadeList);
         // 此处有消息级联的则发值
         // 级联值= 表单数据+当前触发级联的值组合；
         // "cascadeRelation":[
@@ -1010,44 +1014,46 @@ export class SearchResolverComponent extends CnComponentBase
         const sendData = this.value;
         sendData[data.name] = data.value;
 
-        
-        if ( this.config.cascadeRelation) {
-
+        if (this.config.cascadeRelation) {
             this.config.cascadeRelation.forEach(element => {
-                if ( element.name === data.name) {
+                if (element.name === data.name) {
                     if (element.cascadeField) {
                         element.cascadeField.forEach(feild => {
-                            if (!feild['type']) {
+                            if (!feild["type"]) {
                                 if (data[feild.valueName]) {
-                                    sendData[feild.name] = data[feild.valueName];
+                                    sendData[feild.name] =
+                                        data[feild.valueName];
                                 }
                             } else {
-                                if (feild['type'] === 'selectObject') {
+                                if (feild["type"] === "selectObject") {
                                     if (data[feild.valueName]) {
-                                        sendData[feild.name] = data[feild.valueName];
+                                        sendData[feild.name] =
+                                            data[feild.valueName];
                                     }
-                                } else if (feild['type'] === 'tempValueObject') {
-
+                                } else if (
+                                    feild["type"] === "tempValueObject"
+                                ) {
                                     sendData[feild.name] = this.tempValue;
-
-                                } else if (feild['type'] === 'tempValue') {
+                                } else if (feild["type"] === "tempValue") {
                                     if (this.tempValue[feild.valueName]) {
-                                        sendData[feild.name] = this.tempValue[feild.valueName];
+                                        sendData[feild.name] = this.tempValue[
+                                            feild.valueName
+                                        ];
                                     }
-                                } else if (feild['type'] === 'initValueObject') {
-
+                                } else if (
+                                    feild["type"] === "initValueObject"
+                                ) {
                                     sendData[feild.name] = this.initValue;
-
-                                } else if (feild['type'] === 'initValue') {
+                                } else if (feild["type"] === "initValue") {
                                     if (this.initValue[feild.valueName]) {
-                                        sendData[feild.name] = this.initValue[feild.valueName];
+                                        sendData[feild.name] = this.initValue[
+                                            feild.valueName
+                                        ];
                                     }
-                                } else if (feild['type'] === 'value') {  
-                                        sendData[feild.name] = feild.value;
+                                } else if (feild["type"] === "value") {
+                                    sendData[feild.name] = feild.value;
                                 }
-                                 
                             }
-                            
                         });
                     }
                     this.cascade.next(
@@ -1061,14 +1067,8 @@ export class SearchResolverComponent extends CnComponentBase
                     );
                 }
             });
-           
         }
 
-      
-       // console.log('send', sendData);
+        // console.log('send', sendData);
     }
-
-
-
-
 }

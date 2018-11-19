@@ -664,7 +664,7 @@ export class SettingComponentEditorComponent
             if (this.config.component === "tabs") {
             }
         } else {
-            this._http.postProj(APIResource.ViewSetting, data).subscribe(
+            this._http.post(APIResource.ViewSetting, data).subscribe(
                 result => {
                     if (result && result.Status === 200) {
                         if (result && result.Status === 200) {
@@ -696,7 +696,7 @@ export class SettingComponentEditorComponent
         if (this._serverLayoutId) {
             body.Id = this._serverLayoutId;
             this._http
-                .putProj(APIResource.AppConfigPack, body, {
+                .put(APIResource.AppConfigPack, body, {
                     Id: this._serverLayoutId
                 })
                 .subscribe(
@@ -712,7 +712,7 @@ export class SettingComponentEditorComponent
                     }
                 );
         } else {
-            this._http.postProj(APIResource.AppConfigPack, body).subscribe(
+            this._http.post(APIResource.AppConfigPack, body).subscribe(
                 result => {
                     if (result && result.Status === 200) {
                         this.message.success("保存成功");

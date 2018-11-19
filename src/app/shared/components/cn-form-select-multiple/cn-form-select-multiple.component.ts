@@ -161,7 +161,7 @@ export class CnFormSelectMultipleComponent
        }
        console.log("服务器返回",dd); */
 
-            return this.apiService.getProj(url, params).toPromise();
+            return this.apiService.get(url, params).toPromise();
         }
         // else if (p.ajaxType === 'put') {
         //   console.log('put参数', params);

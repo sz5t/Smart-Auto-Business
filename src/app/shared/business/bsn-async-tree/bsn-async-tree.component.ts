@@ -366,7 +366,7 @@ export class BsnAsyncTreeComponent extends CnComponentBase
             }
         }
         if (p.ajaxType === "get" && tag) {
-            return this._http.getProj(url, params).toPromise();
+            return this._http.get(url, params).toPromise();
         }
     }
 
