@@ -49,7 +49,7 @@ const components: { [type: string]: Type<any> } = {
     wf_design: WfDesignComponent,
     bsnCarousel: BsnCarouselComponent,
     bsnCardList: BsnCardListComponent,
-    BsnToolbarComponent
+    bsnToolbar: BsnToolbarComponent
 };
 @Component({
     selector: "cn-component-resolver",

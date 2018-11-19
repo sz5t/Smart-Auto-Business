@@ -1,5 +1,5 @@
 <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
-    <nz-list [nzItemLayout]="'vertical'" [nzDataSource]="data" [nzRenderItem]="item" [nzGrid]="{gutter: 16, xs: 24, sm: 12, md: 6, lg: 6, xl: 4 }">
+    <nz-list [nzItemLayout]="'vertical'" [nzDataSource]="data" [nzRenderItem]="item" [nzGrid]="{gutter: 8, xs: 24, sm: 12, md: 8, lg: 8, xl: 8 }">
         <ng-template #item let-item>
             <nz-list-item
             [nzContent]="nzContent"
@@ -9,11 +9,10 @@
                 <ng-template #nzContent>
                         <cn-form-resolver  [config]="formConfig" [formValue]="item" [formTitle]="getFormTitle(item)"></cn-form-resolver>
                 </ng-template>
-                <ng-template #checkedStatus>
+                <!-- <ng-template #checkedStatus>
                     <label nz-checkbox [(ngModel)]="item.selected" name="item.Id"></label>
-                </ng-template>
+                </ng-template> -->
             </nz-list-item>
         </ng-template>
-
     </nz-list>
 </nz-spin>

@@ -726,7 +726,8 @@
                                                                                                     "action": "FORM",
                                                                                                     "actionType": "formDialog",
                                                                                                     "actionName": "addShowCase",
-                                                                                                    "type": "showForm"
+                                                                                                    "type": "showForm",
+                                                                                                    "cancelPermission": true
                                                                                             },
                                                                                             {
                                                                                                     "name": "editForm",
@@ -1052,7 +1053,7 @@
                                                                                                                             },
                                                                                                                             {
                                                                                                                                     "validator": "pattern",
-                                                                                                                                    "pattern": {},
+                                                                                                                                    "pattern": "\/$[2-6]\/^",
                                                                                                                                     "errorMessage": "请填写数字"
                                                                                                                             }
                                                                                                                     ]

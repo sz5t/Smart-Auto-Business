@@ -42,12 +42,18 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
     toolbarConfig = [];
     model;
     _cascadeState;
+    toolbars;
     constructor(
         @Inject(BSN_COMPONENT_MODES)
         private state: Observer<BsnComponentMessage>
     ) {}
 
     ngOnInit() {
+        if (this.config.toolbar) {
+            this.toolbars = this.config.toolbar;
+        } else {
+            this.toolbars = this.config;
+        }
         this.getPermissions();
     }
 
@@ -56,8 +62,8 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
         this.permissions.forEach(item => {
             permissionMap.set(item.code, item);
         });
-        if (this.config && Array.isArray(this.config)) {
-            this.config.forEach(item => {
+        if (this.toolbars && Array.isArray(this.toolbars)) {
+            this.toolbars.forEach(item => {
                 if (item.group) {
                     const groups = [];
                     item.group.forEach(g => {

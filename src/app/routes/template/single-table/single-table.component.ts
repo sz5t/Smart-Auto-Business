@@ -1261,9 +1261,10 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                                 {
                                                                     name:
                                                                         "enabled",
-                                                                    value: "1",
+                                                                    value:
+                                                                        "[0-1]",
                                                                     checkType:
-                                                                        "value"
+                                                                        "regexp"
                                                                 }
                                                             ]
                                                         ],

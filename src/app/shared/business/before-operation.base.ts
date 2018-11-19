@@ -103,20 +103,6 @@ export class BeforeOperation {
                 }
                 result = actionResult;
             }
-            // op_status.forEach(statusItem => {
-            //     const conditionResult = this.handleOperationConditions(
-            //         statusItem.conditions
-            //     );
-            //     const actionResult = this.handleOperationAction(
-            //         conditionResult,
-            //         statusItem.action
-            //     );
-            //     if (actionResult) {
-            //         result = true;
-            //         return true;
-            //     }
-            //     result = actionResult;
-            // });
         }
         return result;
     }
@@ -144,21 +130,6 @@ export class BeforeOperation {
                 }
                 result = actionResult;
             }
-            //   op_status.forEach(statusItem => {
-            //     const conditionResult = this.handleCheckedRowsOperationConditions(
-            //       statusItem.conditions
-            //     );
-            //     const actionResult = this.handleOperationAction(
-            //       conditionResult,
-            //       statusItem.action
-            //     );
-            //     if (actionResult) {
-            //       result = true;
-            //       // 跳出循环
-            //       return true;
-            //     }
-            //     result = actionResult;
-            //   });
         }
         return result;
     }
@@ -177,34 +148,19 @@ export class BeforeOperation {
                 // 选中行的解析处理
                 switch (item.checkType) {
                     case "value":
-                        andResult = this.matchValueCondition(
-                            this.operationItemData,
-                            item
-                        );
+                        andResult = this.matchValueCondition(item);
                         break;
                     case "regexp":
-                        andResult = this.matchRegexpCondition(
-                            this.operationItemData,
-                            item
-                        );
+                        andResult = this.matchRegexpCondition(item);
                         break;
                     case "tempValue":
-                        andResult = this.matchValueCondition(
-                            this.tempValue,
-                            item
-                        );
+                        andResult = this.matchTempValueCondition(item);
                         break;
                     case "initValue":
-                        andResult = this.matchValueCondition(
-                            this.initValue,
-                            item
-                        );
+                        andResult = this.matchInitValueCondition(item);
                         break;
                     case "cacheValue":
-                        andResult = this.matchValueCondition(
-                            this.cacheValue,
-                            item
-                        );
+                        andResult = this.matchCacheValueCondition(item);
                         break;
                 }
                 andResults.push(andResult);
@@ -214,64 +170,6 @@ export class BeforeOperation {
             // 解析’或‘的关系条件
         });
 
-        return orResult.some(s => s === true);
-    }
-
-    /**
-     * 处理勾选前置操作条件
-     * @param conditions
-     */
-    private handleCheckedRowsOperationConditions(conditions) {
-        const orResult = [];
-        const checkedRows = this.operationItemsData;
-        conditions.forEach(elements => {
-            // 解析‘与’的关系条件
-            const andResults = [];
-            elements.forEach(item => {
-                let andResult = true;
-                // 选中行的解析处理
-                switch (item.checkType) {
-                    case "value":
-                        andResult = this.matchCheckedValueCondition(
-                            // 勾选的行
-                            checkedRows,
-                            item
-                        );
-                        break;
-                    case "regexp":
-                        andResult = this.matchCheckedRegexpCondition(
-                            // 勾选的行
-                            checkedRows,
-                            item
-                        );
-                        break;
-                    case "tempValue":
-                        andResult = this.matchValueCondition(
-                            // 勾选的行
-                            this.tempValue,
-                            item
-                        );
-                        break;
-                    case "initValue":
-                        andResult = this.matchValueCondition(
-                            // 勾选的行
-                            this.initValue,
-                            item
-                        );
-                        break;
-                    case "cacheValue":
-                        andResult = this.matchValueCondition(
-                            this.cacheValue,
-                            item
-                        );
-                        break;
-                }
-                andResults.push(andResult);
-            });
-            // 解析’或‘的关系条件
-            const and = andResults.every(s => s === true);
-            orResult.push(and);
-        });
         return orResult.some(s => s === true);
     }
 
@@ -280,13 +178,171 @@ export class BeforeOperation {
      * @param dataItem 待比较数据
      * @param statusItem 匹配条件对象
      */
-    private matchValueCondition(dataItem, statusItem) {
+    private matchValueCondition(statusItem) {
         let result = false;
-        if (dataItem) {
-            if (dataItem[statusItem["name"]] === statusItem["value"]) {
-                result = true;
+        if (this.operationItemData) {
+            result =
+                this.operationItemData[statusItem["name"]] ===
+                statusItem["value"];
+        }
+        return result;
+    }
+
+    /**
+     * 正则表达匹配验证
+     * @param dataItem 待比较数据
+     * @param statusItem 匹配条件对象
+     */
+    private matchRegexpCondition(statusItem) {
+        let result = false;
+        if (this.operationItemData) {
+            const reg = new RegExp(
+                statusItem["value"] ? statusItem["value"] : ""
+            );
+            result = reg.test(this.operationItemData[statusItem["name"]]);
+        }
+        return result;
+    }
+
+    private matchTempValueCondition(statusItem) {
+        // 判断与固定值做验证还是与当前行数据验证
+        let result = false;
+        if (statusItem["name"]) {
+            result =
+                this.operationItemData[statusItem["name"]] ===
+                this.tempValue[statusItem["valueName"]];
+        } else {
+            const reg = new RegExp(statusItem["value"]);
+            result = reg.test(this.tempValue[statusItem["valueName"]]);
+            //   if (this.tempValue[statusItem['valueName']] === statusItem['value']) {
+            //     result = true;
+            //   }
+        }
+        return result;
+    }
+
+    private matchInitValueCondition(statusItem) {
+        let result = false;
+        if (statusItem["name"]) {
+            result =
+                this.operationItemData[statusItem["name"]] ===
+                this.initValue[statusItem["valueName"]];
+        } else {
+            const reg = new RegExp(statusItem["value"]);
+            result = reg.test(this.initValue[statusItem["valueName"]]);
+        }
+        return result;
+    }
+
+    private matchCacheValueCondition(statusItem) {
+        let result = false;
+        if (statusItem["name"]) {
+            result =
+                this.operationItemData[statusItem["name"]] ===
+                this.cacheValue[statusItem["valueName"]];
+        } else {
+            const reg = new RegExp(statusItem["value"]);
+            result = reg.test(this.cacheValue[statusItem["valueName"]]);
+        }
+        return result;
+    }
+
+    /**
+     * 处理勾选前置操作条件
+     * @param conditions
+     */
+    private handleCheckedRowsOperationConditions(conditions) {
+        const orResult = [];
+        conditions.forEach(elements => {
+            // 解析‘与’的关系条件
+            const andResults = [];
+            elements.forEach(item => {
+                let andResult = true;
+                // 选中行的解析处理
+                switch (item.checkType) {
+                    case "value":
+                        andResult = this.matchCheckedValueCondition(item);
+                        break;
+                    case "regexp":
+                        andResult = this.matchCheckedRegexpCondition(item);
+                        break;
+                    case "tempValue":
+                        andResult = this.matchCheckedTempValueCondition(item);
+                        break;
+                    case "initValue":
+                        andResult = this.matchCheckedInitValueCondition(item);
+                        break;
+                    case "cacheValue":
+                        andResult = this.matchCheckedCacheValueCondition(item);
+                        break;
+                }
+                andResults.push(andResult);
+            });
+            // 解析’或‘的关系条件
+            const and = andResults.every(s => s === true);
+            orResult.push(and);
+        });
+        return orResult.some(s => s === true);
+    }
+
+    /**
+     * 匹配勾选的缓存数据
+     * @param statusItem
+     */
+    private matchCheckedCacheValueCondition(statusItem) {
+        let result = false;
+        if (this.operationItemsData) {
+            if (statusItem["name"]) {
+                result = this.operationItemsData.some(
+                    row =>
+                        row[statusItem["name"]] ===
+                        this.cacheValue[statusItem["valueName"]]
+                );
             } else {
-                result = false;
+                const reg = new RegExp(statusItem["value"]);
+                result = reg.test(this.cacheValue[statusItem["valueName"]]);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 匹配勾选的缓存数据
+     * @param statusItem
+     */
+    private matchCheckedTempValueCondition(statusItem) {
+        let result = false;
+        if (this.operationItemsData) {
+            if (statusItem["name"]) {
+                result = this.operationItemsData.some(
+                    row =>
+                        row[statusItem["name"]] ===
+                        this.tempValue[statusItem["valueName"]]
+                );
+            } else {
+                const reg = new RegExp(statusItem["value"]);
+                result = reg.test(this.tempValue[statusItem["valueName"]]);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 匹配勾选的缓存数据
+     * @param statusItem
+     */
+    private matchCheckedInitValueCondition(statusItem) {
+        let result = false;
+        if (this.operationItemsData) {
+            if (statusItem["name"]) {
+                result = this.operationItemsData.some(
+                    row =>
+                        row[statusItem["name"]] ===
+                        this.initValue[statusItem["valueName"]]
+                );
+            } else {
+                const reg = new RegExp(statusItem["value"]);
+                result = reg.test(this.initValue[statusItem["valueName"]]);
             }
         }
         return result;
@@ -297,10 +353,10 @@ export class BeforeOperation {
      * @param checkedRows
      * @param statusItem
      */
-    private matchCheckedValueCondition(checkedRows, statusItem) {
+    private matchCheckedValueCondition(statusItem) {
         let result = false;
-        if (checkedRows.length > 0) {
-            result = checkedRows.some(
+        if (this.operationItemsData.length > 0) {
+            result = this.operationItemsData.some(
                 row => row[statusItem["name"]] === statusItem["value"]
             );
         }
@@ -312,29 +368,16 @@ export class BeforeOperation {
      * @param checkedRows
      * @param statusItem
      */
-    private matchCheckedRegexpCondition(checkedRows, statusItem) {
+    private matchCheckedRegexpCondition(statusItem) {
         let result = false;
-        if (checkedRows.length > 0) {
+        if (this.operationItemsData.length > 0) {
             const reg = new RegExp(statusItem.value ? statusItem.value : "");
-            result = checkedRows.some(row => reg.test(row[statusItem["name"]]));
-        }
-        return result;
-    }
-
-    /**
-     * 正则表达匹配验证
-     * @param dataItem 待比较数据
-     * @param statusItem 匹配条件对象
-     */
-    private matchRegexpCondition(dataItem, statusItem) {
-        let result = false;
-        if (dataItem) {
-            const reg = new RegExp(statusItem.value ? statusItem.value : "");
-            if (reg.test(dataItem[statusItem["name"]])) {
-                result = true;
-            } else {
-                result = false;
-            }
+            const txt = reg.test(
+                this.operationItemsData[0][statusItem["name"]]
+            );
+            result = this.operationItemsData.some(row =>
+                reg.test(row[statusItem["name"]])
+            );
         }
         return result;
     }
@@ -351,7 +394,6 @@ export class BeforeOperation {
                 case "prevent":
                     if (actionResult) {
                         this.beforeOperationMessage(action, result);
-                        // result = true;
                     } else {
                         result = false;
                     }

@@ -478,26 +478,29 @@ export class FormResolverComponent extends CnComponentBase
     }
 
     async load() {
-        this.isSpinning = true;
-        const ajaxData = await this.execAjax(this.config.ajaxConfig);
-        if (ajaxData) {
-            if (ajaxData.data) {
-                this.setFormValue(ajaxData.data);
-                // 给主键赋值
-                if (this.config.keyId) {
-                    this.tempValue["_id"] = ajaxData.data[this.config.keyId];
-                } else {
-                    if (ajaxData.data["Id"]) {
-                        this.tempValue["_id"] = ajaxData.data["Id"];
+        if (this.config.ajaxConfig) {
+            this.isSpinning = true;
+            const ajaxData = await this.execAjax(this.config.ajaxConfig);
+            if (ajaxData) {
+                if (ajaxData.data) {
+                    this.setFormValue(ajaxData.data);
+                    // 给主键赋值
+                    if (this.config.keyId) {
+                        this.tempValue["_id"] =
+                            ajaxData.data[this.config.keyId];
+                    } else {
+                        if (ajaxData.data["Id"]) {
+                            this.tempValue["_id"] = ajaxData.data["Id"];
+                        }
                     }
+                } else {
+                    this.tempValue["_id"] && delete this.tempValue["_id"];
+                    this.form.reset();
                 }
             } else {
                 this.tempValue["_id"] && delete this.tempValue["_id"];
                 this.form.reset();
             }
-        } else {
-            this.tempValue["_id"] && delete this.tempValue["_id"];
-            this.form.reset();
         }
         this.isSpinning = false;
     }
@@ -541,18 +544,14 @@ export class FormResolverComponent extends CnComponentBase
                                     c,
                                     response,
                                     ajaxConfigs,
-                                    () => {
-                                        this.load();
-                                    }
+                                    () => {}
                                 );
                             } else {
                                 // 没有输出参数，进行默认处理
                                 this.showAjaxMessage(
                                     response,
                                     "操作成功",
-                                    () => {
-                                        this.load();
-                                    }
+                                    () => {}
                                 );
                             }
                         })();
@@ -569,13 +568,13 @@ export class FormResolverComponent extends CnComponentBase
                             response,
                             ajaxConfigs,
                             () => {
-                                this.load();
+                                // this.load();
                             }
                         );
                     } else {
                         // 没有输出参数，进行默认处理
                         this.showAjaxMessage(response, "操作成功", () => {
-                            this.load();
+                            // this.load();
                         });
                     }
                 })();

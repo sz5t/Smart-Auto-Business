@@ -2148,7 +2148,12 @@ export class BsnTableComponent extends CnComponentBase
         this.refChecked();
     }
 
-    refChecked() {
+    refChecked($event?) {
+        if ($event) {
+            $event.perventDefault();
+            $event.stopPropergation();
+        }
+
         this.checkedCount = this.dataList.filter(w => w.checked).length;
         this.allChecked = this.checkedCount === this.dataList.length;
         this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
