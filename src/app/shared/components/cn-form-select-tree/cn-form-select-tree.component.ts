@@ -20,11 +20,15 @@ import { CommonTools } from "@core/utility/common-tools";
 })
 export class CnFormSelectTreeComponent implements OnInit {
     formGroup: FormGroup;
-
+    @Input()
+    value;
     @Input()
     config;
     @Input()
     bsnData;
+    @Output() updateValue = new EventEmitter();
+    @Input() dataSet;
+    @Input() casadeData;
     treeData;
     treeDatalist = [];
     _tempValue = {};
@@ -36,11 +40,14 @@ export class CnFormSelectTreeComponent implements OnInit {
         expandNode: [],
         load: []
     };
-    value;
+    cascadeSetValue = {};
+    // value;
+    _selectedValue;
     treecolumns = {};
     constructor(private _http: ApiService) {}
 
     ngOnInit() {
+        console.log(this.value);
         if (this.config.columns) {
             this.config.columns.forEach(element => {
                 this.treecolumns[element.field] = element.valueName;
@@ -60,8 +67,14 @@ export class CnFormSelectTreeComponent implements OnInit {
                 }
             }
         }
-
+       
         this.loadTreeData();
+        if ( this.cascadeSetValue.hasOwnProperty('setValue')) {
+            this._selectedValue = this.cascadeSetValue['setValue'];
+            delete this.cascadeSetValue['setValue'];
+         } else {
+            this._selectedValue = this.value['value'];
+         }
     }
 
     async getAsyncTreeData(nodeValue = null) {
@@ -108,14 +121,15 @@ export class CnFormSelectTreeComponent implements OnInit {
                     //     isLeaf: false,
                     //     children: []
                     // })];
-
+                        
+                   // console.log('selecttree:', this.cascadeValue, TotreeBefore , parent);
                     // result[0].children.push(...);
                     this.treeData = this.listToAsyncTreeData(
                         TotreeBefore,
                         parent
                     );
 
-                    console.log(this.treeData);
+                   // console.log(this.treeData);
                 }
             }
         })();
@@ -220,6 +234,25 @@ export class CnFormSelectTreeComponent implements OnInit {
         // }
     }
 
+    valueChange(val?: NzTreeNode) {
+        if (val) {
+            const backValue = { name: this.config.name, value: name };
+            if (this.treeDatalist) {
+                let tkey = 'key';
+                if (this.treecolumns['key']) {
+                    tkey = this.treecolumns['key'];
+                }
+                const index = this.treeDatalist.findIndex(item => item[tkey] === val);
+                this.treeDatalist && (backValue['dataItem'] = this.treeDatalist[index]);
+            }
+            this.updateValue.emit(backValue);
+        } else {
+            const backValue = { name: this.config.name, value: name };
+            this.updateValue.emit(backValue);
+        }
+       // console.log('***下拉树返回值***' , this.value);
+
+    }
     expandNode = e => {
         (async () => {
             if (e.node.getChildren().length === 0 && e.node.isExpanded) {

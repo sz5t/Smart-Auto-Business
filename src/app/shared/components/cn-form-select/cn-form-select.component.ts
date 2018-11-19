@@ -52,7 +52,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                 }
             }
         }
-
+        // console.log('select_cascadeValue', this.cascadeValue);
         this._options.length = 0;
         if (this.dataSet) {
             // 加载数据集
@@ -65,6 +65,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                     this.config.ajaxConfig,
                     this.formGroup.value
                 );
+                // console.log('select_result', result);
                 this.resultData = result;
                 if (this.config.valueType && this.config.valueType === "list") {
                     const labels = this.config.labelName.split(".");
@@ -85,6 +86,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                         });
                     });
                 }
+                // console.log('89:', this._options);
                 this.selectedByLoaded();
             })();
         } else {
