@@ -8,9 +8,9 @@
       formControlName="{{config.name}}"
       nzCheckable [nzNodes]="treeData" 
       nzPlaceHolder="{{config.placeholder}}"
-      [(ngModel)]="value" 
+      [(ngModel)]="_selectedValue" 
       nzMultiple="{{config.multiple}}" 
-      (ngModelChange)="onChange($event)">
+      (ngModelChange)="valueChange($event)">
     </nz-tree-select>
   </ng-container>
     <ng-container *ngIf="!config.Checkable">
@@ -18,9 +18,9 @@
           formControlName="{{config.name}}"
           [nzNodes]="treeData" 
           nzPlaceHolder="{{config.placeholder}}"
-          [(ngModel)]="value" 
+          [(ngModel)]="_selectedValue" 
           nzMultiple="{{config.multiple}}" 
-          (ngModelChange)="onChange($event)">
+          (ngModelChange)="valueChange($event)">
         </nz-tree-select>
   </ng-container>
 </nz-form-control>
