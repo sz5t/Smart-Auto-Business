@@ -73,7 +73,7 @@ export class CnFormSelectTreeComponent implements OnInit {
             this._selectedValue = this.cascadeSetValue['setValue'];
             delete this.cascadeSetValue['setValue'];
          } else {
-            this._selectedValue = this.value['value'];
+           // this._selectedValue = this.value['value'];
          }
     }
 
