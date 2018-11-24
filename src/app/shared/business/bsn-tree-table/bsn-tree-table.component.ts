@@ -120,6 +120,7 @@ export class BsnTreeTableComponent extends GridBase
         if (this.initData) {
             this.initValue = this.initData;
         }
+        this.apiResource = this._api;
 
         this.callback = focusId => {
             this._cancelEditRows();
@@ -217,7 +218,8 @@ export class BsnTreeTableComponent extends GridBase
             initValue: this.initValue,
             cacheValue: this.cacheValue.get("userInfo").value
                 ? this.cacheValue.get("userInfo").value
-                : {}
+                : {},
+            apiResource: this.apiResource
         });
     }
     ngOnDestroy() {
