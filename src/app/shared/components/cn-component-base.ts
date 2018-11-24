@@ -28,6 +28,56 @@ export class CnComponentBase {
         this._cacheValue = value;
     }
 
+    private _statusSubscriptions;
+    public get statusSubscriptions() {
+        return this._statusSubscriptions;
+    }
+    public set statusSubscriptions(value) {
+        this._statusSubscriptions = value;
+    }
+
+    private _cascadeSubscriptions;
+    public get cascadeSubscriptions() {
+        return this._cascadeSubscriptions;
+    }
+    public set cascadeSubscriptions(value) {
+        this._cascadeSubscriptions = value;
+    }
+
+    private _baseMessage;
+    public get baseMessage() {
+        return this._baseMessage;
+    }
+    public set baseMessage(value) {
+        this._baseMessage = value;
+    }
+
+    private _baseModal;
+    public get baseModal() {
+        return this._baseModal;
+    }
+    public set baseModal(value) {
+        this._baseModal = value;
+    }
+
+    private _apiResource;
+    public get apiResource() {
+        return this._apiResource;
+    }
+    public set apiResource(value) {
+        this._apiResource = value;
+    }
+
+    unsubscribe() {
+        if (this._statusSubscriptions) {
+            this.statusSubscriptions.unsubscribe();
+        }
+
+        if (this._cascadeSubscriptions) {
+            this.statusSubscriptions.unsubscribe();
+        }
+    }
+
     before(target, method, advice) {
         const original = target[method];
         target[method] = function() {

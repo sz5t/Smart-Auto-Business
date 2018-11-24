@@ -74,6 +74,8 @@ export class FormResolverDirective extends CnComponentBase
     changeConfig;
     @Input()
     tempValue;
+    @Input()
+    initValue;
     @Output()
     updateValue = new EventEmitter();
     component: ComponentRef<any>;
@@ -116,6 +118,7 @@ export class FormResolverDirective extends CnComponentBase
                     this.component.instance.config = this.config;
                     //  if (this.component.instance.bsnData) {
                     this.component.instance.bsnData = this.tempValue;
+                    this.component.instance.initValue = this.initValue;
                     // }
 
                     if (
@@ -159,6 +162,7 @@ export class FormResolverDirective extends CnComponentBase
         this.component.instance.config = this.config;
         // if (this.component.instance.bsnData) {
         this.component.instance.bsnData = this.tempValue;
+        this.component.instance.initValue = this.initValue;
         // }
         if (
             this.config.type !== "submit" ||

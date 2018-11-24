@@ -30,6 +30,7 @@ import { Subscription } from "rxjs";
 import { BsnUploadComponent } from "@shared/business/bsn-upload/bsn-upload.component";
 import { CnFormWindowResolverComponent } from "@shared/resolver/form-resolver/form-window-resolver.component";
 import { BeforeOperation } from "../before-operation.base";
+import { createEmitAndSemanticDiagnosticsBuilderProgram } from "typescript";
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: CnFormWindowResolverComponent,
@@ -133,6 +134,7 @@ export class BsnTableComponent extends CnComponentBase
         private cascadeEvents: Observable<BsnComponentMessage>
     ) {
         super();
+        this.apiResource = this._http;
     }
 
     ngOnInit() {
@@ -240,6 +242,9 @@ export class BsnTableComponent extends CnComponentBase
         this.pageSize = this.config.pageSize
             ? this.config.pageSize
             : this.pageSize;
+    }
+
+    ngAfterViewInit() {
         if (this.config.componentType) {
             if (!this.config.componentType.child) {
                 this.load();
@@ -249,12 +254,8 @@ export class BsnTableComponent extends CnComponentBase
         } else {
             this.load();
         }
-
         // 初始化级联
         this.caseLoad();
-    }
-
-    ngAfterViewInit() {
         // 初始化前置条件验证对象
         this.beforeOperation = new BeforeOperation({
             config: this.config,
@@ -264,7 +265,8 @@ export class BsnTableComponent extends CnComponentBase
             initValue: this.initValue,
             cacheValue: this.cacheValue.get("userInfo").value
                 ? this.cacheValue.get("userInfo").value
-                : {}
+                : {},
+            apiResource: this.apiResource
         });
     }
     private resolverRelation() {
@@ -434,7 +436,10 @@ export class BsnTableComponent extends CnComponentBase
         this.changeConfig_new = {};
         // this._selectRow = {};
         // this.pageIndex = pageIndex;
-        this.loading = true;
+        setTimeout(() => {
+            this.loading = true;    
+        });
+        
         this.allChecked = false;
         this.checkedCount = 0;
         const url = this._buildURL(this.config.ajaxConfig.url);
@@ -523,7 +528,9 @@ export class BsnTableComponent extends CnComponentBase
                 this.setSelectRow();
             }
 
-            this.loading = false;
+            setTimeout(() => {
+                this.loading = false;    
+            });
         })();
     }
 
@@ -2155,15 +2162,10 @@ export class BsnTableComponent extends CnComponentBase
                 data.checked = value;
             }
         });
-        this.refChecked();
+        this.refChecked(value);
     }
 
     refChecked($event?) {
-        if ($event) {
-            $event.perventDefault();
-            $event.stopPropergation();
-        }
-
         this.checkedCount = this.dataList.filter(w => w.checked).length;
         this.allChecked = this.checkedCount === this.dataList.length;
         this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
@@ -2542,7 +2544,8 @@ export class BsnTableComponent extends CnComponentBase
             nzContent: component["form"],
             nzComponentParams: {
                 config: dialog,
-                tempValue: obj
+                tempValue: obj,
+                editable: dialog.type === 'add' ? 'post' : 'put'
             },
             nzFooter: footer
         });
@@ -2554,25 +2557,21 @@ export class BsnTableComponent extends CnComponentBase
                 button["type"] = btn.type ? btn.type : "default";
                 button["onClick"] = componentInstance => {
                     if (btn["name"] === "save") {
-                        (async () => {
-                            const result = await componentInstance.buttonAction(
-                                btn
-                            );
-                            this.showAjaxMessage(result, "保存成功", () => {
+                        componentInstance.buttonAction(
+                            btn,
+                            () => {
                                 modal.close();
                                 this.load();
-                            });
-                        })();
+                            }
+                        );
                     } else if (btn["name"] === "saveAndKeep") {
-                        (async () => {
-                            const result = await componentInstance.buttonAction(
-                                btn
-                            );
-                            this.showAjaxMessage(result, "保存成功", () => {
-                                modal.close();
+                        componentInstance.buttonAction(
+                            btn,
+                            () => {
+                                this._resetForm(componentInstance);
                                 this.load();
-                            });
-                        })();
+                            }
+                        );
                     } else if (btn["name"] === "close") {
                         modal.close();
                     } else if (btn["name"] === "reset") {
@@ -2927,7 +2926,7 @@ export class BsnTableComponent extends CnComponentBase
             });
         // endregion： 解析结束
 
-        console.log("级联配置简析", this.cascadeList);
+        // console.log("级联配置简析", this.cascadeList);
     }
 
     isEmptyObject(e) {
@@ -2935,301 +2934,4 @@ export class BsnTableComponent extends CnComponentBase
         for (t in e) return !1;
         return !0;
     }
-
-    // /**
-    //  * 操作选中行前置判断
-    //  * @option  {type, name, actionName, ajaxConfig}
-    //  */
-    // beforeSelectedRowOperation(option) {
-    //     let result = false;
-    //     if (this._beforeOperationMap.has(option.name)) {
-    //         const op_status = this._beforeOperationMap.get(option.name);
-    //         op_status.forEach(statusItem => {
-    //             const conditionResult = this.handleOperationConditions(
-    //                 statusItem.conditions
-    //             );
-    //             const actionResult = this.handleOperationAction(
-    //                 conditionResult,
-    //                 statusItem.action
-    //             );
-    //             if (actionResult) {
-    //                 result = true;
-    //                 return true;
-    //             }
-    //             result = actionResult;
-    //         });
-    //     }
-    //     return result;
-    // }
-
-    // /**
-    //  * 操作勾选行前置判断
-    //  * @param option
-    //  */
-    // beforeCheckedRowsOperation(option) {
-    //     let result = false;
-    //     if (this._beforeOperationMap.has(option.name)) {
-    //         const op_status = this._beforeOperationMap.get(option.name);
-    //         op_status.forEach(statusItem => {
-    //             const conditionResult = this.handleCheckedRowsOperationConditions(
-    //                 statusItem.conditions
-    //             );
-    //             const actionResult = this.handleOperationAction(
-    //                 conditionResult,
-    //                 statusItem.action
-    //             );
-    //             if (actionResult) {
-    //                 result = true;
-    //                 // 跳出循环
-    //                 return true;
-    //             }
-    //             result = actionResult;
-    //         });
-    //     }
-    //     return result;
-    // }
-
-    // /**
-    //  * 处理选中前置操作条件
-    //  * @param conditions
-    //  */
-    // handleOperationConditions(conditions) {
-    //     const orResult = [];
-    //     conditions.forEach(elements => {
-    //         // 解析‘与’的关系条件
-    //         const andResults = [];
-    //         elements.forEach(item => {
-    //             let andResult = true;
-    //             // 选中行的解析处理
-    //             switch (item.checkType) {
-    //                 case "value":
-    //                     andResult = this.matchValueCondition(
-    //                         this._selectRow,
-    //                         item
-    //                     );
-    //                     break;
-    //                 case "regexp":
-    //                     andResult = this.matchRegexpCondition(
-    //                         this._selectRow,
-    //                         item
-    //                     );
-    //                     break;
-    //                 case "tempValue":
-    //                     andResult = this.matchValueCondition(
-    //                         this.tempValue,
-    //                         item
-    //                     );
-    //                     break;
-    //                 case "initValue":
-    //                     andResult = this.matchValueCondition(
-    //                         this.initValue,
-    //                         item
-    //                     );
-    //                     break;
-    //             }
-    //             andResults.push(andResult);
-    //         });
-    //         const and = andResults.every(s => s === true);
-    //         orResult.push(and);
-    //         // 解析’或‘的关系条件
-    //     });
-
-    //     return orResult.some(s => s === true);
-    // }
-
-    // /**
-    //  * 处理勾选前置操作条件
-    //  * @param conditions
-    //  */
-    // handleCheckedRowsOperationConditions(conditions) {
-    //     const orResult = [];
-    //     const checkedRows = this._getCheckedItems();
-    //     conditions.forEach(elements => {
-    //         // 解析‘与’的关系条件
-    //         const andResults = [];
-    //         elements.forEach(item => {
-    //             let andResult = true;
-    //             // 选中行的解析处理
-    //             switch (item.checkType) {
-    //                 case "value":
-    //                     andResult = this.matchCheckedValueCondition(
-    //                         // 勾选的行
-    //                         checkedRows,
-    //                         item
-    //                     );
-    //                     break;
-    //                 case "regexp":
-    //                     andResult = this.matchCheckedRegexpCondition(
-    //                         // 勾选的行
-    //                         checkedRows,
-    //                         item
-    //                     );
-    //                     break;
-    //                 case "tempValue":
-    //                     andResult = this.matchValueCondition(
-    //                         // 勾选的行
-    //                         this.tempValue,
-    //                         item
-    //                     );
-    //                     break;
-    //                 case "initValue":
-    //                     andResult = this.matchValueCondition(
-    //                         // 勾选的行
-    //                         this.tempValue,
-    //                         item
-    //                     );
-    //                     break;
-    //             }
-    //             andResults.push(andResult);
-    //         });
-    //         // 解析’或‘的关系条件
-    //         const and = andResults.every(s => s === true);
-    //         orResult.push(and);
-    //     });
-    //     return orResult.some(s => s === true);
-    // }
-
-    // /**
-    //  * 值匹配验证
-    //  * @param dataItem 待比较数据
-    //  * @param statusItem 匹配条件对象
-    //  */
-    // matchValueCondition(dataItem, statusItem) {
-    //     let result = true;
-    //     if (dataItem) {
-    //         if (dataItem[statusItem["name"]] === statusItem["value"]) {
-    //             result = true;
-    //         } else {
-    //             result = false;
-    //         }
-    //     }
-    //     return result;
-    // }
-
-    // /**
-    //  * 匹配勾选行值条件
-    //  * @param checkedRows
-    //  * @param statusItem
-    //  */
-    // matchCheckedValueCondition(checkedRows, statusItem) {
-    //     let result = true;
-    //     if (checkedRows.length > 0) {
-    //         checkedRows.forEach(row => {
-    //             if (row[statusItem["name"]] === statusItem["value"]) {
-    //                 result = true;
-    //             } else {
-    //                 result = false;
-    //             }
-    //         });
-    //     }
-    //     return result;
-    // }
-
-    // /**
-    //  * 匹配勾选行的正则条件
-    //  * @param checkedRows
-    //  * @param statusItem
-    //  */
-    // matchCheckedRegexpCondition(checkedRows, statusItem) {
-    //     let result = true;
-    //     if (checkedRows.length > 0) {
-    //         const reg = new RegExp(statusItem.value ? statusItem.value : "");
-    //         checkedRows.forEach(row => {
-    //             if (reg.test(row[statusItem["name"]])) {
-    //                 result = true;
-    //             } else {
-    //                 result = false;
-    //             }
-    //         });
-    //     }
-    //     return result;
-    // }
-
-    // /**
-    //  * 正则表达匹配验证
-    //  * @param dataItem 待比较数据
-    //  * @param statusItem 匹配条件对象
-    //  */
-    // matchRegexpCondition(dataItem, statusItem) {
-    //     let result = true;
-    //     if (dataItem) {
-    //         const reg = new RegExp(statusItem.value ? statusItem.value : "");
-    //         if (reg.test(dataItem[statusItem["name"]])) {
-    //             result = true;
-    //         } else {
-    //             result = false;
-    //         }
-    //     }
-    //     return result;
-    // }
-
-    // /**
-    //  * 处理验证结果
-    //  * @param actionResult
-    //  * @param action
-    //  */
-    // handleOperationAction(actionResult, action) {
-    //     let result = true;
-    //     if (action) {
-    //         switch (action.execute) {
-    //             case "prevent":
-    //                 if (actionResult) {
-    //                     this.beforeOperationMessage(action, result);
-    //                     // result = true;
-    //                 } else {
-    //                     result = false;
-    //                 }
-    //                 break;
-    //             case "continue":
-    //                 if (!actionResult) {
-    //                     result = false;
-    //                 } else {
-    //                     this.beforeOperationMessage(action, result);
-    //                     // result = true;
-    //                 }
-    //                 break;
-    //         }
-    //     }
-
-    //     return result;
-    // }
-
-    // /**
-    //  * 构建验证消息
-    //  * @param action
-    //  */
-    // beforeOperationMessage(action, result) {
-    //     if (action["type"] === "confirm") {
-    //         this.modalService.confirm({
-    //             nzTitle: action["title"],
-    //             nzContent: action["message"],
-    //             nzOnOk: () => {
-    //                 result = false;
-    //                 // 调用后续操作
-    //             },
-    //             nzOnCancel() {
-    //                 result = true;
-    //             }
-    //         });
-    //     } else {
-    //         this._message[action["type"]](action.message);
-    //         result = action.execute === "prevent" ? true : false;
-    //     }
-    // }
-
-    // /**
-    //  * 解析前作动作配置条件
-    //  */
-    // resolverBeforeOperation() {
-    //     this._beforeOperationMap = new Map();
-    //     if (
-    //         this.config.beforeOperation &&
-    //         Array.isArray(this.config.beforeOperation) &&
-    //         this.config.beforeOperation.length > 0
-    //     ) {
-    //         this.config.beforeOperation.forEach(element => {
-    //             this._beforeOperationMap.set(element.name, element.status);
-    //         });
-    //     }
-    // }
 }

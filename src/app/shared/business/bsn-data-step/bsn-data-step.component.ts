@@ -61,9 +61,7 @@ export class BsnDataStepComponent extends CnComponentBase
     }
 
     ngOnInit() {
-        if (this.initData) {
-            this.initValue = this.initValue;
-        }
+        this.initValue = this.initData ? this.initData : {};
         this.resolverRelation();
     }
 
@@ -79,8 +77,12 @@ export class BsnDataStepComponent extends CnComponentBase
                     );
                     const crNodes = this.convertTreeToNodes(rgNodes);
                     const copy = JSON.parse(JSON.stringify(crNodes));
-                    const edges = this.convertTreeToEdges(copy);
-                    this.graph.read({ nodes: crNodes, edges: edges });
+                    if (crNodes.length > 1) {
+                        const edges = this.convertTreeToEdges(copy);
+                        this.graph.read({ nodes: crNodes, edges: edges });
+                    } else {
+                        this.graph.read({ nodes: crNodes});
+                    }
                     this.isLoading = false;
                 }
             });
@@ -159,7 +161,6 @@ export class BsnDataStepComponent extends CnComponentBase
             while (cNodes.length > 0) {
                 const edge = {};
                 let current;
-
                 if (next) {
                     current = next;
                 } else {

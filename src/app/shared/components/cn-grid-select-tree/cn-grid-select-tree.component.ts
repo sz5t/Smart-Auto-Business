@@ -29,7 +29,7 @@ export class CnGridSelectTreeComponent implements OnInit {
     treecolumns = {};
 
     async ngOnInit() {
-
+        this._tempValue = this.bsnData ? this.bsnData : {};
         if (this.config.columns) {
             this.config.columns.forEach(element => {
                 this.treecolumns[element.field] = element.valueName;

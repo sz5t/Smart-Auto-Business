@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "SinoForce": {
+        "Smart-Auto-Business": {
             "root": "",
             "sourceRoot": "src",
             "projectType": "application",
@@ -71,24 +71,24 @@
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "options": {
-                        "browserTarget": "SinoForce:build"
+                        "browserTarget": "Smart-Auto-Business:build"
                     },
                     "configurations": {
                         "prod": {
-                            "browserTarget": "SinoForce:build:prod"
+                            "browserTarget": "Smart-Auto-Business:build:prod"
                         },
                         "hmr": {
-                            "browserTarget": "SinoForce:build:hmr"
+                            "browserTarget": "Smart-Auto-Business:build:hmr"
                         },
                         "chore": {
-                            "browserTarget": "SinoForce:build:chore"
+                            "browserTarget": "Smart-Auto-Business:build:chore"
                         }
                     }
                 },
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "SinoForce:build"
+                        "browserTarget": "Smart-Auto-Business:build"
                     }
                 },
                 "test": {
@@ -129,7 +129,7 @@
                 }
             }
         },
-        "SinoForce-e2e": {
+        "Smart-Auto-Business-e2e": {
             "root": "",
             "sourceRoot": "e2e",
             "projectType": "application",
@@ -138,7 +138,7 @@
                     "builder": "@angular-devkit/build-angular:protractor",
                     "options": {
                         "protractorConfig": "./protractor.conf.js",
-                        "devServerTarget": "SinoForce:serve"
+                        "devServerTarget": "Smart-Auto-Business:serve"
                     }
                 },
                 "lint": {
@@ -155,7 +155,7 @@
             }
         }
     },
-    "defaultProject": "SinoForce",
+    "defaultProject": "Smart-Auto-Business",
     "schematics": {
         "@delon/cli:class": {
             "spec": false

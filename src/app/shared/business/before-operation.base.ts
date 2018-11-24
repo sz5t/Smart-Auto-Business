@@ -1,3 +1,4 @@
+import { CommonTools } from '@core/utility/common-tools';
 export class BeforeOperation {
     private _beforeOperationMap: Map<string, any>;
     public get beforeOperationMap() {
@@ -71,13 +72,50 @@ export class BeforeOperation {
         this._cacheValue = value;
     }
 
-    constructor({ config, modal, message, tempValue, initValue, cacheValue }) {
+    private _apiResource;
+    public get apiResource() {
+        return this._apiResource;
+    }
+    public set apiResource(value) {
+        this._apiResource = value;
+    }
+
+    buildParameter(parameters, value) {
+        const params = CommonTools.parametersResolver({
+            params: parameters,
+            item: value,
+            componentValue: value,
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            cacheValue: this.cacheValue
+        });
+        return params;
+    }
+
+    buildUrl(urlConfig) {
+        let url;
+        if (CommonTools.isString(urlConfig)) {
+            url = urlConfig;
+        } else {
+            const pc = CommonTools.parametersResolver({
+                params: urlConfig.params,
+                tempValue: this.tempValue,
+                initValue: this.initValue,
+                cacheValue: this.cacheValue
+            });
+            url = `${urlConfig.url["parent"]}/${pc}/${urlConfig.url["child"]}`;
+        }
+        return url;
+    } 
+
+    constructor({ config, modal, message, tempValue, initValue, cacheValue, apiResource }) {
         this.config = config;
         this.modal = modal;
         this.message = message;
         this.tempValue = tempValue;
         this.initValue = initValue;
         this.cacheValue = cacheValue;
+        this.apiResource = apiResource;
         this.resolverBeforeOperation();
     }
 
@@ -162,6 +200,14 @@ export class BeforeOperation {
                     case "cacheValue":
                         andResult = this.matchCacheValueCondition(item);
                         break;
+                    case "executeAjax":
+                        // 预留前置异步操作
+                        // andResult = this.executeAjaxCondition(item);
+                        break;
+                    case "ajaxValue":
+                        // 预留前置异步校验
+                        // andResult = this.matchAjaxValueCondition(item);
+                        break;
                 }
                 andResults.push(andResult);
             });
@@ -245,6 +291,38 @@ export class BeforeOperation {
             result = reg.test(this.cacheValue[statusItem["valueName"]]);
         }
         return result;
+    }
+
+    private async matchAjaxValueCondition(statusItem) {
+        let result = false;
+        const url = this.buildUrl(statusItem.ajaxConfig.url);
+        const params = this.buildParameter(statusItem.ajaxConfig.params, this.operationItemData);
+        const response = await this.apiResource[statusItem.ajaxConfig.ajaxType](url, params);
+        if (response.isSuccess) {
+            if (statusItem['name']) {
+                if (Array.isArray(response.data)) {
+                    result = response.data.every(s => this.operationItemData[statusItem['name']] === s[statusItem['valueName']]);
+                } else {
+                    result = this.operationItemData[statusItem['name']] ===
+                    response.data[statusItem['valueName']];
+                }
+            } else {
+                const reg = new RegExp(statusItem['value']);
+                if (Array.isArray(response.data)) {
+                    result = response.data.every(s => reg.test(s[statusItem['name']]));
+                } else {
+                    result = reg.test(response.data[statusItem['valueName']]);
+                }
+            }
+        }
+        return result;
+    }
+
+    private async executeAjaxCondition(statusItem) {
+        const url = this.buildUrl(statusItem.ajaxConfig.url);
+        const params = this.buildParameter(statusItem.ajaxConfig.params, this.operationItemData);
+        const response = await this.apiResource[statusItem.ajaxConfig.ajaxType](url, params);
+        return response.isSuccess;
     }
 
     /**

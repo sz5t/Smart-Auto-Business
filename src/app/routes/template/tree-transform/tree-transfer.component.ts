@@ -194,7 +194,7 @@ export class TreeTransferComponent implements OnInit {
                                                                                 'name': 'Id', 'type': 'checked', 'valueName': 'Id'
                                                                             },
                                                                             {
-                                                                                'name': 'enabled', 'type': 'value', 'value': false
+                                                                                'name': 'enabled', 'type': 'value', 'value': '0'
                                                                             }
                                                                         ]
                                                                     }
@@ -210,7 +210,7 @@ export class TreeTransferComponent implements OnInit {
                                                                                 'name': 'Id', 'type': 'checked', 'valueName': 'Id'
                                                                             },
                                                                             {
-                                                                                'name': 'enabled', 'type': 'value', 'value': true
+                                                                                'name': 'enabled', 'type': 'value', 'value': '1'
                                                                             }
                                                                         ]
                                                                     }

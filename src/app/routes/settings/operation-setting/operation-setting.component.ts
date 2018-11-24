@@ -1978,32 +1978,32 @@ export class OperationSettingComponent extends CnComponentBase
     }
 
     async ngOnInit() {
-        const params = { _select: "Id,Name,ParentId" };
-        const moduleData = await this.getModuleData(params);
-        // 初始化模块列表，将数据加载到及联下拉列表当中
-        this._funcOptions = this.arrayToTree(moduleData.Data, "");
+        // const params = { _select: "Id,Name,ParentId" };
+        // const moduleData = await this.getModuleData(params);
+        // // 初始化模块列表，将数据加载到及联下拉列表当中
+        // this._funcOptions = this.arrayToTree(moduleData.Data, "");
 
-        // this.SetTreeData();
-        // this.setAsyncData();
+        // // this.SetTreeData();
+        // // this.setAsyncData();
 
-        this._relativeResolver = new RelativeResolver();
-        if (this.config.relations && this.config.relations.length > 0) {
-            this._relativeResolver.reference = this;
-            this._relativeResolver.relativeService = this.relativeMessage;
-            this._relativeResolver.relations = this.config.relations;
-            this._relativeResolver.resolverRelation();
-        }
+        // this._relativeResolver = new RelativeResolver();
+        // if (this.config.relations && this.config.relations.length > 0) {
+        //     this._relativeResolver.reference = this;
+        //     this._relativeResolver.relativeService = this.relativeMessage;
+        //     this._relativeResolver.relations = this.config.relations;
+        //     this._relativeResolver.resolverRelation();
+        // }
     }
     // region: func
     // 获取布局设置列表
-    getLayoutConfigData(params) {
-        return this._http.get(APIResource.LayoutSetting, params).toPromise();
-    }
+    // getLayoutConfigData(params) {
+    //     return this._http.get(APIResource.LayoutSetting, params).toPromise();
+    // }
 
-    // 获取模块信息
-    async getModuleData(params) {
-        return this._http.get(APIResource.AppModuleConfig, params).toPromise();
-    }
+    // // 获取模块信息
+    // async getModuleData(params) {
+    //     return this._http.get(APIResource.AppModuleConfig, params).toPromise();
+    // }
 
     // 选择布局名称
     _changeLayoutName($event) {
@@ -2028,16 +2028,16 @@ export class OperationSettingComponent extends CnComponentBase
 
     private _listToTreeData(data, parentid) {
         const result = [];
-        let temp;
+        // let temp;
         for (let i = 0; i < data.length; i++) {
             if (data[i].ParentId === parentid) {
-                temp = this.listToTreeData(data, data[i].Id);
-                if (temp.length > 0) {
-                    data[i]["children"] = temp;
-                } else {
-                    data[i]["isLeaf"] = true;
-                }
-                result.push(data[i]);
+                // temp = this.listToTreeData(data, data[i].Id);
+                // if (temp.length > 0) {
+                //     data[i]["children"] = temp;
+                // } else {
+                //     data[i]["isLeaf"] = true;
+                // }
+                // result.push(data[i]);
             }
         }
         return result;
@@ -2048,7 +2048,7 @@ export class OperationSettingComponent extends CnComponentBase
         const params = {
             LayoutId: layoutId
         };
-        return this._http.get(APIResource.GetOperationTree, params).toPromise();
+        // return this._http.get(APIResource.GetOperationTree, params).toPromise();
     }
 
     // 获取组件
@@ -2056,7 +2056,7 @@ export class OperationSettingComponent extends CnComponentBase
         const params = {
             BlockId: blockId
         };
-        return this._http.get(APIResource.ViewSetting, params).toPromise();
+        // return this._http.get(APIResource.ViewSetting, params).toPromise();
     }
 
     mouseAction(name: string, e: any): void {
@@ -2185,10 +2185,10 @@ export class OperationSettingComponent extends CnComponentBase
     }
 
     async getOperationByBlock(blockId) {
-        const params = {
-            ParentId: blockId
-        };
-        return this._http.get(APIResource.AppConfigPack, params).toPromise();
+        // const params = {
+        //     ParentId: blockId
+        // };
+        // return this._http.get(APIResource.AppConfigPack, params).toPromise();
     }
 
     // 改变模块选项
@@ -2201,22 +2201,22 @@ export class OperationSettingComponent extends CnComponentBase
                 ParentId: this._funcValue[this._funcValue.length - 1],
                 _select: "Id,Name,Metadata"
             };
-            this.getLayoutConfigData(params).then(serverLayoutData => {
-                if (
-                    serverLayoutData.Status === 200 &&
-                    serverLayoutData.Data.length > 0
-                ) {
-                    serverLayoutData.Data.forEach((data, index) => {
-                        const metadata = JSON.parse(data.Metadata);
-                        this._layoutList.push({
-                            label: data.Name,
-                            value: { id: data.Id, metadata: metadata }
-                        });
-                    });
-                } else {
-                    this._layoutList = [];
-                }
-            });
+            // this.getLayoutConfigData(params).then(serverLayoutData => {
+            //     if (
+            //         serverLayoutData.Status === 200 &&
+            //         serverLayoutData.Data.length > 0
+            //     ) {
+            //         serverLayoutData.Data.forEach((data, index) => {
+            //             const metadata = JSON.parse(data.Metadata);
+            //             this._layoutList.push({
+            //                 label: data.Name,
+            //                 value: { id: data.Id, metadata: metadata }
+            //             });
+            //         });
+            //     } else {
+            //         this._layoutList = [];
+            //     }
+            // });
         }
     }
 
@@ -2284,34 +2284,34 @@ export class OperationSettingComponent extends CnComponentBase
     }
 
     async handleOk(e) {
-        this._isConfirmLoading = true;
-        const body = {
-            Name: this._operationName,
-            ParentId: this._currentNode.id,
-            TagA: this.uuID(10),
-            TagB: `component.operation`
-        };
-        const newData = await this.saveNewNode(body);
-        if (newData.Status === 200) {
-            const newNodeData = {
-                id: newData.Data.Id,
-                name: newData.Data.Name,
-                type: "operation"
-            };
+        // this._isConfirmLoading = true;
+        // const body = {
+        //     Name: this._operationName,
+        //     ParentId: this._currentNode.id,
+        //     TagA: this.uuID(10),
+        //     TagB: `component.operation`
+        // };
+        // const newData = await this.saveNewNode(body);
+        // if (newData.Status === 200) {
+        //     const newNodeData = {
+        //         id: newData.Data.Id,
+        //         name: newData.Data.Name,
+        //         type: "operation"
+        //     };
 
-            // 1、新增树节点
-            this._currentNode.data["children"].push(newNodeData);
-            this._currentNode.treeModel.update();
-            this._isConfirmLoading = false;
-            this.isVisible = false;
-            this._currentNode.treeModel.focusDrillDown();
-        } else {
-            this._isConfirmLoading = false;
-        }
+        //     // 1、新增树节点
+        //     this._currentNode.data["children"].push(newNodeData);
+        //     this._currentNode.treeModel.update();
+        //     this._isConfirmLoading = false;
+        //     this.isVisible = false;
+        //     this._currentNode.treeModel.focusDrillDown();
+        // } else {
+        //     this._isConfirmLoading = false;
+        // }
     }
 
     async saveNewNode(body) {
-        return this._http.post(APIResource.AppConfigPack, body).toPromise();
+        // return this._http.post(APIResource.AppConfigPack, body).toPromise();
     }
 
     // 删除操作
@@ -2568,20 +2568,20 @@ export class OperationSettingComponent extends CnComponentBase
     }
 
     async getTreeData() {
-        return this._http
-            .get(APIResource.AppModuleConfig, {
-                _select: "Id as key,Name as title,ParentId"
-            })
-            .toPromise();
+        // return this._http
+        //     .get(APIResource.AppModuleConfig, {
+        //         _select: "Id as key,Name as title,ParentId"
+        //     })
+        //     .toPromise();
     }
 
     SetTreeData() {
-        (async () => {
-            const data = await this.getTreeData();
-            if (data.Data && data.Status === 200) {
-                this._demoTreeData = this.listToTreeData(data.Data, "");
-            }
-        })();
+        // (async () => {
+        //     const data = await this.getTreeData();
+        //     if (data.Data && data.Status === 200) {
+        //         this._demoTreeData = this.listToTreeData(data.Data, "");
+        //     }
+        // })();
     }
 
     onMouseAction(actionName, $event) {
@@ -2605,32 +2605,32 @@ export class OperationSettingComponent extends CnComponentBase
 
     setAsyncData() {
         (async () => {
-            const data = await this.getAsyncTreeData({ ParentId: " " });
-            if (data.Data && data.Status === 200) {
-                this._demoAsyncTreeData = data.Data;
-            }
+            // const data = await this.getAsyncTreeData({ ParentId: " " });
+            // if (data.Data && data.Status === 200) {
+            //     this._demoAsyncTreeData = data.Data;
+            // }
         })();
     }
 
     async getAsyncTreeData(params) {
         params["_select"] = "Id as key,Name as title,ParentId";
-        return this._http.get(APIResource.AppModuleConfig, params).toPromise();
+        // return this._http.get(APIResource.AppModuleConfig, params).toPromise();
     }
 
     expandNode = e => {
         // console.log('expandNode');
         (async () => {
-            if (e.node.getChildren().length === 0 && e.node.isExpanded) {
-                const params = { ParentId: e.node.key };
-                const data = await this.getAsyncTreeData(params);
-                if (data.Data && data.Status === 200) {
-                    data.Data.forEach(item => {
-                        item["isLeaf"] = false;
-                        item["children"] = [];
-                    });
-                    e.node.addChildren(data.Data);
-                }
-            }
+            // if (e.node.getChildren().length === 0 && e.node.isExpanded) {
+            //     const params = { ParentId: e.node.key };
+            //     const data = await this.getAsyncTreeData(params);
+            //     if (data.Data && data.Status === 200) {
+            //         data.Data.forEach(item => {
+            //             item["isLeaf"] = false;
+            //             item["children"] = [];
+            //         });
+            //         e.node.addChildren(data.Data);
+            //     }
+            // }
         })();
     };
 

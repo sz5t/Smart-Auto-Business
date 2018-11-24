@@ -65,12 +65,12 @@ export class DefaultInterceptor implements HttpInterceptor {
             case 500:
                 const EvMsg: any = event;
                 if (
-                    EvMsg.error.Message === "请先登录或重新登录" ||
-                    EvMsg.error.Message === "闲置时间过长，请重新登录"
+                    EvMsg.message === "请先登录或重新登录" ||
+                    EvMsg.message === "闲置时间过长，请重新登录"
                 ) {
                     this.goTo("/passport/login");
                 } else {
-                    this.msg.error(`${EvMsg.error.Message}`);
+                    this.msg.error(`${EvMsg.message}`);
                 }
                 // this.goTo(`/${event.status}`);
                 break;
@@ -115,6 +115,7 @@ export class DefaultInterceptor implements HttpInterceptor {
         const currentConfig: any = this.cacheService.getNone("currentConfig");
         if (!currentConfig) {
             url = SystemResource.localResource;
+            // url = environment.SERVER_URL;
         } else {
             url = currentConfig.Server;
         }

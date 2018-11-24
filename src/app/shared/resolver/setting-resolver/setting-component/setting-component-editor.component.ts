@@ -583,38 +583,38 @@ export class SettingComponentEditorComponent
             // TagB: '',               // 组件类型
             ParentId: this.layoutId // 布局ID
         };
-        this._http.get(APIResource.AppConfigPack, params).subscribe(result => {
-            if (result && result.Status === 200) {
-                result.Data.forEach(data => {
-                    const comp = data.TagB.substring(
-                        data.TagB.lastIndexOf(".") + 1,
-                        data.TagB.length
-                    );
-                    if (comp === "tabs") {
-                        const d = {};
-                        d["config"] = JSON.parse(data.Metadata);
-                        d["dataList"] = [];
-                        d["component"] = comp;
-                        this.createBsnComponent(d);
-                    } else {
-                        this.createBsnComponent(this._dataStruct[comp]);
-                    }
+        // this._http.get(APIResource.AppConfigPack, params).subscribe(result => {
+        //     if (result && result.Status === 200) {
+        //         result.Data.forEach(data => {
+        //             const comp = data.TagB.substring(
+        //                 data.TagB.lastIndexOf(".") + 1,
+        //                 data.TagB.length
+        //             );
+        //             if (comp === "tabs") {
+        //                 const d = {};
+        //                 d["config"] = JSON.parse(data.Metadata);
+        //                 d["dataList"] = [];
+        //                 d["component"] = comp;
+        //                 this.createBsnComponent(d);
+        //             } else {
+        //                 this.createBsnComponent(this._dataStruct[comp]);
+        //             }
 
-                    this._serverLayoutId = data.Id;
-                });
+        //             this._serverLayoutId = data.Id;
+        //         });
 
-                /*result.Data.forEach(data => {
-                  this.menuConfig.forEach(menu => {
-                    menu.children.forEach(componentCfg => {
-                      if(componentCfg.value.component === data.Name) {
-                        this.createBsnComponent(componentCfg.value);
-                        this._serverLayoutId = data.Id;
-                      }
-                    });
-                  });
-                });*/
-            }
-        });
+        //         /*result.Data.forEach(data => {
+        //           this.menuConfig.forEach(menu => {
+        //             menu.children.forEach(componentCfg => {
+        //               if(componentCfg.value.component === data.Name) {
+        //                 this.createBsnComponent(componentCfg.value);
+        //                 this._serverLayoutId = data.Id;
+        //               }
+        //             });
+        //           });
+        //         });*/
+        //     }
+        // });
     }
 
     ngOnChanges() {
@@ -664,20 +664,20 @@ export class SettingComponentEditorComponent
             if (this.config.component === "tabs") {
             }
         } else {
-            this._http.post(APIResource.ViewSetting, data).subscribe(
-                result => {
-                    if (result && result.Status === 200) {
-                        if (result && result.Status === 200) {
-                            this.message.success("保存成功");
-                        } else {
-                            this.message.warning(`出现异常: ${result.Message}`);
-                        }
-                    }
-                },
-                error => {
-                    this.message.error(`出现错误：${error}`);
-                }
-            );
+            // this._http.post(APIResource.ViewSetting, data).subscribe(
+            //     result => {
+            //         if (result && result.Status === 200) {
+            //             if (result && result.Status === 200) {
+            //                 this.message.success("保存成功");
+            //             } else {
+            //                 this.message.warning(`出现异常: ${result.Message}`);
+            //             }
+            //         }
+            //     },
+            //     error => {
+            //         this.message.error(`出现错误：${error}`);
+            //     }
+            // );
         }
     }
 
@@ -696,7 +696,7 @@ export class SettingComponentEditorComponent
         if (this._serverLayoutId) {
             body.Id = this._serverLayoutId;
             this._http
-                .put(APIResource.AppConfigPack, body, {
+                .put('APIResource.AppConfigPack', body, {
                     Id: this._serverLayoutId
                 })
                 .subscribe(
@@ -712,18 +712,18 @@ export class SettingComponentEditorComponent
                     }
                 );
         } else {
-            this._http.post(APIResource.AppConfigPack, body).subscribe(
-                result => {
-                    if (result && result.Status === 200) {
-                        this.message.success("保存成功");
-                    } else {
-                        this.message.warning(`出现异常: ${result.Message}`);
-                    }
-                },
-                error => {
-                    this.message.error(`出现错误：${error}`);
-                }
-            );
+            // this._http.post(APIResource.AppConfigPack, body).subscribe(
+            //     result => {
+            //         if (result && result.Status === 200) {
+            //             this.message.success("保存成功");
+            //         } else {
+            //             this.message.warning(`出现异常: ${result.Message}`);
+            //         }
+            //     },
+            //     error => {
+            //         this.message.error(`出现错误：${error}`);
+            //     }
+            // );
         }
     }
 
@@ -732,7 +732,7 @@ export class SettingComponentEditorComponent
             ParentId: this.layoutId,
             TagA: blockId
         };
-        return this._http.get(APIResource.AppConfigPack, params).toPromise();
+        // return this._http.get(APIResource.AppConfigPack, params).toPromise();
     }
 
     uuID(w) {

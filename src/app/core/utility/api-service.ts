@@ -46,7 +46,10 @@ export class ApiService {
         });
     }
 
-    getById(resource) {
+    getById(resource, params?) {
+        if (params) {
+            resource = `${resource}/${params['Id']}`;
+        }
         return this.httpClient.request("GET", resource, {
             responseType: "json",
             headers: this.setHeaders()
@@ -73,6 +76,7 @@ export class ApiService {
     // region: read inner config data
     getLocalData(name) {
         const urls =
+            // environment.SERVER_URL +
             SystemResource.localResource.url +
             "/assets/data/" +
             name +

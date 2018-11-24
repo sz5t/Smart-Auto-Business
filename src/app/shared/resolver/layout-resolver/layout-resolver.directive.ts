@@ -63,7 +63,6 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
                         const option = cascadeEvent.option;
                         const subViewId = option.subViewId();
                         if (option && cfg.config.viewId === subViewId) {
-                            console.log("option", option);
                             this.buildComponent(
                                 cfg,
                                 option.data,

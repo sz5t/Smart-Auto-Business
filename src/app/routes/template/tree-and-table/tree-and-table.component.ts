@@ -1551,11 +1551,6 @@ export class TreeAndTableComponent implements OnInit {
                                                                     "--请选择--",
                                                                 disabled: false,
                                                                 size: "default",
-                                                                /*  'ajaxConfig': {
-                                                                         'url': 'SinoForce.User.AppUser',
-                                                                         'ajaxType': 'get',
-                                                                         'params': []
-                                                                     }, */
                                                                 options: [
                                                                     {
                                                                         label:
@@ -2433,7 +2428,7 @@ export class TreeAndTableComponent implements OnInit {
                                                                                     params: [
                                                                                         {
                                                                                             name:
-                                                                                                "Id",
+                                                                                                "_ids",
                                                                                             valueName:
                                                                                                 "_id",
                                                                                             type:

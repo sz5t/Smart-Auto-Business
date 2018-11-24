@@ -45,11 +45,14 @@ export class StartupService {
         return new Promise((resolve, reject) => {
             zip(
                 this.httpClient.get(
+                    // environment.SERVER_URL +
                     SystemResource.localResource.url +
                         `/assets/i18n/${this.i18n.defaultLang}.json`
                 ),
                 this.httpClient.get(
-                    SystemResource.localResource.url + "/assets/app-data.json"
+                    // environment.SERVER_URL +
+                    SystemResource.localResource.url 
+                    + "/assets/app-data.json"
                 )
             )
                 .pipe(

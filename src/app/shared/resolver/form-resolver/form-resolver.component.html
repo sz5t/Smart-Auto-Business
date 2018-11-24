@@ -1,5 +1,5 @@
 
-<nz-spin [nzSpinning]="isSpinning" [nzDelay]="300" nzTip='加载中...'>
+<nz-spin [nzSpinning]="formState === 'put' && isSpinning" [nzDelay]="300" nzTip='加载中...'>
     <bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId" [permissions] = "permissions ? permissions : []" ></bsn-toolbar>
     <nz-card [nzTitle]="formTitle ? title : false" nzType="inner">
         <form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form" >
@@ -9,10 +9,10 @@
                         <ng-container *ngIf="!control.hidden">
                             <!-- 垂直表单布局-->
                             <nz-form-item *ngIf="control.layout==='row'">
-                                <ng-container *ngIf="editable === 'post'|| editable === 'put'" cnFormResolverDirective [formGroup]="form" [config]="control" [changeConfig]="changeConfig" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
+                                <ng-container *ngIf="formState === 'post'|| formState === 'put'" cnFormResolverDirective [formGroup]="form" [initValue] = "initValue" [config]="control" [changeConfig]="changeConfig" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
 
                                 </ng-container>
-                                <ng-container *ngIf="editable === 'text'"  cnFormLabelDirective [formGroup]="form" [config]="control">
+                                <ng-container *ngIf="formState === 'text'"  cnFormLabelDirective [formGroup]="form" [config]="control">
 
                                 </ng-container>
                             </nz-form-item>
@@ -20,10 +20,10 @@
                             <!-- 水平表单布局-->
                             <div nz-col [nzSpan]="control.span">
                                 <nz-form-item>
-                                    <ng-container *ngIf="editable === 'post'|| editable === 'put'" cnFormResolverDirective [formGroup]="form" [config]="control" [changeConfig]="changeConfig" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
+                                    <ng-container *ngIf="formState === 'post'|| formState === 'put'" cnFormResolverDirective [formGroup]="form" [initValue]="initValue" [config]="control" [changeConfig]="changeConfig" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
 
                                     </ng-container>
-                                    <ng-container *ngIf="editable === 'text'" cnFormLabelDirective [formGroup]="form" [config]="control">
+                                    <ng-container *ngIf="formState === 'text'" cnFormLabelDirective [formGroup]="form" [config]="control">
 
                                     </ng-container>
                                 </nz-form-item>

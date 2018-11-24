@@ -61,29 +61,54 @@ export class BsnTransferComponent extends CnComponentBase implements OnInit, OnD
                 });
 
                 // 区分左右数据
-                this.config.separator.left.forEach(left => {
-                    let isLeft;
-                    if (dataItem[left['field']] && dataItem[left['field']] === left['value']) {
-                        isLeft = true;
-                    }
-                    if (isLeft) {
-                        listItem['direction'] = 'left';
-                    }
-                });
+                // this.config.separator.left.forEach(left => {
+                //     let isLeft;
+                //     if (dataItem[left['field']] && dataItem[left['field']] === left['value']) {
+                //         isLeft = true;
+                //     }
+                //     if (isLeft) {
+                //         listItem['direction'] = 'left';
+                //     }
+                // });
+                let selectedFlag = false;
+                if (this.separatorData(dataItem, this.config.separator.left)) {
+                    listItem['direction'] = 'left';
+                    selectedFlag = true;
 
-                this.config.separator.right.forEach(right => {
-                    let isRight;
-                    if (dataItem[right['field']] && dataItem[right['field']] === right['value']) {
-                        isRight = true;
-                    }
-                    if (isRight) {
-                        listItem['direction'] = 'right';
-                    }
-                });
-                list.push(listItem);
+                } else if (this.separatorData(dataItem, this.config.separator.right)) {
+                    listItem['direction'] = 'right';
+                    selectedFlag = true;
+                } else {
+                    selectedFlag = false;
+                }
+
+                // this.config.separator.right.forEach(right => {
+                //     let isRight;
+                //     if (dataItem[right['field']] && dataItem[right['field']] === right['value']) {
+                //         isRight = true;
+                //     }
+                //     if (isRight) {
+                //         listItem['direction'] = 'right';
+                //     }
+                // });
+                selectedFlag && list.push(listItem);
             });
         }
         this.dataList = list;
+    }
+
+    private separatorData(dataItem, params) {
+        const result = [];
+        params.forEach(left => {
+            if (left['type'] === 'tempValue') {
+                result.push(dataItem[left['field']] === this.tempValue[left['valueName']]);
+            } else if (left['type'] === 'initValue') {
+                result.push(dataItem[left['field']] === this.initValue[left['valueName']]);
+            } else {
+                result.push(dataItem[left['field']] && dataItem[left['field']] === left['value']);
+            }
+        });
+        return result.every(r => r === true);
     }
 
     private resolverRelation() {
@@ -152,9 +177,7 @@ export class BsnTransferComponent extends CnComponentBase implements OnInit, OnD
     }
 
     change(ret) {
-        this[ret.from](ret.list).then(res => {
-            this.load();
-        });
+        this[ret.from](ret.list);
     }
 
     async right(list) {
@@ -175,8 +198,10 @@ export class BsnTransferComponent extends CnComponentBase implements OnInit, OnD
                 );
                 result.push(response);
             });
+            Promise.all(result).then(() => {
+                this.load();
+            });
         }
-        return result;
     }
 
     async left(list) {
@@ -192,12 +217,10 @@ export class BsnTransferComponent extends CnComponentBase implements OnInit, OnD
                     });
                 }
                 result.push(await this[config.ajaxType](config.url, params));
-                // const response = await this[config.ajaxType](
-                //     config.url,
-                //     params
-                // );
-                // result.push(response);
             });
+            Promise.all(result).then(() => {
+                this.load();
+            })
         }
         return result;
     }

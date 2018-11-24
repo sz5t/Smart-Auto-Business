@@ -1006,14 +1006,14 @@ export class ComponentSettingComponent implements OnInit {
         // this[actionName]($event);
     }
 
-    async getComponentByLayout(layoutId?) {
-        const params = {
-            ParentId: layoutId
-        };
-        return this.apiService
-            .get(APIResource.AppConfigPack, params)
-            .toPromise();
-    }
+    // async getComponentByLayout(layoutId?) {
+    //     const params = {
+    //         ParentId: layoutId
+    //     };
+    //     return this.apiService
+    //         .get(APIResource.AppConfigPack, params)
+    //         .toPromise();
+    // }
 
     //   改变模块选项
     _changeModuleValue($event?) {
@@ -1091,33 +1091,33 @@ export class ComponentSettingComponent implements OnInit {
     }
 
     async saveSqlByApi(sql?) {
-        const params = {
-            ScriptText: sql
-        };
-        return this.apiService
-            .post(APIResource.DbCommandConfig, params)
-            .toPromise();
+        // const params = {
+        //     ScriptText: sql
+        // };
+        // return this.apiService
+        //     .post(APIResource.DbCommandConfig, params)
+        //     .toPromise();
     }
     async updateSqlByApi(sql?, Id?) {
-        const params = {
-            Id: Id,
-            ScriptText: sql
-        };
-        return this.apiService
-            .put(APIResource.DbCommandConfig, params)
-            .toPromise();
+        // const params = {
+        //     Id: Id,
+        //     ScriptText: sql
+        // };
+        // return this.apiService
+        //     .put(APIResource.DbCommandConfig, params)
+        //     .toPromise();
     }
     /**
      * 获取sql对应的字段描述
      * @param Id
      */
     async getSqlFiledByApi(Id?) {
-        const params = {
-            OwnerId: Id
-        };
-        return this.apiService
-            .get(APIResource.EntityPropertyDefine, params)
-            .toPromise();
+        // const params = {
+        //     OwnerId: Id
+        // };
+        // return this.apiService
+        //     .get(APIResource.EntityPropertyDefine, params)
+        //     .toPromise();
     }
 
     /**

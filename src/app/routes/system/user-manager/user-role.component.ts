@@ -46,7 +46,7 @@ export class UserRoleComponent implements OnInit {
         } else {
             const roles = this.roleList.pop();
             this.http
-                .delete(`${APIResource.PrivRoleLink}`, {
+                .delete(``, {
                     LeftId: this.userList.pop()
                 })
                 .subscribe(response => {

@@ -49,11 +49,20 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        if (this.config.toolbar) {
-            this.toolbars = this.config.toolbar;
-        } else {
+
+        if (Array.isArray(this.config)) {
             this.toolbars = this.config;
+        } else if (this.config) {
+            if (this.config.hasOwnProperty('toolbar')) {
+                this.toolbars = this.config.toolbar;
+            }
         }
+        
+        // if (this.config.toolbar) {
+            
+        // } else {
+        //     this.toolbars = this.config;
+        // }
         this.getPermissions();
     }
 

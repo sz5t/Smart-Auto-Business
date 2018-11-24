@@ -1,10 +1,10 @@
 <div class="aside-inner">
-    <nz-dropdown nzTrigger="click" class="user-block">
+    <!-- <nz-dropdown nzTrigger="click" class="user-block">
         <div nz-dropdown class="user-block-dropdown">
-            <nz-avatar class="avatar" [nzSrc]="settings.user['Remark']"></nz-avatar>
+            <nz-avatar class="avatar" [nzSrc]="settings.user['remark']"></nz-avatar>
             <div class="info">
-                <strong  class="text-truncate mb0">{{settings.user['RealName']}}</strong>
-                <p class="text-truncate mb0">{{settings.user['MailAddress']}}</p>
+                <strong  class="text-truncate mb0">{{settings.user['realName']}}</strong>
+                <p class="text-truncate mb0">{{settings.user['mailAddress']}}</p>
             </div>
         </div>
         <ul nz-menu>
@@ -12,6 +12,6 @@
             <li nz-menu-item (click)="msgSrv.success('settings')">{{ 'settings' }}</li>
             <li nz-menu-item (click)="logout()">{{ 'logout' }}</li>
         </ul>
-    </nz-dropdown>
+    </nz-dropdown> -->
     <sidebar-nav class="d-block py-lg"></sidebar-nav>
 </div>

@@ -194,7 +194,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     async login(userLogin) {
         const user = await this._userLogin(userLogin);
         if (user && user.status === 200 && user.isSuccess) {
-            console.log(user.data);
+            // console.log(user.data);
             this.cacheService.set("userInfo", user.data);
             const token: ITokenModel = { token: user.data.token };
             this.tokenService.set(token); // 后续projectId需要进行动态获取
@@ -211,8 +211,8 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                 // const projModule = await this._loadProjectModule();
                 menus = [
                     {
-                        text: "主导航",
-                        i18n: "main_navigation",
+                        text: "功能导航",
+                        i18n: "",
                         group: true,
                         hideInBreadcrumb: true,
                         children: []
@@ -245,52 +245,54 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         return this.apiService.post("common/login", userLogin).toPromise();
     }
 
-    async _getOnlineUser(onlineUser) {
-        return this.apiService
-            .post(APIResource.OnlineUser, onlineUser)
-            .toPromise();
-    }
+    // async _getOnlineUser(onlineUser) {
+    //     return this.apiService
+    //         .post(APIResource.OnlineUser, onlineUser)
+    //         .toPromise();
+    // }
 
-    async _getAppUser(userId) {
-        return this.apiService
-            .get(APIResource.AppUser + "/" + userId)
-            .toPromise();
-    }
+    // async _getAppUser(userId) {
+    //     return this.apiService
+    //         .get(APIResource.AppUser + "/" + userId)
+    //         .toPromise();
+    // }
 
-    async _getSysCommonCode() {
-        return this.apiService
-            .get(APIResource.SysCommonCode, {
-                name: environment.COMMONCODE,
-                ApplyId: "ApplyId"
-            })
-            .toPromise();
-    }
-    async _getAppModule(applyId) {
-        return this.apiService
-            .get(
-                `${APIResource.AppModuleConfig}/_root/${
-                    APIResource.AppModuleConfig
-                }?_recursive=true&_deep=4&_root.ApplyId=${applyId}&_root.parentid=in("",null)`,
-                {
-                    _orderBy: "order asc"
-                }
-            )
-            .toPromise();
-    }
+    // async _getSysCommonCode() {
+    //     return this.apiService
+    //         .get(APIResource.SysCommonCode, {
+    //             name: environment.COMMONCODE,
+    //             ApplyId: "ApplyId"
+    //         })
+    //         .toPromise();
+    // }
+    // async _getAppModule(applyId) {
+    //     return this.apiService
+    //         .get(
+    //             `${APIResource.AppModuleConfig}/_root/${
+    //                 APIResource.AppModuleConfig
+    //             }?_recursive=true&_deep=4&_root.ApplyId=${applyId}&_root.parentid=in("",null)`,
+    //             {
+    //                 _orderBy: "order asc"
+    //             }
+    //         )
+    //         .toPromise();
+    // }
 
     async _getLocalAppData() {
         return this.httpClient
             .get<any>(
-                SystemResource.localResource.url + "/assets/app-data.json"
+                // environment.SERVER_URL
+                SystemResource.localResource.url 
+                + "/assets/app-data.json"
             )
             .toPromise();
     }
 
-    async _getAppPermission() {
-        return this.apiService
-            .get(APIResource.AppPermission + "/Func.SinoForceWeb前端")
-            .toPromise();
-    }
+    // async _getAppPermission() {
+    //     return this.apiService
+    //         .get(APIResource.AppPermission + "/Func.SinoForceWeb前端")
+    //         .toPromise();
+    // }
 
     async _getAppConfig() {
         return this.httpClient.get("assets/app-config.json").toPromise();

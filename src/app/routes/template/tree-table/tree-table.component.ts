@@ -1993,11 +1993,6 @@ export class TreeTableComponent implements OnInit {
                                                                     "--请选择--",
                                                                 disabled: false,
                                                                 size: "default",
-                                                                /*  'ajaxConfig': {
-                                       'url': 'SinoForce.User.AppUser',
-                                       'ajaxType': 'get',
-                                       'params': []
-                                   }, */
                                                                 options: [
                                                                     {
                                                                         label:

@@ -90,7 +90,7 @@ export class ComponentResolverComponent
     ngOnChanges() {
         if (this.componentRef && this.config) {
             this.container.clear();
-            // this.createBsnComponent();
+            this.createBsnComponent();
         }
     }
 

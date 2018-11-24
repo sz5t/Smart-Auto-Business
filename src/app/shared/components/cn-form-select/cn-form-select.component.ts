@@ -27,6 +27,8 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
     rowData;
     @Input()
     dataSet;
+    @Input()
+    initValue;
     formGroup: FormGroup;
     // @Output() updateValue = new EventEmitter();
     @Output()
@@ -136,6 +138,8 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                     params[param.name] = componentValue[param.valueName];
                 } else if (param.type === "cascadeValue") {
                     params[param.name] = this.cascadeValue[param.valueName];
+                } else if (param.type === 'initValue') {
+                    params[param.name] = this.initValue[param.valueName];
                 }
             });
             if (this.isString(p.url)) {
@@ -206,7 +210,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
         //   const backValue = { name: this.config.name, value: name };
         //   this.updateValue.emit(backValue);
         // }
-        if (name) {
+        if (name || name === 0) {
             const backValue = { name: this.config.name, value: name };
             if (this.resultData) {
                 const index = this.resultData.data.findIndex(

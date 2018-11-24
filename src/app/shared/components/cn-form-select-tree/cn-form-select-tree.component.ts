@@ -29,6 +29,7 @@ export class CnFormSelectTreeComponent implements OnInit {
     @Output() updateValue = new EventEmitter();
     @Input() dataSet;
     @Input() casadeData;
+    @Input() initValue;
     treeData;
     treeDatalist = [];
     _tempValue = {};
@@ -47,7 +48,6 @@ export class CnFormSelectTreeComponent implements OnInit {
     constructor(private _http: ApiService) {}
 
     ngOnInit() {
-        console.log(this.value);
         if (this.config.columns) {
             this.config.columns.forEach(element => {
                 this.treecolumns[element.field] = element.valueName;
@@ -101,7 +101,7 @@ export class CnFormSelectTreeComponent implements OnInit {
                     if (this.config.parent) {
                         this.config.parent.forEach(param => {
                             if (param.type === "tempValue") {
-                                parent = this._tempValue[param.valueName];
+                                parent = this.bsnData[param.valueName];
                             } else if (param.type === "value") {
                                 if (param.value === "null") {
                                     param.value = null;
@@ -193,6 +193,8 @@ export class CnFormSelectTreeComponent implements OnInit {
                     params[param.name] = componentValue;
                 } else if (param.type === "cascadeValue") {
                     params[param.name] = this.cascadeValue[param.valueName];
+                } else if (param.type === 'initValue') {
+                    params[param.name] = this.initValue[param.valueName];
                 }
             });
             if (this.isString(p.url)) {

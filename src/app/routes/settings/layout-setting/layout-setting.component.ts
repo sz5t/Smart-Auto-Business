@@ -980,30 +980,30 @@ export class LayoutSettingComponent implements OnInit {
         this._formGroup = this.formBuilder.group({});
         // const params = new HttpParams().set();
         const params = { _select: "Id,Name,ParentId" };
-        const moduleData = await this.getModuleData(params);
+        // const moduleData = await this.getModuleData(params);
         // 初始化模块列表，将数据加载到及联下拉列表当中
-        this._funcOptions = this.arrayToTree(moduleData.Data, "");
+        // this._funcOptions = this.arrayToTree(moduleData.Data, "");
     }
 
-    // 获取模块信息
-    async getModuleData(params) {
-        return this.apiService
-            .get(APIResource.AppModuleConfig, params)
-            .toPromise();
-    }
+    // // 获取模块信息
+    // async getModuleData(params) {
+    //     return this.apiService
+    //         .get(APIResource.AppModuleConfig, params)
+    //         .toPromise();
+    // }
 
-    // 获取布局设置列表
-    async getLayoutConfigData(params) {
-        return this.apiService
-            .get(APIResource.LayoutSetting, params)
-            .toPromise();
-    }
+    // // 获取布局设置列表
+    // async getLayoutConfigData(params) {
+    //     return this.apiService
+    //         .get(APIResource.LayoutSetting, params)
+    //         .toPromise();
+    // }
 
-    async getBlockConfigData(layoutId) {
-        return this.apiService
-            .get(APIResource.BlockSetting, { LayoutId: layoutId })
-            .toPromise();
-    }
+    // async getBlockConfigData(layoutId) {
+    //     return this.apiService
+    //         .get(APIResource.BlockSetting, { LayoutId: layoutId })
+    //         .toPromise();
+    // }
 
     // 改变模块选项
     _changeModuleValue($event?) {
@@ -1017,34 +1017,34 @@ export class LayoutSettingComponent implements OnInit {
             const params = {
                 ModuleId: this._funcValue[this._funcValue.length - 1]
             };
-            this.getLayoutConfigData(params).then(serverLayoutData => {
-                this.loading = true;
-                if (
-                    serverLayoutData.Status === 200 &&
-                    serverLayoutData.Data.length > 0
-                ) {
-                    this._tableDataSource = serverLayoutData.Data;
-                    for (
-                        let i = 0, len = this._tableDataSource.length;
-                        i < len;
-                        i++
-                    ) {
-                        (async () => {
-                            const result = await this.getBlockConfigData(
-                                this._tableDataSource[i].Id
-                            );
-                            if (result.Data && result.Status) {
-                                this._tableDataSource[i]["BlockList"] =
-                                    result.Data;
-                                this._tableDataSource[i]["expand"] = false;
-                            }
-                        })();
-                    }
-                } else {
-                    this._tableDataSource = [];
-                }
-                this.loading = false;
-            });
+            // this.getLayoutConfigData(params).then(serverLayoutData => {
+            //     this.loading = true;
+            //     if (
+            //         serverLayoutData.Status === 200 &&
+            //         serverLayoutData.Data.length > 0
+            //     ) {
+            //         this._tableDataSource = serverLayoutData.Data;
+            //         for (
+            //             let i = 0, len = this._tableDataSource.length;
+            //             i < len;
+            //             i++
+            //         ) {
+            //             (async () => {
+            //                 const result = await this.getBlockConfigData(
+            //                     this._tableDataSource[i].Id
+            //                 );
+            //                 if (result.Data && result.Status) {
+            //                     this._tableDataSource[i]["BlockList"] =
+            //                         result.Data;
+            //                     this._tableDataSource[i]["expand"] = false;
+            //                 }
+            //             })();
+            //         }
+            //     } else {
+            //         this._tableDataSource = [];
+            //     }
+            //     this.loading = false;
+            // });
         }
     }
 
@@ -1096,33 +1096,33 @@ export class LayoutSettingComponent implements OnInit {
         };
 
         (async () => {
-            const layout = await this.addSettingLayout(configData);
-            if (layout.Data && layout.Status === 200) {
-                for (let i = 0, len = blockDataList.length; i < len; i++) {
-                    blockDataList[i]["LayoutId"] = layout.Data.Id;
-                    blockDataList[i]["ParentId"] = moduleID;
-                    blockDataList[i]["type"] = "view";
-                    const block = await this.addBlockSetting(blockDataList[i]);
-                }
+            // const layout = await this.addSettingLayout(configData);
+            // if (layout.Data && layout.Status === 200) {
+            //     for (let i = 0, len = blockDataList.length; i < len; i++) {
+            //         blockDataList[i]["LayoutId"] = layout.Data.Id;
+            //         blockDataList[i]["ParentId"] = moduleID;
+            //         blockDataList[i]["type"] = "view";
+            //         const block = await this.addBlockSetting(blockDataList[i]);
+            //     }
 
-                // const viewData = this._layoutValue.value.layoutEditor;
-                // for (let i = 0, len = viewData.length; i < len; i++) {
-                //   for (let j = 0, jlen = viewData[i].data.length; j < jlen; j++) {
-                //    console.log(viewData[i], viewData[i].data);
-                //    const blockData = {
-                //     Title: viewData[i].data[j].title,
-                //     Icon: viewData[i].data[j].icon,
-                //     LayoutId: layout.Id,
-                //     type: 'view'
-                //   };
-                //   const block = await this.addBlockSetting(blockData);
-                //   }
-                // }
-            } else {
-                this.message.create("error", layout.Message);
-            }
-            this.message.remove(loadingMessage);
-            this.loadLayout();
+            //     // const viewData = this._layoutValue.value.layoutEditor;
+            //     // for (let i = 0, len = viewData.length; i < len; i++) {
+            //     //   for (let j = 0, jlen = viewData[i].data.length; j < jlen; j++) {
+            //     //    console.log(viewData[i], viewData[i].data);
+            //     //    const blockData = {
+            //     //     Title: viewData[i].data[j].title,
+            //     //     Icon: viewData[i].data[j].icon,
+            //     //     LayoutId: layout.Id,
+            //     //     type: 'view'
+            //     //   };
+            //     //   const block = await this.addBlockSetting(blockData);
+            //     //   }
+            //     // }
+            // } else {
+            //     this.message.create("error", layout.Message);
+            // }
+            // this.message.remove(loadingMessage);
+            // this.loadLayout();
         })();
 
         // this.apiService.postProj(
@@ -1139,13 +1139,13 @@ export class LayoutSettingComponent implements OnInit {
     }
 
     async addSettingLayout(data) {
-        return this.apiService
-            .post(APIResource.LayoutSetting, data)
-            .toPromise();
+        // return this.apiService
+        //     .post(APIResource.LayoutSetting, data)
+        //     .toPromise();
     }
 
     async addBlockSetting(data) {
-        return this.apiService.post(APIResource.BlockSetting, data).toPromise();
+        // return this.apiService.post(APIResource.BlockSetting, data).toPromise();
     }
 
     private uuID(w) {

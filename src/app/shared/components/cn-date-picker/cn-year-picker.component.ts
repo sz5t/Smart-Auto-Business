@@ -19,8 +19,9 @@ export class CnYearPickerComponent implements OnInit {
     ngOnInit() {}
 
     changeYear(date: Date) {
-        this.year = getISOYear(date);
-        const backValue = { name: this.config.name, value: this.year };
+        console.log(date);
+        // this.year = getISOYear(date);
+        const backValue = { name: this.config.name, value: getISOYear(date) };
         this.updateValue.emit(backValue);
     }
 }

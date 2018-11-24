@@ -1,13 +1,17 @@
 <nz-tabset [nzTabPosition]="config.tabPosition" [nzType]="config.tabType" [nzSize]="config.size">
-    <nz-tab *ngFor="let tab of config.tabs" [nzTitle]="header">
+    <nz-tab *ngFor="let tab of config.tabs" [nzTitle]="header" (nzDeselect)="tabDisactive(tab)" (nzSelect)="tabActive(tab)">
         <ng-container *ngIf="tab.rows;else tabView">
-                <cn-layout-resolver [layoutId]="" [config]="tab" [initData] = "initData" [tempValue] = "tempValue" [permissions] = "permissions ? permissions : []" ></cn-layout-resolver>
+            <div *ngIf="tab.active">
+                    <cn-layout-resolver [config]="tab" [initData] = "initData" [tempValue] = "tempValue" [permissions] = "permissions ? permissions : []" ></cn-layout-resolver>
+            </div>
         </ng-container>
         <ng-template #tabView>
-                <cn-component-resolver [config]="tabConfig" *ngFor="let tabConfig of tab.viewCfg" [initData]="initData" [tempValue] = "tempValue"  [permissions] = "permissions ? permissions : []" ></cn-component-resolver>
+            <div *ngIf="tab.active">
+                    <cn-component-resolver [config]="tabConfig" *ngFor="let tabConfig of tab.viewCfg" [initData]="initValue" [tempValue] = "tempValue"  [permissions] = "permissions ? permissions : []" ></cn-component-resolver>
+            </div>
         </ng-template>
         <ng-template #header>
-            <span><i class={{tab.icon}}></i> {{tab.title}}</span>
+            <span><i nz-icon type="tag" theme="outline"></i> {{tab.title}}</span>
         </ng-template>
     </nz-tab>
 </nz-tabset>

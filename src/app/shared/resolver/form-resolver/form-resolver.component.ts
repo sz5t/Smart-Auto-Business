@@ -1,3 +1,4 @@
+import { CnFormBase } from './form.base';
 import { BeforeOperation } from "./../../business/before-operation.base";
 import { LayoutResolverComponent } from "./../layout-resolver/layout-resolver.component";
 import { CnFormWindowResolverComponent } from "@shared/resolver/form-resolver/form-window-resolver.component";
@@ -39,7 +40,7 @@ import { Observer } from "rxjs";
     templateUrl: "./form-resolver.component.html",
     styles: [``]
 })
-export class FormResolverComponent extends CnComponentBase
+export class FormResolverComponent extends CnFormBase
     implements OnInit, OnChanges, OnDestroy, AfterViewInit {
     @Input()
     config;
@@ -54,21 +55,15 @@ export class FormResolverComponent extends CnComponentBase
     @Input()
     formValue;
     @Input()
-    editable = BSN_FORM_STATUS.CREATE;
-
-    form: FormGroup;
+    editable;
     @Output()
     submit: EventEmitter<any> = new EventEmitter<any>();
     _relativeResolver;
     isSpinning = false;
-    _statusSubscription;
-    _cascadeSubscription;
-    _isSaving = false;
     changeConfig = [];
-    formconfigcontrol = {}; // liu 表单配置
     beforeOperation: BeforeOperation;
     constructor(
-        private formBuilder: FormBuilder,
+        private builder: FormBuilder,
         private apiService: ApiService,
         private cacheService: CacheService,
         private message: NzMessageService,
@@ -82,6 +77,10 @@ export class FormResolverComponent extends CnComponentBase
         private cascadeEvents: Observable<BsnComponentMessage>
     ) {
         super();
+        this.formBuilder = this.builder;
+        this.baseMessage = this.message;
+        this.baseModal = this.modalService;
+        this.apiResource = this.apiService;
     }
 
     ngAfterViewInit() {
@@ -106,15 +105,17 @@ export class FormResolverComponent extends CnComponentBase
             initValue: this.initValue,
             cacheValue: this.cacheValue.get("userInfo").value
                 ? this.cacheValue.get("userInfo").value
-                : {}
+                : {},
+            apiResource: this.apiResource
         });
     }
 
     // region: 组件生命周期事件
+
     ngOnInit() {
-        if (this.config.editable) {
-            this.editable = this.config.editable;
-        }
+        
+        this.formState = this.initFormState();
+        this.controls = this.initControls(this.config.forms);
         // 做参数简析
         if (this.config.select) {
             this.config.select.forEach(selectItem => {
@@ -129,19 +130,16 @@ export class FormResolverComponent extends CnComponentBase
                 });
             });
         }
-        if (this.initData) {
-            console.log("initValue", this.initValue);
-            this.initValue = this.initData;
-        }
-        if (this.cacheService) {
-            this.cacheValue = this.cacheService;
-        }
+
+        this.initValue = this.initData ? this.initData : {};
+        this.cacheValue = this.cacheService ? this.cacheService : {};
+    
         this.form = this.createGroup();
         this.resolverRelation();
 
         this.config.forms.forEach(formItem => {
             formItem.controls.forEach(control => {
-                this.formconfigcontrol[control.name] = control;
+                this.formConfigControl[control.name] = control;
             });
         });
 
@@ -149,18 +147,26 @@ export class FormResolverComponent extends CnComponentBase
     }
 
     ngOnDestroy() {
-        if (this._statusSubscription) {
-            this._statusSubscription.unsubscribe();
-        }
-        if (this._cascadeSubscription) {
-            this._cascadeSubscription.unsubscribe();
+        this.unsubscribe();
+    }
+
+    initFormState() {
+        switch (this.config.editable) {
+            case 'post':
+                return 'post';
+            case 'put':
+                return 'put';
+            case 'text':
+                return 'text';
+                default:
+                return 'text';
         }
     }
 
     // region: 解析消息
     private resolverRelation() {
         // 注册按钮状态触发接收器
-        this._statusSubscription = this.stateEvents.subscribe(updateState => {
+        this.statusSubscriptions = this.stateEvents.subscribe(updateState => {
             if (updateState._viewId === this.config.viewId) {
                 const option = updateState.option;
                 this.beforeOperation.operationItemData = this.value;
@@ -170,16 +176,16 @@ export class FormResolverComponent extends CnComponentBase
                             this.load();
                             break;
                         case BSN_COMPONENT_MODES.CREATE:
-                            this.editable = BSN_FORM_STATUS.CREATE;
-                            this.form.reset();
+                            this.formState = BSN_FORM_STATUS.CREATE;
+                            this.resetForm();
                             break;
                         case BSN_COMPONENT_MODES.EDIT:
                             this.load();
-                            this.editable = BSN_FORM_STATUS.EDIT;
+                            this.formState = BSN_FORM_STATUS.EDIT;
                             break;
                         case BSN_COMPONENT_MODES.CANCEL:
                             this.load();
-                            this.editable = BSN_FORM_STATUS.TEXT;
+                            this.formState = BSN_FORM_STATUS.TEXT;
                             break;
                         case BSN_COMPONENT_MODES.SAVE:
                             if (option.ajaxConfig) {
@@ -203,9 +209,13 @@ export class FormResolverComponent extends CnComponentBase
                         case BSN_COMPONENT_MODES.EXECUTE:
                             if (option.ajaxConfig) {
                                 // 根据表单状态进行具体配置操作
-                                this._resolveAjaxConfig(
+                                this.resolveAjaxConfig(
                                     option.ajaxConfig,
-                                    this.editable
+                                    this.formState,
+                                    () => {
+                                        // this.load();
+                                        this.sendCascadeMessage();                               
+                                    }
                                 );
                             }
                             break;
@@ -226,33 +236,9 @@ export class FormResolverComponent extends CnComponentBase
         // 表格内部状态触发接收器console.log(this.config);
         if (
             this.config.componentType &&
-            this.config.componentType.parent === true
-        ) {
-            // 注册消息发送方法
-            // 注册行选中事件发送消息
-            this.after(this, "saveForm", () => {
-                this.cascade.next(
-                    new BsnComponentMessage(
-                        BSN_COMPONENT_CASCADE_MODES.REFRESH,
-                        this.config.viewId,
-                        {
-                            data: this.value
-                        }
-                    )
-                );
-            });
-            // this.after(this, 'saveForm_2', () => {
-            //     this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH,
-            //         this.config.viewId, {
-            //         data: this.value
-            //     }));
-            // });
-        }
-        if (
-            this.config.componentType &&
             this.config.componentType.child === true
         ) {
-            this._cascadeSubscription = this.cascadeEvents.subscribe(
+            this.cascadeSubscriptions = this.cascadeEvents.subscribe(
                 cascadeEvent => {
                     // 解析子表消息配置
                     if (
@@ -329,186 +315,43 @@ export class FormResolverComponent extends CnComponentBase
 
     // endregion
 
-    // region: 表单功能实现
-    get controls() {
-        const controls = [];
-        this.config.forms.map(formItem => {
-            const items = formItem.controls.filter(({ type }) => {
-                return type !== "button" && type !== "submit";
-            });
-            controls.push(...items);
-        });
-        return controls;
-    }
-
-    get changes() {
-        return this.form.valueChanges;
-    }
-
-    get valid() {
-        return this.form.valid;
-    }
-
-    get value() {
-        return this.form.value;
-    }
-
-    resetForm() {
-        this.form.reset();
-    }
-
-    createGroup() {
-        const group = this.formBuilder.group({});
-        this.controls.forEach(control =>
-            group.addControl(control.name, this.createControl(control))
-        );
-        return group;
-    }
-
-    createControl(control) {
-        const { disabled, value } = control;
-        const validations = this.getValidations(control.validations);
-        return this.formBuilder.control({ disabled, value }, validations);
-    }
-
-    getValidations(validations) {
-        const validation = [];
-        validations &&
-            validations.forEach(valid => {
-                if (
-                    valid.validator === "required" ||
-                    valid.validator === "email"
-                ) {
-                    validation.push(Validators[valid.validator]);
-                } else if (
-                    valid.validator === "minLength" ||
-                    valid.validator === "maxLength"
-                ) {
-                    validation.push(Validators[valid.validator](valid.length));
-                } else if (valid.validator === "pattern") {
-                    validation.push(Validators[valid.validator](valid.pattern));
-                }
-            });
-        return validation;
-    }
-
-    getFormControl(name) {
-        return this.form.controls[name];
-    }
-
-    _submitForm($event) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.submit.emit(this.value);
-    }
-
-    setValue(name: string, value: any) {
-        const control = this.form.controls[name];
-        if (control) {
-            control.setValue(value, { emitEvent: true });
-        }
-    }
-
-    setFormValue(data) {
-        if (data) {
-            for (const d in data) {
-                if (data.hasOwnProperty(d)) {
-                    if (this.formconfigcontrol[d]) {
-                        if (
-                            this.formconfigcontrol[d]["type"] ===
-                                "selectMultiple" ||
-                            this.formconfigcontrol[d]["type"] ===
-                                "selectTreeMultiple"
-                        ) {
-                            let ArrayValue = [];
-                            if (data[d]) {
-                                if (data[d].length > 0) {
-                                    ArrayValue = data[d].split(",");
-                                }
-                            }
-                            this.setValue(d, ArrayValue);
-                            // console.log('拼接', ArrayValue);
-                        } else {
-                            this.setValue(d, data[d]);
-                        }
-                    } else {
-                        this.setValue(d, data[d]);
-                    }
-                }
-            }
-        }
-    }
-
-    // endregion
-
     // region: 数据处理
-    async execAjax(ajaxConfig) {
-        let url;
-        const params = CommonTools.parametersResolver({
-            params: ajaxConfig.params,
-            tempValue: this.tempValue,
-            initValue: this.initValue,
-            cacheValue: this.cacheService
-        });
-        if (this.isString(ajaxConfig.url)) {
-            url = ajaxConfig.url;
-        } else {
-            const pc = CommonTools.parametersResolver({
-                params: ajaxConfig.url.params,
-                tempValue: this.tempValue,
-                initValue: this.initValue,
-                cacheValue: this.cacheService
-            });
-            url =
-                ajaxConfig.url["parent"] +
-                "/" +
-                pc +
-                "/" +
-                ajaxConfig.url["child"];
-        }
-        if (ajaxConfig.ajaxType === "getById") {
-            return this.apiService
-                .getById(`${url}/${params["Id"]}`)
-                .toPromise();
-        }
-    }
 
-    isString(obj) {
-        // 判断对象是否是字符串
-        return Object.prototype.toString.call(obj) === "[object String]";
-    }
-
-    async load() {
-        if (this.config.ajaxConfig) {
-            this.isSpinning = true;
-            const ajaxData = await this.execAjax(this.config.ajaxConfig);
-            if (ajaxData) {
-                if (ajaxData.data) {
-                    this.setFormValue(ajaxData.data);
+    load() {
+        if (this.config.ajaxConfig && 
+            (this.formState === BSN_FORM_STATUS.EDIT || this.formState === BSN_FORM_STATUS.TEXT)) {
+                setTimeout(() => {
+                    this.isSpinning = true;
+                })
+            const url = this.buildUrl(this.config.ajaxConfig.url);
+            const params = this.buildParameter(this.config.ajaxConfig.params);
+            this.execute(url, 'getById', params).then(result => {
+                if (result.data) {
+                    this.setFormValue(result.data);
                     // 给主键赋值
                     if (this.config.keyId) {
                         this.tempValue["_id"] =
-                            ajaxData.data[this.config.keyId];
+                        result.data[this.config.keyId];
                     } else {
-                        if (ajaxData.data["Id"]) {
-                            this.tempValue["_id"] = ajaxData.data["Id"];
+                        if (result.data["Id"]) {
+                            this.tempValue["_id"] = result.data["Id"];
                         }
                     }
                 } else {
                     this.tempValue["_id"] && delete this.tempValue["_id"];
                     this.form.reset();
                 }
-            } else {
-                this.tempValue["_id"] && delete this.tempValue["_id"];
-                this.form.reset();
-            }
+            });
         }
-        this.isSpinning = false;
+        setTimeout(() => {
+            this.isSpinning = false;
+        });
+        
     }
 
     async saveForm_2(ajaxConfigs) {
         let result;
-        const method = this.editable;
+        const method = this.formState;
         if (method === BSN_FORM_STATUS.TEXT) {
             this.message.warning("请在编辑数据后进行保存！");
             return false;
@@ -520,376 +363,24 @@ export class FormResolverComponent extends CnComponentBase
         }
     }
 
-    private _resolveAjaxConfig(ajaxConfigs, editable) {
-        const index = ajaxConfigs.findIndex(item => item.ajaxType === editable);
-        const c = ajaxConfigs[index];
-        if (c) {
-            this._getAjaxConfig(c, ajaxConfigs);
-        } else {
-            console.log("表单状态,无法执行此操作!");
-        }
-    }
-
-    private _getAjaxConfig(c, ajaxConfigs) {
-        if (c) {
-            if (c.message) {
-                this.modalService.confirm({
-                    nzTitle: c.title ? c.title : "提示",
-                    nzContent: c.message ? c.message : "",
-                    nzOnOk: () => {
-                        (async () => {
-                            const response = await this.executeAction(c);
-                            // 处理输出参数
-                            if (c.outputParams) {
-                                this._outputParametersResolver(
-                                    c,
-                                    response,
-                                    ajaxConfigs,
-                                    () => {}
-                                );
-                            } else {
-                                // 没有输出参数，进行默认处理
-                                this.showAjaxMessage(
-                                    response,
-                                    "操作成功",
-                                    () => {}
-                                );
-                            }
-                        })();
-                    },
-                    nzOnCancel() {}
-                });
-            } else {
-                (async () => {
-                    const response = await this.executeAction(c);
-                    // 处理输出参数
-                    if (c.outputParams) {
-                        this._outputParametersResolver(
-                            c,
-                            response,
-                            ajaxConfigs,
-                            () => {
-                                // this.load();
-                            }
-                        );
-                    } else {
-                        // 没有输出参数，进行默认处理
-                        this.showAjaxMessage(response, "操作成功", () => {
-                            // this.load();
-                        });
-                    }
-                })();
-            }
-        }
-    }
-
-    /**
-     *
-     * @param outputParams
-     * @param response
-     * @param callback
-     * @returns {Array}
-     * @private
-     * 1、输出参数的配置中，消息类型的参数只能设置一次
-     * 2、值类型的结果可以设置多个
-     * 3、表类型的返回结果可以设置多个
-     */
-    private _outputParametersResolver(c, response, ajaxConfig, callback) {
-        const result = false;
-        if (response.isSuccess) {
-            const msg =
-                c.outputParams[
-                    c.outputParams.findIndex(
-                        m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
-                    )
-                ];
-            const value =
-                c.outputParams[
-                    c.outputParams.findIndex(
-                        m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
-                    )
-                ];
-            const table =
-                c.outputParams[
-                    c.outputParams.findIndex(
-                        m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
-                    )
-                ];
-            const msgObj = response.data[msg.name]
-                ? response.data[msg.name].split(":")
-                : "";
-            // const valueObj = response.data[value.name] ? response.data[value.name] : [];
-            // const tableObj = response.data[table.name] ? response.data[table.name] : [];
-            if (msgObj && msgObj.length > 1) {
-                const messageType = msgObj[0];
-                let options;
-                switch (messageType) {
-                    case "info":
-                        options = {
-                            nzTitle: "提示",
-                            nzWidth: "350px",
-                            nzContent: msgObj[1]
-                        };
-                        this.modalService[messageType](options);
-                        break;
-                    case "error":
-                        options = {
-                            nzTitle: "提示",
-                            nzWidth: "350px",
-                            nzContent: msgObj[1]
-                        };
-                        this.modalService[messageType](options);
-                        break;
-                    case "confirm":
-                        options = {
-                            nzTitle: "提示",
-                            nzContent: msgObj[1],
-                            nzOnOk: () => {
-                                // 是否继续后续操作，根据返回状态结果
-                                const childrenConfig = ajaxConfig.filter(
-                                    f => f.parentName && f.parentName === c.name
-                                );
-                                childrenConfig &&
-                                    childrenConfig.map(currentAjax => {
-                                        this._getAjaxConfig(
-                                            currentAjax,
-                                            ajaxConfig
-                                        );
-                                    });
-                            },
-                            nzOnCancel: () => {}
-                        };
-                        this.modalService[messageType](options);
-                        break;
-                    case "warning":
-                        options = {
-                            nzTitle: "提示",
-                            nzWidth: "350px",
-                            nzContent: msgObj[1]
-                        };
-                        this.modalService[messageType](options);
-                        break;
-                    case "success":
-                        options = {
-                            nzTitle: "",
-                            nzWidth: "350px",
-                            nzContent: msgObj[1]
-                        };
-                        this.message.success(msgObj[1]);
-                        callback && callback();
-                        break;
-                }
-                // if(options) {
-                //     this.modalService[messageType](options);
-                //
-                //     // 如果成功则执行回调
-                //     if(messageType === 'success') {
-                //         callback && callback();
-                //     }
-                // }
-            } else {
-                this.message.error(
-                    "存储过程返回结果异常：未获得输出的消息内容"
-                );
-            }
-        } else {
-            this.message.error("操作异常：", response.message);
-        }
-    }
-
-    /**
-     * 数据访问返回消息处理
-     * @param result
-     * @param message
-     * @param callback
-     */
-    showAjaxMessage(result, message?, callback?) {
-        const rs: { success: boolean; msg: string[] } = {
-            success: true,
-            msg: []
-        };
-        let suc = false;
-        if (result && Array.isArray(result)) {
-            result.forEach(res => {
-                rs["success"] = rs["success"] && res.isSuccess;
-                if (!res.isSuccess) {
-                    rs.msg.push(res.message);
-                }
-            });
-            if (rs.success) {
-                this.message.success(message);
-                suc = true;
-            } else {
-                this.message.error(rs.msg.join("<br/>"));
-            }
-        } else {
-            if (result.isSuccess) {
-                this.message.success(message);
-                suc = true;
-            } else {
-                this.message.error(result.message);
-            }
-        }
-        if (callback && suc) {
-            callback();
-            if (
-                this.config.componentType &&
-                this.config.componentType.parent === true
-            ) {
-                this.cascade.next(
-                    new BsnComponentMessage(
-                        BSN_COMPONENT_CASCADE_MODES.REFRESH,
-                        this.config.viewId
-                    )
-                );
-            }
-        }
-    }
-
-    private async executeAction(postConfig) {
-        const url = this._buildURL(postConfig.url);
-        const params = CommonTools.parametersResolver({
-            params: postConfig.params,
-            tempValue: this.tempValue,
-            initValue: this.initValue,
-            componentValue: this.value,
-            cacheValue: this.cacheService
-        });
-        return this.execute(url, postConfig.ajaxType, params);
-    }
-
-    /*  // async saveForm() {
-     //     let result;
-     //     const buttons = this.config.toolbar.buttons;
-     //     if (buttons) {
-     //         const index = buttons.findIndex(item => item.name === 'saveForm');
-     //         if (buttons[index].ajaxConfig) {
-     //             const pconfig = JSON.parse(JSON.stringify(buttons[index].ajaxConfig));
-     //             if (this.tempValue['_id']) {
-     //                 // 修改保存
-     //                 const ajaxData = await this.execAjax(pconfig['put'], this.value);
-     //                 if (ajaxData.isSuccess) {
-     //                     this.message.success('保存成功');
-     //                     result = true;
-     //                 } else {
-     //                     this.message.error(`保存失败！<br/> ${ajaxData.message}`);
-     //                     result = false;
-     //                 }
- 
-     //             } else {
-     //                 // 新增保存
-     //                 if (Array.isArray(pconfig['post'])) {
-     //                     for (let i = 0; i < pconfig['post'].length; i++) {
-     //                         const ajaxData = await this.execAjax(pconfig['post'][i], this.value);
-     //                         if (ajaxData) {
-     //                             if (pconfig['post'][i]['output']) {
-     //                                 pconfig['post'][i]['output'].forEach(out => {
-     //                                     this.tempValue[out.name] = ajaxData.Data[out['dataName']];
-     //                                 });
-     //                             }
-     //                         }
-     //                     }
-     //                 } else {
-     //                     const ajaxData = await this.execAjax(pconfig['add'], this.value);
-     //                     if (ajaxData.isSuccess) {
-     //                         this.message.success('保存成功');
-     //                         result = true;
-     //                     } else {
-     //                         this.message.error(`保存失败！<br/> ${ajaxData.message}`);
-     //                         result = false;
-     //                     }
- 
-     //                 }
-     //             }
-     //         }
-     //     }
-     //     return result;
-     // } */
-
-    searchForm() {
-        this.searchFormByValue(this.value);
-    }
-
-    searchFormByValue(data) {
-        // console.log(data);
-    }
-
-    /* async buttonAction(btn) {
-        let result = false;
-        this._isSaving = true;
-        if (this.checkFormValidation()) {
-
-            if (this[btn.name] && btn.ajaxConfig) {
-                result = await this[btn.name](btn.ajaxConfig);
-            } else if (this[btn.name]) {
-                this[btn.name]();
-            } else if (btn.name === 'saveAndKeep') { // 特殊处理：执行保存并继续
-                result = await this.save(btn.ajaxConfig);
-            }
-            if (result || !result) {
-                this._isSaving = false;
-            }
-        } else {
-            this._isSaving = false;
-        }
-        return result;
-    } */
-
-    private checkFormValidation() {
-        if (this.form.invalid) {
-            for (const i in this.form.controls) {
-                this.form.controls[i].markAsDirty();
-                this.form.controls[i].updateValueAndValidity();
-            }
-            return false;
-        }
-        return true;
-    }
-
-    /* private async save(ajaxConfig) {
-        if (ajaxConfig.post) {
-            return this.post(ajaxConfig.post);
-        }
-        if (ajaxConfig.put) {
-            return this.put(ajaxConfig.put);
-        }
-
-    } */
-
     /**
      * 新增数据
      * @param postConfig 数据访问配置
      */
     private async post(postConfig) {
         let result = true;
-        const url = this._buildURL(postConfig.url);
+        const url = this.buildUrl(postConfig.url);
         const newValue = this.GetComponentValue();
-        const params = CommonTools.parametersResolver({
-            params: postConfig.params,
-            tempValue: this.tempValue,
-            initValue: this.initValue,
-            componentValue: newValue, // liu this.value,
-            cacheValue: this.cacheService
-        });
+        const params = this.buildParameter(postConfig.params);
         const res = await this.execute(url, postConfig.ajaxType, params);
         if (res.isSuccess) {
             this.message.create("success", "操作成功");
-            this.editable = BSN_FORM_STATUS.TEXT;
-            this.load();
+            this.formState = BSN_FORM_STATUS.EDIT;
+            // this.load();
             // 发送消息 刷新其他界面
-            if (
-                this.config.componentType &&
-                this.config.componentType.parent === true
-            ) {
-                this.cascade.next(
-                    new BsnComponentMessage(
-                        BSN_COMPONENT_CASCADE_MODES.REFRESH,
-                        this.config.viewId
-                    )
-                );
-            }
+            this.sendCascadeMessage();
         } else {
-            this.message.create("error", res.message);
+            this.baseMessage.create("error", res.message);
             result = false;
         }
         return result;
@@ -901,15 +392,9 @@ export class FormResolverComponent extends CnComponentBase
      */
     private async put(putConfig) {
         let result = true;
-        const url = this._buildURL(putConfig.url);
+        const url = this.buildUrl(putConfig.url);
         const newValue = this.GetComponentValue();
-        const params = CommonTools.parametersResolver({
-            params: putConfig.params,
-            tempValue: this.tempValue,
-            initValue: this.initValue,
-            componentValue: newValue, // liu this.value,
-            cacheValue: this.cacheService
-        });
+        const params = this.buildParameter(putConfig.params);
         if (params && !params["Id"]) {
             this.message.warning("编辑数据的Id不存在，无法进行更新！");
             return;
@@ -917,20 +402,10 @@ export class FormResolverComponent extends CnComponentBase
             const res = await this.execute(url, putConfig.ajaxType, params);
             if (res.isSuccess) {
                 this.message.create("success", "保存成功");
-                this.editable = BSN_FORM_STATUS.TEXT;
+                this.formState = BSN_FORM_STATUS.EDIT;
                 this.load();
                 // 发送消息 刷新其他界面
-                if (
-                    this.config.componentType &&
-                    this.config.componentType.parent === true
-                ) {
-                    this.cascade.next(
-                        new BsnComponentMessage(
-                            BSN_COMPONENT_CASCADE_MODES.REFRESH,
-                            this.config.viewId
-                        )
-                    );
-                }
+                this.sendCascadeMessage();
             } else {
                 this.message.create("error", res.message);
                 result = false;
@@ -941,14 +416,14 @@ export class FormResolverComponent extends CnComponentBase
 
     // 处理参数 liu
     private GetComponentValue() {
-        this.formconfigcontrol; // liu 表单配置
+        this.formConfigControl; // liu 表单配置
         const ComponentValue = {};
         // 循环 this.value
         for (const key in this.value) {
-            if (this.formconfigcontrol[key]) {
+            if (this.formConfigControl[key]) {
                 if (
-                    this.formconfigcontrol[key]["type"] === "selectMultiple" ||
-                    this.formconfigcontrol[key]["type"] === "selectTreeMultiple"
+                    this.formConfigControl[key]["type"] === "selectMultiple" ||
+                    this.formConfigControl[key]["type"] === "selectTreeMultiple"
                 ) {
                     let ArrayValue = "";
                     // console.log('数组', this.value[key]);
@@ -970,27 +445,17 @@ export class FormResolverComponent extends CnComponentBase
         return ComponentValue;
     }
 
-    private isArray(obj) {
-        // 判断对象是否是数组
-        return Object.prototype.toString.call(obj) === "[object Array]";
-    }
     /**
      * 删除数据
      * @param deleteConfig 数据访问配置
      */
     private async delete(deleteConfig) {
-        let result = true;
+        const asyncResponse = [];
         for (let i = 0, len = deleteConfig.length; i < len; i++) {
-            const url = this._buildURL(deleteConfig[i].url);
-            const params = CommonTools.parametersResolver({
-                params: deleteConfig[i].params,
-                tempValue: this.tempValue,
-                initValue: this.initValue,
-                componentValue: this.value,
-                cacheValue: this.cacheService
-            });
-            if (params && !params["Id"]) {
-                this.message.warning("删除数据的Id不存在，无法进行删除！");
+            const url = this.buildUrl(deleteConfig[i].url);
+            const params = this.buildParameter(deleteConfig[i].params);
+            if (params && !params["_ids"]) {
+                this.baseMessage.warning("删除数据的_ids不存在，无法进行删除！");
                 return;
             } else {
                 const res = await this.execute(
@@ -998,44 +463,35 @@ export class FormResolverComponent extends CnComponentBase
                     deleteConfig[i].ajaxType,
                     params
                 );
-                if (res.isSuccess) {
-                    this.message.create("success", "删除成功");
-                    this.editable = BSN_FORM_STATUS.TEXT;
-                    this.form.reset();
-                    // 发送消息 刷新其他界面
-                    if (
-                        this.config.componentType &&
-                        this.config.componentType.parent === true
-                    ) {
-                        this.cascade.next(
-                            new BsnComponentMessage(
-                                BSN_COMPONENT_CASCADE_MODES.REFRESH,
-                                this.config.viewId
-                            )
-                        );
-                    }
-                } else {
-                    this.message.create("error", res.message);
-                    result = false;
-                }
+                asyncResponse.push(res);
             }
         }
+        Promise.all(asyncResponse).then(res => {
+            this.baseMessage.create("success", "操作完成");
+                this.formState = this.initFormState();
+                this.form.reset();
+                this.sendCascadeMessage();
+        }, error => {
+            this.baseMessage.create('error', '操作异常,未能正确删除数据');
+        })
     }
 
-    private _buildURL(urlConfig) {
-        let url = "";
-        if (urlConfig && this._isUrlString(urlConfig)) {
-            url = urlConfig;
+    sendCascadeMessage() {
+        // 发送消息 刷新其他界面
+        if (
+            this.config.componentType &&
+            this.config.componentType.parent === true
+        ) {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                    this.config.viewId,
+                    {
+                        data: this.value
+                    }
+                )
+            );
         }
-        return url;
-    }
-
-    private _isUrlString(url) {
-        return Object.prototype.toString.call(url) === "[object String]";
-    }
-
-    private async execute(url, method, body) {
-        return this.apiService[method](url, body).toPromise();
     }
 
     initParameters(data?) {
@@ -1167,25 +623,21 @@ export class FormResolverComponent extends CnComponentBase
                 button["type"] = btn.type ? btn.type : "default";
                 button["onClick"] = componentInstance => {
                     if (btn["name"] === "save") {
-                        (async () => {
-                            const result = await componentInstance.buttonAction(
-                                btn
-                            );
-                            this.showAjaxMessage(result, "保存成功", () => {
+                        componentInstance.buttonAction(
+                            btn,
+                            () => {
                                 modal.close();
                                 this.load();
-                            });
-                        })();
+                            }
+                        );
                     } else if (btn["name"] === "saveAndKeep") {
-                        (async () => {
-                            const result = await componentInstance.buttonAction(
-                                btn
-                            );
-                            this.showAjaxMessage(result, "保存成功", () => {
-                                modal.close();
+                        componentInstance.buttonAction(
+                            btn,
+                            () => {
+                                this.resetForm();
                                 this.load();
-                            });
-                        })();
+                            }
+                        );
                     } else if (btn["name"] === "close") {
                         modal.close();
                     } else if (btn["name"] === "reset") {
@@ -1316,15 +768,13 @@ export class FormResolverComponent extends CnComponentBase
                     button["type"] = btn.type ? btn.type : "default";
                     button["onClick"] = componentInstance => {
                         if (btn["name"] === "batchSave") {
-                            (async () => {
-                                const result = await componentInstance.buttonAction(
-                                    btn
-                                );
-                                this.showAjaxMessage(result, "保存成功", () => {
+                            componentInstance.buttonAction(
+                                btn,
+                                () => {
                                     modal.close();
                                     this.load();
-                                });
-                            })();
+                                }
+                            );
                         } else if (btn["name"] === "close") {
                             modal.close();
                         } else if (btn["name"] === "reset") {
@@ -1475,7 +925,6 @@ export class FormResolverComponent extends CnComponentBase
     }
 
     valueChange(data?) {
-        console.log("valueChange", this.initValue);
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
         const sendCasade = data.name;

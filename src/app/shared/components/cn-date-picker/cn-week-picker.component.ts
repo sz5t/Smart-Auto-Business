@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { getISOWeek } from "date-fns";
+import { getISOWeek, getISOYear } from "date-fns";
 
 @Component({
     selector: "cn-week-picker",
@@ -19,8 +19,8 @@ export class CnWeekPickerComponent implements OnInit {
     ngOnInit() {}
 
     getWeek(result: Date): void {
-        this.week = getISOWeek(result);
-        const backValue = { name: this.config.name, value: this.week };
+        // this.week = getISOWeek(result);
+        const backValue = { name: this.config.name, value: `${getISOYear(result)}-${getISOWeek(result)}` };
         this.updateValue.emit(backValue);
     }
 }

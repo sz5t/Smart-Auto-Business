@@ -1,23 +1,23 @@
 
 <nz-modal [(nzVisible)]="isVisible" [nzWidth]="config.select.nzWidth" [nzTitle]="config.select.title" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
 
-  <bsn-tree-table #table [config]="config.select.selectTreeGrid"   [value]="_value" > </bsn-tree-table>
-  <!-- [casadeData]="casadeData" [value]="_value" -->
+    <bsn-tree-table #table [config]="config.select.selectTreeGrid"   [value]="_value" > </bsn-tree-table>
+    <!-- [casadeData]="casadeData" [value]="_value" -->
 </nz-modal>
 
 <div>
-  <nz-input-group nzSearch  [nzSuffix]="suffixIconButton">
-      <!-- [ngStyle]="{'width':config.width}" -->
-    <input nz-input style=" padding-right: 30px;"   type="{{config.inputType}}" [nzSize]="config.size"
-    placeholder="{{config.placeholder}}" [(ngModel)]="_valuetext">
+    <nz-input-group nzSearch  [nzSuffix]="suffixIconButton">
+            <!-- [ngStyle]="{'width':config.width}" -->
+        <input nz-input style=" padding-right: 30px;"   type="{{config.inputType}}" [nzSize]="config.size"
+        placeholder="{{config.placeholder}}" [(ngModel)]="_valuetext">
 
-    <input nz-input  (ngModelChange)="valueChange($event)" type="hidden"
-    placeholder="{{config.placeholder}}" [(ngModel)]="_value">
+        <input nz-input  (ngModelChange)="valueChange($event)" type="hidden"
+        placeholder="{{config.placeholder}}" [(ngModel)]="_value">
 
-  </nz-input-group>                                                                                       
-  <ng-template #suffixIconButton>
-      <button nz-button nzSearch [nzType]="'default'" (click)="showModal()">
-          <i class="anticon anticon-edit"></i>
-      </button>
-  </ng-template>
+    </nz-input-group>
+    <ng-template #suffixIconButton>
+            <button nz-button nzSearch [nzType]="'default'" (click)="showModal()">
+                    <i nz-icon type="edit" theme="outline"></i>
+            </button>
+    </ng-template>
 </div>
