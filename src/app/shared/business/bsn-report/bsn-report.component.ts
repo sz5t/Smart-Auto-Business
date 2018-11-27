@@ -2,21 +2,22 @@ import {
     Component,
     OnInit,
     Input
-} from "@angular/core";
-import { DataService } from "app/model/app-data.service";
+} from '@angular/core';
+import { DataService } from 'app/model/app-data.service';
 @Component({
-    selector: "bsn-report",
-    templateUrl: "./bsn-report.component.html",
+    // tslint:disable-next-line:component-selector
+    selector: 'bsn-report',
+    templateUrl: './bsn-report.component.html',
     styles: [``]
 })
 export class BsnReportComponent implements OnInit {
     @Input()
-    config;
+    public config;
     @Input()
-    viewId;
-    data: any;
-    autoGenerateColumns;
-    hostStyle = {
+    public viewId;
+    public data: any;
+    public autoGenerateColumns;
+    public hostStyle = {
         width: '100%',
         height: '500px'
     }
@@ -27,7 +28,7 @@ export class BsnReportComponent implements OnInit {
         this.data = _appData.getAirpotsData();
     }
 
-    ngOnInit() {
+    public ngOnInit() {
 
     }
 

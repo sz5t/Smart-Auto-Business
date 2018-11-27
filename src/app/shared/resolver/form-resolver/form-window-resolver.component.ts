@@ -35,6 +35,7 @@ import { BeforeOperation } from '@shared/business/before-operation.base';
 import { FormResolverComponent } from './form-resolver.component';
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'cn-form-window-resolver,[cn-form-window-resolver]',
     templateUrl: './form-window-resolver.component.html',
     styles: [``]
@@ -57,7 +58,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
     public ref
     @Input()
     public editable;
-
+    private cascadeList = {};
     // form: FormGroup;
     @Output()
     public submit: EventEmitter<any> = new EventEmitter<any>();
@@ -312,8 +313,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
     }
 
     // endregion
-
-    public cascadeList = {};
 
     public caseLoad() {
         this.cascadeList = {};
