@@ -9,7 +9,7 @@
                         <ng-container *ngIf="!control.hidden">
                             <!-- 垂直表单布局-->
                             <nz-form-item *ngIf="control.layout==='row'">
-                                <ng-container *ngIf="formState === 'post'|| formState === 'put'" cnFormResolverDirective [formGroup]="form" [initValue] = "initValue" [config]="control" [changeConfig]="changeConfig" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
+                                <ng-container *ngIf="formState === 'post'|| formState === 'put'" cnFormResolverDirective [formGroup]="form" [initValue] = "initValue" [config]="control" [changeConfig]="change_config[control.name]" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
 
                                 </ng-container>
                                 <ng-container *ngIf="formState === 'text'"  cnFormLabelDirective [formGroup]="form" [config]="control">
@@ -20,7 +20,7 @@
                             <!-- 水平表单布局-->
                             <div nz-col [nzSpan]="control.span">
                                 <nz-form-item>
-                                    <ng-container *ngIf="formState === 'post'|| formState === 'put'" cnFormResolverDirective [formGroup]="form" [initValue]="initValue" [config]="control" [changeConfig]="changeConfig" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
+                                    <ng-container *ngIf="formState === 'post'|| formState === 'put'" cnFormResolverDirective [formGroup]="form" [initValue]="initValue" [config]="control" [changeConfig]="change_config[control.name]" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
 
                                     </ng-container>
                                     <ng-container *ngIf="formState === 'text'" cnFormLabelDirective [formGroup]="form" [config]="control">

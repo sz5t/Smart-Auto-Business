@@ -6,4 +6,6 @@ type="{{config.inputType}}"
 placeholder="{{config.placeholder}}"
 readonly="{{config.readonly}}"
 disabled="{{config.disabled}}"
-[(ngModel)]="_value">
+[(ngModel)]="_value"
+(blur)="onblur($event,'end')" (keyup)="onKeyPress($event,'end')"
+>

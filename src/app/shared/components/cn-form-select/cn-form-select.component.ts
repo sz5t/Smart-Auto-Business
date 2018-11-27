@@ -29,6 +29,8 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
     dataSet;
     @Input()
     initValue;
+    @Input()
+    changeConfig;
     formGroup: FormGroup;
     // @Output() updateValue = new EventEmitter();
     @Output()
@@ -37,15 +39,13 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
     cascadeValue = {};
     resultData;
     // _selectedMultipleOption:any[];
-    constructor(private apiService: ApiService) {}
+    constructor(private apiService: ApiService) { }
     _selectedOption;
 
     ngOnInit() {
         if (!this.config["multiple"]) {
             this.config["multiple"] = "default";
         }
-
-        // console.log('select加载固定数据', this.config);
         if (this.config["cascadeValue"]) {
             // cascadeValue
             for (const key in this.config["cascadeValue"]) {
@@ -54,6 +54,18 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                 }
             }
         }
+        // console.log('select加载固定数据', this.config);
+        if (this.changeConfig) {
+            if (this.changeConfig["cascadeValue"]) {
+                // cascadeValue
+                for (const key in this.changeConfig["cascadeValue"]) {
+                    if (this.changeConfig["cascadeValue"].hasOwnProperty(key)) {
+                        this.cascadeValue[key] = this.changeConfig["cascadeValue"][key];
+                    }
+                }
+            }
+        }
+
         // console.log('select_cascadeValue', this.cascadeValue);
         this._options.length = 0;
         if (this.dataSet) {
@@ -62,35 +74,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
             this.selectedByLoaded();
         } else if (this.config.ajaxConfig) {
             // 异步加载options
-            (async () => {
-                const result = await this.asyncLoadOptions(
-                    this.config.ajaxConfig,
-                    this.formGroup.value
-                );
-                // console.log('select_result', result);
-                this.resultData = result;
-                if (this.config.valueType && this.config.valueType === "list") {
-                    const labels = this.config.labelName.split(".");
-                    const values = this.config.valueName.split(".");
-                    result.data.forEach(d => {
-                        d[this.config.valueName].forEach(v => {
-                            this._options.push({
-                                label: v.ParameterName,
-                                value: v.ParameterName
-                            });
-                        });
-                    });
-                } else {
-                    result.data.forEach(d => {
-                        this._options.push({
-                            label: d[this.config.labelName],
-                            value: d[this.config.valueName]
-                        });
-                    });
-                }
-                // console.log('89:', this._options);
-                this.selectedByLoaded();
-            })();
+            this.load();
         } else {
             // 加载固定数据
             this._options = this.config.options;
@@ -98,11 +82,42 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
         }
     }
 
+    async load() {
+        const result = await this.asyncLoadOptions(
+            this.config.ajaxConfig,
+            this.formGroup.value
+        );
+        // console.log('select_result', result);
+        this.resultData = result;
+        if (this.config.valueType && this.config.valueType === "list") {
+            const labels = this.config.labelName.split(".");
+            const values = this.config.valueName.split(".");
+            result.data.forEach(d => {
+                d[this.config.valueName].forEach(v => {
+                    this._options.push({
+                        label: v.ParameterName,
+                        value: v.ParameterName
+                    });
+                });
+            });
+        } else {
+            result.data.forEach(d => {
+                this._options.push({
+                    label: d[this.config.labelName],
+                    value: d[this.config.valueName]
+                });
+            });
+        }
+
+        // console.log('select89:', this.config.name, this._options);
+        this.selectedByLoaded();
+    }
+
     ngOnChanges() {
-        // console.log('select加载固定数据ngOnChanges', this.config);
+         console.log('select加载固定数据ngOnChanges', this.changeConfig);
         // console.log('变化时临时参数' , this.bsnData);
     }
-    ngAfterViewInit() {}
+    ngAfterViewInit() { }
 
     async asyncLoadOptions(p?, componentValue?, type?) {
         // console.log('select load 异步加载', componentValue); // liu
@@ -185,9 +200,9 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
         if (!this.value) {
             this.value = this.config.defaultValue;
         }
-        if (this.value && this.value.data) {
+        if (this.value) {
             this._options.forEach(element => {
-                if (element.value === this.value.data) {
+                if (element.value === this.value) {
                     selected = element;
                 }
             });
@@ -202,7 +217,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
         this._selectedOption = selected;
     }
 
-    valueChange(name?) {
+    async valueChange(name?) {
         // if (name) {
         //   const backValue = { name: this.config.name, value: name };
         //   this.updateValue.emit(backValue);
@@ -213,11 +228,28 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
         if (name || name === 0) {
             const backValue = { name: this.config.name, value: name };
             if (this.resultData) {
+                // console.log('221', this.resultData, name);
                 const index = this.resultData.data.findIndex(
                     item => item[this.config["valueName"]] === name
                 );
                 this.resultData.data &&
                     (backValue["dataItem"] = this.resultData.data[index]);
+            } else {
+                if (this.config.ajaxConfig) {
+                    const result = await this.asyncLoadOptions(
+                        this.config.ajaxConfig,
+                        this.formGroup.value
+                    );
+                   // console.log('229', result, name);
+                    const index = result.data.findIndex(
+                        item => item[this.config["valueName"]] === name
+                    );
+                    if (index > -1) {
+                        result.data &&
+                            (backValue["dataItem"] = result.data[index]);
+                    }
+                }
+
             }
             this.updateValue.emit(backValue);
         } else {

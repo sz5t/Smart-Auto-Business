@@ -55,6 +55,7 @@ export class SearchResolverComponent extends CnComponentBase
     expandForm = false;
     changeConfig = [];
     formconfigcontrol = {}; // liu 表单配置
+    change_config = {};
     _statusSubscription: Subscription;
     _cascadeSubscription: Subscription;
     loading = false;
@@ -93,9 +94,14 @@ export class SearchResolverComponent extends CnComponentBase
         this.form = this.createGroup();
         this.resolverRelation();
         this.caseLoad(); // liu 20181103
+        this.config.forms.forEach(formItem => {
+            formItem.controls.forEach(control => {
+                this.change_config[control.name] = null;
+            });
+        });
     }
 
-    ngOnChanges() {}
+    ngOnChanges() { }
 
     ngOnDestroy() {
         if (this._statusSubscription) {
@@ -378,7 +384,7 @@ export class SearchResolverComponent extends CnComponentBase
         }, 500);
     }
 
-    searchFormByValue(data) {}
+    searchFormByValue(data) { }
 
     collapseForm($event) {
         this.expandForm = !this.expandForm;
@@ -491,7 +497,7 @@ export class SearchResolverComponent extends CnComponentBase
         return Object.prototype.toString.call(url) === "[object String]";
     }
 
-    private setParamsValue(params) {}
+    private setParamsValue(params) { }
 
     private async _post(url, body) {
         return this.apiService.post(url, body).toPromise();
@@ -728,9 +734,9 @@ export class SearchResolverComponent extends CnComponentBase
                                                         ajaxItem["name"]
                                                     ] =
                                                         data.dataItem[
-                                                            ajaxItem[
-                                                                "valueName"
-                                                            ]
+                                                        ajaxItem[
+                                                        "valueName"
+                                                        ]
                                                         ];
                                                 }
                                             }
@@ -776,9 +782,9 @@ export class SearchResolverComponent extends CnComponentBase
                                             // 选中行数据[这个是单值]
                                             setValuedata["data"] =
                                                 data[
-                                                    caseItem["setValue"][
-                                                        "valueName"
-                                                    ]
+                                                caseItem["setValue"][
+                                                "valueName"
+                                                ]
                                                 ];
                                         }
                                         if (
@@ -789,9 +795,9 @@ export class SearchResolverComponent extends CnComponentBase
                                             if (data.dataItem) {
                                                 setValuedata["data"] =
                                                     data.dataItem[
-                                                        caseItem["setValue"][
-                                                            "valueName"
-                                                        ]
+                                                    caseItem["setValue"][
+                                                    "valueName"
+                                                    ]
                                                     ];
                                             }
                                         }
@@ -826,7 +832,7 @@ export class SearchResolverComponent extends CnComponentBase
                                             if (data["dataItem"]) {
                                                 regularData =
                                                     data["dataItem"][
-                                                        caseItem["valueName"]
+                                                    caseItem["valueName"]
                                                     ];
                                             } else {
                                                 regularData = data.data;
@@ -897,9 +903,9 @@ export class SearchResolverComponent extends CnComponentBase
                                                                 ajaxItem["name"]
                                                             ] =
                                                                 data.dataItem[
-                                                                    ajaxItem[
-                                                                        "valueName"
-                                                                    ]
+                                                                ajaxItem[
+                                                                "valueName"
+                                                                ]
                                                                 ];
                                                         }
                                                     }
@@ -948,7 +954,7 @@ export class SearchResolverComponent extends CnComponentBase
                                                 // 静态数据
                                                 setValuedata["data"] =
                                                     caseItem["setValue"][
-                                                        "value"
+                                                    "value"
                                                     ];
                                             }
                                             if (
@@ -958,9 +964,9 @@ export class SearchResolverComponent extends CnComponentBase
                                                 // 选中行数据[这个是单值]
                                                 setValuedata["data"] =
                                                     data[
-                                                        caseItem["setValue"][
-                                                            "valueName"
-                                                        ]
+                                                    caseItem["setValue"][
+                                                    "valueName"
+                                                    ]
                                                     ];
                                             }
                                             if (
@@ -971,9 +977,9 @@ export class SearchResolverComponent extends CnComponentBase
                                                 if (data.dataItem) {
                                                     setValuedata["data"] =
                                                         data.dataItem[
-                                                            caseItem[
-                                                                "setValue"
-                                                            ]["valueName"]
+                                                        caseItem[
+                                                        "setValue"
+                                                        ]["valueName"]
                                                         ];
                                                 }
                                             }
@@ -999,6 +1005,11 @@ export class SearchResolverComponent extends CnComponentBase
             }
 
             this.changeConfig = JSON.parse(JSON.stringify(changeConfig_new));
+            changeConfig_new.forEach(changeConfig => {
+
+                this.change_config[changeConfig.name] = changeConfig;
+            }
+            )
         }
 
         // console.log('变更后的', this.config.forms);

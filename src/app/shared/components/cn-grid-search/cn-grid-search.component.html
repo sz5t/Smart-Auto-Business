@@ -65,24 +65,26 @@
 </div> -->
 
 <nz-input-group nzCompact>
-    <nz-dropdown>
-        <a nz-dropdown>
-          条件
-          <i class="anticon anticon-down"></i>
-        </a>
-        <ul nz-menu nzSelectable (nzClick)="onClick($event)" >
-          <ng-template ngFor let-data [ngForOf]="op" >
-            <li id="{{data.value}}"  nz-menu-item [nzSelected]="data.select">
-              <a >{{data.lable}}</a>
-            </li>
-          </ng-template>
-      
-        </ul>
-      </nz-dropdown>
+  <nz-dropdown>
+    <a nz-dropdown>
+      条件
+      <i class="anticon anticon-down"></i>
+    </a>
+    <ul nz-menu nzSelectable (nzClick)="onClick($event)">
+      <ng-template ngFor let-data [ngForOf]="op">
+        <li id="{{data.value}}" nz-menu-item [nzSelected]="data.select">
+          <a>{{data.lable}}</a>
+        </li>
+      </ng-template>
+
+    </ul>
+  </nz-dropdown>
   <div style="width:70%;">
-    <input *ngIf="searchType === 'input'" type="text" nz-input [(ngModel)]="inputValue" (blur)="onblur($event)" (keyup)="onKeyPress($event)">
-    <cn-grid-between-input  *ngIf="searchType === 'btn'" (updateValue)="valueChange($event)"></cn-grid-between-input>
+    <!-- <input *ngIf="searchType === 'input'" type="text" nz-input [(ngModel)]="inputValue" (blur)="onblur($event)" (keyup)="onKeyPress($event)"> -->
+    <ng-container [bsnData]="bsnData" [initData]="initData" [rowData]="rowData" [dataSet]="dataSet?dataSet:null" CnGridEditorDirective
+      *ngIf="searchType === 'input'" [config]="config" [value]="value" [changeConfig]="''" (updateValue)="valueChange($event)">
+    </ng-container>
+    <cn-grid-between-input *ngIf="searchType === 'btn'" (updateValue)="valueChange($event)"></cn-grid-between-input>
   </div>
 
 </nz-input-group>
-

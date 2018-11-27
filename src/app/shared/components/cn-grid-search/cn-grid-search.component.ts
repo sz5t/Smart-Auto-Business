@@ -7,6 +7,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class CnGridSearchComponent implements OnInit {
   @Input()
+  searchConfigType;
+  @Input()
   config;
   @Input()
   value;
@@ -28,7 +30,51 @@ export class CnGridSearchComponent implements OnInit {
 
   searchType = 'input';
   ngOnInit() {
+    if (this.searchConfigType) {
+      if (this.searchConfigType === "default") {
+        this.config = {
+          type: "input",
+          labelSize: "6",
+          controlSize: "18",
+          inputType: "text"
+        }
+      }
+    }
+    this.setOP();  // 简析条件参数
+
+    console.log('当前类型：', this.searchConfigType, this.config, this.value);
     this.AfterValue = 'eq';
+  }
+
+  // 默认 Edit 简析操作条件
+  // 下拉选中等， = ！= in not in  这四种
+  // 文本 = ！= in not in like not like
+  // 数值类型的 范围 = ！= in not in  btw
+  // 时间类型的 = ！= in not in  btw
+  setOP() {
+
+    if (this.config.type === 'select') {
+      const newOp = [
+        { lable: '=', value: 'eq', select: true },
+        { lable: '!=', value: 'neq', select: false },
+        { lable: '包含', value: 'in', select: false },
+        { lable: '不包含', value: 'nin', select: false },
+      ];
+      this.op = newOp;
+    } else if (this.config.type === 'input') {
+      const newOp = [
+        { lable: '=', value: 'eq', select: true },
+        { lable: '!=', value: 'neq', select: false },
+        { lable: '部分一致', value: 'ctn', select: false },
+        { lable: '不属于', value: 'nctn', select: false },
+        { lable: '包含', value: 'in', select: false },
+        { lable: '不包含', value: 'nin', select: false },
+      ];
+      this.op = newOp;
+
+    } else if (this.config.type === 'number') {
+
+    }
   }
 
   // 查询条件配置 设计
@@ -167,25 +213,88 @@ export class CnGridSearchComponent implements OnInit {
   // rowData = { edit: true };
   // dataSet;
   options = {
-    type:
-      "input",
-    labelSize:
-      "6",
-    controlSize:
-      "18",
-    inputType:
-      "text",
+    type: "input",
+    labelSize: "6",
+    controlSize: "18",
+    inputType: "text",
     disabled: false,
     readonly: null
   }
+
+  // 配置模板
+  liu = {
+    title: "名称",
+    field: "name",
+    width: 80,
+    showFilter: false,
+    showSort: false,
+    editorAsSearch: true, // 是否启用editor 作为 查询框
+    editor: {
+      type: "input",
+      field: "name",
+      options: {
+        type: "input",
+        labelSize: "6",
+        controlSize: "18",
+        inputType: "text"
+      }
+    },
+    searcheditor: {
+      type: "search",
+      field: "name",
+      queryTerm: ['eq', 'ctn'],  // 适配条件
+      defaultQueryTerm: 'eq', // 默认条件
+      options: [
+        {
+          name: 'eq',
+          type: "input",
+          field: "name",
+          options: {
+            type: "input",
+            labelSize: "6",
+            controlSize: "18",
+            inputType: "text"
+          }
+        },
+        {
+          name: 'ctn',
+          type: "input",
+          field: "name",
+          options: {
+            type: "input",
+            labelSize: "6",
+            controlSize: "18",
+            inputType: "text"
+          }
+        }
+      ]
+    }
+  }
+
   valueChange(backdata?) {
 
     // 
     console.log('查询行返回', backdata);
-    this.CreateSearchChange(backdata);
+    let backvalue;
+    if (this.isString(backdata)) {
+      backvalue = backdata;
+    } else {
+      if (backdata === null) {
+        backvalue = backdata;
+      } else if (backdata.hasOwnProperty('data')) {
+        backvalue = backdata.data;
+      } else {
+        backvalue = backdata;
+      }
+    }
+
+    this.CreateSearchChange(backvalue);
 
   }
-
+  isString(obj) {
+    // 判断对象是否是字符串
+    return Object.prototype.toString.call(obj) === "[object String]";
+  }
   searchValue;
 
 
@@ -209,7 +318,8 @@ export class CnGridSearchComponent implements OnInit {
       this.searchType = 'input';
     }
     this.CreateSearch();
-     console.log('最终选择：', ck, this.op);
+    this.op = JSON.parse(JSON.stringify(this.op));
+    console.log('最终选择：', ck, this.op);
   }
   op = [
     { lable: '=', value: 'eq', select: true },

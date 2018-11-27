@@ -7,7 +7,7 @@
                         <div nz-col [nzSpan]="control.span">
 
                             <nz-form-item style="margin-bottom:0px">
-                                <ng-container cnFormResolverDirective [formGroup]="form" [changeConfig]="changeConfig" [config]="control" [tempValue]="tempValue"
+                                <ng-container cnFormResolverDirective [formGroup]="form" [changeConfig]="change_config[control.name]" [config]="control" [tempValue]="tempValue"
                                     (updateValue)="valueChange($event)">
 
                                 </ng-container>
@@ -33,7 +33,7 @@
                     <div nz-col [nzSpan]="control.span" *ngFor="let control of formItem.controls">
                         <ng-container *ngIf="!control.hidden">
                             <nz-form-item style="margin-bottom:0px">
-                                <ng-container cnFormResolverDirective [formGroup]="form" [changeConfig]="changeConfig" [config]="control" [tempValue]="tempValue"
+                                <ng-container cnFormResolverDirective [formGroup]="form" [changeConfig]="change_config[control.name]" [config]="control" [tempValue]="tempValue"
                                     (updateValue)="valueChange($event)">
 
                                 </ng-container>

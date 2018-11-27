@@ -64,6 +64,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
     _relativeResolver;
     isSpinning = false;
     changeConfig = [];
+    change_config = {};
     beforeOperation: BeforeOperation;
     constructor(
         private builder: FormBuilder,
@@ -115,6 +116,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
         this.config.forms.forEach(formItem => {
             formItem.controls.forEach(control => {
                 this.formConfigControl[control.name] = control;
+                this.change_config[control.name] = null;
             });
         });
 
@@ -783,7 +785,11 @@ export class CnFormWindowResolverComponent extends CnFormBase
             setTimeout(() => {
                 this.changeConfig = JSON.parse(JSON.stringify(changeConfig_new));
             })
-            
+            changeConfig_new.forEach(changeConfig => {
+
+                this.change_config[changeConfig.name] = changeConfig;
+            }
+            )
         }
 
         const sendData = this.value;

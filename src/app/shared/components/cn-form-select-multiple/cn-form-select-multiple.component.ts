@@ -28,6 +28,7 @@ export class CnFormSelectMultipleComponent
     rowData;
     @Input()
     dataSet;
+    @Input() changeConfig;
     formGroup: FormGroup;
     // @Output() updateValue = new EventEmitter();
     @Output()
@@ -51,6 +52,16 @@ export class CnFormSelectMultipleComponent
                     this.cascadeValue["cascadeValue"] = this.config[
                         "cascadeValue"
                     ][key];
+                }
+            }
+        }
+        if (this.changeConfig) {
+            if (this.changeConfig["cascadeValue"]) {
+                // cascadeValue
+                for (const key in this.changeConfig["cascadeValue"]) {
+                    if (this.changeConfig["cascadeValue"].hasOwnProperty(key)) {
+                        this.cascadeValue[key] = this.changeConfig["cascadeValue"][key];
+                    }
                 }
             }
         }

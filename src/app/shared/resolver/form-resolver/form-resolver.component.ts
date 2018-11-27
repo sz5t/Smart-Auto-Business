@@ -87,14 +87,17 @@ export class FormResolverComponent extends CnFormBase
         if (this.config.ajaxConfig) {
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
+                    console.log('90');
                     this.load();
                 }
             } else {
+                console.log('93');
                 this.load();
             }
         } else if (this.formValue) {
             // 表单加载初始化数据
             this.setFormValue(this.formValue);
+            console.log('表单加载初始化数据', this.formValue);
         }
         // 初始化前置条件验证对象
         this.beforeOperation = new BeforeOperation({
@@ -111,9 +114,9 @@ export class FormResolverComponent extends CnFormBase
     }
 
     // region: 组件生命周期事件
-
+    change_config = {};
     ngOnInit() {
-        
+
         this.formState = this.initFormState();
         this.controls = this.initControls(this.config.forms);
         // 做参数简析
@@ -133,13 +136,18 @@ export class FormResolverComponent extends CnFormBase
 
         this.initValue = this.initData ? this.initData : {};
         this.cacheValue = this.cacheService ? this.cacheService : {};
-    
+
         this.form = this.createGroup();
         this.resolverRelation();
 
         this.config.forms.forEach(formItem => {
             formItem.controls.forEach(control => {
                 this.formConfigControl[control.name] = control;
+            });
+        });
+        this.config.forms.forEach(formItem => {
+            formItem.controls.forEach(control => {
+                this.change_config[control.name] = null;
             });
         });
 
@@ -158,7 +166,7 @@ export class FormResolverComponent extends CnFormBase
                 return 'put';
             case 'text':
                 return 'text';
-                default:
+            default:
                 return 'text';
         }
     }
@@ -202,7 +210,7 @@ export class FormResolverComponent extends CnFormBase
                                     nzOnOk: () => {
                                         this.delete(option.ajaxConfig);
                                     },
-                                    nzOnCancel() {}
+                                    nzOnCancel() { }
                                 });
                             }
                             break;
@@ -214,7 +222,7 @@ export class FormResolverComponent extends CnFormBase
                                     this.formState,
                                     () => {
                                         // this.load();
-                                        this.sendCascadeMessage();                               
+                                        this.sendCascadeMessage();
                                     }
                                 );
                             }
@@ -252,7 +260,7 @@ export class FormResolverComponent extends CnFormBase
                                 // 获取当前设置的级联的模式
                                 const mode =
                                     BSN_COMPONENT_CASCADE_MODES[
-                                        relation.cascadeMode
+                                    relation.cascadeMode
                                     ];
                                 // 获取传递的消息数据
                                 const option = cascadeEvent.option;
@@ -318,20 +326,21 @@ export class FormResolverComponent extends CnFormBase
     // region: 数据处理
 
     load() {
-        if (this.config.ajaxConfig && 
+        if (this.config.ajaxConfig &&
             (this.formState === BSN_FORM_STATUS.EDIT || this.formState === BSN_FORM_STATUS.TEXT)) {
-                setTimeout(() => {
-                    this.isSpinning = true;
-                })
+            setTimeout(() => {
+                this.isSpinning = true;
+            })
             const url = this.buildUrl(this.config.ajaxConfig.url);
             const params = this.buildParameter(this.config.ajaxConfig.params);
             this.execute(url, 'getById', params).then(result => {
                 if (result.data) {
                     this.setFormValue(result.data);
+                    console.log('setFormValue:', result.data);
                     // 给主键赋值
                     if (this.config.keyId) {
                         this.tempValue["_id"] =
-                        result.data[this.config.keyId];
+                            result.data[this.config.keyId];
                     } else {
                         if (result.data["Id"]) {
                             this.tempValue["_id"] = result.data["Id"];
@@ -346,8 +355,9 @@ export class FormResolverComponent extends CnFormBase
         setTimeout(() => {
             this.isSpinning = false;
         });
-        
+
     }
+
 
     async saveForm_2(ajaxConfigs) {
         let result;
@@ -468,9 +478,9 @@ export class FormResolverComponent extends CnFormBase
         }
         Promise.all(asyncResponse).then(res => {
             this.baseMessage.create("success", "操作完成");
-                this.formState = this.initFormState();
-                this.form.reset();
-                this.sendCascadeMessage();
+            this.formState = this.initFormState();
+            this.form.reset();
+            this.sendCascadeMessage();
         }, error => {
             this.baseMessage.create('error', '操作异常,未能正确删除数据');
         })
@@ -925,6 +935,7 @@ export class FormResolverComponent extends CnFormBase
     }
 
     valueChange(data?) {
+        console.log('valueChange', data);
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
         const sendCasade = data.name;
@@ -1000,9 +1011,9 @@ export class FormResolverComponent extends CnFormBase
                                                         ajaxItem["name"]
                                                     ] =
                                                         data.dataItem[
-                                                            ajaxItem[
-                                                                "valueName"
-                                                            ]
+                                                        ajaxItem[
+                                                        "valueName"
+                                                        ]
                                                         ];
                                                 }
                                             }
@@ -1048,9 +1059,9 @@ export class FormResolverComponent extends CnFormBase
                                             // 选中行数据[这个是单值]
                                             setValuedata["data"] =
                                                 data[
-                                                    caseItem["setValue"][
-                                                        "valueName"
-                                                    ]
+                                                caseItem["setValue"][
+                                                "valueName"
+                                                ]
                                                 ];
                                         }
                                         if (
@@ -1061,9 +1072,9 @@ export class FormResolverComponent extends CnFormBase
                                             if (data.dataItem) {
                                                 setValuedata["data"] =
                                                     data.dataItem[
-                                                        caseItem["setValue"][
-                                                            "valueName"
-                                                        ]
+                                                    caseItem["setValue"][
+                                                    "valueName"
+                                                    ]
                                                     ];
                                             }
                                         }
@@ -1098,7 +1109,7 @@ export class FormResolverComponent extends CnFormBase
                                             if (data["dataItem"]) {
                                                 regularData =
                                                     data["dataItem"][
-                                                        caseItem["valueName"]
+                                                    caseItem["valueName"]
                                                     ];
                                             } else {
                                                 regularData = data.data;
@@ -1169,9 +1180,9 @@ export class FormResolverComponent extends CnFormBase
                                                                 ajaxItem["name"]
                                                             ] =
                                                                 data.dataItem[
-                                                                    ajaxItem[
-                                                                        "valueName"
-                                                                    ]
+                                                                ajaxItem[
+                                                                "valueName"
+                                                                ]
                                                                 ];
                                                         }
                                                     }
@@ -1220,7 +1231,7 @@ export class FormResolverComponent extends CnFormBase
                                                 // 静态数据
                                                 setValuedata["data"] =
                                                     caseItem["setValue"][
-                                                        "value"
+                                                    "value"
                                                     ];
                                             }
                                             if (
@@ -1230,9 +1241,9 @@ export class FormResolverComponent extends CnFormBase
                                                 // 选中行数据[这个是单值]
                                                 setValuedata["data"] =
                                                     data[
-                                                        caseItem["setValue"][
-                                                            "valueName"
-                                                        ]
+                                                    caseItem["setValue"][
+                                                    "valueName"
+                                                    ]
                                                     ];
                                             }
                                             if (
@@ -1243,9 +1254,9 @@ export class FormResolverComponent extends CnFormBase
                                                 if (data.dataItem) {
                                                     setValuedata["data"] =
                                                         data.dataItem[
-                                                            caseItem[
-                                                                "setValue"
-                                                            ]["valueName"]
+                                                        caseItem[
+                                                        "setValue"
+                                                        ]["valueName"]
                                                         ];
                                                 }
                                             }
@@ -1271,6 +1282,12 @@ export class FormResolverComponent extends CnFormBase
             }
 
             this.changeConfig = JSON.parse(JSON.stringify(changeConfig_new));
+            changeConfig_new.forEach(changeConfig => {
+
+                this.change_config[changeConfig.name] = changeConfig;
+            }
+            )
+          //  console.log('*****变更后配置******',  this.change_config);
         }
 
         // console.log('变更后的', this.config.forms);
@@ -1348,6 +1365,16 @@ export class FormResolverComponent extends CnFormBase
             });
         }
     }
+
+    // 【20181126】 针对级联编辑状态目前问题处理
+    // 原来的结构不合理，在于变化的检测均是完全修改配置
+    // 现在调整为，将级联包装成对象，给小组件，小组件自行完成
+    // setValue 由form 层控制（继续使用表单内部的机制）
+    // 隐藏，显示 也是由 form 控制（和渲染模板有关）
+    // 顺序：ajax、option 》 setvalue
+    // 异步参数？表单值 
+
+
 
     // 级联变化，情况大致分为三种
     // 1.值变化，其他组件值变化

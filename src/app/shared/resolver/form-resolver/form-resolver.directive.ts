@@ -79,7 +79,7 @@ export class FormResolverDirective extends CnComponentBase
     @Output()
     updateValue = new EventEmitter();
     component: ComponentRef<any>;
-
+    value;
     constructor(
         private resolver: ComponentFactoryResolver,
         private container: ViewContainerRef
@@ -96,53 +96,99 @@ export class FormResolverDirective extends CnComponentBase
             // }
         }
         if (this.changeConfig) {
-            // 判断是否是自己的级联对象
-            this.changeConfig.forEach(changeConfig => {
-                if (this.config.name === changeConfig.name) {
-                    this.config = changeConfig;
-                    this.container.clear();
-                    if (!components[this.config.type]) {
-                        const supportedTypes = Object.keys(components).join(
-                            ", "
-                        );
-                        throw new Error(
-                            `不支持此类型的组件 (${
-                                this.config.type
-                            }).可支持的类型为: ${supportedTypes}`
-                        );
-                    }
-                    const comp = this.resolver.resolveComponentFactory<any>(
-                        components[this.config.type]
-                    );
-                    this.component = this.container.createComponent(comp);
-                    this.component.instance.config = this.config;
-                    //  if (this.component.instance.bsnData) {
-                    this.component.instance.bsnData = this.tempValue;
-                    this.component.instance.initValue = this.initValue;
-                    // }
-
-                    if (
-                        this.config.type !== "submit" ||
-                        this.config.type !== "button"
-                    ) {
-                        this.component.instance.formGroup = this.formGroup;
-                    }
-                    if (this.config.type === "search") {
-                        // 测试事件上抛
-                        // (<CnFormSearchComponent>this.component.instance).searchEmitter.subscribe(() => {
-                        //   console.log('search');
-                        // });
-                    }
-                    // 级联数据接受 liu
-                    if (this.component.instance.updateValue) {
-                        this.component.instance.updateValue.subscribe(event => {
-                            this.setValue(event);
-                        });
-                    }
-                    // console.log('变化' , this.changeConfig );
+            if (this.component) {
+               // console.log('ngOnChanges', this.changeConfig);
+                this.container.clear();
+                const comp = this.resolver.resolveComponentFactory<any>(
+                    components[this.config.type]
+                );
+                this.component = this.container.createComponent(comp);
+                this.component.instance.config = this.config;
+                this.component.instance.changeConfig = this.changeConfig;
+                // console.log('164' , this.changeConfig);
+                // if (this.component.instance.bsnData) {
+                this.component.instance.bsnData = this.tempValue;
+                this.component.instance.initValue = this.initValue;
+                this.component.instance.value = this.value;
+                // }
+                if (
+                    this.config.type !== "submit" ||
+                    this.config.type !== "button" ||
+                    this.config.type !== "search"
+                ) {
+                    this.component.instance.formGroup = this.formGroup;
                 }
-            });
+                if (this.config.type === "search") {
+                    // 测试事件上抛
+                    // (<CnFormSearchComponent>this.component.instance).searchEmitter.subscribe(() => {
+                    //   // console.log('search');
+                    // });
+                }
+                // if (this.component.instance.expandEmitter) {
+                //   this.component.instance.expandEmitter.subscribe(expand => {
+                //     this.setExpandForm(expand);
+                //   });
+                // }
+                // 级联数据接受 liu
+                if (this.component.instance.updateValue) {
+                    this.component.instance.updateValue.subscribe(event => {
+                        if ( event ) {
+                            this.value = event.value;
+                        }
+                        this.setValue(event);
+                    });
+                }
+            }
+
         }
+        // if (this.changeConfig) {
+        //     // 判断是否是自己的级联对象
+        //     this.changeConfig.forEach(changeConfig => {
+        //         if (this.config.name === changeConfig.name) {
+        //             this.config = changeConfig;
+        //             this.container.clear();
+        //             if (!components[this.config.type]) {
+        //                 const supportedTypes = Object.keys(components).join(
+        //                     ", "
+        //                 );
+        //                 throw new Error(
+        //                     `不支持此类型的组件 (${
+        //                         this.config.type
+        //                     }).可支持的类型为: ${supportedTypes}`
+        //                 );
+        //             }
+        //             const comp = this.resolver.resolveComponentFactory<any>(
+        //                 components[this.config.type]
+        //             );
+        //             this.component = this.container.createComponent(comp);
+        //             this.component.instance.config = this.config;
+        //             //  if (this.component.instance.bsnData) {
+        //             this.component.instance.bsnData = this.tempValue;
+        //             this.component.instance.initValue = this.initValue;
+        //             // }
+
+        //             if (
+        //                 this.config.type !== "submit" ||
+        //                 this.config.type !== "button"
+        //             ) {
+        //                 this.component.instance.formGroup = this.formGroup;
+        //             }
+        //             if (this.config.type === "search") {
+        //                 // 测试事件上抛
+        //                 // (<CnFormSearchComponent>this.component.instance).searchEmitter.subscribe(() => {
+        //                 //   console.log('search');
+        //                 // });
+        //             }
+        //             // 级联数据接受 liu
+        //             if (this.component.instance.updateValue) {
+        //                 this.component.instance.updateValue.subscribe(event => {
+        //                     this.setValue(event);
+        //                 });
+        //             }
+        //             // console.log('变化' , this.changeConfig );
+        //         }
+        //     });
+        // }
     }
 
     ngOnInit() {
@@ -160,6 +206,8 @@ export class FormResolverDirective extends CnComponentBase
         );
         this.component = this.container.createComponent(comp);
         this.component.instance.config = this.config;
+        this.component.instance.changeConfig = this.changeConfig;
+        // console.log('164' , this.changeConfig);
         // if (this.component.instance.bsnData) {
         this.component.instance.bsnData = this.tempValue;
         this.component.instance.initValue = this.initValue;
@@ -185,6 +233,9 @@ export class FormResolverDirective extends CnComponentBase
         // 级联数据接受 liu
         if (this.component.instance.updateValue) {
             this.component.instance.updateValue.subscribe(event => {
+                if ( event ) {
+                    this.value = event.value;
+                }
                 this.setValue(event);
             });
         }
