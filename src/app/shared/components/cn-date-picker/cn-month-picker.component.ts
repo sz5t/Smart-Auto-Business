@@ -19,7 +19,7 @@ export class CnMonthPickerComponent implements OnInit {
     ngOnInit() {}
 
     monthChange(date: Date) {
-        const backValue = { name: this.config.name, value: `${getISOYear(this.month)}-${getMonth(this.month)}` };
+        const backValue = { name: this.config.name, value: `${getISOYear(this.month)}-${getMonth(this.month) + 1 }` };
         this.updateValue.emit(backValue);
     }
 }

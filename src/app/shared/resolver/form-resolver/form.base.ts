@@ -1,7 +1,7 @@
+import { BSN_FORM_STATUS } from './../../../core/relative-Service/BsnTableStatus';
 import { CnComponentBase } from "@shared/components/cn-component-base";
 import { FormBuilder, Validators } from "@angular/forms";
 import { FormGroup } from "@angular/forms";
-import { AnimationGroupPlayer } from "@angular/animations/src/players/animation_group_player";
 import { CommonTools } from "@core/utility/common-tools";
 import { BSN_OUTPOUT_PARAMETER_TYPE } from "@core/relative-Service/BsnTableStatus";
 export class CnFormBase extends CnComponentBase {
@@ -424,7 +424,13 @@ export class CnFormBase extends CnComponentBase {
     }
 
     resolveAjaxConfig(ajaxConfig, formState, callback?) {
-        const enterAjaxConfig = ajaxConfig.filter(item => !item.parent);
+        let enterAjaxConfig;
+        if (formState === BSN_FORM_STATUS.TEXT) {
+            enterAjaxConfig = ajaxConfig.filter(item => !item.parent && item.ajaxType === 'delete');
+
+        } else {
+            enterAjaxConfig = ajaxConfig.filter(item => !item.parent && item.ajaxType === formState);
+        }
         if (Array.isArray(enterAjaxConfig) && enterAjaxConfig[0]) {
             this.getAjaxConfig(enterAjaxConfig[0], ajaxConfig, callback);
         } else {

@@ -270,7 +270,6 @@ export class GridBase extends CnComponentBase {
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_SAVE_ROW:
                     // 获取更新状态的数据
-
                     handleData = this.getAddedRows();
                     msg = "新增数据保存成功";
                     if (handleData && handleData.length <= 0) {
@@ -832,35 +831,33 @@ export class GridBase extends CnComponentBase {
                     if (btn["name"] === "save2") {
                         (async () => {
                             const result = await componentInstance.buttonAction(
-                                btn
-                            );
-                            if (result) {
-                                this.showAjaxMessage(result, "保存成功", () => {
+                                btn,
+                                () => {
                                     modal.close();
                                     this._callback();
-                                });
-                            }
+                                }
+                            );
                         })();
                     }
                     if (btn["name"] === "save") {
                         (async () => {
                             const result = await componentInstance.buttonAction(
-                                btn
+                                btn,
+                                () => {
+                                    modal.close();
+                                    this._callback();
+                                }
                             );
-                            this.showAjaxMessage(result, "保存成功", () => {
-                                modal.close();
-                                this._callback();
-                            });
                         })();
                     } else if (btn["name"] === "saveAndKeep") {
                         (async () => {
                             const result = await componentInstance.buttonAction(
-                                btn
+                                btn,
+                                () => {
+                                    modal.close();
+                                    this._callback();
+                                }
                             );
-                            this.showAjaxMessage(result, "保存成功", () => {
-                                modal.close();
-                                this._callback();
-                            });
                         })();
                     } else if (btn["name"] === "close") {
                         modal.close();

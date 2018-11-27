@@ -42,6 +42,7 @@ import {
 } from "@core/relative-Service/BsnTableStatus";
 import { Subject } from "rxjs";
 import { RouteReuseStrategy } from "@angular/router";
+import {DataService} from "./model/app-data.service";
 // JSON-Schema form
 // import { JsonSchemaModule } from '@shared/json-schema/json-schema.module';
 
@@ -122,6 +123,7 @@ export function StartupServiceFactory(
             useValue: new Subject<BsnComponentMessage>()
         },
         ApiService,
+        DataService,
         RelativeService,
         RelativeResolver,
         LodopService

@@ -25,11 +25,11 @@
         "label-position": true,
         "max-line-length": [
             false,
-            140
+            120
         ],
-        "member-access": false,
+        "member-access": true,
         "member-ordering": [
-            false,
+            true,
             {
                 "order": [
                     "static-field",
@@ -67,7 +67,7 @@
         "no-switch-case-fall-through": true,
         "no-trailing-whitespace": false,
         "no-unnecessary-initializer": true,
-        "no-unused-expression": false,
+        "no-unused-expression": true,
         "no-use-before-declare": true,
         "no-var-keyword": true,
         "object-literal-sort-keys": false,
@@ -80,7 +80,7 @@
         ],
         "prefer-const": true,
         "quotemark": [
-            false,
+            true,
             "single"
         ],
         "radix": true,
@@ -114,13 +114,13 @@
             "check-type"
         ],
         "directive-selector": [
-            false,
+            true,
             "attribute",
             "app",
             "camelCase"
         ],
         "component-selector": [
-            false,
+            true,
             "element",
             "app",
             "kebab-case"

@@ -88,7 +88,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
 
     ngOnInit() {
         // init form state, default: post
-        this.formState = this.editable ? this.editable : BSN_FORM_STATUS.CREATE;
+        this.formState = this.initFormState();
         // init controls
         this.controls = this.initControls(this.config.forms);
         // init form group
@@ -142,8 +142,22 @@ export class CnFormWindowResolverComponent extends CnFormBase
         this.unsubscribe();
     }
 
+    initFormState() {
+        switch (this.config.editable) {
+            case 'post':
+                return 'post';
+            case 'put':
+                return 'put';
+            case 'text':
+                return 'text';
+            default:
+                return 'text';
+        }
+    }
+
     // 加载编辑数据
     load() {
+
         if (this.config.ajaxConfig && this.formState === BSN_FORM_STATUS.EDIT) {
             const url = this.buildUrl(this.config.ajaxConfig.url);
             const params = this.buildParameter(this.config.ajaxConfig.params);
@@ -228,7 +242,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
             if (btn.ajaxConfig) {
                 this.resolveAjaxConfig(btn.ajaxConfig, this.formState, callback);
             } else {
-                this.baseMessage.warning('未配置任何数据操作')
+                this.baseMessage.warning('未配置任何数据操作');
             }
         }
     }
@@ -783,7 +797,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
             setTimeout(() => {
                 this.changeConfig = JSON.parse(JSON.stringify(changeConfig_new));
             })
-            
+
         }
 
         const sendData = this.value;

@@ -17,6 +17,7 @@ import { CnAppDocumentComponent } from "./app-document/app-document.component";
 import { CnApiDocumentComponent } from "./api-document/api-document.component";
 import { TreeAndSubTableComponent } from "./tree-and-sub-table/tree-and-sub-table.component";
 import { TreeTransferComponent } from "./tree-transform/tree-transfer.component";
+import { ReportTemplateComponent } from "./report-template/report-template.component";
 
 const routes: Routes = [
     {
@@ -76,6 +77,11 @@ const routes: Routes = [
         canActivate: [AuthGuard]
     },
     {
+        path: "reportTemplate",
+        component: ReportTemplateComponent,
+        canActivate: [AuthGuard]
+    },
+    {
         path: "dynamicTemplate/:name",
         component: DynamicTemplateComponent,
         canActivate: [AuthGuard]
@@ -95,7 +101,8 @@ const COMPONENT_NOROUNT = [
     CnAppDocumentComponent,
     CnApiDocumentComponent,
     TreeAndSubTableComponent,
-    TreeTransferComponent
+    TreeTransferComponent,
+    ReportTemplateComponent
 ];
 
 @NgModule({

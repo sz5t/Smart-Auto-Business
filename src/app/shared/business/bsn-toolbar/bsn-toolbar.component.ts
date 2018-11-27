@@ -69,7 +69,7 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
     getPermissions() {
         const permissionMap = new Map();
         this.permissions.forEach(item => {
-            permissionMap.set(item.code, item);
+            permissionMap.set(item.code, item); 
         });
         if (this.toolbars && Array.isArray(this.toolbars)) {
             this.toolbars.forEach(item => {
