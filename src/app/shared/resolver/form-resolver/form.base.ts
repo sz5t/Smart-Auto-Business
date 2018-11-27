@@ -1,9 +1,9 @@
 import { BSN_FORM_STATUS } from './../../../core/relative-Service/BsnTableStatus';
-import { CnComponentBase } from "@shared/components/cn-component-base";
-import { FormBuilder, Validators } from "@angular/forms";
-import { FormGroup } from "@angular/forms";
-import { CommonTools } from "@core/utility/common-tools";
-import { BSN_OUTPOUT_PARAMETER_TYPE } from "@core/relative-Service/BsnTableStatus";
+import { CnComponentBase } from '@shared/components/cn-component-base';
+import { FormBuilder, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+import { CommonTools } from '@core/utility/common-tools';
+import { BSN_OUTPOUT_PARAMETER_TYPE } from '@core/relative-Service/BsnTableStatus';
 export class CnFormBase extends CnComponentBase {
     private _form: FormGroup;
     public get form() {
@@ -69,11 +69,11 @@ export class CnFormBase extends CnComponentBase {
         return this.form.value;
     }
 
-    resetForm() {
+    public resetForm() {
         this.form.reset();
     }
 
-    createGroup() {
+    public createGroup() {
         const group = this.formBuilder.group({});
         this.controls.forEach(control => {
             group.addControl(control.name, this.createControl(control));
@@ -81,58 +81,58 @@ export class CnFormBase extends CnComponentBase {
         return group;
     }
 
-    createControl(control) {
+    public createControl(control) {
         const { disabled, value } = control;
         const validations = this.getValidations(control.validations);
         return this.formBuilder.control({ disabled, value }, validations);
     }
 
-    getValidations(validations) {
+    public getValidations(validations) {
         const validation = [];
         validations &&
             validations.forEach(valid => {
-                if (valid.validator === "required" || valid.validator === "email") {
+                if (valid.validator === 'required' || valid.validator === 'email') {
                     validation.push(Validators[valid.validator]);
                 } else if (
-                    valid.validator === "minLength" ||
-                    valid.validator === "maxLength"
+                    valid.validator === 'minLength' ||
+                    valid.validator === 'maxLength'
                 ) {
                     validation.push(Validators[valid.validator](valid.length));
-                } else if (valid.validator === "pattern") {
+                } else if (valid.validator === 'pattern') {
                     validation.push(Validators[valid.validator](valid.pattern));
                 }
             });
         return validation;
     }
 
-    getFormControl(name) {
+    public getFormControl(name) {
         return this.form.controls[name];
     }
 
-    submitForm($event) {
+    public submitForm($event) {
         this.submit.emit(this.value);
     }
 
-    setValue(name: string, value: any) {
+    public setValue(name: string, value: any) {
         const control = this.form.controls[name];
         if (control) {
             control.setValue(value, { emitEvent: true });
         }
     }
 
-    setFormValue(data) {
+    public setFormValue(data) {
         if (data) {
             for (const d in data) {
                 if (data.hasOwnProperty(d)) {
                     if (this.formConfigControl[d]) {
                         if (
-                            this.formConfigControl[d]["type"] === "selectMultiple" ||
-                            this.formConfigControl[d]["type"] === "selectTreeMultiple"
+                            this.formConfigControl[d]['type'] === 'selectMultiple' ||
+                            this.formConfigControl[d]['type'] === 'selectTreeMultiple'
                         ) {
                             let ArrayValue = [];
                             if (data[d]) {
                                 if (data[d].length > 0) {
-                                    ArrayValue = data[d].split(",");
+                                    ArrayValue = data[d].split(',');
                                 }
                             }
                             this.setValue(d, ArrayValue);
@@ -147,7 +147,7 @@ export class CnFormBase extends CnComponentBase {
         }
     }
 
-    checkFormValidation() {
+    public checkFormValidation() {
         if (this.form.invalid) {
             for (const i in this.form.controls) {
                 this.form.controls[i].markAsDirty();
@@ -158,18 +158,18 @@ export class CnFormBase extends CnComponentBase {
         return true;
     }
 
-    initControls(formConfig) {
+    public initControls(formConfig) {
         const controls = [];
         formConfig.map(formItem => {
             const items = formItem.controls.filter(({ type }) => {
-                return type !== "button" && type !== "submit";
+                return type !== 'button' && type !== 'submit';
             });
             controls.push(...items);
         });
         return controls;
     }
 
-    buildParameter(parameters) {
+    public buildParameter(parameters) {
         const params = CommonTools.parametersResolver({
             params: parameters,
             item: this.value,
@@ -181,7 +181,7 @@ export class CnFormBase extends CnComponentBase {
         return params;
     }
 
-    buildUrl(urlConfig) {
+    public buildUrl(urlConfig) {
         let url;
         if (CommonTools.isString(urlConfig)) {
             url = urlConfig;
@@ -192,7 +192,7 @@ export class CnFormBase extends CnComponentBase {
                 initValue: this.initValue,
                 cacheValue: this.cacheValue
             });
-            url = `${urlConfig.url["parent"]}/${pc}/${urlConfig.url["child"]}`;
+            url = `${urlConfig.url['parent']}/${pc}/${urlConfig.url['child']}`;
         }
         return url;
     }
@@ -208,7 +208,7 @@ export class CnFormBase extends CnComponentBase {
      * 2、值类型的结果可以设置多个
      * 3、表类型的返回结果可以设置多个
      */
-    outputParametersResolver(c, response, ajaxConfig, callback) {
+    public outputParametersResolver(c, response, ajaxConfig, callback) {
         const result = false;
         if (response.isSuccess) {
             const msg =
@@ -230,33 +230,33 @@ export class CnFormBase extends CnComponentBase {
                     )
                 ];
             const msgObj = response.data[msg.name]
-                ? response.data[msg.name].split(":")
-                : "";
+                ? response.data[msg.name].split(':')
+                : '';
             // const valueObj = response.data[value.name] ? response.data[value.name] : [];
             // const tableObj = response.data[table.name] ? response.data[table.name] : [];
             if (msgObj && msgObj.length > 1) {
                 const messageType = msgObj[0];
                 let options;
                 switch (messageType) {
-                    case "info":
+                    case 'info':
                         options = {
-                            nzTitle: "提示",
-                            nzWidth: "350px",
+                            nzTitle: '提示',
+                            nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
                         this.baseModal[messageType](options);
                         break;
-                    case "error":
+                    case 'error':
                         options = {
-                            nzTitle: "提示",
-                            nzWidth: "350px",
+                            nzTitle: '提示',
+                            nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
                         this.baseModal[messageType](options);
                         break;
-                    case "confirm":
+                    case 'confirm':
                         options = {
-                            nzTitle: "提示",
+                            nzTitle: '提示',
                             nzContent: msgObj[1],
                             nzOnOk: () => {
                                 // 是否继续后续操作，根据返回状态结果
@@ -278,18 +278,18 @@ export class CnFormBase extends CnComponentBase {
                         };
                         this.baseModal[messageType](options);
                         break;
-                    case "warning":
+                    case 'warning':
                         options = {
-                            nzTitle: "提示",
-                            nzWidth: "350px",
+                            nzTitle: '提示',
+                            nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
                         this.baseModal[messageType](options);
                         break;
-                    case "success":
+                    case 'success':
                         options = {
-                            nzTitle: "",
-                            nzWidth: "350px",
+                            nzTitle: '',
+                            nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
                         this.baseMessage.success(msgObj[1]);
@@ -306,11 +306,11 @@ export class CnFormBase extends CnComponentBase {
                 // }
             } else {
                 this.baseMessage.error(
-                    "存储过程返回结果异常：未获得输出的消息内容"
+                    '存储过程返回结果异常：未获得输出的消息内容'
                 );
             }
         } else {
-            this.baseMessage.error("操作异常：", response.message);
+            this.baseMessage.error('操作异常：', response.message);
         }
     }
 
@@ -320,7 +320,7 @@ export class CnFormBase extends CnComponentBase {
      * @param message
      * @param callback
      */
-    showAjaxMessage(result, message?, callback?) {
+    public showAjaxMessage(result, message?, callback?) {
         const rs: { success: boolean; msg: string[] } = {
             success: true,
             msg: []
@@ -328,7 +328,7 @@ export class CnFormBase extends CnComponentBase {
         let suc = false;
         if (result && Array.isArray(result)) {
             result.forEach(res => {
-                rs["success"] = rs["success"] && res.isSuccess;
+                rs['success'] = rs['success'] && res.isSuccess;
                 if (!res.isSuccess) {
                     rs.msg.push(res.message);
                 }
@@ -337,7 +337,7 @@ export class CnFormBase extends CnComponentBase {
                 this.baseMessage.success(message);
                 suc = true;
             } else {
-                this.baseMessage.error(rs.msg.join("<br/>"));
+                this.baseMessage.error(rs.msg.join('<br/>'));
             }
         } else {
             if (result.isSuccess) {
@@ -352,18 +352,18 @@ export class CnFormBase extends CnComponentBase {
         }
     }
 
-    execute(url, method, body?) {
+    public execute(url, method, body?) {
         return this.apiResource[method](url, body).toPromise();
     }
 
-    getAjaxConfig(c, ajaxConfigs, callback?) {
+    public getAjaxConfig(c, ajaxConfigs, callback?) {
         if (c) {
             const url = this.buildUrl(c.url);
             const params = this.buildParameter(c.params);
             if (c.message) {
                 this.baseModal.confirm({
-                    nzTitle: c.title ? c.title : "提示",
-                    nzContent: c.message ? c.message : "",
+                    nzTitle: c.title ? c.title : '提示',
+                    nzContent: c.message ? c.message : '',
                     nzOnOk: () => {
                         (async () => {
                             const response = await this.execute(url, c.ajaxType, params);
@@ -383,7 +383,7 @@ export class CnFormBase extends CnComponentBase {
                                 // 没有输出参数，进行默认处理
                                 this.showAjaxMessage(
                                     response,
-                                    "操作成功",
+                                    '操作成功',
                                     () => {
                                         if (callback) {
                                             callback();
@@ -412,7 +412,7 @@ export class CnFormBase extends CnComponentBase {
                         );
                     } else {
                         // 没有输出参数，进行默认处理
-                        this.showAjaxMessage(response, "操作成功", () => {
+                        this.showAjaxMessage(response, '操作成功', () => {
                             if (callback) {
                                 callback();
                             }
@@ -423,7 +423,7 @@ export class CnFormBase extends CnComponentBase {
         }
     }
 
-    resolveAjaxConfig(ajaxConfig, formState, callback?) {
+    public resolveAjaxConfig(ajaxConfig, formState, callback?) {
         let enterAjaxConfig;
         if (formState === BSN_FORM_STATUS.TEXT) {
             enterAjaxConfig = ajaxConfig.filter(item => !item.parent && item.ajaxType === 'delete');

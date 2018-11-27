@@ -599,15 +599,15 @@ export class GridBase extends CnComponentBase {
                     case "warning":
                         options = {
                             nzTitle: "提示",
-                            nzWidth: "350px",
+                            nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
                         this._modalService[messageType](options);
                         break;
-                    case "success":
+                    case 'success':
                         options = {
-                            nzTitle: "",
-                            nzWidth: "350px",
+                            nzTitle: '',
+                            nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
                         this._message.success(msgObj[1]);
@@ -624,11 +624,11 @@ export class GridBase extends CnComponentBase {
                 // }
             } else {
                 this._message.error(
-                    "存储过程返回结果异常：未获得输出的消息内容"
+                    '存储过程返回结果异常：未获得输出的消息内容'
                 );
             }
         } else {
-            this._message.error("操作异常：", response.message);
+            this._message.error('操作异常：', response.message);
         }
     }
 
@@ -645,7 +645,7 @@ export class GridBase extends CnComponentBase {
         };
         if (result && Array.isArray(result)) {
             result.forEach(res => {
-                rs["success"] = rs["success"] && res.isSuccess;
+                rs['success'] = rs['success'] && res.isSuccess;
                 if (!res.isSuccess) {
                     rs.msg.push(res.message);
                 }
@@ -656,7 +656,7 @@ export class GridBase extends CnComponentBase {
                     callback();
                 }
             } else {
-                this._message.error(rs.msg.join("<br/>"));
+                this._message.error(rs.msg.join('<br/>'));
             }
         } else {
             if (result.isSuccess) {
@@ -688,35 +688,35 @@ export class GridBase extends CnComponentBase {
             if (dialog.buttons) {
                 dialog.buttons.forEach(btn => {
                     const button = {};
-                    button["label"] = btn.text;
-                    button["type"] = btn.type ? btn.type : "default";
-                    button["show"] = true;
-                    button["onClick"] = componentInstance => {
-                        if (btn["name"] === "save") {
+                    button['label'] = btn.text;
+                    button['type'] = btn.type ? btn.type : 'default';
+                    button['show'] = true;
+                    button['onClick'] = componentInstance => {
+                        if (btn['name'] === 'save') {
                             (async () => {
                                 const result = await componentInstance.buttonAction(
-                                    btn
+                                    btn,
+                                    () => {
+                                        modal.close();
+                                        // todo: 操作完成当前数据后需要定位
+                                        this.callback();
+                                    }
                                 );
-                                if (result) {
-                                    modal.close();
-                                    // todo: 操作完成当前数据后需要定位
-                                    this.callback();
-                                }
                             })();
-                        } else if (btn["name"] === "saveAndKeep") {
+                        } else if (btn['name'] === 'saveAndKeep') {
                             (async () => {
                                 const result = await componentInstance.buttonAction(
-                                    btn
+                                    btn,
+                                    () => {
+                                        // todo: 操作完成当前数据后需要定位
+                                        this.callback();
+                                    }
                                 );
-                                if (result) {
-                                    // todo: 操作完成当前数据后需要定位
-                                    this.callback();
-                                }
                             })();
-                        } else if (btn["name"] === "close") {
+                        } else if (btn['name'] === 'close') {
                             modal.close();
                             this.callback();
-                        } else if (btn["name"] === "ok") {
+                        } else if (btn['name'] === 'ok') {
                             modal.close();
                             this.callback();
                             //
@@ -759,22 +759,22 @@ export class GridBase extends CnComponentBase {
             if (dialog.buttons) {
                 dialog.buttons.forEach(btn => {
                     const button = {};
-                    button["label"] = btn.text;
-                    button["type"] = btn.type ? btn.type : "default";
-                    button["onClick"] = componentInstance => {
-                        if (btn["name"] === "batchSave") {
+                    button['label'] = btn.text;
+                    button['type'] = btn.type ? btn.type : 'default';
+                    button['onClick'] = componentInstance => {
+                        if (btn['name'] === 'batchSave') {
                             (async () => {
                                 const result = await componentInstance.buttonAction(
-                                    btn
+                                    btn,
+                                    () => {
+                                        modal.close();
+                                        this.callback();
+                                    }
                                 );
-                                this.showAjaxMessage(result, "保存成功", () => {
-                                    modal.close();
-                                    this.callback();
-                                });
                             })();
-                        } else if (btn["name"] === "close") {
+                        } else if (btn['name'] === 'close') {
                             modal.close();
-                        } else if (btn["name"] === "reset") {
+                        } else if (btn['name'] === 'reset') {
                             this._resetForm(componentInstance);
                         }
                     };
@@ -782,7 +782,7 @@ export class GridBase extends CnComponentBase {
                 });
             }
         } else {
-            this._message.create("warning", "请先选中需要处理的数据");
+            this._message.create('warning', '请先选中需要处理的数据');
         }
     }
     /**
@@ -792,10 +792,10 @@ export class GridBase extends CnComponentBase {
      */
     protected showForm(dialog) {
         let obj;
-        if (dialog.type === "add") {
-        } else if (dialog.type === "edit") {
+        if (dialog.type === 'add') {
+        } else if (dialog.type === 'edit') {
             if (!this.selectedItem) {
-                this._message.warning("请选中一条需要添加附件的记录！");
+                this._message.warning('请选中一条需要添加附件的记录！');
                 return false;
             }
         }
@@ -804,10 +804,10 @@ export class GridBase extends CnComponentBase {
             ...this.initValue,
             ...this.tempValue,
             ...sItem,
-            _id: sItem[dialog.keyId] ? sItem[dialog.keyId] : "",
-            _parentId: this.tempValue["_parentId"]
-                ? this.tempValue["_parentId"]
-                : ""
+            _id: sItem[dialog.keyId] ? sItem[dialog.keyId] : '',
+            _parentId: this.tempValue['_parentId']
+                ? this.tempValue['_parentId']
+                : ''
         };
         const footer = [];
         const modal = this.modalService.create({
@@ -825,10 +825,10 @@ export class GridBase extends CnComponentBase {
         if (dialog.buttons) {
             dialog.buttons.forEach(btn => {
                 const button = {};
-                button["label"] = btn.text;
-                button["type"] = btn.type ? btn.type : "default";
-                button["onClick"] = componentInstance => {
-                    if (btn["name"] === "save2") {
+                button['label'] = btn.text;
+                button['type'] = btn.type ? btn.type : 'default';
+                button['onClick'] = componentInstance => {
+                    if (btn['name'] === 'save2') {
                         (async () => {
                             const result = await componentInstance.buttonAction(
                                 btn,
@@ -839,7 +839,7 @@ export class GridBase extends CnComponentBase {
                             );
                         })();
                     }
-                    if (btn["name"] === "save") {
+                    if (btn['name'] === 'save') {
                         (async () => {
                             const result = await componentInstance.buttonAction(
                                 btn,
@@ -849,7 +849,7 @@ export class GridBase extends CnComponentBase {
                                 }
                             );
                         })();
-                    } else if (btn["name"] === "saveAndKeep") {
+                    } else if (btn['name'] === 'saveAndKeep') {
                         (async () => {
                             const result = await componentInstance.buttonAction(
                                 btn,
@@ -859,9 +859,9 @@ export class GridBase extends CnComponentBase {
                                 }
                             );
                         })();
-                    } else if (btn["name"] === "close") {
+                    } else if (btn['name'] === 'close') {
                         modal.close();
-                    } else if (btn["name"] === "reset") {
+                    } else if (btn['name'] === 'reset') {
                         this._resetForm(componentInstance);
                     }
                 };
@@ -885,13 +885,13 @@ export class GridBase extends CnComponentBase {
      */
     protected openUploadDialog(dialog): boolean {
         if (!this.selectedItem) {
-            this._message.warning("请选中一条需要添加附件的记录！");
+            this._message.warning('请选中一条需要添加附件的记录！');
             return false;
         }
         const footer = [];
         const obj = {
             _id: this.selectedItem[dialog.keyId],
-            _parentId: this.tempValue["_parentId"]
+            _parentId: this.tempValue['_parentId']
         };
         const modal = this.modalService.create({
             nzTitle: dialog.title,
@@ -947,7 +947,7 @@ export class GridBase extends CnComponentBase {
      * @protected
      */
     protected buildURL(ajaxUrl): string {
-        let url = "";
+        let url = '';
         if (ajaxUrl && this.isUrlString(ajaxUrl)) {
             url = ajaxUrl;
         } else if (ajaxUrl) {
@@ -962,8 +962,8 @@ export class GridBase extends CnComponentBase {
     protected buildPaging(isPaging): {} {
         const params = {};
         if (isPaging) {
-            params["_page"] = this.pageIndex;
-            params["_rows"] = this.pageSize;
+            params['_page'] = this.pageIndex;
+            params['_rows'] = this.pageSize;
         }
         return params;
     }
@@ -974,7 +974,7 @@ export class GridBase extends CnComponentBase {
      * @protected
      */
     protected isUrlString(url): boolean {
-        return Object.prototype.toString.call(url) === "[object String]";
+        return Object.prototype.toString.call(url) === '[object String]';
     }
     /**
      * 构建排序
@@ -984,7 +984,7 @@ export class GridBase extends CnComponentBase {
     protected buildSort(): {} {
         const sortObj = {};
         if (this.sortName && this.sortOrder) {
-            sortObj["_sort"] = this.sortName + this.sortOrder;
+            sortObj['_sort'] = this.sortName + this.sortOrder;
         }
         return sortObj;
     }
@@ -997,7 +997,7 @@ export class GridBase extends CnComponentBase {
         const focusParams = {};
         // 服务器端待解决
         if (this.focusIds) {
-            focusParams["_focusedId"] = this.focusIds;
+            focusParams['_focusedId'] = this.focusIds;
         }
         return focusParams;
     }
@@ -1014,7 +1014,7 @@ export class GridBase extends CnComponentBase {
                 filter.value.map(value => {
                     valueStr.push(`'${value}'`);
                 });
-                filterParams[filter.field] = `in(${valueStr.join(",")})`;
+                filterParams[filter.field] = `in(${valueStr.join(',')})`;
             });
         }
         return filterParams;
@@ -1026,10 +1026,10 @@ export class GridBase extends CnComponentBase {
         let search = {};
         if (this.search_Row) {
             const searchData = JSON.parse(JSON.stringify(this.search_Row));
-            delete searchData["key"];
-            delete searchData["checked"];
-            delete searchData["row_status"];
-            delete searchData["selected"];
+            delete searchData['key'];
+            delete searchData['checked'];
+            delete searchData['row_status'];
+            delete searchData['selected'];
 
             search = searchData;
         }
@@ -1040,25 +1040,25 @@ export class GridBase extends CnComponentBase {
         return { _recursive: true, _deep: -1 };
     }
 
-    sort(sort: { key: string; value: string }) {
+    public sort(sort: { key: string; value: string }) {
         this._sortName = sort.key;
-        if (sort.value === "ascend") {
-            this._sortOrder = " Asc";
-        } else if (sort.value === "descend") {
-            this._sortOrder = " Desc";
+        if (sort.value === 'ascend') {
+            this._sortOrder = ' Asc';
+        } else if (sort.value === 'descend') {
+            this._sortOrder = ' Desc';
         } else {
-            this._sortOrder = "";
+            this._sortOrder = '';
         }
 
         this._sortType = !this._sortType;
         this.callback();
     }
 
-    columnFilter(field: string, values: string[]) {
+    public columnFilter(field: string, values: string[]) {
         const filter = {};
         if (values.length > 0 && field) {
-            filter["field"] = field;
-            filter["value"] = values;
+            filter['field'] = field;
+            filter['value'] = values;
             this.columnFilterList.push(filter);
         } else {
             this.columnFilterList = [];
