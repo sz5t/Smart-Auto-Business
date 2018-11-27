@@ -113,14 +113,14 @@ export class CnFormWindowResolverComponent extends CnFormBase
                 });
             });
         }
-
+        const formConfigControlobject = {};
         this.config.forms.forEach(formItem => {
             formItem.controls.forEach(control => {
-                this.formConfigControl[control.name] = control;
+                formConfigControlobject[control.name] = control;
                 this.change_config[control.name] = null;
             });
         });
-
+        this.formConfigControl = formConfigControlobject;
         this.resolverRelation();
         this.caseLoad(); // liu 20180521 测试
     }
@@ -250,36 +250,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
         }
     }
 
-    // 处理参数 liu
-    private GetComponentValue() {
-        this.formConfigControl; // liu 表单配置
-        const ComponentValue = {};
-        // 循环 this.value
-        for (const key in this.value) {
-            if (this.formConfigControl[key]) {
-                if (
-                    this.formConfigControl[key]['type'] === 'selectMultiple' ||
-                    this.formConfigControl[key]['type'] === 'selectTreeMultiple'
-                ) {
-                    let ArrayValue = '';
-                    // console.log('数组', this.value[key]);
-                    this.value[key].forEach(element => {
-                        ArrayValue = ArrayValue + element.toString() + ',';
-                    });
-                    if (ArrayValue.length > 0) {
-                        ArrayValue = ArrayValue.slice(0, ArrayValue.length - 1);
-                    }
-                    ComponentValue[key] = ArrayValue;
-                    // console.log('拼接', ArrayValue);
-                } else {
-                    ComponentValue[key] = this.value[key];
-                }
-            } else {
-                ComponentValue[key] = this.value[key];
-            }
-        }
-        return ComponentValue;
-    }
 
     public initParameters(data?) {
         if (!this.tempValue) {

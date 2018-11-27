@@ -168,16 +168,48 @@ export class CnFormBase extends CnComponentBase {
         });
         return controls;
     }
+    // 处理参数 liu
+    public GetComponentValue() {
+        // liu 表单配置
+        // console.log('------', this.formConfigControl);
+        const ComponentValue = {};
+        // 循环 this.value
+        for (const key in this.value) {
+            if (this.formConfigControl[key]) {
+                if (
+                    this.formConfigControl[key]['type'] === 'selectMultiple' ||
+                    this.formConfigControl[key]['type'] === 'selectTreeMultiple'
+                ) {
+                    let ArrayValue = '';
+                    // console.log('数组', this.value[key]);
+                    this.value[key].forEach(element => {
+                        ArrayValue = ArrayValue + element.toString() + ',';
+                    });
+                    if (ArrayValue.length > 0) {
+                        ArrayValue = ArrayValue.slice(0, ArrayValue.length - 1);
+                    }
+                    ComponentValue[key] = ArrayValue;
+                    // console.log('拼接', ArrayValue);
+                } else {
+                    ComponentValue[key] = this.value[key];
+                }
+            } else {
+                ComponentValue[key] = this.value[key];
+            }
+        }
+        return ComponentValue;
+    }
 
     public buildParameter(parameters) {
         const params = CommonTools.parametersResolver({
             params: parameters,
             item: this.value,
-            componentValue: this.value,
+            componentValue: this.GetComponentValue(),
             tempValue: this.tempValue,
             initValue: this.initValue,
             cacheValue: this.cacheValue
         });
+        console.log('****GetComponentValue****', this.GetComponentValue());
         return params;
     }
 
@@ -197,37 +229,37 @@ export class CnFormBase extends CnComponentBase {
         return url;
     }
 
-     /**
-     *
-     * @param outputParams
-     * @param response
-     * @param callback
-     * @returns {Array}
-     * @private
-     * 1、输出参数的配置中，消息类型的参数只能设置一次
-     * 2、值类型的结果可以设置多个
-     * 3、表类型的返回结果可以设置多个
-     */
+    /**
+    *
+    * @param outputParams
+    * @param response
+    * @param callback
+    * @returns {Array}
+    * @private
+    * 1、输出参数的配置中，消息类型的参数只能设置一次
+    * 2、值类型的结果可以设置多个
+    * 3、表类型的返回结果可以设置多个
+    */
     public outputParametersResolver(c, response, ajaxConfig, callback) {
         const result = false;
         if (response.isSuccess) {
             const msg =
                 c.outputParams[
-                    c.outputParams.findIndex(
-                        m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
-                    )
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
+                )
                 ];
             const value =
                 c.outputParams[
-                    c.outputParams.findIndex(
-                        m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
-                    )
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
+                )
                 ];
             const table =
                 c.outputParams[
-                    c.outputParams.findIndex(
-                        m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
-                    )
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
+                )
                 ];
             const msgObj = response.data[msg.name]
                 ? response.data[msg.name].split(':')
@@ -274,7 +306,7 @@ export class CnFormBase extends CnComponentBase {
                                 //         );
                                 //     });
                             },
-                            nzOnCancel: () => {}
+                            nzOnCancel: () => { }
                         };
                         this.baseModal[messageType](options);
                         break;
@@ -393,7 +425,7 @@ export class CnFormBase extends CnComponentBase {
                             }
                         })();
                     },
-                    nzOnCancel() {}
+                    nzOnCancel() { }
                 });
             } else {
                 (async () => {

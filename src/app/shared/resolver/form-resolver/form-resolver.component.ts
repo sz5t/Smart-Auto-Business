@@ -87,17 +87,15 @@ export class FormResolverComponent extends CnFormBase
         if (this.config.ajaxConfig) {
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
-                    console.log('90');
                     this.load();
                 }
             } else {
-                console.log('93');
                 this.load();
             }
         } else if (this.formValue) {
             // 表单加载初始化数据
             this.setFormValue(this.formValue);
-            console.log('表单加载初始化数据', this.formValue);
+            // console.log('表单加载初始化数据', this.formValue);
         }
         // 初始化前置条件验证对象
         this.beforeOperation = new BeforeOperation({
@@ -140,17 +138,14 @@ export class FormResolverComponent extends CnFormBase
         this.form = this.createGroup();
         this.resolverRelation();
 
+        const formConfigControlobject = {};
         this.config.forms.forEach(formItem => {
             formItem.controls.forEach(control => {
-                this.formConfigControl[control.name] = control;
-            });
-        });
-        this.config.forms.forEach(formItem => {
-            formItem.controls.forEach(control => {
+                formConfigControlobject[control.name] = control;
                 this.change_config[control.name] = null;
             });
         });
-
+        this.formConfigControl = formConfigControlobject;
         this.caseLoad(); // liu 20180521 测试
     }
 
@@ -424,36 +419,7 @@ export class FormResolverComponent extends CnFormBase
         return result;
     }
 
-    // 处理参数 liu
-    private GetComponentValue() {
-        this.formConfigControl; // liu 表单配置
-        const ComponentValue = {};
-        // 循环 this.value
-        for (const key in this.value) {
-            if (this.formConfigControl[key]) {
-                if (
-                    this.formConfigControl[key]["type"] === "selectMultiple" ||
-                    this.formConfigControl[key]["type"] === "selectTreeMultiple"
-                ) {
-                    let ArrayValue = "";
-                    // console.log('数组', this.value[key]);
-                    this.value[key].forEach(element => {
-                        ArrayValue = ArrayValue + element.toString() + ",";
-                    });
-                    if (ArrayValue.length > 0) {
-                        ArrayValue = ArrayValue.slice(0, ArrayValue.length - 1);
-                    }
-                    ComponentValue[key] = ArrayValue;
-                    // console.log('拼接', ArrayValue);
-                } else {
-                    ComponentValue[key] = this.value[key];
-                }
-            } else {
-                ComponentValue[key] = this.value[key];
-            }
-        }
-        return ComponentValue;
-    }
+  
 
     /**
      * 删除数据
