@@ -1,50 +1,68 @@
 <page-header [title]=""></page-header>
 
+        <hr>
+        <ng-container *ngTemplateOutlet="svk; context: myContext"></ng-container>
+        <hr>
+
+
+        <ng-template #svk let-person="localSk"><span> {{person}}!</span></ng-template>
+
+<ng-template #defaultTabButtons let-person="children">
+    <tr>
+        <td>..... {{person.Id}}</td>
+    </tr>
+</ng-template>
+
+<table>
+    <ng-template ngFor let-data [ngForOf]="liu_list">
+            {{data||json}}
+        <ng-container *ngTemplateOutlet="defaultTabButtons; context: data">
+        </ng-container>
+    </ng-template>
+</table>
+
 <!-- <nz-mention
 [nzSuggestions]="suggestions"
 (nzOnSelect)="onSelect($event)"
 [nzPrefix]="_nzPrefix"
 >
 <input
-  placeholder="input here"
-  nzMentionTrigger
-  nz-input
-  [(ngModel)]="inputValue"
-  (ngModelChange)="onChange($event)"
-  (onSearchChange) ="onSearchChange($event)"
+    placeholder="input here"
+    nzMentionTrigger
+    nz-input
+    [(ngModel)]="inputValue"
+    (ngModelChange)="onChange($event)"
+    (onSearchChange) ="onSearchChange($event)"
 >
 </nz-mention> -->
 <div class="editable-row-operations">
-  <ng-container>
-    <a (click)="alert('dj');">Edit</a>
-  </ng-container>
-  </div>
+    <ng-container>
+        <a (click)="click_rowButton();">Edit</a>
+    </ng-container>
+</div>
 <br>
 <br>
 <div style="width: 500px;">
-    <nz-input-group nzSearch  [nzSuffix]="suffixIconButton">
+    <nz-input-group nzSearch [nzSuffix]="suffixIconButton">
         <input type="text" nz-input placeholder="Search name" [(ngModel)]="searchValue">
 
     </nz-input-group>
     <ng-template #suffixIconButton>
-            <!-- <button nz-button nzSearch [nzType]="'default'" (click)="showModal()">
-                    <i class="anticon anticon-edit"></i>
-                    
-            </button> -->
-            <nz-dropdown nzTrigger="click" [nzClickHide]="false" #dropdown>
-                <i nz-icon type="down" class="ant-table-filter-icon" [class.ant-table-filter-open]="dropdown.nzVisible" nz-dropdown></i>
-                <div class="custom-filter-dropdown">
-                  <cn-form-resolver  [config]="config_bd" [permissions]="permissions"></cn-form-resolver>
-                  <button nz-button [nzType]="'primary'" (click)="search()">Search</button>
-                </div>
-              </nz-dropdown>
+        <!-- <button nz-button nzSearch [nzType]="'default'" (click)="showModal()">
+                                        <i class="anticon anticon-edit"></i>
+
+                        </button> -->
+        <nz-dropdown nzTrigger="click" [nzClickHide]="false" #dropdown>
+            <i nz-icon type="down" class="ant-table-filter-icon" [class.ant-table-filter-open]="dropdown.nzVisible" nz-dropdown></i>
+            <div class="custom-filter-dropdown">
+                <cn-form-resolver [config]="config_bd" [permissions]="permissions"></cn-form-resolver>
+                <button nz-button [nzType]="'primary'" (click)="search()">Search</button>
+            </div>
+        </nz-dropdown>
     </ng-template>
 </div>
 
 <cn-grid-search></cn-grid-search>
-<cn-form-resolver  [config]="config_bd" [permissions]="permissions"></cn-form-resolver>
+<cn-form-resolver [config]="config_bd" [permissions]="permissions"></cn-form-resolver>
 
 <cn-layout-resolver [config]="config"></cn-layout-resolver>
-
-
-

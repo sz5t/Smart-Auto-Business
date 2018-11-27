@@ -34,6 +34,21 @@ export class WorkFlowTodoComponent implements OnInit {
     // #table
     @ViewChild("table")
     table: BsnTableComponent;
+    myContext = { $name1: 'World', localSk: 'Svet' };
+
+    liu_list = [
+        {
+            Id: "1", name: "001", children: 
+                { Id: "2", name: "001001" }
+            
+        },
+        {
+            Id: "3", name: "002", children: 
+                { Id: "4", name: "002001" }
+            
+        }
+    ];
+
     configold = {
         rows: [
             {
@@ -1761,7 +1776,7 @@ export class WorkFlowTodoComponent implements OnInit {
                                                                     type:
                                                                         "value",
                                                                     valueName:
-                                                                         "",
+                                                                        "",
                                                                     value: "1"
                                                                 },
                                                                 {
@@ -6463,7 +6478,7 @@ export class WorkFlowTodoComponent implements OnInit {
                     }
                 ]
             },
-           
+
             {
                 controls: [
                     {
@@ -7155,7 +7170,7 @@ export class WorkFlowTodoComponent implements OnInit {
                 config: {
                     nzWidth: 768,
                     title: "弹出树",
-                    datagrid : {
+                    datagrid: {
                         title: "扫码数据",
                         viewId: "businesskey_Table_ck",
                         component: "bsnTable",
@@ -7230,7 +7245,17 @@ export class WorkFlowTodoComponent implements OnInit {
                                         inputType:
                                             "text"
                                     }
-                                }
+                                },
+                                // searcheditor: {
+                                //     type: "input",
+                                //     field: "Id",
+                                //     options: {
+                                //         type: "input",
+                                //         labelSize: "6",
+                                //         controlSize: "18",
+                                //         inputType: "text"
+                                //     }
+                                // }
                             },
                             {
                                 title: "名称",
@@ -7238,7 +7263,7 @@ export class WorkFlowTodoComponent implements OnInit {
                                 width: 80,
                                 showFilter: false,
                                 showSort: false,
-                                editor: {
+                               /*  editor: {
                                     type:
                                         "input",
                                     field:
@@ -7253,7 +7278,17 @@ export class WorkFlowTodoComponent implements OnInit {
                                         inputType:
                                             "text"
                                     }
-                                }
+                                },
+                                searcheditor: {
+                                    type: "input",
+                                    field: "name",
+                                    options: {
+                                        type: "input",
+                                        labelSize: "6",
+                                        controlSize: "18",
+                                        inputType: "text"
+                                    }
+                                } */
                             },
                             {
                                 title: "编号",
@@ -7276,9 +7311,19 @@ export class WorkFlowTodoComponent implements OnInit {
                                         inputType:
                                             "text"
                                     }
-                                }
+                                },
+                                // searcheditor: {
+                                //     type: "input",
+                                //     field: "code",
+                                //     options: {
+                                //         type: "input",
+                                //         labelSize: "6",
+                                //         controlSize: "18",
+                                //         inputType: "text"
+                                //     }
+                                // }
                             },
-                            
+
                             {
                                 title: "备注",
                                 field: "remark1",
@@ -7298,6 +7343,16 @@ export class WorkFlowTodoComponent implements OnInit {
                                             "18",
                                         inputType:
                                             "text"
+                                    }
+                                },
+                                searcheditor: {
+                                    type: "number",
+                                    field: "remark1",
+                                    options: {
+                                        type: "number",
+                                        labelSize: "6",
+                                        controlSize: "18",
+                                        inputType: "text"
                                     }
                                 }
                             },
@@ -7320,6 +7375,16 @@ export class WorkFlowTodoComponent implements OnInit {
                                             "18",
                                         inputType:
                                             "text"
+                                    }
+                                },
+                                searcheditor: {
+                                    type: "input",
+                                    field: "remark",
+                                    options: {
+                                        type: "input",
+                                        labelSize: "6",
+                                        controlSize: "18",
+                                        inputType: "text"
                                     }
                                 }
                             },
@@ -7345,6 +7410,16 @@ export class WorkFlowTodoComponent implements OnInit {
                                             "18",
                                         inputType:
                                             "text"
+                                    }
+                                },
+                                searcheditor: {
+                                    type: "input",
+                                    field: "createDate",
+                                    options: {
+                                        type: "input",
+                                        labelSize: "6",
+                                        controlSize: "18",
+                                        inputType: "text"
                                     }
                                 }
                             }
@@ -7421,13 +7496,13 @@ export class WorkFlowTodoComponent implements OnInit {
                                 ],
                                 event: {
                                     // 执行的操作,自行处理
-    
+
                                 }
                             }
                         }
                     }
                 }
-              
+
             }
         ],
         cascadeRelation: [
@@ -7514,7 +7589,9 @@ export class WorkFlowTodoComponent implements OnInit {
     }
 
 
-
+    click_rowButton() {
+        console.log('点击按钮');
+    }
 
 
 }

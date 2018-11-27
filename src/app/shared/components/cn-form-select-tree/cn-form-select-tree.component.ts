@@ -30,6 +30,7 @@ export class CnFormSelectTreeComponent implements OnInit {
     @Input() dataSet;
     @Input() casadeData;
     @Input() initValue;
+    @Input() changeConfig;
     treeData;
     treeDatalist = [];
     _tempValue = {};
@@ -67,7 +68,16 @@ export class CnFormSelectTreeComponent implements OnInit {
                 }
             }
         }
-       
+        if (this.changeConfig) {
+            if (this.changeConfig["cascadeValue"]) {
+                // cascadeValue
+                for (const key in this.changeConfig["cascadeValue"]) {
+                    if (this.changeConfig["cascadeValue"].hasOwnProperty(key)) {
+                        this.cascadeValue[key] = this.changeConfig["cascadeValue"][key];
+                    }
+                }
+            }
+        }
         this.loadTreeData();
         if ( this.cascadeSetValue.hasOwnProperty('setValue')) {
             this._selectedValue = this.cascadeSetValue['setValue'];

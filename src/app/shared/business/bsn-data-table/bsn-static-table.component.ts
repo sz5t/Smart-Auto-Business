@@ -601,6 +601,13 @@ export class BsnStaticTableComponent extends CnComponentBase
         console.log('load', this.pageIndex, this.pageSize);
     }
 
+    // load 分组
+    // 原始数据【olddata】 数据缓存【update】 
+    // 注意 撤销、删除 对数据的影响
+    loadStatic() {
+
+    }
+
     scanCodeROW() {
 
         console.log('_ScanCode', this.tempValue["_ScanCode"]);
@@ -642,6 +649,18 @@ export class BsnStaticTableComponent extends CnComponentBase
     }
 
     scanCodeaddRow() {
+        //  "judge":{"name":"_ScanCodeObject"},
+        let _ScanCode = "_ScanCode";
+        if (this.config.ScanCode.addRow.judge) {
+            _ScanCode = this.config.ScanCode.addRow.judge.name;
+        }
+        if (this.tempValue[_ScanCode]) {
+            if (this.tempValue[_ScanCode].length <= 0) {
+                this._message.info('扫码没有匹配到数据！');
+                return true;
+            }
+        }
+
         const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
         const fieldIdentity = CommonTools.uuID(6);
         rowContentNew["key"] = fieldIdentity;
@@ -690,10 +709,10 @@ export class BsnStaticTableComponent extends CnComponentBase
                                     superpositionValue = this.config.ScanCode.addRow.distinct["value"];
                                 }
                             }
-                            if ( element.dataType === 'number') {
-                               if (! this.loadData.rows[index][element.field]) {
-                                this.loadData.rows[index][element.field] = element.defaultValue;
-                               }
+                            if (element.dataType === 'number') {
+                                if (!this.loadData.rows[index][element.field]) {
+                                    this.loadData.rows[index][element.field] = element.defaultValue;
+                                }
                             }
                             this.loadData.rows[index][element.field] = this.loadData.rows[index][element.field] + superpositionValue;
                         });
@@ -725,17 +744,17 @@ export class BsnStaticTableComponent extends CnComponentBase
                                     superpositionValue = this.config.ScanCode.addRow.distinct["value"];
                                 }
                             }
-                            if ( element.dataType === 'number') {
-                               if (! rowContentNew[element.field]) {
-                                rowContentNew[element.field] = element.defaultValue;
-                               }
+                            if (element.dataType === 'number') {
+                                if (!rowContentNew[element.field]) {
+                                    rowContentNew[element.field] = element.defaultValue;
+                                }
                             }
-                            rowContentNew[element.field] =  superpositionValue;
+                            rowContentNew[element.field] = superpositionValue;
                             console.log(element.field, rowContentNew[element.field]);
                         });
                     }
 
-                } 
+                }
             }
         }
 
@@ -835,6 +854,15 @@ export class BsnStaticTableComponent extends CnComponentBase
         return params;
     }
 
+    // 行内删除 
+    deleteRowStatic() {
+        this.dataList.forEach(d => {
+            this.dataList.splice(
+                this.dataList.indexOf(d),
+                1
+            );
+        });
+    }
     // 获取当前选中的值 liu 扩展部分，目前不实现，原因是会多请求数据（主要是对级联赋值的扩充）
     selectload(selectparams?: any[], selectvalue?) {
         const url = this._buildURL(this.config.ajaxConfig.url);
@@ -1624,6 +1652,9 @@ export class BsnStaticTableComponent extends CnComponentBase
     valueChangeSearch(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
         console.log('值变化valueChangeSearch', data);
+        this.search_Row[data.name] = data.data;
+
+        console.log('值变化后的数据结构', this.search_Row, this._buildSearch());
         // console.log('级联结果数据集', this.changeConfig_new[rowCasade]);
         // this.changeConfig_new = JSON.parse(JSON.stringify(this.changeConfig_new));
         // console.log('当前编辑缓存行内容', this.editCache[data.key].data);
@@ -1756,6 +1787,8 @@ export class BsnStaticTableComponent extends CnComponentBase
             }
         }
     }
+
+
 
     async _executeDelete(deleteConfig, ids) {
         let isSuccess;
