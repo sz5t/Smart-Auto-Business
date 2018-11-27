@@ -7,36 +7,135 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class CnGridSearchComponent implements OnInit {
   @Input()
-  searchConfigType;
+  public searchConfigType;
   @Input()
-  config;
+  public config;
   @Input()
-  value;
+  public value;
   @Input()
-  rowData;
+  public rowData;
   @Input()
-  bsnData;
+  public bsnData;
   @Input()
-  dataSet;
+  public dataSet;
   @Input()
-  changeConfig;
+  public changeConfig;
   @Input()
-  initData;
+  public initData;
   @Output()
-  updateValue = new EventEmitter();
-  constructor() { }
-  inputValue;
-  AfterValue;
+  public updateValue = new EventEmitter();
+  // 查询条件配置 设计
+  public config_one = {
+    searchEdit: {
+      type: 'search',
+      field: 'Id',
+      options: {
+        type: 'search',
+        labelSize: '6',
+        controlSize: '18',
+        inputType: 'text',
+        queryTerm: ['eq', 'ctn'],  // 适配条件
+        defaultQueryTerm: 'eq', // 默认条件
+        queryTermOptions: [
+          { name: 'eq', options: { type: 'input', labelSize: '6', controlSize: '18', inputType: 'text' } },
+          { name: 'ctn', options: { type: 'input', labelSize: '6', controlSize: '18', inputType: 'text' } }
+        ]
+      }
+    }
 
-  searchType = 'input';
-  ngOnInit() {
+  }
+  public inputValue;
+  public AfterValue;
+
+  public searchType = 'input';
+
+  public tempValue;
+  // initData;
+  // rowData = { edit: true };
+  // dataSet;
+  public options = {
+    type: 'input',
+    labelSize: '6',
+    controlSize: '18',
+    inputType: 'text',
+    disabled: false,
+    readonly: null
+  }
+
+  // 配置模板
+  public liu = {
+    title: '名称',
+    field: 'name',
+    width: 80,
+    showFilter: false,
+    showSort: false,
+    editorAsSearch: true, // 是否启用editor 作为 查询框
+    editor: {
+      type: 'input',
+      field: 'name',
+      options: {
+        type: 'input',
+        labelSize: '6',
+        controlSize: '18',
+        inputType: 'text'
+      }
+    },
+    searcheditor: {
+      type: 'search',
+      field: 'name',
+      queryTerm: ['eq', 'ctn'],  // 适配条件
+      defaultQueryTerm: 'eq', // 默认条件
+      options: [
+        {
+          name: 'eq',
+          type: 'input',
+          field: 'name',
+          options: {
+            type: 'input',
+            labelSize: '6',
+            controlSize: '18',
+            inputType: 'text'
+          }
+        },
+        {
+          name: 'ctn',
+          type: 'input',
+          field: 'name',
+          options: {
+            type: 'input',
+            labelSize: '6',
+            controlSize: '18',
+            inputType: 'text'
+          }
+        }
+      ]
+    }
+  }
+  public op = [
+    { lable: '=', value: 'eq', select: true },
+    { lable: '!=', value: 'neq', select: false },
+    { lable: '部分一致', value: 'ctn', select: false },
+    { lable: '不属于', value: 'nctn', select: false },
+    { lable: '包含', value: 'in', select: false },
+    { lable: '不包含', value: 'nin', select: false },
+    { lable: '范围', value: 'btn', select: false },
+    { lable: '>=', value: 'ge', select: false },
+    { lable: '>', value: 'gt', select: false },
+    { lable: '<=', value: 'le', select: false },
+    { lable: '<', value: 'lt', select: false }
+    // { lable: '自定义', value: 'zdy', select: false }
+  ];
+  public searchValue;
+  constructor() { }
+
+  public ngOnInit() {
     if (this.searchConfigType) {
-      if (this.searchConfigType === "default") {
+      if (this.searchConfigType === 'default') {
         this.config = {
-          type: "input",
-          labelSize: "6",
-          controlSize: "18",
-          inputType: "text"
+          type: 'input',
+          labelSize: '6',
+          controlSize: '18',
+          inputType: 'text'
         }
       }
     }
@@ -51,7 +150,7 @@ export class CnGridSearchComponent implements OnInit {
   // 文本 = ！= in not in like not like
   // 数值类型的 范围 = ！= in not in  btw
   // 时间类型的 = ！= in not in  btw
-  setOP() {
+  public setOP() {
 
     if (this.config.type === 'select') {
       const newOp = [
@@ -77,29 +176,10 @@ export class CnGridSearchComponent implements OnInit {
     }
   }
 
-  // 查询条件配置 设计
-  config_one = {
-    searchEdit: {
-      type: "search",
-      field: "Id",
-      options: {
-        type: "search",
-        labelSize: "6",
-        controlSize: "18",
-        inputType: "text",
-        queryTerm: ['eq', 'ctn'],  // 适配条件
-        defaultQueryTerm: 'eq', // 默认条件
-        queryTermOptions: [
-          { name: 'eq', options: { type: "input", labelSize: "6", controlSize: "18", inputType: "text" } },
-          { name: 'ctn', options: { type: "input", labelSize: "6", controlSize: "18", inputType: "text" } }
-        ]
-      }
-    }
-
-  }
 
 
-  AftervalueChange(v?) {
+
+  public AftervalueChange(v?) {
 
     // console.log('查询条件发生变化：', v, this.AfterValue);
     if (v === 'btn') {
@@ -111,44 +191,44 @@ export class CnGridSearchComponent implements OnInit {
     this.CreateSearch();
   }
 
-  onblur() {
+  public onblur() {
     // console.log('onblur：', this.inputValue);
     this.CreateSearch();
 
   }
-  async onKeyPress(e) {
+  public async onKeyPress(e) {
     if (e.code === 'Enter') {
       // console.log('Enter', this.inputValue);
       this.CreateSearch();
     }
   }
 
-  CreateSearch() {
-    let strQ = "";
+  public CreateSearch() {
+    let strQ = '';
     if (!this.inputValue) {
       return strQ;
     }
     switch (this.AfterValue) {
       case 'eq': // =
-        strQ = strQ + "eq (" + this.inputValue + ")";
+        strQ = strQ + 'eq (' + this.inputValue + ')';
         break;
       case 'neq': // =
-        strQ = strQ + "!eq (" + this.inputValue + ")";
+        strQ = strQ + '!eq (' + this.inputValue + ')';
         break;
       case 'ctn': // like
-        strQ = strQ + "ctn('%" + this.inputValue + "%')";
+        strQ = strQ + 'ctn(\'%' + this.inputValue + '%\')';
         break;
       case 'nctn': // not like
-        strQ = strQ + "!ctn('%" + this.inputValue + "%')";
+        strQ = strQ + '!ctn(\'%' + this.inputValue + '%\')';
         break;
       case 'in': // in  如果是input 是这样取值，其他则是多选取值
-        strQ = strQ + "in(" + this.inputValue + ")";
+        strQ = strQ + 'in(' + this.inputValue + ')';
         break;
       case 'nin': // in  如果是input 是这样取值，其他则是多选取值
-        strQ = strQ + "!in(" + this.inputValue + ")";
+        strQ = strQ + '!in(' + this.inputValue + ')';
         break;
       default:
-        strQ = strQ + "default(" + this.inputValue + ")";
+        strQ = strQ + 'default(' + this.inputValue + ')';
         break;
     }
     console.log('查询参数：', strQ);
@@ -156,47 +236,47 @@ export class CnGridSearchComponent implements OnInit {
 
   }
 
-  CreateSearchChange(inputValue?) {
-    let strQ = "";
+  public CreateSearchChange(inputValue?) {
+    let strQ = '';
     if (!inputValue) {
       // return strQ;
     }
     switch (this.AfterValue) {
       case 'eq': // =
-        strQ = strQ + "eq (" + inputValue + ")";
+        strQ = strQ + 'eq (' + inputValue + ')';
         break;
       case 'neq': // !=
-        strQ = strQ + "!eq (" + inputValue + ")";
+        strQ = strQ + '!eq (' + inputValue + ')';
         break;
       case 'ctn': // like
-        strQ = strQ + "ctn('%" + inputValue + "%')";
+        strQ = strQ + 'ctn(\'%' + inputValue + '%\')';
         break;
       case 'nctn': // not like
-        strQ = strQ + "!ctn('%" + inputValue + "%')";
+        strQ = strQ + '!ctn(\'%' + inputValue + '%\')';
         break;
       case 'in': // in  如果是input 是这样取值，其他则是多选取值
-        strQ = strQ + "in(" + inputValue + ")";
+        strQ = strQ + 'in(' + inputValue + ')';
         break;
       case 'nin': // not in  如果是input 是这样取值，其他则是多选取值
-        strQ = strQ + "!in(" + inputValue + ")";
+        strQ = strQ + '!in(' + inputValue + ')';
         break;
       case 'btn': // between  
-        strQ = strQ + "btn(" + inputValue + ")";
+        strQ = strQ + 'btn(' + inputValue + ')';
         break;
       case 'ge': // >=  
-        strQ = strQ + "ge(" + inputValue + ")";
+        strQ = strQ + 'ge(' + inputValue + ')';
         break;
       case 'gt': // >  
-        strQ = strQ + "gt(" + inputValue + ")";
+        strQ = strQ + 'gt(' + inputValue + ')';
         break;
       case 'le': // <=  
-        strQ = strQ + "le(" + inputValue + ")";
+        strQ = strQ + 'le(' + inputValue + ')';
         break;
       case 'lt': // <  
-        strQ = strQ + "lt(" + inputValue + ")";
+        strQ = strQ + 'lt(' + inputValue + ')';
         break;
       default:
-        strQ = strQ + "default(" + inputValue + ")";
+        strQ = strQ + 'default(' + inputValue + ')';
         break;
     }
     console.log('查询参数：', strQ);
@@ -208,70 +288,8 @@ export class CnGridSearchComponent implements OnInit {
 
   }
   // 触发条件，光标离开、回车、下拉选择触发
-  tempValue;
-  // initData;
-  // rowData = { edit: true };
-  // dataSet;
-  options = {
-    type: "input",
-    labelSize: "6",
-    controlSize: "18",
-    inputType: "text",
-    disabled: false,
-    readonly: null
-  }
 
-  // 配置模板
-  liu = {
-    title: "名称",
-    field: "name",
-    width: 80,
-    showFilter: false,
-    showSort: false,
-    editorAsSearch: true, // 是否启用editor 作为 查询框
-    editor: {
-      type: "input",
-      field: "name",
-      options: {
-        type: "input",
-        labelSize: "6",
-        controlSize: "18",
-        inputType: "text"
-      }
-    },
-    searcheditor: {
-      type: "search",
-      field: "name",
-      queryTerm: ['eq', 'ctn'],  // 适配条件
-      defaultQueryTerm: 'eq', // 默认条件
-      options: [
-        {
-          name: 'eq',
-          type: "input",
-          field: "name",
-          options: {
-            type: "input",
-            labelSize: "6",
-            controlSize: "18",
-            inputType: "text"
-          }
-        },
-        {
-          name: 'ctn',
-          type: "input",
-          field: "name",
-          options: {
-            type: "input",
-            labelSize: "6",
-            controlSize: "18",
-            inputType: "text"
-          }
-        }
-      ]
-    }
-  }
-
-  valueChange(backdata?) {
+  public valueChange(backdata?) {
 
     // 
     console.log('查询行返回', backdata);
@@ -291,14 +309,14 @@ export class CnGridSearchComponent implements OnInit {
     this.CreateSearchChange(backvalue);
 
   }
-  isString(obj) {
+  public isString(obj) {
     // 判断对象是否是字符串
-    return Object.prototype.toString.call(obj) === "[object String]";
+    return Object.prototype.toString.call(obj) === '[object String]';
   }
-  searchValue;
+ 
 
 
-  onClick(name?) {
+  public onClick(name?) {
     // console.log('onClick', name);
 
     const id = name.hostElement.nativeElement.id;
@@ -321,19 +339,5 @@ export class CnGridSearchComponent implements OnInit {
     this.op = JSON.parse(JSON.stringify(this.op));
     console.log('最终选择：', ck, this.op);
   }
-  op = [
-    { lable: '=', value: 'eq', select: true },
-    { lable: '!=', value: 'neq', select: false },
-    { lable: '部分一致', value: 'ctn', select: false },
-    { lable: '不属于', value: 'nctn', select: false },
-    { lable: '包含', value: 'in', select: false },
-    { lable: '不包含', value: 'nin', select: false },
-    { lable: '范围', value: 'btn', select: false },
-    { lable: '>=', value: 'ge', select: false },
-    { lable: '>', value: 'gt', select: false },
-    { lable: '<=', value: 'le', select: false },
-    { lable: '<', value: 'lt', select: false }
-    // { lable: '自定义', value: 'zdy', select: false }
-  ];
-
+  
 }
