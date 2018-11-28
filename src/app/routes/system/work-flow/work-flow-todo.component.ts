@@ -38,14 +38,14 @@ export class WorkFlowTodoComponent implements OnInit {
 
     liu_list = [
         {
-            Id: "1", name: "001", children: 
+            Id: "1", name: "001", children:
                 { Id: "2", name: "001001" }
-            
+
         },
         {
-            Id: "3", name: "002", children: 
+            Id: "3", name: "002", children:
                 { Id: "4", name: "002001" }
-            
+
         }
     ];
 
@@ -7263,32 +7263,32 @@ export class WorkFlowTodoComponent implements OnInit {
                                 width: 80,
                                 showFilter: false,
                                 showSort: false,
-                               /*  editor: {
-                                    type:
-                                        "input",
-                                    field:
-                                        "name",
-                                    options: {
-                                        type:
-                                            "input",
-                                        labelSize:
-                                            "6",
-                                        controlSize:
-                                            "18",
-                                        inputType:
-                                            "text"
-                                    }
-                                },
-                                searcheditor: {
-                                    type: "input",
-                                    field: "name",
-                                    options: {
-                                        type: "input",
-                                        labelSize: "6",
-                                        controlSize: "18",
-                                        inputType: "text"
-                                    }
-                                } */
+                                /*  editor: {
+                                     type:
+                                         "input",
+                                     field:
+                                         "name",
+                                     options: {
+                                         type:
+                                             "input",
+                                         labelSize:
+                                             "6",
+                                         controlSize:
+                                             "18",
+                                         inputType:
+                                             "text"
+                                     }
+                                 },
+                                 searcheditor: {
+                                     type: "input",
+                                     field: "name",
+                                     options: {
+                                         type: "input",
+                                         labelSize: "6",
+                                         controlSize: "18",
+                                         inputType: "text"
+                                     }
+                                 } */
                             },
                             {
                                 title: "编号",
@@ -7422,6 +7422,12 @@ export class WorkFlowTodoComponent implements OnInit {
                                         inputType: "text"
                                     }
                                 }
+                            },
+                            {
+                                title: "操作",
+                                field: "action",
+                                width: 80,
+                                type: "button"
                             }
                         ],
                         toolbar: [

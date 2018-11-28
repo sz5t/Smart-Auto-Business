@@ -83,7 +83,7 @@ export class CnGridSelectTreeComponent implements OnInit {
     loadTreeData() {
         (async () => {
             const data = await this.getAsyncTreeData();
-            if (data.data && data.status === 200 && data.isSuccess) {
+            if (data && data.data && data.status === 200 && data.isSuccess) {
                 this.treeDatalist = data.data;
                 const TotreeBefore = data.data;
                 TotreeBefore.forEach(d => {

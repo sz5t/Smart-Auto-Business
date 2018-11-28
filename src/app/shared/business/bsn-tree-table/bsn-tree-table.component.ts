@@ -66,7 +66,9 @@ export class BsnTreeTableComponent extends GridBase
     indeterminate = false;
     is_Search;
     search_Row;
-
+    public changeConfig_new = {};
+    // 级联
+    public cascadeList = {};
     /**
      * 数据源
      */
@@ -132,6 +134,21 @@ export class BsnTreeTableComponent extends GridBase
     ngOnInit() {
         this.cfg = this.config;
         this.permission = this.permissions;
+        if (this.config.select) {
+            this.config.select.forEach(selectItem => {
+                this.config.columns.forEach(columnItem => {
+                    if (columnItem.editor) {
+                        if (columnItem.editor.field === selectItem.name) {
+                            // if (selectItem.type === 'selectGrid') {
+                            columnItem.editor.options['select'] = selectItem.config;
+                            // }
+                        }
+                    }
+                });
+            });
+        }
+        // 初始化级联
+        this.caseLoad();
         if (this.casadeData) {
             for (const key in this.casadeData) {
                 // 临时变量的整理
@@ -356,7 +373,7 @@ export class BsnTreeTableComponent extends GridBase
                                 // 获取当前设置的级联的模式
                                 const mode =
                                     BSN_COMPONENT_CASCADE_MODES[
-                                        relation.cascadeMode
+                                    relation.cascadeMode
                                     ];
                                 // 获取传递的消息数据
                                 const option = cascadeEvent.option;
@@ -781,11 +798,11 @@ export class BsnTreeTableComponent extends GridBase
     private _getCheckedRowStatusMap(): Map<
         string,
         { key: string; status: string }
-    > {
+        > {
         const cancelRowMap: Map<
             string,
             { key: string; status: string }
-        > = new Map();
+            > = new Map();
         this.treeData.map(dataItem => {
             this.expandDataCache[dataItem.Id].map(item => {
                 if (item["checked"]) {
@@ -1193,7 +1210,7 @@ export class BsnTreeTableComponent extends GridBase
 
                 this.executeSelectedAction(this._selectRow, option);
             },
-            nzOnCancel() {}
+            nzOnCancel() { }
         });
     }
 
@@ -1232,7 +1249,7 @@ export class BsnTreeTableComponent extends GridBase
                     this.executeCheckedAction(serverData, option);
                 }
             },
-            nzOnCancel() {}
+            nzOnCancel() { }
         });
     }
 
@@ -1463,7 +1480,7 @@ export class BsnTreeTableComponent extends GridBase
                     this.executeDelete(serverData);
                 }
             },
-            nzOnCancel() {}
+            nzOnCancel() { }
         });
     }
 
@@ -1840,13 +1857,555 @@ export class BsnTreeTableComponent extends GridBase
         this.editCache[key]["edit"] = true;
     }
 
-    private _startChildRowAddRecurse() {}
+    private _startChildRowAddRecurse() { }
 
-    private _startChildRowaddRecurse_2() {}
+    private _startChildRowaddRecurse_2() { }
 
     valueChange(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
         this.editCache[data.key].data[data.name] = data.data;
+        this.editCache[data.key].data[data.name] = JSON.parse(
+            JSON.stringify(this.editCache[data.key].data[data.name])
+        );
+        // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
+        // { key:行标识,name: this.config.name, value: name }
+        const rowCasade = data.key;
+        const sendCasade = data.name;
+        // const changeConfig_new = {};
+
+        // {hang：[name:{具体属性}]}
+        if (this.cascadeList[sendCasade]) {
+            // 判断当前组件是否有级联
+            if (!this.changeConfig_new[rowCasade]) {
+                this.changeConfig_new[rowCasade] = {};
+            }
+            // console.log('当前组件有被级联的子对象');
+            for (const key in this.cascadeList[sendCasade]) {
+                // 处理当前级联
+                //  console.log('处理当前级联', key);
+                if (!this.changeConfig_new[rowCasade][key]) {
+                    this.changeConfig_new[rowCasade][key] = {};
+                }
+
+                if (this.cascadeList[sendCasade][key]["dataType"]) {
+                    this.cascadeList[sendCasade][key]["dataType"].forEach(
+                        caseItem => {
+                            // console.log('dataType-caseItem', caseItem);
+                            // region: 解析开始 根据组件类型组装新的配置【静态option组装】
+                            if (caseItem["type"] === "option") {
+                                // 在做判断前，看看值是否存在，如果在，更新，值不存在，则创建新值
+                                this.changeConfig_new[rowCasade][key][
+                                    "options"
+                                ] = caseItem["option"];
+                            } else {
+                                if (
+                                    this.changeConfig_new[rowCasade][key][
+                                    "options"
+                                    ]
+                                ) {
+                                    delete this.changeConfig_new[rowCasade][
+                                        key
+                                    ]["options"];
+                                }
+                            }
+                            if (caseItem["type"] === "ajax") {
+                                // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
+                                // 解析参数
+
+                                // const cascadeValue = {};
+                                if (
+                                    !this.changeConfig_new[rowCasade][key][
+                                    "cascadeValue"
+                                    ]
+                                ) {
+                                    this.changeConfig_new[rowCasade][key][
+                                        "cascadeValue"
+                                    ] = {};
+                                }
+                                caseItem["ajax"].forEach(ajaxItem => {
+                                    if (ajaxItem["type"] === "value") {
+                                        // 静态数据
+                                        this.changeConfig_new[rowCasade][key][
+                                            "cascadeValue"
+                                        ][ajaxItem["name"]] = ajaxItem["value"];
+                                    }
+                                    if (ajaxItem["type"] === "selectValue") {
+                                        // 选中行数据[这个是单值]
+                                        this.changeConfig_new[rowCasade][key][
+                                            "cascadeValue"
+                                        ][ajaxItem["name"]] =
+                                            data[ajaxItem["valueName"]];
+                                    }
+                                    if (
+                                        ajaxItem["type"] === "selectObjectValue"
+                                    ) {
+                                        // 选中行对象数据
+                                        if (data.dataItem) {
+                                            this.changeConfig_new[rowCasade][
+                                                key
+                                            ]["cascadeValue"][
+                                                ajaxItem["name"]
+                                            ] =
+                                                data.dataItem[
+                                                ajaxItem["valueName"]
+                                                ];
+                                        }
+                                    }
+
+                                    // 其他取值【日后扩展部分】value
+                                });
+                                // changeConfig_new[rowCasade][key]['cascadeValue'] = cascadeValue;
+                            } /*  else {
+                            if (this.changeConfig_new[rowCasade][key]['cascadeValue'] ) {
+                                delete this.changeConfig_new[rowCasade][key]['cascadeValue'];
+                            }
+                        } */
+                            if (caseItem["type"] === "setValue") {
+                                // console.log('setValueinput' , caseItem['setValue'] );
+
+                                if (caseItem["setValue"]["type"] === "value") {
+                                    // 静态数据
+                                    this.changeConfig_new[rowCasade][key][
+                                        "setValue"
+                                    ] = caseItem["setValue"]["value"];
+                                }
+                                if (
+                                    caseItem["setValue"]["type"] ===
+                                    "selectValue"
+                                ) {
+                                    // 选中行数据[这个是单值]
+                                    this.changeConfig_new[rowCasade][key][
+                                        "setValue"
+                                    ] = data[caseItem["setValue"]["valueName"]];
+                                }
+                                if (
+                                    caseItem["setValue"]["type"] ===
+                                    "selectObjectValue"
+                                ) {
+                                    // 选中行对象数据
+                                    if (data.dataItem) {
+                                        this.changeConfig_new[rowCasade][key][
+                                            "setValue"
+                                        ] =
+                                            data.dataItem[
+                                            caseItem["setValue"][
+                                            "valueName"
+                                            ]
+                                            ];
+                                    }
+                                }
+                                if (data.data === null) {
+                                    this.changeConfig_new[rowCasade][key][
+                                        "setValue"
+                                    ] = null;
+                                }
+                                if (
+                                    caseItem["setValue"]["type"] ===
+                                    "notsetValue"
+                                ) {
+                                    // 选中行对象数据
+                                    if (
+                                        this.changeConfig_new[rowCasade][
+                                            key
+                                        ].hasOwnProperty("setValue")
+                                    ) {
+                                        delete this.changeConfig_new[rowCasade][
+                                            key
+                                        ]["setValue"];
+                                    }
+                                }
+                            } else {
+                                if (
+                                    this.changeConfig_new[rowCasade][
+                                        key
+                                    ].hasOwnProperty("setValue")
+                                ) {
+                                    delete this.changeConfig_new[rowCasade][
+                                        key
+                                    ]["setValue"];
+                                }
+                            }
+
+                            // 扩充：判断当前字段是否有 edit ，如果无编辑，则将该字段赋值
+                            if (this.changeConfig_new[rowCasade][key]) {
+                                if (this.changeConfig_new[rowCasade][key]) {
+                                    //
+                                    if (this.isEdit(key)) {
+                                        this.editCache[data.key].data[
+                                            key
+                                        ] = this.changeConfig_new[rowCasade][
+                                        key
+                                        ]["setValue"];
+                                    }
+                                }
+                            }
+
+                            // endregion  解析结束
+                        }
+                    );
+                }
+                if (this.cascadeList[sendCasade][key]["valueType"]) {
+                    this.cascadeList[sendCasade][key]["valueType"].forEach(
+                        caseItem => {
+                            // console.log('分析' + key, caseItem);
+                            // region: 解析开始  正则表达
+                            const reg1 = new RegExp(caseItem.regular);
+                            let regularData;
+                            if (caseItem.regularType) {
+                                if (
+                                    caseItem.regularType === "selectObjectValue"
+                                ) {
+                                    if (data["dataItem"]) {
+                                        regularData =
+                                            data["dataItem"][
+                                            caseItem["valueName"]
+                                            ];
+                                    } else {
+                                        regularData = data.data;
+                                    }
+                                } else {
+                                    regularData = data.data;
+                                }
+                            } else {
+                                regularData = data.data;
+                            }
+                            const regularflag = reg1.test(regularData);
+                            // console.log('正则结果：', regularflag);
+                            // endregion  解析结束 正则表达
+                            if (regularflag) {
+                                // region: 解析开始 根据组件类型组装新的配置【静态option组装】
+                                if (caseItem["type"] === "option") {
+                                    this.changeConfig_new[rowCasade][key][
+                                        "options"
+                                    ] = caseItem["option"];
+                                } else {
+                                    if (
+                                        this.changeConfig_new[rowCasade][key][
+                                        "options"
+                                        ]
+                                    ) {
+                                        delete this.changeConfig_new[rowCasade][
+                                            key
+                                        ]["options"];
+                                    }
+                                }
+                                if (caseItem["type"] === "ajax") {
+                                    // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
+                                    if (
+                                        !this.changeConfig_new[rowCasade][key][
+                                        "cascadeValue"
+                                        ]
+                                    ) {
+                                        this.changeConfig_new[rowCasade][key][
+                                            "cascadeValue"
+                                        ] = {};
+                                    }
+                                    caseItem["ajax"].forEach(ajaxItem => {
+                                        if (ajaxItem["type"] === "value") {
+                                            // 静态数据
+                                            this.changeConfig_new[rowCasade][
+                                                key
+                                            ]["cascadeValue"][
+                                                ajaxItem["name"]
+                                            ] = ajaxItem["value"];
+                                        }
+                                        if (
+                                            ajaxItem["type"] === "selectValue"
+                                        ) {
+                                            // 选中行数据[这个是单值]
+                                            this.changeConfig_new[rowCasade][
+                                                key
+                                            ]["cascadeValue"][
+                                                ajaxItem["name"]
+                                            ] = data[ajaxItem["valueName"]];
+                                        }
+                                        if (
+                                            ajaxItem["type"] ===
+                                            "selectObjectValue"
+                                        ) {
+                                            // 选中行对象数据
+                                            if (data.dataItem) {
+                                                this.changeConfig_new[
+                                                    rowCasade
+                                                ][key]["cascadeValue"][
+                                                    ajaxItem["name"]
+                                                ] =
+                                                    data.dataItem[
+                                                    ajaxItem["valueName"]
+                                                    ];
+                                            }
+                                        }
+
+                                        // 其他取值【日后扩展部分】value
+                                    });
+                                }
+                                /*   else {
+                                 if (this.changeConfig_new[rowCasade][key]['cascadeValue'] ) {
+                                     delete this.changeConfig_new[rowCasade][key]['cascadeValue'];
+                                 }
+                               
+                             } */
+                                if (caseItem["type"] === "show") {
+                                    if (caseItem["show"]) {
+                                        //
+                                        // control['hidden'] = caseItem['show']['hidden'];
+                                    }
+                                    // changeConfig_new[rowCasade]['show'] = caseItem['option'];
+                                }
+                                if (caseItem["type"] === "setValue") {
+                                    console.log(
+                                        "setValue2",
+                                        caseItem["setValue"]
+                                    );
+                                    if (
+                                        caseItem["setValue"]["type"] === "value"
+                                    ) {
+                                        // 静态数据
+                                        this.changeConfig_new[rowCasade][key][
+                                            "setValue"
+                                        ] = caseItem["setValue"]["value"];
+                                    }
+                                    if (
+                                        caseItem["setValue"]["type"] ===
+                                        "selectValue"
+                                    ) {
+                                        // 选中行数据[这个是单值]
+                                        this.changeConfig_new[rowCasade][key][
+                                            "setValue"
+                                        ] =
+                                            data[
+                                            caseItem["setValue"][
+                                            "valueName"
+                                            ]
+                                            ];
+                                    }
+                                    if (
+                                        caseItem["setValue"]["type"] ===
+                                        "selectObjectValue"
+                                    ) {
+                                        // 选中行对象数据
+                                        if (data.dataItem) {
+                                            this.changeConfig_new[rowCasade][
+                                                key
+                                            ]["setValue"] =
+                                                data.dataItem[
+                                                caseItem["setValue"][
+                                                "valueName"
+                                                ]
+                                                ];
+                                        }
+                                    }
+                                    if (data.data === null) {
+                                        this.changeConfig_new[rowCasade][key][
+                                            "setValue"
+                                        ] = null;
+                                    }
+                                    if (
+                                        caseItem["setValue"]["type"] ===
+                                        "notsetValue"
+                                    ) {
+                                        // 选中行对象数据
+                                        if (
+                                            this.changeConfig_new[rowCasade][
+                                                key
+                                            ].hasOwnProperty("setValue")
+                                        ) {
+                                            delete this.changeConfig_new[
+                                                rowCasade
+                                            ][key]["setValue"];
+                                        }
+                                    }
+                                } else {
+                                    if (
+                                        this.changeConfig_new[rowCasade][
+                                            key
+                                        ].hasOwnProperty("setValue")
+                                    ) {
+                                        delete this.changeConfig_new[rowCasade][
+                                            key
+                                        ]["setValue"];
+                                    }
+                                }
+                            }
+                            // endregion  解析结束
+                            // 扩充：判断当前字段是否有 edit ，如果无编辑，则将该字段赋值
+                            if (this.changeConfig_new[rowCasade][key]) {
+                                if (this.changeConfig_new[rowCasade][key]) {
+                                    //
+                                    if (this.isEdit(key)) {
+                                        this.editCache[data.key].data[
+                                            key
+                                        ] = this.changeConfig_new[rowCasade][
+                                        key
+                                        ]["setValue"];
+                                    }
+                                }
+                            }
+                        }
+                    );
+                }
+                // if (!this.isEmptyObject(this.changeConfig_new[rowCasade][key])) { }
+
+                this.changeConfig_new[rowCasade][key] = JSON.parse(
+                    JSON.stringify(this.changeConfig_new[rowCasade][key])
+                );
+            }
+            // console.log('级联结果数据集', this.changeConfig_new);
+        }
+
+    }
+    public caseLoad() {
+        this.cascadeList = {};
+        // region: 解析开始
+        if (this.config.cascade)
+            this.config.cascade.forEach(c => {
+                this.cascadeList[c.name] = {}; // 将关系维护到一个对象中
+                // region: 解析具体对象开始
+                c.CascadeObjects.forEach(cobj => {
+                    // 具体对象
+                    this.cascadeList[c.name][cobj.cascadeName] = {};
+
+                    const dataType = [];
+                    const valueType = [];
+                    cobj["cascadeDataItems"].forEach(item => {
+                        // 数据关联 （只是单纯的数据关联，内容只有ajax）
+                        // cobj.data
+                        const dataTypeItem = {};
+                        if (item["caseValue"]) {
+                            // 取值， 解析 正则表达式
+                            // item.case.regular; 正则
+                            dataTypeItem["regularType"] = item.caseValue.type;
+                            dataTypeItem["valueName"] =
+                                item.caseValue.valueName;
+                            dataTypeItem["regular"] = item.caseValue.regular;
+                        }
+                        this.cascadeList[c.name][cobj.cascadeName]["type"] =
+                            item.data.type;
+                        dataTypeItem["type"] = item.data.type;
+                        if (item.data.type === "option") {
+                            // 静态数据集
+                            this.cascadeList[c.name][cobj.cascadeName][
+                                "option"
+                            ] = item.data.option_data.option;
+                            dataTypeItem["option"] =
+                                item.data.option_data.option;
+                        }
+                        if (item.data.type === "ajax") {
+                            // 异步请求参数取值
+                            this.cascadeList[c.name][cobj.cascadeName]["ajax"] =
+                                item.data.ajax_data.option;
+                            dataTypeItem["ajax"] = item.data.ajax_data.option;
+                        }
+                        if (item.data.type === "setValue") {
+                            // 组件赋值
+                            this.cascadeList[c.name][cobj.cascadeName][
+                                "setValue"
+                            ] = item.data.setValue_data.option;
+                            dataTypeItem["setValue"] =
+                                item.data.setValue_data.option;
+                        }
+                        if (item.data.type === "show") {
+                            // 页面显示控制
+                            this.cascadeList[c.name][cobj.cascadeName]["show"] =
+                                item.data.show_data.option;
+                            dataTypeItem["show"] = item.data.show_data.option;
+                        }
+                        if (item.data.type === "relation") {
+                            // 消息交互
+                            this.cascadeList[c.name][cobj.cascadeName][
+                                "relation"
+                            ] = item.data.relation_data.option;
+                            dataTypeItem["relation"] =
+                                item.data.relation_data.option;
+                        }
+
+                        dataType.push(dataTypeItem);
+                    });
+
+                    cobj["cascadeValueItems"].forEach(item => {
+                        const valueTypeItem = {};
+                        if (item.caseValue) {
+                            // 取值， 解析 正则表达式
+                            // item.case.regular; 正则
+                            valueTypeItem["regularType"] = item.caseValue.type;
+                            valueTypeItem["valueName"] =
+                                item.caseValue.valueName;
+                            valueTypeItem["regular"] = item.caseValue.regular;
+                        }
+                        this.cascadeList[c.name][cobj.cascadeName]["type"] =
+                            item.data.type;
+                        valueTypeItem["type"] = item.data.type;
+                        if (item.data.type === "option") {
+                            // 静态数据集
+                            this.cascadeList[c.name][cobj.cascadeName][
+                                "option"
+                            ] = item.data.option_data.option;
+                            valueTypeItem["option"] =
+                                item.data.option_data.option;
+                        }
+                        if (item.data.type === "ajax") {
+                            // 异步请求参数取值
+                            this.cascadeList[c.name][cobj.cascadeName]["ajax"] =
+                                item.data.ajax_data.option;
+                            valueTypeItem["ajax"] = item.data.ajax_data.option;
+                        }
+                        if (item.data.type === "setValue") {
+                            // 组件赋值
+                            this.cascadeList[c.name][cobj.cascadeName][
+                                "setValue"
+                            ] = item.data.setValue_data.option;
+                            valueTypeItem["setValue"] =
+                                item.data.setValue_data.option;
+                        }
+                        if (item.data.type === "show") {
+                            // 页面显示控制
+                            this.cascadeList[c.name][cobj.cascadeName]["show"] =
+                                item.data.show_data.option;
+                            valueTypeItem["show"] = item.data.show_data.option;
+                        }
+                        if (item.data.type === "relation") {
+                            // 消息交互
+                            this.cascadeList[c.name][cobj.cascadeName][
+                                "relation"
+                            ] = item.data.relation_data.option;
+                            valueTypeItem["relation"] =
+                                item.data.relation_data.option;
+                        }
+                        valueType.push(valueTypeItem);
+                    });
+
+                    this.cascadeList[c.name][cobj.cascadeName][
+                        "dataType"
+                    ] = dataType;
+                    this.cascadeList[c.name][cobj.cascadeName][
+                        "valueType"
+                    ] = valueType;
+                });
+                // endregion: 解析对象结束
+            });
+        // endregion： 解析结束
+
+        // console.log("级联配置简析", this.cascadeList);
+    }
+    public isEdit(fieldname) {
+        let isEditState = false;
+        this.config.columns.forEach(column => {
+            if (column.field === fieldname) {
+                if (column.hidden) {
+                    isEditState = true;
+                }
+                if (!column.editor) {
+                    isEditState = true;
+                }
+                if (column.editor) {
+                    // 20181020 liu
+                    if (fieldname !== column.editor.field) {
+                        isEditState = true;
+                    }
+                }
+            }
+        });
+        return isEditState;
     }
 
     expandChange(array: any[], data: any, $event: boolean) {

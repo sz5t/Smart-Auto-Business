@@ -34,6 +34,7 @@
                                                                 </span>
                                                                 <ng-container [bsnData]="tempParameters" [rowData]="item" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
                                                                         CnGridEditorDirective *ngIf="editCache[item.key].edit" [config]="col.editor.options" [value]="{key:item.key,name:col.editor.field,data:editCache[item.key].data[col.editor.field]}"
+                                                                        [changeConfig]="changeConfig_new.hasOwnProperty(item.key) ? changeConfig_new[item.key][col.editor.field]:''"
                                                                         (updateValue)="valueChange($event)">
                                                                 </ng-container>
 
@@ -49,6 +50,7 @@
                                                                 </div>
                                                                 <ng-container [bsnData]="tempParameters" [rowData]="item" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
                                                                         CnGridEditorDirective *ngIf="editCache[item.key].edit" [config]="col.editor.options" [value]="{key:item.key,name:col.editor.field,data:editCache[item.key].data[col.editor.field]}"
+                                                                        [changeConfig]="changeConfig_new.hasOwnProperty(item.key) ? changeConfig_new[item.key][col.editor.field]:''"
                                                                         (updateValue)="valueChange($event)">
                                                                 </ng-container>
                                                         </ng-container>
