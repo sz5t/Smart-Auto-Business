@@ -1,9 +1,10 @@
-import { FormGroup } from "@angular/forms";
-import { Component, Input, OnInit, AfterViewInit } from "@angular/core";
+import { FormGroup } from '@angular/forms';
+import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
 
 @Component({
-    selector: "cn-form-label",
-    templateUrl: "./cn-form-label.component.html",
+    // tslint:disable-next-line:component-selector
+    selector: 'cn-form-label',
+    templateUrl: './cn-form-label.component.html',
     styles: [
         `
             .anticon-close-circle {
@@ -25,15 +26,15 @@ import { Component, Input, OnInit, AfterViewInit } from "@angular/core";
 })
 export class CnFormLabelComponent implements OnInit, AfterViewInit {
     @Input()
-    config;
+    public config;
     @Input()
-    formGroup: FormGroup;
-    model = "";
-    modelText = "";
+    public formGroup: FormGroup;
+    public model = '';
+    public modelText = '';
     constructor() {}
 
-    ngOnInit() {}
-    ngAfterViewInit() {
+    public ngOnInit() {}
+    public ngAfterViewInit() {
         // if (this.config.textName) {
         //   this.modelText = this.formGroup.controls[this.config.textName].value;
         // }

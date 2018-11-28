@@ -6,27 +6,28 @@ import {
     ElementRef,
     AfterViewInit,
     ViewEncapsulation
-} from "@angular/core";
-import { _HttpClient } from "@delon/theme";
-import { SimpleTableColumn, SimpleTableComponent } from "@delon/abc";
-import { Form, FormGroup } from "@angular/forms";
+} from '@angular/core';
+import { _HttpClient } from '@delon/theme';
+import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
+import { Form, FormGroup } from '@angular/forms';
 @Component({
-    selector: "cn-table-chart",
-    templateUrl: "./table-chart.component.html",
+    // tslint:disable-next-line:component-selector
+    selector: 'cn-table-chart',
+    templateUrl: './table-chart.component.html',
     encapsulation: ViewEncapsulation.None,
-    styleUrls: ["./table-chart.css"]
+    styleUrls: ['./table-chart.css']
 })
 export class TableChartComponent implements OnInit, AfterViewInit {
-    config = {
+    private config = {
         rows: [
             {
                 row: {
                     cols: [
                         {
-                            id: "area1",
+                            id: 'area1',
                             // title: '数据网格',
                             span: 24,
-                            icon: "icon-list",
+                            icon: 'icon-list',
                             size: {
                                 nzXs: 24,
                                 nzSm: 24,
@@ -37,11 +38,11 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                             viewCfg: [
                                 {
                                     config: {
-                                        title: "数据网格",
-                                        viewId: "chartTable",
-                                        component: "bsnTable",
+                                        title: '数据网格',
+                                        viewId: 'chartTable',
+                                        component: 'bsnTable',
                                         info: true,
-                                        keyId: "Id",
+                                        keyId: 'Id',
                                         pagination: true, // 是否分页
                                         showTotal: true, // 是否显示总数据量
                                         pageSize: 5, // 默认每页数据条数
@@ -55,116 +56,116 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                         ],
                                         ajaxConfig: {
                                             // 'url': 'common/ShowCase',
-                                            url: "common/GetCase",
-                                            ajaxType: "get",
+                                            url: 'common/GetCase',
+                                            ajaxType: 'get',
                                             params: [
                                                 {
-                                                    name: "parentId",
-                                                    type: "value",
-                                                    valueName: "",
+                                                    name: 'parentId',
+                                                    type: 'value',
+                                                    valueName: '',
                                                     value: null
                                                 }
                                             ]
                                         },
                                         columns: [
                                             {
-                                                title: "序号",
-                                                field: "_serilize",
-                                                width: "50px",
+                                                title: '序号',
+                                                field: '_serilize',
+                                                width: '50px',
                                                 hidden: false,
                                                 editor: {
-                                                    type: "input",
-                                                    field: "Id",
+                                                    type: 'input',
+                                                    field: 'Id',
                                                     options: {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "18",
-                                                        inputType: "text"
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '18',
+                                                        inputType: 'text'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: "Id",
-                                                field: "Id",
+                                                title: 'Id',
+                                                field: 'Id',
                                                 width: 80,
                                                 hidden: true,
                                                 editor: {
-                                                    type: "input",
-                                                    field: "Id",
+                                                    type: 'input',
+                                                    field: 'Id',
                                                     options: {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "18",
-                                                        inputType: "text"
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '18',
+                                                        inputType: 'text'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: "名称",
-                                                field: "caseName",
-                                                width: "90px",
+                                                title: '名称',
+                                                field: 'caseName',
+                                                width: '90px',
                                                 showFilter: false,
                                                 showSort: false,
                                                 editor: {
-                                                    type: "input",
-                                                    field: "caseName",
+                                                    type: 'input',
+                                                    field: 'caseName',
                                                     options: {
-                                                        type: "input",
-                                                        inputType: "text"
+                                                        type: 'input',
+                                                        inputType: 'text'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: "类别",
-                                                field: "typeName",
-                                                width: "100px",
+                                                title: '类别',
+                                                field: 'typeName',
+                                                width: '100px',
                                                 hidden: false,
                                                 showFilter: true,
                                                 showSort: true,
                                                 editor: {
-                                                    type: "select",
-                                                    field: "Type",
+                                                    type: 'select',
+                                                    field: 'Type',
                                                     options: {
-                                                        type: "select",
-                                                        labelSize: "6",
-                                                        controlSize: "18",
-                                                        inputType: "submit",
-                                                        name: "Type",
-                                                        label: "Type",
-                                                        notFoundContent: "",
+                                                        type: 'select',
+                                                        labelSize: '6',
+                                                        controlSize: '18',
+                                                        inputType: 'submit',
+                                                        name: 'Type',
+                                                        label: 'Type',
+                                                        notFoundContent: '',
                                                         selectModel: false,
                                                         showSearch: true,
                                                         placeholder:
-                                                            "-请选择数据-",
+                                                            '-请选择数据-',
                                                         disabled: false,
-                                                        size: "default",
+                                                        size: 'default',
                                                         clear: true,
-                                                        width: "200px",
-                                                        dataSet: "getCaseName",
+                                                        width: '200px',
+                                                        dataSet: 'getCaseName',
                                                         options: [
                                                             {
-                                                                label: "表格",
-                                                                value: "1",
+                                                                label: '表格',
+                                                                value: '1',
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "树组件",
-                                                                value: "2",
+                                                                label: '树组件',
+                                                                value: '2',
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "树表",
-                                                                value: "3",
+                                                                label: '树表',
+                                                                value: '3',
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "表单",
-                                                                value: "4",
+                                                                label: '表单',
+                                                                value: '4',
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "标签页",
-                                                                value: "5",
+                                                                label: '标签页',
+                                                                value: '5',
                                                                 disabled: false
                                                             }
                                                         ]
@@ -172,117 +173,117 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                                 }
                                             },
                                             {
-                                                title: "数量",
-                                                field: "caseCount",
+                                                title: '数量',
+                                                field: 'caseCount',
                                                 width: 80,
                                                 hidden: false,
                                                 editor: {
-                                                    type: "input",
-                                                    field: "caseCount",
+                                                    type: 'input',
+                                                    field: 'caseCount',
                                                     options: {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "18",
-                                                        inputType: "text"
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '18',
+                                                        inputType: 'text'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: "级别",
-                                                field: "caseLevel",
+                                                title: '级别',
+                                                field: 'caseLevel',
                                                 width: 80,
                                                 hidden: false,
                                                 showFilter: false,
                                                 showSort: false,
                                                 editor: {
-                                                    type: "input",
-                                                    field: "caseLevel",
+                                                    type: 'input',
+                                                    field: 'caseLevel',
                                                     options: {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "18",
-                                                        inputType: "text"
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '18',
+                                                        inputType: 'text'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: "创建时间",
-                                                field: "createDate",
+                                                title: '创建时间',
+                                                field: 'createDate',
                                                 width: 80,
                                                 hidden: false,
-                                                dataType: "date",
+                                                dataType: 'date',
                                                 editor: {
-                                                    type: "input",
-                                                    pipe: "datetime",
-                                                    field: "createDate",
+                                                    type: 'input',
+                                                    pipe: 'datetime',
+                                                    field: 'createDate',
                                                     options: {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "18",
-                                                        inputType: "datetime"
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '18',
+                                                        inputType: 'datetime'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: "备注",
-                                                field: "remark",
+                                                title: '备注',
+                                                field: 'remark',
                                                 width: 80,
                                                 hidden: false,
                                                 editor: {
-                                                    type: "input",
-                                                    field: "remark",
+                                                    type: 'input',
+                                                    field: 'remark',
                                                     options: {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "18",
-                                                        inputType: "text"
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '18',
+                                                        inputType: 'text'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: "状态",
-                                                field: "enableText",
+                                                title: '状态',
+                                                field: 'enableText',
                                                 width: 80,
                                                 hidden: false,
                                                 formatter: [
                                                     {
-                                                        value: "启用",
-                                                        bgcolor: "",
-                                                        fontcolor: "text-blue",
-                                                        valueas: "启用"
+                                                        value: '启用',
+                                                        bgcolor: '',
+                                                        fontcolor: 'text-blue',
+                                                        valueas: '启用'
                                                     },
                                                     {
-                                                        value: "禁用",
-                                                        bgcolor: "",
-                                                        fontcolor: "text-red",
-                                                        valueas: "禁用"
+                                                        value: '禁用',
+                                                        bgcolor: '',
+                                                        fontcolor: 'text-red',
+                                                        valueas: '禁用'
                                                     }
                                                 ],
                                                 editor: {
-                                                    type: "select",
-                                                    field: "enabled",
+                                                    type: 'select',
+                                                    field: 'enabled',
                                                     options: {
-                                                        type: "select",
-                                                        labelSize: "6",
-                                                        controlSize: "18",
-                                                        inputType: "submit",
-                                                        name: "enabled",
-                                                        notFoundContent: "",
+                                                        type: 'select',
+                                                        labelSize: '6',
+                                                        controlSize: '18',
+                                                        inputType: 'submit',
+                                                        name: 'enabled',
+                                                        notFoundContent: '',
                                                         selectModel: false,
                                                         showSearch: true,
-                                                        placeholder: "-请选择-",
+                                                        placeholder: '-请选择-',
                                                         disabled: false,
-                                                        size: "default",
+                                                        size: 'default',
                                                         clear: true,
-                                                        width: "80px",
+                                                        width: '80px',
                                                         options: [
                                                             {
-                                                                label: "启用",
+                                                                label: '启用',
                                                                 value: true,
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "禁用",
+                                                                label: '禁用',
                                                                 value: false,
                                                                 disabled: false
                                                             }
@@ -308,9 +309,9 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                 row: {
                     cols: [
                         {
-                            id: "area2",
+                            id: 'area2',
                             span: 12,
-                            icon: "icon-list",
+                            icon: 'icon-list',
                             size: {
                                 nzXs: 12,
                                 nzSm: 12,
@@ -321,18 +322,18 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                             viewCfg: [
                                 {
                                     config: {
-                                        viewId: "chart1",
-                                        component: "barChart",
-                                        keyId: "Id",
+                                        viewId: 'chart1',
+                                        component: 'barChart',
+                                        keyId: 'Id',
                                         height: 300,
                                         ajaxConfig: {
-                                            url: "common/ShowCase",
-                                            ajaxType: "get",
+                                            url: 'common/ShowCase',
+                                            ajaxType: 'get',
                                             params: [
                                                 {
-                                                    name: "parentId",
-                                                    type: "tempValue",
-                                                    valueName: "_parentId"
+                                                    name: 'parentId',
+                                                    type: 'tempValue',
+                                                    valueName: '_parentId'
                                                 }
                                             ]
                                         },
@@ -343,12 +344,12 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                         },
                                         relations: [
                                             {
-                                                relationViewId: "chartTable",
-                                                cascadeMode: "REFRESH_AS_CHILD",
+                                                relationViewId: 'chartTable',
+                                                cascadeMode: 'REFRESH_AS_CHILD',
                                                 params: [
                                                     {
-                                                        pid: "Id",
-                                                        cid: "_parentId"
+                                                        pid: 'Id',
+                                                        cid: '_parentId'
                                                     }
                                                 ],
                                                 relationReceiveContent: []
@@ -357,18 +358,18 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                         options: {
                                             scales: {
                                                 caseName: {
-                                                    alias: "用例"
+                                                    alias: '用例'
                                                 },
                                                 caseCount: {
-                                                    alias: "数量"
+                                                    alias: '数量'
                                                 }
                                             },
                                             geoms: [
                                                 {
-                                                    type: "interval",
+                                                    type: 'interval',
                                                     position:
-                                                        "caseName*caseCount",
-                                                    color: "caseName"
+                                                        'caseName*caseCount',
+                                                    color: 'caseName'
                                                 }
                                             ]
                                             // 'coord': {},
@@ -383,9 +384,9 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                             ]
                         },
                         {
-                            id: "area2",
+                            id: 'area2',
                             span: 12,
-                            icon: "icon-list",
+                            icon: 'icon-list',
                             size: {
                                 nzXs: 12,
                                 nzSm: 12,
@@ -396,18 +397,18 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                             viewCfg: [
                                 {
                                     config: {
-                                        viewId: "chart1e",
-                                        component: "barChart",
-                                        keyId: "Id",
+                                        viewId: 'chart1e',
+                                        component: 'barChart',
+                                        keyId: 'Id',
                                         height: 300,
                                         ajaxConfig: {
-                                            url: "common/ShowCase",
-                                            ajaxType: "get",
+                                            url: 'common/ShowCase',
+                                            ajaxType: 'get',
                                             params: [
                                                 {
-                                                    name: "parentId",
-                                                    type: "tempValue",
-                                                    valueName: "_parentId"
+                                                    name: 'parentId',
+                                                    type: 'tempValue',
+                                                    valueName: '_parentId'
                                                 }
                                             ]
                                         },
@@ -418,12 +419,12 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                         },
                                         relations: [
                                             {
-                                                relationViewId: "chartTable",
-                                                cascadeMode: "REFRESH_AS_CHILD",
+                                                relationViewId: 'chartTable',
+                                                cascadeMode: 'REFRESH_AS_CHILD',
                                                 params: [
                                                     {
-                                                        pid: "Id",
-                                                        cid: "_parentId"
+                                                        pid: 'Id',
+                                                        cid: '_parentId'
                                                     }
                                                 ],
                                                 relationReceiveContent: []
@@ -432,28 +433,28 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                         options: {
                                             scales: {
                                                 caseName: {
-                                                    alias: "用例"
+                                                    alias: '用例'
                                                 },
                                                 caseCount: {
-                                                    alias: "数量",
+                                                    alias: '数量',
                                                     min: 0
                                                 }
                                             },
                                             geoms: [
                                                 {
-                                                    type: "line",
+                                                    type: 'line',
                                                     position:
-                                                        "caseName*caseCount"
+                                                        'caseName*caseCount'
                                                 },
                                                 {
-                                                    type: "point",
+                                                    type: 'point',
                                                     position:
-                                                        "caseName*caseCount",
+                                                        'caseName*caseCount',
                                                     // color: 'caseName',
                                                     size: 4,
-                                                    shape: "circle",
+                                                    shape: 'circle',
                                                     style: {
-                                                        stroke: "#fff",
+                                                        stroke: '#fff',
                                                         lineWidth: 1
                                                     }
                                                 }
@@ -465,7 +466,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                             // 'filter': {},
                                             tooltip: {
                                                 crosshairs: {
-                                                    type: "line"
+                                                    type: 'line'
                                                 }
                                             }
                                         }
@@ -480,9 +481,9 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                 row: {
                     cols: [
                         {
-                            id: "area2",
+                            id: 'area2',
                             span: 12,
-                            icon: "icon-list",
+                            icon: 'icon-list',
                             size: {
                                 nzXs: 12,
                                 nzSm: 12,
@@ -493,18 +494,18 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                             viewCfg: [
                                 {
                                     config: {
-                                        viewId: "chart1e",
-                                        component: "barChart",
-                                        keyId: "Id",
+                                        viewId: 'chart1e',
+                                        component: 'barChart',
+                                        keyId: 'Id',
                                         height: 300,
                                         ajaxConfig: {
-                                            url: "common/GetCasePercent",
-                                            ajaxType: "get",
+                                            url: 'common/GetCasePercent',
+                                            ajaxType: 'get',
                                             params: [
                                                 {
-                                                    name: "_parentId",
-                                                    type: "tempValue",
-                                                    valueName: "_parentId"
+                                                    name: '_parentId',
+                                                    type: 'tempValue',
+                                                    valueName: '_parentId'
                                                 }
                                             ]
                                         },
@@ -515,12 +516,12 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                         },
                                         relations: [
                                             {
-                                                relationViewId: "chartTable",
-                                                cascadeMode: "REFRESH_AS_CHILD",
+                                                relationViewId: 'chartTable',
+                                                cascadeMode: 'REFRESH_AS_CHILD',
                                                 params: [
                                                     {
-                                                        pid: "Id",
-                                                        cid: "_parentId"
+                                                        pid: 'Id',
+                                                        cid: '_parentId'
                                                     }
                                                 ],
                                                 relationReceiveContent: []
@@ -529,32 +530,32 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                         options: {
                                             scales: {
                                                 casePercent: {
-                                                    type: "cat"
+                                                    type: 'cat'
                                                 },
                                                 casePercentText: {
-                                                    type: "cat"
+                                                    type: 'cat'
                                                 }
                                             },
                                             geoms: [
                                                 {
-                                                    type: "intervalStack",
-                                                    position: "casePercent",
-                                                    color: "caseName",
+                                                    type: 'intervalStack',
+                                                    position: 'casePercent',
+                                                    color: 'caseName',
                                                     style: {
-                                                        stroke: "#fff",
+                                                        stroke: '#fff',
                                                         lineWidth: 1
                                                     },
                                                     label: {
-                                                        field: "casePercentText"
+                                                        field: 'casePercentText'
                                                     },
                                                     tooltip: {
                                                         field:
-                                                            "caseName*casePercent"
+                                                            'caseName*casePercent'
                                                     }
                                                 }
                                             ],
                                             coord: {
-                                                type: "theta",
+                                                type: 'theta',
                                                 cfg: {
                                                     radius: 0.75
                                                 }
@@ -574,9 +575,9 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                             ]
                         },
                         {
-                            id: "area4",
+                            id: 'area4',
                             span: 12,
-                            icon: "icon-list",
+                            icon: 'icon-list',
                             size: {
                                 nzXs: 12,
                                 nzSm: 12,
@@ -587,18 +588,18 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                             viewCfg: [
                                 {
                                     config: {
-                                        viewId: "chart1e",
-                                        component: "barChart",
-                                        keyId: "Id",
+                                        viewId: 'chart1e',
+                                        component: 'barChart',
+                                        keyId: 'Id',
                                         height: 300,
                                         ajaxConfig: {
-                                            url: "common/ShowCase",
-                                            ajaxType: "get",
+                                            url: 'common/ShowCase',
+                                            ajaxType: 'get',
                                             params: [
                                                 {
-                                                    name: "parentId",
-                                                    type: "tempValue",
-                                                    valueName: "_parentId"
+                                                    name: 'parentId',
+                                                    type: 'tempValue',
+                                                    valueName: '_parentId'
                                                 }
                                             ]
                                         },
@@ -609,12 +610,12 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                         },
                                         relations: [
                                             {
-                                                relationViewId: "chartTable",
-                                                cascadeMode: "REFRESH_AS_CHILD",
+                                                relationViewId: 'chartTable',
+                                                cascadeMode: 'REFRESH_AS_CHILD',
                                                 params: [
                                                     {
-                                                        pid: "Id",
-                                                        cid: "_parentId"
+                                                        pid: 'Id',
+                                                        cid: '_parentId'
                                                     }
                                                 ],
                                                 relationReceiveContent: []
@@ -623,28 +624,28 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                         options: {
                                             scales: {
                                                 caseName: {
-                                                    alias: "用例"
+                                                    alias: '用例'
                                                 },
                                                 caseCount: {
-                                                    alias: "数量",
+                                                    alias: '数量',
                                                     min: 0
                                                 }
                                             },
                                             geoms: [
                                                 {
-                                                    type: "line",
+                                                    type: 'line',
                                                     position:
-                                                        "caseName*caseCount"
+                                                        'caseName*caseCount'
                                                 },
                                                 {
-                                                    type: "point",
+                                                    type: 'point',
                                                     position:
-                                                        "caseName*caseCount",
+                                                        'caseName*caseCount',
                                                     // color: 'caseName',
                                                     size: 4,
-                                                    shape: "circle",
+                                                    shape: 'circle',
                                                     style: {
-                                                        stroke: "#fff",
+                                                        stroke: '#fff',
                                                         lineWidth: 1
                                                     }
                                                 }
@@ -656,7 +657,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                             // 'filter': {},
                                             tooltip: {
                                                 crosshairs: {
-                                                    type: "line"
+                                                    type: 'line'
                                                 }
                                             }
                                         }
@@ -671,9 +672,9 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                 row: {
                     cols: [
                         {
-                            id: "dataSteps",
+                            id: 'dataSteps',
                             span: 24,
-                            icon: "icon-list",
+                            icon: 'icon-list',
                             size: {
                                 nzXs: 24,
                                 nzSm: 24,
@@ -684,24 +685,24 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                             viewCfg: [
                                 {
                                     config: {
-                                        viewId: "chart",
-                                        component: "dataSteps",
+                                        viewId: 'chart',
+                                        component: 'dataSteps',
                                         width: 1400,
                                         height: 60,
                                         stepNum: 50,
                                         startX: 100,
                                         startY: 100,
-                                        textField: "caseName",
-                                        mainTitle: "",
-                                        subTitle: "",
-                                        position: "lc",
-                                        direction: "horizontal",
+                                        textField: 'caseName',
+                                        mainTitle: '',
+                                        subTitle: '',
+                                        position: 'lc',
+                                        direction: 'horizontal',
                                         labelOffsetX: 0,
                                         labelOffsetY: -30,
                                         size: 40,
                                         ajaxConfig: {
-                                            url: "common/ShowCase",
-                                            ajaxType: "get",
+                                            url: 'common/ShowCase',
+                                            ajaxType: 'get',
                                             params: [
                                                 // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
                                             ]
@@ -722,9 +723,9 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                 row: {
                     cols: [
                         {
-                            id: "dataSteps",
+                            id: 'dataSteps',
                             span: 3,
-                            icon: "icon-list",
+                            icon: 'icon-list',
                             size: {
                                 nzXs: 3,
                                 nzSm: 3,
@@ -735,24 +736,24 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                             viewCfg: [
                                 {
                                     config: {
-                                        viewId: "chart34",
-                                        component: "dataSteps",
+                                        viewId: 'chart34',
+                                        component: 'dataSteps',
                                         width: 120,
                                         height: 1000,
                                         stepNum: 50,
                                         startX: 75,
                                         startY: 75,
-                                        position: "tr",
-                                        direction: "vertical",
-                                        textField: "caseName",
-                                        mainTitle: "",
-                                        subTitle: "",
+                                        position: 'tr',
+                                        direction: 'vertical',
+                                        textField: 'caseName',
+                                        mainTitle: '',
+                                        subTitle: '',
                                         size: 40,
                                         labelOffsetX: -50,
                                         labelOffsetY: 1,
                                         ajaxConfig: {
-                                            url: "common/ShowCase",
-                                            ajaxType: "get",
+                                            url: 'common/ShowCase',
+                                            ajaxType: 'get',
                                             params: [
                                                 // { name: 'enabled', type: 'value', value: '0' },
                                                 // { name: 'parentId', type: 'value', value: null }
@@ -774,9 +775,9 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                 row: {
                     cols: [
                         {
-                            id: "dataSteps",
+                            id: 'dataSteps',
                             span: 12,
-                            icon: "icon-list",
+                            icon: 'icon-list',
                             size: {
                                 nzXs: 12,
                                 nzSm: 12,
@@ -787,28 +788,28 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                             viewCfg: [
                                 {
                                     config: {
-                                        viewId: "chart34",
-                                        component: "bsnCarousel",
-                                        autoPlay: false,
+                                        viewId: 'chart34',
+                                        component: 'bsnCarousel',
+                                        autoPlay: true,
                                         dataMapping: [
-                                            { field: "remark", name: "alt" },
-                                            { field: "savePath", name: "src" }
+                                            { field: 'remark', name: 'alt' },
+                                            { field: 'urlPath', name: 'src' }
                                         ],
                                         ajaxConfig: {
-                                            url: "common/SysFile",
-                                            ajaxType: "get",
+                                            url: 'common/SysFile',
+                                            ajaxType: 'get',
                                             params: [
                                                 {
-                                                    name: "refDataId",
-                                                    type: "tempValue",
-                                                    valueName: ""
+                                                    name: 'refDataId',
+                                                    type: 'value',
+                                                    value: '44CB74A0-FF6D-4F28-901D-485C8DE87A5F'
                                                 }
                                             ]
                                         },
                                         componentType: {
-                                            parent: true,
+                                            parent: false,
                                             child: false,
-                                            sub: false
+                                            owner: true
                                         }
                                     }
                                 }
@@ -821,8 +822,8 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                 row: {
                     cols: [
                         {
-                            id: "area2",
-                            title: "右表单",
+                            id: 'area2',
+                            title: '右表单',
                             span: 24,
                             size: {
                                 nzXs: 24,
@@ -834,22 +835,22 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                             viewCfg: [
                                 {
                                     config: {
-                                        viewId: "tree_and_form_forms",
-                                        component: "bsnCardList",
-                                        keyId: "Id",
-                                        titleField: "caseName",
+                                        viewId: 'tree_and_form_forms',
+                                        component: 'bsnCardList',
+                                        keyId: 'Id',
+                                        titleField: 'caseName',
                                         ajaxConfig: {
-                                            url: "common/ShowCase",
-                                            ajaxType: "get",
+                                            url: 'common/ShowCase',
+                                            ajaxType: 'get',
                                             params: [
                                                 {
-                                                    name: "enabled",
-                                                    type: "value",
-                                                    value: "0"
+                                                    name: 'enabled',
+                                                    type: 'value',
+                                                    value: '0'
                                                 },
                                                 {
-                                                    name: "parentId",
-                                                    type: "value",
+                                                    name: 'parentId',
+                                                    type: 'value',
                                                     value: null
                                                 }
                                             ]
@@ -863,153 +864,153 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                             {
                                                 controls: [
                                                     {
-                                                        type: "select",
-                                                        labelSize: "6",
-                                                        controlSize: "16",
-                                                        inputType: "submit",
-                                                        name: "enabled",
-                                                        label: "状态",
-                                                        notFoundContent: "",
+                                                        type: 'select',
+                                                        labelSize: '6',
+                                                        controlSize: '16',
+                                                        inputType: 'submit',
+                                                        name: 'enabled',
+                                                        label: '状态',
+                                                        notFoundContent: '',
                                                         selectModel: false,
                                                         showSearch: true,
                                                         placeholder:
-                                                            "--请选择--",
+                                                            '--请选择--',
                                                         disabled: false,
-                                                        size: "default",
+                                                        size: 'default',
                                                         options: [
                                                             {
-                                                                label: "启用",
+                                                                label: '启用',
                                                                 value: true,
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "禁用",
+                                                                label: '禁用',
                                                                 value: false,
                                                                 disabled: false
                                                             }
                                                         ],
-                                                        layout: "column",
-                                                        span: "24"
+                                                        layout: 'column',
+                                                        span: '24'
                                                     }
                                                 ]
                                             },
                                             {
                                                 controls: [
                                                     {
-                                                        type: "select",
-                                                        labelSize: "6",
-                                                        controlSize: "16",
-                                                        inputType: "submit",
-                                                        name: "caseType",
-                                                        label: "类别",
-                                                        notFoundContent: "",
+                                                        type: 'select',
+                                                        labelSize: '6',
+                                                        controlSize: '16',
+                                                        inputType: 'submit',
+                                                        name: 'caseType',
+                                                        label: '类别',
+                                                        notFoundContent: '',
                                                         selectModel: false,
                                                         showSearch: true,
                                                         placeholder:
-                                                            "--请选择--",
+                                                            '--请选择--',
                                                         disabled: false,
-                                                        size: "default",
+                                                        size: 'default',
                                                         options: [
                                                             {
-                                                                label: "表",
-                                                                value: "1",
+                                                                label: '表',
+                                                                value: '1',
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "树",
-                                                                value: "2",
+                                                                label: '树',
+                                                                value: '2',
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "树表",
-                                                                value: "3",
+                                                                label: '树表',
+                                                                value: '3',
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "表单",
-                                                                value: "4",
+                                                                label: '表单',
+                                                                value: '4',
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "标签页",
-                                                                value: "5",
+                                                                label: '标签页',
+                                                                value: '5',
                                                                 disabled: false
                                                             }
                                                         ],
-                                                        layout: "column",
-                                                        span: "24"
+                                                        layout: 'column',
+                                                        span: '24'
                                                     }
                                                 ]
                                             },
                                             {
                                                 controls: [
                                                     {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "16",
-                                                        inputType: "text",
-                                                        name: "caseName",
-                                                        label: "名称",
-                                                        placeholder: "",
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '16',
+                                                        inputType: 'text',
+                                                        name: 'caseName',
+                                                        label: '名称',
+                                                        placeholder: '',
                                                         disabled: false,
                                                         readonly: false,
-                                                        size: "default",
-                                                        layout: "column",
-                                                        span: "24"
+                                                        size: 'default',
+                                                        layout: 'column',
+                                                        span: '24'
                                                     }
                                                 ]
                                             },
                                             {
                                                 controls: [
                                                     {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "16",
-                                                        inputType: "text",
-                                                        name: "caseLevel",
-                                                        label: "级别",
-                                                        placeholder: "",
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '16',
+                                                        inputType: 'text',
+                                                        name: 'caseLevel',
+                                                        label: '级别',
+                                                        placeholder: '',
                                                         disabled: false,
                                                         readonly: false,
-                                                        size: "default",
-                                                        layout: "column",
-                                                        span: "24"
+                                                        size: 'default',
+                                                        layout: 'column',
+                                                        span: '24'
                                                     }
                                                 ]
                                             },
                                             {
                                                 controls: [
                                                     {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "16",
-                                                        inputType: "text",
-                                                        name: "caseCount",
-                                                        label: "数量",
-                                                        placeholder: "",
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '16',
+                                                        inputType: 'text',
+                                                        name: 'caseCount',
+                                                        label: '数量',
+                                                        placeholder: '',
                                                         disabled: false,
                                                         readonly: false,
-                                                        size: "default",
-                                                        layout: "column",
-                                                        span: "24"
+                                                        size: 'default',
+                                                        layout: 'column',
+                                                        span: '24'
                                                     }
                                                 ]
                                             },
                                             {
                                                 controls: [
                                                     {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "16",
-                                                        inputType: "text",
-                                                        name: "remark",
-                                                        label: "备注",
-                                                        placeholder: "",
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '16',
+                                                        inputType: 'text',
+                                                        name: 'remark',
+                                                        label: '备注',
+                                                        placeholder: '',
                                                         disabled: false,
                                                         readonly: false,
-                                                        size: "default",
-                                                        layout: "column",
-                                                        span: "24"
+                                                        size: 'default',
+                                                        layout: 'column',
+                                                        span: '24'
                                                     }
                                                 ]
                                             }
@@ -1017,12 +1018,12 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                         relations: [
                                             {
                                                 relationViewId:
-                                                    "tree_and_form_tree",
-                                                cascadeMode: "REFRESH_AS_CHILD",
+                                                    'tree_and_form_tree',
+                                                cascadeMode: 'REFRESH_AS_CHILD',
                                                 params: [
                                                     {
-                                                        pid: "Id",
-                                                        cid: "_id"
+                                                        pid: 'Id',
+                                                        cid: '_id'
                                                     }
                                                 ]
                                             }

@@ -84,5 +84,16 @@ export class ApiService {
             CommonTools.uuID(10);
         return this.http.get<any>(urls);
     }
+
+    getLocalReportTemplate() {
+        const urls =
+            // environment.SERVER_URL +
+            SystemResource.localResource.url +
+            "/assets/report_template/" +
+            name +
+            ".json?rtc=" +
+            CommonTools.uuID(10);
+        return this.http.get<any>(urls);
+    }
     // endregion
 }

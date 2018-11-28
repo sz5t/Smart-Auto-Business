@@ -1,4 +1,5 @@
-import { CnComponentBase } from "./../../components/cn-component-base";
+import { SystemResource } from '@core/utility/system-resource';
+import { CnComponentBase } from './../../components/cn-component-base';
 import {
     Component,
     OnInit,
@@ -8,27 +9,28 @@ import {
     Input,
     Inject,
     OnDestroy
-} from "@angular/core";
-import G6 from "@antv/g6";
-import { ApiService } from "@core/utility/api-service";
-import { CacheService } from "@delon/cache";
+} from '@angular/core';
+import G6 from '@antv/g6';
+import { ApiService } from '@core/utility/api-service';
+import { CacheService } from '@delon/cache';
 import {
     BSN_COMPONENT_MODES,
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
     BSN_COMPONENT_CASCADE_MODES
-} from "@core/relative-Service/BsnTableStatus";
-import { Observable, Observer } from "rxjs";
-import { CommonTools } from "@core/utility/common-tools";
-import { initDomAdapter } from "@angular/platform-browser/src/browser";
-import { AdNumberToChineseModule } from "@delon/abc";
+} from '@core/relative-Service/BsnTableStatus';
+import { Observable, Observer } from 'rxjs';
+import { CommonTools } from '@core/utility/common-tools';
+import { initDomAdapter } from '@angular/platform-browser/src/browser';
+import { AdNumberToChineseModule } from '@delon/abc';
 @Component({
-    selector: "bsn-carousel",
+    // tslint:disable-next-line:component-selector
+    selector: 'bsn-carousel',
     template: `
   <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
-    <nz-carousel [nzEffect]="'scrollx'" >
+    <nz-carousel [nzEffect]="'fade'" [nzAutoPlay]="config.autoPlay">
     <div nz-carousel-content *ngFor="let img of imgList">
-        <img alt="{{img.alt}}" src="{{img.src}}"/></div>
+        <img alt="{{img.alt}}" src="{{serverPath + img.src}}"/></div>
     </nz-carousel>
   </nz-spin>
   
@@ -38,10 +40,10 @@ import { AdNumberToChineseModule } from "@delon/abc";
             [nz-carousel-content] {
                 text-align: center;
                 height: 400px;
-                min-height: 300px;
+                min-height: 400px;
                 line-height: 400px;
                 background: #364d79;
-                color: #fff;
+                color: #000;
                 overflow: hidden;
             }
         `
@@ -50,13 +52,14 @@ import { AdNumberToChineseModule } from "@delon/abc";
 export class BsnCarouselComponent extends CnComponentBase
     implements OnInit, AfterViewInit, OnDestroy {
     @Input()
-    config;
+    public config;
     @Input()
-    initData;
-    isLoading = true;
-    imgList = [];
-    _statusSubscription;
-    _cascadeSubscription;
+    public initData;
+    public isLoading = true;
+    public imgList = [];
+    public _statusSubscription;
+    public _cascadeSubscription;
+    public serverPath = SystemResource.appSystem.Server;
     constructor(
         private _apiService: ApiService,
         private _cacheService: CacheService,
@@ -70,43 +73,47 @@ export class BsnCarouselComponent extends CnComponentBase
         super();
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         if (this.initData) {
             this.initValue = this.initValue;
         }
         this.resolverRelation();
     }
 
-    async load() {
-        const response = await this.get();
-        if (response.isSuccess) {
-            // 构建数据源
-            response.data.forEach(d => {
-                const imgItem = {};
-                this.config.dataMapping.forEach(element => {
-                    imgItem[d["name"]] = element[d["field"]];
+    public load() {
+        this.imgList = [];
+        this.get().then(response => {
+            if (response.isSuccess) {
+                // 构建数据源
+                response.data.forEach(d => {
+                    const imgItem = {};
+                    this.config.dataMapping.forEach(element => {
+                        imgItem[element['name']] = d[element['field']];                    
+                    });
                     this.imgList.push(imgItem);
                 });
-            });
-            this.isLoading = false;
-        }
-    }
-
-    async get() {
-        return this._apiService
-            .get(
-                this.config.ajaxConfig.url,
-                CommonTools.parametersResolver({
-                    params: this.config.ajaxConfig.params,
-                    tempValue: this.tempValue,
-                    initValue: this.initValue,
-                    cacheValue: this._cacheService
+                setTimeout(() => {
+                    this.isLoading = false;
                 })
-            )
-            .toPromise();
+                
+            }
+        });
+        
     }
 
-    resolverRelation() {
+    public async get() {
+        const url = this.config.ajaxConfig.url;
+        const params = CommonTools.parametersResolver({
+            params: this.config.ajaxConfig.params,
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            cacheValue: this._cacheService
+        }); 
+        return this._apiService
+            .get(url, params).toPromise();
+    }
+
+    public resolverRelation() {
         if (
             this.config.componentType &&
             this.config.componentType.child === true
@@ -138,8 +145,8 @@ export class BsnCarouselComponent extends CnComponentBase
                                         if (!this.tempValue) {
                                             this.tempValue = {};
                                         }
-                                        this.tempValue[param["cid"]] =
-                                            option.data[param["pid"]];
+                                        this.tempValue[param['cid']] =
+                                            option.data[param['pid']];
                                     });
                                 }
                                 // 匹配及联模式
@@ -159,11 +166,14 @@ export class BsnCarouselComponent extends CnComponentBase
         }
     }
 
-    ngAfterViewInit() {
-        this.load();
+    public ngAfterViewInit() {
+        if (this.config.componentType.owner) {
+            this.load();
+        }
+        
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         if (this._statusSubscription) {
             this._statusSubscription.unsubscribe();
         }

@@ -1,3 +1,5 @@
+import { ApiService } from './../../../core/utility/api-service';
+import { APIResource } from '@core/utility/api-resource';
 import { ElementRef, AfterViewInit } from '@angular/core';
 import {
     Component,
@@ -6,13 +8,14 @@ import {
     ViewChild
 } from '@angular/core';
 import { DataService } from 'app/model/app-data.service';
+import { CnComponentBase } from '@shared/components/cn-component-base';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'bsn-report',
     templateUrl: './bsn-report.component.html',
     styles: [``]
 })
-export class BsnReportComponent implements OnInit, AfterViewInit {
+export class BsnReportComponent extends CnComponentBase implements OnInit, AfterViewInit {
     @Input()
     public config;
     
@@ -27,14 +30,14 @@ export class BsnReportComponent implements OnInit, AfterViewInit {
     private reportView: ElementRef;
     private reportObject;
 
-    private _lines = ["Computers", "Washers", "Stoves"];
-    private _colors = ["Red", "Green", "Blue", "White"];
-    private _ratings = ["Terrible", "Bad", "Average", "Good", "Great", "Epic"];
+    private _lines = ['Computers', 'Washers', 'Stoves'];
+    private _colors = ['Red', 'Green', 'Blue', 'White'];
+    private _ratings = ['Terrible', 'Bad', 'Average', 'Good', 'Great', 'Epic'];
     constructor(
-        private _appData: DataService,
+        private _api: ApiService
     ) {
-
-        this.data = _appData.getAirpotsData();
+        super();
+        this.apiResource = _api;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
     }
 
     public ngOnInit() {
@@ -42,9 +45,15 @@ export class BsnReportComponent implements OnInit, AfterViewInit {
     }
 
     public ngAfterViewInit() {
+        
         this.reportObject = new GC.Spread.Sheets.Workbook(this.reportView.nativeElement, {sheetCount: 2});
         this.initSpread(this.reportObject);
     }
+
+    private async getReportTemplate() {
+        this.apiResource.getLocalReportTemplate('demo.ssjson').toPromise();
+    }
+
 
     private getProducts(count) {
         const dataList = [];
@@ -76,23 +85,23 @@ export class BsnReportComponent implements OnInit, AfterViewInit {
         const products = this.getProducts(100);
 
         const sheet = spread.getSheet(0);
-        sheet.name('Default binding');
+        sheet.name('默认绑定');
         sheet.setDataSource(products);
 
         const sheet2 = spread.getSheet(1);
-        sheet2.name('Custom binding');
+        sheet2.name('自定义绑定');
         sheet2.autoGenerateColumns = false;
         sheet2.setDataSource(products);
         const colInfos = [
-            { name: 'id', displayName: 'ID' },
-            { name: 'name', displayName: 'Name', size: 100 },
-            { name: 'line', displayName: 'Line', size: 80 },
-            { name: 'color', displayName: 'Color' },
-            { name: 'price', displayName: 'Price', formatter: '0.00', size: 80 },
-            { name: 'cost', displayName: 'Cost', formatter: '0.00', size: 80 },
-            { name: 'weight', displayName: 'Weight', formatter: '0.00', size: 80 },
-            { name: 'discontinued', displayName: 'Discontinued', cellType: new GC.Spread.Sheets.CellTypes.CheckBox(), size: 100 },
-            { name: 'rating', displayName: 'Rating' }
+            { name: 'id', displayName: '编号' },
+            { name: 'name', displayName: '名称', size: 100 },
+            { name: 'line', displayName: '线', size: 80 },
+            { name: 'color', displayName: '颜色' },
+            { name: 'price', displayName: '价格', formatter: '0.00', size: 80 },
+            { name: 'cost', displayName: '话费', formatter: '0.00', size: 80 },
+            { name: 'weight', displayName: '重量', formatter: '0.00', size: 80 },
+            { name: 'discontinued', displayName: '折扣', cellType: new GC.Spread.Sheets.CellTypes.CheckBox(), size: 100 },
+            { name: 'rating', displayName: '评价' }
         ];
         sheet2.bindColumns(colInfos);
 
