@@ -32,7 +32,7 @@
                                                                 <span *ngIf="!editCache[item.key].edit">
                                                                         {{item[col.field]}}
                                                                 </span>
-                                                                <ng-container [bsnData]="tempParameters" [rowData]="item" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                                                                <ng-container [bsnData]="tempValue" [rowData]="item" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
                                                                         CnGridEditorDirective *ngIf="editCache[item.key].edit" [config]="col.editor.options" [value]="{key:item.key,name:col.editor.field,data:editCache[item.key].data[col.editor.field]}"
                                                                         [changeConfig]="changeConfig_new.hasOwnProperty(item.key) ? changeConfig_new[item.key][col.editor.field]:''"
                                                                         (updateValue)="valueChange($event)">
@@ -48,7 +48,7 @@
                                                                 <div *ngIf="!editCache[item.key].edit">
                                                                         <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'']">{{editCache[item.key].data[col.field]}}</span>
                                                                 </div>
-                                                                <ng-container [bsnData]="tempParameters" [rowData]="item" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                                                                <ng-container [bsnData]="tempValue" [rowData]="item" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
                                                                         CnGridEditorDirective *ngIf="editCache[item.key].edit" [config]="col.editor.options" [value]="{key:item.key,name:col.editor.field,data:editCache[item.key].data[col.editor.field]}"
                                                                         [changeConfig]="changeConfig_new.hasOwnProperty(item.key) ? changeConfig_new[item.key][col.editor.field]:''"
                                                                         (updateValue)="valueChange($event)">

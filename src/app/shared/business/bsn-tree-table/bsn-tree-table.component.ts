@@ -46,26 +46,26 @@ const component: { [type: string]: Type<any> } = {
 export class BsnTreeTableComponent extends GridBase
     implements OnInit, AfterViewInit, OnDestroy {
     @Input()
-    config;
+    public config;
     @Input()
     permissions = [];
     @Input()
-    initData;
+    public initData;
     @Input()
-    casadeData; // 级联配置 liu 20181023
+    public casadeData; // 级联配置 liu 20181023
     @Input()
-    value;
+    public value;
     @Input()
-    bsnData;
+    public bsnData;
     //  分页默认参数
-    loading = false;
-    total = 1;
+    public loading = false;
+    public total = 1;
 
     //  表格操作
-    allChecked = false;
-    indeterminate = false;
-    is_Search;
-    search_Row;
+    public allChecked = false;
+    public indeterminate = false;
+    public is_Search;
+    public search_Row;
     public changeConfig_new = {};
     // 级联
     public cascadeList = {};
@@ -76,33 +76,33 @@ export class BsnTreeTableComponent extends GridBase
     /**
      * 展开数据行
      */
-    expandDataCache = {};
+    public expandDataCache = {};
     /**
      * 待编辑的行集合
      */
     // dataList = [];
 
-    editCache = {};
+    public editCache = {};
     // editCache;
-    treeData = [];
-    treeDataOrigin = [];
+    public treeData = [];
+    public treeDataOrigin = [];
 
     //  业务对象
-    _selectRow = {};
-    _searchParameters = {};
-    rowContent = {};
-    dataSet = {};
-    checkedCount = 0;
+    public _selectRow = {};
+    public _searchParameters = {};
+    public rowContent = {};
+    public dataSet = {};
+    public checkedCount = 0;
 
-    _statusSubscription: Subscription;
-    _cascadeSubscription: Subscription;
+    public _statusSubscription: Subscription;
+    public _cascadeSubscription: Subscription;
 
     // 下拉属性 liu
-    is_Selectgrid = true;
-    cascadeValue = {}; // 级联数据
-    selectGridValueName;
+    public is_Selectgrid = true;
+    public cascadeValue = {}; // 级联数据
+    public selectGridValueName;
 
-    beforeOperation;
+    public beforeOperation;
     constructor(
         private _api: ApiService,
         private _msg: NzMessageService,
@@ -131,7 +131,7 @@ export class BsnTreeTableComponent extends GridBase
     }
 
     // 生命周期事件
-    ngOnInit() {
+    public ngOnInit() {
         this.cfg = this.config;
         this.permission = this.permissions;
         if (this.config.select) {
@@ -225,7 +225,7 @@ export class BsnTreeTableComponent extends GridBase
             this.load();
         }
     }
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         // 初始化前置条件验证对象
         this.beforeOperation = new BeforeOperation({
             config: this.config,
@@ -239,7 +239,7 @@ export class BsnTreeTableComponent extends GridBase
             apiResource: this.apiResource
         });
     }
-    ngOnDestroy() {
+    public ngOnDestroy() {
         if (this._statusSubscription) {
             this._statusSubscription.unsubscribe();
         }
@@ -469,7 +469,7 @@ export class BsnTreeTableComponent extends GridBase
         })();
     }
     // 获取 文本值，当前选中行数据
-    async loadByselect(
+    public async loadByselect(
         ajaxConfig,
         componentValue?,
         selecttempValue?,
@@ -543,7 +543,7 @@ export class BsnTreeTableComponent extends GridBase
     /**
      * 创建新行数据
      */
-    _createNewRowData(parentId?) {
+    public _createNewRowData(parentId?) {
         const newRow = { ...this.rowContent };
         const fieldIdentity = CommonTools.uuID(6);
         newRow["key"] = fieldIdentity;
@@ -617,7 +617,7 @@ export class BsnTreeTableComponent extends GridBase
 
     // 定位行选中 liu 20181024
 
-    setSelectRow() {
+    public setSelectRow() {
         // console.log('setSelectRow', this.value);
 
         // 遍历
@@ -843,7 +843,7 @@ export class BsnTreeTableComponent extends GridBase
     }
     /** --------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-    searchData(reset: boolean = false) {
+    public searchData(reset: boolean = false) {
         if (reset) {
             this.pageIndex = 1;
         }
@@ -872,7 +872,7 @@ export class BsnTreeTableComponent extends GridBase
     }
 
     //  格式化单元格
-    setCellFont(value, format) {
+    public setCellFont(value, format) {
         let fontColor = "";
         if (format) {
             format.map(color => {
@@ -885,7 +885,7 @@ export class BsnTreeTableComponent extends GridBase
         return fontColor;
     }
 
-    searchRow(option) {
+    public searchRow(option) {
         if (option["type"] === "addSearchRow") {
             this.addSearchRow();
         } else if (option["type"] === "cancelSearchRow") {
@@ -893,7 +893,7 @@ export class BsnTreeTableComponent extends GridBase
         }
     }
 
-    addSearchRow() {
+    public addSearchRow() {
         let isSearch = true;
         for (let i = 0; i < this.dataList.length; i++) {
             if (this.dataList[i]["row_status"] === "search") {
@@ -924,7 +924,7 @@ export class BsnTreeTableComponent extends GridBase
     }
 
     // 生成查询行
-    createSearchRow() {
+    public createSearchRow() {
         if (this.is_Search) {
             this.dataList = [this.search_Row, ...this.dataList];
             // this.dataList.push(this.rowContent);
@@ -950,7 +950,7 @@ export class BsnTreeTableComponent extends GridBase
     }
 
     // 取消查询
-    cancelSearchRow() {
+    public cancelSearchRow() {
         for (let i = 0, len = this.dataList.length; i < len; i++) {
             if (this.dataList[i]["row_status"] === "search") {
                 delete this.editCache[this.dataList[i].key];
@@ -981,7 +981,7 @@ export class BsnTreeTableComponent extends GridBase
     }
 
     //  表格操作
-    _getAllItemList() {
+    public _getAllItemList() {
         let list = [];
         if (this.expandDataCache) {
             for (const r in this.expandDataCache) {
@@ -991,7 +991,7 @@ export class BsnTreeTableComponent extends GridBase
         return list;
     }
 
-    checkAll(value) {
+    public checkAll(value) {
         for (const r in this.expandDataCache) {
             this.expandDataCache[r].map(data => {
                 if (!data["disabled"]) {
@@ -1003,7 +1003,7 @@ export class BsnTreeTableComponent extends GridBase
         this.refChecked();
     }
 
-    refChecked() {
+    public refChecked() {
         let allCount = 0;
         // parent count
         this.checkedCount = 0; // = this.dataList.filter(w => w.checked).length;
@@ -1019,7 +1019,7 @@ export class BsnTreeTableComponent extends GridBase
         this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
     }
 
-    async saveRow() {
+    public async saveRow() {
         const addRows = [];
         const updateRows = [];
         let isSuccess = false;
@@ -1043,7 +1043,7 @@ export class BsnTreeTableComponent extends GridBase
         return isSuccess;
     }
 
-    async _execute(rowsData, method, postConfig) {
+    public async _execute(rowsData, method, postConfig) {
         let isSuccess = false;
         if (postConfig) {
             for (let i = 0, len = postConfig.length; i < len; i++) {
@@ -1094,7 +1094,7 @@ export class BsnTreeTableComponent extends GridBase
         return isSuccess;
     }
 
-    async executeSave(rowsData, method) {
+    public async executeSave(rowsData, method) {
         // Todo: 优化配置
         let result;
         this.config.toolbar.forEach(bar => {
@@ -1126,7 +1126,7 @@ export class BsnTreeTableComponent extends GridBase
         return result;
     }
 
-    async executeDelete(ids) {
+    public async executeDelete(ids) {
         let result;
         if (ids && ids.length > 0) {
             this.config.toolbar.forEach(bar => {
@@ -1160,7 +1160,7 @@ export class BsnTreeTableComponent extends GridBase
         return result;
     }
 
-    async _executeDelete(deleteConfig, ids) {
+    public async _executeDelete(deleteConfig, ids) {
         let isSuccess;
         if (deleteConfig) {
             for (let i = 0, len = deleteConfig.length; i < len; i++) {
@@ -1194,7 +1194,7 @@ export class BsnTreeTableComponent extends GridBase
         return isSuccess;
     }
 
-    executeSelectedRow(option) {
+    public executeSelectedRow(option) {
         if (!this._selectRow) {
             this.message.create("info", "请选选择要执行的数据");
             return false;
@@ -1214,7 +1214,7 @@ export class BsnTreeTableComponent extends GridBase
         });
     }
 
-    executeCheckedRow(option) {
+    public executeCheckedRow(option) {
         if (this.dataList.filter(item => item.checked === true).length <= 0) {
             this.message.create("info", "请选择要执行的数据");
             return false;
@@ -1253,7 +1253,7 @@ export class BsnTreeTableComponent extends GridBase
         });
     }
 
-    async executeSelectedAction(selectedRow, option) {
+    public async executeSelectedAction(selectedRow, option) {
         let isSuccess;
         if (selectedRow) {
             this.config.toolbar.forEach(bar => {
@@ -1298,7 +1298,7 @@ export class BsnTreeTableComponent extends GridBase
         return isSuccess;
     }
 
-    async _executeSelectedAction(selectedRow, option, cfg) {
+    public async _executeSelectedAction(selectedRow, option, cfg) {
         let isSuccess;
         if (cfg) {
             for (let i = 0, len = cfg.length; i < len; i++) {
@@ -1328,7 +1328,7 @@ export class BsnTreeTableComponent extends GridBase
         }
     }
 
-    async executeCheckedAction(items, option) {
+    public async executeCheckedAction(items, option) {
         let isSuccess;
         if (items && items.length > 0) {
             this.config.toolbar.forEach(bar => {
@@ -1373,7 +1373,7 @@ export class BsnTreeTableComponent extends GridBase
         return isSuccess;
     }
 
-    async _executeCheckedAction(items, option, cfg) {
+    public async _executeCheckedAction(items, option, cfg) {
         let isSuccess;
         if (cfg) {
             for (let i = 0, len = cfg.length; i < len; i++) {
@@ -1410,7 +1410,7 @@ export class BsnTreeTableComponent extends GridBase
         }
     }
 
-    deleteRow() {
+    public deleteRow() {
         this.modalService.confirm({
             nzTitle: "确认删除选中的记录？",
             nzContent: "",
@@ -1517,7 +1517,7 @@ export class BsnTreeTableComponent extends GridBase
     }
 
     // 将选中行改变为编辑状态
-    updateRow() {
+    public updateRow() {
         this.dataList.forEach(item => {
             if (item.checked) {
                 if (item["row_status"] && item["row_status"] === "adding") {
@@ -1557,7 +1557,7 @@ export class BsnTreeTableComponent extends GridBase
         this.editCache = this.editCache;
     }
 
-    cancelRow() {
+    public cancelRow() {
         // debugger;
         // for (let i = 0, len = this.dataList.length; i < len; i++) {
         //     if (this.dataList[i].checked) {
@@ -1669,7 +1669,7 @@ export class BsnTreeTableComponent extends GridBase
         this.editCache = this.editCache;
     }
 
-    addRow() {
+    public addRow() {
         const rowContentNew = { ...this.rowContent };
         const fieldIdentity = CommonTools.uuID(6);
         rowContentNew["key"] = fieldIdentity;
@@ -1696,7 +1696,7 @@ export class BsnTreeTableComponent extends GridBase
         return true;
     }
 
-    addChildRow() {
+    public addChildRow() {
         const rowContentNew = { ...this.rowContent };
         const fieldIdentity = CommonTools.uuID(6);
         let parentId;
@@ -1861,7 +1861,7 @@ export class BsnTreeTableComponent extends GridBase
 
     private _startChildRowaddRecurse_2() { }
 
-    valueChange(data) {
+    public valueChange(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
         this.editCache[data.key].data[data.name] = data.data;
         this.editCache[data.key].data[data.name] = JSON.parse(
@@ -1936,19 +1936,13 @@ export class BsnTreeTableComponent extends GridBase
                                         ][ajaxItem["name"]] =
                                             data[ajaxItem["valueName"]];
                                     }
-                                    if (
-                                        ajaxItem["type"] === "selectObjectValue"
-                                    ) {
+                                    if (ajaxItem["type"] === "selectObjectValue") {
                                         // 选中行对象数据
                                         if (data.dataItem) {
-                                            this.changeConfig_new[rowCasade][
-                                                key
-                                            ]["cascadeValue"][
-                                                ajaxItem["name"]
-                                            ] =
-                                                data.dataItem[
-                                                ajaxItem["valueName"]
-                                                ];
+                                            if (data.dataItem.hasOwnProperty(ajaxItem["valueName"])) {
+                                                this.changeConfig_new[rowCasade][key]["cascadeValue"][ajaxItem["name"]] =
+                                                    data.dataItem[ajaxItem["valueName"]];
+                                            }
                                         }
                                     }
 
@@ -2253,6 +2247,7 @@ export class BsnTreeTableComponent extends GridBase
             // console.log('级联结果数据集', this.changeConfig_new);
         }
 
+        // console.log('*********', this.changeConfig_new[rowCasade]);
     }
     public caseLoad() {
         this.cascadeList = {};
@@ -2408,7 +2403,7 @@ export class BsnTreeTableComponent extends GridBase
         return isEditState;
     }
 
-    expandChange(array: any[], data: any, $event: boolean) {
+    public expandChange(array: any[], data: any, $event: boolean) {
         if ($event === false) {
             if (data.children) {
                 data.children.forEach(d => {
@@ -2455,7 +2450,7 @@ export class BsnTreeTableComponent extends GridBase
         // console.log('最终展示有关的数据', this.expandDataCache);
     }
 
-    convertTreeToList(root: object): any[] {
+    public convertTreeToList(root: object): any[] {
         const stack = [];
         const array = [];
         const hashMap = {};
@@ -2479,14 +2474,14 @@ export class BsnTreeTableComponent extends GridBase
         return array;
     }
 
-    visitNode(node: any, hashMap: object, array: any[]): void {
+    public visitNode(node: any, hashMap: object, array: any[]): void {
         if (!hashMap[node.key]) {
             hashMap[node.key] = true;
             array.push(node);
         }
     }
 
-    dialog(option) {
+    public dialog(option) {
         if (this.config.dialog && this.config.dialog.length > 0) {
             const index = this.config.dialog.findIndex(
                 item => item.name === option.actionName
@@ -2495,7 +2490,7 @@ export class BsnTreeTableComponent extends GridBase
         }
     }
 
-    windowDialog(option) {
+    public windowDialog(option) {
         if (this.config.windowDialog && this.config.windowDialog.length > 0) {
             const index = this.config.windowDialog.findIndex(
                 item => item.name === option.actionName
@@ -2504,7 +2499,7 @@ export class BsnTreeTableComponent extends GridBase
         }
     }
 
-    formDialog(option) {
+    public formDialog(option) {
         if (this.config.formDialog && this.config.formDialog.length > 0) {
             const index = this.config.formDialog.findIndex(
                 item => item.name === option.actionName
@@ -2516,7 +2511,7 @@ export class BsnTreeTableComponent extends GridBase
      * 弹出批量处理表单
      * @param option
      */
-    formBatchDialog(option) {
+    public formBatchDialog(option) {
         if (this.config.formDialog && this.config.formDialog.length > 0) {
             const index = this.config.formDialog.findIndex(
                 item => item.name === option.actionName
@@ -2528,7 +2523,7 @@ export class BsnTreeTableComponent extends GridBase
      * 弹出上传对话
      * @param option
      */
-    uploadDialog(option) {
+    public uploadDialog(option) {
         if (this.config.uploadDialog && this.config.uploadDialog.length > 0) {
             const index = this.config.uploadDialog.findIndex(
                 item => item.name === option.actionName
