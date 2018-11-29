@@ -44,22 +44,77 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
 
     }
 
-    public ngAfterViewInit() {
-        
-        this.reportObject = new GC.Spread.Sheets.Workbook(this.reportView.nativeElement, {sheetCount: 2});
-        this.initSpread(this.reportObject);
+    public async ngAfterViewInit() {
+        this.buildCompositeTableReport();
+        // this.buildTableReport();
     }
 
     private async getReportTemplate() {
-        this.apiResource.getLocalReportTemplate('demo.ssjson').toPromise();
+        return this.apiResource.getLocalReportTemplate('demo1').toPromise();
     }
 
+
+    private async getReportData() {
+        
+        return this.apiResource.get();
+    }
+
+
+    private async buildTableReport() {
+        this.reportObject = new GC.Spread.Sheets.Workbook(this.reportView.nativeElement, {sheetCount: 2});
+        this.reportObject.suspendPaint();
+        const templateData = await this.getReportTemplate();
+        this.reportObject.fromJSON(templateData);
+        const sheet = this.reportObject.getSheet(0);     
+        const data = this.getProducts(100);   
+        console.log(data);
+        sheet.setDataSource(data);
+        this.reportObject.resumePaint();
+    }
+
+    private async buildCompositeTableReport() {
+        this.reportObject = new GC.Spread.Sheets.Workbook(this.reportView.nativeElement, {sheetCount: 2});
+        this.reportObject.suspendPaint();
+        const templateData = await this.getReportTemplate();
+        this.reportObject.fromJSON(templateData);
+
+        const data = this.getProductGroup();
+        const sheet = this.reportObject.getSheet(0);
+        sheet.autoGenerateColumns = false;        
+        
+        // sheet.tables.findByName('products').bindingPath('Product');
+        const source = new GC.Spread.Sheets.Bindings.CellBindingSource(data);
+        sheet.setDataSource(source);
+        // sheet.bindColumns([
+        //     { name: 'id', displayName: '编号' },
+        //     { name: 'name', displayName: '名称', size: 100 },
+        //     { name: 'color', displayName: '颜色' },
+        //     // { name: 'price', displayName: '价格', formatter: '0.00', size: 80 },
+        //     { name: 'cost', displayName: '话费', formatter: '0.00', size: 80 },
+        //     { name: 'weight', displayName: '重量', formatter: '0.00', size: 80 },
+        //     { name: 'rating', displayName: '评价' }
+        // ]);
+        this.reportObject.resumePaint();
+    }
+
+    private getProductGroup() {
+        const group = new ProductGroup(
+            '鸡腿',
+            '第一组',
+            '生产任务',
+            '001',
+            '第一阶段',
+            '产品',
+            this.getProducts(10)
+        );
+        return group;
+    }
 
     private getProducts(count) {
         const dataList = [];
         for (let i = 1; i <= count; i++) {
             // tslint:disable-next-line:radix
-            const line = this._lines[parseInt(Math.random() * 3 + '')];
+            const line = this._lines[parseInt(Math.random() * 3 + '')];                                                             
             dataList[i - 1] = new Product(i,
                     line,
                     // tslint:disable-next-line:radix
@@ -112,7 +167,7 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
 }
 
 export class Product {
-    private id
+    private id;
     private line;
     private color;
     private name;
@@ -131,5 +186,25 @@ export class Product {
         this.weight = weight;
         this.discontinued = discontinued;
         this.rating = rating;
+       
+    }
+}
+
+export class ProductGroup {
+    private name;
+    private group;
+    private taskId;
+    private productId;
+    private stage;
+    private type;
+    public Product;
+    constructor(name, group, taskId, productId, stage, type, productList) {
+        this.name = name;
+        this.group = group;
+        this.taskId = taskId;
+        this.productId = productId;
+        this.stage = stage;
+        this.type = type;
+        this.Product = productList;
     }
 }

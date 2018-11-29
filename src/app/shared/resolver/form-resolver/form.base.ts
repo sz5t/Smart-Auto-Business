@@ -466,6 +466,17 @@ export class CnFormBase extends CnComponentBase {
         if (Array.isArray(enterAjaxConfig) && enterAjaxConfig[0]) {
             this.getAjaxConfig(enterAjaxConfig[0], ajaxConfig, callback);
         } else {
+            let msg = '';
+            switch (formState) {
+                case 'text':
+                msg = '预览状态下无法执行此操作!'
+                break;
+                case 'post':
+                msg = '';
+                break;
+                case 'put': 
+                break;   
+            }
             this.baseMessage.warning('配置异常,无法执行请求!');
         }
     }

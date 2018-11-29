@@ -1,4 +1,4 @@
-import { CnFormInputComponent } from "./../../components/cn-form-input/cn-form-input.component";
+import { CnFormInputComponent } from './../../components/cn-form-input/cn-form-input.component';
 import {
     ComponentFactoryResolver,
     ComponentRef,
@@ -11,65 +11,66 @@ import {
     Output,
     EventEmitter,
     OnDestroy
-} from "@angular/core";
-import { CnFormLabelComponent } from "@shared/components/cn-form-label/cn-form-label.component";
-import { CnFormCheckboxComponent } from "@shared/components/cn-form-checkbox/cn-form-checkbox.component";
-import { CnFormHiddenComponent } from "@shared/components/cn-form-hidden/cn-form-hidden.component";
+} from '@angular/core';
+import { CnFormLabelComponent } from '@shared/components/cn-form-label/cn-form-label.component';
+import { CnFormCheckboxComponent } from '@shared/components/cn-form-checkbox/cn-form-checkbox.component';
+import { CnFormHiddenComponent } from '@shared/components/cn-form-hidden/cn-form-hidden.component';
 const components: { [type: string]: Type<any> } = {
     label: CnFormLabelComponent,
     checkbox: CnFormCheckboxComponent,
     hidden: CnFormHiddenComponent
 };
 @Directive({
-    selector: "[cnFormLabelDirective]"
+    // tslint:disable-next-line:directive-selector
+    selector: '[cnFormLabelDirective]'
 })
 export class CnFormLabelDirective implements OnInit, OnChanges, OnDestroy {
     @Input()
-    config;
+    public config;
     @Input()
-    formGroup;
+    public formGroup;
     @Input()
-    changeConfig;
+    public changeConfig;
     @Input()
-    tempValue;
+    public tempValue;
     @Input()
-    value;
+    public value;
     @Output()
-    updateValue = new EventEmitter();
-    component: ComponentRef<any>;
+    public updateValue = new EventEmitter();
+    public component: ComponentRef<any>;
 
     constructor(
         private resolver: ComponentFactoryResolver,
         private container: ViewContainerRef
     ) {}
 
-    ngOnChanges() {
+    public ngOnChanges() {
         if (this.component) {
             this.component.instance.config = this.config;
             this.component.instance.formGroup = this.formGroup;
         }
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         let comp;
-        if (this.config.type === "checkbox") {
+        if (this.config.type === 'checkbox') {
             comp = this.resolver.resolveComponentFactory<any>(
-                components["checkbox"]
+                components['checkbox']
             );
-        } else if (this.config.type === "hidden") {
+        } else if (this.config.type === 'hidden') {
             comp = this.resolver.resolveComponentFactory<any>(
-                components["hidden"]
+                components['hidden']
             );
         } else {
             comp = this.resolver.resolveComponentFactory<any>(
-                components["label"]
+                components['label']
             );
         }
         this.component = this.container.createComponent(comp);
         this.component.instance.config = this.config;
         this.component.instance.formGroup = this.formGroup;
     }
-    ngOnDestroy() {
+    public ngOnDestroy() {
         this.component.destroy();
     }
 }

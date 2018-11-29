@@ -1,11 +1,11 @@
 import { CnFormBase } from './form.base';
-import { BeforeOperation } from "./../../business/before-operation.base";
-import { LayoutResolverComponent } from "./../layout-resolver/layout-resolver.component";
-import { CnFormWindowResolverComponent } from "@shared/resolver/form-resolver/form-window-resolver.component";
-import { BsnUploadComponent } from "@shared/business/bsn-upload/bsn-upload.component";
-import { BSN_COMPONENT_MODES } from "@core/relative-Service/BsnTableStatus";
-import { CacheService } from "@delon/cache";
-import { CommonTools } from "./../../../core/utility/common-tools";
+import { BeforeOperation } from './../../business/before-operation.base';
+import { LayoutResolverComponent } from './../layout-resolver/layout-resolver.component';
+import { CnFormWindowResolverComponent } from '@shared/resolver/form-resolver/form-window-resolver.component';
+import { BsnUploadComponent } from '@shared/business/bsn-upload/bsn-upload.component';
+import { BSN_COMPONENT_MODES } from '@core/relative-Service/BsnTableStatus';
+import { CacheService } from '@delon/cache';
+import { CommonTools } from './../../../core/utility/common-tools';
 import {
     Component,
     EventEmitter,
@@ -16,52 +16,55 @@ import {
     Inject,
     OnDestroy,
     AfterViewInit
-} from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { ApiService } from "@core/utility/api-service";
-import { NzMessageService, NzModalService } from "ng-zorro-antd";
+} from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ApiService } from '@core/utility/api-service';
+import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import {
     RelativeService,
     RelativeResolver
-} from "@core/relative-Service/relative-service";
-import { CnComponentBase } from "@shared/components/cn-component-base";
+} from '@core/relative-Service/relative-service';
+import { CnComponentBase } from '@shared/components/cn-component-base';
 import {
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
     BSN_COMPONENT_CASCADE_MODES,
     BSN_FORM_STATUS,
     BSN_OUTPOUT_PARAMETER_TYPE
-} from "@core/relative-Service/BsnTableStatus";
-import { Observable } from "rxjs";
-import { Observer } from "rxjs";
+} from '@core/relative-Service/BsnTableStatus';
+import { Observable } from 'rxjs';
+import { Observer } from 'rxjs';
 
 @Component({
-    selector: "cn-form-resolver,[cn-form-resolver]",
-    templateUrl: "./form-resolver.component.html",
+    // tslint:disable-next-line:component-selector
+    selector: 'cn-form-resolver,[cn-form-resolver]',
+    templateUrl: './form-resolver.component.html',
     styles: [``]
 })
 export class FormResolverComponent extends CnFormBase
     implements OnInit, OnChanges, OnDestroy, AfterViewInit {
     @Input()
-    config;
+    public config;
     @Input()
-    permissions = [];
+    public permissions = [];
     @Input()
-    dataList;
+    public dataList;
     @Input()
-    initData;
+    public initData;
     @Input()
-    formTitle;
+    public formTitle;
     @Input()
-    formValue;
+    public formValue;
     @Input()
-    editable;
+    public editable;
     @Output()
-    submit: EventEmitter<any> = new EventEmitter<any>();
-    _relativeResolver;
-    isSpinning = false;
-    changeConfig = [];
-    beforeOperation: BeforeOperation;
+    public submit: EventEmitter<any> = new EventEmitter<any>();
+    public _relativeResolver;
+    public isSpinning = false;
+    public changeConfig = [];
+    public beforeOperation: BeforeOperation;
+    public change_config = {};
+    public cascadeList = {};
     constructor(
         private builder: FormBuilder,
         private apiService: ApiService,
@@ -83,7 +86,7 @@ export class FormResolverComponent extends CnFormBase
         this.apiResource = this.apiService;
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         if (this.config.ajaxConfig) {
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
@@ -104,16 +107,16 @@ export class FormResolverComponent extends CnFormBase
             modal: this.modalService,
             tempValue: this.tempValue,
             initValue: this.initValue,
-            cacheValue: this.cacheValue.get("userInfo").value
-                ? this.cacheValue.get("userInfo").value
+            cacheValue: this.cacheValue.get('userInfo').value
+                ? this.cacheValue.get('userInfo').value
                 : {},
             apiResource: this.apiResource
         });
     }
 
     // region: 组件生命周期事件
-    change_config = {};
-    ngOnInit() {
+    
+    public ngOnInit() {
 
         this.formState = this.initFormState();
         this.controls = this.initControls(this.config.forms);
@@ -124,7 +127,7 @@ export class FormResolverComponent extends CnFormBase
                     formItem.controls.forEach(control => {
                         if (control) {
                             if (control.name === selectItem.name) {
-                                control["select"] = selectItem.config;
+                                control['select'] = selectItem.config;
                             }
                         }
                     });
@@ -149,11 +152,11 @@ export class FormResolverComponent extends CnFormBase
         this.caseLoad(); // liu 20180521 测试
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         this.unsubscribe();
     }
 
-    initFormState() {
+    public initFormState() {
         switch (this.config.editable) {
             case 'post':
                 return 'post';
@@ -194,14 +197,14 @@ export class FormResolverComponent extends CnFormBase
                             if (option.ajaxConfig) {
                                 this.saveForm_2(option.ajaxConfig);
                             } else {
-                                this.message.info("未配置任何操作!");
+                                this.message.info('未配置任何操作!');
                             }
                             break;
                         case BSN_COMPONENT_MODES.DELETE:
                             if (option.ajaxConfig) {
                                 this.modalService.confirm({
-                                    nzTitle: "确认删除当前数据？",
-                                    nzContent: "",
+                                    nzTitle: '确认删除当前数据？',
+                                    nzContent: '',
                                     nzOnOk: () => {
                                         this.delete(option.ajaxConfig);
                                     },
@@ -268,8 +271,8 @@ export class FormResolverComponent extends CnFormBase
                                         if (!this.tempValue) {
                                             this.tempValue = {};
                                         }
-                                        this.tempValue[param["cid"]] =
-                                            option.data[param["pid"]];
+                                        this.tempValue[param['cid']] =
+                                            option.data[param['pid']];
                                     });
                                 }
                                 // 匹配及联模式
@@ -295,7 +298,7 @@ export class FormResolverComponent extends CnFormBase
 
     // endregion
 
-    ngOnChanges() {
+    public ngOnChanges() {
         if (this.form) {
             const controls = Object.keys(this.form.controls);
             const configControls = this.controls.map(item => item.name);
@@ -320,7 +323,7 @@ export class FormResolverComponent extends CnFormBase
 
     // region: 数据处理
 
-    load() {
+    public load() {
         if (this.config.ajaxConfig &&
             (this.formState === BSN_FORM_STATUS.EDIT || this.formState === BSN_FORM_STATUS.TEXT)) {
             setTimeout(() => {
@@ -331,18 +334,17 @@ export class FormResolverComponent extends CnFormBase
             this.execute(url, 'getById', params).then(result => {
                 if (result.data) {
                     this.setFormValue(result.data);
-                    console.log('setFormValue:', result.data);
                     // 给主键赋值
                     if (this.config.keyId) {
-                        this.tempValue["_id"] =
+                        this.tempValue['_id'] =
                             result.data[this.config.keyId];
                     } else {
-                        if (result.data["Id"]) {
-                            this.tempValue["_id"] = result.data["Id"];
+                        if (result.data['Id']) {
+                            this.tempValue['_id'] = result.data['Id'];
                         }
                     }
                 } else {
-                    this.tempValue["_id"] && delete this.tempValue["_id"];
+                    this.tempValue['_id'] && delete this.tempValue['_id'];
                     this.form.reset();
                 }
             });
@@ -354,11 +356,11 @@ export class FormResolverComponent extends CnFormBase
     }
 
 
-    async saveForm_2(ajaxConfigs) {
+    public async saveForm_2(ajaxConfigs) {
         let result;
         const method = this.formState;
         if (method === BSN_FORM_STATUS.TEXT) {
-            this.message.warning("请在编辑数据后进行保存！");
+            this.message.warning('请在编辑数据后进行保存！');
             return false;
         } else {
             const index = ajaxConfigs.findIndex(
@@ -379,13 +381,13 @@ export class FormResolverComponent extends CnFormBase
         const params = this.buildParameter(postConfig.params);
         const res = await this.execute(url, postConfig.ajaxType, params);
         if (res.isSuccess) {
-            this.message.create("success", "操作成功");
+            this.message.create('success', '操作成功');
             this.formState = BSN_FORM_STATUS.EDIT;
             // this.load();
             // 发送消息 刷新其他界面
             this.sendCascadeMessage();
         } else {
-            this.baseMessage.create("error", res.message);
+            this.baseMessage.create('error', res.message);
             result = false;
         }
         return result;
@@ -400,19 +402,19 @@ export class FormResolverComponent extends CnFormBase
         const url = this.buildUrl(putConfig.url);
         const newValue = this.GetComponentValue();
         const params = this.buildParameter(putConfig.params);
-        if (params && !params["Id"]) {
-            this.message.warning("编辑数据的Id不存在，无法进行更新！");
+        if (params && !params['Id']) {
+            this.message.warning('编辑数据的Id不存在，无法进行更新！');
             return;
         } else {
             const res = await this.execute(url, putConfig.ajaxType, params);
             if (res.isSuccess) {
-                this.message.create("success", "保存成功");
+                this.message.create('success', '保存成功');
                 this.formState = BSN_FORM_STATUS.EDIT;
                 this.load();
                 // 发送消息 刷新其他界面
                 this.sendCascadeMessage();
             } else {
-                this.message.create("error", res.message);
+                this.message.create('error', res.message);
                 result = false;
             }
         }
@@ -430,8 +432,8 @@ export class FormResolverComponent extends CnFormBase
         for (let i = 0, len = deleteConfig.length; i < len; i++) {
             const url = this.buildUrl(deleteConfig[i].url);
             const params = this.buildParameter(deleteConfig[i].params);
-            if (params && !params["_ids"]) {
-                this.baseMessage.warning("删除数据的_ids不存在，无法进行删除！");
+            if (params && !params['_ids']) {
+                this.baseMessage.warning('删除数据的_ids不存在，无法进行删除！');
                 return;
             } else {
                 const res = await this.execute(
@@ -443,7 +445,7 @@ export class FormResolverComponent extends CnFormBase
             }
         }
         Promise.all(asyncResponse).then(res => {
-            this.baseMessage.create("success", "操作完成");
+            this.baseMessage.create('success', '操作完成');
             this.formState = this.initFormState();
             this.form.reset();
             this.sendCascadeMessage();
@@ -452,7 +454,7 @@ export class FormResolverComponent extends CnFormBase
         })
     }
 
-    sendCascadeMessage() {
+    public sendCascadeMessage() {
         // 发送消息 刷新其他界面
         if (
             this.config.componentType &&
@@ -470,7 +472,7 @@ export class FormResolverComponent extends CnFormBase
         }
     }
 
-    initParameters(data?) {
+    public initParameters(data?) {
         if (!this.tempValue) {
             this.tempValue = {};
         }
@@ -480,7 +482,7 @@ export class FormResolverComponent extends CnFormBase
         // console.log('初始化参数', this.tempValue);
     }
 
-    initParametersLoad(data?) {
+    public initParametersLoad(data?) {
         if (!this.tempValue) {
             this.tempValue = {};
         }
@@ -488,14 +490,14 @@ export class FormResolverComponent extends CnFormBase
             this.tempValue[d] = data[d];
         }
         this.load();
-        console.log("初始化参数并load 主子刷新", this.tempValue);
+        console.log('初始化参数并load 主子刷新', this.tempValue);
     }
 
     /**
      * 弹出上传对话
      * @param option
      */
-    uploadDialog(option) {
+    public uploadDialog(option) {
         if (this.config.uploadDialog && this.config.uploadDialog.length > 0) {
             const index = this.config.uploadDialog.findIndex(
                 item => item.name === option.actionName
@@ -511,13 +513,13 @@ export class FormResolverComponent extends CnFormBase
      */
     private openUploadDialog(dialog) {
         if (!this.value) {
-            this.message.warning("请选中一条需要添加附件的记录！");
+            this.message.warning('请选中一条需要添加附件的记录！');
             return false;
         }
         const footer = [];
         const obj = {
             _id: this.value[dialog.keyId],
-            _parentId: this.tempValue["_parentId"],
+            _parentId: this.tempValue['_parentId'],
             ...this.value,
             ...this.tempValue
         };
@@ -537,7 +539,7 @@ export class FormResolverComponent extends CnFormBase
      * 弹出窗体
      * @param option
      */
-    windowDialog(option) {
+    public windowDialog(option) {
         if (this.config.windowDialog && this.config.windowDialog.length > 0) {
             const index = this.config.windowDialog.findIndex(
                 item => item.name === option.actionName
@@ -550,7 +552,7 @@ export class FormResolverComponent extends CnFormBase
      * 弹出表单
      * @param option
      */
-    formDialog(option) {
+    public formDialog(option) {
         if (this.config.formDialog && this.config.formDialog.length > 0) {
             const index = this.config.formDialog.findIndex(
                 item => item.name === option.actionName
@@ -566,15 +568,15 @@ export class FormResolverComponent extends CnFormBase
      */
     private showForm(dialog) {
         let obj;
-        if (dialog.type === "add") {
-        } else if (dialog.type === "edit") {
+        if (dialog.type === 'add') {
+        } else if (dialog.type === 'edit') {
             if (!this.value) {
-                this.message.warning("请选中一条需要添加附件的记录！");
+                this.message.warning('请选中一条需要添加附件的记录！');
                 return false;
             }
         }
         obj = {
-            _id: this.value[dialog.keyId] ? this.value[dialog.keyId] : "",
+            _id: this.value[dialog.keyId] ? this.value[dialog.keyId] : '',
             // _parentId: this.tempValue['_parentId'] ? this.tempValue['_parentId'] : ''
             ...this.tempValue
         };
@@ -595,28 +597,30 @@ export class FormResolverComponent extends CnFormBase
         if (dialog.buttons) {
             dialog.buttons.forEach(btn => {
                 const button = {};
-                button["label"] = btn.text;
-                button["type"] = btn.type ? btn.type : "default";
-                button["onClick"] = componentInstance => {
-                    if (btn["name"] === "save") {
+                button['label'] = btn.text;
+                button['type'] = btn.type ? btn.type : 'default';
+                button['onClick'] = componentInstance => {
+                    if (btn['name'] === 'save') {
                         componentInstance.buttonAction(
                             btn,
                             () => {
                                 modal.close();
                                 this.load();
+                                this.sendCascadeMessage();
                             }
                         );
-                    } else if (btn["name"] === "saveAndKeep") {
+                    } else if (btn['name'] === 'saveAndKeep') {
                         componentInstance.buttonAction(
                             btn,
                             () => {
                                 this.resetForm();
                                 this.load();
+                                this.sendCascadeMessage();
                             }
                         );
-                    } else if (btn["name"] === "close") {
+                    } else if (btn['name'] === 'close') {
                         modal.close();
-                    } else if (btn["name"] === "reset") {
+                    } else if (btn['name'] === 'reset') {
                         this._resetForm(componentInstance);
                     }
                 };
@@ -636,7 +640,7 @@ export class FormResolverComponent extends CnFormBase
      * 弹出批量处理表单
      * @param option
      */
-    formBatchDialog(option) {
+    public formBatchDialog(option) {
         if (this.config.formDialog && this.config.formDialog.length > 0) {
             const index = this.config.formDialog.findIndex(
                 item => item.name === option.actionName
@@ -666,11 +670,11 @@ export class FormResolverComponent extends CnFormBase
             if (dialog.buttons) {
                 dialog.buttons.forEach(btn => {
                     const button = {};
-                    button["label"] = btn.text;
-                    button["type"] = btn.type ? btn.type : "default";
-                    button["show"] = true;
-                    button["onClick"] = componentInstance => {
-                        if (btn["name"] === "save") {
+                    button['label'] = btn.text;
+                    button['type'] = btn.type ? btn.type : 'default';
+                    button['show'] = true;
+                    button['onClick'] = componentInstance => {
+                        if (btn['name'] === 'save') {
                             (async () => {
                                 const result = await componentInstance.buttonAction(
                                     btn
@@ -678,26 +682,30 @@ export class FormResolverComponent extends CnFormBase
                                 if (result) {
                                     modal.close();
                                     // todo: 操作完成当前数据后需要定位
+                                    this.sendCascadeMessage();
                                     this.load();
                                 }
                             })();
-                        } else if (btn["name"] === "saveAndKeep") {
+                        } else if (btn['name'] === 'saveAndKeep') {
                             (async () => {
                                 const result = await componentInstance.buttonAction(
                                     btn
                                 );
                                 if (result) {
                                     // todo: 操作完成当前数据后需要定位
+
                                     this.load();
                                 }
                             })();
-                        } else if (btn["name"] === "close") {
+                        } else if (btn['name'] === 'close') {
                             modal.close();
+                            this.sendCascadeMessage();
                             this.load();
-                        } else if (btn["name"] === "reset") {
+                        } else if (btn['name'] === 'reset') {
                             this._resetForm(componentInstance);
-                        } else if (btn["name"] === "ok") {
+                        } else if (btn['name'] === 'ok') {
                             modal.close();
+                            this.sendCascadeMessage();
                             this.load();
                             //
                         }
@@ -740,20 +748,21 @@ export class FormResolverComponent extends CnFormBase
             if (dialog.buttons) {
                 dialog.buttons.forEach(btn => {
                     const button = {};
-                    button["label"] = btn.text;
-                    button["type"] = btn.type ? btn.type : "default";
-                    button["onClick"] = componentInstance => {
-                        if (btn["name"] === "batchSave") {
+                    button['label'] = btn.text;
+                    button['type'] = btn.type ? btn.type : 'default';
+                    button['onClick'] = componentInstance => {
+                        if (btn['name'] === 'batchSave') {
                             componentInstance.buttonAction(
                                 btn,
                                 () => {
                                     modal.close();
+                                    this.sendCascadeMessage();
                                     this.load();
                                 }
                             );
-                        } else if (btn["name"] === "close") {
+                        } else if (btn['name'] === 'close') {
                             modal.close();
-                        } else if (btn["name"] === "reset") {
+                        } else if (btn['name'] === 'reset') {
                             this._resetForm(componentInstance);
                         }
                     };
@@ -761,14 +770,12 @@ export class FormResolverComponent extends CnFormBase
                 });
             }
         } else {
-            this.message.create("warning", "请先选中需要处理的数据");
+            this.message.create('warning', '请先选中需要处理的数据');
         }
     }
     // endregion
 
-    cascadeList = {};
-
-    caseLoad() {
+    public caseLoad() {
         this.cascadeList = {};
         // region: 解析开始
         if (this.config.cascade)
@@ -781,118 +788,118 @@ export class FormResolverComponent extends CnFormBase
 
                     const dataType = [];
                     const valueType = [];
-                    cobj["cascadeDataItems"].forEach(item => {
+                    cobj['cascadeDataItems'].forEach(item => {
                         // 数据关联 （只是单纯的数据关联，内容只有ajax）
                         // cobj.data
                         const dataTypeItem = {};
-                        if (item["caseValue"]) {
+                        if (item['caseValue']) {
                             // 取值， 解析 正则表达式
                             // item.case.regular; 正则
-                            dataTypeItem["regularType"] = item.caseValue.type;
-                            dataTypeItem["valueName"] =
+                            dataTypeItem['regularType'] = item.caseValue.type;
+                            dataTypeItem['valueName'] =
                                 item.caseValue.valueName;
-                            dataTypeItem["regular"] = item.caseValue.regular;
+                            dataTypeItem['regular'] = item.caseValue.regular;
                         }
-                        this.cascadeList[c.name][cobj.cascadeName]["type"] =
+                        this.cascadeList[c.name][cobj.cascadeName]['type'] =
                             item.data.type;
-                        dataTypeItem["type"] = item.data.type;
-                        if (item.data.type === "option") {
+                        dataTypeItem['type'] = item.data.type;
+                        if (item.data.type === 'option') {
                             // 静态数据集
                             this.cascadeList[c.name][cobj.cascadeName][
-                                "option"
+                                'option'
                             ] = item.data.option_data.option;
-                            dataTypeItem["option"] =
+                            dataTypeItem['option'] =
                                 item.data.option_data.option;
                         }
-                        if (item.data.type === "ajax") {
+                        if (item.data.type === 'ajax') {
                             // 异步请求参数取值
-                            this.cascadeList[c.name][cobj.cascadeName]["ajax"] =
+                            this.cascadeList[c.name][cobj.cascadeName]['ajax'] =
                                 item.data.ajax_data.option;
-                            dataTypeItem["ajax"] = item.data.ajax_data.option;
+                            dataTypeItem['ajax'] = item.data.ajax_data.option;
                         }
-                        if (item.data.type === "setValue") {
+                        if (item.data.type === 'setValue') {
                             // 组件赋值
                             this.cascadeList[c.name][cobj.cascadeName][
-                                "setValue"
+                                'setValue'
                             ] = item.data.setValue_data.option;
-                            dataTypeItem["setValue"] =
+                            dataTypeItem['setValue'] =
                                 item.data.setValue_data.option;
                         }
-                        if (item.data.type === "show") {
+                        if (item.data.type === 'show') {
                             // 页面显示控制
-                            this.cascadeList[c.name][cobj.cascadeName]["show"] =
+                            this.cascadeList[c.name][cobj.cascadeName]['show'] =
                                 item.data.show_data.option;
-                            dataTypeItem["show"] = item.data.show_data.option;
+                            dataTypeItem['show'] = item.data.show_data.option;
                         }
-                        if (item.data.type === "relation") {
+                        if (item.data.type === 'relation') {
                             // 消息交互
                             this.cascadeList[c.name][cobj.cascadeName][
-                                "relation"
+                                'relation'
                             ] = item.data.relation_data.option;
-                            dataTypeItem["relation"] =
+                            dataTypeItem['relation'] =
                                 item.data.relation_data.option;
                         }
 
                         dataType.push(dataTypeItem);
                     });
 
-                    cobj["cascadeValueItems"].forEach(item => {
+                    cobj['cascadeValueItems'].forEach(item => {
                         const valueTypeItem = {};
                         if (item.caseValue) {
                             // 取值， 解析 正则表达式
                             // item.case.regular; 正则
-                            valueTypeItem["regularType"] = item.caseValue.type;
-                            valueTypeItem["valueName"] =
+                            valueTypeItem['regularType'] = item.caseValue.type;
+                            valueTypeItem['valueName'] =
                                 item.caseValue.valueName;
-                            valueTypeItem["regular"] = item.caseValue.regular;
+                            valueTypeItem['regular'] = item.caseValue.regular;
                         }
-                        this.cascadeList[c.name][cobj.cascadeName]["type"] =
+                        this.cascadeList[c.name][cobj.cascadeName]['type'] =
                             item.data.type;
-                        valueTypeItem["type"] = item.data.type;
-                        if (item.data.type === "option") {
+                        valueTypeItem['type'] = item.data.type;
+                        if (item.data.type === 'option') {
                             // 静态数据集
                             this.cascadeList[c.name][cobj.cascadeName][
-                                "option"
+                                'option'
                             ] = item.data.option_data.option;
-                            valueTypeItem["option"] =
+                            valueTypeItem['option'] =
                                 item.data.option_data.option;
                         }
-                        if (item.data.type === "ajax") {
+                        if (item.data.type === 'ajax') {
                             // 异步请求参数取值
-                            this.cascadeList[c.name][cobj.cascadeName]["ajax"] =
+                            this.cascadeList[c.name][cobj.cascadeName]['ajax'] =
                                 item.data.ajax_data.option;
-                            valueTypeItem["ajax"] = item.data.ajax_data.option;
+                            valueTypeItem['ajax'] = item.data.ajax_data.option;
                         }
-                        if (item.data.type === "setValue") {
+                        if (item.data.type === 'setValue') {
                             // 组件赋值
                             this.cascadeList[c.name][cobj.cascadeName][
-                                "setValue"
+                                'setValue'
                             ] = item.data.setValue_data.option;
-                            valueTypeItem["setValue"] =
+                            valueTypeItem['setValue'] =
                                 item.data.setValue_data.option;
                         }
-                        if (item.data.type === "show") {
+                        if (item.data.type === 'show') {
                             // 页面显示控制
-                            this.cascadeList[c.name][cobj.cascadeName]["show"] =
+                            this.cascadeList[c.name][cobj.cascadeName]['show'] =
                                 item.data.show_data.option;
-                            valueTypeItem["show"] = item.data.show_data.option;
+                            valueTypeItem['show'] = item.data.show_data.option;
                         }
-                        if (item.data.type === "relation") {
+                        if (item.data.type === 'relation') {
                             // 消息交互
                             this.cascadeList[c.name][cobj.cascadeName][
-                                "relation"
+                                'relation'
                             ] = item.data.relation_data.option;
-                            valueTypeItem["relation"] =
+                            valueTypeItem['relation'] =
                                 item.data.relation_data.option;
                         }
                         valueType.push(valueTypeItem);
                     });
 
                     this.cascadeList[c.name][cobj.cascadeName][
-                        "dataType"
+                        'dataType'
                     ] = dataType;
                     this.cascadeList[c.name][cobj.cascadeName][
-                        "valueType"
+                        'valueType'
                     ] = valueType;
                 });
                 // endregion: 解析对象结束
@@ -900,12 +907,12 @@ export class FormResolverComponent extends CnFormBase
         // endregion： 解析结束
     }
 
-    valueChange(data?) {
+    public valueChange(data?) {
         console.log('valueChange', data);
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
         const sendCasade = data.name;
-        const receiveCasade = " ";
+        const receiveCasade = ' ';
 
         // 第二步，根据配置，和返回值，来构建应答数据集合
         // 第三步，
@@ -923,12 +930,12 @@ export class FormResolverComponent extends CnFormBase
                 this.config.forms.forEach(formsItems => {
                     formsItems.controls.forEach(control => {
                         if (control.name === key) {
-                            if (this.cascadeList[sendCasade][key]["dataType"]) {
+                            if (this.cascadeList[sendCasade][key]['dataType']) {
                                 this.cascadeList[sendCasade][key][
-                                    "dataType"
+                                    'dataType'
                                 ].forEach(caseItem => {
                                     // region: 解析开始 根据组件类型组装新的配置【静态option组装】
-                                    if (caseItem["type"] === "option") {
+                                    if (caseItem['type'] === 'option') {
                                         // 在做判断前，看看值是否存在，如果在，更新，值不存在，则创建新值
                                         let Exist = false;
                                         changeConfig_new.forEach(config_new => {
@@ -936,49 +943,49 @@ export class FormResolverComponent extends CnFormBase
                                                 config_new.name === control.name
                                             ) {
                                                 Exist = true;
-                                                config_new["options"] =
-                                                    caseItem["option"];
+                                                config_new['options'] =
+                                                    caseItem['option'];
                                             }
                                         });
                                         if (!Exist) {
                                             control.options =
-                                                caseItem["option"];
+                                                caseItem['option'];
                                             control = JSON.parse(
                                                 JSON.stringify(control)
                                             );
                                             changeConfig_new.push(control);
                                         }
                                     }
-                                    if (caseItem["type"] === "ajax") {
+                                    if (caseItem['type'] === 'ajax') {
                                         // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
                                         // 解析参数
 
                                         const cascadeValue = {};
-                                        caseItem["ajax"].forEach(ajaxItem => {
-                                            if (ajaxItem["type"] === "value") {
-                                                cascadeValue[ajaxItem["name"]] =
-                                                    ajaxItem["value"];
+                                        caseItem['ajax'].forEach(ajaxItem => {
+                                            if (ajaxItem['type'] === 'value') {
+                                                cascadeValue[ajaxItem['name']] =
+                                                    ajaxItem['value'];
                                             }
                                             if (
-                                                ajaxItem["type"] ===
-                                                "selectValue"
+                                                ajaxItem['type'] ===
+                                                'selectValue'
                                             ) {
                                                 // 选中行数据[这个是单值]
-                                                cascadeValue[ajaxItem["name"]] =
-                                                    data["value"];
+                                                cascadeValue[ajaxItem['name']] =
+                                                    data['value'];
                                             }
                                             if (
-                                                ajaxItem["type"] ===
-                                                "selectObjectValue"
+                                                ajaxItem['type'] ===
+                                                'selectObjectValue'
                                             ) {
                                                 // 选中行对象数据
                                                 if (data.dataItem) {
                                                     cascadeValue[
-                                                        ajaxItem["name"]
+                                                        ajaxItem['name']
                                                     ] =
                                                         data.dataItem[
                                                         ajaxItem[
-                                                        "valueName"
+                                                        'valueName'
                                                         ]
                                                         ];
                                                 }
@@ -992,13 +999,13 @@ export class FormResolverComponent extends CnFormBase
                                             ) {
                                                 Exist = true;
                                                 config_new[
-                                                    "cascadeValue"
+                                                    'cascadeValue'
                                                 ] = cascadeValue;
                                             }
                                         });
                                         if (!Exist) {
                                             control[
-                                                "cascadeValue"
+                                                'cascadeValue'
                                             ] = cascadeValue;
                                             control = JSON.parse(
                                                 JSON.stringify(control)
@@ -1006,51 +1013,51 @@ export class FormResolverComponent extends CnFormBase
                                             changeConfig_new.push(control);
                                         }
                                     }
-                                    if (caseItem["type"] === "setValue") {
+                                    if (caseItem['type'] === 'setValue') {
                                         // console.log('setValueinput' , caseItem['setValue'] );
 
                                         const setValuedata = {};
                                         if (
-                                            caseItem["setValue"]["type"] ===
-                                            "value"
+                                            caseItem['setValue']['type'] ===
+                                            'value'
                                         ) {
                                             // 静态数据
-                                            setValuedata["data"] =
-                                                caseItem["setValue"]["value"];
+                                            setValuedata['data'] =
+                                                caseItem['setValue']['value'];
                                         }
                                         if (
-                                            caseItem["setValue"]["type"] ===
-                                            "selectValue"
+                                            caseItem['setValue']['type'] ===
+                                            'selectValue'
                                         ) {
                                             // 选中行数据[这个是单值]
-                                            setValuedata["data"] =
+                                            setValuedata['data'] =
                                                 data[
-                                                caseItem["setValue"][
-                                                "valueName"
+                                                caseItem['setValue'][
+                                                'valueName'
                                                 ]
                                                 ];
                                         }
                                         if (
-                                            caseItem["setValue"]["type"] ===
-                                            "selectObjectValue"
+                                            caseItem['setValue']['type'] ===
+                                            'selectObjectValue'
                                         ) {
                                             // 选中行对象数据
                                             if (data.dataItem) {
-                                                setValuedata["data"] =
+                                                setValuedata['data'] =
                                                     data.dataItem[
-                                                    caseItem["setValue"][
-                                                    "valueName"
+                                                    caseItem['setValue'][
+                                                    'valueName'
                                                     ]
                                                     ];
                                             }
                                         }
                                         // 手动给表单赋值，将值
                                         if (
-                                            setValuedata.hasOwnProperty("data")
+                                            setValuedata.hasOwnProperty('data')
                                         ) {
                                             this.setValue(
                                                 key,
-                                                setValuedata["data"]
+                                                setValuedata['data']
                                             );
                                         }
                                     }
@@ -1059,10 +1066,10 @@ export class FormResolverComponent extends CnFormBase
                                 });
                             }
                             if (
-                                this.cascadeList[sendCasade][key]["valueType"]
+                                this.cascadeList[sendCasade][key]['valueType']
                             ) {
                                 this.cascadeList[sendCasade][key][
-                                    "valueType"
+                                    'valueType'
                                 ].forEach(caseItem => {
                                     // region: 解析开始  正则表达
                                     const reg1 = new RegExp(caseItem.regular);
@@ -1070,12 +1077,12 @@ export class FormResolverComponent extends CnFormBase
                                     if (caseItem.regularType) {
                                         if (
                                             caseItem.regularType ===
-                                            "selectObjectValue"
+                                            'selectObjectValue'
                                         ) {
-                                            if (data["dataItem"]) {
+                                            if (data['dataItem']) {
                                                 regularData =
-                                                    data["dataItem"][
-                                                    caseItem["valueName"]
+                                                    data['dataItem'][
+                                                    caseItem['valueName']
                                                     ];
                                             } else {
                                                 regularData = data.data;
@@ -1091,7 +1098,7 @@ export class FormResolverComponent extends CnFormBase
                                     // endregion  解析结束 正则表达
                                     if (regularflag) {
                                         // region: 解析开始 根据组件类型组装新的配置【静态option组装】
-                                        if (caseItem["type"] === "option") {
+                                        if (caseItem['type'] === 'option') {
                                             let Exist = false;
                                             changeConfig_new.forEach(
                                                 config_new => {
@@ -1100,54 +1107,54 @@ export class FormResolverComponent extends CnFormBase
                                                         control.name
                                                     ) {
                                                         Exist = true;
-                                                        config_new["options"] =
-                                                            caseItem["option"];
+                                                        config_new['options'] =
+                                                            caseItem['option'];
                                                     }
                                                 }
                                             );
                                             if (!Exist) {
                                                 control.options =
-                                                    caseItem["option"];
+                                                    caseItem['option'];
                                                 control = JSON.parse(
                                                     JSON.stringify(control)
                                                 );
                                                 changeConfig_new.push(control);
                                             }
                                         }
-                                        if (caseItem["type"] === "ajax") {
+                                        if (caseItem['type'] === 'ajax') {
                                             // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
                                             const cascadeValue = {};
-                                            caseItem["ajax"].forEach(
+                                            caseItem['ajax'].forEach(
                                                 ajaxItem => {
                                                     if (
-                                                        ajaxItem["type"] ===
-                                                        "value"
+                                                        ajaxItem['type'] ===
+                                                        'value'
                                                     ) {
                                                         cascadeValue[
-                                                            ajaxItem["name"]
-                                                        ] = ajaxItem["value"];
+                                                            ajaxItem['name']
+                                                        ] = ajaxItem['value'];
                                                     }
                                                     if (
-                                                        ajaxItem["type"] ===
-                                                        "selectValue"
+                                                        ajaxItem['type'] ===
+                                                        'selectValue'
                                                     ) {
                                                         // 选中行数据[这个是单值]
                                                         cascadeValue[
-                                                            ajaxItem["name"]
-                                                        ] = data["value"];
+                                                            ajaxItem['name']
+                                                        ] = data['value'];
                                                     }
                                                     if (
-                                                        ajaxItem["type"] ===
-                                                        "selectObjectValue"
+                                                        ajaxItem['type'] ===
+                                                        'selectObjectValue'
                                                     ) {
                                                         // 选中行对象数据
                                                         if (data.dataItem) {
                                                             cascadeValue[
-                                                                ajaxItem["name"]
+                                                                ajaxItem['name']
                                                             ] =
                                                                 data.dataItem[
                                                                 ajaxItem[
-                                                                "valueName"
+                                                                'valueName'
                                                                 ]
                                                                 ];
                                                         }
@@ -1164,14 +1171,14 @@ export class FormResolverComponent extends CnFormBase
                                                     ) {
                                                         Exist = true;
                                                         config_new[
-                                                            "cascadeValue"
+                                                            'cascadeValue'
                                                         ] = cascadeValue;
                                                     }
                                                 }
                                             );
                                             if (!Exist) {
                                                 control[
-                                                    "cascadeValue"
+                                                    'cascadeValue'
                                                 ] = cascadeValue;
                                                 control = JSON.parse(
                                                     JSON.stringify(control)
@@ -1179,62 +1186,62 @@ export class FormResolverComponent extends CnFormBase
                                                 changeConfig_new.push(control);
                                             }
                                         }
-                                        if (caseItem["type"] === "show") {
-                                            if (caseItem["show"]) {
+                                        if (caseItem['type'] === 'show') {
+                                            if (caseItem['show']) {
                                                 //
-                                                control["hidden"] =
-                                                    caseItem["show"]["hidden"];
+                                                control['hidden'] =
+                                                    caseItem['show']['hidden'];
                                             }
                                         }
-                                        if (caseItem["type"] === "setValue") {
+                                        if (caseItem['type'] === 'setValue') {
                                             // console.log('setValueinput' , caseItem['setValue'] );
 
                                             const setValuedata = {};
                                             if (
-                                                caseItem["setValue"]["type"] ===
-                                                "value"
+                                                caseItem['setValue']['type'] ===
+                                                'value'
                                             ) {
                                                 // 静态数据
-                                                setValuedata["data"] =
-                                                    caseItem["setValue"][
-                                                    "value"
+                                                setValuedata['data'] =
+                                                    caseItem['setValue'][
+                                                    'value'
                                                     ];
                                             }
                                             if (
-                                                caseItem["setValue"]["type"] ===
-                                                "selectValue"
+                                                caseItem['setValue']['type'] ===
+                                                'selectValue'
                                             ) {
                                                 // 选中行数据[这个是单值]
-                                                setValuedata["data"] =
+                                                setValuedata['data'] =
                                                     data[
-                                                    caseItem["setValue"][
-                                                    "valueName"
+                                                    caseItem['setValue'][
+                                                    'valueName'
                                                     ]
                                                     ];
                                             }
                                             if (
-                                                caseItem["setValue"]["type"] ===
-                                                "selectObjectValue"
+                                                caseItem['setValue']['type'] ===
+                                                'selectObjectValue'
                                             ) {
                                                 // 选中行对象数据
                                                 if (data.dataItem) {
-                                                    setValuedata["data"] =
+                                                    setValuedata['data'] =
                                                         data.dataItem[
                                                         caseItem[
-                                                        "setValue"
-                                                        ]["valueName"]
+                                                        'setValue'
+                                                        ]['valueName']
                                                         ];
                                                 }
                                             }
                                             // 手动给表单赋值，将值
                                             if (
                                                 setValuedata.hasOwnProperty(
-                                                    "data"
+                                                    'data'
                                                 )
                                             ) {
                                                 this.setValue(
                                                     key,
-                                                    setValuedata["data"]
+                                                    setValuedata['data']
                                                 );
                                             }
                                         }
@@ -1249,10 +1256,11 @@ export class FormResolverComponent extends CnFormBase
 
             this.changeConfig = JSON.parse(JSON.stringify(changeConfig_new));
             changeConfig_new.forEach(changeConfig => {
-
-                this.change_config[changeConfig.name] = changeConfig;
-            }
-            )
+                setTimeout(() => {
+                    this.change_config[changeConfig.name] = changeConfig;
+                });
+                
+            })
           //  console.log('*****变更后配置******',  this.change_config);
         }
 
@@ -1280,44 +1288,44 @@ export class FormResolverComponent extends CnFormBase
                 if (element.name === data.name) {
                     if (element.cascadeField) {
                         element.cascadeField.forEach(feild => {
-                            if (!feild["type"]) {
+                            if (!feild['type']) {
                                 if (data[feild.valueName]) {
                                     sendData[feild.name] =
                                         data[feild.valueName];
                                 }
                             } else {
-                                if (feild["type"] === "selectObject") {
+                                if (feild['type'] === 'selectObject') {
                                     if (data[feild.valueName]) {
                                         sendData[feild.name] =
                                             data[feild.valueName];
                                     }
                                 } else if (
-                                    feild["type"] === "tempValueObject"
+                                    feild['type'] === 'tempValueObject'
                                 ) {
                                     sendData[feild.name] = this.tempValue;
-                                } else if (feild["type"] === "tempValue") {
+                                } else if (feild['type'] === 'tempValue') {
                                     if (this.tempValue[feild.valueName]) {
                                         sendData[feild.name] = this.tempValue[
                                             feild.valueName
                                         ];
                                     }
                                 } else if (
-                                    feild["type"] === "initValueObject"
+                                    feild['type'] === 'initValueObject'
                                 ) {
                                     sendData[feild.name] = this.initValue;
-                                } else if (feild["type"] === "initValue") {
+                                } else if (feild['type'] === 'initValue') {
                                     if (this.initValue[feild.valueName]) {
                                         sendData[feild.name] = this.initValue[
                                             feild.valueName
                                         ];
                                     }
-                                } else if (feild["type"] === "value") {
+                                } else if (feild['type'] === 'value') {
                                     sendData[feild.name] = feild.value;
                                 }
                             }
                         });
                     }
-                    console.log(this.initValue);
+                    
                     this.cascade.next(
                         new BsnComponentMessage(
                             BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],

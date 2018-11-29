@@ -1,4 +1,4 @@
-import { CnComponentBase } from "./../../components/cn-component-base";
+import { CnComponentBase } from './../../components/cn-component-base';
 import {
     Component,
     OnInit,
@@ -6,29 +6,29 @@ import {
     OnDestroy,
     Type,
     Inject
-} from "@angular/core";
-import { instantiateDefaultStyleNormalizer } from "@angular/platform-browser/animations/src/providers";
-import { Subscription, Observable, Observer } from "rxjs";
-import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_CASCADE } from "@core/relative-Service/BsnTableStatus";
-import { NzTabComponent, NzTabChangeEvent } from "ng-zorro-antd";
+} from '@angular/core';
+import { instantiateDefaultStyleNormalizer } from '@angular/platform-browser/animations/src/providers';
+import { Subscription, Observable, Observer } from 'rxjs';
+import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_CASCADE } from '@core/relative-Service/BsnTableStatus';
+import { NzTabComponent, NzTabChangeEvent } from 'ng-zorro-antd';
 @Component({
-    selector: "bsn-tabs",
-    templateUrl: "./bsn-tabs.component.html",
+    selector: 'bsn-tabs',
+    templateUrl: './bsn-tabs.component.html',
     styles: [``]
 })
 export class BsnTabsComponent extends CnComponentBase implements OnInit {
     @Input()
-    config;
+    public config;
     @Input()
-    viewId;
+    public viewId;
     @Input()
-    permissions = [];
+    public permissions = [];
     @Input()
-    initData;
+    public initData;
 
-    _statusSubscription: Subscription;
-    _cascadeSubscription: Subscription;
-    _currentIndex;
+    public _statusSubscription: Subscription;
+    public _cascadeSubscription: Subscription;
+    public _currentIndex;
     constructor(
         @Inject(BSN_COMPONENT_MODES)
         private stateEvents: Observable<BsnComponentMessage>,
@@ -40,7 +40,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit {
         super();
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.initValue = this.initData ? this.initData : {};
         this.resolverRelation();
         // const activeIndex = this.config.tabs.findIndex(tab => tab.active);
@@ -55,18 +55,18 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit {
         // );
     }
 
-    tabChange(tab: NzTabChangeEvent) {
+    public tabChange(tab: NzTabChangeEvent) {
         this.config.tabs[tab.index]['active'] = true;
     }
 
-    tabActive(tab) {
+    public tabActive(tab) {
         setTimeout(() => {
             tab['active'] = true;
         })
         
     }
 
-    tabDisactive(tab) {
+    public tabDisactive(tab) {
         setTimeout(() => {
             tab['active'] = false;
         });
@@ -106,8 +106,8 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit {
                                     ) {
                                         const t = {}
                                         relation.params.forEach(param => {
-                                            t[param["cid"]] =
-                                                option.data[param["pid"]];
+                                            t[param['cid']] =
+                                                option.data[param['pid']];
                                         });
                                         this.tempValue = t;
                                     }

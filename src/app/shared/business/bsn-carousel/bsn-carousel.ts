@@ -69,7 +69,7 @@ export class BsnCarouselComponent extends CnComponentBase
         private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascadeEvents: Observable<BsnComponentMessage>
-    ) {
+    ) { 
         super();
     }
 

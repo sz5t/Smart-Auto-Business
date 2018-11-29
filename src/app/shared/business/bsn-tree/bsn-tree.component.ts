@@ -226,6 +226,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
             this.config.componentType.parent === true
         ) {
             this.after(this, 'clickNode', () => {
+                console.log('send casacde data')
                 this.selectedItem &&
                     this.cascade.next(
                         new BsnComponentMessage(
@@ -258,7 +259,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
             this.config.componentType.sub === true
         ) {
             this.after(this, 'clickNode', () => {
-                console.log('send tree initValue', this.initValue);
+                console.log('send tree sub');
                 this.tempValue['_selectedNode'] &&
                     this.cascade.next(
                         new BsnComponentMessage(
@@ -487,6 +488,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                         this.config.componentType &&
                         this.config.componentType.parent === true
                     ) {
+                        // console.log('send cascade data')
                         this.tempValue['_selectedNode'] &&
                             this.cascade.next(
                                 new BsnComponentMessage(
@@ -502,7 +504,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                         this.config.componentType &&
                         this.config.componentType.sub === true
                     ) {
-                        console.log('send tree initValue', this.initValue);
+                        // console.log('send tree sub', this.initValue);
                         this.tempValue['_selectedNode'] &&
                             this.cascade.next(
                                 new BsnComponentMessage(
