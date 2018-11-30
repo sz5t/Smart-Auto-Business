@@ -6,61 +6,61 @@ import {
     Output,
     EventEmitter,
     OnChanges
-} from "@angular/core";
-import { _HttpClient } from "@delon/theme";
-import { ApiService } from "@core/utility/api-service";
-import { APIResource } from "@core/utility/api-resource";
-import { FormGroup } from "@angular/forms";
+} from '@angular/core';
+import { _HttpClient } from '@delon/theme';
+import { ApiService } from '@core/utility/api-service';
+import { APIResource } from '@core/utility/api-resource';
+import { FormGroup } from '@angular/forms';
 
 @Component({
-    selector: "cn-form-select-multiple",
-    templateUrl: "./cn-form-select-multiple.component.html"
+    selector: 'cn-form-select-multiple',
+    templateUrl: './cn-form-select-multiple.component.html'
 })
 export class CnFormSelectMultipleComponent
     implements OnInit, AfterViewInit, OnChanges {
     @Input()
-    config;
+    public config;
     @Input()
-    value;
+    public value;
     @Input()
-    bsnData;
+    public bsnData;
     @Input()
-    rowData;
+    public rowData;
     @Input()
-    dataSet;
-    @Input() changeConfig;
-    formGroup: FormGroup;
+    public dataSet;
+    @Input() public changeConfig;
+    public formGroup: FormGroup;
     // @Output() updateValue = new EventEmitter();
     @Output()
-    updateValue = new EventEmitter();
-    _options = [];
-    cascadeValue = {};
+    public updateValue = new EventEmitter();
+    public _options = [];
+    public cascadeValue = {};
     // _selectedMultipleOption:any[];
     constructor(private apiService: ApiService) {}
-    _selectedOption;
+    public _selectedOption;
 
-    ngOnInit() {
-        if (!this.config["multiple"]) {
-            this.config["multiple"] = "default";
+    public ngOnInit() {
+        if (!this.config['multiple']) {
+            this.config['multiple'] = 'default';
         }
 
         // console.log('select加载固定数据', this.config);
-        if (this.config["cascadeValue"]) {
+        if (this.config['cascadeValue']) {
             // cascadeValue
-            for (const key in this.config["cascadeValue"]) {
-                if (this.config["cascadeValue"].hasOwnProperty(key)) {
-                    this.cascadeValue["cascadeValue"] = this.config[
-                        "cascadeValue"
+            for (const key in this.config['cascadeValue']) {
+                if (this.config['cascadeValue'].hasOwnProperty(key)) {
+                    this.cascadeValue['cascadeValue'] = this.config[
+                        'cascadeValue'
                     ][key];
                 }
             }
         }
         if (this.changeConfig) {
-            if (this.changeConfig["cascadeValue"]) {
+            if (this.changeConfig['cascadeValue']) {
                 // cascadeValue
-                for (const key in this.changeConfig["cascadeValue"]) {
-                    if (this.changeConfig["cascadeValue"].hasOwnProperty(key)) {
-                        this.cascadeValue[key] = this.changeConfig["cascadeValue"][key];
+                for (const key in this.changeConfig['cascadeValue']) {
+                    if (this.changeConfig['cascadeValue'].hasOwnProperty(key)) {
+                        this.cascadeValue[key] = this.changeConfig['cascadeValue'][key];
                     }
                 }
             }
@@ -77,9 +77,9 @@ export class CnFormSelectMultipleComponent
                 const result = await this.asyncLoadOptions(
                     this.config.ajaxConfig
                 );
-                if (this.config.valueType && this.config.valueType === "list") {
-                    const labels = this.config.labelName.split(".");
-                    const values = this.config.valueName.split(".");
+                if (this.config.valueType && this.config.valueType === 'list') {
+                    const labels = this.config.labelName.split('.');
+                    const values = this.config.valueName.split('.');
                     result.data.forEach(d => {
                         d[this.config.valueName].forEach(v => {
                             this._options.push({
@@ -105,22 +105,22 @@ export class CnFormSelectMultipleComponent
         }
     }
 
-    ngOnChanges() {
+    public ngOnChanges() {
         // console.log('select加载固定数据ngOnChanges', this.config);
         // console.log('变化时临时参数' , this.bsnData);
     }
-    ngAfterViewInit() {}
+    public ngAfterViewInit() {}
 
-    async asyncLoadOptions(p?, componentValue?, type?) {
+    public async asyncLoadOptions(p?, componentValue?, type?) {
         // console.log('select load 异步加载'); // liu
         const params = {};
         let tag = true;
         let url;
         if (p) {
             p.params.forEach(param => {
-                if (param.type === "tempValue") {
+                if (param.type === 'tempValue') {
                     if (type) {
-                        if (type === "load") {
+                        if (type === 'load') {
                             if (this.bsnData[param.valueName]) {
                                 params[param.name] = this.bsnData[
                                     param.valueName
@@ -139,32 +139,32 @@ export class CnFormSelectMultipleComponent
                             params[param.name] = this.bsnData[param.valueName];
                         }
                     }
-                } else if (param.type === "value") {
+                } else if (param.type === 'value') {
                     params[param.name] = param.value;
-                } else if (param.type === "componentValue") {
+                } else if (param.type === 'componentValue') {
                     params[param.name] = componentValue[param.valueName];
-                } else if (param.type === "cascadeValue") {
+                } else if (param.type === 'cascadeValue') {
                     params[param.name] = this.cascadeValue[param.valueName];
                 }
             });
             if (this.isString(p.url)) {
                 url = p.url;
             } else {
-                let pc = "null";
+                let pc = 'null';
                 p.url.params.forEach(param => {
-                    if (param["type"] === "value") {
+                    if (param['type'] === 'value') {
                         pc = param.value;
-                    } else if (param.type === "componentValue") {
+                    } else if (param.type === 'componentValue') {
                         pc = componentValue[param.valueName];
-                    } else if (param.type === "tempValue") {
+                    } else if (param.type === 'tempValue') {
                         pc = this.bsnData[param.valueName];
                     }
                 });
 
-                url = p.url["parent"] + "/" + pc + "/" + p.url["child"];
+                url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
             }
         }
-        if (p.ajaxType === "get" && tag) {
+        if (p.ajaxType === 'get' && tag) {
             // console.log('get参数', params);
             /*  const dd=await this._http.getProj(APIResource[p.url], params).toPromise();
        if (dd && dd.Status === 200) {
@@ -186,7 +186,7 @@ export class CnFormSelectMultipleComponent
         // }
     }
 
-    selectedByLoaded() {
+    public selectedByLoaded() {
         let selected;
         if (!this.value) {
             this.value = this.config.defaultValue;
@@ -208,7 +208,7 @@ export class CnFormSelectMultipleComponent
         this._selectedOption = selected;
     }
 
-    valueChange(name?) {
+    public valueChange(name?) {
         if (name) {
             const backValue = { name: this.config.name, value: name };
             this.updateValue.emit(backValue);
@@ -218,8 +218,8 @@ export class CnFormSelectMultipleComponent
         }
     }
 
-    isString(obj) {
+    public isString(obj) {
         // 判断对象是否是字符串
-        return Object.prototype.toString.call(obj) === "[object String]";
+        return Object.prototype.toString.call(obj) === '[object String]';
     }
 }
