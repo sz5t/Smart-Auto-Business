@@ -12,7 +12,7 @@ import { NzMessageService } from 'ng-zorro-antd';
 @Component({
   selector: 'wf-design,[wf-design]',
   templateUrl: './wf-design.component.html',
-  styleUrls: ['./wf-design.component.css' , '../../../../../node_modules/@antv/g6-editor/build/base.css'],
+  styleUrls: ['./wf-design.component.css', '../../../../../node_modules/@antv/g6-editor/build/base.css'],
   encapsulation: ViewEncapsulation.Emulated
 })
 export class WfDesignComponent extends CnComponentBase implements OnInit {
@@ -111,7 +111,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     ],
   };
 
-  data = { nodes: [], edges: []}; 
+  data = { nodes: [], edges: [] };
 
   // 节点基本信息配置
   node_panels = [
@@ -169,39 +169,39 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
 
 
   async load() {
-    
-     // console.log('tempValue:', this.tempValue);
+
+    // console.log('tempValue:', this.tempValue);
 
     const url = this._buildURL(this.config.ajaxConfig.url);
     const params = {
       ...this._buildParameters(this.config.ajaxConfig.params),
       ...this._buildFilter(this.config.ajaxConfig.filter)
     };
-   
-      const loadData = await this._load(url, params);
-      console.log(url , params);
-      if (loadData && loadData.status === 200 && loadData.isSuccess) {
-        if (loadData.data) {
-         // console.log('加载数据', loadData);
-          if ( loadData.data.length > 0) {
-            if (loadData.data[0].configjson) {
-           //   console.log('configjson:', loadData.data[0].configjson);
-              this.data =  JSON.parse(loadData.data[0].configjson);
-            }
-          } else {
-             this.data = { nodes: [], edges: []}; 
+
+    const loadData = await this._load(url, params);
+    console.log(url, params);
+    if (loadData && loadData.status === 200 && loadData.isSuccess) {
+      if (loadData.data) {
+        // console.log('加载数据', loadData);
+        if (loadData.data.length > 0) {
+          if (loadData.data[0].configjson) {
+            //   console.log('configjson:', loadData.data[0].configjson);
+            this.data = JSON.parse(loadData.data[0].configjson);
           }
         } else {
-          this.data = { nodes: [], edges: []}; 
+          this.data = { nodes: [], edges: [] };
         }
       } else {
-        this.data = { nodes: [], edges: []}; 
+        this.data = { nodes: [], edges: [] };
       }
+    } else {
+      this.data = { nodes: [], edges: [] };
+    }
 
 
-   // console.log('this.data:', this.data);
+    // console.log('this.data:', this.data);
     this.page.read(this.data);
-   // console.log('调用load结束');
+    // console.log('调用load结束');
 
   }
   private async _load(url, params) {
@@ -214,7 +214,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     }
     this.load();
     console.log('begin');
-   
+
   }
 
   // tslint:disable-next-line:use-life-cycle-interface
@@ -289,7 +289,22 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     graph.on('node:click', ev => {
       // console.log('node:click', ev);
       if (ev.item) {
-        console.log('节点model', ev.item.model);
+        const s_data = this.page.save();
+        this.data.edges = s_data.edges;
+
+        s_data.nodes.forEach(nodeItem => {
+          let nodeState = false;
+          this.data.nodes.forEach(n => {
+            if (n.id === nodeItem.id) {
+              nodeState = true;
+            }
+           });
+           if ( !nodeState) {
+            this.data.nodes.push(nodeItem);
+           }
+        });
+
+        // console.log('节点model', ev.item.model);
         let nodestate = true;
         this.data.nodes.forEach(n => {
           if (n.id === ev.item.model.id) {
@@ -310,23 +325,49 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
           });
         }
 
+
       }
       // this.nodeform 
       //  const data = page.save();
-      //  console.log('当前节点数据', data);
+     // console.log('当前节点数据', this.data);
 
     });     // 节点点击事件
     graph.on('edge:click', ev => {
-      console.log('edge:click', ev);
+      // console.log('edge:click', ev);
       if (ev.item) {
-        console.log('edgemodel', ev.item.model);
+        const s_data = this.page.save();
+        this.data.edges = s_data.edges;
+
+        s_data.nodes.forEach(nodeItem => {
+          let nodeState = false;
+          this.data.nodes.forEach(n => {
+            if (n.id === nodeItem.id) {
+              nodeState = true;
+            }
+           });
+           if ( !nodeState) {
+            this.data.nodes.push(nodeItem);
+           }
+        });
+        let nodestate = true;
+       // console.log('edgemodel', ev.item.model);
         this.data.edges.forEach(n => {
           if (n.id === ev.item.model.id) {
             this.edgeinfo.id = n.id;
+            nodestate = false;
           }
         });
-
+        if (nodestate) {
+          const nodemodel = ev.item.model;
+          this.data.edges.push(nodemodel);
+          this.data.edges.forEach(n => {
+            if (n.id === ev.item.model.id) {
+              this.edgeinfo.id = n.id;
+            }
+          });
+        }
       }
+      // console.log('当前边节点数据', this.data);
     });     // 边点击事件
     graph.on('group:click', ev => {
       console.log('group:click');
@@ -349,7 +390,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     });
     console.log('当前节点数据', s_data);
     console.log('当前节点数据string: ', JSON.stringify(s_data));
-   
+
     const submitData = {};
     submitData['Id'] = this.tempValue['_parentId'];
     submitData['configjson'] = JSON.stringify(s_data);
@@ -357,9 +398,9 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     submitData['edgejson'] = JSON.stringify(s_data.edges);
     const response = await this.execute('common/WfVersion', 'put', submitData);
     if (response && response.status === 200 && response.isSuccess) {
-        this._message.create('success', '保存成功');
+      this._message.create('success', '保存成功');
     } else {
-        this._message.create('error', response.message);
+      this._message.create('error', response.message);
     }
   }
 
