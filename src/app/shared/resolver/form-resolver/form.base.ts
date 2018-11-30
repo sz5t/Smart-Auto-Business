@@ -181,8 +181,8 @@ export class CnFormBase extends CnComponentBase {
                     this.formConfigControl[key]['type'] === 'selectTreeMultiple'
                 ) {
                     let ArrayValue = '';
-                    // console.log('数组', this.value[key]);
-                    this.value[key].forEach(element => {
+                    // console.log('数组', this.value, key);
+                    this.value[key] && this.value[key].forEach(element => {
                         ArrayValue = ArrayValue + element.toString() + ',';
                     });
                     if (ArrayValue.length > 0) {

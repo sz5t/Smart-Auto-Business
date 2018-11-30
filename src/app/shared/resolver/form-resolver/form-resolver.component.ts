@@ -117,7 +117,6 @@ export class FormResolverComponent extends CnFormBase
     // region: 组件生命周期事件
     
     public ngOnInit() {
-
         this.formState = this.initFormState();
         this.controls = this.initControls(this.config.forms);
         // 做参数简析

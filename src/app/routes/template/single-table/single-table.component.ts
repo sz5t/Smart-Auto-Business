@@ -1898,6 +1898,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 name: "updateShowCase",
                                                 title: "编辑",
                                                 width: "600", 
+                                                editable: 'put',
                                                 type: 'edit',
                                                 ajaxConfig: {
                                                     url: "common/ShowCase",

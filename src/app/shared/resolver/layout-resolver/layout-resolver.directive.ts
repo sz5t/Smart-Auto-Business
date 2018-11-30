@@ -9,30 +9,31 @@ import {
     OnInit,
     Type,
     ViewContainerRef
-} from "@angular/core";
-import { ComponentResolverComponent } from "@shared/resolver/component-resolver/component-resolver.component";
-import { Observable, Observer, Subscription } from "rxjs/index";
+} from '@angular/core';
+import { ComponentResolverComponent } from '@shared/resolver/component-resolver/component-resolver.component';
+import { Observable, Observer, Subscription } from 'rxjs/index';
 import {
     BSN_COMPONENT_CASCADE,
     BSN_COMPONENT_CASCADE_MODES,
     BSN_COMPONENT_MODES,
     BsnComponentMessage
-} from "@core/relative-Service/BsnTableStatus";
-import { IBlockExclusionDescriptor } from "tslint/lib/rules/completed-docs/blockExclusion";
+} from '@core/relative-Service/BsnTableStatus';
+import { IBlockExclusionDescriptor } from 'tslint/lib/rules/completed-docs/blockExclusion';
 
 @Directive({
-    selector: "[cnLayoutResolverDirective]"
+    // tslint:disable-next-line:directive-selector
+    selector: '[cnLayoutResolverDirective]'
 })
 export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
     @Input()
-    config;
+    public config;
     @Input()
-    layoutId;
+    public layoutId;
     @Input()
-    permissions;
-    component: ComponentRef<any>;
-    _statusSubscription: Subscription;
-    _cascadeSubscription: Subscription;
+    public permissions;
+    public component: ComponentRef<any>;
+    public _statusSubscription: Subscription;
+    public _cascadeSubscription: Subscription;
     constructor(
         private resolver: ComponentFactoryResolver,
         private container: ViewContainerRef,
@@ -44,13 +45,14 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
         private cascadeEvents: Observable<BsnComponentMessage>
     ) {}
 
-    ngOnChanges() {}
+    public ngOnChanges() {}
 
-    ngOnInit() {
+    public ngOnInit() {
         this.resolveRelation();
+        this.buildComponent(this.config.viewCfg[0]);
     }
 
-    resolveRelation() {
+    public resolveRelation() {
         this._cascadeSubscription = this.cascadeEvents.subscribe(
             cascadeEvent => {
                 const viewCfg = this.config.viewCfg;
@@ -66,8 +68,8 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
                             this.buildComponent(
                                 cfg,
                                 option.data,
-                                option["tempValue"] ? option["tempValue"] : {},
-                                option["initValue"] ? option["initValue"] : {}
+                                option['tempValue'] ? option['tempValue'] : {},
+                                option['initValue'] ? option['initValue'] : {}
                             );
                         }
                     });
@@ -82,11 +84,11 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
                     viewCfg.forEach(cfg => {
                         if (cfg.config.subMapping) {
                             if (
-                                cfg.config.subMapping["sendViewId"] ===
+                                cfg.config.subMapping['sendViewId'] ===
                                     sendViewId &&
                                 option.data.mappingData[
-                                    cfg.config.subMapping["field"]
-                                ] === cfg.config.subMapping["value"]
+                                    cfg.config.subMapping['field']
+                                ] === cfg.config.subMapping['value']
                             ) {
                                 const data = option.data.mappingData
                                     ? option.data.mappingData
@@ -111,7 +113,7 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
         );
     }
 
-    buildComponent(config, data?, tempValue?, initValue?) {
+    public buildComponent(config, data?, tempValue?, initValue?) {
         const comp = this.resolver.resolveComponentFactory<any>(
             ComponentResolverComponent
         );
@@ -123,7 +125,7 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
         this.component.instance.permissions = this.permissions;
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         if (this._cascadeSubscription) {
             this._cascadeSubscription.unsubscribe();
         }
