@@ -27,7 +27,14 @@ import { AdNumberToChineseModule } from '@delon/abc';
     selector: 'bsn-data-step',
     template: `
     <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
-      <div #dataSteps></div>
+        <div 
+            [ngStyle]="{overflow: 'auto',height: config.scrollHeight, width: config.scrollWidth}"
+            infiniteScroll
+            [infiniteScrollDistance]="1"
+            [infiniteScrollThrottle]="50"
+            [scrollWindow]="false">
+            <div #dataSteps></div>
+        </div>
     </nz-spin>`,
     styles: [``]
 })

@@ -1,17 +1,18 @@
-import { CommonTools } from "@core/utility/common-tools";
-import { Component, OnInit, ViewChild, Input, OnDestroy } from "@angular/core";
-import { ApiService } from "@core/utility/api-service";
-import { CnCodeEditComponent } from "@shared/components/cn-code-edit/cn-code-edit.component";
+import { CommonTools } from '@core/utility/common-tools';
+import { Component, OnInit, ViewChild, Input, OnDestroy } from '@angular/core';
+import { ApiService } from '@core/utility/api-service';
+import { CnCodeEditComponent } from '@shared/components/cn-code-edit/cn-code-edit.component';
 import {
     RelativeResolver,
     RelativeService
-} from "@core/relative-Service/relative-service";
-import { NzMessageService } from "ng-zorro-antd";
-import { CnComponentBase } from "@shared/components/cn-component-base";
+} from '@core/relative-Service/relative-service';
+import { NzMessageService } from 'ng-zorro-antd';
+import { CnComponentBase } from '@shared/components/cn-component-base';
 
 @Component({
-    selector: "cn-sql-editor",
-    templateUrl: "./sql-editor.component.html",
+    // tslint:disable-next-line:component-selector
+    selector: 'cn-sql-editor',
+    templateUrl: './sql-editor.component.html',
     styles: [
         `
             :host ::ng-deep .ant-table-expanded-row > td:last-child {
@@ -77,32 +78,33 @@ import { CnComponentBase } from "@shared/components/cn-component-base";
 })
 export class SqlEditorComponent extends CnComponentBase
     implements OnInit, OnDestroy {
-    total = 1;
-    pageIndex = 1;
-    pageSize = 100;
-    tableData = [];
-    _selectedRow;
-    _scriptName;
-    loading = true;
-    scriptModelList = [
-        { value: "get", name: "get" },
-        { value: "post", name: "post" },
-        { value: "put", name: "put" },
-        { value: "delete", name: "delete" }
+    public total = 1;
+    public pageIndex = 1;
+    public pageSize = 100;
+    public tableData = [];
+    public _selectedRow;
+    public _scriptName;
+    public loading = true;
+    public scriptModelList = [
+        { value: 'get', name: 'get' },
+        { value: 'post', name: 'post' },
+        { value: 'put', name: 'put' },
+        { value: 'delete', name: 'delete' }
     ];
-    scriptModel;
-    isModelloading = false;
-    _funcOptions;
-    _funcValue;
-    _moduleId;
-    _resourceName;
-    isAnalysisModel = 1;
-    bsnTypeMode;
+    public scriptModel;
+    public isModelloading = false;
+    public _funcOptions;
+    public _funcValue;
+    public _moduleId;
+    public _resourceName;
+    public isAnalysisModel = 1;
+    public bsnTypeMode;
+    private rname;
     @Input()
-    config;
-    codeMirrorConfig = { type: "text/x-sql" };
-    @ViewChild("editor")
-    editor: CnCodeEditComponent;
+    public config;
+    public codeMirrorConfig = { type: 'text/x-sql' };
+    @ViewChild('editor')
+    public editor: CnCodeEditComponent;
 
     constructor(
         private _http: ApiService,
@@ -112,10 +114,10 @@ export class SqlEditorComponent extends CnComponentBase
         super();
     }
 
-    async ngOnInit() {
+    public async ngOnInit() {
         const params = {
-            _select: "Id,name,parentId",
-            refProjectId: "7fe971700f21d3a796d2017398812dcd"
+            _select: 'Id,name,parentId',
+            refProjectId: '7fe971700f21d3a796d2017398812dcd'
         };
         const moduleData = await this.getModuleData(params);
         // 初始化模块列表，将数据加载到及联下拉列表当中
@@ -125,12 +127,12 @@ export class SqlEditorComponent extends CnComponentBase
     }
 
     // 获取模块信息
-    async getModuleData(params) {
-        return this._http.get("common/CfgProjectModule", params).toPromise();
+    public async getModuleData(params) {
+        return this._http.get('common/CfgProjectModule', params).toPromise();
     }
 
     // 改变模块选项
-    async _changeModuleValue($event?) {
+    public async _changeModuleValue($event?) {
         // 选择功能模块，首先加载服务端配置列表
         if (this._funcValue.length > 0) {
             this._moduleId = this._funcValue[this._funcValue.length - 1];
@@ -139,7 +141,7 @@ export class SqlEditorComponent extends CnComponentBase
         }
     }
 
-    arrayToTree(data, parentid) {
+    public arrayToTree(data, parentid) {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
@@ -147,9 +149,9 @@ export class SqlEditorComponent extends CnComponentBase
                 const obj = { label: data[i].name, value: data[i].Id };
                 temp = this.arrayToTree(data, data[i].Id);
                 if (temp.length > 0) {
-                    obj["children"] = temp;
+                    obj['children'] = temp;
                 } else {
-                    obj["isLeaf"] = true;
+                    obj['isLeaf'] = true;
                 }
                 result.push(obj);
             }
@@ -157,13 +159,13 @@ export class SqlEditorComponent extends CnComponentBase
         return result;
     }
 
-    async load(condition?) {
+    public async load(condition?) {
         let param = {
             _page: this.pageIndex,
             _rows: this.pageSize,
-            _subResourceName: "CfgSqlParameter",
-            _subListRefPropName: "sqlScriptId",
-            _subSort: "orderCode"
+            _subResourceName: 'CfgSqlParameter',
+            _subListRefPropName: 'sqlScriptId',
+            _subSort: 'orderCode'
         };
 
         if (condition) {
@@ -178,12 +180,12 @@ export class SqlEditorComponent extends CnComponentBase
             this.tableData = response.data.rows;
             this.total = response.data.total;
             this.tableData.map(d => {
-                d["expand"] = false;
-                d["selected"] = false;
+                d['expand'] = false;
+                d['selected'] = false;
                 if (d.children && d.children.length > 0) {
-                    d["parameterList"] = d.children;
-                    d["parameterList"].forEach(p => {
-                        p["edit"] = false;
+                    d['parameterList'] = d.children;
+                    d['parameterList'].forEach(p => {
+                        p['edit'] = false;
                     });
                 }
             });
@@ -191,7 +193,7 @@ export class SqlEditorComponent extends CnComponentBase
         this.loading = false;
     }
 
-    selectRow(row) {
+    public selectRow(row) {
         this.tableData.map(d => {
             d.selected = false;
         });
@@ -201,16 +203,16 @@ export class SqlEditorComponent extends CnComponentBase
         this._resourceName = row.resourceName;
         this.isAnalysisModel = row.isAnalysisParameters;
         this.bsnTypeMode = row.confType;
-        this.scriptModel = row.requestMethod.split(",");
+        this.scriptModel = row.requestMethod.split(',');
         this._selectedRow = row;
     }
 
-    add() {
-        this.editor.setValue("");
+    public add() {
+        this.editor.setValue('');
         this.clearInfo();
     }
 
-    async save() {
+    public async save() {
         const sqlString = this.editor.getValue();
         let returnValue: any;
 
@@ -228,52 +230,52 @@ export class SqlEditorComponent extends CnComponentBase
             }
         }
         if (returnValue.isSuccess) {
-            this._message.create("success", "SQL 保存成功");
+            this._message.create('success', 'SQL 保存成功');
             this.load();
             this.clearInfo();
         } else {
-            this._message.create("error", returnValue.message);
+            this._message.create('error', returnValue.message);
         }
     }
 
-    clearInfo() {
+    public clearInfo() {
         this.isAnalysisModel = 1;
         this.bsnTypeMode = null;
         this.scriptModel = null;
         this._selectedRow = null;
         this._scriptName = null;
         this._resourceName = null;
-        this.editor.setValue("");
+        this.editor.setValue('');
     }
 
     // 删除SQL语句
-    delete(id) {
+    public delete(id) {
         (async () => {
             const resSql = await this.delSql(id);
             const resRelative = await this.delSqlRelative(id);
             if (resSql.isSuccess) {
-                this._message.create("success", "SQL 删除成功");
+                this._message.create('success', 'SQL 删除成功');
                 this.load();
                 this.clearInfo();
             } else {
-                this._message.create("error", resSql.message);
+                this._message.create('error', resSql.message);
             }
         })();
     }
 
     // 删除SQL 参数
-    deleteParam(id) {}
+    public deleteParam(id) {}
 
     private async addSql(sql) {
         const params = {
-            confType: this.bsnTypeMode ? this.bsnTypeMode : "", // 业务类型
+            confType: this.bsnTypeMode ? this.bsnTypeMode : '', // 业务类型
             isAnalysisParameters: this.isAnalysisModel, // 需要添加下拉列表 1, 0
             contents: sql,
             name: this._scriptName,
             resourceName: this._resourceName,
             isEnabled: 1,
             // isNeedDeploy: 1,
-            requestMethod: this.scriptModel.join(","),
+            requestMethod: this.scriptModel.join(','),
             isImmediateCreate: 1
         };
         return this._http.post(`common/CfgSql`, params).toPromise();
@@ -283,10 +285,10 @@ export class SqlEditorComponent extends CnComponentBase
         const params = {
             leftId: this._moduleId,
             rightId: sqlId,
-            leftResourceName: "CfgProjectModule",
-            rightResourceName: "CfgSql"
+            leftResourceName: 'CfgProjectModule',
+            rightResourceName: 'CfgSql'
         };
-        return this._http.post("common/SysDataLinks", params).toPromise();
+        return this._http.post('common/SysDataLinks', params).toPromise();
     }
 
     private async delSql(id) {
@@ -300,53 +302,61 @@ export class SqlEditorComponent extends CnComponentBase
             rightId: id,
             leftId: this._moduleId
         };
-        return this._http.delete("common/SysDataLinks", params).toPromise();
+        return this._http.delete('common/SysDataLinks', params).toPromise();
     }
 
     private async updateSql(sql) {
         const params = {
-            Id: this._selectedRow["Id"],
-            confType: this.bsnTypeMode ? this.bsnTypeMode : "",
+            Id: this._selectedRow['Id'],
+            confType: this.bsnTypeMode ? this.bsnTypeMode : '',
             contents: sql,
             name: this._scriptName,
             resourceName: this._resourceName,
             isEnabled: 1,
             // isNeedDeploy: 1,
-            requestMethod: this.scriptModel.join(","),
+            requestMethod: this.scriptModel.join(','),
             isAnalysisParameters: this.isAnalysisModel, // 需要添加下拉列表 1, 0
             isImmediateCreate: 1
         };
         return this._http.put(`common/CfgSql`, params).toPromise();
     }
 
-    changeEdit(data, flag) {
-        data["edit"] = flag;
+    public changeEdit(data, flag) {
+        data['edit'] = flag;
     }
 
-    saveParams(data) {
+    public saveParams(data) {
         this._http
-            .put("common/sql_parameter/update", data)
+            .put('common/sql_parameter/update', data)
             .subscribe(result => {
                 if (result.isSuccess) {
                     this.changeEdit(data, false);
-                    console.log("保存成功");
+                    console.log('保存成功');
                 } else {
-                    console.log("保存异常");
+                    console.log('保存异常');
                 }
             });
     }
 
-    setEnabledText(val) {
-        return val === 1 ? "启用" : "禁用";
+    public setEnabledText(val) {
+        return val === 1 ? '启用' : '禁用';
     }
 
-    setPublishText(val) {
-        return val === 1 ? "已发布" : "未发布";
+    public setPublishText(val) {
+        return val === 1 ? '已发布' : '未发布';
     }
 
-    ngOnDestroy() {}
+    public search($event: KeyboardEvent) {
+        if ($event.keyCode === 13) {
+            const condition =  this.rname ? {resourceName: `ctn(%${this.rname}%)`} : {}
+            this.load(condition);
+        }
+        
+    }
 
-    cancel() {}
+    public ngOnDestroy() {}
+
+    public cancel() {}
 
     // 添加参数修改: 数据类型, 是否可为空, 默认值 调用更新参数接口
 }

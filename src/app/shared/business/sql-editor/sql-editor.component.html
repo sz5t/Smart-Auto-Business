@@ -44,7 +44,7 @@
         </nz-card>
         <nz-row [nzGutter]="8">
                 <nz-col nzSpan="24">
-                        <nz-table #sqlTable [nzData]="tableData" [nzSize]="'small'" [nzLoading]="loading" [nzTotal]="total" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize">
+                        <nz-table #sqlTable [nzTitle]="tableSearch" [nzData]="tableData" [nzSize]="'small'" [nzLoading]="loading" [nzTotal]="total" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize">
                                 <thead>
                                         <tr>
                                                 <th nzShowExpand></th>
@@ -186,6 +186,9 @@
                                         </ng-template>
                                 </tbody>
                         </nz-table>
+                        <ng-template #tableSearch>
+                                <input nz-input [(ngModel)]="rname" placeholder="查询资源名称" (keyup)="search($event)">
+                        </ng-template>
                 </nz-col>
         </nz-row>
 </nz-card>

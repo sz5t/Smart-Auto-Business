@@ -243,7 +243,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
             // 1、支持原生API资源调用
             // 2、支持SQL存储过程和返回结果后续操作
             if (btn.ajaxConfig) {
-                debugger;
                 this.resolveAjaxConfig(btn.ajaxConfig, this.formState, callback);
             } else {
                 this.baseMessage.warning('未配置任何数据操作');

@@ -60,6 +60,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit {
     }
 
     public tabActive(tab) {
+        console.log(tab);
         setTimeout(() => {
             tab['active'] = true;
         })

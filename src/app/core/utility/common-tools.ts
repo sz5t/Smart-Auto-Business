@@ -7,6 +7,7 @@ export interface ParametersResolverModel {
     initValue?;
     cacheValue?;
     cascadeValue?;
+    returnValue?;
 }
 export class CommonTools {
     public static uuID(w) {
@@ -142,7 +143,12 @@ export class CommonTools {
                                 model.cascadeValue[param['valueName']];
                             }
                             break;
-
+                        case BSN_PARAMETER_TYPE.RETURN_VALUE:
+                            if (model.returnValue) {
+                                result[param['name']] =
+                                model.returnValue[param['valueName']];
+                            }
+                        break;
                             
                     }
                 }

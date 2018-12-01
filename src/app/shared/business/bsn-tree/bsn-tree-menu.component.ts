@@ -20,16 +20,16 @@ import { Observer ,  Observable ,  Subscription } from 'rxjs';
     `
     })
 export class CnBsnTreeMenuComponent extends CnComponentBase implements OnInit, OnDestroy {
-    @Input() config;
-    @Input() dropdown: NzDropdownContextComponent;
-    treeData;
-    _relativeResolver;
-    checkedKeys = [];
-    selectedKeys = [];
-    _toTreeBefore = [];
-    activedNode: NzTreeNode;
-    _cascadeState;
-    _checkItemList = [];
+    @Input() public config;
+    @Input() public dropdown: NzDropdownContextComponent;
+    public treeData;
+    public _relativeResolver;
+    public checkedKeys = [];
+    public selectedKeys = [];
+    public _toTreeBefore = [];
+    public activedNode: NzTreeNode;
+    public _cascadeState;
+    public _checkItemList = [];
     constructor(
         private _http: ApiService,
         private _message: NzMessageService,
@@ -40,16 +40,16 @@ export class CnBsnTreeMenuComponent extends CnComponentBase implements OnInit, O
         super();
     }
 
-    ngOnInit() {
+    public ngOnInit() {
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         if (this._cascadeState) {
             this._cascadeState.unsubscribe();
         }
     }
 
-    selectMenu(menuConfig, relationViewId) {
+    public selectMenu(menuConfig, relationViewId) {
         const action = menuConfig.action
             ? BSN_COMPONENT_MODES[menuConfig.action]
             : BSN_COMPONENT_MODES['EXECUTE'];
@@ -59,7 +59,8 @@ export class CnBsnTreeMenuComponent extends CnComponentBase implements OnInit, O
                 relationViewId,
                 {
                     type: menuConfig.actionType ? menuConfig.actionType : null,
-                    name: menuConfig.actionName ? menuConfig.actionName : null,
+                    name: menuConfig.name ? menuConfig.name : null,
+                    actionName: menuConfig.actionName ? menuConfig.actionName : null,
                     ajaxConfig: menuConfig.ajaxConfig ? menuConfig.ajaxConfig : null
                 }
             )

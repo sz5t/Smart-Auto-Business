@@ -687,6 +687,8 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                     config: {
                                         viewId: 'chart',
                                         component: 'dataSteps',
+                                        scrollWidth: '1000px',
+                                        scrollHeight: 'auto',
                                         width: 1400,
                                         height: 60,
                                         stepNum: 50,
@@ -695,7 +697,7 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                         textField: 'caseName',
                                         mainTitle: '',
                                         subTitle: '',
-                                        position: 'lc',
+                                        position: 'cc',
                                         direction: 'horizontal',
                                         labelOffsetX: 0,
                                         labelOffsetY: -30,
@@ -738,6 +740,8 @@ export class TableChartComponent implements OnInit, AfterViewInit {
                                     config: {
                                         viewId: 'chart34',
                                         component: 'dataSteps',
+                                        scrollWidth: 'auto',
+                                        scrollHeight: '1000px',
                                         width: 120,
                                         height: 1000,
                                         stepNum: 50,

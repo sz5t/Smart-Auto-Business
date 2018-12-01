@@ -1674,8 +1674,9 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     {
                                                         controls: [
                                                             {
-                                                                type: "input",
+                                                                type: "textarea",
                                                                 labelSize: "6",
+                                                                autoSize: 6,
                                                                 controlSize:
                                                                     "16",
                                                                 inputType:
@@ -2173,7 +2174,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                     {
                                                         controls: [
                                                             {
-                                                                type: "input",
+                                                                type: "textarea",
                                                                 labelSize: "6",
                                                                 controlSize:
                                                                     "16",

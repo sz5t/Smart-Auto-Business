@@ -1,8 +1,8 @@
-import { CnMonthPickerComponent } from "./../../components/cn-date-picker/cn-month-picker.component";
-import { CnYearPickerComponent } from "./../../components/cn-date-picker/cn-year-picker.component";
-import { CnWeekPickerComponent } from "./../../components/cn-date-picker/cn-week-picker.component";
-import { CnComponentBase } from "@shared/components/cn-component-base";
-import { CnFormHiddenComponent } from "@shared/components/cn-form-hidden/cn-form-hidden.component";
+import { CnMonthPickerComponent } from './../../components/cn-date-picker/cn-month-picker.component';
+import { CnYearPickerComponent } from './../../components/cn-date-picker/cn-year-picker.component';
+import { CnWeekPickerComponent } from './../../components/cn-date-picker/cn-week-picker.component';
+import { CnComponentBase } from '@shared/components/cn-component-base';
+import { CnFormHiddenComponent } from '@shared/components/cn-form-hidden/cn-form-hidden.component';
 import {
     ComponentFactoryResolver,
     ComponentRef,
@@ -15,26 +15,26 @@ import {
     Output,
     EventEmitter,
     OnDestroy
-} from "@angular/core";
-import { CnFormInputComponent } from "@shared/components/cn-form-input/cn-form-input.component";
-import { CnFormSubmitComponent } from "@shared/components/cn-form-submit/cn-form-submit.component";
-import { CnFormSelectComponent } from "@shared/components/cn-form-select/cn-form-select.component";
-import { CnDatePickerComponent } from "@shared/components/cn-date-picker/cn-date-picker.component";
-import { CnTimePickerComponent } from "@shared/components/cn-time-picker/cn-time-picker.component";
-import { CnFormRangePickerComponent } from "@shared/components/cn-form-range-picker/cn-form-range-picker.component";
-import { CnFormCheckboxComponent } from "@shared/components/cn-form-checkbox/cn-form-checkbox.component";
-import { CnFormCheckboxGroupComponent } from "@shared/components/cn-form-checkbox-group/cn-form-checkbox-group.component";
-import { CnFormRadioGroupComponent } from "@shared/components/cn-form-radio-group/cn-form-radio-group.component";
-import { CnFormSearchComponent } from "@shared/components/cn-form-search/cn-form-search.component";
-import { CnFormSelectTreeComponent } from "@shared/components/cn-form-select-tree/cn-form-select-tree.component";
-import { CnFormTextareaComponent } from "@shared/components/cn-form-textarea/cn-form-textarea.component";
-import { CnFormNumberComponent } from "@shared/components/cn-form-number/cn-form-number.component";
-import { CnFormSelectMultipleComponent } from "@shared/components/cn-form-select-multiple/cn-form-select-multiple.component";
-import { CnFormSelectTreeMultipleComponent } from "@shared/components/cn-form-select-tree-multiple/cn-form-select-tree-multiple.component";
-import { CnFormSelectGridComponent } from "@shared/components/cn-form-select-grid/cn-form-select-grid.component";
-import { CnFormSelectTreegridComponent } from "@shared/components/cn-form-select-treegrid/cn-form-select-treegrid.component";
-import { CnFormScancodeComponent } from "@shared/components/cn-form-scancode/cn-form-scancode.component";
-import { CnFormGridComponent } from "@shared/components/cn-form-grid/cn-form-grid.component";
+} from '@angular/core';
+import { CnFormInputComponent } from '@shared/components/cn-form-input/cn-form-input.component';
+import { CnFormSubmitComponent } from '@shared/components/cn-form-submit/cn-form-submit.component';
+import { CnFormSelectComponent } from '@shared/components/cn-form-select/cn-form-select.component';
+import { CnDatePickerComponent } from '@shared/components/cn-date-picker/cn-date-picker.component';
+import { CnTimePickerComponent } from '@shared/components/cn-time-picker/cn-time-picker.component';
+import { CnFormRangePickerComponent } from '@shared/components/cn-form-range-picker/cn-form-range-picker.component';
+import { CnFormCheckboxComponent } from '@shared/components/cn-form-checkbox/cn-form-checkbox.component';
+import { CnFormCheckboxGroupComponent } from '@shared/components/cn-form-checkbox-group/cn-form-checkbox-group.component';
+import { CnFormRadioGroupComponent } from '@shared/components/cn-form-radio-group/cn-form-radio-group.component';
+import { CnFormSearchComponent } from '@shared/components/cn-form-search/cn-form-search.component';
+import { CnFormSelectTreeComponent } from '@shared/components/cn-form-select-tree/cn-form-select-tree.component';
+import { CnFormTextareaComponent } from '@shared/components/cn-form-textarea/cn-form-textarea.component';
+import { CnFormNumberComponent } from '@shared/components/cn-form-number/cn-form-number.component';
+import { CnFormSelectMultipleComponent } from '@shared/components/cn-form-select-multiple/cn-form-select-multiple.component';
+import { CnFormSelectTreeMultipleComponent } from '@shared/components/cn-form-select-tree-multiple/cn-form-select-tree-multiple.component';
+import { CnFormSelectGridComponent } from '@shared/components/cn-form-select-grid/cn-form-select-grid.component';
+import { CnFormSelectTreegridComponent } from '@shared/components/cn-form-select-treegrid/cn-form-select-treegrid.component';
+import { CnFormScancodeComponent } from '@shared/components/cn-form-scancode/cn-form-scancode.component';
+import { CnFormGridComponent } from '@shared/components/cn-form-grid/cn-form-grid.component';
 
 const components: { [type: string]: Type<any> } = {
     input: CnFormInputComponent,
@@ -62,24 +62,24 @@ const components: { [type: string]: Type<any> } = {
     datagrid: CnFormGridComponent
 };
 @Directive({
-    selector: "[cnFormResolverDirective]"
+    selector: '[cnFormResolverDirective]'
 })
 export class FormResolverDirective extends CnComponentBase
     implements OnInit, OnChanges, OnDestroy {
     @Input()
-    config;
+    public config;
     @Input()
-    formGroup;
+    public formGroup;
     @Input()
-    changeConfig;
+    public changeConfig;
     @Input()
-    tempValue;
+    public tempValue;
     @Input()
-    initValue;
+    public initValue;
     @Output()
-    updateValue = new EventEmitter();
-    component: ComponentRef<any>;
-    value;
+    public updateValue = new EventEmitter();
+    public component: ComponentRef<any>;
+    public value;
     constructor(
         private resolver: ComponentFactoryResolver,
         private container: ViewContainerRef
@@ -87,7 +87,7 @@ export class FormResolverDirective extends CnComponentBase
         super();
     }
 
-    ngOnChanges() {
+    public ngOnChanges() {
         if (this.component) {
             this.component.instance.config = this.config;
             this.component.instance.formGroup = this.formGroup;
@@ -112,13 +112,13 @@ export class FormResolverDirective extends CnComponentBase
                 this.component.instance.value = this.value;
                 // }
                 if (
-                    this.config.type !== "submit" ||
-                    this.config.type !== "button" ||
-                    this.config.type !== "search"
+                    this.config.type !== 'submit' ||
+                    this.config.type !== 'button' ||
+                    this.config.type !== 'search'
                 ) {
                     this.component.instance.formGroup = this.formGroup;
                 }
-                if (this.config.type === "search") {
+                if (this.config.type === 'search') {
                     // 测试事件上抛
                     // (<CnFormSearchComponent>this.component.instance).searchEmitter.subscribe(() => {
                     //   // console.log('search');
@@ -191,9 +191,9 @@ export class FormResolverDirective extends CnComponentBase
         // }
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         if (!components[this.config.type]) {
-            const supportedTypes = Object.keys(components).join(", ");
+            const supportedTypes = Object.keys(components).join(', ');
             throw new Error(
                 `不支持此类型的组件 (${
                     this.config.type
@@ -213,13 +213,13 @@ export class FormResolverDirective extends CnComponentBase
         this.component.instance.initValue = this.initValue;
         // }
         if (
-            this.config.type !== "submit" ||
-            this.config.type !== "button" ||
-            this.config.type !== "search"
+            this.config.type !== 'submit' ||
+            this.config.type !== 'button' ||
+            this.config.type !== 'search'
         ) {
             this.component.instance.formGroup = this.formGroup;
         }
-        if (this.config.type === "search") {
+        if (this.config.type === 'search') {
             // 测试事件上抛
             // (<CnFormSearchComponent>this.component.instance).searchEmitter.subscribe(() => {
             //   // console.log('search');
@@ -242,12 +242,12 @@ export class FormResolverDirective extends CnComponentBase
     }
 
     // 组件将值写回、级联数据-》回写 liu
-    setValue(data?) {
+    public setValue(data?) {
         this.updateValue.emit(data);
         // console.log('级联数据回写触发后', data);
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         if (this.component) {
             this.component.destroy();
         }

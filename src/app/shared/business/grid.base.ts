@@ -1,17 +1,17 @@
-import { BeforeOperation } from "./before-operation.base";
-import { BsnUploadComponent } from "./bsn-upload/bsn-upload.component";
-import { CnComponentBase } from "@shared/components/cn-component-base";
+import { BeforeOperation } from './before-operation.base';
+import { BsnUploadComponent } from './bsn-upload/bsn-upload.component';
+import { CnComponentBase } from '@shared/components/cn-component-base';
 import {
     BSN_COMPONENT_CASCADE,
     BSN_EXECUTE_ACTION,
     BSN_OUTPOUT_PARAMETER_TYPE
-} from "@core/relative-Service/BsnTableStatus";
-import { NzModalService, NzMessageService } from "ng-zorro-antd";
-import { ApiService } from "@core/utility/api-service";
-import { CommonTools } from "@core/utility/common-tools";
-import { LayoutResolverComponent } from "@shared/resolver/layout-resolver/layout-resolver.component";
-import { CnFormWindowResolverComponent } from "@shared/resolver/form-resolver/form-window-resolver.component";
-import { FormResolverComponent } from "@shared/resolver/form-resolver/form-resolver.component";
+} from '@core/relative-Service/BsnTableStatus';
+import { NzModalService, NzMessageService } from 'ng-zorro-antd';
+import { ApiService } from '@core/utility/api-service';
+import { CommonTools } from '@core/utility/common-tools';
+import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
+import { CnFormWindowResolverComponent } from '@shared/resolver/form-resolver/form-window-resolver.component';
+import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
 
 export class GridBase extends CnComponentBase {
     private _dataList;
@@ -195,7 +195,7 @@ export class GridBase extends CnComponentBase {
         super();
     }
 
-    resolver(option) {
+    public resolver(option) {
         if (option.ajaxConfig && option.ajaxConfig.length > 0) {
             option.ajaxConfig.filter(c => !c.parentName).map(c => {
                 this.getAjaxConfig(c, option);
@@ -213,7 +213,7 @@ export class GridBase extends CnComponentBase {
                         this.dataList.filter(item => item.checked === true)
                             .length <= 0
                     ) {
-                        this._message.create("info", "请选择要执行的数据");
+                        this._message.create('info', '请选择要执行的数据');
                         return false;
                     }
                     // 目前还未解决confirm确认操作后的后续执行问题
@@ -223,14 +223,14 @@ export class GridBase extends CnComponentBase {
                         return false;
                     }
 
-                    msg = "操作完成";
+                    msg = '操作完成';
                     this.buildConfirm(c, option.ajaxConfig, handleData, msg);
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_SELECTED:
-                    if (this.selectedItem["row_status"] === "adding") {
+                    if (this.selectedItem['row_status'] === 'adding') {
                         this.message.create(
-                            "info",
-                            "当前数据未保存无法进行处理"
+                            'info',
+                            '当前数据未保存无法进行处理'
                         );
                         return false;
                     }
@@ -240,7 +240,7 @@ export class GridBase extends CnComponentBase {
                         return false;
                     }
 
-                    msg = "操作完成";
+                    msg = '操作完成';
                     this.buildConfirm(c, option.ajaxConfig, handleData, msg);
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_CHECKED_ID:
@@ -248,7 +248,7 @@ export class GridBase extends CnComponentBase {
                         this.dataList.filter(item => item.checked === true)
                             .length <= 0
                     ) {
-                        this._message.create("info", "请选择要执行的数据");
+                        this._message.create('info', '请选择要执行的数据');
                         return false;
                     }
                     handleData = this.getCheckItemsId();
@@ -257,12 +257,12 @@ export class GridBase extends CnComponentBase {
                         return false;
                     }
 
-                    msg = "操作完成";
+                    msg = '操作完成';
                     this.buildConfirm(c, option.ajaxConfig, handleData, msg);
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_ROW:
                     handleData = this.getEditedRows();
-                    msg = "编辑数据保存成功";
+                    msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
                     }
@@ -271,7 +271,7 @@ export class GridBase extends CnComponentBase {
                 case BSN_EXECUTE_ACTION.EXECUTE_SAVE_ROW:
                     // 获取更新状态的数据
                     handleData = this.getAddedRows();
-                    msg = "新增数据保存成功";
+                    msg = '新增数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
                     }
@@ -279,7 +279,7 @@ export class GridBase extends CnComponentBase {
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_TREE_ROW:
                     handleData = this._getTreeEditRows();
-                    msg = "编辑数据保存成功";
+                    msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
                     }
@@ -288,7 +288,7 @@ export class GridBase extends CnComponentBase {
                 case BSN_EXECUTE_ACTION.EXECUTE_SAVE_TREE_ROW:
                     // 获取更新状态的数据
                     handleData = this._getTreeAddedRows();
-                    msg = "新增数据保存成功";
+                    msg = '新增数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
                     }
@@ -309,8 +309,8 @@ export class GridBase extends CnComponentBase {
     protected buildConfirm(c, ajaxConfigs, handleData, msg) {
         if (c.message) {
             this._modalService.confirm({
-                nzTitle: c.title ? c.title : "提示",
-                nzContent: c.message ? c.message : "",
+                nzTitle: c.title ? c.title : '提示',
+                nzContent: c.message ? c.message : '',
                 nzOnOk: () => {
                     (async () => {
                         const response = await this.executeAjaxConfig(
@@ -407,7 +407,7 @@ export class GridBase extends CnComponentBase {
         // 执行数据操作
         return this.executeRequest(
             ajaxConfigObj.url,
-            ajaxConfigObj.ajaxType ? ajaxConfigObj.ajaxType : "post",
+            ajaxConfigObj.ajaxType ? ajaxConfigObj.ajaxType : 'post',
             executeParams
         );
     }
@@ -423,7 +423,7 @@ export class GridBase extends CnComponentBase {
         // 执行数据操作
         return this.executeRequest(
             ajaxConfigObj.url,
-            ajaxConfigObj.ajaxType ? ajaxConfigObj.ajaxType : "post",
+            ajaxConfigObj.ajaxType ? ajaxConfigObj.ajaxType : 'post',
             executeParam
         );
     }
@@ -437,20 +437,20 @@ export class GridBase extends CnComponentBase {
             // }
             if (
                 item.checked === true &&
-                item["row_status"] !== "adding" &&
-                item["row_status"] !== "updating" &&
-                item["row_status"] !== "search"
+                item['row_status'] !== 'adding' &&
+                item['row_status'] !== 'updating' &&
+                item['row_status'] !== 'search'
             ) {
                 // 删除服务端数据
                 serverData.push(item);
             }
         });
-        this.tempValue["checkedRow"] = serverData;
+        this.tempValue['checkedRow'] = serverData;
         return serverData;
     }
 
     protected getSelectedItem() {
-        this.tempValue["selectedRow"] = this.selectedItem;
+        this.tempValue['selectedRow'] = this.selectedItem;
         return this.selectedItem;
     }
 
@@ -463,23 +463,23 @@ export class GridBase extends CnComponentBase {
             // }
             if (
                 item.checked === true &&
-                item["row_status"] !== "adding" &&
-                item["row_status"] !== "updating" &&
-                item["row_status"] !== "search"
+                item['row_status'] !== 'adding' &&
+                item['row_status'] !== 'updating' &&
+                item['row_status'] !== 'search'
             ) {
                 // 删除服务端数据
-                serverData.push(item["Id"]);
+                serverData.push(item['Id']);
             }
         });
-        this.tempValue["_checkedIds"] = serverData.join(",");
-        return serverData.join(",");
+        this.tempValue['_checkedIds'] = serverData.join(',');
+        return serverData.join(',');
     }
 
     protected getAddedRows() {
         const addedRows = [];
         this.dataList.map(item => {
-            delete item["$type"];
-            if (item["row_status"] === "adding") {
+            delete item['$type'];
+            if (item['row_status'] === 'adding') {
                 addedRows.push(item);
             }
         });
@@ -489,8 +489,8 @@ export class GridBase extends CnComponentBase {
     protected getEditedRows() {
         const updatedRows = [];
         this.dataList.map(item => {
-            delete item["$type"];
-            if (item["row_status"] === "updating") {
+            delete item['$type'];
+            if (item['row_status'] === 'updating') {
                 updatedRows.push(item);
             }
         });
@@ -505,12 +505,12 @@ export class GridBase extends CnComponentBase {
         const Ids = [];
         if (Array.isArray(data)) {
             data.forEach(d => {
-                Ids.push(d["$focusedOper$"] ? d["$focusedOper$"] : "");
+                Ids.push(d['$focusedOper$'] ? d['$focusedOper$'] : '');
             });
         } else {
-            Ids.push(data["$focusedOper$"] ? data["$focusedOper$"] : "");
+            Ids.push(data['$focusedOper$'] ? data['$focusedOper$'] : '');
         }
-        return Ids.join(",");
+        return Ids.join(',');
     }
 
     /**
@@ -551,33 +551,33 @@ export class GridBase extends CnComponentBase {
                     )
                 ];
             const msgObj = response.data[msg.name]
-                ? response.data[msg.name].split(":")
-                : "";
+                ? response.data[msg.name].split(':')
+                : '';
             // const valueObj = response.data[value.name] ? response.data[value.name] : [];
             // const tableObj = response.data[table.name] ? response.data[table.name] : [];
             if (msgObj && msgObj.length > 1) {
                 const messageType = msgObj[0];
                 let options;
                 switch (messageType) {
-                    case "info":
+                    case 'info':
                         options = {
-                            nzTitle: "提示",
-                            nzWidth: "350px",
+                            nzTitle: '提示',
+                            nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
                         this._modalService[messageType](options);
                         break;
-                    case "error":
+                    case 'error':
                         options = {
-                            nzTitle: "提示",
-                            nzWidth: "350px",
+                            nzTitle: '提示',
+                            nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
                         this._modalService[messageType](options);
                         break;
-                    case "confirm":
+                    case 'confirm':
                         options = {
-                            nzTitle: "提示",
+                            nzTitle: '提示',
                             nzContent: msgObj[1],
                             nzOnOk: () => {
                                 // 是否继续后续操作，根据返回状态结果
@@ -596,9 +596,9 @@ export class GridBase extends CnComponentBase {
                         };
                         this._modalService[messageType](options);
                         break;
-                    case "warning":
+                    case 'warning':
                         options = {
-                            nzTitle: "提示",
+                            nzTitle: '提示',
                             nzWidth: '350px',
                             nzContent: msgObj[1]
                         };

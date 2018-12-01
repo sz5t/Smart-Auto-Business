@@ -1,29 +1,30 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { _HttpClient } from "@delon/theme";
-import { SimpleTableColumn, SimpleTableComponent } from "@delon/abc";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { _HttpClient } from '@delon/theme';
+import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
 
 @Component({
-    selector: "app-tree-and-table",
-    templateUrl: "./tree-and-table.component.html"
+    selector: 'app-tree-and-table',
+    templateUrl: './tree-and-table.component.html'
 })
 export class TreeAndTableComponent implements OnInit {
     constructor(private http: _HttpClient) {}
 
-    ngOnInit() {
+    public ngOnInit() {
         // console.log(JSON.stringify(this.config));
     }
 
-    config = {
+    // tslint:disable-next-line:member-ordering
+    public config = {
         rows: [
             {
                 row: {
                     cols: [
                         {
-                            id: "area1",
-                            title: "结构树",
+                            id: 'area1',
+                            title: '结构树',
                             bodyStyle: {
-                                height: "800px",
-                                padding: "8px"
+                                height: '800px',
+                                padding: '8px'
                             },
                             span: 5,
                             size: {
@@ -36,10 +37,10 @@ export class TreeAndTableComponent implements OnInit {
                             viewCfg: [
                                 {
                                     config: {
-                                        viewId: "tree_and_table_tree",
-                                        keyId: "Id",
-                                        height: "500px",
-                                        component: "bsnTree",
+                                        viewId: 'tree_and_table_tree',
+                                        keyId: 'Id',
+                                        height: '500px',
+                                        component: 'bsnTree',
                                         asyncData: true, //
                                         expandAll: true, //
                                         checkable: true, //    在节点之前添加一个复选框 false
@@ -47,42 +48,42 @@ export class TreeAndTableComponent implements OnInit {
                                         columns: [
                                             // 字段映射，映射成树结构所需
                                             {
-                                                title: "主键",
-                                                field: "key",
-                                                valueName: "Id"
+                                                title: '主键',
+                                                field: 'key',
+                                                valueName: 'Id'
                                             },
                                             {
-                                                title: "父节点",
-                                                field: "parentId",
-                                                valueName: "parentId"
+                                                title: '父节点',
+                                                field: 'parentId',
+                                                valueName: 'parentId'
                                             },
                                             {
-                                                title: "标题",
-                                                field: "title",
-                                                valueName: "caseName"
+                                                title: '标题',
+                                                field: 'title',
+                                                valueName: 'caseName'
                                             }
                                         ],
                                         checkedMapping: [
                                             {
-                                                name: "enabled",
-                                                value: true
+                                                name: 'enabled',
+                                                value: '1'
                                             }
                                         ],
                                         defaultSelection: {
                                             selected: [
                                                 {
                                                     level: 1,
-                                                    field: "",
+                                                    field: '',
                                                     index: 2,
-                                                    reg: "",
-                                                    type: ""
+                                                    reg: '',
+                                                    type: ''
                                                 },
                                                 {
                                                     level: 2,
-                                                    field: "",
+                                                    field: '',
                                                     index: 1,
-                                                    reg: "",
-                                                    type: ""
+                                                    reg: '',
+                                                    type: ''
                                                 }
                                             ]
                                         },
@@ -90,43 +91,43 @@ export class TreeAndTableComponent implements OnInit {
                                             {
                                                 group: [
                                                     {
-                                                        name: "refresh",
-                                                        text: "刷新",
-                                                        action: "REFRESH",
-                                                        icon: "sync",
+                                                        name: 'refresh',
+                                                        text: '刷新',
+                                                        action: 'REFRESH',
+                                                        icon: 'sync',
                                                         color:
-                                                            "text-success-light",
-                                                        theme: "outline",
+                                                            'text-success-light',
+                                                        theme: 'outline',
                                                         cancelPermission: true
                                                     },
                                                     {
-                                                        name: "save",
-                                                        text: "保存",
-                                                        icon: "save",
+                                                        name: 'save',
+                                                        text: '保存',
+                                                        icon: 'save',
                                                         color:
-                                                            "text-success-light",
+                                                            'text-success-light',
                                                         cancelPermission: true,
                                                         ajaxConfig: [
                                                             {
                                                                 url:
-                                                                    "common/SetShowCaseEnable",
+                                                                    'common/SetShowCaseEnable',
                                                                 ajaxType:
-                                                                    "post",
+                                                                    'post',
                                                                 action:
-                                                                    "EXECUTE_NODES_CHECKED_KEY",
-                                                                title: "",
+                                                                    'EXECUTE_NODES_CHECKED_KEY',
+                                                                title: '',
                                                                 message:
-                                                                    "是否保存选中结点数据",
+                                                                    '是否保存选中结点数据',
                                                                 params: [
                                                                     {
                                                                         name:
-                                                                            "Ids",
+                                                                            'Ids',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "_checkedIds",
+                                                                            '_checkedIds',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     }
                                                                 ]
                                                             }
@@ -138,248 +139,248 @@ export class TreeAndTableComponent implements OnInit {
                                         menus: [
                                             {
                                                 relationViewId:
-                                                    "tree_and_form_form",
+                                                    'tree_and_form_form',
                                                 group: [
                                                     {
-                                                        name: "refresh",
-                                                        action: "REFRESH",
-                                                        text: "刷新",
-                                                        icon: "sync",
+                                                        name: 'refresh',
+                                                        action: 'REFRESH',
+                                                        text: '刷新',
+                                                        icon: 'sync',
                                                         color:
-                                                            "text-success-light"
+                                                            'text-success-light'
                                                     },
                                                     {
-                                                        name: "addRow",
+                                                        name: 'addRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "新增",
-                                                        action: "CREATE",
-                                                        icon: "plus",
+                                                            'editable-add-btn',
+                                                        text: '新增',
+                                                        action: 'CREATE',
+                                                        icon: 'plus',
                                                         color:
-                                                            "text-success-light"
+                                                            'text-success-light'
                                                     },
                                                     {
-                                                        name: "updateRow",
+                                                        name: 'updateRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "修改",
-                                                        action: "EDIT",
-                                                        icon: "edit",
-                                                        color: "text-success"
+                                                            'editable-add-btn',
+                                                        text: '修改',
+                                                        action: 'EDIT',
+                                                        icon: 'edit',
+                                                        color: 'text-success'
                                                     },
                                                     {
-                                                        name: "updateRow",
+                                                        name: 'updateRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "取消",
-                                                        action: "CANCEL",
-                                                        icon: "edit",
-                                                        color: "text-success"
+                                                            'editable-add-btn',
+                                                        text: '取消',
+                                                        action: 'CANCEL',
+                                                        icon: 'edit',
+                                                        color: 'text-success'
                                                     },
                                                     {
-                                                        name: "saveForm",
-                                                        text: "保存",
-                                                        icon: "save",
-                                                        color: "text-primary",
-                                                        action: "SAVE",
+                                                        name: 'saveForm',
+                                                        text: '保存',
+                                                        icon: 'save',
+                                                        color: 'text-primary',
+                                                        action: 'SAVE',
                                                         ajaxConfig: [
                                                             {
                                                                 url:
-                                                                    "common/ShowCase",
+                                                                    'common/ShowCase',
                                                                 ajaxType:
-                                                                    "post",
+                                                                    'post',
                                                                 params: [
                                                                     {
                                                                         name:
-                                                                            "parentId",
+                                                                            'parentId',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "_parentId"
+                                                                            '_parentId'
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "caseName",
+                                                                            'caseName',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "caseName",
+                                                                            'caseName',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "caseCount",
+                                                                            'caseCount',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "caseCount",
+                                                                            'caseCount',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "enabled",
+                                                                            'enabled',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "enabled",
+                                                                            'enabled',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "caseLevel",
+                                                                            'caseLevel',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "caseLevel",
+                                                                            'caseLevel',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "parentId",
+                                                                            'parentId',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "_parentId",
+                                                                            '_parentId',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "remark",
+                                                                            'remark',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "remark",
+                                                                            'remark',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "caseType",
+                                                                            'caseType',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "caseType",
+                                                                            'caseType',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     }
                                                                 ]
                                                             },
                                                             {
                                                                 url:
-                                                                    "common/ShowCase",
-                                                                ajaxType: "put",
+                                                                    'common/ShowCase',
+                                                                ajaxType: 'put',
                                                                 params: [
                                                                     {
                                                                         name:
-                                                                            "Id",
+                                                                            'Id',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "_id",
+                                                                            '_id',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "caseName",
+                                                                            'caseName',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "caseName",
+                                                                            'caseName',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "caseCount",
+                                                                            'caseCount',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "caseCount",
+                                                                            'caseCount',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "enabled",
+                                                                            'enabled',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "enabled",
+                                                                            'enabled',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "caseLevel",
+                                                                            'caseLevel',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "caseLevel",
+                                                                            'caseLevel',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "parentId",
+                                                                            'parentId',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "_parentId",
+                                                                            '_parentId',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "remark",
+                                                                            'remark',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "remark",
+                                                                            'remark',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "caseType",
+                                                                            'caseType',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "caseType",
+                                                                            'caseType',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     }
                                                                 ]
                                                             }
                                                         ]
                                                     },
                                                     {
-                                                        name: "deleteRow",
+                                                        name: 'deleteRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "删除",
-                                                        action: "DELETE",
-                                                        icon: "delete",
-                                                        color: "text-red-light",
+                                                            'editable-add-btn',
+                                                        text: '删除',
+                                                        action: 'DELETE',
+                                                        icon: 'delete',
+                                                        color: 'text-red-light',
                                                         ajaxConfig: [
                                                             {
                                                                 url:
-                                                                    "common/ShowCase",
+                                                                    'common/ShowCase',
                                                                 ajaxType:
-                                                                    "delete",
+                                                                    'delete',
                                                                 params: [
                                                                     {
                                                                         name:
-                                                                            "Id",
+                                                                            'Id',
                                                                         valueName:
-                                                                            "_id",
+                                                                            '_id',
                                                                         type:
-                                                                            "tempValue"
+                                                                            'tempValue'
                                                                     }
                                                                 ]
                                                             }
@@ -389,71 +390,72 @@ export class TreeAndTableComponent implements OnInit {
                                             },
                                             {
                                                 relationViewId:
-                                                    "tree_and_table_tree",
+                                                    'tree_and_table_tree',
                                                 group: [
                                                     {
-                                                        name: "addForm",
-                                                        text: "弹出新增表单",
-                                                        icon: "form",
-                                                        action: "FORM",
+                                                        name: 'addForm',
+                                                        text: '弹出新增表单',
+                                                        icon: 'form',
+                                                        action: 'FORM',
                                                         actionType:
-                                                            "formDialog",
+                                                            'formDialog',
                                                         actionName:
-                                                            "addShowCase",
-                                                        type: "showForm"
+                                                            'addShowCase',
+                                                        type: 'showForm'
                                                     },
                                                     {
-                                                        name: "editForm",
-                                                        text: "弹出编辑表单",
-                                                        icon: "form",
-                                                        action: "FORM",
+                                                        name: 'editForm',
+                                                        text: '弹出编辑表单',
+                                                        icon: 'form',
+                                                        action: 'FORM',
                                                         actionType:
-                                                            "formDialog",
+                                                            'formDialog',
                                                         actionName:
-                                                            "updateShowCase",
-                                                        type: "showForm"
+                                                            'updateShowCase',
+                                                        type: 'showForm'
                                                     },
                                                     {
-                                                        name: "batchEditForm",
+                                                        name: 'batchEditForm',
                                                         text:
-                                                            "弹出批量处理表单",
-                                                        action: "FORM_BATCH",
+                                                            '弹出批量处理表单',
+                                                        action: 'FORM_BATCH',
                                                         actionName:
-                                                            "batchUpdateShowCase",
-                                                        icon: "form",
-                                                        type: "showBatchForm"
+                                                            'batchUpdateShowCase',
+                                                        icon: 'form',
+                                                        type: 'showBatchForm'
                                                     },
                                                     {
-                                                        name: "showDialogPage",
-                                                        text: "弹出页面",
-                                                        action: "WINDOW",
+                                                        name: 'showDialogPage',
+                                                        text: '弹出页面',
+                                                        action: 'WINDOW',
                                                         actionType:
-                                                            "windowDialog",
+                                                            'windowDialog',
                                                         actionName:
-                                                            "ShowCaseWindow",
-                                                        type: "showLayout"
+                                                            'ShowCaseWindow',
+                                                        type: 'showLayout',
+                                                        cancelPermission: true
                                                     },
                                                     {
-                                                        name: "upload",
-                                                        icon: "upload",
-                                                        text: "附件上传",
-                                                        action: "UPLOAD",
+                                                        name: 'upload',
+                                                        icon: 'upload',
+                                                        text: '附件上传',
+                                                        action: 'UPLOAD',
                                                         actionType:
-                                                            "uploadDialog",
+                                                            'uploadDialog',
                                                         actionName:
-                                                            "uploadCase",
-                                                        type: "uploadDialog"
+                                                            'uploadCase',
+                                                        type: 'uploadDialog'
                                                     },
                                                     {
-                                                        name: "addFormcascade",
-                                                        text: "级联例子",
-                                                        icon: "form",
-                                                        action: "FORM",
+                                                        name: 'addFormcascade',
+                                                        text: '级联例子',
+                                                        icon: 'form',
+                                                        action: 'FORM',
                                                         actionType:
-                                                            "formDialog",
+                                                            'formDialog',
                                                         actionName:
-                                                            "addShowCasecascade",
-                                                        type: "showForm"
+                                                            'addShowCasecascade',
+                                                        type: 'showForm'
                                                     }
                                                 ]
                                             }
@@ -465,15 +467,15 @@ export class TreeAndTableComponent implements OnInit {
                                         },
                                         parent: [
                                             {
-                                                name: "parentId",
-                                                type: "value",
-                                                valueName: "",
+                                                name: 'parentId',
+                                                type: 'value',
+                                                valueName: '',
                                                 value: null
                                             }
                                         ],
                                         ajaxConfig: {
-                                            url: "common/ShowCase",
-                                            ajaxType: "get",
+                                            url: 'common/ShowCase',
+                                            ajaxType: 'get',
                                             params: [
                                                 // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
                                             ]
@@ -481,20 +483,20 @@ export class TreeAndTableComponent implements OnInit {
                                         relations: [
                                             {
                                                 relationViewId:
-                                                    "tree_and_form_form",
-                                                cascadeMode: "REFRESH",
+                                                    'tree_and_form_form',
+                                                cascadeMode: 'REFRESH',
                                                 params: []
                                             }
                                         ],
                                         formDialog: [
                                             {
-                                                keyId: "Id",
-                                                name: "addShowCase",
-                                                layout: "horizontal",
-                                                title: "新增数据",
-                                                width: "800",
+                                                keyId: 'Id',
+                                                name: 'addShowCase',
+                                                layout: 'horizontal',
+                                                title: '新增数据',
+                                                width: '800',
                                                 isCard: true,
-                                                type: "add",
+                                                type: 'add',
                                                 componentType: {
                                                     parent: false,
                                                     child: false,
@@ -504,143 +506,143 @@ export class TreeAndTableComponent implements OnInit {
                                                     {
                                                         controls: [
                                                             {
-                                                                type: "select",
-                                                                labelSize: "6",
+                                                                type: 'select',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "submit",
-                                                                name: "enabled",
-                                                                label: "状态",
+                                                                    'submit',
+                                                                name: 'enabled',
+                                                                label: '状态',
                                                                 notFoundContent:
-                                                                    "",
+                                                                    '',
                                                                 selectModel: false,
                                                                 showSearch: true,
                                                                 placeholder:
-                                                                    "--请选择--",
+                                                                    '--请选择--',
                                                                 disabled: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 defaultValue: 1,
                                                                 options: [
                                                                     {
                                                                         label:
-                                                                            "启用",
+                                                                            '启用',
                                                                         value: 0
                                                                     },
                                                                     {
                                                                         label:
-                                                                            "禁用",
+                                                                            '禁用',
                                                                         value: 1
                                                                     }
                                                                 ],
                                                                 layout:
-                                                                    "column",
-                                                                span: "24"
+                                                                    'column',
+                                                                span: '24'
                                                             }
                                                         ]
                                                     },
                                                     {
                                                         controls: [
                                                             {
-                                                                type: "select",
-                                                                labelSize: "6",
+                                                                type: 'select',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "submit",
+                                                                    'submit',
                                                                 name:
-                                                                    "caseType",
-                                                                label: "父类别",
+                                                                    'caseType',
+                                                                label: '父类别',
                                                                 labelName:
-                                                                    "caseName",
-                                                                valueName: "Id",
+                                                                    'caseName',
+                                                                valueName: 'Id',
                                                                 notFoundContent:
-                                                                    "",
+                                                                    '',
                                                                 selectModel: false,
                                                                 showSearch: true,
                                                                 placeholder:
-                                                                    "--请选择--",
+                                                                    '--请选择--',
                                                                 disabled: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 defaultValue:
-                                                                    "6b4021cef8394d5fb4775afcd01d920f",
+                                                                    '6b4021cef8394d5fb4775afcd01d920f',
                                                                 ajaxConfig: {
                                                                     url:
-                                                                        "common/ShowCase",
+                                                                        'common/ShowCase',
                                                                     ajaxType:
-                                                                        "get",
+                                                                        'get',
                                                                     params: []
                                                                 },
                                                                 cascader: [
                                                                     {
                                                                         name:
-                                                                            "getCaseName",
+                                                                            'getCaseName',
                                                                         type:
-                                                                            "sender",
+                                                                            'sender',
                                                                         cascaderData: {
                                                                             params: [
                                                                                 {
                                                                                     pid:
-                                                                                        "Id",
+                                                                                        'Id',
                                                                                     cid:
-                                                                                        "_typeId"
+                                                                                        '_typeId'
                                                                                 }
                                                                             ]
                                                                         }
                                                                     }
                                                                 ],
                                                                 layout:
-                                                                    "column",
-                                                                span: "24"
+                                                                    'column',
+                                                                span: '24'
                                                             }
                                                         ]
                                                     },
                                                     {
                                                         controls: [
                                                             {
-                                                                type: "input",
-                                                                labelSize: "6",
+                                                                type: 'input',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "text",
+                                                                    'text',
                                                                 name:
-                                                                    "caseName",
-                                                                label: "名称",
+                                                                    'caseName',
+                                                                label: '名称',
                                                                 isRequired: true,
                                                                 placeholder:
-                                                                    "请输入Case名称",
-                                                                perfix: "edit",
+                                                                    '请输入Case名称',
+                                                                perfix: 'edit',
                                                                 disabled: false,
                                                                 readonly: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 layout:
-                                                                    "column",
+                                                                    'column',
                                                                 explain:
-                                                                    "名称需要根据规范填写",
-                                                                span: "24",
+                                                                    '名称需要根据规范填写',
+                                                                span: '24',
                                                                 validations: [
                                                                     {
                                                                         validator:
-                                                                            "required",
+                                                                            'required',
                                                                         errorMessage:
-                                                                            "请输入Case名称!!!!"
+                                                                            '请输入Case名称!!!!'
                                                                     },
                                                                     {
                                                                         validator:
-                                                                            "minLength",
+                                                                            'minLength',
                                                                         length:
-                                                                            "3",
+                                                                            '3',
                                                                         errorMessage:
-                                                                            "请输入最少三个字符"
+                                                                            '请输入最少三个字符'
                                                                     },
                                                                     {
                                                                         validator:
-                                                                            "maxLength",
+                                                                            'maxLength',
                                                                         length:
-                                                                            "5",
+                                                                            '5',
                                                                         errorMessage:
-                                                                            "请输入最5个字符"
+                                                                            '请输入最5个字符'
                                                                     }
                                                                 ]
                                                             }
@@ -649,29 +651,29 @@ export class TreeAndTableComponent implements OnInit {
                                                     {
                                                         controls: [
                                                             {
-                                                                type: "input",
-                                                                labelSize: "6",
+                                                                type: 'input',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "text",
+                                                                    'text',
                                                                 name:
-                                                                    "caseLevel",
-                                                                label: "级别",
+                                                                    'caseLevel',
+                                                                label: '级别',
                                                                 isRequired: true,
-                                                                placeholder: "",
+                                                                placeholder: '',
                                                                 disabled: false,
                                                                 readonly: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 layout:
-                                                                    "column",
-                                                                span: "24",
+                                                                    'column',
+                                                                span: '24',
                                                                 validations: [
                                                                     {
                                                                         validator:
-                                                                            "required",
+                                                                            'required',
                                                                         errorMessage:
-                                                                            "请输入级别"
+                                                                            '请输入级别'
                                                                     }
                                                                 ]
                                                             }
@@ -681,23 +683,23 @@ export class TreeAndTableComponent implements OnInit {
                                                         controls: [
                                                             {
                                                                 type:
-                                                                    "checkboxGroup",
-                                                                label: "选项",
-                                                                labelSize: "6",
+                                                                    'checkboxGroup',
+                                                                label: '选项',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "18",
-                                                                name: "enabled",
+                                                                    '18',
+                                                                name: 'enabled',
                                                                 disabled: false,
                                                                 options: [
                                                                     {
                                                                         label:
-                                                                            "启用",
+                                                                            '启用',
                                                                         value: true,
                                                                         disabled: false
                                                                     },
                                                                     {
                                                                         label:
-                                                                            "禁用",
+                                                                            '禁用',
                                                                         value: false,
                                                                         disabled: false
                                                                     }
@@ -709,24 +711,24 @@ export class TreeAndTableComponent implements OnInit {
                                                         controls: [
                                                             {
                                                                 type:
-                                                                    "radioGroup",
-                                                                label: "选项",
-                                                                labelSize: "6",
+                                                                    'radioGroup',
+                                                                label: '选项',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "18",
+                                                                    '18',
                                                                 name:
-                                                                    "enabled1",
+                                                                    'enabled1',
                                                                 disabled: false,
                                                                 options: [
                                                                     {
                                                                         label:
-                                                                            "启用",
+                                                                            '启用',
                                                                         value: true,
                                                                         disabled: false
                                                                     },
                                                                     {
                                                                         label:
-                                                                            "禁用",
+                                                                            '禁用',
                                                                         value: false,
                                                                         disabled: false
                                                                     }
@@ -737,36 +739,36 @@ export class TreeAndTableComponent implements OnInit {
                                                     {
                                                         controls: [
                                                             {
-                                                                type: "input",
-                                                                labelSize: "6",
+                                                                type: 'input',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "text",
+                                                                    'text',
                                                                 name:
-                                                                    "caseCount",
-                                                                label: "数量",
+                                                                    'caseCount',
+                                                                label: '数量',
                                                                 isRequired: true,
-                                                                placeholder: "",
+                                                                placeholder: '',
                                                                 disabled: false,
                                                                 readonly: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 layout:
-                                                                    "column",
-                                                                span: "24",
+                                                                    'column',
+                                                                span: '24',
                                                                 validations: [
                                                                     {
                                                                         validator:
-                                                                            "required",
+                                                                            'required',
                                                                         errorMessage:
-                                                                            "请输入数量"
+                                                                            '请输入数量'
                                                                     },
                                                                     {
                                                                         validator:
-                                                                            "pattern",
+                                                                            'pattern',
                                                                         pattern: /^\d+$/,
                                                                         errorMessage:
-                                                                            "请填写数字"
+                                                                            '请填写数字'
                                                                     }
                                                                 ]
                                                             }
@@ -776,27 +778,27 @@ export class TreeAndTableComponent implements OnInit {
                                                         controls: [
                                                             {
                                                                 type:
-                                                                    "datePicker",
-                                                                labelSize: "6",
+                                                                    'datePicker',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "text",
+                                                                    'text',
                                                                 name:
-                                                                    "createTime",
+                                                                    'createTime',
                                                                 label:
-                                                                    "创建时间",
-                                                                placeholder: "",
+                                                                    '创建时间',
+                                                                placeholder: '',
                                                                 disabled: false,
                                                                 readonly: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 layout:
-                                                                    "column",
+                                                                    'column',
                                                                 showTime: true,
                                                                 format:
-                                                                    "yyyy-MM-dd",
+                                                                    'yyyy-MM-dd',
                                                                 showToday: true,
-                                                                span: "24"
+                                                                span: '24'
                                                             }
                                                         ]
                                                     },
@@ -804,144 +806,144 @@ export class TreeAndTableComponent implements OnInit {
                                                         controls: [
                                                             {
                                                                 type:
-                                                                    "rangePicker",
-                                                                labelSize: "6",
+                                                                    'rangePicker',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "text",
+                                                                    'text',
                                                                 name:
-                                                                    "createTime",
+                                                                    'createTime',
                                                                 label:
-                                                                    "时间范围",
-                                                                placeholder: "",
+                                                                    '时间范围',
+                                                                placeholder: '',
                                                                 disabled: false,
                                                                 readonly: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 layout:
-                                                                    "column",
+                                                                    'column',
                                                                 showTime: true,
                                                                 format:
-                                                                    "yyyy-MM-dd",
+                                                                    'yyyy-MM-dd',
                                                                 showToday: true,
-                                                                span: "24"
+                                                                span: '24'
                                                             }
                                                         ]
                                                     },
                                                     {
                                                         controls: [
                                                             {
-                                                                type: "input",
-                                                                labelSize: "6",
+                                                                type: 'input',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "time",
-                                                                name: "remark",
-                                                                label: "备注",
-                                                                placeholder: "",
+                                                                    'time',
+                                                                name: 'remark',
+                                                                label: '备注',
+                                                                placeholder: '',
                                                                 disabled: false,
                                                                 readonly: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 layout:
-                                                                    "column",
-                                                                span: "24"
+                                                                    'column',
+                                                                span: '24'
                                                             }
                                                         ]
                                                     }
                                                 ],
                                                 buttons: [
                                                     {
-                                                        name: "save",
-                                                        text: "保存",
-                                                        type: "primary",
+                                                        name: 'save',
+                                                        text: '保存',
+                                                        type: 'primary',
                                                         ajaxConfig: {
                                                             post: [
                                                                 {
                                                                     ajaxType:
-                                                                        "post",
+                                                                        'post',
                                                                     url:
-                                                                        "common/ShowCase",
+                                                                        'common/ShowCase',
                                                                     params: [
                                                                         {
                                                                             name:
-                                                                                "caseName",
+                                                                                'caseName',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "caseName",
+                                                                                'caseName',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "caseCount",
+                                                                                'caseCount',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "caseCount",
+                                                                                'caseCount',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "createTime",
+                                                                                'createTime',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "createTime",
+                                                                                'createTime',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "enabled",
+                                                                                'enabled',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "enabled",
+                                                                                'enabled',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "caseLevel",
+                                                                                'caseLevel',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "caseLevel",
+                                                                                'caseLevel',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "parentId",
+                                                                                'parentId',
                                                                             type:
-                                                                                "tempValue",
+                                                                                'tempValue',
                                                                             valueName:
-                                                                                "_parentId",
+                                                                                '_parentId',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "remark",
+                                                                                'remark',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "remark",
+                                                                                'remark',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "caseType",
+                                                                                'caseType',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "caseType",
+                                                                                'caseType',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         }
                                                                     ]
                                                                 }
@@ -949,94 +951,94 @@ export class TreeAndTableComponent implements OnInit {
                                                         }
                                                     },
                                                     {
-                                                        name: "saveAndKeep",
-                                                        text: "保存并继续",
-                                                        type: "primary",
+                                                        name: 'saveAndKeep',
+                                                        text: '保存并继续',
+                                                        type: 'primary',
                                                         ajaxConfig: {
                                                             post: [
                                                                 {
                                                                     url:
-                                                                        "common/ShowCase",
+                                                                        'common/ShowCase',
                                                                     params: [
                                                                         {
                                                                             name:
-                                                                                "caseName",
+                                                                                'caseName',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "caseName",
+                                                                                'caseName',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "caseCount",
+                                                                                'caseCount',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "caseCount",
+                                                                                'caseCount',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "createTime",
+                                                                                'createTime',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "createTime",
+                                                                                'createTime',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "enabled",
+                                                                                'enabled',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "enabled",
+                                                                                'enabled',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "caseLevel",
+                                                                                'caseLevel',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "caseLevel",
+                                                                                'caseLevel',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "parentId",
+                                                                                'parentId',
                                                                             type:
-                                                                                "tempValue",
+                                                                                'tempValue',
                                                                             valueName:
-                                                                                "_parentId",
+                                                                                '_parentId',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "remark",
+                                                                                'remark',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "remark",
+                                                                                'remark',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "caseType",
+                                                                                'caseType',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "caseType",
+                                                                                'caseType',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         }
                                                                     ]
                                                                 }
@@ -1044,30 +1046,30 @@ export class TreeAndTableComponent implements OnInit {
                                                         }
                                                     },
                                                     {
-                                                        name: "reset",
-                                                        text: "重置"
+                                                        name: 'reset',
+                                                        text: '重置'
                                                     },
                                                     {
-                                                        name: "close",
-                                                        text: "关闭"
+                                                        name: 'close',
+                                                        text: '关闭'
                                                     }
                                                 ]
                                             },
                                             {
-                                                keyId: "Id",
-                                                name: "updateShowCase",
-                                                title: "编辑",
-                                                width: "600",
-                                                type: "edit",
+                                                keyId: 'Id',
+                                                name: 'updateShowCase',
+                                                title: '编辑',
+                                                width: '600',
+                                                type: 'edit',
                                                 ajaxConfig: {
-                                                    url: "common/ShowCase",
-                                                    ajaxType: "getById",
+                                                    url: 'common/ShowCase',
+                                                    ajaxType: 'getById',
                                                     params: [
                                                         {
-                                                            name: "Id",
-                                                            type: "tempValue",
-                                                            valueName: "_id",
-                                                            value: ""
+                                                            name: 'Id',
+                                                            type: 'tempValue',
+                                                            valueName: '_id',
+                                                            value: ''
                                                         }
                                                     ]
                                                 },
@@ -1080,116 +1082,116 @@ export class TreeAndTableComponent implements OnInit {
                                                     {
                                                         controls: [
                                                             {
-                                                                type: "select",
-                                                                labelSize: "6",
+                                                                type: 'select',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
-                                                                name: "enabled",
-                                                                label: "状态",
+                                                                    '16',
+                                                                name: 'enabled',
+                                                                label: '状态',
                                                                 notFoundContent:
-                                                                    "",
+                                                                    '',
                                                                 selectModel: false,
                                                                 showSearch: true,
                                                                 placeholder:
-                                                                    "--请选择--",
+                                                                    '--请选择--',
                                                                 disabled: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 defaultValue: 1,
                                                                 options: [
                                                                     {
                                                                         label:
-                                                                            "启用",
+                                                                            '启用',
                                                                         value: 1
                                                                     },
                                                                     {
                                                                         label:
-                                                                            "禁用",
+                                                                            '禁用',
                                                                         value: 0
                                                                     }
                                                                 ],
                                                                 layout:
-                                                                    "column",
-                                                                span: "24"
+                                                                    'column',
+                                                                span: '24'
                                                             }
                                                         ]
                                                     },
                                                     {
                                                         controls: [
                                                             {
-                                                                type: "select",
-                                                                labelSize: "6",
+                                                                type: 'select',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "submit",
+                                                                    'submit',
                                                                 name:
-                                                                    "parentId",
-                                                                label: "父类别",
+                                                                    'parentId',
+                                                                label: '父类别',
                                                                 labelName:
-                                                                    "caseName",
-                                                                valueName: "Id",
+                                                                    'caseName',
+                                                                valueName: 'Id',
                                                                 notFoundContent:
-                                                                    "",
+                                                                    '',
                                                                 selectModel: false,
                                                                 showSearch: true,
                                                                 placeholder:
-                                                                    "--请选择--",
+                                                                    '--请选择--',
                                                                 disabled: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 ajaxConfig: {
                                                                     url:
-                                                                        "common/ShowCase",
+                                                                        'common/ShowCase',
                                                                     ajaxType:
-                                                                        "get",
+                                                                        'get',
                                                                     params: []
                                                                 },
                                                                 cascader: [
                                                                     {
                                                                         name:
-                                                                            "getCaseName",
+                                                                            'getCaseName',
                                                                         type:
-                                                                            "sender",
+                                                                            'sender',
                                                                         cascaderData: {
                                                                             params: [
                                                                                 {
                                                                                     pid:
-                                                                                        "Id",
+                                                                                        'Id',
                                                                                     cid:
-                                                                                        "_typeId"
+                                                                                        '_typeId'
                                                                                 }
                                                                             ]
                                                                         }
                                                                     }
                                                                 ],
                                                                 layout:
-                                                                    "column",
-                                                                span: "24"
+                                                                    'column',
+                                                                span: '24'
                                                             }
                                                         ]
                                                     },
                                                     {
                                                         controls: [
                                                             {
-                                                                type: "input",
-                                                                labelSize: "6",
+                                                                type: 'input',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "text",
+                                                                    'text',
                                                                 name:
-                                                                    "caseName",
-                                                                label: "名称",
+                                                                    'caseName',
+                                                                label: '名称',
                                                                 isRequired: true,
                                                                 placeholder:
-                                                                    "请输入Case名称",
-                                                                perfix: "edit",
-                                                                suffix: "",
+                                                                    '请输入Case名称',
+                                                                perfix: 'edit',
+                                                                suffix: '',
                                                                 disabled: false,
                                                                 readonly: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 layout:
-                                                                    "column",
-                                                                span: "24"
+                                                                    'column',
+                                                                span: '24'
                                                                 // 'validations': [
                                                                 //     {
                                                                 //         'validator': 'required',
@@ -1212,29 +1214,29 @@ export class TreeAndTableComponent implements OnInit {
                                                     {
                                                         controls: [
                                                             {
-                                                                type: "input",
-                                                                labelSize: "6",
+                                                                type: 'input',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "text",
+                                                                    'text',
                                                                 name:
-                                                                    "caseLevel",
-                                                                label: "级别",
+                                                                    'caseLevel',
+                                                                label: '级别',
                                                                 isRequired: true,
-                                                                placeholder: "",
+                                                                placeholder: '',
                                                                 disabled: false,
                                                                 readonly: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 layout:
-                                                                    "column",
-                                                                span: "24",
+                                                                    'column',
+                                                                span: '24',
                                                                 validations: [
                                                                     {
                                                                         validator:
-                                                                            "required",
+                                                                            'required',
                                                                         errorMessage:
-                                                                            "请输入级别"
+                                                                            '请输入级别'
                                                                     }
                                                                 ]
                                                             }
@@ -1243,23 +1245,23 @@ export class TreeAndTableComponent implements OnInit {
                                                     {
                                                         controls: [
                                                             {
-                                                                type: "input",
-                                                                labelSize: "6",
+                                                                type: 'input',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "text",
+                                                                    'text',
                                                                 name:
-                                                                    "caseCount",
-                                                                label: "数量",
+                                                                    'caseCount',
+                                                                label: '数量',
                                                                 isRequired: true,
-                                                                placeholder: "",
+                                                                placeholder: '',
                                                                 disabled: false,
                                                                 readonly: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 layout:
-                                                                    "column",
-                                                                span: "24"
+                                                                    'column',
+                                                                span: '24'
                                                                 // 'validations': [
                                                                 //     {
                                                                 //         'validator': 'required',
@@ -1278,27 +1280,27 @@ export class TreeAndTableComponent implements OnInit {
                                                         controls: [
                                                             {
                                                                 type:
-                                                                    "datePicker",
-                                                                labelSize: "6",
+                                                                    'datePicker',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "text",
+                                                                    'text',
                                                                 name:
-                                                                    "createTime",
+                                                                    'createTime',
                                                                 label:
-                                                                    "创建时间",
-                                                                placeholder: "",
+                                                                    '创建时间',
+                                                                placeholder: '',
                                                                 disabled: false,
                                                                 readonly: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 layout:
-                                                                    "column",
+                                                                    'column',
                                                                 showTime: true,
                                                                 format:
-                                                                    "yyyy-MM-dd",
+                                                                    'yyyy-MM-dd',
                                                                 showToday: true,
-                                                                span: "24"
+                                                                span: '24'
                                                             }
                                                         ]
                                                     },
@@ -1306,154 +1308,154 @@ export class TreeAndTableComponent implements OnInit {
                                                         controls: [
                                                             {
                                                                 type:
-                                                                    "rangePicker",
-                                                                labelSize: "6",
+                                                                    'rangePicker',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "text",
+                                                                    'text',
                                                                 name:
-                                                                    "createTime",
+                                                                    'createTime',
                                                                 label:
-                                                                    "时间范围",
-                                                                placeholder: "",
+                                                                    '时间范围',
+                                                                placeholder: '',
                                                                 disabled: false,
                                                                 readonly: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 layout:
-                                                                    "column",
+                                                                    'column',
                                                                 showTime: true,
                                                                 format:
-                                                                    "yyyy-MM-dd",
+                                                                    'yyyy-MM-dd',
                                                                 showToday: true,
-                                                                span: "24"
+                                                                span: '24'
                                                             }
                                                         ]
                                                     },
                                                     {
                                                         controls: [
                                                             {
-                                                                type: "input",
-                                                                labelSize: "6",
+                                                                type: 'input',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "time",
-                                                                name: "remark",
-                                                                label: "备注",
-                                                                placeholder: "",
+                                                                    'time',
+                                                                name: 'remark',
+                                                                label: '备注',
+                                                                placeholder: '',
                                                                 disabled: false,
                                                                 readonly: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 layout:
-                                                                    "column",
-                                                                span: "24"
+                                                                    'column',
+                                                                span: '24'
                                                             }
                                                         ]
                                                     }
                                                 ],
                                                 buttons: [
                                                     {
-                                                        name: "save",
-                                                        text: "保存",
-                                                        type: "primary",
+                                                        name: 'save',
+                                                        text: '保存',
+                                                        type: 'primary',
                                                         ajaxConfig: {
                                                             put: [
                                                                 {
                                                                     ajaxType:
-                                                                        "put",
+                                                                        'put',
                                                                     url:
-                                                                        "common/ShowCase",
+                                                                        'common/ShowCase',
                                                                     params: [
                                                                         {
                                                                             name:
-                                                                                "Id",
+                                                                                'Id',
                                                                             type:
-                                                                                "tempValue",
+                                                                                'tempValue',
                                                                             valueName:
-                                                                                "_id",
+                                                                                '_id',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "caseName",
+                                                                                'caseName',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "caseName",
+                                                                                'caseName',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "parentId",
+                                                                                'parentId',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "parentId",
+                                                                                'parentId',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "caseCount",
+                                                                                'caseCount',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "caseCount",
+                                                                                'caseCount',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "createDate",
+                                                                                'createDate',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "createDate",
+                                                                                'createDate',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "enabled",
+                                                                                'enabled',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "enabled",
+                                                                                'enabled',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "caseLevel",
+                                                                                'caseLevel',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "caseLevel",
+                                                                                'caseLevel',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "remark",
+                                                                                'remark',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "remark",
+                                                                                'remark',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "caseType",
+                                                                                'caseType',
                                                                             type:
-                                                                                "componentValue",
+                                                                                'componentValue',
                                                                             valueName:
-                                                                                "caseType",
+                                                                                'caseType',
                                                                             value:
-                                                                                ""
+                                                                                ''
                                                                         }
                                                                     ]
                                                                 }
@@ -1461,28 +1463,28 @@ export class TreeAndTableComponent implements OnInit {
                                                         }
                                                     },
                                                     {
-                                                        name: "close",
+                                                        name: 'close',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "关闭"
+                                                            'editable-add-btn',
+                                                        text: '关闭'
                                                     },
                                                     {
-                                                        name: "reset",
+                                                        name: 'reset',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "重置"
+                                                            'editable-add-btn',
+                                                        text: '重置'
                                                     }
                                                 ],
                                                 dataList: []
                                             },
                                             {
-                                                keyId: "Id",
-                                                name: "addShowCasecascade",
-                                                layout: "horizontal",
-                                                title: "新增数据",
-                                                width: "800",
+                                                keyId: 'Id',
+                                                name: 'addShowCasecascade',
+                                                layout: 'horizontal',
+                                                title: '新增数据',
+                                                width: '800',
                                                 isCard: true,
-                                                type: "add",
+                                                type: 'add',
                                                 componentType: {
                                                     parent: false,
                                                     child: false,
@@ -1492,39 +1494,39 @@ export class TreeAndTableComponent implements OnInit {
                                                     {
                                                         controls: [
                                                             {
-                                                                type: "select",
-                                                                labelSize: "6",
+                                                                type: 'select',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "submit",
-                                                                name: "Enable",
-                                                                label: "状态",
+                                                                    'submit',
+                                                                name: 'Enable',
+                                                                label: '状态',
                                                                 notFoundContent:
-                                                                    "",
+                                                                    '',
                                                                 selectModel: false,
                                                                 showSearch: true,
                                                                 placeholder:
-                                                                    "--请选择--",
+                                                                    '--请选择--',
                                                                 disabled: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 options: [
                                                                     {
                                                                         label:
-                                                                            "启用",
+                                                                            '启用',
                                                                         value: true,
                                                                         disabled: false
                                                                     },
                                                                     {
                                                                         label:
-                                                                            "禁用",
+                                                                            '禁用',
                                                                         value: false,
                                                                         disabled: false
                                                                     }
                                                                 ],
                                                                 layout:
-                                                                    "column",
-                                                                span: "24"
+                                                                    'column',
+                                                                span: '24'
                                                             }
                                                         ]
                                                     },
@@ -1532,65 +1534,65 @@ export class TreeAndTableComponent implements OnInit {
                                                         controls: [
                                                             {
                                                                 hidden: false,
-                                                                type: "select",
-                                                                labelSize: "6",
+                                                                type: 'select',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "submit",
-                                                                name: "Type",
-                                                                label: "类别Id",
+                                                                    'submit',
+                                                                name: 'Type',
+                                                                label: '类别Id',
                                                                 labelName:
-                                                                    "Name",
-                                                                valueName: "Id",
+                                                                    'Name',
+                                                                valueName: 'Id',
                                                                 notFoundContent:
-                                                                    "",
+                                                                    '',
                                                                 selectModel: false,
                                                                 showSearch: true,
                                                                 placeholder:
-                                                                    "--请选择--",
+                                                                    '--请选择--',
                                                                 disabled: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 options: [
                                                                     {
                                                                         label:
-                                                                            "表",
+                                                                            '表',
                                                                         value:
-                                                                            "1",
+                                                                            '1',
                                                                         disabled: false
                                                                     },
                                                                     {
                                                                         label:
-                                                                            "树",
+                                                                            '树',
                                                                         value:
-                                                                            "2",
+                                                                            '2',
                                                                         disabled: false
                                                                     },
                                                                     {
                                                                         label:
-                                                                            "树表",
+                                                                            '树表',
                                                                         value:
-                                                                            "3",
+                                                                            '3',
                                                                         disabled: false
                                                                     },
                                                                     {
                                                                         label:
-                                                                            "表单",
+                                                                            '表单',
                                                                         value:
-                                                                            "4",
+                                                                            '4',
                                                                         disabled: false
                                                                     },
                                                                     {
                                                                         label:
-                                                                            "标签页",
+                                                                            '标签页',
                                                                         value:
-                                                                            "5",
+                                                                            '5',
                                                                         disabled: false
                                                                     }
                                                                 ],
                                                                 layout:
-                                                                    "column",
-                                                                span: "24"
+                                                                    'column',
+                                                                span: '24'
                                                             }
                                                         ]
                                                     },
@@ -1598,22 +1600,22 @@ export class TreeAndTableComponent implements OnInit {
                                                         controls: [
                                                             {
                                                                 hidden: false,
-                                                                type: "input",
-                                                                labelSize: "6",
+                                                                type: 'input',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "text",
+                                                                    'text',
                                                                 name:
-                                                                    "caseName",
-                                                                label: "名称",
-                                                                placeholder: "",
+                                                                    'caseName',
+                                                                label: '名称',
+                                                                placeholder: '',
                                                                 disabled: false,
                                                                 readonly: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 layout:
-                                                                    "column",
-                                                                span: "24"
+                                                                    'column',
+                                                                span: '24'
                                                             }
                                                         ]
                                                     },
@@ -1621,26 +1623,26 @@ export class TreeAndTableComponent implements OnInit {
                                                         controls: [
                                                             {
                                                                 hidden: false,
-                                                                type: "select",
-                                                                labelSize: "6",
+                                                                type: 'select',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "submit",
-                                                                name: "Level",
-                                                                label: "级别",
+                                                                    'submit',
+                                                                name: 'Level',
+                                                                label: '级别',
                                                                 notFoundContent:
-                                                                    "",
+                                                                    '',
                                                                 selectModel: false,
                                                                 showSearch: true,
                                                                 placeholder:
-                                                                    "--请选择--",
+                                                                    '--请选择--',
                                                                 disabled: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 options: [
                                                                     {
                                                                         label:
-                                                                            "初级",
+                                                                            '初级',
                                                                         value: 0,
                                                                         disabled: false
                                                                     }
@@ -1652,22 +1654,22 @@ export class TreeAndTableComponent implements OnInit {
                                                         controls: [
                                                             {
                                                                 hidden: false,
-                                                                type: "input",
-                                                                labelSize: "6",
+                                                                type: 'input',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "text",
+                                                                    'text',
                                                                 name:
-                                                                    "caseCount",
-                                                                label: "数量",
-                                                                placeholder: "",
+                                                                    'caseCount',
+                                                                label: '数量',
+                                                                placeholder: '',
                                                                 disabled: false,
                                                                 readonly: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 layout:
-                                                                    "column",
-                                                                span: "24"
+                                                                    'column',
+                                                                span: '24'
                                                             }
                                                         ]
                                                     },
@@ -1675,32 +1677,32 @@ export class TreeAndTableComponent implements OnInit {
                                                         controls: [
                                                             {
                                                                 hidden: false,
-                                                                type: "input",
-                                                                labelSize: "6",
+                                                                type: 'input',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
+                                                                    '16',
                                                                 inputType:
-                                                                    "text",
-                                                                name: "Remark",
-                                                                label: "备注",
-                                                                placeholder: "",
+                                                                    'text',
+                                                                name: 'Remark',
+                                                                label: '备注',
+                                                                placeholder: '',
                                                                 disabled: false,
                                                                 readonly: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 layout:
-                                                                    "column",
-                                                                span: "24"
+                                                                    'column',
+                                                                span: '24'
                                                             }
                                                         ]
                                                     }
                                                 ]
                                             },
                                             {
-                                                keyId: "Id",
-                                                name: "batchUpdateShowCase",
-                                                title: "批量编辑",
-                                                width: "600",
-                                                type: "edit",
+                                                keyId: 'Id',
+                                                name: 'batchUpdateShowCase',
+                                                title: '批量编辑',
+                                                width: '600',
+                                                type: 'edit',
                                                 componentType: {
                                                     parent: false,
                                                     child: false,
@@ -1710,81 +1712,81 @@ export class TreeAndTableComponent implements OnInit {
                                                     {
                                                         controls: [
                                                             {
-                                                                type: "select",
-                                                                labelSize: "6",
+                                                                type: 'select',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "16",
-                                                                name: "enabled",
-                                                                label: "状态",
+                                                                    '16',
+                                                                name: 'enabled',
+                                                                label: '状态',
                                                                 notFoundContent:
-                                                                    "",
+                                                                    '',
                                                                 selectModel: false,
                                                                 showSearch: true,
                                                                 placeholder:
-                                                                    "--请选择--",
+                                                                    '--请选择--',
                                                                 disabled: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 defaultValue: 1,
                                                                 options: [
                                                                     {
                                                                         label:
-                                                                            "启用",
+                                                                            '启用',
                                                                         value: true
                                                                     },
                                                                     {
                                                                         label:
-                                                                            "禁用",
+                                                                            '禁用',
                                                                         value: false
                                                                     }
                                                                 ],
                                                                 layout:
-                                                                    "column",
-                                                                span: "24"
+                                                                    'column',
+                                                                span: '24'
                                                             }
                                                         ]
                                                     }
                                                 ],
                                                 buttons: [
                                                     {
-                                                        name: "batchSave",
-                                                        text: "保存",
-                                                        type: "primary",
+                                                        name: 'batchSave',
+                                                        text: '保存',
+                                                        type: 'primary',
                                                         ajaxConfig: [
                                                             {
-                                                                ajaxType: "put",
+                                                                ajaxType: 'put',
                                                                 url:
-                                                                    "common/ShowCase",
+                                                                    'common/ShowCase',
                                                                 batch: true,
                                                                 params: [
                                                                     {
                                                                         name:
-                                                                            "Id",
+                                                                            'Id',
                                                                         type:
-                                                                            "checkedRow",
+                                                                            'checkedRow',
                                                                         valueName:
-                                                                            "Id",
+                                                                            'Id',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "enabled",
+                                                                            'enabled',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "enabled",
+                                                                            'enabled',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     }
                                                                 ]
                                                             }
                                                         ]
                                                     },
                                                     {
-                                                        name: "close",
+                                                        name: 'close',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "关闭"
+                                                            'editable-add-btn',
+                                                        text: '关闭'
                                                     }
                                                 ],
                                                 dataList: []
@@ -1792,41 +1794,41 @@ export class TreeAndTableComponent implements OnInit {
                                         ],
                                         windowDialog: [
                                             {
-                                                title: "",
-                                                name: "ShowCaseWindow",
-                                                layoutName: "singleTable",
+                                                title: '',
+                                                name: 'ShowCaseWindow',
+                                                layoutName: 'singleTable',
                                                 width: 800,
                                                 buttons: [
                                                     {
-                                                        name: "ok",
-                                                        text: "确定",
-                                                        type: "primary"
+                                                        name: 'ok',
+                                                        text: '确定',
+                                                        type: 'primary'
                                                     },
                                                     {
-                                                        name: "close",
-                                                        text: "关闭"
+                                                        name: 'close',
+                                                        text: '关闭'
                                                     }
                                                 ]
                                             }
                                         ],
                                         uploadDialog: [
                                             {
-                                                keyId: "Id",
-                                                title: "",
-                                                name: "uploadCase",
-                                                width: "600",
+                                                keyId: 'Id',
+                                                title: '',
+                                                name: 'uploadCase',
+                                                width: '600',
                                                 ajaxConfig: {
-                                                    deleteUrl: "file/delete",
-                                                    listUrl: "common/SysFile",
-                                                    url: "file/upload",
+                                                    deleteUrl: 'file/delete',
+                                                    listUrl: 'common/SysFile',
+                                                    url: 'file/upload',
                                                     downloadUrl:
-                                                        "file/download",
-                                                    ajaxType: "post",
+                                                        'file/download',
+                                                    ajaxType: 'post',
                                                     params: [
                                                         {
-                                                            name: "Id",
-                                                            type: "tempValue",
-                                                            valueName: "_id"
+                                                            name: 'Id',
+                                                            type: 'tempValue',
+                                                            valueName: '_id'
                                                         }
                                                     ]
                                                 }
@@ -1838,8 +1840,8 @@ export class TreeAndTableComponent implements OnInit {
                             ]
                         },
                         {
-                            id: "area2",
-                            title: "右表",
+                            id: 'area2',
+                            title: '右表',
                             span: 19,
                             size: {
                                 nzXs: 24,
@@ -1853,8 +1855,8 @@ export class TreeAndTableComponent implements OnInit {
                                     row: {
                                         cols: [
                                             {
-                                                id: "area2_1",
-                                                title: "表单",
+                                                id: 'area2_1',
+                                                title: '表单',
                                                 span: 24,
                                                 editable: true,
                                                 size: {
@@ -1868,26 +1870,26 @@ export class TreeAndTableComponent implements OnInit {
                                                     {
                                                         config: {
                                                             viewId:
-                                                                "tree_and_form_form",
+                                                                'tree_and_form_form',
                                                             component:
-                                                                "form_view",
-                                                            keyId: "Id",
-                                                            editable: "post",
+                                                                'form_view',
+                                                            keyId: 'Id',
+                                                            editable: 'post',
                                                             ajaxConfig: {
                                                                 url:
-                                                                    "common/GetCase",
+                                                                    'common/GetCase',
                                                                 ajaxType:
-                                                                    "getById",
+                                                                    'getById',
                                                                 params: [
                                                                     {
                                                                         name:
-                                                                            "Id",
+                                                                            'Id',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "_id",
+                                                                            '_id',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     }
                                                                 ]
                                                             },
@@ -1901,132 +1903,132 @@ export class TreeAndTableComponent implements OnInit {
                                                                     controls: [
                                                                         {
                                                                             type:
-                                                                                "input",
+                                                                                'input',
                                                                             labelSize:
-                                                                                "4",
+                                                                                '4',
                                                                             controlSize:
-                                                                                "16",
+                                                                                '16',
                                                                             inputType:
-                                                                                "hidden",
+                                                                                'hidden',
                                                                             name:
-                                                                                "enableText",
+                                                                                'enableText',
                                                                             placeholder:
-                                                                                "",
+                                                                                '',
                                                                             disabled: false,
                                                                             readonly: false,
                                                                             size:
-                                                                                "default",
+                                                                                'default',
                                                                             layout:
-                                                                                "column",
+                                                                                'column',
                                                                             span:
-                                                                                ""
+                                                                                ''
                                                                         },
                                                                         {
                                                                             type:
-                                                                                "select",
+                                                                                'select',
                                                                             labelSize:
-                                                                                "4",
+                                                                                '4',
                                                                             controlSize:
-                                                                                "16",
+                                                                                '16',
                                                                             inputType:
-                                                                                "hidden",
+                                                                                'hidden',
                                                                             textName:
-                                                                                "enableText",
+                                                                                'enableText',
                                                                             name:
-                                                                                "enabled",
+                                                                                'enabled',
                                                                             label:
-                                                                                "状态",
+                                                                                '状态',
                                                                             notFoundContent:
-                                                                                "",
+                                                                                '',
                                                                             selectModel: false,
                                                                             showSearch: true,
                                                                             placeholder:
-                                                                                "--请选择--",
+                                                                                '--请选择--',
                                                                             disabled: false,
                                                                             size:
-                                                                                "default",
+                                                                                'default',
                                                                             options: [
                                                                                 {
                                                                                     label:
-                                                                                        "启用",
+                                                                                        '启用',
                                                                                     value: true,
                                                                                     disabled: false
                                                                                 },
                                                                                 {
                                                                                     label:
-                                                                                        "禁用",
+                                                                                        '禁用',
                                                                                     value: false,
                                                                                     disabled: false
                                                                                 }
                                                                             ],
                                                                             layout:
-                                                                                "column",
+                                                                                'column',
                                                                             span:
-                                                                                "12"
+                                                                                '12'
                                                                         },
                                                                         {
                                                                             type:
-                                                                                "select",
+                                                                                'select',
                                                                             labelSize:
-                                                                                "4",
+                                                                                '4',
                                                                             controlSize:
-                                                                                "16",
+                                                                                '16',
                                                                             inputType:
-                                                                                "submit",
+                                                                                'submit',
                                                                             name:
-                                                                                "caseType",
+                                                                                'caseType',
                                                                             label:
-                                                                                "类别",
+                                                                                '类别',
                                                                             notFoundContent:
-                                                                                "",
+                                                                                '',
                                                                             selectModel: false,
                                                                             showSearch: true,
                                                                             placeholder:
-                                                                                "--请选择--",
+                                                                                '--请选择--',
                                                                             disabled: false,
                                                                             size:
-                                                                                "default",
+                                                                                'default',
                                                                             options: [
                                                                                 {
                                                                                     label:
-                                                                                        "表",
+                                                                                        '表',
                                                                                     value:
-                                                                                        "1",
+                                                                                        '1',
                                                                                     disabled: false
                                                                                 },
                                                                                 {
                                                                                     label:
-                                                                                        "树",
+                                                                                        '树',
                                                                                     value:
-                                                                                        "2",
+                                                                                        '2',
                                                                                     disabled: false
                                                                                 },
                                                                                 {
                                                                                     label:
-                                                                                        "树表",
+                                                                                        '树表',
                                                                                     value:
-                                                                                        "3",
+                                                                                        '3',
                                                                                     disabled: false
                                                                                 },
                                                                                 {
                                                                                     label:
-                                                                                        "表单",
+                                                                                        '表单',
                                                                                     value:
-                                                                                        "4",
+                                                                                        '4',
                                                                                     disabled: false
                                                                                 },
                                                                                 {
                                                                                     label:
-                                                                                        "标签页",
+                                                                                        '标签页',
                                                                                     value:
-                                                                                        "5",
+                                                                                        '5',
                                                                                     disabled: false
                                                                                 }
                                                                             ],
                                                                             layout:
-                                                                                "column",
+                                                                                'column',
                                                                             span:
-                                                                                "12"
+                                                                                '12'
                                                                         }
                                                                     ]
                                                                 },
@@ -2034,73 +2036,73 @@ export class TreeAndTableComponent implements OnInit {
                                                                     controls: [
                                                                         {
                                                                             type:
-                                                                                "selectGrid",
+                                                                                'selectGrid',
                                                                             labelSize:
-                                                                                "4",
+                                                                                '4',
                                                                             controlSize:
-                                                                                "16",
+                                                                                '16',
                                                                             inputType:
-                                                                                "text",
+                                                                                'text',
                                                                             name:
-                                                                                "caseName",
+                                                                                'caseName',
                                                                             label:
-                                                                                "名称",
+                                                                                '名称',
                                                                             placeholder:
-                                                                                "",
+                                                                                '',
                                                                             disabled: false,
                                                                             readonly: false,
                                                                             size:
-                                                                                "default",
+                                                                                'default',
                                                                             layout:
-                                                                                "column",
+                                                                                'column',
                                                                             span:
-                                                                                "12",
+                                                                                '12',
                                                                             valueName:
-                                                                                "Id",
+                                                                                'Id',
                                                                             lableName:
-                                                                                "name",
+                                                                                'name',
                                                                             ajaxConfig: {
                                                                                 url:
-                                                                                    "common/CfgTable",
+                                                                                    'common/CfgTable',
                                                                                 ajaxType:
-                                                                                    "get",
+                                                                                    'get',
                                                                                 params: [
                                                                                     {
                                                                                         name:
-                                                                                            "Id",
+                                                                                            'Id',
                                                                                         type:
-                                                                                            "componentValue",
+                                                                                            'componentValue',
                                                                                         valueName:
-                                                                                            "Id",
+                                                                                            'Id',
                                                                                         value:
-                                                                                            "63fc58ae67604ae0912a93c81ddcb3ca"
+                                                                                            '63fc58ae67604ae0912a93c81ddcb3ca'
                                                                                     }
                                                                                 ]
                                                                             }
                                                                         },
                                                                         {
                                                                             type:
-                                                                                "input",
+                                                                                'input',
                                                                             labelSize:
-                                                                                "4",
+                                                                                '4',
                                                                             controlSize:
-                                                                                "16",
+                                                                                '16',
                                                                             inputType:
-                                                                                "text",
+                                                                                'text',
                                                                             name:
-                                                                                "caseLevel",
+                                                                                'caseLevel',
                                                                             label:
-                                                                                "级别",
+                                                                                '级别',
                                                                             placeholder:
-                                                                                "",
+                                                                                '',
                                                                             disabled: false,
                                                                             readonly: false,
                                                                             size:
-                                                                                "default",
+                                                                                'default',
                                                                             layout:
-                                                                                "column",
+                                                                                'column',
                                                                             span:
-                                                                                "12"
+                                                                                '12'
                                                                         }
                                                                     ]
                                                                 },
@@ -2108,51 +2110,51 @@ export class TreeAndTableComponent implements OnInit {
                                                                     controls: [
                                                                         {
                                                                             type:
-                                                                                "input",
+                                                                                'input',
                                                                             labelSize:
-                                                                                "4",
+                                                                                '4',
                                                                             controlSize:
-                                                                                "16",
+                                                                                '16',
                                                                             inputType:
-                                                                                "text",
+                                                                                'text',
                                                                             name:
-                                                                                "caseCount",
+                                                                                'caseCount',
                                                                             label:
-                                                                                "数量",
+                                                                                '数量',
                                                                             placeholder:
-                                                                                "",
+                                                                                '',
                                                                             disabled: false,
                                                                             readonly: false,
                                                                             size:
-                                                                                "default",
+                                                                                'default',
                                                                             layout:
-                                                                                "column",
+                                                                                'column',
                                                                             span:
-                                                                                "12"
+                                                                                '12'
                                                                         },
                                                                         {
                                                                             type:
-                                                                                "input",
+                                                                                'input',
                                                                             labelSize:
-                                                                                "4",
+                                                                                '4',
                                                                             controlSize:
-                                                                                "16",
+                                                                                '16',
                                                                             inputType:
-                                                                                "text",
+                                                                                'text',
                                                                             name:
-                                                                                "remark",
+                                                                                'remark',
                                                                             label:
-                                                                                "备注",
+                                                                                '备注',
                                                                             placeholder:
-                                                                                "",
+                                                                                '',
                                                                             disabled: false,
                                                                             readonly: false,
                                                                             size:
-                                                                                "default",
+                                                                                'default',
                                                                             layout:
-                                                                                "column",
+                                                                                'column',
                                                                             span:
-                                                                                "12"
+                                                                                '12'
                                                                         }
                                                                     ]
                                                                 }
@@ -2162,244 +2164,244 @@ export class TreeAndTableComponent implements OnInit {
                                                                     group: [
                                                                         {
                                                                             name:
-                                                                                "refresh",
+                                                                                'refresh',
                                                                             action:
-                                                                                "REFRESH",
+                                                                                'REFRESH',
                                                                             text:
-                                                                                "刷新",
+                                                                                '刷新',
                                                                             color:
-                                                                                "text-primary",
+                                                                                'text-primary',
                                                                             cancelPermission: true
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "addRow",
+                                                                                'addRow',
                                                                             class:
-                                                                                "editable-add-btn",
+                                                                                'editable-add-btn',
                                                                             text:
-                                                                                "新增",
+                                                                                '新增',
                                                                             action:
-                                                                                "CREATE",
+                                                                                'CREATE',
                                                                             icon:
-                                                                                "plus",
+                                                                                'plus',
                                                                             color:
-                                                                                "text-primary",
+                                                                                'text-primary',
                                                                             cancelPermission: true
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "updateRow",
+                                                                                'updateRow',
                                                                             class:
-                                                                                "editable-add-btn",
+                                                                                'editable-add-btn',
                                                                             text:
-                                                                                "修改",
+                                                                                '修改',
                                                                             action:
-                                                                                "EDIT",
+                                                                                'EDIT',
                                                                             icon:
-                                                                                "edit",
+                                                                                'edit',
                                                                             color:
-                                                                                "text-success",
+                                                                                'text-success',
                                                                             cancelPermission: true
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "updateRow",
+                                                                                'updateRow',
                                                                             class:
-                                                                                "editable-add-btn",
+                                                                                'editable-add-btn',
                                                                             text:
-                                                                                "取消",
+                                                                                '取消',
                                                                             action:
-                                                                                "CANCEL",
+                                                                                'CANCEL',
                                                                             icon:
-                                                                                "edit",
+                                                                                'edit',
                                                                             color:
-                                                                                "text-success",
+                                                                                'text-success',
                                                                             cancelPermission: true
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "saveForm",
+                                                                                'saveForm',
                                                                             text:
-                                                                                "保存",
+                                                                                '保存',
                                                                             icon:
-                                                                                "save",
+                                                                                'save',
                                                                             color:
-                                                                                "text-primary",
+                                                                                'text-primary',
                                                                             action:
-                                                                                "SAVE",
+                                                                                'SAVE',
                                                                             cancelPermission: true,
                                                                             ajaxConfig: [
                                                                                 {
                                                                                     url:
-                                                                                        "common/ShowCase",
+                                                                                        'common/ShowCase',
                                                                                     ajaxType:
-                                                                                        "post",
+                                                                                        'post',
                                                                                     params: [
                                                                                         {
                                                                                             name:
-                                                                                                "parentId",
+                                                                                                'parentId',
                                                                                             type:
-                                                                                                "tempValue",
+                                                                                                'tempValue',
                                                                                             valueName:
-                                                                                                "_parentId"
+                                                                                                '_parentId'
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "caseName",
+                                                                                                'caseName',
                                                                                             type:
-                                                                                                "componentValue",
+                                                                                                'componentValue',
                                                                                             valueName:
-                                                                                                "caseName",
+                                                                                                'caseName',
                                                                                             value:
-                                                                                                ""
+                                                                                                ''
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "caseCount",
+                                                                                                'caseCount',
                                                                                             type:
-                                                                                                "componentValue",
+                                                                                                'componentValue',
                                                                                             valueName:
-                                                                                                "caseCount",
+                                                                                                'caseCount',
                                                                                             value:
-                                                                                                ""
+                                                                                                ''
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "enabled",
+                                                                                                'enabled',
                                                                                             type:
-                                                                                                "componentValue",
+                                                                                                'componentValue',
                                                                                             valueName:
-                                                                                                "enabled",
+                                                                                                'enabled',
                                                                                             value:
-                                                                                                ""
+                                                                                                ''
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "caseLevel",
+                                                                                                'caseLevel',
                                                                                             type:
-                                                                                                "componentValue",
+                                                                                                'componentValue',
                                                                                             valueName:
-                                                                                                "caseLevel",
+                                                                                                'caseLevel',
                                                                                             value:
-                                                                                                ""
+                                                                                                ''
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "parentId",
+                                                                                                'parentId',
                                                                                             type:
-                                                                                                "tempValue",
+                                                                                                'tempValue',
                                                                                             valueName:
-                                                                                                "_parentId",
+                                                                                                '_parentId',
                                                                                             value:
-                                                                                                ""
+                                                                                                ''
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "remark",
+                                                                                                'remark',
                                                                                             type:
-                                                                                                "componentValue",
+                                                                                                'componentValue',
                                                                                             valueName:
-                                                                                                "remark",
+                                                                                                'remark',
                                                                                             value:
-                                                                                                ""
+                                                                                                ''
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "caseType",
+                                                                                                'caseType',
                                                                                             type:
-                                                                                                "componentValue",
+                                                                                                'componentValue',
                                                                                             valueName:
-                                                                                                "caseType",
+                                                                                                'caseType',
                                                                                             value:
-                                                                                                ""
+                                                                                                ''
                                                                                         }
                                                                                     ]
                                                                                 },
                                                                                 {
                                                                                     url:
-                                                                                        "common/ShowCase",
+                                                                                        'common/ShowCase',
                                                                                     ajaxType:
-                                                                                        "put",
+                                                                                        'put',
                                                                                     params: [
                                                                                         {
                                                                                             name:
-                                                                                                "Id",
+                                                                                                'Id',
                                                                                             type:
-                                                                                                "tempValue",
+                                                                                                'tempValue',
                                                                                             valueName:
-                                                                                                "_id",
+                                                                                                '_id',
                                                                                             value:
-                                                                                                ""
+                                                                                                ''
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "caseName",
+                                                                                                'caseName',
                                                                                             type:
-                                                                                                "componentValue",
+                                                                                                'componentValue',
                                                                                             valueName:
-                                                                                                "caseName",
+                                                                                                'caseName',
                                                                                             value:
-                                                                                                ""
+                                                                                                ''
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "caseCount",
+                                                                                                'caseCount',
                                                                                             type:
-                                                                                                "componentValue",
+                                                                                                'componentValue',
                                                                                             valueName:
-                                                                                                "caseCount",
+                                                                                                'caseCount',
                                                                                             value:
-                                                                                                ""
+                                                                                                ''
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "enabled",
+                                                                                                'enabled',
                                                                                             type:
-                                                                                                "componentValue",
+                                                                                                'componentValue',
                                                                                             valueName:
-                                                                                                "enabled",
+                                                                                                'enabled',
                                                                                             value:
-                                                                                                ""
+                                                                                                ''
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "caseLevel",
+                                                                                                'caseLevel',
                                                                                             type:
-                                                                                                "componentValue",
+                                                                                                'componentValue',
                                                                                             valueName:
-                                                                                                "caseLevel",
+                                                                                                'caseLevel',
                                                                                             value:
-                                                                                                ""
+                                                                                                ''
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "parentId",
+                                                                                                'parentId',
                                                                                             type:
-                                                                                                "tempValue",
+                                                                                                'tempValue',
                                                                                             valueName:
-                                                                                                "_parentId",
+                                                                                                '_parentId',
                                                                                             value:
-                                                                                                ""
+                                                                                                ''
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "remark",
+                                                                                                'remark',
                                                                                             type:
-                                                                                                "componentValue",
+                                                                                                'componentValue',
                                                                                             valueName:
-                                                                                                "remark",
+                                                                                                'remark',
                                                                                             value:
-                                                                                                ""
+                                                                                                ''
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "caseType",
+                                                                                                'caseType',
                                                                                             type:
-                                                                                                "componentValue",
+                                                                                                'componentValue',
                                                                                             valueName:
-                                                                                                "caseType",
+                                                                                                'caseType',
                                                                                             value:
-                                                                                                ""
+                                                                                                ''
                                                                                         }
                                                                                     ]
                                                                                 }
@@ -2407,32 +2409,32 @@ export class TreeAndTableComponent implements OnInit {
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "deleteRow",
+                                                                                'deleteRow',
                                                                             class:
-                                                                                "editable-add-btn",
+                                                                                'editable-add-btn',
                                                                             text:
-                                                                                "删除",
+                                                                                '删除',
                                                                             action:
-                                                                                "DELETE",
+                                                                                'DELETE',
                                                                             icon:
-                                                                                "delete",
+                                                                                'delete',
                                                                             color:
-                                                                                "text-red-light",
+                                                                                'text-red-light',
                                                                             cancelPermission: true,
                                                                             ajaxConfig: [
                                                                                 {
                                                                                     url:
-                                                                                        "common/ShowCase",
+                                                                                        'common/ShowCase',
                                                                                     ajaxType:
-                                                                                        "delete",
+                                                                                        'delete',
                                                                                     params: [
                                                                                         {
                                                                                             name:
-                                                                                                "_ids",
+                                                                                                '_ids',
                                                                                             valueName:
-                                                                                                "_id",
+                                                                                                '_id',
                                                                                             type:
-                                                                                                "tempValue"
+                                                                                                'tempValue'
                                                                                         }
                                                                                     ]
                                                                                 }
@@ -2445,28 +2447,28 @@ export class TreeAndTableComponent implements OnInit {
                                                             select: [
                                                                 {
                                                                     name:
-                                                                        "caseName",
+                                                                        'caseName',
                                                                     type:
-                                                                        "selectGrid",
+                                                                        'selectGrid',
                                                                     config: {
                                                                         width:
-                                                                            "1024", // 弹出的宽度
+                                                                            '1024', // 弹出的宽度
                                                                         title:
-                                                                            "弹出表格",
+                                                                            '弹出表格',
                                                                         selectGrid: {
                                                                             viewId:
-                                                                                "businesskey_Table",
+                                                                                'businesskey_Table',
                                                                             component:
-                                                                                "bsnTable",
+                                                                                'bsnTable',
                                                                             keyId:
-                                                                                "Id",
+                                                                                'Id',
                                                                             pagination: true, // 是否分页
                                                                             showTotal: true, // 是否显示总数据量
                                                                             pageSize: 5, // 默pageSizeOptions认每页数据条数
                                                                             isSelectGrid: true, // 【弹出表格时用】弹出表格值为true
                                                                             selectGridValueName:
-                                                                                "Id", // 【弹出表格时用】指定绑定的value值
-                                                                            "": [
+                                                                                'Id', // 【弹出表格时用】指定绑定的value值
+                                                                            '': [
                                                                                 5,
                                                                                 10,
                                                                                 20,
@@ -2476,19 +2478,19 @@ export class TreeAndTableComponent implements OnInit {
                                                                             ],
                                                                             ajaxConfig: {
                                                                                 url:
-                                                                                    "common/CfgTable",
+                                                                                    'common/CfgTable',
                                                                                 ajaxType:
-                                                                                    "get",
+                                                                                    'get',
                                                                                 params: [
                                                                                     {
                                                                                         name:
-                                                                                            "_sort",
+                                                                                            '_sort',
                                                                                         type:
-                                                                                            "value",
+                                                                                            'value',
                                                                                         valueName:
-                                                                                            "",
+                                                                                            '',
                                                                                         value:
-                                                                                            "createDate desc"
+                                                                                            'createDate desc'
                                                                                     }
                                                                                 ]
                                                                             },
@@ -2500,124 +2502,124 @@ export class TreeAndTableComponent implements OnInit {
                                                                             columns: [
                                                                                 {
                                                                                     title:
-                                                                                        "Id",
+                                                                                        'Id',
                                                                                     field:
-                                                                                        "Id",
+                                                                                        'Id',
                                                                                     width: 80,
                                                                                     hidden: true,
                                                                                     editor: {
                                                                                         type:
-                                                                                            "input",
+                                                                                            'input',
                                                                                         field:
-                                                                                            "Id",
+                                                                                            'Id',
                                                                                         options: {
                                                                                             type:
-                                                                                                "input",
+                                                                                                'input',
                                                                                             labelSize:
-                                                                                                "6",
+                                                                                                '6',
                                                                                             controlSize:
-                                                                                                "18",
+                                                                                                '18',
                                                                                             inputType:
-                                                                                                "text"
+                                                                                                'text'
                                                                                         }
                                                                                     }
                                                                                 },
                                                                                 {
                                                                                     title:
-                                                                                        "名称",
+                                                                                        '名称',
                                                                                     field:
-                                                                                        "name",
+                                                                                        'name',
                                                                                     width: 80,
                                                                                     showFilter: false,
                                                                                     showSort: false,
                                                                                     editor: {
                                                                                         type:
-                                                                                            "input",
+                                                                                            'input',
                                                                                         field:
-                                                                                            "name",
+                                                                                            'name',
                                                                                         options: {
                                                                                             type:
-                                                                                                "input",
+                                                                                                'input',
                                                                                             labelSize:
-                                                                                                "6",
+                                                                                                '6',
                                                                                             controlSize:
-                                                                                                "18",
+                                                                                                '18',
                                                                                             inputType:
-                                                                                                "text"
+                                                                                                'text'
                                                                                         }
                                                                                     }
                                                                                 },
                                                                                 {
                                                                                     title:
-                                                                                        "编号",
+                                                                                        '编号',
                                                                                     field:
-                                                                                        "code",
+                                                                                        'code',
                                                                                     width: 80,
                                                                                     showFilter: false,
                                                                                     showSort: false,
                                                                                     editor: {
                                                                                         type:
-                                                                                            "input",
+                                                                                            'input',
                                                                                         field:
-                                                                                            "code",
+                                                                                            'code',
                                                                                         options: {
                                                                                             type:
-                                                                                                "input",
+                                                                                                'input',
                                                                                             labelSize:
-                                                                                                "6",
+                                                                                                '6',
                                                                                             controlSize:
-                                                                                                "18",
+                                                                                                '18',
                                                                                             inputType:
-                                                                                                "text"
+                                                                                                'text'
                                                                                         }
                                                                                     }
                                                                                 },
                                                                                 {
                                                                                     title:
-                                                                                        "备注",
+                                                                                        '备注',
                                                                                     field:
-                                                                                        "remark",
+                                                                                        'remark',
                                                                                     width: 80,
                                                                                     hidden: false,
                                                                                     editor: {
                                                                                         type:
-                                                                                            "input",
+                                                                                            'input',
                                                                                         field:
-                                                                                            "remark",
+                                                                                            'remark',
                                                                                         options: {
                                                                                             type:
-                                                                                                "input",
+                                                                                                'input',
                                                                                             labelSize:
-                                                                                                "6",
+                                                                                                '6',
                                                                                             controlSize:
-                                                                                                "18",
+                                                                                                '18',
                                                                                             inputType:
-                                                                                                "text"
+                                                                                                'text'
                                                                                         }
                                                                                     }
                                                                                 },
                                                                                 {
                                                                                     title:
-                                                                                        "创建时间",
+                                                                                        '创建时间',
                                                                                     field:
-                                                                                        "createDate",
+                                                                                        'createDate',
                                                                                     width: 80,
                                                                                     hidden: false,
                                                                                     showSort: true,
                                                                                     editor: {
                                                                                         type:
-                                                                                            "input",
+                                                                                            'input',
                                                                                         field:
-                                                                                            "createDate",
+                                                                                            'createDate',
                                                                                         options: {
                                                                                             type:
-                                                                                                "input",
+                                                                                                'input',
                                                                                             labelSize:
-                                                                                                "6",
+                                                                                                '6',
                                                                                             controlSize:
-                                                                                                "18",
+                                                                                                '18',
                                                                                             inputType:
-                                                                                                "text"
+                                                                                                'text'
                                                                                         }
                                                                                     }
                                                                                 }
@@ -2627,52 +2629,52 @@ export class TreeAndTableComponent implements OnInit {
                                                                                     group: [
                                                                                         {
                                                                                             name:
-                                                                                                "refresh",
+                                                                                                'refresh',
                                                                                             class:
-                                                                                                "editable-add-btn",
+                                                                                                'editable-add-btn',
                                                                                             text:
-                                                                                                "刷新",
+                                                                                                '刷新',
                                                                                             cancelPermission: true
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "addSearchRow",
+                                                                                                'addSearchRow',
                                                                                             class:
-                                                                                                "editable-add-btn",
+                                                                                                'editable-add-btn',
                                                                                             text:
-                                                                                                "查询",
+                                                                                                '查询',
                                                                                             action:
-                                                                                                "SEARCH",
+                                                                                                'SEARCH',
                                                                                             actionType:
-                                                                                                "addSearchRow",
+                                                                                                'addSearchRow',
                                                                                             actionName:
-                                                                                                "addSearchRow",
+                                                                                                'addSearchRow',
                                                                                             cancelPermission: true
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "cancelSearchRow",
+                                                                                                'cancelSearchRow',
                                                                                             class:
-                                                                                                "editable-add-btn",
+                                                                                                'editable-add-btn',
                                                                                             text:
-                                                                                                "取消查询",
+                                                                                                '取消查询',
                                                                                             action:
-                                                                                                "SEARCH",
+                                                                                                'SEARCH',
                                                                                             actionType:
-                                                                                                "cancelSearchRow",
+                                                                                                'cancelSearchRow',
                                                                                             actionName:
-                                                                                                "cancelSearchRow",
+                                                                                                'cancelSearchRow',
                                                                                             cancelPermission: true
                                                                                         },
                                                                                         {
                                                                                             name:
-                                                                                                "cancelSelectRow",
+                                                                                                'cancelSelectRow',
                                                                                             class:
-                                                                                                "editable-add-btn",
+                                                                                                'editable-add-btn',
                                                                                             text:
-                                                                                                "取消选中",
+                                                                                                '取消选中',
                                                                                             action:
-                                                                                                "CANCEL_SELECTED",
+                                                                                                'CANCEL_SELECTED',
                                                                                             cancelPermission: true
                                                                                         }
                                                                                     ]
@@ -2683,25 +2685,25 @@ export class TreeAndTableComponent implements OnInit {
                                                                 },
                                                                 {
                                                                     name:
-                                                                        "businesskey",
+                                                                        'businesskey',
                                                                     type:
-                                                                        "selectTreeGrid",
+                                                                        'selectTreeGrid',
                                                                     config: {
                                                                         nzWidth: 768,
                                                                         title:
-                                                                            "弹出树",
+                                                                            '弹出树',
                                                                         selectTreeGrid: {
                                                                             isSelectGrid: true,
                                                                             selectGridValueName:
-                                                                                "Id", // 【弹出表格时用】指定绑定的value值
+                                                                                'Id', // 【弹出表格时用】指定绑定的value值
                                                                             // 'title': '树表网格',
                                                                             viewId:
-                                                                                "bsnTreeTable",
+                                                                                'bsnTreeTable',
                                                                             component:
-                                                                                "bsnTreeTable",
+                                                                                'bsnTreeTable',
                                                                             info: true,
                                                                             keyId:
-                                                                                "Id",
+                                                                                'Id',
                                                                             pagination: true,
                                                                             showTotal: true,
                                                                             pageSize: 5,
@@ -2715,126 +2717,126 @@ export class TreeAndTableComponent implements OnInit {
                                                                             ],
                                                                             ajaxConfig: {
                                                                                 url:
-                                                                                    "common/GetCase/null/GetCase",
+                                                                                    'common/GetCase/null/GetCase',
                                                                                 ajaxType:
-                                                                                    "get",
+                                                                                    'get',
                                                                                 params: [],
                                                                                 filter: []
                                                                             },
                                                                             columns: [
                                                                                 {
                                                                                     title:
-                                                                                        "Id",
+                                                                                        'Id',
                                                                                     field:
-                                                                                        "Id",
+                                                                                        'Id',
                                                                                     width: 80,
                                                                                     hidden: true,
                                                                                     editor: {
                                                                                         type:
-                                                                                            "input",
+                                                                                            'input',
                                                                                         field:
-                                                                                            "Id",
+                                                                                            'Id',
                                                                                         options: {
                                                                                             type:
-                                                                                                "input",
+                                                                                                'input',
                                                                                             inputType:
-                                                                                                "text"
+                                                                                                'text'
                                                                                         }
                                                                                     }
                                                                                 },
                                                                                 {
                                                                                     title:
-                                                                                        "名称",
+                                                                                        '名称',
                                                                                     field:
-                                                                                        "caseName",
+                                                                                        'caseName',
                                                                                     width:
-                                                                                        "90px",
+                                                                                        '90px',
                                                                                     expand: true,
                                                                                     showFilter: false,
                                                                                     showSort: false,
                                                                                     editor: {
                                                                                         type:
-                                                                                            "input",
+                                                                                            'input',
                                                                                         field:
-                                                                                            "caseName",
+                                                                                            'caseName',
                                                                                         options: {
                                                                                             type:
-                                                                                                "input",
+                                                                                                'input',
                                                                                             inputType:
-                                                                                                "text",
+                                                                                                'text',
                                                                                             width:
-                                                                                                "100px"
+                                                                                                '100px'
                                                                                         }
                                                                                     }
                                                                                 },
                                                                                 {
                                                                                     title:
-                                                                                        "类别",
+                                                                                        '类别',
                                                                                     field:
-                                                                                        "caseTypeText",
+                                                                                        'caseTypeText',
                                                                                     width:
-                                                                                        "100px",
+                                                                                        '100px',
                                                                                     hidden: false,
                                                                                     showFilter: true,
                                                                                     showSort: true,
                                                                                     editor: {
                                                                                         type:
-                                                                                            "select",
+                                                                                            'select',
                                                                                         field:
-                                                                                            "caseType",
+                                                                                            'caseType',
                                                                                         options: {
                                                                                             type:
-                                                                                                "select",
+                                                                                                'select',
                                                                                             name:
-                                                                                                "caseType",
+                                                                                                'caseType',
                                                                                             label:
-                                                                                                "Type",
+                                                                                                'Type',
                                                                                             notFoundContent:
-                                                                                                "",
+                                                                                                '',
                                                                                             selectModel: false,
                                                                                             showSearch: true,
                                                                                             placeholder:
-                                                                                                "-请选择数据-",
+                                                                                                '-请选择数据-',
                                                                                             disabled: false,
                                                                                             size:
-                                                                                                "default",
+                                                                                                'default',
                                                                                             clear: true,
                                                                                             width:
-                                                                                                "150px",
+                                                                                                '150px',
                                                                                             options: [
                                                                                                 {
                                                                                                     label:
-                                                                                                        "表格",
+                                                                                                        '表格',
                                                                                                     value:
-                                                                                                        "1",
+                                                                                                        '1',
                                                                                                     disabled: false
                                                                                                 },
                                                                                                 {
                                                                                                     label:
-                                                                                                        "树组件",
+                                                                                                        '树组件',
                                                                                                     value:
-                                                                                                        "2",
+                                                                                                        '2',
                                                                                                     disabled: false
                                                                                                 },
                                                                                                 {
                                                                                                     label:
-                                                                                                        "树表",
+                                                                                                        '树表',
                                                                                                     value:
-                                                                                                        "3",
+                                                                                                        '3',
                                                                                                     disabled: false
                                                                                                 },
                                                                                                 {
                                                                                                     label:
-                                                                                                        "表单",
+                                                                                                        '表单',
                                                                                                     value:
-                                                                                                        "4",
+                                                                                                        '4',
                                                                                                     disabled: false
                                                                                                 },
                                                                                                 {
                                                                                                     label:
-                                                                                                        "标签页",
+                                                                                                        '标签页',
                                                                                                     value:
-                                                                                                        "5",
+                                                                                                        '5',
                                                                                                     disabled: false
                                                                                                 }
                                                                                             ]
@@ -2843,223 +2845,223 @@ export class TreeAndTableComponent implements OnInit {
                                                                                 },
                                                                                 {
                                                                                     title:
-                                                                                        "数量",
+                                                                                        '数量',
                                                                                     field:
-                                                                                        "caseCount",
+                                                                                        'caseCount',
                                                                                     width: 80,
                                                                                     hidden: false,
                                                                                     editor: {
                                                                                         type:
-                                                                                            "input",
+                                                                                            'input',
                                                                                         field:
-                                                                                            "caseCount",
+                                                                                            'caseCount',
                                                                                         options: {
                                                                                             type:
-                                                                                                "input",
+                                                                                                'input',
                                                                                             inputType:
-                                                                                                "text"
+                                                                                                'text'
                                                                                         }
                                                                                     }
                                                                                 },
                                                                                 {
                                                                                     title:
-                                                                                        "级别",
+                                                                                        '级别',
                                                                                     field:
-                                                                                        "caseLevel",
+                                                                                        'caseLevel',
                                                                                     width: 80,
                                                                                     hidden: false,
                                                                                     showFilter: false,
                                                                                     showSort: false,
                                                                                     editor: {
                                                                                         type:
-                                                                                            "input",
+                                                                                            'input',
                                                                                         field:
-                                                                                            "caseLevel",
+                                                                                            'caseLevel',
                                                                                         options: {
                                                                                             type:
-                                                                                                "input",
+                                                                                                'input',
                                                                                             inputType:
-                                                                                                "text"
+                                                                                                'text'
                                                                                         }
                                                                                     }
                                                                                 },
                                                                                 {
                                                                                     title:
-                                                                                        "父类别",
+                                                                                        '父类别',
                                                                                     field:
-                                                                                        "parentName",
+                                                                                        'parentName',
                                                                                     width: 80,
                                                                                     hidden: false,
                                                                                     showFilter: false,
                                                                                     showSort: false,
                                                                                     editor: {
                                                                                         type:
-                                                                                            "input",
+                                                                                            'input',
                                                                                         field:
-                                                                                            "parentId",
+                                                                                            'parentId',
                                                                                         options: {
                                                                                             type:
-                                                                                                "selectTree",
+                                                                                                'selectTree',
                                                                                             name:
-                                                                                                "parentId",
+                                                                                                'parentId',
                                                                                             label:
-                                                                                                "父类别",
+                                                                                                '父类别',
                                                                                             notFoundContent:
-                                                                                                "",
+                                                                                                '',
                                                                                             selectModel: false,
                                                                                             showSearch: true,
                                                                                             placeholder:
-                                                                                                "--请选择--",
+                                                                                                '--请选择--',
                                                                                             disabled: false,
                                                                                             size:
-                                                                                                "default",
+                                                                                                'default',
                                                                                             columns: [
                                                                                                 {
                                                                                                     title:
-                                                                                                        "主键",
+                                                                                                        '主键',
                                                                                                     field:
-                                                                                                        "key",
+                                                                                                        'key',
                                                                                                     valueName:
-                                                                                                        "Id"
+                                                                                                        'Id'
                                                                                                 },
                                                                                                 {
                                                                                                     title:
-                                                                                                        "父节点",
+                                                                                                        '父节点',
                                                                                                     field:
-                                                                                                        "parentId",
+                                                                                                        'parentId',
                                                                                                     valueName:
-                                                                                                        "parentId"
+                                                                                                        'parentId'
                                                                                                 },
                                                                                                 {
                                                                                                     title:
-                                                                                                        "标题",
+                                                                                                        '标题',
                                                                                                     field:
-                                                                                                        "title",
+                                                                                                        'title',
                                                                                                     valueName:
-                                                                                                        "caseName"
+                                                                                                        'caseName'
                                                                                                 }
                                                                                             ],
                                                                                             ajaxConfig: {
                                                                                                 url:
-                                                                                                    "common/ShowCase",
+                                                                                                    'common/ShowCase',
                                                                                                 ajaxType:
-                                                                                                    "get",
+                                                                                                    'get',
                                                                                                 params: []
                                                                                             },
                                                                                             layout:
-                                                                                                "column",
+                                                                                                'column',
                                                                                             span:
-                                                                                                "24"
+                                                                                                '24'
                                                                                         }
                                                                                     }
                                                                                 },
                                                                                 {
                                                                                     title:
-                                                                                        "创建时间",
+                                                                                        '创建时间',
                                                                                     field:
-                                                                                        "createDate",
+                                                                                        'createDate',
                                                                                     width: 80,
                                                                                     hidden: false,
                                                                                     dataType:
-                                                                                        "date",
+                                                                                        'date',
                                                                                     editor: {
                                                                                         type:
-                                                                                            "input",
+                                                                                            'input',
                                                                                         pipe:
-                                                                                            "datetime",
+                                                                                            'datetime',
                                                                                         field:
-                                                                                            "createDate",
+                                                                                            'createDate',
                                                                                         options: {
                                                                                             type:
-                                                                                                "input",
+                                                                                                'input',
                                                                                             inputType:
-                                                                                                "datetime"
+                                                                                                'datetime'
                                                                                         }
                                                                                     }
                                                                                 },
                                                                                 {
                                                                                     title:
-                                                                                        "备注",
+                                                                                        '备注',
                                                                                     field:
-                                                                                        "remark",
+                                                                                        'remark',
                                                                                     width: 80,
                                                                                     hidden: false,
                                                                                     editor: {
                                                                                         type:
-                                                                                            "input",
+                                                                                            'input',
                                                                                         field:
-                                                                                            "remark",
+                                                                                            'remark',
                                                                                         options: {
                                                                                             type:
-                                                                                                "input",
+                                                                                                'input',
                                                                                             inputType:
-                                                                                                "text"
+                                                                                                'text'
                                                                                         }
                                                                                     }
                                                                                 },
                                                                                 {
                                                                                     title:
-                                                                                        "状态",
+                                                                                        '状态',
                                                                                     field:
-                                                                                        "enabledText",
+                                                                                        'enabledText',
                                                                                     width: 80,
                                                                                     hidden: false,
                                                                                     formatter: [
                                                                                         {
                                                                                             value:
-                                                                                                "启用",
+                                                                                                '启用',
                                                                                             bgcolor:
-                                                                                                "",
+                                                                                                '',
                                                                                             fontcolor:
-                                                                                                "text-blue",
+                                                                                                'text-blue',
                                                                                             valueas:
-                                                                                                "启用"
+                                                                                                '启用'
                                                                                         },
                                                                                         {
                                                                                             value:
-                                                                                                "禁用",
+                                                                                                '禁用',
                                                                                             bgcolor:
-                                                                                                "",
+                                                                                                '',
                                                                                             fontcolor:
-                                                                                                "text-red",
+                                                                                                'text-red',
                                                                                             valueas:
-                                                                                                "禁用"
+                                                                                                '禁用'
                                                                                         }
                                                                                     ],
                                                                                     editor: {
                                                                                         type:
-                                                                                            "select",
+                                                                                            'select',
                                                                                         field:
-                                                                                            "enabled",
+                                                                                            'enabled',
                                                                                         options: {
                                                                                             type:
-                                                                                                "select",
+                                                                                                'select',
                                                                                             inputType:
-                                                                                                "submit",
+                                                                                                'submit',
                                                                                             name:
-                                                                                                "enabled",
+                                                                                                'enabled',
                                                                                             notFoundContent:
-                                                                                                "",
+                                                                                                '',
                                                                                             selectModel: false,
                                                                                             showSearch: true,
                                                                                             placeholder:
-                                                                                                "-请选择-",
+                                                                                                '-请选择-',
                                                                                             disabled: false,
                                                                                             size:
-                                                                                                "default",
+                                                                                                'default',
                                                                                             clear: true,
                                                                                             width:
-                                                                                                "80px",
+                                                                                                '80px',
                                                                                             options: [
                                                                                                 {
                                                                                                     label:
-                                                                                                        "启用",
+                                                                                                        '启用',
                                                                                                     value: true,
                                                                                                     disabled: false
                                                                                                 },
                                                                                                 {
                                                                                                     label:
-                                                                                                        "禁用",
+                                                                                                        '禁用',
                                                                                                     value: false,
                                                                                                     disabled: false
                                                                                                 }
@@ -3078,13 +3080,13 @@ export class TreeAndTableComponent implements OnInit {
                                                                                     group: [
                                                                                         {
                                                                                             name:
-                                                                                                "refresh",
+                                                                                                'refresh',
                                                                                             action:
-                                                                                                "REFRESH",
+                                                                                                'REFRESH',
                                                                                             text:
-                                                                                                "刷新",
+                                                                                                '刷新',
                                                                                             color:
-                                                                                                "text-primary",
+                                                                                                'text-primary',
                                                                                             cancelPermission: true
                                                                                         }
                                                                                     ]
@@ -3097,21 +3099,21 @@ export class TreeAndTableComponent implements OnInit {
                                                             relations: [
                                                                 {
                                                                     relationViewId:
-                                                                        "tree_and_table_tree",
+                                                                        'tree_and_table_tree',
                                                                     cascadeMode:
-                                                                        "REFRESH_AS_CHILD",
+                                                                        'REFRESH_AS_CHILD',
                                                                     params: [
                                                                         {
                                                                             pid:
-                                                                                "Id",
+                                                                                'Id',
                                                                             cid:
-                                                                                "_id"
+                                                                                '_id'
                                                                         },
                                                                         {
                                                                             pid:
-                                                                                "parentId",
+                                                                                'parentId',
                                                                             cid:
-                                                                                "_parentId"
+                                                                                '_parentId'
                                                                         }
                                                                     ]
                                                                 }
@@ -3122,8 +3124,8 @@ export class TreeAndTableComponent implements OnInit {
                                                 ]
                                             },
                                             {
-                                                id: "area2_2",
-                                                title: "主表",
+                                                id: 'area2_2',
+                                                title: '主表',
                                                 span: 24,
                                                 size: {
                                                     nzXs: 24,
@@ -3135,14 +3137,14 @@ export class TreeAndTableComponent implements OnInit {
                                                 viewCfg: [
                                                     {
                                                         config: {
-                                                            title: "数据网格",
+                                                            title: '数据网格',
                                                             viewId:
-                                                                "tree_singleTable",
+                                                                'tree_singleTable',
                                                             component:
-                                                                "bsnTable",
+                                                                'bsnTable',
                                                             info: true,
-                                                            keyId: "Id",
-                                                            size: "small",
+                                                            keyId: 'Id',
+                                                            size: 'small',
                                                             pagination: true, // 是否分页
                                                             showTotal: true, // 是否显示总数据量
                                                             pageSize: 5, // 默认每页数据条数
@@ -3156,187 +3158,187 @@ export class TreeAndTableComponent implements OnInit {
                                                             ],
                                                             ajaxConfig: {
                                                                 url:
-                                                                    "common/GetCase",
-                                                                ajaxType: "get",
+                                                                    'common/GetCase',
+                                                                ajaxType: 'get',
                                                                 params: [
                                                                     {
                                                                         name:
-                                                                            "parentId",
+                                                                            'parentId',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "_parentId"
+                                                                            '_parentId'
                                                                     }
                                                                 ],
                                                                 filter: [
                                                                     {
                                                                         name:
-                                                                            "caseName",
+                                                                            'caseName',
                                                                         valueName:
-                                                                            "_caseName",
+                                                                            '_caseName',
                                                                         type:
-                                                                            "",
+                                                                            '',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "enabled",
+                                                                            'enabled',
                                                                         valueName:
-                                                                            "_enabled",
+                                                                            '_enabled',
                                                                         type:
-                                                                            "",
+                                                                            '',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "caseType",
+                                                                            'caseType',
                                                                         valueName:
-                                                                            "_caseType",
+                                                                            '_caseType',
                                                                         type:
-                                                                            "",
+                                                                            '',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     }
                                                                 ]
                                                             },
                                                             columns: [
                                                                 {
                                                                     title:
-                                                                        "序号",
+                                                                        '序号',
                                                                     field:
-                                                                        "_serilize",
+                                                                        '_serilize',
                                                                     width:
-                                                                        "50px",
+                                                                        '50px',
                                                                     hidden: false,
                                                                     editor: {
                                                                         type:
-                                                                            "input",
+                                                                            'input',
                                                                         field:
-                                                                            "Id",
+                                                                            'Id',
                                                                         options: {
                                                                             type:
-                                                                                "input",
+                                                                                'input',
                                                                             inputType:
-                                                                                "text"
+                                                                                'text'
                                                                         }
                                                                     }
                                                                 },
                                                                 {
-                                                                    title: "Id",
-                                                                    field: "Id",
+                                                                    title: 'Id',
+                                                                    field: 'Id',
                                                                     width: 80,
                                                                     hidden: true,
                                                                     editor: {
                                                                         type:
-                                                                            "input",
+                                                                            'input',
                                                                         field:
-                                                                            "Id",
+                                                                            'Id',
                                                                         options: {
                                                                             type:
-                                                                                "input",
+                                                                                'input',
                                                                             inputType:
-                                                                                "text"
+                                                                                'text'
                                                                         }
                                                                     }
                                                                 },
                                                                 {
                                                                     title:
-                                                                        "名称",
+                                                                        '名称',
                                                                     field:
-                                                                        "caseName",
+                                                                        'caseName',
                                                                     width:
-                                                                        "90px",
+                                                                        '90px',
                                                                     showFilter: false,
                                                                     showSort: false,
                                                                     editor: {
                                                                         type:
-                                                                            "input",
+                                                                            'input',
                                                                         field:
-                                                                            "caseName",
+                                                                            'caseName',
                                                                         options: {
                                                                             type:
-                                                                                "input",
+                                                                                'input',
                                                                             inputType:
-                                                                                "text"
+                                                                                'text'
                                                                         }
                                                                     }
                                                                 },
                                                                 {
                                                                     title:
-                                                                        "类别",
+                                                                        '类别',
                                                                     field:
-                                                                        "caseTypeText",
+                                                                        'caseTypeText',
                                                                     width:
-                                                                        "100px",
+                                                                        '100px',
                                                                     hidden: false,
                                                                     showFilter: true,
                                                                     showSort: true,
                                                                     editor: {
                                                                         type:
-                                                                            "select",
+                                                                            'select',
                                                                         field:
-                                                                            "caseType",
+                                                                            'caseType',
                                                                         options: {
                                                                             type:
-                                                                                "select",
+                                                                                'select',
                                                                             labelSize:
-                                                                                "6",
+                                                                                '6',
                                                                             controlSize:
-                                                                                "18",
+                                                                                '18',
                                                                             inputType:
-                                                                                "submit",
+                                                                                'submit',
                                                                             name:
-                                                                                "caseType",
+                                                                                'caseType',
                                                                             label:
-                                                                                "Type",
+                                                                                'Type',
                                                                             notFoundContent:
-                                                                                "",
+                                                                                '',
                                                                             selectModel: false,
                                                                             showSearch: true,
                                                                             placeholder:
-                                                                                "-请选择数据-",
+                                                                                '-请选择数据-',
                                                                             disabled: false,
                                                                             size:
-                                                                                "default",
+                                                                                'default',
                                                                             clear: true,
                                                                             width:
-                                                                                "200px",
+                                                                                '200px',
                                                                             options: [
                                                                                 {
                                                                                     label:
-                                                                                        "表格",
+                                                                                        '表格',
                                                                                     value:
-                                                                                        "1",
+                                                                                        '1',
                                                                                     disabled: false
                                                                                 },
                                                                                 {
                                                                                     label:
-                                                                                        "树组件",
+                                                                                        '树组件',
                                                                                     value:
-                                                                                        "2",
+                                                                                        '2',
                                                                                     disabled: false
                                                                                 },
                                                                                 {
                                                                                     label:
-                                                                                        "树表",
+                                                                                        '树表',
                                                                                     value:
-                                                                                        "3",
+                                                                                        '3',
                                                                                     disabled: false
                                                                                 },
                                                                                 {
                                                                                     label:
-                                                                                        "表单",
+                                                                                        '表单',
                                                                                     value:
-                                                                                        "4",
+                                                                                        '4',
                                                                                     disabled: false
                                                                                 },
                                                                                 {
                                                                                     label:
-                                                                                        "标签页",
+                                                                                        '标签页',
                                                                                     value:
-                                                                                        "5",
+                                                                                        '5',
                                                                                     disabled: false
                                                                                 }
                                                                             ]
@@ -3345,173 +3347,173 @@ export class TreeAndTableComponent implements OnInit {
                                                                 },
                                                                 {
                                                                     title:
-                                                                        "数量",
+                                                                        '数量',
                                                                     field:
-                                                                        "caseCount",
+                                                                        'caseCount',
                                                                     width: 80,
                                                                     hidden: false,
                                                                     editor: {
                                                                         type:
-                                                                            "input",
+                                                                            'input',
                                                                         field:
-                                                                            "caseCount",
+                                                                            'caseCount',
                                                                         options: {
                                                                             type:
-                                                                                "input",
+                                                                                'input',
                                                                             labelSize:
-                                                                                "6",
+                                                                                '6',
                                                                             controlSize:
-                                                                                "18",
+                                                                                '18',
                                                                             inputType:
-                                                                                "text"
+                                                                                'text'
                                                                         }
                                                                     }
                                                                 },
                                                                 {
                                                                     title:
-                                                                        "级别",
+                                                                        '级别',
                                                                     field:
-                                                                        "caseLevel",
+                                                                        'caseLevel',
                                                                     width: 80,
                                                                     hidden: false,
                                                                     showFilter: false,
                                                                     showSort: false,
                                                                     editor: {
                                                                         type:
-                                                                            "input",
+                                                                            'input',
                                                                         field:
-                                                                            "caseLevel",
+                                                                            'caseLevel',
                                                                         options: {
                                                                             type:
-                                                                                "input",
+                                                                                'input',
                                                                             labelSize:
-                                                                                "6",
+                                                                                '6',
                                                                             controlSize:
-                                                                                "18",
+                                                                                '18',
                                                                             inputType:
-                                                                                "text"
+                                                                                'text'
                                                                         }
                                                                     }
                                                                 },
                                                                 {
                                                                     title:
-                                                                        "创建时间",
+                                                                        '创建时间',
                                                                     field:
-                                                                        "createTime",
+                                                                        'createTime',
                                                                     width: 80,
                                                                     hidden: false,
                                                                     dataType:
-                                                                        "date",
+                                                                        'date',
                                                                     editor: {
                                                                         type:
-                                                                            "input",
+                                                                            'input',
                                                                         pipe:
-                                                                            "datetime",
+                                                                            'datetime',
                                                                         field:
-                                                                            "createTime",
+                                                                            'createTime',
                                                                         options: {
                                                                             type:
-                                                                                "input",
+                                                                                'input',
                                                                             labelSize:
-                                                                                "6",
+                                                                                '6',
                                                                             controlSize:
-                                                                                "18",
+                                                                                '18',
                                                                             inputType:
-                                                                                "datetime"
+                                                                                'datetime'
                                                                         }
                                                                     }
                                                                 },
                                                                 {
                                                                     title:
-                                                                        "备注",
+                                                                        '备注',
                                                                     field:
-                                                                        "remark",
+                                                                        'remark',
                                                                     width: 80,
                                                                     hidden: false,
                                                                     editor: {
                                                                         type:
-                                                                            "input",
+                                                                            'input',
                                                                         field:
-                                                                            "remark",
+                                                                            'remark',
                                                                         options: {
                                                                             type:
-                                                                                "input",
+                                                                                'input',
                                                                             labelSize:
-                                                                                "6",
+                                                                                '6',
                                                                             controlSize:
-                                                                                "18",
+                                                                                '18',
                                                                             inputType:
-                                                                                "text"
+                                                                                'text'
                                                                         }
                                                                     }
                                                                 },
                                                                 {
                                                                     title:
-                                                                        "状态",
+                                                                        '状态',
                                                                     field:
-                                                                        "enableText",
+                                                                        'enableText',
                                                                     width: 80,
                                                                     hidden: false,
                                                                     formatter: [
                                                                         {
                                                                             value:
-                                                                                "启用",
+                                                                                '启用',
                                                                             bgcolor:
-                                                                                "",
+                                                                                '',
                                                                             fontcolor:
-                                                                                "text-blue",
+                                                                                'text-blue',
                                                                             valueas:
-                                                                                "启用"
+                                                                                '启用'
                                                                         },
                                                                         {
                                                                             value:
-                                                                                "禁用",
+                                                                                '禁用',
                                                                             bgcolor:
-                                                                                "",
+                                                                                '',
                                                                             fontcolor:
-                                                                                "text-red",
+                                                                                'text-red',
                                                                             valueas:
-                                                                                "禁用"
+                                                                                '禁用'
                                                                         }
                                                                     ],
                                                                     editor: {
                                                                         type:
-                                                                            "select",
+                                                                            'select',
                                                                         field:
-                                                                            "enabled",
+                                                                            'enabled',
                                                                         options: {
                                                                             type:
-                                                                                "select",
+                                                                                'select',
                                                                             labelSize:
-                                                                                "6",
+                                                                                '6',
                                                                             controlSize:
-                                                                                "18",
+                                                                                '18',
                                                                             inputType:
-                                                                                "submit",
+                                                                                'submit',
                                                                             name:
-                                                                                "enabled",
+                                                                                'enabled',
                                                                             notFoundContent:
-                                                                                "",
+                                                                                '',
                                                                             selectModel: false,
                                                                             showSearch: true,
                                                                             placeholder:
-                                                                                "-请选择-",
+                                                                                '-请选择-',
                                                                             disabled: false,
                                                                             size:
-                                                                                "default",
+                                                                                'default',
                                                                             clear: true,
                                                                             width:
-                                                                                "80px",
+                                                                                '80px',
                                                                             options: [
                                                                                 {
                                                                                     label:
-                                                                                        "启用",
+                                                                                        '启用',
                                                                                     value: true,
                                                                                     disabled: false
                                                                                 },
                                                                                 {
                                                                                     label:
-                                                                                        "禁用",
+                                                                                        '禁用',
                                                                                     value: false,
                                                                                     disabled: false
                                                                                 }
@@ -3528,23 +3530,23 @@ export class TreeAndTableComponent implements OnInit {
                                                             relations: [
                                                                 {
                                                                     relationViewId:
-                                                                        "tree_and_table_tree",
+                                                                        'tree_and_table_tree',
                                                                     cascadeMode:
-                                                                        "REFRESH_AS_CHILD",
+                                                                        'REFRESH_AS_CHILD',
                                                                     params: [
                                                                         {
                                                                             pid:
-                                                                                "key",
+                                                                                'key',
                                                                             cid:
-                                                                                "_parentId"
+                                                                                '_parentId'
                                                                         }
                                                                     ]
                                                                 },
                                                                 {
                                                                     relationViewId:
-                                                                        "tree_and_form_form",
+                                                                        'tree_and_form_form',
                                                                     cascadeMode:
-                                                                        "REFRESH",
+                                                                        'REFRESH',
                                                                     params: []
                                                                 }
                                                             ],
@@ -3553,76 +3555,76 @@ export class TreeAndTableComponent implements OnInit {
                                                                     group: [
                                                                         {
                                                                             name:
-                                                                                "refresh",
+                                                                                'refresh',
                                                                             class:
-                                                                                "editable-add-btn",
+                                                                                'editable-add-btn',
                                                                             text:
-                                                                                "刷新",
+                                                                                '刷新',
                                                                             color:
-                                                                                "text-primary",
+                                                                                'text-primary',
                                                                             cancelPermission: true
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "addRow",
+                                                                                'addRow',
                                                                             class:
-                                                                                "editable-add-btn",
+                                                                                'editable-add-btn',
                                                                             text:
-                                                                                "新增",
+                                                                                '新增',
                                                                             action:
-                                                                                "CREATE",
+                                                                                'CREATE',
                                                                             icon:
-                                                                                "plus",
+                                                                                'plus',
                                                                             color:
-                                                                                "text-primary",
+                                                                                'text-primary',
                                                                             cancelPermission: true
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "updateRow",
+                                                                                'updateRow',
                                                                             class:
-                                                                                "editable-add-btn",
+                                                                                'editable-add-btn',
                                                                             text:
-                                                                                "修改",
+                                                                                '修改',
                                                                             action:
-                                                                                "EDIT",
+                                                                                'EDIT',
                                                                             icon:
-                                                                                "edit",
+                                                                                'edit',
                                                                             color:
-                                                                                "text-success",
+                                                                                'text-success',
                                                                             cancelPermission: true
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "deleteRow",
+                                                                                'deleteRow',
                                                                             class:
-                                                                                "editable-add-btn",
+                                                                                'editable-add-btn',
                                                                             text:
-                                                                                "删除",
+                                                                                '删除',
                                                                             action:
-                                                                                "DELETE",
+                                                                                'DELETE',
                                                                             icon:
-                                                                                "delete",
+                                                                                'delete',
                                                                             color:
-                                                                                "text-red-light",
+                                                                                'text-red-light',
                                                                             cancelPermission: true,
                                                                             ajaxConfig: {
                                                                                 delete: [
                                                                                     {
                                                                                         actionName:
-                                                                                            "delete",
+                                                                                            'delete',
                                                                                         url:
-                                                                                            "common/ShowCase",
+                                                                                            'common/ShowCase',
                                                                                         ajaxType:
-                                                                                            "delete",
+                                                                                            'delete',
                                                                                         params: [
                                                                                             {
                                                                                                 name:
-                                                                                                    "Id",
+                                                                                                    'Id',
                                                                                                 valueName:
-                                                                                                    "Id",
+                                                                                                    'Id',
                                                                                                 type:
-                                                                                                    "checkedRow"
+                                                                                                    'checkedRow'
                                                                                             }
                                                                                         ]
                                                                                     }
@@ -3635,39 +3637,39 @@ export class TreeAndTableComponent implements OnInit {
                                                                     group: [
                                                                         {
                                                                             name:
-                                                                                "executeCheckedRow",
+                                                                                'executeCheckedRow',
                                                                             class:
-                                                                                "editable-add-btn",
+                                                                                'editable-add-btn',
                                                                             text:
-                                                                                "多选删除",
+                                                                                '多选删除',
                                                                             action:
-                                                                                "EXECUTE_CHECKED",
+                                                                                'EXECUTE_CHECKED',
                                                                             icon:
-                                                                                "delete",
+                                                                                'delete',
                                                                             color:
-                                                                                "text-red-light",
+                                                                                'text-red-light',
                                                                             actionType:
-                                                                                "post",
+                                                                                'post',
                                                                             actionName:
-                                                                                "execChecked",
+                                                                                'execChecked',
                                                                             cancelPermission: true,
                                                                             ajaxConfig: {
                                                                                 post: [
                                                                                     {
                                                                                         actionName:
-                                                                                            "post",
+                                                                                            'post',
                                                                                         url:
-                                                                                            "common/ShowCase",
+                                                                                            'common/ShowCase',
                                                                                         ajaxType:
-                                                                                            "post",
+                                                                                            'post',
                                                                                         params: [
                                                                                             {
                                                                                                 name:
-                                                                                                    "Id",
+                                                                                                    'Id',
                                                                                                 valueName:
-                                                                                                    "Id",
+                                                                                                    'Id',
                                                                                                 type:
-                                                                                                    "checkedRow"
+                                                                                                    'checkedRow'
                                                                                             }
                                                                                         ]
                                                                                     }
@@ -3676,37 +3678,37 @@ export class TreeAndTableComponent implements OnInit {
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "executeSelectedRow",
+                                                                                'executeSelectedRow',
                                                                             class:
-                                                                                "editable-add-btn",
+                                                                                'editable-add-btn',
                                                                             text:
-                                                                                "选中删除",
+                                                                                '选中删除',
                                                                             action:
-                                                                                "EXECUTE_SELECTED",
+                                                                                'EXECUTE_SELECTED',
                                                                             icon:
-                                                                                "delete",
+                                                                                'delete',
                                                                             actionType:
-                                                                                "post",
+                                                                                'post',
                                                                             actionName:
-                                                                                "execSelected",
+                                                                                'execSelected',
                                                                             cancelPermission: true,
                                                                             ajaxConfig: {
                                                                                 post: [
                                                                                     {
                                                                                         actionName:
-                                                                                            "post",
+                                                                                            'post',
                                                                                         url:
-                                                                                            "common/ShowCase",
+                                                                                            'common/ShowCase',
                                                                                         ajaxType:
-                                                                                            "post",
+                                                                                            'post',
                                                                                         params: [
                                                                                             {
                                                                                                 name:
-                                                                                                    "Id",
+                                                                                                    'Id',
                                                                                                 valueName:
-                                                                                                    "Id",
+                                                                                                    'Id',
                                                                                                 type:
-                                                                                                    "checkedRow"
+                                                                                                    'checkedRow'
                                                                                             }
                                                                                         ]
                                                                                     }
@@ -3715,109 +3717,109 @@ export class TreeAndTableComponent implements OnInit {
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "saveRow",
+                                                                                'saveRow',
                                                                             class:
-                                                                                "editable-add-btn",
+                                                                                'editable-add-btn',
                                                                             text:
-                                                                                "保存",
+                                                                                '保存',
                                                                             action:
-                                                                                "SAVE",
+                                                                                'SAVE',
                                                                             icon:
-                                                                                "save",
+                                                                                'save',
                                                                             type:
-                                                                                "default",
+                                                                                'default',
                                                                             color:
-                                                                                "text-primary",
+                                                                                'text-primary',
                                                                             cancelPermission: true,
                                                                             ajaxConfig: {
                                                                                 post: [
                                                                                     {
                                                                                         actionName:
-                                                                                            "add",
+                                                                                            'add',
                                                                                         url:
-                                                                                            "common/ShowCase",
+                                                                                            'common/ShowCase',
                                                                                         ajaxType:
-                                                                                            "post",
+                                                                                            'post',
                                                                                         params: [
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseName",
+                                                                                                    'caseName',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseName",
+                                                                                                    'caseName',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseCount",
+                                                                                                    'caseCount',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseCount",
+                                                                                                    'caseCount',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "enabled",
+                                                                                                    'enabled',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "enabled",
+                                                                                                    'enabled',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseLevel",
+                                                                                                    'caseLevel',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseLevel",
+                                                                                                    'caseLevel',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "parentId",
+                                                                                                    'parentId',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "parentId",
+                                                                                                    'parentId',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "remark",
+                                                                                                    'remark',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "remark",
+                                                                                                    'remark',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseType",
+                                                                                                    'caseType',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseType",
+                                                                                                    'caseType',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             }
                                                                                         ],
                                                                                         output: [
                                                                                             {
                                                                                                 name:
-                                                                                                    "_id",
+                                                                                                    '_id',
                                                                                                 type:
-                                                                                                    "",
+                                                                                                    '',
                                                                                                 dataName:
-                                                                                                    "Id"
+                                                                                                    'Id'
                                                                                             }
                                                                                         ]
                                                                                     }
@@ -3825,89 +3827,89 @@ export class TreeAndTableComponent implements OnInit {
                                                                                 put: [
                                                                                     {
                                                                                         url:
-                                                                                            "common/ShowCase",
+                                                                                            'common/ShowCase',
                                                                                         ajaxType:
-                                                                                            "put",
+                                                                                            'put',
                                                                                         params: [
                                                                                             {
                                                                                                 name:
-                                                                                                    "Id",
+                                                                                                    'Id',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "Id",
+                                                                                                    'Id',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseName",
+                                                                                                    'caseName',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseName",
+                                                                                                    'caseName',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseCount",
+                                                                                                    'caseCount',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseCount",
+                                                                                                    'caseCount',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "enabled",
+                                                                                                    'enabled',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "enabled",
+                                                                                                    'enabled',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseLevel",
+                                                                                                    'caseLevel',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseLevel",
+                                                                                                    'caseLevel',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "parentId",
+                                                                                                    'parentId',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "parentId",
+                                                                                                    'parentId',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "remark",
+                                                                                                    'remark',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "remark",
+                                                                                                    'remark',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseType",
+                                                                                                    'caseType',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseType",
+                                                                                                    'caseType',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             }
                                                                                         ]
                                                                                     }
@@ -3916,17 +3918,17 @@ export class TreeAndTableComponent implements OnInit {
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "cancelRow",
+                                                                                'cancelRow',
                                                                             class:
-                                                                                "editable-add-btn",
+                                                                                'editable-add-btn',
                                                                             text:
-                                                                                "取消",
+                                                                                '取消',
                                                                             action:
-                                                                                "CANCEL",
+                                                                                'CANCEL',
                                                                             icon:
-                                                                                "rollback",
+                                                                                'rollback',
                                                                             color:
-                                                                                "text-grey-darker",
+                                                                                'text-grey-darker',
                                                                             cancelPermission: true
                                                                         }
                                                                     ]
@@ -3935,79 +3937,79 @@ export class TreeAndTableComponent implements OnInit {
                                                                     group: [
                                                                         {
                                                                             name:
-                                                                                "addForm",
+                                                                                'addForm',
                                                                             text:
-                                                                                "弹出新增表单",
+                                                                                '弹出新增表单',
                                                                             icon:
-                                                                                "form",
+                                                                                'form',
                                                                             action:
-                                                                                "FORM",
+                                                                                'FORM',
                                                                             actionType:
-                                                                                "formDialog",
+                                                                                'formDialog',
                                                                             actionName:
-                                                                                "addShowCase",
+                                                                                'addShowCase',
                                                                             type:
-                                                                                "showForm",
+                                                                                'showForm',
                                                                             cancelPermission: true
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "editForm",
+                                                                                'editForm',
                                                                             text:
-                                                                                "弹出编辑表单",
+                                                                                '弹出编辑表单',
                                                                             icon:
-                                                                                "form",
+                                                                                'form',
                                                                             action:
-                                                                                "FORM",
+                                                                                'FORM',
                                                                             actionType:
-                                                                                "formDialog",
+                                                                                'formDialog',
                                                                             actionName:
-                                                                                "updateShowCase",
+                                                                                'updateShowCase',
                                                                             type:
-                                                                                "showForm",
+                                                                                'showForm',
                                                                             cancelPermission: true
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "batchEditForm",
+                                                                                'batchEditForm',
                                                                             text:
-                                                                                "弹出批量处理表单",
+                                                                                '弹出批量处理表单',
                                                                             icon:
-                                                                                "form",
+                                                                                'form',
                                                                             type:
-                                                                                "showBatchForm",
+                                                                                'showBatchForm',
                                                                             cancelPermission: true
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "showDialogPage",
+                                                                                'showDialogPage',
                                                                             text:
-                                                                                "弹出页面",
+                                                                                '弹出页面',
                                                                             action:
-                                                                                "WINDOW",
+                                                                                'WINDOW',
                                                                             actionType:
-                                                                                "windowDialog",
+                                                                                'windowDialog',
                                                                             actionName:
-                                                                                "ShowCaseWindow",
+                                                                                'ShowCaseWindow',
                                                                             type:
-                                                                                "showLayout",
+                                                                                'showLayout',
                                                                             cancelPermission: true
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "upload",
+                                                                                'upload',
                                                                             icon:
-                                                                                "upload",
+                                                                                'upload',
                                                                             text:
-                                                                                "附件上传",
+                                                                                '附件上传',
                                                                             action:
-                                                                                "UPLOAD",
+                                                                                'UPLOAD',
                                                                             actionType:
-                                                                                "uploadDialog",
+                                                                                'uploadDialog',
                                                                             actionName:
-                                                                                "uploadCase",
+                                                                                'uploadCase',
                                                                             type:
-                                                                                "uploadDialog",
+                                                                                'uploadDialog',
                                                                             cancelPermission: true
                                                                         }
                                                                     ]
@@ -4016,43 +4018,43 @@ export class TreeAndTableComponent implements OnInit {
                                                                     dropdown: [
                                                                         {
                                                                             name:
-                                                                                "btnGroup",
+                                                                                'btnGroup',
                                                                             text:
-                                                                                " 分组操作",
+                                                                                ' 分组操作',
                                                                             icon:
-                                                                                "icon-plus",
+                                                                                'icon-plus',
                                                                             buttons: [
                                                                                 {
                                                                                     name:
-                                                                                        "refresh",
+                                                                                        'refresh',
                                                                                     class:
-                                                                                        "editable-add-btn",
+                                                                                        'editable-add-btn',
                                                                                     text:
-                                                                                        " 刷新",
+                                                                                        ' 刷新',
                                                                                     icon:
-                                                                                        "icon-list",
+                                                                                        'icon-list',
                                                                                     cancelPermission: true
                                                                                 },
                                                                                 {
                                                                                     name:
-                                                                                        "addRow",
+                                                                                        'addRow',
                                                                                     class:
-                                                                                        "editable-add-btn",
+                                                                                        'editable-add-btn',
                                                                                     text:
-                                                                                        "新增",
+                                                                                        '新增',
                                                                                     icon:
-                                                                                        "icon-add",
+                                                                                        'icon-add',
                                                                                     cancelPermission: true
                                                                                 },
                                                                                 {
                                                                                     name:
-                                                                                        "updateRow",
+                                                                                        'updateRow',
                                                                                     class:
-                                                                                        "editable-add-btn",
+                                                                                        'editable-add-btn',
                                                                                     text:
-                                                                                        "修改",
+                                                                                        '修改',
                                                                                     icon:
-                                                                                        "icon-edit",
+                                                                                        'icon-edit',
                                                                                     cancelPermission: true
                                                                                 }
                                                                             ]
@@ -4063,54 +4065,54 @@ export class TreeAndTableComponent implements OnInit {
                                                             dataSet: [
                                                                 {
                                                                     name:
-                                                                        "getCaseName",
+                                                                        'getCaseName',
                                                                     ajaxConfig: {
                                                                         url:
-                                                                            "common/ShowCase",
+                                                                            'common/ShowCase',
                                                                         ajaxType:
-                                                                            "get",
+                                                                            'get',
                                                                         params: []
                                                                     },
                                                                     params: [],
                                                                     fields: [
                                                                         {
                                                                             label:
-                                                                                "ID",
+                                                                                'ID',
                                                                             field:
-                                                                                "Id",
+                                                                                'Id',
                                                                             name:
-                                                                                "value"
+                                                                                'value'
                                                                         },
                                                                         {
                                                                             label:
-                                                                                "",
+                                                                                '',
                                                                             field:
-                                                                                "name",
+                                                                                'name',
                                                                             name:
-                                                                                "label"
+                                                                                'label'
                                                                         },
                                                                         {
                                                                             label:
-                                                                                "",
+                                                                                '',
                                                                             field:
-                                                                                "name",
+                                                                                'name',
                                                                             name:
-                                                                                "text"
+                                                                                'text'
                                                                         }
                                                                     ]
                                                                 }
                                                             ],
                                                             formDialog: [
                                                                 {
-                                                                    keyId: "Id",
+                                                                    keyId: 'Id',
                                                                     name:
-                                                                        "addShowCase",
+                                                                        'addShowCase',
                                                                     layout:
-                                                                        "horizontal",
+                                                                        'horizontal',
                                                                     title:
-                                                                        "新增数据",
+                                                                        '新增数据',
                                                                     width:
-                                                                        "800",
+                                                                        '800',
                                                                     isCard: true,
                                                                     componentType: {
                                                                         parent: false,
@@ -4122,44 +4124,44 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "select",
+                                                                                        'select',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "16",
+                                                                                        '16',
                                                                                     inputType:
-                                                                                        "submit",
+                                                                                        'submit',
                                                                                     name:
-                                                                                        "enabled",
+                                                                                        'enabled',
                                                                                     label:
-                                                                                        "状态",
+                                                                                        '状态',
                                                                                     notFoundContent:
-                                                                                        "",
+                                                                                        '',
                                                                                     selectModel: false,
                                                                                     showSearch: true,
                                                                                     placeholder:
-                                                                                        "--请选择--",
+                                                                                        '--请选择--',
                                                                                     disabled: false,
                                                                                     size:
-                                                                                        "default",
+                                                                                        'default',
                                                                                     options: [
                                                                                         {
                                                                                             label:
-                                                                                                "启用",
+                                                                                                '启用',
                                                                                             value: true,
                                                                                             disabled: false
                                                                                         },
                                                                                         {
                                                                                             label:
-                                                                                                "禁用",
+                                                                                                '禁用',
                                                                                             value: false,
                                                                                             disabled: false
                                                                                         }
                                                                                     ],
                                                                                     layout:
-                                                                                        "column",
+                                                                                        'column',
                                                                                     span:
-                                                                                        "24"
+                                                                                        '24'
                                                                                 }
                                                                             ]
                                                                         },
@@ -4167,59 +4169,59 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "select",
+                                                                                        'select',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "16",
+                                                                                        '16',
                                                                                     inputType:
-                                                                                        "submit",
+                                                                                        'submit',
                                                                                     name:
-                                                                                        "caseType",
+                                                                                        'caseType',
                                                                                     label:
-                                                                                        "父类别",
+                                                                                        '父类别',
                                                                                     labelName:
-                                                                                        "caseName",
+                                                                                        'caseName',
                                                                                     valueName:
-                                                                                        "Id",
+                                                                                        'Id',
                                                                                     notFoundContent:
-                                                                                        "",
+                                                                                        '',
                                                                                     selectModel: false,
                                                                                     showSearch: true,
                                                                                     placeholder:
-                                                                                        "--请选择--",
+                                                                                        '--请选择--',
                                                                                     disabled: false,
                                                                                     size:
-                                                                                        "default",
+                                                                                        'default',
                                                                                     ajaxConfig: {
                                                                                         url:
-                                                                                            "common/ShowCase",
+                                                                                            'common/ShowCase',
                                                                                         ajaxType:
-                                                                                            "get",
+                                                                                            'get',
                                                                                         params: []
                                                                                     },
                                                                                     cascader: [
                                                                                         {
                                                                                             name:
-                                                                                                "getCaseName",
+                                                                                                'getCaseName',
                                                                                             type:
-                                                                                                "sender",
+                                                                                                'sender',
                                                                                             cascaderData: {
                                                                                                 params: [
                                                                                                     {
                                                                                                         pid:
-                                                                                                            "Id",
+                                                                                                            'Id',
                                                                                                         cid:
-                                                                                                            "_typeId"
+                                                                                                            '_typeId'
                                                                                                     }
                                                                                                 ]
                                                                                             }
                                                                                         }
                                                                                     ],
                                                                                     layout:
-                                                                                        "column",
+                                                                                        'column',
                                                                                     span:
-                                                                                        "24"
+                                                                                        '24'
                                                                                 }
                                                                             ]
                                                                         },
@@ -4227,54 +4229,54 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "input",
+                                                                                        'input',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "16",
+                                                                                        '16',
                                                                                     inputType:
-                                                                                        "text",
+                                                                                        'text',
                                                                                     name:
-                                                                                        "caseName",
+                                                                                        'caseName',
                                                                                     label:
-                                                                                        "名称",
+                                                                                        '名称',
                                                                                     isRequired: true,
                                                                                     placeholder:
-                                                                                        "请输入Case名称",
+                                                                                        '请输入Case名称',
                                                                                     perfix:
-                                                                                        "edit",
+                                                                                        'edit',
                                                                                     disabled: false,
                                                                                     readonly: false,
                                                                                     size:
-                                                                                        "default",
+                                                                                        'default',
                                                                                     layout:
-                                                                                        "column",
+                                                                                        'column',
                                                                                     explain:
-                                                                                        "名称需要根据规范填写",
+                                                                                        '名称需要根据规范填写',
                                                                                     span:
-                                                                                        "24",
+                                                                                        '24',
                                                                                     validations: [
                                                                                         {
                                                                                             validator:
-                                                                                                "required",
+                                                                                                'required',
                                                                                             errorMessage:
-                                                                                                "请输入Case名称!!!!"
+                                                                                                '请输入Case名称!!!!'
                                                                                         },
                                                                                         {
                                                                                             validator:
-                                                                                                "minLength",
+                                                                                                'minLength',
                                                                                             length:
-                                                                                                "3",
+                                                                                                '3',
                                                                                             errorMessage:
-                                                                                                "请输入最少三个字符"
+                                                                                                '请输入最少三个字符'
                                                                                         },
                                                                                         {
                                                                                             validator:
-                                                                                                "maxLength",
+                                                                                                'maxLength',
                                                                                             length:
-                                                                                                "5",
+                                                                                                '5',
                                                                                             errorMessage:
-                                                                                                "请输入最5个字符"
+                                                                                                '请输入最5个字符'
                                                                                         }
                                                                                     ]
                                                                                 }
@@ -4284,34 +4286,34 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "input",
+                                                                                        'input',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "16",
+                                                                                        '16',
                                                                                     inputType:
-                                                                                        "text",
+                                                                                        'text',
                                                                                     name:
-                                                                                        "caseLevel",
+                                                                                        'caseLevel',
                                                                                     label:
-                                                                                        "级别",
+                                                                                        '级别',
                                                                                     isRequired: true,
                                                                                     placeholder:
-                                                                                        "",
+                                                                                        '',
                                                                                     disabled: false,
                                                                                     readonly: false,
                                                                                     size:
-                                                                                        "default",
+                                                                                        'default',
                                                                                     layout:
-                                                                                        "column",
+                                                                                        'column',
                                                                                     span:
-                                                                                        "24",
+                                                                                        '24',
                                                                                     validations: [
                                                                                         {
                                                                                             validator:
-                                                                                                "required",
+                                                                                                'required',
                                                                                             errorMessage:
-                                                                                                "请输入级别"
+                                                                                                '请输入级别'
                                                                                         }
                                                                                     ]
                                                                                 }
@@ -4321,26 +4323,26 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "checkboxGroup",
+                                                                                        'checkboxGroup',
                                                                                     label:
-                                                                                        "选项",
+                                                                                        '选项',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "18",
+                                                                                        '18',
                                                                                     name:
-                                                                                        "enabled",
+                                                                                        'enabled',
                                                                                     disabled: false,
                                                                                     options: [
                                                                                         {
                                                                                             label:
-                                                                                                "启用",
+                                                                                                '启用',
                                                                                             value: true,
                                                                                             disabled: false
                                                                                         },
                                                                                         {
                                                                                             label:
-                                                                                                "禁用",
+                                                                                                '禁用',
                                                                                             value: false,
                                                                                             disabled: false
                                                                                         }
@@ -4352,26 +4354,26 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "radioGroup",
+                                                                                        'radioGroup',
                                                                                     label:
-                                                                                        "选项",
+                                                                                        '选项',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "18",
+                                                                                        '18',
                                                                                     name:
-                                                                                        "enabled1",
+                                                                                        'enabled1',
                                                                                     disabled: false,
                                                                                     options: [
                                                                                         {
                                                                                             label:
-                                                                                                "启用",
+                                                                                                '启用',
                                                                                             value: true,
                                                                                             disabled: false
                                                                                         },
                                                                                         {
                                                                                             label:
-                                                                                                "禁用",
+                                                                                                '禁用',
                                                                                             value: false,
                                                                                             disabled: false
                                                                                         }
@@ -4383,41 +4385,41 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "input",
+                                                                                        'input',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "16",
+                                                                                        '16',
                                                                                     inputType:
-                                                                                        "text",
+                                                                                        'text',
                                                                                     name:
-                                                                                        "caseCount",
+                                                                                        'caseCount',
                                                                                     label:
-                                                                                        "数量",
+                                                                                        '数量',
                                                                                     isRequired: true,
                                                                                     placeholder:
-                                                                                        "",
+                                                                                        '',
                                                                                     disabled: false,
                                                                                     readonly: false,
                                                                                     size:
-                                                                                        "default",
+                                                                                        'default',
                                                                                     layout:
-                                                                                        "column",
+                                                                                        'column',
                                                                                     span:
-                                                                                        "24",
+                                                                                        '24',
                                                                                     validations: [
                                                                                         {
                                                                                             validator:
-                                                                                                "required",
+                                                                                                'required',
                                                                                             errorMessage:
-                                                                                                "请输入数量"
+                                                                                                '请输入数量'
                                                                                         },
                                                                                         {
                                                                                             validator:
-                                                                                                "pattern",
+                                                                                                'pattern',
                                                                                             pattern: /^\d+$/,
                                                                                             errorMessage:
-                                                                                                "请填写数字"
+                                                                                                '请填写数字'
                                                                                         }
                                                                                     ]
                                                                                 }
@@ -4427,31 +4429,31 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "datePicker",
+                                                                                        'datePicker',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "16",
+                                                                                        '16',
                                                                                     inputType:
-                                                                                        "text",
+                                                                                        'text',
                                                                                     name:
-                                                                                        "createTime",
+                                                                                        'createTime',
                                                                                     label:
-                                                                                        "创建时间",
+                                                                                        '创建时间',
                                                                                     placeholder:
-                                                                                        "",
+                                                                                        '',
                                                                                     disabled: false,
                                                                                     readonly: false,
                                                                                     size:
-                                                                                        "default",
+                                                                                        'default',
                                                                                     layout:
-                                                                                        "column",
+                                                                                        'column',
                                                                                     showTime: true,
                                                                                     format:
-                                                                                        "yyyy-MM-dd",
+                                                                                        'yyyy-MM-dd',
                                                                                     showToday: true,
                                                                                     span:
-                                                                                        "24"
+                                                                                        '24'
                                                                                 }
                                                                             ]
                                                                         },
@@ -4459,31 +4461,31 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "rangePicker",
+                                                                                        'rangePicker',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "16",
+                                                                                        '16',
                                                                                     inputType:
-                                                                                        "text",
+                                                                                        'text',
                                                                                     name:
-                                                                                        "createTime",
+                                                                                        'createTime',
                                                                                     label:
-                                                                                        "时间范围",
+                                                                                        '时间范围',
                                                                                     placeholder:
-                                                                                        "",
+                                                                                        '',
                                                                                     disabled: false,
                                                                                     readonly: false,
                                                                                     size:
-                                                                                        "default",
+                                                                                        'default',
                                                                                     layout:
-                                                                                        "column",
+                                                                                        'column',
                                                                                     showTime: true,
                                                                                     format:
-                                                                                        "yyyy-MM-dd",
+                                                                                        'yyyy-MM-dd',
                                                                                     showToday: true,
                                                                                     span:
-                                                                                        "24"
+                                                                                        '24'
                                                                                 }
                                                                             ]
                                                                         },
@@ -4491,27 +4493,27 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "input",
+                                                                                        'input',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "16",
+                                                                                        '16',
                                                                                     inputType:
-                                                                                        "time",
+                                                                                        'time',
                                                                                     name:
-                                                                                        "remark",
+                                                                                        'remark',
                                                                                     label:
-                                                                                        "备注",
+                                                                                        '备注',
                                                                                     placeholder:
-                                                                                        "",
+                                                                                        '',
                                                                                     disabled: false,
                                                                                     readonly: false,
                                                                                     size:
-                                                                                        "default",
+                                                                                        'default',
                                                                                     layout:
-                                                                                        "column",
+                                                                                        'column',
                                                                                     span:
-                                                                                        "24"
+                                                                                        '24'
                                                                                 }
                                                                             ]
                                                                         }
@@ -4519,96 +4521,96 @@ export class TreeAndTableComponent implements OnInit {
                                                                     buttons: [
                                                                         {
                                                                             name:
-                                                                                "save",
+                                                                                'save',
                                                                             text:
-                                                                                "保存",
+                                                                                '保存',
                                                                             type:
-                                                                                "primary",
+                                                                                'primary',
                                                                             ajaxConfig: {
                                                                                 post: [
                                                                                     {
                                                                                         url:
-                                                                                            "common/ShowCase",
+                                                                                            'common/ShowCase',
                                                                                         params: [
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseName",
+                                                                                                    'caseName',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseName",
+                                                                                                    'caseName',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseCount",
+                                                                                                    'caseCount',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseCount",
+                                                                                                    'caseCount',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "createTime",
+                                                                                                    'createTime',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "createTime",
+                                                                                                    'createTime',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "enabled",
+                                                                                                    'enabled',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "enabled",
+                                                                                                    'enabled',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseLevel",
+                                                                                                    'caseLevel',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseLevel",
+                                                                                                    'caseLevel',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "parentId",
+                                                                                                    'parentId',
                                                                                                 type:
-                                                                                                    "tempValue",
+                                                                                                    'tempValue',
                                                                                                 valueName:
-                                                                                                    "_parentId",
+                                                                                                    '_parentId',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "remark",
+                                                                                                    'remark',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "remark",
+                                                                                                    'remark',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseType",
+                                                                                                    'caseType',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseType",
+                                                                                                    'caseType',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             }
                                                                                         ]
                                                                                     }
@@ -4617,96 +4619,96 @@ export class TreeAndTableComponent implements OnInit {
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "saveAndKeep",
+                                                                                'saveAndKeep',
                                                                             text:
-                                                                                "保存并继续",
+                                                                                '保存并继续',
                                                                             type:
-                                                                                "primary",
+                                                                                'primary',
                                                                             ajaxConfig: {
                                                                                 post: [
                                                                                     {
                                                                                         url:
-                                                                                            "common/ShowCase",
+                                                                                            'common/ShowCase',
                                                                                         params: [
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseName",
+                                                                                                    'caseName',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseName",
+                                                                                                    'caseName',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseCount",
+                                                                                                    'caseCount',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseCount",
+                                                                                                    'caseCount',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "createTime",
+                                                                                                    'createTime',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "createTime",
+                                                                                                    'createTime',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "enabled",
+                                                                                                    'enabled',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "enabled",
+                                                                                                    'enabled',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseLevel",
+                                                                                                    'caseLevel',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseLevel",
+                                                                                                    'caseLevel',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "parentId",
+                                                                                                    'parentId',
                                                                                                 type:
-                                                                                                    "tempValue",
+                                                                                                    'tempValue',
                                                                                                 valueName:
-                                                                                                    "_parentId",
+                                                                                                    '_parentId',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "remark",
+                                                                                                    'remark',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "remark",
+                                                                                                    'remark',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseType",
+                                                                                                    'caseType',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseType",
+                                                                                                    'caseType',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             }
                                                                                         ]
                                                                                     }
@@ -4715,41 +4717,41 @@ export class TreeAndTableComponent implements OnInit {
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "reset",
+                                                                                'reset',
                                                                             text:
-                                                                                "重置"
+                                                                                '重置'
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "close",
+                                                                                'close',
                                                                             text:
-                                                                                "关闭"
+                                                                                '关闭'
                                                                         }
                                                                     ]
                                                                 },
                                                                 {
-                                                                    keyId: "Id",
+                                                                    keyId: 'Id',
                                                                     name:
-                                                                        "updateShowCase",
+                                                                        'updateShowCase',
                                                                     title:
-                                                                        "编辑",
+                                                                        '编辑',
                                                                     width:
-                                                                        "600",
+                                                                        '600',
                                                                     ajaxConfig: {
                                                                         url:
-                                                                            "common/ShowCase",
+                                                                            'common/ShowCase',
                                                                         ajaxType:
-                                                                            "getById",
+                                                                            'getById',
                                                                         params: [
                                                                             {
                                                                                 name:
-                                                                                    "Id",
+                                                                                    'Id',
                                                                                 type:
-                                                                                    "tempValue",
+                                                                                    'tempValue',
                                                                                 valueName:
-                                                                                    "_id",
+                                                                                    '_id',
                                                                                 value:
-                                                                                    ""
+                                                                                    ''
                                                                             }
                                                                         ]
                                                                     },
@@ -4763,42 +4765,42 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "select",
+                                                                                        'select',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "16",
+                                                                                        '16',
                                                                                     name:
-                                                                                        "enabled",
+                                                                                        'enabled',
                                                                                     label:
-                                                                                        "状态",
+                                                                                        '状态',
                                                                                     notFoundContent:
-                                                                                        "",
+                                                                                        '',
                                                                                     selectModel: false,
                                                                                     showSearch: true,
                                                                                     placeholder:
-                                                                                        "--请选择--",
+                                                                                        '--请选择--',
                                                                                     disabled: false,
                                                                                     size:
-                                                                                        "default",
+                                                                                        'default',
                                                                                     options: [
                                                                                         {
                                                                                             label:
-                                                                                                "启用",
+                                                                                                '启用',
                                                                                             value: true,
                                                                                             disabled: false
                                                                                         },
                                                                                         {
                                                                                             label:
-                                                                                                "禁用",
+                                                                                                '禁用',
                                                                                             value: false,
                                                                                             disabled: false
                                                                                         }
                                                                                     ],
                                                                                     layout:
-                                                                                        "column",
+                                                                                        'column',
                                                                                     span:
-                                                                                        "24"
+                                                                                        '24'
                                                                                 }
                                                                             ]
                                                                         },
@@ -4806,59 +4808,59 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "select",
+                                                                                        'select',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "16",
+                                                                                        '16',
                                                                                     inputType:
-                                                                                        "submit",
+                                                                                        'submit',
                                                                                     name:
-                                                                                        "parentId",
+                                                                                        'parentId',
                                                                                     label:
-                                                                                        "父类别",
+                                                                                        '父类别',
                                                                                     labelName:
-                                                                                        "caseName",
+                                                                                        'caseName',
                                                                                     valueName:
-                                                                                        "Id",
+                                                                                        'Id',
                                                                                     notFoundContent:
-                                                                                        "",
+                                                                                        '',
                                                                                     selectModel: false,
                                                                                     showSearch: true,
                                                                                     placeholder:
-                                                                                        "--请选择--",
+                                                                                        '--请选择--',
                                                                                     disabled: false,
                                                                                     size:
-                                                                                        "default",
+                                                                                        'default',
                                                                                     ajaxConfig: {
                                                                                         url:
-                                                                                            "common/ShowCase",
+                                                                                            'common/ShowCase',
                                                                                         ajaxType:
-                                                                                            "get",
+                                                                                            'get',
                                                                                         params: []
                                                                                     },
                                                                                     cascader: [
                                                                                         {
                                                                                             name:
-                                                                                                "getCaseName",
+                                                                                                'getCaseName',
                                                                                             type:
-                                                                                                "sender",
+                                                                                                'sender',
                                                                                             cascaderData: {
                                                                                                 params: [
                                                                                                     {
                                                                                                         pid:
-                                                                                                            "Id",
+                                                                                                            'Id',
                                                                                                         cid:
-                                                                                                            "_typeId"
+                                                                                                            '_typeId'
                                                                                                     }
                                                                                                 ]
                                                                                             }
                                                                                         }
                                                                                     ],
                                                                                     layout:
-                                                                                        "column",
+                                                                                        'column',
                                                                                     span:
-                                                                                        "24"
+                                                                                        '24'
                                                                                 }
                                                                             ]
                                                                         },
@@ -4866,54 +4868,54 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "input",
+                                                                                        'input',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "16",
+                                                                                        '16',
                                                                                     inputType:
-                                                                                        "text",
+                                                                                        'text',
                                                                                     name:
-                                                                                        "caseName",
+                                                                                        'caseName',
                                                                                     label:
-                                                                                        "名称",
+                                                                                        '名称',
                                                                                     isRequired: true,
                                                                                     placeholder:
-                                                                                        "请输入Case名称",
+                                                                                        '请输入Case名称',
                                                                                     perfix:
-                                                                                        "edit",
+                                                                                        'edit',
                                                                                     suffix:
-                                                                                        "",
+                                                                                        '',
                                                                                     disabled: false,
                                                                                     readonly: false,
                                                                                     size:
-                                                                                        "default",
+                                                                                        'default',
                                                                                     layout:
-                                                                                        "column",
+                                                                                        'column',
                                                                                     span:
-                                                                                        "24",
+                                                                                        '24',
                                                                                     validations: [
                                                                                         {
                                                                                             validator:
-                                                                                                "required",
+                                                                                                'required',
                                                                                             errorMessage:
-                                                                                                "请输入Case名称!!!!"
+                                                                                                '请输入Case名称!!!!'
                                                                                         },
                                                                                         {
                                                                                             validator:
-                                                                                                "minLength",
+                                                                                                'minLength',
                                                                                             length:
-                                                                                                "3",
+                                                                                                '3',
                                                                                             errorMessage:
-                                                                                                "请输入最少三个字符"
+                                                                                                '请输入最少三个字符'
                                                                                         },
                                                                                         {
                                                                                             validator:
-                                                                                                "maxLength",
+                                                                                                'maxLength',
                                                                                             length:
-                                                                                                "5",
+                                                                                                '5',
                                                                                             errorMessage:
-                                                                                                "请输入最5个字符"
+                                                                                                '请输入最5个字符'
                                                                                         }
                                                                                     ]
                                                                                 }
@@ -4923,34 +4925,34 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "input",
+                                                                                        'input',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "16",
+                                                                                        '16',
                                                                                     inputType:
-                                                                                        "text",
+                                                                                        'text',
                                                                                     name:
-                                                                                        "caseLevel",
+                                                                                        'caseLevel',
                                                                                     label:
-                                                                                        "级别",
+                                                                                        '级别',
                                                                                     isRequired: true,
                                                                                     placeholder:
-                                                                                        "",
+                                                                                        '',
                                                                                     disabled: false,
                                                                                     readonly: false,
                                                                                     size:
-                                                                                        "default",
+                                                                                        'default',
                                                                                     layout:
-                                                                                        "column",
+                                                                                        'column',
                                                                                     span:
-                                                                                        "24",
+                                                                                        '24',
                                                                                     validations: [
                                                                                         {
                                                                                             validator:
-                                                                                                "required",
+                                                                                                'required',
                                                                                             errorMessage:
-                                                                                                "请输入级别"
+                                                                                                '请输入级别'
                                                                                         }
                                                                                     ]
                                                                                 }
@@ -4960,41 +4962,41 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "input",
+                                                                                        'input',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "16",
+                                                                                        '16',
                                                                                     inputType:
-                                                                                        "text",
+                                                                                        'text',
                                                                                     name:
-                                                                                        "caseCount",
+                                                                                        'caseCount',
                                                                                     label:
-                                                                                        "数量",
+                                                                                        '数量',
                                                                                     isRequired: true,
                                                                                     placeholder:
-                                                                                        "",
+                                                                                        '',
                                                                                     disabled: false,
                                                                                     readonly: false,
                                                                                     size:
-                                                                                        "default",
+                                                                                        'default',
                                                                                     layout:
-                                                                                        "column",
+                                                                                        'column',
                                                                                     span:
-                                                                                        "24",
+                                                                                        '24',
                                                                                     validations: [
                                                                                         {
                                                                                             validator:
-                                                                                                "required",
+                                                                                                'required',
                                                                                             errorMessage:
-                                                                                                "请输入数量"
+                                                                                                '请输入数量'
                                                                                         },
                                                                                         {
                                                                                             validator:
-                                                                                                "pattern",
+                                                                                                'pattern',
                                                                                             pattern: /^\d+$/,
                                                                                             errorMessage:
-                                                                                                "请填写数字"
+                                                                                                '请填写数字'
                                                                                         }
                                                                                     ]
                                                                                 }
@@ -5004,31 +5006,31 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "datePicker",
+                                                                                        'datePicker',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "16",
+                                                                                        '16',
                                                                                     inputType:
-                                                                                        "text",
+                                                                                        'text',
                                                                                     name:
-                                                                                        "createTime",
+                                                                                        'createTime',
                                                                                     label:
-                                                                                        "创建时间",
+                                                                                        '创建时间',
                                                                                     placeholder:
-                                                                                        "",
+                                                                                        '',
                                                                                     disabled: false,
                                                                                     readonly: false,
                                                                                     size:
-                                                                                        "default",
+                                                                                        'default',
                                                                                     layout:
-                                                                                        "column",
+                                                                                        'column',
                                                                                     showTime: true,
                                                                                     format:
-                                                                                        "yyyy-MM-dd",
+                                                                                        'yyyy-MM-dd',
                                                                                     showToday: true,
                                                                                     span:
-                                                                                        "24"
+                                                                                        '24'
                                                                                 }
                                                                             ]
                                                                         },
@@ -5036,31 +5038,31 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "rangePicker",
+                                                                                        'rangePicker',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "16",
+                                                                                        '16',
                                                                                     inputType:
-                                                                                        "text",
+                                                                                        'text',
                                                                                     name:
-                                                                                        "createTime",
+                                                                                        'createTime',
                                                                                     label:
-                                                                                        "时间范围",
+                                                                                        '时间范围',
                                                                                     placeholder:
-                                                                                        "",
+                                                                                        '',
                                                                                     disabled: false,
                                                                                     readonly: false,
                                                                                     size:
-                                                                                        "default",
+                                                                                        'default',
                                                                                     layout:
-                                                                                        "column",
+                                                                                        'column',
                                                                                     showTime: true,
                                                                                     format:
-                                                                                        "yyyy-MM-dd",
+                                                                                        'yyyy-MM-dd',
                                                                                     showToday: true,
                                                                                     span:
-                                                                                        "24"
+                                                                                        '24'
                                                                                 }
                                                                             ]
                                                                         },
@@ -5068,27 +5070,27 @@ export class TreeAndTableComponent implements OnInit {
                                                                             controls: [
                                                                                 {
                                                                                     type:
-                                                                                        "input",
+                                                                                        'input',
                                                                                     labelSize:
-                                                                                        "6",
+                                                                                        '6',
                                                                                     controlSize:
-                                                                                        "16",
+                                                                                        '16',
                                                                                     inputType:
-                                                                                        "time",
+                                                                                        'time',
                                                                                     name:
-                                                                                        "remark",
+                                                                                        'remark',
                                                                                     label:
-                                                                                        "备注",
+                                                                                        '备注',
                                                                                     placeholder:
-                                                                                        "",
+                                                                                        '',
                                                                                     disabled: false,
                                                                                     readonly: false,
                                                                                     size:
-                                                                                        "default",
+                                                                                        'default',
                                                                                     layout:
-                                                                                        "column",
+                                                                                        'column',
                                                                                     span:
-                                                                                        "24"
+                                                                                        '24'
                                                                                 }
                                                                             ]
                                                                         }
@@ -5096,96 +5098,96 @@ export class TreeAndTableComponent implements OnInit {
                                                                     buttons: [
                                                                         {
                                                                             name:
-                                                                                "save",
+                                                                                'save',
                                                                             text:
-                                                                                "保存",
+                                                                                '保存',
                                                                             type:
-                                                                                "primary",
+                                                                                'primary',
                                                                             ajaxConfig: {
                                                                                 put: [
                                                                                     {
                                                                                         url:
-                                                                                            "common/ShowCase",
+                                                                                            'common/ShowCase',
                                                                                         params: [
                                                                                             {
                                                                                                 name:
-                                                                                                    "Id",
+                                                                                                    'Id',
                                                                                                 type:
-                                                                                                    "tempValue",
+                                                                                                    'tempValue',
                                                                                                 valueName:
-                                                                                                    "_id",
+                                                                                                    '_id',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseName",
+                                                                                                    'caseName',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseName",
+                                                                                                    'caseName',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseCount",
+                                                                                                    'caseCount',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseCount",
+                                                                                                    'caseCount',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "createTime",
+                                                                                                    'createTime',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "createTime",
+                                                                                                    'createTime',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "enabled",
+                                                                                                    'enabled',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "enabled",
+                                                                                                    'enabled',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "level",
+                                                                                                    'level',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseLevel",
+                                                                                                    'caseLevel',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "remark",
+                                                                                                    'remark',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "remark",
+                                                                                                    'remark',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             },
                                                                                             {
                                                                                                 name:
-                                                                                                    "caseType",
+                                                                                                    'caseType',
                                                                                                 type:
-                                                                                                    "componentValue",
+                                                                                                    'componentValue',
                                                                                                 valueName:
-                                                                                                    "caseType",
+                                                                                                    'caseType',
                                                                                                 value:
-                                                                                                    ""
+                                                                                                    ''
                                                                                             }
                                                                                         ]
                                                                                     }
@@ -5194,19 +5196,19 @@ export class TreeAndTableComponent implements OnInit {
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "close",
+                                                                                'close',
                                                                             class:
-                                                                                "editable-add-btn",
+                                                                                'editable-add-btn',
                                                                             text:
-                                                                                "关闭"
+                                                                                '关闭'
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "reset",
+                                                                                'reset',
                                                                             class:
-                                                                                "editable-add-btn",
+                                                                                'editable-add-btn',
                                                                             text:
-                                                                                "重置"
+                                                                                '重置'
                                                                         }
                                                                     ],
                                                                     dataList: []
@@ -5214,59 +5216,59 @@ export class TreeAndTableComponent implements OnInit {
                                                             ],
                                                             windowDialog: [
                                                                 {
-                                                                    title: "",
+                                                                    title: '',
                                                                     name:
-                                                                        "ShowCaseWindow",
+                                                                        'ShowCaseWindow',
                                                                     layoutName:
-                                                                        "singleTable",
+                                                                        'singleTable',
                                                                     width: 800,
                                                                     buttons: [
                                                                         {
                                                                             name:
-                                                                                "ok1",
+                                                                                'ok1',
                                                                             text:
-                                                                                "确定",
+                                                                                '确定',
                                                                             class:
-                                                                                "editable-add-btn",
+                                                                                'editable-add-btn',
                                                                             type:
-                                                                                "primary"
+                                                                                'primary'
                                                                         },
                                                                         {
                                                                             name:
-                                                                                "close",
+                                                                                'close',
                                                                             text:
-                                                                                "关闭"
+                                                                                '关闭'
                                                                         }
                                                                     ]
                                                                 }
                                                             ],
                                                             uploadDialog: [
                                                                 {
-                                                                    keyId: "Id",
-                                                                    title: "",
+                                                                    keyId: 'Id',
+                                                                    title: '',
                                                                     name:
-                                                                        "uploadCase",
+                                                                        'uploadCase',
                                                                     width:
-                                                                        "600",
+                                                                        '600',
                                                                     ajaxConfig: {
                                                                         deleteUrl:
-                                                                            "file/delete",
+                                                                            'file/delete',
                                                                         listUrl:
-                                                                            "common/SysFile",
+                                                                            'common/SysFile',
                                                                         url:
-                                                                            "file/upload",
+                                                                            'file/upload',
                                                                         downloadUrl:
-                                                                            "file/download",
+                                                                            'file/download',
                                                                         ajaxType:
-                                                                            "post",
+                                                                            'post',
                                                                         params: [
                                                                             {
                                                                                 name:
-                                                                                    "Id",
+                                                                                    'Id',
                                                                                 type:
-                                                                                    "tempValue",
+                                                                                    'tempValue',
                                                                                 valueName:
-                                                                                    "_id"
+                                                                                    '_id'
                                                                             }
                                                                         ]
                                                                     }

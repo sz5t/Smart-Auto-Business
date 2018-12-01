@@ -68,7 +68,15 @@ export class CnComponentBase {
         this._apiResource = value;
     }
 
-    unsubscribe() {
+    private _returnValue;
+    public get returnValue() {
+        return this._returnValue;
+    }
+    public set returnValue(value) {
+        this._returnValue = value;
+    }
+
+    public unsubscribe() {
         if (this._statusSubscriptions) {
             this.statusSubscriptions.unsubscribe();
         }
@@ -78,7 +86,7 @@ export class CnComponentBase {
         }
     }
 
-    before(target, method, advice) {
+    public before(target, method, advice) {
         const original = target[method];
         target[method] = function() {
             const result = advice(arguments);
@@ -88,7 +96,7 @@ export class CnComponentBase {
         };
         return target;
     }
-    after(target, method, advice) {
+    public after(target, method, advice) {
         const original = target[method];
         target[method] = function() {
             original.apply(target, arguments);
@@ -96,7 +104,7 @@ export class CnComponentBase {
         };
         return target;
     }
-    around(target, method, advice) {
+    public around(target, method, advice) {
         const original = target[method];
         target[method] = function() {
             advice(arguments);

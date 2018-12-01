@@ -207,9 +207,10 @@ export class CnFormBase extends CnComponentBase {
             componentValue: this.GetComponentValue(),
             tempValue: this.tempValue,
             initValue: this.initValue,
-            cacheValue: this.cacheValue
+            cacheValue: this.cacheValue,
+            returnValue: this.returnValue
         });
-        console.log('****GetComponentValue****', this.GetComponentValue());
+        // console.log('****GetComponentValue****', this.GetComponentValue());
         return params;
     }
 
@@ -243,6 +244,7 @@ export class CnFormBase extends CnComponentBase {
     public outputParametersResolver(c, response, ajaxConfig, callback) {
         const result = false;
         if (response.isSuccess) {
+
             const msg =
                 c.outputParams[
                 c.outputParams.findIndex(
@@ -261,10 +263,10 @@ export class CnFormBase extends CnComponentBase {
                     m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
                 )
                 ];
-            const msgObj = response.data[msg.name]
+            const msgObj = msg
                 ? response.data[msg.name].split(':')
-                : '';
-            // const valueObj = response.data[value.name] ? response.data[value.name] : [];
+                : null;
+            const valueObj = response.data ? response.data : {};
             // const tableObj = response.data[table.name] ? response.data[table.name] : [];
             if (msgObj && msgObj.length > 1) {
                 const messageType = msgObj[0];
@@ -336,11 +338,21 @@ export class CnFormBase extends CnComponentBase {
                 //         callback && callback();
                 //     }
                 // }
-            } else {
-                this.baseMessage.error(
-                    '存储过程返回结果异常：未获得输出的消息内容'
+            } 
+            // else {
+            //     this.baseMessage.error(
+            //         '存储过程返回结果异常：未获得输出的消息内容'
+            //     );
+            // }
+            if (valueObj) {
+                this.returnValue = valueObj;
+                const childrenConfig = ajaxConfig.filter(
+                    f => f.parentName && f.parentName === c.name
                 );
+                //  目前紧支持一次执行一个分之步骤
+                this.getAjaxConfig(childrenConfig[0], ajaxConfig, callback);
             }
+
         } else {
             this.baseMessage.error('操作异常：', response.message);
         }
@@ -430,6 +442,7 @@ export class CnFormBase extends CnComponentBase {
             } else {
                 (async () => {
                     const response = await this.execute(url, c.ajaxType, params);
+                    debugger;
                     // 处理输出参数
                     if (c.outputParams) {
                         this.outputParametersResolver(
