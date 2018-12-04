@@ -584,9 +584,29 @@ export class BsnStaticTableComponent extends CnComponentBase
         console.log(' this.loadData.rows:', this.loadData.rows);
     }
 
+    public pageIndexPlan() {
+        if (this.pageIndex > 1) {
+            const p_pindex = ((this.pageIndex - 1) * this.pageSize);
+            if (this.loadData.total <= p_pindex) {
+                this.pageIndex = this.pageIndex - 1;
+                this.load();
+            } else {
+                this.load();
+            }
+        }
+    }
     public load() {
         if (typeof this.pageIndex !== 'undefined') {
             this.pageIndex = this.pageIndex || 1;
+        }
+
+        // 当前页无数据则退回到上一页
+        if (this.pageIndex > 1) {
+            const p_pindex = ((this.pageIndex - 1) * this.pageSize);
+            if (this.loadData.total <= p_pindex) {
+                this.pageIndex = this.pageIndex - 1;
+                this.pageIndexPlan();
+            }
         }
 
         const pagedata = [];
@@ -670,6 +690,7 @@ export class BsnStaticTableComponent extends CnComponentBase
         rowContentNew['checked'] = true;
         rowContentNew['row_status'] = 'adding';
         rowContentNew['$operDataType$'] = 'add';
+        rowContentNew['edit'] = true;
         let isback = false;
         if (this.config.ScanCode.addRow.type) {
             if (this.config.ScanCode.addRow.type === 'distinct') {
@@ -801,10 +822,12 @@ export class BsnStaticTableComponent extends CnComponentBase
         this._updateEditCache();
         this._startEdit(fieldIdentity.toString());
 
-        this.loadData.rows.push(rowContentNew);
+        this.loadData.rows.unshift(rowContentNew);
         this.loadData.total = this.loadData.rows.length;
         this.total = this.loadData.total;
         this.scanCodeValueChange(); // 扫码后将结果返回
+        this.pageIndex = 1; // 【目前只新增在最前，日后扩充可前可后】
+        this.load(); // 扫码后页数切换【目前未考虑排序】
         return true;
     }
 
@@ -3222,5 +3245,34 @@ export class BsnStaticTableComponent extends CnComponentBase
         let t;
         for (t in e) return !1;
         return !0;
+    }
+
+    public execFun(name?, key?) {
+        switch (name) {
+            case 'deleteRow':
+                // this.config.actions['deleteRow'] ? this.config.actions['deleteRow'] : null
+                this.deleteRowOnSelected(key);
+                break;
+            default:
+                break;
+        }
+    }
+
+    // 行内删除
+    public deleteRowOnSelected(key) {
+
+        //  console.log('行内删除', key);
+        // 注意，末页删除需要将数据页数上移
+        const index = this.loadData.rows.findIndex(item => item['key'] === key);
+        if (index !== -1) {
+            const rowValue = this.loadData.rows[index];
+            this.loadData.rows.splice(this.loadData.rows.indexOf(rowValue), 1);
+            this.loadData.total = this.loadData.rows.length;
+            this.total = this.loadData.total;
+            this.load();
+        }
+        this.scanCodeValueChange();
+
+
     }
 }
