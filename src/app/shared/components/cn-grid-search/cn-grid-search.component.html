@@ -82,7 +82,7 @@
     <div style="width:70%;">
         <!-- <input *ngIf="searchType === 'input'" type="text" nz-input [(ngModel)]="inputValue" (blur)="onblur($event)" (keyup)="onKeyPress($event)"> -->
         <ng-container [bsnData]="bsnData" [initData]="initData" [rowData]="rowData" [dataSet]="dataSet?dataSet:null" CnGridEditorDirective
-            *ngIf="searchType === 'input'" [config]="config" [value]="value" [changeConfig]="''" (updateValue)="valueChange($event)">
+            *ngIf="searchType === 'input'" [config]="config" [value]="value" [changeConfig]="changeConfig" (updateValue)="valueChange($event)">
         </ng-container>
         <cn-grid-between-input *ngIf="searchType === 'btn'" (updateValue)="valueChange($event)"></cn-grid-between-input>
     </div>
