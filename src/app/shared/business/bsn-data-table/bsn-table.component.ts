@@ -895,21 +895,22 @@ export class BsnTableComponent extends CnComponentBase
             this.is_Search = true;
         } else {
             // 执行行查询
-            this.load(); // 查询后将页面置1
-            let len = this.dataList.length;
-            for (let i = 0; i < len; i++) {
-                if (this.dataList[i]['row_status'] === 'search') {
-                    this.dataList.splice(
-                        this.dataList.indexOf(this.dataList[i]),
-                        1
-                    );
-                    i--;
-                    len--;
-                }
-            }
+            // this.load(); // 查询后将页面置1 liu 20181204 去除查询按钮的load功能
+            // let len = this.dataList.length;
+            // for (let i = 0; i < len; i++) {
+            //     if (this.dataList[i]['row_status'] === 'search') {
+            //         this.dataList.splice(
+            //             this.dataList.indexOf(this.dataList[i]),
+            //             1
+            //         );
+            //         i--;
+            //         len--;
+            //     }
+            // }
 
-            this.is_Search = false;
-            this.search_Row = {};
+            // this.is_Search = false;
+            // this.search_Row = {};
+            this.cancelSearchRow();
         }
     }
 
