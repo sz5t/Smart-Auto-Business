@@ -1,90 +1,90 @@
 <!-- <div>
-    <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-        <input *ngIf="searchType === 'input'"  type="text" nz-input [(ngModel)]="inputValue" (blur)="onblur($event)" (keyup)="onKeyPress($event)">
-        <input *ngIf="searchType === 'btn'" type="text" nz-input placeholder="最小值" style="width:100px; text-align: center;">
-        <input *ngIf="searchType === 'btn'" type="text" disabled nz-input placeholder="~" style="width: 30px; border-left: 0px; pointer-events: none; background-color: rgb(255, 255, 255);">
-        <input *ngIf="searchType === 'btn'" type="text" nz-input placeholder="最大值" style="width: 100px; text-align: center; border-left: 0px;">
-    </nz-input-group>
-    <ng-template #addOnBeforeTemplate>
-        <nz-select [(ngModel)]="AfterValue" (ngModelChange)="AftervalueChange($event)" >
-            <nz-option [nzLabel]="'='" [nzValue]="'eq'" ></nz-option>
-            <nz-option [nzLabel]="'!='" [nzValue]="'neq'"></nz-option>
-            <nz-option [nzLabel]="'部分一致'" [nzValue]="'ctn'"></nz-option>
-            <nz-option [nzLabel]="'不属于'" [nzValue]="'nctn'"></nz-option>
-            <nz-option [nzLabel]="'包含'" [nzValue]="'in'"></nz-option>
-            <nz-option [nzLabel]="'不包含'" [nzValue]="'nin'"></nz-option>
-            <nz-option [nzLabel]="'范围'" [nzValue]="'btn'"></nz-option>
-            <nz-option [nzLabel]="'!='" [nzValue]="'ne'"></nz-option>
-            <nz-option [nzLabel]="'>='" [nzValue]="'ge'"></nz-option>
-            <nz-option [nzLabel]="'>'" [nzValue]="'gt'"></nz-option>
-            <nz-option [nzLabel]="'<='" [nzValue]="'le'"></nz-option>
-            <nz-option [nzLabel]="'<'" [nzValue]="'lt'"></nz-option>
-            <nz-option [nzLabel]="'自定义'" [nzValue]="'zdy'"></nz-option>
-        </nz-select>
-    </ng-template>
+        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+                <input *ngIf="searchType === 'input'"  type="text" nz-input [(ngModel)]="inputValue" (blur)="onblur($event)" (keyup)="onKeyPress($event)">
+                <input *ngIf="searchType === 'btn'" type="text" nz-input placeholder="最小值" style="width:100px; text-align: center;">
+                <input *ngIf="searchType === 'btn'" type="text" disabled nz-input placeholder="~" style="width: 30px; border-left: 0px; pointer-events: none; background-color: rgb(255, 255, 255);">
+                <input *ngIf="searchType === 'btn'" type="text" nz-input placeholder="最大值" style="width: 100px; text-align: center; border-left: 0px;">
+        </nz-input-group>
+        <ng-template #addOnBeforeTemplate>
+                <nz-select [(ngModel)]="AfterValue" (ngModelChange)="AftervalueChange($event)" >
+                        <nz-option [nzLabel]="'='" [nzValue]="'eq'" ></nz-option>
+                        <nz-option [nzLabel]="'!='" [nzValue]="'neq'"></nz-option>
+                        <nz-option [nzLabel]="'部分一致'" [nzValue]="'ctn'"></nz-option>
+                        <nz-option [nzLabel]="'不属于'" [nzValue]="'nctn'"></nz-option>
+                        <nz-option [nzLabel]="'包含'" [nzValue]="'in'"></nz-option>
+                        <nz-option [nzLabel]="'不包含'" [nzValue]="'nin'"></nz-option>
+                        <nz-option [nzLabel]="'范围'" [nzValue]="'btn'"></nz-option>
+                        <nz-option [nzLabel]="'!='" [nzValue]="'ne'"></nz-option>
+                        <nz-option [nzLabel]="'>='" [nzValue]="'ge'"></nz-option>
+                        <nz-option [nzLabel]="'>'" [nzValue]="'gt'"></nz-option>
+                        <nz-option [nzLabel]="'<='" [nzValue]="'le'"></nz-option>
+                        <nz-option [nzLabel]="'<'" [nzValue]="'lt'"></nz-option>
+                        <nz-option [nzLabel]="'自定义'" [nzValue]="'zdy'"></nz-option>
+                </nz-select>
+        </ng-template>
 
 
 </div>  -->
 
 <!-- <ng-template #addOnBeforeTemplate>  [nzAddOnBefore]="addOnBeforeTemplate" addOnAfterTemplate
-        <nz-select [ngModel]="'Http://'">
-            <nz-option [nzLabel]="'Http://'" [nzValue]="'Http://'"></nz-option>
-            <nz-option [nzLabel]="'Https://'" [nzValue]="'Https://'"></nz-option>
-        </nz-select>
-    </ng-template> -->
+                <nz-select [ngModel]="'Http://'">
+                        <nz-option [nzLabel]="'Http://'" [nzValue]="'Http://'"></nz-option>
+                        <nz-option [nzLabel]="'Https://'" [nzValue]="'Https://'"></nz-option>
+                </nz-select>
+        </ng-template> -->
 <!--
 <nz-input-group nzCompact>
-    <nz-select [ngModel]="'Between'">
-        <nz-option [nzLabel]="'范围'" [nzValue]="'Between'"></nz-option>
-        <nz-option [nzLabel]="'Except'" [nzValue]="'Except'"></nz-option>
-    </nz-select>
-    <input type="text" nz-input placeholder="最小值" style="width:100px; text-align: center;">
-    <input type="text" disabled nz-input placeholder="~" style="width: 30px; border-left: 0px; pointer-events: none; background-color: rgb(255, 255, 255);">
-    <input type="text" nz-input placeholder="最大值" style="width: 100px; text-align: center; border-left: 0px;">
+        <nz-select [ngModel]="'Between'">
+                <nz-option [nzLabel]="'范围'" [nzValue]="'Between'"></nz-option>
+                <nz-option [nzLabel]="'Except'" [nzValue]="'Except'"></nz-option>
+        </nz-select>
+        <input type="text" nz-input placeholder="最小值" style="width:100px; text-align: center;">
+        <input type="text" disabled nz-input placeholder="~" style="width: 30px; border-left: 0px; pointer-events: none; background-color: rgb(255, 255, 255);">
+        <input type="text" nz-input placeholder="最大值" style="width: 100px; text-align: center; border-left: 0px;">
 </nz-input-group> -->
 
 <!-- <div>
-            <nz-input-group nzCompact>
-            <nz-select   [(ngModel)]="AfterValue" (ngModelChange)="AftervalueChange($event)" >
-                    <nz-option [nzLabel]="'='" [nzValue]="'eq'" ></nz-option>
-                    <nz-option [nzLabel]="'!='" [nzValue]="'neq'"></nz-option>
-                    <nz-option [nzLabel]="'部分一致'" [nzValue]="'ctn'"></nz-option>
-                    <nz-option [nzLabel]="'不属于'" [nzValue]="'nctn'"></nz-option>
-                    <nz-option [nzLabel]="'包含'" [nzValue]="'in'"></nz-option>
-                    <nz-option [nzLabel]="'不包含'" [nzValue]="'nin'"></nz-option>
-                    <nz-option [nzLabel]="'范围'" [nzValue]="'btn'"></nz-option>
-                    <nz-option [nzLabel]="'!='" [nzValue]="'ne'"></nz-option>
-                    <nz-option [nzLabel]="'>='" [nzValue]="'ge'"></nz-option>
-                    <nz-option [nzLabel]="'>'" [nzValue]="'gt'"></nz-option>
-                    <nz-option [nzLabel]="'<='" [nzValue]="'le'"></nz-option>
-                    <nz-option [nzLabel]="'<'" [nzValue]="'lt'"></nz-option>
-                    <nz-option [nzLabel]="'自定义'" [nzValue]="'zdy'"></nz-option>
-                </nz-select>
-             <cn-grid-input config="options" (updateValue)="valueChange($event)"></cn-grid-input>
-                </nz-input-group>
+                        <nz-input-group nzCompact>
+                        <nz-select   [(ngModel)]="AfterValue" (ngModelChange)="AftervalueChange($event)" >
+                                        <nz-option [nzLabel]="'='" [nzValue]="'eq'" ></nz-option>
+                                        <nz-option [nzLabel]="'!='" [nzValue]="'neq'"></nz-option>
+                                        <nz-option [nzLabel]="'部分一致'" [nzValue]="'ctn'"></nz-option>
+                                        <nz-option [nzLabel]="'不属于'" [nzValue]="'nctn'"></nz-option>
+                                        <nz-option [nzLabel]="'包含'" [nzValue]="'in'"></nz-option>
+                                        <nz-option [nzLabel]="'不包含'" [nzValue]="'nin'"></nz-option>
+                                        <nz-option [nzLabel]="'范围'" [nzValue]="'btn'"></nz-option>
+                                        <nz-option [nzLabel]="'!='" [nzValue]="'ne'"></nz-option>
+                                        <nz-option [nzLabel]="'>='" [nzValue]="'ge'"></nz-option>
+                                        <nz-option [nzLabel]="'>'" [nzValue]="'gt'"></nz-option>
+                                        <nz-option [nzLabel]="'<='" [nzValue]="'le'"></nz-option>
+                                        <nz-option [nzLabel]="'<'" [nzValue]="'lt'"></nz-option>
+                                        <nz-option [nzLabel]="'自定义'" [nzValue]="'zdy'"></nz-option>
+                                </nz-select>
+                         <cn-grid-input config="options" (updateValue)="valueChange($event)"></cn-grid-input>
+                                </nz-input-group>
 </div> -->
 
 <nz-input-group nzCompact>
-    <nz-dropdown>
-        <a nz-dropdown>
-            条件
-            <i class="anticon anticon-down"></i>
-        </a>
-        <ul nz-menu nzSelectable (nzClick)="onClick($event)">
-            <ng-template ngFor let-data [ngForOf]="op">
-                <li id="{{data.value}}" nz-menu-item [nzSelected]="data.select">
-                    <a>{{data.lable}}</a>
-                </li>
-            </ng-template>
+        <nz-dropdown>
+                <a nz-dropdown>
+                        条件
+                        <i class="anticon anticon-down"></i>
+                </a>
+                <ul nz-menu nzSelectable (nzClick)="onClick($event)">
+                        <ng-template ngFor let-data [ngForOf]="op">
+                                <li id="{{data.value}}" nz-menu-item [nzSelected]="data.select">
+                                        <a>{{data.lable}}</a>
+                                </li>
+                        </ng-template>
 
-        </ul>
-    </nz-dropdown>
-    <div style="width:70%;">
-        <!-- <input *ngIf="searchType === 'input'" type="text" nz-input [(ngModel)]="inputValue" (blur)="onblur($event)" (keyup)="onKeyPress($event)"> -->
-        <ng-container [bsnData]="bsnData" [initData]="initData" [rowData]="rowData" [dataSet]="dataSet?dataSet:null" CnGridEditorDirective
-            *ngIf="searchType === 'input'" [config]="config" [value]="value" [changeConfig]="''" (updateValue)="valueChange($event)">
-        </ng-container>
-        <cn-grid-between-input *ngIf="searchType === 'btn'" (updateValue)="valueChange($event)"></cn-grid-between-input>
-    </div>
+                </ul>
+        </nz-dropdown>
+        <div style="width:70%;">
+                <!-- <input *ngIf="searchType === 'input'" type="text" nz-input [(ngModel)]="inputValue" (blur)="onblur($event)" (keyup)="onKeyPress($event)"> -->
+                <ng-container [bsnData]="bsnData" [initData]="initData" [rowData]="rowData" [dataSet]="dataSet?dataSet:null" CnGridEditorDirective
+                        *ngIf="searchType === 'input'" [config]="config" [value]="value" [changeConfig]="changeConfig" (updateValue)="valueChange($event)">
+                </ng-container>
+                <cn-grid-between-input *ngIf="searchType === 'btn'" (updateValue)="valueChange($event)"></cn-grid-between-input>
+        </div>
 
 </nz-input-group>

@@ -172,7 +172,12 @@ export class CnGridSearchComponent implements OnInit {
       this.op = newOp;
 
     } else if (this.config.type === 'number') {
-
+      const newOp = [
+        { lable: '=', value: 'eq', select: true },
+        { lable: '!=', value: 'neq', select: false },
+        { lable: '范围', value: 'btn', select: false },
+      ];
+      this.op = newOp;
     }
   }
 
@@ -243,10 +248,10 @@ export class CnGridSearchComponent implements OnInit {
     }
     switch (this.AfterValue) {
       case 'eq': // =
-        strQ = strQ + 'eq (' + inputValue + ')';
+        strQ = strQ + 'eq(' + inputValue + ')';
         break;
       case 'neq': // !=
-        strQ = strQ + '!eq (' + inputValue + ')';
+        strQ = strQ + '!eq(' + inputValue + ')';
         break;
       case 'ctn': // like
         strQ = strQ + 'ctn(\'%' + inputValue + '%\')';

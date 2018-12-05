@@ -7180,7 +7180,7 @@ export class WorkFlowTodoComponent implements OnInit {
                         pageSize: 5, // 默pageSizeOptions认每页数据条数
                         isSelectGrid: true, // 【弹出表格时用】弹出表格值为true
                         selectGridValueName: 'Id', // 【弹出表格时用】指定绑定的value值
-                        '': [
+                        pageSizeOptions: [
                             5,
                             10,
                             20,
@@ -7440,6 +7440,7 @@ export class WorkFlowTodoComponent implements OnInit {
                                                 name: 'del',
                                                 class: 'editable-add-btn',
                                                 text: '删除',
+                                                action: 'DELETEROW',
                                                 cancelPermission: true
                                             }
                                         ]
@@ -7599,6 +7600,7 @@ export class WorkFlowTodoComponent implements OnInit {
     // 实现小组件 【消息结构配置】
 
     // 接受参数也是新的数据类型，级联类型
+    // tslint:disable-next-line:member-ordering
     public relationConfig = {
         relation_data: {
             option: [
