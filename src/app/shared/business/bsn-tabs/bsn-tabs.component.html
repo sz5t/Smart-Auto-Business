@@ -1,4 +1,4 @@
-<nz-tabset [nzTabPosition]="config.tabPosition" [nzType]="config.tabType" [nzSize]="config.size">
+<nz-tabset [nzTabPosition]="config.tabPosition" [nzType]="config.tabType" [nzSize]="config.size" (nzSelectChange)="tabChange($event)">
     <nz-tab *ngFor="let tab of config.tabs" [nzTitle]="header" (nzDeselect)="tabDisactive(tab)" (nzSelect)="tabActive(tab)">
         <ng-container *ngIf="tab.rows;else tabView">
             <div *ngIf="tab.active">
@@ -8,6 +8,13 @@
         <ng-template #tabView>
             <div *ngIf="tab.active">
                     <cn-component-resolver [config]="tabConfig" *ngFor="let tabConfig of tab.viewCfg" [initData]="initValue" [tempValue] = "tempValue"  [permissions] = "permissions ? permissions : []" ></cn-component-resolver>
+                <!--<div *ngIf="tab.handle && tab.handle === 'single'; else: elseTemplate">-->
+                    <!--<ng-container cnLayoutResolverDirective [config]="tab" [permissions]="permissions ? permissions : []"></ng-container>-->
+                <!--</div>-->
+                <!--<ng-template #elseTemplate>-->
+                    <!--<cn-component-resolver *ngFor="let cfg of tab.viewCfg" [permissions]="permissions ? permissions : []"-->
+                                           <!--[config]="cfg" [initData]="initData" [tempValue]="tempValue"></cn-component-resolver>-->
+                <!--</ng-template>-->
             </div>
         </ng-template>
         <ng-template #header>
@@ -15,3 +22,6 @@
         </ng-template>
     </nz-tab>
 </nz-tabset>
+
+
+

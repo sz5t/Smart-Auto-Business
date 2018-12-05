@@ -734,6 +734,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
 
     public onMouseAction(actionName, $event) {
         this[actionName]($event);
+        return false;
     }
 
     public contextMenu($event: MouseEvent, template: TemplateRef<void>): void {
@@ -890,15 +891,34 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
         }
     }
 
+    private _getCheckedNodesFromParent(treeNode) {
+        let list = [];
+        if (treeNode.children && treeNode.children.length > 0) {
+            treeNode.children.forEach(d => {
+                list = list.concat(this._getCheckedNodesFromParent(d));
+            });
+        } 
+        list.push(treeNode); 
+        return list;
+    }
+
+
     private _getCheckedNodes() {
-        const checkedNodes = [...this.treeObj.getCheckedNodeList(), ...this.treeObj.getHalfCheckedNodeList()];
+        
+        let checkedNodes = [];
+        const currentNodes = [...this.treeObj.getCheckedNodeList()];
+        currentNodes.forEach(node => {
+           checkedNodes = checkedNodes.concat([...this._getCheckedNodesFromParent(node)]);
+        });
+        checkedNodes.push(...this.treeObj.getHalfCheckedNodeList());
+
         this.tempValue['_checkedNodes'] = checkedNodes;
         return checkedNodes;
     }
 
     private _getCheckedNodesIds() {
-        const checkedNodes = [...this.treeObj.getCheckedNodeList(), ...this.treeObj.getHalfCheckedNodeList()];
         const checkedIds = [];
+        const checkedNodes = this._getCheckedNodes();
         if (checkedNodes && checkedNodes.length > 0) {
            checkedNodes.forEach(node => {
                checkedIds.push(node.key);

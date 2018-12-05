@@ -45,18 +45,36 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
     }
 
     public async ngAfterViewInit() {
-        this.buildCompositeTableReport();
+        // this.buildCompositeTableReport();
         // this.buildTableReport();
+        this.buildAsyncDataReport();
     }
 
     private async getReportTemplate() {
-        return this.apiResource.getLocalReportTemplate('demo1').toPromise();
+        return this.apiResource.getLocalReportTemplate('ProcessData').toPromise();
     }
 
 
     private async getReportData() {
+        return this.apiResource.get('common/RepProcessData').toPromise();
+    }
+
+    private async buildAsyncDataReport() {
+        const reportData = await this.getReportData();
+        const reportTemplateData = await this.getReportTemplate();
+
+        this.reportObject = new GC.Spread.Sheets.Workbook(this.reportView.nativeElement, {sheetCount: 1});
+        this.reportObject.suspendPaint();
+        this.reportObject.fromJSON(reportTemplateData);
+
+        const sheet = this.reportObject.getSheet(0);
+        sheet.autoGenerateColumns = false;        
         
-        return this.apiResource.get();
+        // sheet.tables.findByName('data').bindingPath('table');
+        const source = new GC.Spread.Sheets.Bindings.CellBindingSource(reportData);
+        sheet.setDataSource(source);
+        this.reportObject.resumePaint();
+
     }
 
 
@@ -67,7 +85,7 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
         this.reportObject.fromJSON(templateData);
         const sheet = this.reportObject.getSheet(0);     
         const data = this.getProducts(100);   
-        console.log(data);
+
         sheet.setDataSource(data);
         this.reportObject.resumePaint();
     }

@@ -1,27 +1,30 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
-import { FormGroup } from "@angular/forms";
-import { getISOYear } from "date-fns";
+import {Component, OnInit, Input, Output, EventEmitter, AfterViewInit} from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { getISOYear } from 'date-fns';
 
 @Component({
-    selector: "cn-year-picker",
-    templateUrl: "./cn-year-picker.component.html"
+    selector: 'cn-year-picker',
+    templateUrl: './cn-year-picker.component.html'
 })
-export class CnYearPickerComponent implements OnInit {
+export class CnYearPickerComponent implements OnInit, AfterViewInit {
     @Input()
-    config;
-    @Input() value;
+    public config;
+    @Input() public value;
     @Output()
-    updateValue = new EventEmitter();
-    formGroup: FormGroup;
-    year;
+    public updateValue = new EventEmitter();
+    public formGroup: FormGroup;
+    public year = new Date();
     constructor() {}
 
-    ngOnInit() {}
+    public ngOnInit() {}
 
-    changeYear(date: Date) {
-        console.log(date);
+    public ngAfterViewInit() {
+        
+    }
+
+    public changeYear(date: Date) {
         // this.year = getISOYear(date);
-        const backValue = { name: this.config.name, value: getISOYear(date) };
+        const backValue = { name: this.config.name, value: `${getISOYear(date)}` };
         this.updateValue.emit(backValue);
     }
 }

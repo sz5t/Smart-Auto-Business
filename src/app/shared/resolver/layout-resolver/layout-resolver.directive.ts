@@ -19,6 +19,7 @@ import {
     BsnComponentMessage
 } from '@core/relative-Service/BsnTableStatus';
 import { IBlockExclusionDescriptor } from 'tslint/lib/rules/completed-docs/blockExclusion';
+import {CommonTools} from "@core/utility/common-tools";
 
 @Directive({
     // tslint:disable-next-line:directive-selector
@@ -49,7 +50,7 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
 
     public ngOnInit() {
         this.resolveRelation();
-        this.buildComponent(this.config.viewCfg[0]);
+        //this.buildComponent(this.config.viewCfg[0]);
     }
 
     public resolveRelation() {
@@ -61,6 +62,7 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
                     cascadeEvent._mode ===
                         BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD
                 ) {
+                    // 接收替换节点消息, 根据消息重新指定切换标签页的方式
                     viewCfg.forEach(cfg => {
                         const option = cascadeEvent.option;
                         const subViewId = option.subViewId();
@@ -119,7 +121,7 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
         );
         this.container.clear();
         this.component = this.container.createComponent(comp);
-        this.component.instance.config = config;
+        this.component.instance.config = CommonTools.deepCopy(config);
         this.component.instance.tempValue = data;
         this.component.instance.initData = initValue ? initValue : data;
         this.component.instance.permissions = this.permissions;

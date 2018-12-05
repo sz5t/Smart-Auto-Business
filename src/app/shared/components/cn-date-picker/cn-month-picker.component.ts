@@ -1,24 +1,30 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
-import { FormGroup } from "@angular/forms";
-import { getMonth, getISOYear } from "date-fns";
+import {Component, OnInit, Input, Output, EventEmitter, AfterViewInit} from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { getMonth, getISOYear } from 'date-fns';
 
 @Component({
-    selector: "cn-month-picker",
-    templateUrl: "./cn-month-picker.component.html"
+    selector: 'cn-month-picker',
+    templateUrl: './cn-month-picker.component.html'
 })
-export class CnMonthPickerComponent implements OnInit {
+export class CnMonthPickerComponent implements OnInit, AfterViewInit {
     @Input()
-    config;
-    @Input() value;
+    public config;
+    @Input() public value;
     @Output()
-    updateValue = new EventEmitter();
-    formGroup: FormGroup;
-    month;
+    public updateValue = new EventEmitter();
+    public formGroup: FormGroup;
+    public month = new Date();
     constructor() {}
 
-    ngOnInit() {}
+    public ngOnInit() {
 
-    monthChange(date: Date) {
+    }
+
+    public ngAfterViewInit () {
+
+    }
+
+    public monthChange(date: Date) {
         const backValue = { name: this.config.name, value: `${getISOYear(this.month)}-${getMonth(this.month) + 1 }` };
         this.updateValue.emit(backValue);
     }

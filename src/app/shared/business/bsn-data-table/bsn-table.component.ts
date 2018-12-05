@@ -1698,7 +1698,7 @@ export class BsnTableComponent extends CnComponentBase
                             );
                             // 处理输出参数
                             if (c.outputParams) {
-                                this._outputParametersResolver(
+                                this.outputParametersResolver(
                                     c,
                                     response,
                                     option.ajaxConfig,
@@ -1730,7 +1730,7 @@ export class BsnTableComponent extends CnComponentBase
                     );
                     // 处理输出参数
                     if (c.outputParams) {
-                        this._outputParametersResolver(
+                        this.outputParametersResolver(
                             c,
                             response,
                             option.ajaxConfig,
@@ -1766,118 +1766,132 @@ export class BsnTableComponent extends CnComponentBase
     }
 
     /**
-     *
-     * @param outputParams
-     * @param response
-     * @param callback
-     * @returns {Array}
-     * @private
-     * 1、输出参数的配置中，消息类型的参数只能设置一次
-     * 2、值类型的结果可以设置多个
-     * 3、表类型的返回结果可以设置多个
-     */
-    private _outputParametersResolver(c, response, ajaxConfig, callback) {
-        const result = false;
-        if (response.isSuccess) {
-            const msg =
-                c.outputParams[
-                    c.outputParams.findIndex(
-                        m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
-                    )
-                ];
-            const value =
-                c.outputParams[
-                    c.outputParams.findIndex(
-                        m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
-                    )
-                ];
-            const table =
-                c.outputParams[
-                    c.outputParams.findIndex(
-                        m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
-                    )
-                ];
-            const msgObj = response.data[msg.name]
-                ? response.data[msg.name].split(':')
-                : '';
-            // const valueObj = response.data[value.name] ? response.data[value.name] : [];
-            // const tableObj = response.data[table.name] ? response.data[table.name] : [];
-            if (msgObj && msgObj.length > 1) {
-                const messageType = msgObj[0];
-                let options;
-                switch (messageType) {
-                    case 'info':
-                        options = {
-                            nzTitle: '提示',
-                            nzWidth: '350px',
-                            nzContent: msgObj[1]
-                        };
-                        this.modalService[messageType](options);
-                        break;
-                    case 'error':
-                        options = {
-                            nzTitle: '提示',
-                            nzWidth: '350px',
-                            nzContent: msgObj[1]
-                        };
-                        this.modalService[messageType](options);
-                        break;
-                    case 'confirm':
-                        options = {
-                            nzTitle: '提示',
-                            nzContent: msgObj[1],
-                            nzOnOk: () => {
-                                // 是否继续后续操作，根据返回状态结果
-                                const childrenConfig = ajaxConfig.filter(
-                                    f => f.parentName && f.parentName === c.name
-                                );
-                                childrenConfig &&
-                                    childrenConfig.map(currentAjax => {
-                                        this._getAjaxConfig(
-                                            currentAjax,
-                                            ajaxConfig
-                                        );
-                                    });
-                            },
-                            nzOnCancel: () => {}
-                        };
-                        this.modalService[messageType](options);
-                        break;
-                    case 'warning':
-                        options = {
-                            nzTitle: '提示',
-                            nzWidth: '350px',
-                            nzContent: msgObj[1]
-                        };
-                        this.modalService[messageType](options);
-                        break;
-                    case 'success':
-                        options = {
-                            nzTitle: '',
-                            nzWidth: '350px',
-                            nzContent: msgObj[1]
-                        };
-                        this._message.success(msgObj[1]);
-                        callback && callback();
-                        break;
-                }
-                // if(options) {
-                //     this.modalService[messageType](options);
-                //
-                //     // 如果成功则执行回调
-                //     if(messageType === 'success') {
-                //         callback && callback();
-                //     }
-                // }
-            } else {
-                this._message.error(
-                    '存储过程返回结果异常：未获得输出的消息内容'
-                );
+    *
+    * @param outputParams
+    * @param response
+    * @param callback
+    * @returns {Array}
+    * @private
+    * 1、输出参数的配置中，消息类型的参数只能设置一次
+    * 2、值类型的结果可以设置多个
+    * 3、表类型的返回结果可以设置多个
+    */
+   public outputParametersResolver(c, response, ajaxConfig, callback) {
+    const result = false;
+    if (response.isSuccess) {
+
+        const msg =
+            c.outputParams[
+            c.outputParams.findIndex(
+                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
+            )
+            ];
+        const value =
+            c.outputParams[
+            c.outputParams.findIndex(
+                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
+            )
+            ];
+        const table =
+            c.outputParams[
+            c.outputParams.findIndex(
+                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
+            )
+            ];
+        const msgObj = msg
+            ? response.data[msg.name].split(':')
+            : null;
+        const valueObj = response.data ? response.data : {};
+        // const tableObj = response.data[table.name] ? response.data[table.name] : [];
+        if (msgObj && msgObj.length > 1) {
+            const messageType = msgObj[0];
+            let options;
+            switch (messageType) {
+                case 'info':
+                    options = {
+                        nzTitle: '提示',
+                        nzWidth: '350px',
+                        nzContent: msgObj[1]
+                    };
+                    this.baseModal[messageType](options);
+                    break;
+                case 'error':
+                    options = {
+                        nzTitle: '提示',
+                        nzWidth: '350px',
+                        nzContent: msgObj[1]
+                    };
+                    this.baseModal[messageType](options);
+                    break;
+                case 'confirm':
+                    options = {
+                        nzTitle: '提示',
+                        nzContent: msgObj[1],
+                        nzOnOk: () => {
+                            // 是否继续后续操作，根据返回状态结果
+                            const childrenConfig = ajaxConfig.filter(
+                                f => f.parentName && f.parentName === c.name
+                            );
+                            //  目前紧支持一次执行一个分之步骤
+                            this._getAjaxConfig(childrenConfig[0], ajaxConfig);
+                            // childrenConfig &&
+                            //     childrenConfig.map(currentAjax => {
+                            //         this.getAjaxConfig(
+                            //             currentAjax,
+                            //             ajaxConfig,
+                            //             callback
+                            //         );
+                            //     });
+                        },
+                        nzOnCancel: () => { }
+                    };
+                    this.baseModal[messageType](options);
+                    break;
+                case 'warning':
+                    options = {
+                        nzTitle: '提示',
+                        nzWidth: '350px',
+                        nzContent: msgObj[1]
+                    };
+                    this.baseModal[messageType](options);
+                    break;
+                case 'success':
+                    options = {
+                        nzTitle: '',
+                        nzWidth: '350px',
+                        nzContent: msgObj[1]
+                    };
+                    this.baseMessage.success(msgObj[1]);
+                    callback && callback();
+                    break;
             }
-        } else {
-            this._message.error('操作异常：', response.message);
+            // if(options) {
+            //     this.modalService[messageType](options);
+            //
+            //     // 如果成功则执行回调
+            //     if(messageType === 'success') {
+            //         callback && callback();
+            //     }
+            // }
+        } 
+        // else {
+        //     this.baseMessage.error(
+        //         '存储过程返回结果异常：未获得输出的消息内容'
+        //     );
+        // }
+        if (valueObj) {
+            this.returnValue = valueObj;
+            const childrenConfig = ajaxConfig.filter(
+                f => f.parentName && f.parentName === c.name
+            );
+            //  目前紧支持一次执行一个分之步骤
+            this._getAjaxConfig(childrenConfig[0], ajaxConfig);
         }
+
+    } else {
+        this.baseMessage.error('操作异常：', response.message);
     }
+}
 
     private async _executeAjaxConfig(ajaxConfigObj, handleData) {
         if (Array.isArray(handleData)) {
@@ -1893,7 +1907,8 @@ export class BsnTableComponent extends CnComponentBase
             tempValue: this.tempValue,
             item: handleData,
             initValue: this.initValue,
-            cacheValue: this.cacheService
+            cacheValue: this.cacheService,
+            returnValue: this.returnValue
         });
         // 执行数据操作
         return this._executeRequest(
@@ -1914,7 +1929,8 @@ export class BsnTableComponent extends CnComponentBase
                         item: dataItem,
                         componentValue: dataItem,
                         initValue: this.initValue,
-                        cacheValue: this.cacheService
+                        cacheValue: this.cacheService,
+                        returnValue: this.returnValue
                     });
                     executeParams.push(newParam);
                 });
@@ -1927,7 +1943,8 @@ export class BsnTableComponent extends CnComponentBase
                     item: handleData,
                     componentValue: handleData,
                     initValue: this.initValue,
-                    cacheValue: this.cacheService
+                    cacheValue: this.cacheService,
+                    returnValue: this.returnValue
                 })
             );
         }

@@ -11,12 +11,13 @@ import { instantiateDefaultStyleNormalizer } from '@angular/platform-browser/ani
 import { Subscription, Observable, Observer } from 'rxjs';
 import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_CASCADE } from '@core/relative-Service/BsnTableStatus';
 import { NzTabComponent, NzTabChangeEvent } from 'ng-zorro-antd';
+import {current} from "codelyzer/util/syntaxKind";
 @Component({
     selector: 'bsn-tabs',
     templateUrl: './bsn-tabs.component.html',
     styles: [``]
 })
-export class BsnTabsComponent extends CnComponentBase implements OnInit {
+export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestroy {
     @Input()
     public config;
     @Input()
@@ -26,9 +27,8 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit {
     @Input()
     public initData;
 
-    public _statusSubscription: Subscription;
-    public _cascadeSubscription: Subscription;
     public _currentIndex;
+    public handleIndexs;
     constructor(
         @Inject(BSN_COMPONENT_MODES)
         private stateEvents: Observable<BsnComponentMessage>,
@@ -55,23 +55,65 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit {
         // );
     }
 
+    public ngOnDestroy(): void {
+        this.unsubscribe();
+    }
+
     public tabChange(tab: NzTabChangeEvent) {
-        this.config.tabs[tab.index]['active'] = true;
+        setTimeout(() => {
+            const currentTab = this.config.tabs[tab.index];
+            currentTab['active'] = true;
+            // if (this.handleIndexs.includes(tab.index) && currentTab['handle']) {
+            //     if (
+            //         currentTab.componentType &&
+            //         currentTab.componentType.sub === true
+            //     ) {
+            //         this.cascade.next(
+            //             new BsnComponentMessage(
+            //                 BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
+            //                 currentTab.id,
+            //                 {
+            //                     data: {
+            //                         ...this.initValue,
+            //                         ...this.tempValue
+            //                     },
+            //                     initValue: this.initValue ? this.initValue : {},
+            //                     tempValue: this.tempValue ? this.tempValue : {},
+            //                     subViewId: () => {
+            //                         let id = '';
+            //                         currentTab.subMapping.forEach(sub => {
+            //                             const mappingVal = this.tempValue[sub['field']];
+            //                             if (sub.mapping) {
+            //                                 sub.mapping.forEach(m => {
+            //                                     if (m.value === mappingVal) {
+            //                                         id = m.subViewId;
+            //                                     }
+            //                                 });
+            //                             }
+            //                         });
+            //                         return id;
+            //                     }
+            //                 }
+            //             )
+            //         );
+            //      }
+            // }
+        });
+
     }
 
     public tabActive(tab) {
-        console.log(tab);
-        setTimeout(() => {
-            tab['active'] = true;
-        })
-        
+        // setTimeout(() => {
+        //     tab['active'] = true;
+        // });
+
     }
 
     public tabDisactive(tab) {
         setTimeout(() => {
             tab['active'] = false;
         });
-        
+
     }
 
     private resolverRelation() {
@@ -81,7 +123,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit {
             this.config.componentType &&
             this.config.componentType.child === true
         ) {
-            this._cascadeSubscription = this.cascadeEvents.subscribe(
+            this.cascadeSubscriptions = this.cascadeEvents.subscribe(
                 cascadeEvent => {
                     // 解析子表消息配置
                     if (
@@ -99,38 +141,58 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit {
                                     ];
                                 // 获取传递的消息数据
                                 const option = cascadeEvent.option;
-                                if (option) {
-                                    // 解析参数
-                                    if (
-                                        relation.params &&
-                                        relation.params.length > 0
-                                    ) {
-                                        const t = {}
-                                        relation.params.forEach(param => {
-                                            t[param['cid']] =
-                                                option.data[param['pid']];
-                                        });
-                                        this.tempValue = t;
-                                    }
-                                    
-                                }
+                                switch (mode) {
+                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                                        if (option) {
+                                            // 解析参数
+                                            if (
+                                                relation.params &&
+                                                relation.params.length > 0
+                                            ) {
+                                                const t = {};
+                                                relation.params.forEach(param => {
+                                                    t[param['cid']] =
+                                                        option.data[param['pid']];
+                                                });
+                                                this.tempValue = t;
+                                            }
 
-                                // 匹配及联模式
-                                // switch (mode) {
-                                //     case BSN_COMPONENT_CASCADE_MODES.REFRESH:
-                                //         this.load();
-                                //         break;
-                                //     case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
-                                //         this.load();
-                                //         break;
-                                //     case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN:
-                                //         this.load();
-                                //         break;
-                                //     case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
-                                //         break;
-                                //     case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
-                                //         break;
-                                // }
+                                        }
+                                    break;
+                                    case BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD:
+                                        // 获取相关配置，该配置获取所有标签页
+                                        // 找出标签页中设置替换刷新的配置标签
+                                        // console.log(option, this.config);
+                                        // this.handleIndexs = [];
+                                        //
+                                        // this.config.tabs.forEach((tab, index) => {
+                                        //    if (tab.handle && tab.handle === 'single') {
+                                        //         this.handleIndexs.push(index);
+                                        //    }
+                                        // });
+                                        // const viewCfg = this.config.viewCfg;
+                                        // if (
+                                        //     viewCfg &&
+                                        //     cascadeEvent._mode ===
+                                        //     BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD
+                                        // ) {
+                                        //
+                                        //     // 接收替换节点消息, 根据消息重新指定切换标签页的方式
+                                        //     // viewCfg.forEach(cfg => {
+                                        //     //     const option = cascadeEvent.option;
+                                        //     //     const subViewId = option.subViewId();
+                                        //     //     if (option && cfg.config.viewId === subViewId) {
+                                        //     //         this.buildComponent(
+                                        //     //             cfg,
+                                        //     //             option.data,
+                                        //     //             option['tempValue'] ? option['tempValue'] : {},
+                                        //     //             option['initValue'] ? option['initValue'] : {}
+                                        //     //         );
+                                        //     //     }
+                                        //     // });
+                                        // }
+                                    break;
+                                }
                             }
                         });
                     }

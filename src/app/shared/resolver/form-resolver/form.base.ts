@@ -442,7 +442,6 @@ export class CnFormBase extends CnComponentBase {
             } else {
                 (async () => {
                     const response = await this.execute(url, c.ajaxType, params);
-                    debugger;
                     // 处理输出参数
                     if (c.outputParams) {
                         this.outputParametersResolver(
