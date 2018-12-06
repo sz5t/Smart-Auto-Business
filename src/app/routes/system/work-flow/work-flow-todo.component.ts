@@ -6124,6 +6124,16 @@ export class WorkFlowTodoComponent implements OnInit {
                                             ],
                                             filter: []
                                         },
+                                        saveConfig: {
+                                            // 图形保存
+                                            url: 'common/WfInfo',
+                                            ajaxType: 'put',
+                                            params: [
+                                                { name: 'configjson', type: 'componentValue', valueName: 'configjson', value: '' },
+                                                { name: 'nodejson', type: 'componentValue', valueName: 'nodejson', value: '' },
+                                                { name: 'edgejson', type: 'componentValue', valueName: 'edgejson', value: '' }
+                                            ]
+                                        },
                                         // 该属性不作简析，目前只作单纯json维护
                                         componentType: {
                                             parent: false,
@@ -6141,8 +6151,19 @@ export class WorkFlowTodoComponent implements OnInit {
                                                 relationReceiveContent: []
                                             }
                                         ],
+                                        cascadeRelation: [
+                                            {
+                                                name: 'node', // node 是点击节点时发出消息
+                                                cascadeMode: 'Scan_Code_Locate_ROW', // 发出消息的类别
+                                                cascadeField: [  // cascadeField 不配则默认节点信息，配置后可添加其他信息通过消息发送
+                                                    { name: 'ScanCode', valueName: 'value', type: 'selectObject/tempValueObject/tempValue/initValueObject/initValue/value', value: '固定值' },
+                                                    { name: 'ScanCodeObject', valueName: 'dataItem' }
+                                                ]
+                                            }
+                                        ],
+                                        // 【目前不用预留配置】
                                         toolbar: [
-                                            // 此处的toolbar 是用户自定义按钮 + 编辑器内置命令按钮，分组  commandtype: 'editorcommand',  // editorcommand 编辑器内置命令，componentcommand 组件内置方法，command 自定义
+                                            //  此处的toolbar 是用户自定义按钮 + 编辑器内置命令按钮，分组  commandtype: 'editorcommand',  // editorcommand 编辑器内置命令，componentcommand 组件内置方法，command 自定义
                                             {
                                                 group: [
                                                     {
@@ -6293,10 +6314,8 @@ export class WorkFlowTodoComponent implements OnInit {
                                                 group: [
                                                     {
                                                         name: 'saveWF',
-                                                        commandtype:
-                                                            'componentcommand',
-                                                        class:
-                                                            'command iconfont icon-select',
+                                                        commandtype: 'componentcommand',
+                                                        class: 'command iconfont icon-select',
                                                         text: '保存',
                                                         hidden: false
                                                     }
@@ -7429,11 +7448,10 @@ export class WorkFlowTodoComponent implements OnInit {
                                 width: 80,
                                 type: 'button',
                                 toolbar: [
-                                    {   
-                                        // 描述行状态 来展示 操作
+                                    {   // 描述行状态 来展示 操作
                                         rowState: {
-                                           type: '', // 是否启用 规则校验
-                                           // 校验条件
+                                            type: true, // 是否启用 规则校验
+                                            // 校验条件
                                         },
                                         group: [
                                             {

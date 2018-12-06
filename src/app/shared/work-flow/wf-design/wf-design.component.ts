@@ -16,22 +16,22 @@ import { NzMessageService } from 'ng-zorro-antd';
   encapsulation: ViewEncapsulation.Emulated
 })
 export class WfDesignComponent extends CnComponentBase implements OnInit {
-  @Input() config; // dataTables 的配置参数
-  @Input() permissions = [];
-  @Input() dataList = []; // 表格数据集合
-  @Input() initData;
+  @Input() public config; // dataTables 的配置参数
+  @Input() public permissions = [];
+  @Input() public dataList = []; // 表格数据集合
+  @Input() public initData;
   // './node_modules/@antv/g6-editor/build/base.css'
-  @ViewChild('minimap') minimap: ElementRef;
-  @ViewChild('toolbar') toolbar: ElementRef;
-  @ViewChild('contextmenu') contextmenu: ElementRef;
-  @ViewChild('itempannel') itempannel: ElementRef;
-  @ViewChild('detailpannel') detailpannel: ElementRef;
-  @ViewChild('page') rpage: ElementRef;
-  @ViewChild('zoomslider') zoomslider: ElementRef;
-  _statusSubscription: Subscription;
-  _cascadeSubscription: Subscription;
-  tempValue = {};
-  data1 = {
+  @ViewChild('minimap') public minimap: ElementRef;
+  @ViewChild('toolbar') public toolbar: ElementRef;
+  @ViewChild('contextmenu') public contextmenu: ElementRef;
+  @ViewChild('itempannel') public itempannel: ElementRef;
+  @ViewChild('detailpannel') public detailpannel: ElementRef;
+  @ViewChild('page') public rpage: ElementRef;
+  @ViewChild('zoomslider') public zoomslider: ElementRef;
+  public _statusSubscription: Subscription;
+  public _cascadeSubscription: Subscription;
+  public tempValue = {};
+  public data1 = {
     nodes: [
       {
         type: 'node',
@@ -111,10 +111,10 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     ],
   };
 
-  data = { nodes: [], edges: [] };
+  public data = { nodes: [], edges: [] };
 
   // 节点基本信息配置
-  node_panels = [
+  public node_panels = [
     {
       active: true,
       name: '属性',
@@ -128,7 +128,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
   ];
 
   // 边基本信息
-  edge_panels = [
+  public edge_panels = [
     {
       active: true,
       name: '属性',
@@ -142,11 +142,11 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
   ];
 
   // 节点表单信息
-  nodeinfo = {
+  public nodeinfo = {
     id: '',
     label: ''
   };
-  edgeinfo = {
+  public edgeinfo = {
     id: '',
     label: ''
   };
@@ -164,11 +164,11 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     super();
   }
 
-  editor = new Editor();
-  page;
+  public editor = new Editor();
+  public page;
 
 
-  async load() {
+  public async load() {
 
     // console.log('tempValue:', this.tempValue);
 
@@ -177,16 +177,16 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
       ...this._buildParameters(this.config.ajaxConfig.params),
       ...this._buildFilter(this.config.ajaxConfig.filter)
     };
-
+    const configjson = this.config.configjson ? this.config.configjson : 'configjson';
     const loadData = await this._load(url, params);
     console.log(url, params);
     if (loadData && loadData.status === 200 && loadData.isSuccess) {
       if (loadData.data) {
         // console.log('加载数据', loadData);
         if (loadData.data.length > 0) {
-          if (loadData.data[0].configjson) {
+          if (loadData.data[0][configjson]) {
             //   console.log('configjson:', loadData.data[0].configjson);
-            this.data = JSON.parse(loadData.data[0].configjson);
+            this.data = JSON.parse(loadData.data[0][configjson]);
           }
         } else {
           this.data = { nodes: [], edges: [] };
@@ -207,7 +207,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
   private async _load(url, params) {
     return this.apiService.get(url, params).toPromise();
   }
-  ngOnInit() {
+  public ngOnInit() {
     this.resolverRelation();
     if (this.initData) {
       this.initValue = this.initData;
@@ -218,7 +218,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
   }
 
   // tslint:disable-next-line:use-life-cycle-interface
-  ngAfterViewInit() {
+  public ngAfterViewInit() {
     console.log('ngAfterViewInit');
     const Command = Editor.Command;
     Command.registerCommand('liu', {
@@ -292,17 +292,17 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
         const s_data = this.page.save();
         this.data.edges = s_data.edges;
 
-        s_data.nodes.forEach(nodeItem => {
-          let nodeState = false;
-          this.data.nodes.forEach(n => {
-            if (n.id === nodeItem.id) {
-              nodeState = true;
-            }
-           });
-           if ( !nodeState) {
-            this.data.nodes.push(nodeItem);
-           }
-        });
+        // s_data.nodes.forEach(nodeItem => {
+        //   let nodeState = false;
+        //   this.data.nodes.forEach(n => {
+        //     if (n.id === nodeItem.id) {
+        //       nodeState = true;
+        //     }
+        //   });
+        //   if (!nodeState) {
+        //     this.data.nodes.push(nodeItem);
+        //   }
+        // });
 
         // console.log('节点model', ev.item.model);
         let nodestate = true;
@@ -325,11 +325,101 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
           });
         }
 
+        // 点击中节点发出消息
+        let sendData = {};
+        let nodeData = {};
+        this.data.nodes.forEach(n => {
+          if (n.id === ev.item.model.id) {
+            sendData = n;
+            nodeData = n;
+          }
+        });
+        console.log('*******************');
+        console.log('发出消息：', sendData);
+        // ******注释调这块
+        // this.cascade.next(
+        //   new BsnComponentMessage(
+        //     BSN_COMPONENT_CASCADE_MODES['SELECTED_NODE'],
+        //     this.config.viewId,
+        //     {
+        //       data: sendData
+        //     }
+        //   )
+        // );
+
+
+        // *******************************
+        // 配置明细
+        // const cascadeRelation = [{
+        //   name: 'node',
+        //   cascadeMode: 'Scan_Code_Locate_ROW',
+        //   cascadeField: [
+        //     { name: 'ScanCode', valueName: 'value',type:'selectObject/tempValueObject/tempValue/initValueObject/initValue/value',value:'固定值' },
+        //     { name: 'ScanCodeObject', valueName: 'dataItem' }
+        //   ]
+        // }];
+
+        if (this.config.cascadeRelation) {
+          this.config.cascadeRelation.forEach(element => {
+            if (element.name === 'node') {
+              if (element.cascadeField) {
+                element.cascadeField.forEach(feild => {
+                  if (!feild['type']) {
+                    if (nodeData[feild.valueName]) {
+                      sendData[feild.name] = nodeData[feild.valueName];
+                    }
+                  } else {
+                    if (feild['type'] === 'selectObject') {
+                      if (nodeData[feild.valueName]) {
+                        sendData[feild.name] = nodeData[feild.valueName];
+                      }
+                    } else if (feild['type'] === 'tempValueObject') {
+
+                      sendData[feild.name] = this.tempValue;
+
+                    } else if (feild['type'] === 'tempValue') {
+                      if (this.tempValue[feild.valueName]) {
+                        sendData[feild.name] = this.tempValue[feild.valueName];
+                      }
+                    } else if (feild['type'] === 'initValueObject') {
+
+                      sendData[feild.name] = this.initValue;
+
+                    } else if (feild['type'] === 'initValue') {
+                      if (this.initValue[feild.valueName]) {
+                        sendData[feild.name] = this.initValue[feild.valueName];
+                      }
+                    } else if (feild['type'] === 'value') {
+                      sendData[feild.name] = feild.value;
+                    }
+
+                  }
+
+                });
+              }
+              this.cascade.next(
+                new BsnComponentMessage(
+                  BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],
+                  this.config.viewId,
+                  {
+                    data: sendData
+                  }
+                )
+              );
+            }
+          });
+        }
+        // *******************************
+
+
+
+
+
 
       }
       // this.nodeform 
       //  const data = page.save();
-     // console.log('当前节点数据', this.data);
+      // console.log('当前节点数据', this.data);
 
     });     // 节点点击事件
     graph.on('edge:click', ev => {
@@ -344,13 +434,13 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
             if (n.id === nodeItem.id) {
               nodeState = true;
             }
-           });
-           if ( !nodeState) {
+          });
+          if (!nodeState) {
             this.data.nodes.push(nodeItem);
-           }
+          }
         });
         let nodestate = true;
-       // console.log('edgemodel', ev.item.model);
+        // console.log('edgemodel', ev.item.model);
         this.data.edges.forEach(n => {
           if (n.id === ev.item.model.id) {
             this.edgeinfo.id = n.id;
@@ -380,31 +470,56 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
 
   }
 
-  async save() {
+  public async save() {
     console.log('执行save');
+    // const s_data = this.page.save();
+    // s_data.nodes.forEach(n => {
+    //   if (!n.hasOwnProperty('nodetype')) {
+    //     n['nodetype'] = this.getNodeType(n.label);
+    //   }
+    // });
+    // console.log('当前节点数据', s_data);
+    // console.log('当前节点数据string: ', JSON.stringify(s_data));
+
+    // const submitData = {};
+    // submitData['Id'] = this.tempValue['_parentId'];
+    // submitData['configjson'] = JSON.stringify(s_data);
+    // submitData['nodejson'] = JSON.stringify(s_data.nodes);
+    // submitData['edgejson'] = JSON.stringify(s_data.edges);
+
+    // componentValue
+
+    if (this.config.saveConfig) {
+      const url = this._buildURL(this.config.saveConfig.url);
+      const params = {
+        ...this._buildParameters(this.config.saveConfig.params),
+      };
+      const response = await this.execute(url, this.config.saveConfig.ajaxType, params);
+      if (response && response.status === 200 && response.isSuccess) {
+        this._message.create('success', '保存成功');
+      } else {
+        this._message.create('error', response.message);
+      }
+    }
+
+  }
+
+  // 获取组件值
+  public getComponentValue() {
     const s_data = this.page.save();
     s_data.nodes.forEach(n => {
       if (!n.hasOwnProperty('nodetype')) {
         n['nodetype'] = this.getNodeType(n.label);
       }
     });
-    console.log('当前节点数据', s_data);
-    console.log('当前节点数据string: ', JSON.stringify(s_data));
-
     const submitData = {};
-    submitData['Id'] = this.tempValue['_parentId'];
     submitData['configjson'] = JSON.stringify(s_data);
     submitData['nodejson'] = JSON.stringify(s_data.nodes);
     submitData['edgejson'] = JSON.stringify(s_data.edges);
-    const response = await this.execute('common/WfVersion', 'put', submitData);
-    if (response && response.status === 200 && response.isSuccess) {
-      this._message.create('success', '保存成功');
-    } else {
-      this._message.create('error', response.message);
-    }
+    return submitData;
   }
 
-  valueChange() {
+  public valueChange() {
     this.data.nodes.forEach(n => {
       if (n.id === this.nodeinfo.id) {
         n.label = this.nodeinfo.label;
@@ -413,7 +528,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     this.page.read(this.data);
   }
   // 看以后是否维护边信息
-  edgevalueChange() {
+  public edgevalueChange() {
     //   this.data.edges.forEach(n => {
     //     if (n.id === this.edgeinfo.id ) {
     //      //  n.label = this.edgeinfo.label;
@@ -422,7 +537,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     //  this.page.read(this.data);
   }
 
-  getNodeType(label) {
+  public getNodeType(label) {
     let nodetype = '';
     if (label === '开始节点') {
       nodetype = 'BeginNode';
@@ -441,7 +556,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
 
 
   // 工作流配置信息保存，保存的时候，拆解node edge 通过函数简析，这部分信息也通过配置
-  executeSave() {
+  public executeSave() {
 
 
   }
@@ -453,7 +568,8 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
 
 
   // 工作流组件json 格式定义
-  config1 = {
+  // tslint:disable-next-line:member-ordering
+  public config1 = {
     viewId: 'wfeditorid',  // 唯一标识
     component: 'wf_design', // 工作流图形编辑组件
     loadtype: 'ajax',  // 【新增配置项】ajax、data  当前组件的加载方式【预留，目前以ajax为主】
@@ -783,7 +899,8 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
         params: paramsConfig,
         tempValue: this.tempValue,
         initValue: this.initValue,
-        cacheValue: this.cacheService
+        cacheValue: this.cacheService,
+        componentValue: this.getComponentValue()
       });
     }
     return params;
