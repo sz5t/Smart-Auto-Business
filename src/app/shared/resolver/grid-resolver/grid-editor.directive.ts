@@ -11,7 +11,7 @@ import {
     Output,
     EventEmitter,
     OnDestroy
-} from "@angular/core";
+} from '@angular/core';
 import {
     NzCheckboxComponent,
     NzCheckboxGroupComponent,
@@ -21,16 +21,16 @@ import {
     // NzRangePickerComponent,
     NzSelectComponent
     // NzTimePickerComponent
-} from "ng-zorro-antd";
-import { CnGridInputComponent } from "@shared/components/cn-grid-input/cn-grid-input.component";
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
-import { CnGridSelectComponent } from "@shared/components/cn-grid-select/cn-grid-select.component";
-import { CnGridSelectTreeComponent } from "@shared/components/cn-grid-select-tree/cn-grid-select-tree.component";
-import { CnGridDatePickerComponent } from "@shared/components/cn-grid-date-picker/cn-grid-date-picker.component";
-import { CnGridNumberComponent } from "@shared/components/cn-grid-munber/cn-grid-number.component";
-import { CnGridSelectGridComponent } from "@shared/components/cn-grid-select-grid/cn-grid-select-grid.component";
-import { CnGridSelectTreegridComponent } from "@shared/components/cn-grid-select-treegrid/cn-grid-select-treegrid.component";
-import { CnGridSearchComponent } from "@shared/components/cn-grid-search/cn-grid-search.component";
+} from 'ng-zorro-antd';
+import { CnGridInputComponent } from '@shared/components/cn-grid-input/cn-grid-input.component';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { CnGridSelectComponent } from '@shared/components/cn-grid-select/cn-grid-select.component';
+import { CnGridSelectTreeComponent } from '@shared/components/cn-grid-select-tree/cn-grid-select-tree.component';
+import { CnGridDatePickerComponent } from '@shared/components/cn-grid-date-picker/cn-grid-date-picker.component';
+import { CnGridNumberComponent } from '@shared/components/cn-grid-munber/cn-grid-number.component';
+import { CnGridSelectGridComponent } from '@shared/components/cn-grid-select-grid/cn-grid-select-grid.component';
+import { CnGridSelectTreegridComponent } from '@shared/components/cn-grid-select-treegrid/cn-grid-select-treegrid.component';
+import { CnGridSearchComponent } from '@shared/components/cn-grid-search/cn-grid-search.component';
 const components: { [type: string]: Type<any> } = {
     input: CnGridInputComponent,
     select: CnGridSelectComponent,
@@ -55,35 +55,36 @@ const components: { [type: string]: Type<any> } = {
 // };
 
 @Directive({
-    selector: "[CnGridEditorDirective]"
+    // tslint:disable-next-line:directive-selector
+    selector: '[CnGridEditorDirective]'
     // providers: [EXE_COUNTER_VALUE_ACCESSOR]
 })
 export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
     @Input()
-    config;
+    public config;
     @Input()
-    value;
+    public value;
     @Input()
-    rowData;
+    public rowData;
     @Input()
-    bsnData;
+    public bsnData;
     @Input()
-    dataSet;
+    public dataSet;
     @Input()
-    changeConfig;
+    public changeConfig;
     @Input()
-    initData;
+    public initData;
     @Output()
-    updateValue = new EventEmitter();
-    component: ComponentRef<any>;
+    public updateValue = new EventEmitter();
+    public component: ComponentRef<any>;
 
     constructor(
         private resolver: ComponentFactoryResolver,
         private container: ViewContainerRef
     ) {}
 
-    changecount = "first";
-    ngOnChanges() {
+    public changecount = 'first';
+    public ngOnChanges() {
         if (this.component) {
         }
 
@@ -94,10 +95,10 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
             // console.log('ngOnChanges', this.changeConfig);
             // console.log('ngOnChangesvalue', this.value);
             // console.log('ngOnChangesvalueconfig', this.config);
-            this.changecount = "repeat";
+            this.changecount = 'repeat';
             this.container.clear();
             if (!components[this.config.type]) {
-                const supportedTypes = Object.keys(components).join(", ");
+                const supportedTypes = Object.keys(components).join(', ');
                 throw new Error(
                     `不支持此类型的组件 (${
                         this.config.type
@@ -133,11 +134,11 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
         }
     }
 
-    ngOnInit() {
-        console.log("ngOnChangesvalue", this.changecount);
-        if (this.changecount === "first") {
+    public ngOnInit() {
+        console.log('ngOnChangesvalue', this.changecount);
+        if (this.changecount === 'first') {
             if (!components[this.config.type]) {
-                const supportedTypes = Object.keys(components).join(", ");
+                const supportedTypes = Object.keys(components).join(', ');
                 throw new Error(
                     `不支持此类型的组件 (${
                         this.config.type
@@ -170,7 +171,7 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
         } else {
             this.container.clear();
             if (!components[this.config.type]) {
-                const supportedTypes = Object.keys(components).join(", ");
+                const supportedTypes = Object.keys(components).join(', ');
                 throw new Error(
                     `不支持此类型的组件 (${
                         this.config.type
@@ -207,18 +208,18 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
     }
 
     // 组件将值写回
-    setValue(data?) {
+    public setValue(data?) {
         this.value = data;
         this.updateValue.emit(data);
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         if (this.component) {
             this.component.destroy();
         }
     }
 
-    isEmptyObject(e) {
+    public isEmptyObject(e) {
         let t;
         for (t in e) return !1;
         return !0;

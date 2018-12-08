@@ -1,3 +1,4 @@
+import { ApiService } from './../../../core/utility/api-service';
 import {
     Component,
     Inject,
@@ -19,17 +20,16 @@ import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resol
 import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { Observable, Observer, Subscription } from 'rxjs';
-import { GridBase } from './../grid.base';
+import { GridBase } from '../grid.base';
 import { BeforeOperation } from '../before-operation.base';
-import { ApiService } from '@core/utility/api-service';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: FormResolverComponent
 };
 @Component({
     // tslint:disable-next-line:component-selector
-    selector: 'bsn-tree-table,[bsn-tree-table]',
-    templateUrl: './bsn-tree-table.component.html',
+    selector: 'bsn-async-tree-table,[bsn-async-tree-table]',
+    templateUrl: './bsn-treeTable.component.html',
     styles: [
         `
             .table-operations {
@@ -44,7 +44,7 @@ const component: { [type: string]: Type<any> } = {
         `
     ]
 })
-export class BsnTreeTableComponent extends GridBase
+export class BsnAsyncTreeTableComponent extends GridBase
     implements OnInit, AfterViewInit, OnDestroy {
     @Input()
     public config;
@@ -125,7 +125,7 @@ export class BsnTreeTableComponent extends GridBase
         this.apiResource = this._api;
 
         this.callback = focusId => {
-            this._cancelEditRows();
+            // this._cancelEditRows();
             this.load();
         };
     }
@@ -189,7 +189,7 @@ export class BsnTreeTableComponent extends GridBase
                     const params = this.buildParameters(
                         this.config.dataSet[i].ajaxConfig.params
                     );
-                    const data = await this.get(url, params);
+                    const data = await this.apiResource.get(url, params).toPromise();
                     if (data.length > 0 && data.status === 200) {
                         if (this.config.dataSet[i].fields) {
                             const dataSetObjs = [];
@@ -257,12 +257,12 @@ export class BsnTreeTableComponent extends GridBase
                 switch (updateState._mode) {
                     case BSN_COMPONENT_MODES.CREATE:
                         !this.beforeOperation.beforeItemDataOperation(option) &&
-                            this._addNewRow();
+                            this.addNewRow();
                         break;
                     case BSN_COMPONENT_MODES.CREATE_CHILD:
                         this.beforeOperation.operationItemData = this.selectedItem;
                         !this.beforeOperation.beforeItemDataOperation(option) &&
-                            this._addNewChildRow();
+                            this.addNewChildRow();
                         break;
                     case BSN_COMPONENT_MODES.EDIT:
                         this.beforeOperation.operationItemData = [
@@ -408,7 +408,7 @@ export class BsnTreeTableComponent extends GridBase
         }
     }
 
-    //  功能实现
+    // 加载数据
     private load() {
         this.loading = true;
         this.allChecked = false;
@@ -426,39 +426,16 @@ export class BsnTreeTableComponent extends GridBase
         };
         this.expandDataCache = {};
         (async () => {
-            const loadData = await this._load(url, params);
+            const loadData = await this.apiResource.get(url, params).toPromise();
             if (loadData && loadData.status === 200) {
                 if (loadData.data && loadData.data.rows) {
                     this.treeDataOrigin = loadData.data.rows;
                     this.treeData = CommonTools.deepCopy(loadData.data.rows);
                     this.treeData.map(row => {
-                        row['key'] = row[this.config.keyId]
-                            ? row[this.config.keyId]
-                            : 'Id';
-                        this.expandDataCache[row.Id] = this.convertTreeToList(
-                            row
-                        );
+                        this.setChildExpand(row, 0);
                     });
-                    this.dataList = this._getAllItemList();
-                    this._updateEditCache();
+                    this.dataList = this.treeData;
                     this.total = loadData.data.total;
-                    if (this.is_Search) {
-                        this.createSearchRow();
-                    }
-                } else {
-                    // this._updateEditCacheByLoad([]);
-                    this.dataList = loadData.data;
-                    this.total = 0;
-                    if (this.is_Search) {
-                        this.createSearchRow();
-                    }
-                }
-            } else {
-                // this._updateEditCacheByLoad([]);
-                this.dataList = [];
-                this.total = 0;
-                if (this.is_Search) {
-                    this.createSearchRow();
                 }
             }
             // liu
@@ -468,13 +445,550 @@ export class BsnTreeTableComponent extends GridBase
             this.loading = false;
         })();
     }
+
+    private _setExpandChildData(parentRowData, newRowData, parentId) {
+        for (let i = 0, len = parentRowData.length; i < len; i++) {
+            if (parentRowData['Id'] === parentId) {
+                // 向该节点下添加下级节点
+                if (!parentRowData[i]['children']) {
+                    parentRowData[i]['children'] = [];
+                }
+                newRowData['parent'] = parentRowData[i];
+                parentRowData[i]['children'].push(newRowData);
+                return parentRowData;
+            } else {
+                if (
+                    parentRowData[i]['children'] &&
+                    parentRowData[i].length > 0
+                ) {
+                    this._setExpandChildData(
+                        parentRowData[i]['children'],
+                        newRowData,
+                        parentId
+                    );
+                }
+            }
+        }
+    }
+
+    public expandChange(childrenData, data: any, $event: boolean) {
+        if ($event === true) {
+            (async () => {
+                const response = await this.expandLoad(data);
+                if (response.isSuccess && response.data.length > 0) {
+                    response.data.forEach(d => {
+                        this.setChildExpand(d, data['level'] + 1);
+                    });
+                    // childrenData = data;
+                    this.insertChildrenListToTree(data, response.data);
+                }
+            })();
+        } else {
+            if (childrenData) {
+                childrenData.forEach(d => {
+                    const target = this.dataList.find(t => t.Id === d.Id);
+                    if (target && target.parent) {
+                        target.parent.expand = false;
+                    }
+                    this.expandChange(target.children, target, false)
+                })
+            }
+        }
+    }
+
+    private setChildExpand(data, level) {
+        data['parent'] = {};
+        data['parent']['expand'] = true;
+        data['level'] = level;
+        data['key'] = data['Id'];
+        // data['edit'] = false;
+        // 将当前行数据添加到编辑缓存对象当中
+        this.editCache[data['key']] = {edit: false, data: data};
+    }
+
+    private insertChildrenListToTree(parent, childrenList) {
+        const index = this.treeData.findIndex(d => d.Id === parent.Id);
+        this.treeData.splice(index + 1, 0, ...childrenList);
+    }
+
+    private expandLoad(parentData) {
+        const url = this.buildURL(this.config.ajaxConfig.url);
+        const params = this.buildParameters(this.config.ajaxConfig.childrenParams, parentData);
+        return this.apiResource.get(url, { ...params, ...this.buildRecursive() }).toPromise();
+    }
+
+    //  格式化单元格
+    public setCellFont(value, format) {
+        let fontColor = '';
+        if (format) {
+            format.map(color => {
+                if (color.value === value) {
+                    fontColor = color.fontcolor;
+                }
+            });
+        }
+
+        return fontColor;
+    }
+
+    /**
+     * 选中行
+     * @param data
+     * @param $event 
+     */
+    private selectRow(data, $event) {
+        if (
+            $event.srcElement.type === 'checkbox' ||
+            $event.target.type === 'checkbox'
+        ) {
+            return;
+        }
+        $event.stopPropagation();
+
+        this.treeData.forEach(t => t['selected'] = false);
+        data['selected'] = true;
+        this.selectedItem = data;
+        // liu  子组件
+        if (!this.is_Selectgrid) {
+            this.value = this.selectedItem[
+                this.config.selectGridValueName
+                    ? this.config.selectGridValueName
+                    : 'Id'
+            ];
+        }
+    }
+
+    /**
+     * 创建新行数据
+     */
+    public createNewRowData(parentId?) {
+        const newRow = { ...this.rowContent };
+        const  newRowId = CommonTools.uuID(6);
+        newRow['key'] = newRowId;
+        newRow['Id'] = newRowId;
+        newRow['checked'] = true;
+        newRow['row_status'] = 'adding';
+        if (parentId) {
+            newRow['parentId'] = parentId;
+        }
+        newRow['children'] = [];
+        return newRow;
+    }
+    /**
+     * 添加根节点行
+     */
+    private addNewRow() {
+        // 初始化新行数据
+        const newRow = this.createNewRowData();
+        this.editCache[newRow['Id']] = {edit: true, data : newRow};
+        this.dataList.splice(0, 0, newRow);
+        return true;
+    }
+
+    /**
+     * 添加子节点行
+     */
+    private addNewChildRow() {
+        if (this.selectedItem) {
+            const parentId = this.selectedItem[
+                this.config.keyId ? this.config.keyId : 'Id'
+            ];
+            const newRow = this.createNewRowData(parentId);
+            this.editCache[newRow['Id']] = {edit: true, data : newRow};
+            // 数据添加到具体选中行的下方
+            this.dataList = this._setChildRow(newRow, parentId);
+        } else {
+            console.log('未选择任何行,无法添加下级');
+            return false;
+        }
+    }
+
+    /**
+     * 重新排列数据列表(将添加的新行追加到父节点下的位置)
+     * @param dataList
+     * @param newRowData
+     * @param parentId
+     */
+    private _setChildRow(newRowData, parentId) {
+        if (this.dataList) {
+            const parentIndex = this.dataList.findIndex(d => d.Id === parentId);
+            if (parentIndex > 0) {
+                const level = this.dataList[parentIndex]['level'];
+                if (level > 0) {
+                    newRowData['level'] = level + 1;
+                }
+                this.dataList.splice(parentIndex + 1, 0, newRowData);
+            }
+        }
+        return this.dataList;
+    }
+
+    /**
+     * 设置数据状态为编辑
+     * @param key
+     */
+    private _startRowEdit(key: string): void {
+        this.editCache[key]['edit'] = true;
+    }
+
+    private _cancelEditRows() {
+        const cancelRowMap = this._getCheckedRowStatusMap();
+        // 删除dataList中数据
+        for (let i = 0, len = this.dataList.length; i < len; i++) {
+            const key = this.dataList[i].key;
+            const checkedRowStatus = cancelRowMap.get(key);
+            if (checkedRowStatus && checkedRowStatus.status === 'adding') {
+                if (this.editCache[key]) {
+                    delete this.editCache[key];
+                }
+                this.dataList.splice(i, 1);
+                i--;
+                len--;
+            } else if (
+                checkedRowStatus &&
+                checkedRowStatus.status === 'updating'
+            ) {
+                this._cancelEdit(key);
+            }
+        }
+
+        this.refChecked();
+        return true;
+    }
+
+    private _cancelTreeDataByKey(treeData, key) {
+        for (let j = 0, jlen = treeData.length; j < jlen; j++) {
+            if (treeData[j]['Id'] === key) {
+                treeData.splice(j, 1);
+                j--;
+                jlen--;
+                return;
+            } else {
+                if (
+                    treeData[j]['children'] &&
+                    treeData[j]['children'].length > 0
+                ) {
+                    this._cancelTreeDataByKey(treeData[j]['children'], key);
+                }
+            }
+        }
+    }
+
+    private _getCheckedRowStatusMap(): Map<string, { key: string; status: string }> {
+        const cancelRowMap: Map<string, { key: string; status: string }> = new Map();
+        this.dataList.filter(d => d.checked)
+            .map(dataItem => {
+                const checkedData = this.editCache[dataItem.Id];
+                if (checkedData) {
+                    cancelRowMap.set(dataItem.Id, {
+                        key: dataItem.Id,
+                                status: dataItem['row_status']
+                                    ? dataItem['row_status']
+                                    : 'updating'
+                    });
+                }
+            })
+        return cancelRowMap;
+    }
+
+    private _editRowData() {
+        const checkedRowStatusMap = this._getCheckedRowStatusMap();
+        checkedRowStatusMap.forEach(item => {
+            if (item.status === 'updating') {
+                this._startRowEdit(item.key);
+            }
+        });
+        return true;
+    }
+
+    private _cancelEdit(key: string): void {
+        const itemList = this.treeDataOrigin;
+        const index = itemList.findIndex(item => item.Id === key);
+        this.editCache[key].edit = false;
+        this.editCache[key].data = JSON.parse(JSON.stringify(itemList[index]));
+    }
+
+    public checkAll(value) {
+        this.dataList.forEach(d => {
+            d['checked'] = value;
+        })
+        this.refChecked();
+    }
+
+    public refChecked() {
+        let allCount = 0;
+        // parent count
+        this.checkedCount = 0; 
+        // child count
+        this.dataList.forEach(r => {
+            allCount += r.checked ? 1 : 0;
+        });
+        
+        this.indeterminate = this.allChecked ? false : allCount > 0;
+    }
+
+    private _getAddedAndUpdatingRows() {
+        const checkedRows = this._getCheckedRowStatusMap();
+        this.addedTreeRows = [];
+        this.editTreeRows = [];
+        checkedRows.forEach(item => {
+            if (item.status === 'adding') {
+                this.addedTreeRows.push(this.editCache[item.key].data);
+            } else if (item.status === 'updating') {
+                this.editTreeRows.push(this.editCache[item.key].data);
+            }
+        });
+    }
+
+    // 获取行内编辑是行填充数据
+    private _getContent() {
+        this.rowContent['key'] = null;
+        this.config.columns.forEach(element => {
+            const colsname = element.field.toString();
+            this.rowContent[colsname] = '';
+        });
+    }
+
+    public deleteRow() {
+        this.baseModal.confirm({
+            nzTitle: '确认删除选中的记录？',
+            nzContent: '',
+            nzOnOk: () => {
+                const newData = [];
+                const serverData = [];
+                const e = this.dataList;
+                const d = this.editCache;
+
+                for (let i = 0, len = this.dataList.length; i < len; i++) {
+                    if (
+                        this.dataList[i].checked &&
+                        this.dataList[i]['row_status'] === 'adding'
+                    ) {
+                        if (this.editCache[this.dataList[i].key]) {
+                            delete this.editCache[this.dataList[i].key];
+                        }
+                        this.dataList.splice(this.dataList.indexOf(d), 1);
+                        i--;
+                        len--;
+                    }
+                }
+
+                for (let i = 0, len = this.dataList.length; i < len; i++) {
+                    if (this.dataList[i]['checked']) {
+                        if (this.dataList[i]['row_status'] === 'adding') {
+                            this.dataList.splice(
+                                this.dataList.indexOf(this.dataList[i]),
+                                1
+                            );
+                            i--;
+                            len--;
+                        } else if (
+                            this.dataList[i]['row_status'] === 'search'
+                        ) {
+                            this.dataList.splice(
+                                this.dataList.indexOf(this.dataList[i]),
+                                1
+                            );
+                            this.is_Search = false;
+                            this.search_Row = {};
+                            i--;
+                            len--;
+                        } else {
+                            serverData.push(this.dataList[i].key);
+                        }
+                    }
+                }
+                if (serverData.length > 0) {
+                    this.executeDelete(serverData);
+                }
+            },
+            nzOnCancel() { }
+        });
+    }
+
+    public async executeDelete(ids) {
+        let result;
+        if (ids && ids.length > 0) {
+            this.config.toolbar.forEach(bar => {
+                if (bar.group && bar.group.length > 0) {
+                    const index = bar.group.findIndex(
+                        item => item.name === 'deleteRow'
+                    );
+                    if (index !== -1) {
+                        const deleteConfig =
+                            bar.group[index].ajaxConfig['delete'];
+                        result = this._executeDelete(deleteConfig, ids);
+                    }
+                }
+                if (
+                    bar.dropdown &&
+                    bar.dropdown.buttons &&
+                    bar.dropdown.buttons.length > 0
+                ) {
+                    const index = bar.dropdown.buttons.findIndex(
+                        item => item.name === 'deleteRow'
+                    );
+                    if (index !== -1) {
+                        const deleteConfig =
+                            bar.dropdown.buttons[index].ajaxConfig['delete'];
+                        result = this._executeDelete(deleteConfig, ids);
+                    }
+                }
+            });
+        }
+
+        return result;
+    }
+
+    public async _executeDelete(deleteConfig, ids) {
+        let isSuccess;
+        if (deleteConfig) {
+            for (let i = 0, len = deleteConfig.length; i < len; i++) {
+                const params = {
+                    _ids: ids.join(',')
+                };
+                const response = await this.apiResource.delete(
+                    deleteConfig[i].url,
+                    params
+                ).toPromise();
+                if (response && response.status === 200 && response.isSuccess) {
+                    this.baseMessage.create('success', '删除成功');
+                    isSuccess = true;
+                } else {
+                    this.baseMessage.create('error', response.message);
+                }
+            }
+            if (isSuccess) {
+                this.load();
+            }
+        }
+
+        if (isSuccess === true) {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                    this.config.viewId
+                )
+            );
+        }
+        return isSuccess;
+    }
+
+    public async saveRow() {
+        const addRows = [];
+        const updateRows = [];
+        let isSuccess = false;
+        this.dataList.map(item => {
+            delete item['$type'];
+            if (item.checked && item['row_status'] === 'adding') {
+                addRows.push(item);
+            } else if (item.checked && item['row_status'] === 'updating') {
+                updateRows.push(item);
+            }
+        });
+        if (addRows.length > 0) {
+            // save add;
+            isSuccess = await this.executeSave(addRows, 'post');
+        }
+
+        if (updateRows.length > 0) {
+            // update
+            isSuccess = await this.executeSave(updateRows, 'put');
+        }
+        return isSuccess;
+    }
+
+    public async _execute(rowsData, method, postConfig) {
+        let isSuccess = false;
+        if (postConfig) {
+            for (let i = 0, len = postConfig.length; i < len; i++) {
+                const submitData = [];
+                rowsData.map(rowData => {
+                    const submitItem = {};
+                    postConfig[i].params.map(param => {
+                        if (param.type === 'tempValue') {
+                            submitItem[param['name']] = this.tempValue[
+                                param['valueName']
+                            ];
+                        } else if (param.type === 'componentValue') {
+                            submitItem[param['name']] =
+                                rowData[param['valueName']];
+                        } else if (param.type === 'GUID') {
+                        } else if (param.type === 'value') {
+                            submitItem[param['name']] = param.value;
+                        }
+                    });
+                    submitData.push(submitItem);
+                });
+                const response = await this[method](
+                    postConfig[i].url,
+                    submitData
+                );
+                if (response && response.status === 200 && response.isSuccess) {
+                    this.baseMessage.create('success', '保存成功');
+                    isSuccess = true;
+                } else {
+                    this.baseMessage.create('error', response.message);
+                }
+            }
+            if (isSuccess) {
+                // rowsData.map(row => {
+                //     this._saveEdit(row.key);
+                // });
+                this.load();
+            }
+        }
+        if (isSuccess === true) {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                    this.config.viewId
+                )
+            );
+        }
+        return isSuccess;
+    }
+
+    public async executeSave(rowsData, method) {
+        // Todo: 优化配置
+        let result;
+        this.config.toolbar.forEach(bar => {
+            if (bar.group && bar.group.length > 0) {
+                const index = bar.group.findIndex(
+                    item => item.name === 'saveRow'
+                );
+                if (index !== -1) {
+                    const postConfig = bar.group[index].ajaxConfig[method];
+                    result = this._execute(rowsData, method, postConfig);
+                }
+            }
+            if (
+                bar.dropdown &&
+                bar.dropdown.buttons &&
+                bar.dropdown.buttons.length > 0
+            ) {
+                const index = bar.dropdown.buttons.findIndex(
+                    item => item.name === 'saveRow'
+                );
+                if (index !== -1) {
+                    const postConfig =
+                        bar.dropdown.buttons[index].ajaxConfig[method];
+                    result = this._execute(rowsData, method, postConfig);
+                }
+            }
+        });
+
+        return result;
+    }
+    /**------------------------------------------------------------------------------ */
+
+
+
+
+
+
     // 获取 文本值，当前选中行数据
-    public async loadByselect(
-        ajaxConfig,
-        componentValue?,
-        selecttempValue?,
-        cascadeValue?
-    ) {
+    public async loadByselect( ajaxConfig, componentValue?, selecttempValue?, cascadeValue?) {
         const url = this.buildURL(ajaxConfig.url);
         const params = {
             ...this._buildParametersByselect(
@@ -485,7 +999,7 @@ export class BsnTreeTableComponent extends GridBase
             )
         };
         let selectrowdata = {};
-        const loadData = await this._load(url, params);
+        const loadData = await this.apiResource.get(url, params).toPromise();
         if (loadData && loadData.status === 200 && loadData.isSuccess) {
             if (loadData.data) {
                 if (loadData.data.length > 0) {
@@ -496,13 +1010,9 @@ export class BsnTreeTableComponent extends GridBase
         console.log('异步获取当前值:', selectrowdata);
         return selectrowdata;
     }
+
     // 构建获取文本值参数
-    private _buildParametersByselect(
-        paramsConfig,
-        componentValue?,
-        selecttempValue?,
-        cascadeValue?
-    ) {
+    private _buildParametersByselect( paramsConfig, componentValue?, selecttempValue?, cascadeValue?) {
         let params = {};
         if (paramsConfig) {
             params = CommonTools.parametersResolver({
@@ -516,6 +1026,7 @@ export class BsnTreeTableComponent extends GridBase
         }
         return params;
     }
+
     /**
      * 更新编辑数据,并设置为取消状态
      */
@@ -530,89 +1041,6 @@ export class BsnTreeTableComponent extends GridBase
                 }
             }
         });
-    }
-
-    /**
-     * 设置数据状态为编辑
-     * @param key
-     */
-    private _startRowEdit(key: string): void {
-        this.editCache[key]['edit'] = true;
-    }
-
-    /**
-     * 创建新行数据
-     */
-    public _createNewRowData(parentId?) {
-        const newRow = { ...this.rowContent };
-        const fieldIdentity = CommonTools.uuID(6);
-        newRow['key'] = fieldIdentity;
-        newRow['Id'] = fieldIdentity;
-        newRow['checked'] = true;
-        newRow['row_status'] = 'adding';
-        if (parentId) {
-            newRow['parentId'] = parentId;
-        }
-        return newRow;
-    }
-    /**
-     * 添加根节点行
-     */
-    private _addNewRow() {
-        // 初始化新行数据
-        const newRow = this._createNewRowData();
-
-        this.expandDataCache[newRow['Id']] = [newRow];
-        // 数据添加到数据列表中
-        this.dataList = [newRow, ...this.dataList];
-        // 数据添加到树结构数据中
-        this.treeData = [newRow, ...this.treeData];
-
-        // 更新编辑行对象
-        this._updateEditCache();
-        // 打开行编辑状态
-        this._startRowEdit(newRow['Id']);
-
-        return true;
-    }
-
-    /**
-     * 添加子节点行
-     */
-    private _addNewChildRow() {
-        if (this.selectedItem) {
-            const parentId = this.selectedItem[
-                this.config.keyId ? this.config.keyId : 'Id'
-            ];
-            const newRow = this._createNewRowData(parentId);
-            // 数据添加到具体选中行的下方
-            this.dataList = this._setChildRow(this.dataList, newRow, parentId);
-            const rootId = this.findRootId(this.dataList, parentId);
-            // 数据添加到树结构中
-            const newTreeData = this._addTreeData(
-                parentId,
-                newRow,
-                this.treeData
-            );
-            this.treeData = JSON.parse(JSON.stringify(newTreeData));
-
-            // 数据添加到数据列表中
-            this.expandDataCache[rootId] = this.convertTreeToList(
-                this.treeData.filter(item => item.Id === rootId)[0]
-            );
-
-            this._updateEditCache();
-            this._startRowEdit(newRow['Id']);
-
-            for (const r in this.expandDataCache) {
-                this.expandDataCache[r].map(row => {
-                    row['selected'] = false;
-                });
-            }
-        } else {
-            console.log('未选择任何行,无法添加下级');
-            return false;
-        }
     }
 
     // 定位行选中 liu 20181024
@@ -644,204 +1072,56 @@ export class BsnTreeTableComponent extends GridBase
      * @param newRowData
      * @param parent
      */
-    private _addTreeData(parentId, newRowData, parent) {
-        if (parentId) {
-            // 子节点数据
-            for (let i = 0, len = parent.length; i < len; i++) {
-                if (parentId === parent[i].Id) {
-                    if (!parent[i]['children']) {
-                        parent[i]['children'] = [];
-                    }
-                    parent[i]['children'].push(newRowData);
-                    return parent;
-                } else {
-                    if (
-                        parent[i]['children'] &&
-                        parent[i]['children'].length > 0
-                    ) {
-                        this._addTreeData(
-                            parentId,
-                            newRowData,
-                            parent[i]['children']
-                        );
-                    }
-                }
-            }
-        }
-        return parent;
-    }
+    // private _addTreeData(parentId, newRowData, parent) {
+    //     if (parentId) {
+    //         // 子节点数据
+    //         for (let i = 0, len = parent.length; i < len; i++) {
+    //             if (parentId === parent[i].Id) {
+    //                 if (!parent[i]['children']) {
+    //                     parent[i]['children'] = [];
+    //                 }
+    //                 parent[i]['children'].push(newRowData);
+    //                 return parent;
+    //             } else {
+    //                 if (
+    //                     parent[i]['children'] &&
+    //                     parent[i]['children'].length > 0
+    //                 ) {
+    //                     this._addTreeData(
+    //                         parentId,
+    //                         newRowData,
+    //                         parent[i]['children']
+    //                     );
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return parent;
+    // }
 
     /**
      * 查找根节点ID
      * @param dataList
      * @param Id
      */
-    private findRootId(dataList, Id) {
-        for (let i = 0, len = dataList.length; i < len; i++) {
-            if (dataList[i].Id === Id) {
-                return dataList[i]['rootId']
-                    ? dataList[i]['rootId']
-                    : dataList[i]['Id'];
-            }
-        }
-    }
+    // private findRootId(dataList, Id) {
+    //     for (let i = 0, len = dataList.length; i < len; i++) {
+    //         if (dataList[i].Id === Id) {
+    //             return dataList[i]['rootId']
+    //                 ? dataList[i]['rootId']
+    //                 : dataList[i]['Id'];
+    //         }
+    //     }
+    // }
 
-    /**
-     * 重新排列数据列表(将添加的新行追加到父节点下的位置)
-     * @param dataList
-     * @param newRowData
-     * @param parentId
-     */
-    private _setChildRow(dataList, newRowData, parentId) {
-        const list = [];
-        if (dataList) {
-            for (let i = 0, len = dataList.length; i < len; i++) {
-                list.push(dataList[i]);
-                if (dataList[i]['Id'] && dataList[i]['Id'] === parentId) {
-                    list.push(newRowData);
-                }
-            }
-        }
-        return list;
-    }
-
-    private _getAddedAndUpdatingRows() {
-        const checkedRows = this._getCheckedRowStatusMap();
-        this.addedTreeRows = [];
-        this.editTreeRows = [];
-        checkedRows.forEach(item => {
-            if (item.status === 'adding') {
-                this.addedTreeRows.push(this.editCache[item.key].data);
-            } else if (item.status === 'updating') {
-                this.editTreeRows.push(this.editCache[item.key].data);
-            }
-        });
-    }
-
-    private _cancelEditRows() {
-        const cancelRowMap = this._getCheckedRowStatusMap();
-
-        // 删除dataList中数据
-        for (let i = 0, len = this.dataList.length; i < len; i++) {
-            const key = this.dataList[i].key;
-            const checkedRowStatus = cancelRowMap.get(key);
-            if (checkedRowStatus && checkedRowStatus.status === 'adding') {
-                if (this.editCache[key]) {
-                    delete this.editCache[key];
-                }
-                this.dataList.splice(i, 1);
-                // 删除treeData中数据的临时数据或者更改原始数据中的编辑状态
-                this._cancelTreeDataByKey(this.treeData, key);
-                i--;
-                len--;
-            } else if (
-                checkedRowStatus &&
-                checkedRowStatus.status === 'updating'
-            ) {
-                this._cancelEdit(key);
-            }
-        }
-
-        // 刷新数据
-        this.treeData.map(row => {
-            row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
-            this.expandDataCache[row.Id] = this.convertTreeToList(row);
-        });
-
-        this.refChecked();
-        return true;
-    }
-
-    private _cancelTreeDataByKey(treeData, key) {
-        for (let j = 0, jlen = treeData.length; j < jlen; j++) {
-            if (treeData[j]['Id'] === key) {
-                treeData.splice(j, 1);
-                j--;
-                jlen--;
-                return;
-            } else {
-                if (
-                    treeData[j]['children'] &&
-                    treeData[j]['children'].length > 0
-                ) {
-                    this._cancelTreeDataByKey(treeData[j]['children'], key);
-                }
-            }
-        }
-    }
-
-    private selectRow(data, $event) {
-        if (
-            $event.srcElement.type === 'checkbox' ||
-            $event.target.type === 'checkbox'
-        ) {
-            return;
-        }
-        $event.stopPropagation();
-        for (const r in this.expandDataCache) {
-            this.expandDataCache[r].map(row => {
-                row['selected'] = false;
-            });
-        }
-        data['selected'] = true;
-        this.selectedItem = data;
-        // liu  子组件
-        if (!this.is_Selectgrid) {
-            this.value = this.selectedItem[
-                this.config.selectGridValueName
-                    ? this.config.selectGridValueName
-                    : 'Id'
-            ];
-        }
-    }
-
-    private _getCheckedRowStatusMap(): Map<
-        string,
-        { key: string; status: string }
-        > {
-        const cancelRowMap: Map<
-            string,
-            { key: string; status: string }
-            > = new Map();
-        this.treeData.map(dataItem => {
-            this.expandDataCache[dataItem.Id].map(item => {
-                if (item['checked']) {
-                    cancelRowMap.set(item.Id, {
-                        key: item.Id,
-                        status: item['row_status']
-                            ? item['row_status']
-                            : 'updating'
-                    });
-                }
-            });
-        });
-        return cancelRowMap;
-    }
-
-    private _editRowData() {
-        // debugger;
-        const checkedRowStatusMap = this._getCheckedRowStatusMap();
-        checkedRowStatusMap.forEach(item => {
-            if (item.status === 'updating') {
-                this._startRowEdit(item.key);
-            }
-        });
-
-        // this.dataList.forEach(item => {
-        //     if (item.checked) {
-        //         if (item['row_status'] && item['row_status'] === 'adding') {
-
-        //         } else if (item['row_status'] && item['row_status'] === 'search') {
-
-        //         } else {
-        //             item['row_status'] = 'updating';
-        //         }
-        //         this._startRowEdit(item.key);
-        //     }
-        // });
-        return true;
-    }
+    
     /** --------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+
+
+
+
 
     public searchData(reset: boolean = false) {
         if (reset) {
@@ -855,35 +1135,21 @@ export class BsnTreeTableComponent extends GridBase
         return this.apiResource.get(url, params).toPromise();
     }
 
-    private async post(url, body) {
-        return this.apiResource.post(url, body).toPromise();
-    }
+    // private async post(url, body) {
+    //     return this.apiResource.post(url, body).toPromise();
+    // }
 
-    private async put(url, body) {
-        return this.apiResource.put(url, body).toPromise();
-    }
+    // private async put(url, body) {
+    //     return this.apiResource.put(url, body).toPromise();
+    // }
 
-    private async delete(url, params) {
-        return this.apiResource.delete(url, params).toPromise();
-    }
+    // private async delete(url, params) {
+    //     return this.apiResource.delete(url, params).toPromise();
+    // }
 
-    private async get(url, params) {
-        return this.apiResource.get(url, params).toPromise();
-    }
-
-    //  格式化单元格
-    public setCellFont(value, format) {
-        let fontColor = '';
-        if (format) {
-            format.map(color => {
-                if (color.value === value) {
-                    fontColor = color.fontcolor;
-                }
-            });
-        }
-
-        return fontColor;
-    }
+    // private async get(url, params) {
+    //     return this.apiResource.get(url, params).toPromise();
+    // }
 
     public searchRow(option) {
         if (option['type'] === 'addSearchRow') {
@@ -980,219 +1246,19 @@ export class BsnTreeTableComponent extends GridBase
         return true;
     }
 
-    //  表格操作
-    public _getAllItemList() {
-        let list = [];
-        if (this.expandDataCache) {
-            for (const r in this.expandDataCache) {
-                list = list.concat([...this.expandDataCache[r]]);
-            }
-        }
-        return list;
-    }
+    // //  表格操作
+    // public _getAllItemList() {
+    //     let list = [];
+    //     if (this.expandDataCache) {
+    //         for (const r in this.expandDataCache) {
+    //             list = list.concat([...this.expandDataCache[r]]);
+    //         }
+    //     }
+    //     return list;
+    // }
 
-    public checkAll(value) {
-        for (const r in this.expandDataCache) {
-            this.expandDataCache[r].map(data => {
-                if (!data['disabled']) {
-                    data['checked'] = value;
-                }
-            });
-        }
+    
 
-        this.refChecked();
-    }
-
-    public refChecked() {
-        let allCount = 0;
-        // parent count
-        this.checkedCount = 0; // = this.dataList.filter(w => w.checked).length;
-        // child count
-        for (const r in this.expandDataCache) {
-            this.checkedCount += this.expandDataCache[r].filter(
-                c => c.checked
-            ).length;
-            allCount += this.expandDataCache[r].length;
-        }
-
-        this.allChecked = this.checkedCount === allCount;
-        this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
-    }
-
-    public async saveRow() {
-        const addRows = [];
-        const updateRows = [];
-        let isSuccess = false;
-        this.dataList.map(item => {
-            delete item['$type'];
-            if (item.checked && item['row_status'] === 'adding') {
-                addRows.push(item);
-            } else if (item.checked && item['row_status'] === 'updating') {
-                updateRows.push(item);
-            }
-        });
-        if (addRows.length > 0) {
-            // save add;
-            isSuccess = await this.executeSave(addRows, 'post');
-        }
-
-        if (updateRows.length > 0) {
-            // update
-            isSuccess = await this.executeSave(updateRows, 'put');
-        }
-        return isSuccess;
-    }
-
-    public async _execute(rowsData, method, postConfig) {
-        let isSuccess = false;
-        if (postConfig) {
-            for (let i = 0, len = postConfig.length; i < len; i++) {
-                const submitData = [];
-                rowsData.map(rowData => {
-                    const submitItem = {};
-                    postConfig[i].params.map(param => {
-                        if (param.type === 'tempValue') {
-                            submitItem[param['name']] = this.tempValue[
-                                param['valueName']
-                            ];
-                        } else if (param.type === 'componentValue') {
-                            submitItem[param['name']] =
-                                rowData[param['valueName']];
-                        } else if (param.type === 'GUID') {
-                        } else if (param.type === 'value') {
-                            submitItem[param['name']] = param.value;
-                        }
-                    });
-                    submitData.push(submitItem);
-                });
-                const response = await this[method](
-                    postConfig[i].url,
-                    submitData
-                );
-                if (response && response.status === 200 && response.isSuccess) {
-                    this.baseMessage.create('success', '保存成功');
-                    isSuccess = true;
-                } else {
-                    this.baseMessage.create('error', response.message);
-                }
-            }
-            if (isSuccess) {
-                rowsData.map(row => {
-                    this._saveEdit(row.key);
-                });
-                this.load();
-            }
-        }
-        if (isSuccess === true) {
-            this.cascade.next(
-                new BsnComponentMessage(
-                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
-                    this.config.viewId
-                )
-            );
-        }
-        return isSuccess;
-    }
-
-    public async executeSave(rowsData, method) {
-        // Todo: 优化配置
-        let result;
-        this.config.toolbar.forEach(bar => {
-            if (bar.group && bar.group.length > 0) {
-                const index = bar.group.findIndex(
-                    item => item.name === 'saveRow'
-                );
-                if (index !== -1) {
-                    const postConfig = bar.group[index].ajaxConfig[method];
-                    result = this._execute(rowsData, method, postConfig);
-                }
-            }
-            if (
-                bar.dropdown &&
-                bar.dropdown.buttons &&
-                bar.dropdown.buttons.length > 0
-            ) {
-                const index = bar.dropdown.buttons.findIndex(
-                    item => item.name === 'saveRow'
-                );
-                if (index !== -1) {
-                    const postConfig =
-                        bar.dropdown.buttons[index].ajaxConfig[method];
-                    result = this._execute(rowsData, method, postConfig);
-                }
-            }
-        });
-
-        return result;
-    }
-
-    public async executeDelete(ids) {
-        let result;
-        if (ids && ids.length > 0) {
-            this.config.toolbar.forEach(bar => {
-                if (bar.group && bar.group.length > 0) {
-                    const index = bar.group.findIndex(
-                        item => item.name === 'deleteRow'
-                    );
-                    if (index !== -1) {
-                        const deleteConfig =
-                            bar.group[index].ajaxConfig['delete'];
-                        result = this._executeDelete(deleteConfig, ids);
-                    }
-                }
-                if (
-                    bar.dropdown &&
-                    bar.dropdown.buttons &&
-                    bar.dropdown.buttons.length > 0
-                ) {
-                    const index = bar.dropdown.buttons.findIndex(
-                        item => item.name === 'deleteRow'
-                    );
-                    if (index !== -1) {
-                        const deleteConfig =
-                            bar.dropdown.buttons[index].ajaxConfig['delete'];
-                        result = this._executeDelete(deleteConfig, ids);
-                    }
-                }
-            });
-        }
-
-        return result;
-    }
-
-    public async _executeDelete(deleteConfig, ids) {
-        let isSuccess;
-        if (deleteConfig) {
-            for (let i = 0, len = deleteConfig.length; i < len; i++) {
-                const params = {
-                    _ids: ids.join(',')
-                };
-                const response = await this['delete'](
-                    deleteConfig[i].url,
-                    params
-                );
-                if (response && response.status === 200 && response.isSuccess) {
-                    this.baseMessage.create('success', '删除成功');
-                    isSuccess = true;
-                } else {
-                    this.baseMessage.create('error', response.message);
-                }
-            }
-            if (isSuccess) {
-                this.load();
-            }
-        }
-
-        if (isSuccess === true) {
-            this.cascade.next(
-                new BsnComponentMessage(
-                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
-                    this.config.viewId
-                )
-            );
-        }
-        return isSuccess;
-    }
 
     public executeSelectedRow(option) {
         if (!this._selectRow) {
@@ -1410,94 +1476,15 @@ export class BsnTreeTableComponent extends GridBase
         }
     }
 
-    public deleteRow() {
-        this.baseModal.confirm({
-            nzTitle: '确认删除选中的记录？',
-            nzContent: '',
-            nzOnOk: () => {
-                const newData = [];
-                const serverData = [];
-                const e = this.dataList;
-                const d = this.editCache;
+   
 
-                for (let i = 0, len = this.dataList.length; i < len; i++) {
-                    if (
-                        this.dataList[i].checked &&
-                        this.dataList[i]['row_status'] === 'adding'
-                    ) {
-                        if (this.editCache[this.dataList[i].key]) {
-                            delete this.editCache[this.dataList[i].key];
-                        }
-                        this.dataList.splice(this.dataList.indexOf(d), 1);
-                        i--;
-                        len--;
-                    }
-                }
+    // private _deleteEdit(i: string): void {
+    //     const dataSet = this._getAllItemList().filter(d => d.key !== i);
+    //     // 需要特殊处理层级问题
+    //     this.dataList = dataSet;
+    // }
 
-                for (let i = 0, len = this.dataList.length; i < len; i++) {
-                    if (this.dataList[i]['checked']) {
-                        if (this.dataList[i]['row_status'] === 'adding') {
-                            this.dataList.splice(
-                                this.dataList.indexOf(this.dataList[i]),
-                                1
-                            );
-                            i--;
-                            len--;
-                        } else if (
-                            this.dataList[i]['row_status'] === 'search'
-                        ) {
-                            this.dataList.splice(
-                                this.dataList.indexOf(this.dataList[i]),
-                                1
-                            );
-                            this.is_Search = false;
-                            this.search_Row = {};
-                            i--;
-                            len--;
-                        } else {
-                            serverData.push(this.dataList[i].key);
-                        }
-                    }
-                }
-
-                // const itemList = this.allDataList;
-                // itemList.forEach(item => {
-                //     if (item.checked === true && item['row_status'] === 'adding') {
-                //         // 删除新增临时数据
-                //         newData.push(item.key);
-                //     }
-                //     if (item.checked === true) {
-                //         // 删除服务端数据
-                //         serverData.push(item.Id);
-                //     }
-                // });
-                // if (newData.length > 0) {
-                //     newData.forEach(d => {
-                //         itemList.splice(itemList.indexOf(d), 1);
-                //     });
-                // }
-                if (serverData.length > 0) {
-                    this.executeDelete(serverData);
-                }
-            },
-            nzOnCancel() { }
-        });
-    }
-
-    private _deleteEdit(i: string): void {
-        const dataSet = this._getAllItemList().filter(d => d.key !== i);
-        // 需要特殊处理层级问题
-        this.dataList = dataSet;
-    }
-
-    // 获取行内编辑是行填充数据
-    private _getContent() {
-        this.rowContent['key'] = null;
-        this.config.columns.forEach(element => {
-            const colsname = element.field.toString();
-            this.rowContent[colsname] = '';
-        });
-    }
+    
 
     // 初始化可编辑的数据结构
     private _initEditDataCache() {
@@ -1517,135 +1504,135 @@ export class BsnTreeTableComponent extends GridBase
     }
 
     // 将选中行改变为编辑状态
-    public updateRow() {
-        this.dataList.forEach(item => {
-            if (item.checked) {
-                if (item['row_status'] && item['row_status'] === 'adding') {
-                } else if (
-                    item['row_status'] &&
-                    item['row_status'] === 'search'
-                ) {
-                } else {
-                    item['row_status'] = 'updating';
-                }
-                this._startRowEdit(item.key);
-            }
-        });
-        // console.log(this.editCache);
-        return true;
-    }
+    // public updateRow() {
+    //     this.dataList.forEach(item => {
+    //         if (item.checked) {
+    //             if (item['row_status'] && item['row_status'] === 'adding') {
+    //             } else if (
+    //                 item['row_status'] &&
+    //                 item['row_status'] === 'search'
+    //             ) {
+    //             } else {
+    //                 item['row_status'] = 'updating';
+    //             }
+    //             this._startRowEdit(item.key);
+    //         }
+    //     });
+    //     // console.log(this.editCache);
+    //     return true;
+    // }
 
-    private _saveEdit(key: string): void {
-        const itemList = this.dataList;
-        const index = itemList.findIndex(item => item.key === key);
-        let checked = false;
-        let selected = false;
+    // private _saveEdit(key: string): void {
+    //     const itemList = this.dataList;
+    //     const index = itemList.findIndex(item => item.key === key);
+    //     let checked = false;
+    //     let selected = false;
 
-        if (itemList[index].checked) {
-            checked = itemList[index].checked;
-        }
-        if (itemList[index].selected) {
-            selected = itemList[index].selected;
-        }
+    //     if (itemList[index].checked) {
+    //         checked = itemList[index].checked;
+    //     }
+    //     if (itemList[index].selected) {
+    //         selected = itemList[index].selected;
+    //     }
 
-        itemList[index] = this.editCache[key].data;
-        itemList[index].checked = checked;
-        itemList[index].selected = selected;
+    //     itemList[index] = this.editCache[key].data;
+    //     itemList[index].checked = checked;
+    //     itemList[index].selected = selected;
 
-        this.editCache[key].edit = false;
+    //     this.editCache[key].edit = false;
 
-        this.editCache = this.editCache;
-    }
+    //     this.editCache = this.editCache;
+    // }
 
-    public cancelRow() {
-        // debugger;
-        // for (let i = 0, len = this.dataList.length; i < len; i++) {
-        //     if (this.dataList[i].checked) {
-        //         if (this.dataList[i]['row_status'] === 'adding') {
-        //             if (this.editCache[this.dataList[i].key]) {
-        //                 delete this.editCache[this.dataList[i].key];
-        //             }
-        //             this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
-        //             i--;
-        //             len--;
-        //         }
+    // public cancelRow() {
+    //     // debugger;
+    //     // for (let i = 0, len = this.dataList.length; i < len; i++) {
+    //     //     if (this.dataList[i].checked) {
+    //     //         if (this.dataList[i]['row_status'] === 'adding') {
+    //     //             if (this.editCache[this.dataList[i].key]) {
+    //     //                 delete this.editCache[this.dataList[i].key];
+    //     //             }
+    //     //             this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+    //     //             i--;
+    //     //             len--;
+    //     //         }
 
-        //     }
-        // }
-        const cancelKeys = [];
-        this.treeData.map(dataItem => {
-            this.expandDataCache[dataItem.Id].map(item => {
-                if (item['checked']) {
-                    cancelKeys.push(item['key']);
-                }
-            });
-        });
-        // const cancelList = this.dataList.filter(item => cancelKeys.findIndex(key => key === item.key) > -1);
+    //     //     }
+    //     // }
+    //     const cancelKeys = [];
+    //     this.treeData.map(dataItem => {
+    //         this.expandDataCache[dataItem.Id].map(item => {
+    //             if (item['checked']) {
+    //                 cancelKeys.push(item['key']);
+    //             }
+    //         });
+    //     });
+    //     // const cancelList = this.dataList.filter(item => cancelKeys.findIndex(key => key === item.key) > -1);
 
-        for (let i = 0, len = this.dataList.length; i < len; i++) {
-            const __key = this.dataList[i].key;
-            if (cancelKeys.findIndex(key => key === __key) > -1) {
-                if (this.dataList[i]['row_status'] === 'adding') {
-                    if (this.editCache[__key]) {
-                        delete this.editCache[__key];
-                    }
-                    this.dataList.splice(
-                        this.dataList.indexOf(this.dataList[i]),
-                        1
-                    );
-                    // 删除数结果集中的数据
-                    this._cancelTreeDataByKey(this.treeData, __key);
+    //     for (let i = 0, len = this.dataList.length; i < len; i++) {
+    //         const __key = this.dataList[i].key;
+    //         if (cancelKeys.findIndex(key => key === __key) > -1) {
+    //             if (this.dataList[i]['row_status'] === 'adding') {
+    //                 if (this.editCache[__key]) {
+    //                     delete this.editCache[__key];
+    //                 }
+    //                 this.dataList.splice(
+    //                     this.dataList.indexOf(this.dataList[i]),
+    //                     1
+    //                 );
+    //                 // 删除数结果集中的数据
+    //                 this._cancelTreeDataByKey(this.treeData, __key);
 
-                    i--;
-                    len--;
-                } else if (this.dataList[i]['row_status'] === 'search') {
-                    this.dataList.splice(
-                        this.dataList.indexOf(this.dataList[i]),
-                        1
-                    );
-                    this.is_Search = false;
-                    this.search_Row = {};
-                    i--;
-                    len--;
-                } else {
-                    this._cancelEdit(this.dataList[i].key);
-                }
-            }
+    //                 i--;
+    //                 len--;
+    //             } else if (this.dataList[i]['row_status'] === 'search') {
+    //                 this.dataList.splice(
+    //                     this.dataList.indexOf(this.dataList[i]),
+    //                     1
+    //                 );
+    //                 this.is_Search = false;
+    //                 this.search_Row = {};
+    //                 i--;
+    //                 len--;
+    //             } else {
+    //                 this._cancelEdit(this.dataList[i].key);
+    //             }
+    //         }
 
-            // if (this.dataList[i]['checked']) {
-            //     // // const key = this.dataList[i].key;
-            //     // // if (this.dataList[i]['row_status'] === 'adding') {
-            //     // //     if (this.editCache[key]) {
-            //     // //         delete this.editCache[key];
-            //     // //     }
-            //     // //     this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
-            //     // //     // 删除数结果集中的数据
-            //     // //     this._cancelTreeDataByKey(this.treeData, key);
-            //     // //     i--;
-            //     // //     len--;
+    //         // if (this.dataList[i]['checked']) {
+    //         //     // // const key = this.dataList[i].key;
+    //         //     // // if (this.dataList[i]['row_status'] === 'adding') {
+    //         //     // //     if (this.editCache[key]) {
+    //         //     // //         delete this.editCache[key];
+    //         //     // //     }
+    //         //     // //     this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+    //         //     // //     // 删除数结果集中的数据
+    //         //     // //     this._cancelTreeDataByKey(this.treeData, key);
+    //         //     // //     i--;
+    //         //     // //     len--;
 
-            //     // } else if (this.dataList[i]['row_status'] === 'search') {
-            //     //     this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
-            //     //     this.is_Search = false;
-            //     //     this.search_Row = {};
-            //     //     i--;
-            //     //     len--;
-            //     // } else {
-            //     //     this._cancelEdit(this.dataList[i].key);
-            //     // }
-            // }
-        }
-        if (cancelKeys.length > 0) {
-            this.treeData.map(row => {
-                row['key'] = row[this.config.keyId]
-                    ? row[this.config.keyId]
-                    : 'Id';
-                this.expandDataCache[row.Id] = this.convertTreeToList(row);
-            });
-        }
-        this.refChecked();
-        return true;
-    }
+    //         //     // } else if (this.dataList[i]['row_status'] === 'search') {
+    //         //     //     this.dataList.splice(this.dataList.indexOf(this.dataList[i]), 1);
+    //         //     //     this.is_Search = false;
+    //         //     //     this.search_Row = {};
+    //         //     //     i--;
+    //         //     //     len--;
+    //         //     // } else {
+    //         //     //     this._cancelEdit(this.dataList[i].key);
+    //         //     // }
+    //         // }
+    //     }
+    //     if (cancelKeys.length > 0) {
+    //         this.treeData.map(row => {
+    //             row['key'] = row[this.config.keyId]
+    //                 ? row[this.config.keyId]
+    //                 : 'Id';
+    //             this.expandDataCache[row.Id] = this.convertTreeToList(row);
+    //         });
+    //     }
+    //     this.refChecked();
+    //     return true;
+    // }
 
     // private _cancelTreeDataByKey(treeData, key) {
     //     for (let j = 0, jlen = treeData.length; j < jlen; j++) {
@@ -1661,166 +1648,137 @@ export class BsnTreeTableComponent extends GridBase
     //     }
     // }
 
-    private _cancelEdit(key: string): void {
-        const itemList = this.dataList;
-        const index = itemList.findIndex(item => item.key === key);
-        this.editCache[key].edit = false;
-        this.editCache[key].data = JSON.parse(JSON.stringify(itemList[index]));
-        this.editCache = this.editCache;
-    }
+   
 
-    public addRow() {
-        const rowContentNew = { ...this.rowContent };
-        const fieldIdentity = CommonTools.uuID(6);
-        rowContentNew['key'] = fieldIdentity;
-        rowContentNew['Id'] = fieldIdentity;
-        rowContentNew['checked'] = true;
-        rowContentNew['row_status'] = 'adding';
-        // 针对查询和新增行处理
-        if (this.is_Search) {
-            this.dataList.splice(1, 0, rowContentNew);
-        } else {
-            this.expandDataCache[fieldIdentity] = [rowContentNew];
-            this.dataList = [rowContentNew, ...this.dataList];
-            this.treeData = [rowContentNew, ...this.treeData];
-            // this.dataList = [rowContentNew, ...this.dataList];
-            // this.treeData.map(row => {
-            //     row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
-            //     this.expandDataCache[row.Id] = this.convertTreeToList(row);
-            // });
-        }
-        // 需要特殊处理层级问题
-        // this.dataList.push(this.rowContent);
-        this._addEditCache();
-        this._startAdd(fieldIdentity);
-        return true;
-    }
+    // public addRow() {
+    //     const rowContentNew = { ...this.rowContent };
+    //     const fieldIdentity = CommonTools.uuID(6);
+    //     rowContentNew['key'] = fieldIdentity;
+    //     rowContentNew['Id'] = fieldIdentity;
+    //     rowContentNew['checked'] = true;
+    //     rowContentNew['row_status'] = 'adding';
+    //     // 针对查询和新增行处理
+    //     if (this.is_Search) {
+    //         this.dataList.splice(1, 0, rowContentNew);
+    //     } else {
+    //         this.expandDataCache[fieldIdentity] = [rowContentNew];
+    //         this.dataList = [rowContentNew, ...this.dataList];
+    //         this.treeData = [rowContentNew, ...this.treeData];
+    //         // this.dataList = [rowContentNew, ...this.dataList];
+    //         // this.treeData.map(row => {
+    //         //     row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
+    //         //     this.expandDataCache[row.Id] = this.convertTreeToList(row);
+    //         // });
+    //     }
+    //     // 需要特殊处理层级问题
+    //     // this.dataList.push(this.rowContent);
+    //     this._addEditCache();
+    //     this._startAdd(fieldIdentity);
+    //     return true;
+    // }
 
-    public addChildRow() {
-        const rowContentNew = { ...this.rowContent };
-        const fieldIdentity = CommonTools.uuID(6);
-        let parentId;
-        if (this.selectedItem['Id']) {
-            parentId = this.selectedItem['Id'];
-        } else {
-            console.log('未获取父节点数据');
-            return;
-        }
-        rowContentNew['key'] = fieldIdentity;
-        rowContentNew['checked'] = true;
-        rowContentNew['row_status'] = 'adding';
-        rowContentNew['Id'] = fieldIdentity;
+    // public addChildRow() {
+    //     const rowContentNew = { ...this.rowContent };
+    //     const fieldIdentity = CommonTools.uuID(6);
+    //     let parentId;
+    //     if (this.selectedItem['Id']) {
+    //         parentId = this.selectedItem['Id'];
+    //     } else {
+    //         console.log('未获取父节点数据');
+    //         return;
+    //     }
+    //     rowContentNew['key'] = fieldIdentity;
+    //     rowContentNew['checked'] = true;
+    //     rowContentNew['row_status'] = 'adding';
+    //     rowContentNew['Id'] = fieldIdentity;
 
-        // 向数据集中添加子节点数据
-        this._setChildRow(this.treeData, rowContentNew, parentId);
-        // this.treeData[0].children.push(rowContentNew);
+    //     // 向数据集中添加子节点数据
+    //     this._setChildRow(rowContentNew, parentId);
+    //     // this.treeData[0].children.push(rowContentNew);
 
-        // 重新生成树表的数据格式
-        // 查找添加节点的数据根节点
-        this.treeData.map(row => {
-            row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
-            this.expandDataCache[row.Id] = this.convertTreeToList(row);
-        });
-        this.dataList = [...this._setDataList(this.expandDataCache)];
-        this._updateChildRowEditCache();
-        this._startChildRowAdd(fieldIdentity);
-        return true;
-    }
+    //     // 重新生成树表的数据格式
+    //     // 查找添加节点的数据根节点
+    //     this.treeData.map(row => {
+    //         row['key'] = row[this.config.keyId] ? row[this.config.keyId] : 'Id';
+    //         this.expandDataCache[row.Id] = this.convertTreeToList(row);
+    //     });
+    //     this.dataList = [...this._setDataList(this.expandDataCache)];
+    //     this._updateChildRowEditCache();
+    //     this._startChildRowAdd(fieldIdentity);
+    //     return true;
+    // }
 
-    private _setExpandDataCache(cacheData, newRowData, parentId) {
-        if (cacheData) {
-            for (const p in cacheData) {
-                if (cacheData[p] && cacheData[p].length > 0) {
-                    for (let i = 0, len = cacheData[p].length; i < len; i++) {
-                        if (cacheData[p][i]['Id'] === parentId) {
-                            // 向该节点下添加下级节点
-                            if (!cacheData[p][i]['children']) {
-                                cacheData[p][i]['children'] = [];
-                            }
-                            newRowData['parent'] = cacheData[p][i];
-                            cacheData[p][i]['children'].push(newRowData);
-                            return cacheData;
-                        } else {
-                            if (
-                                cacheData[p][i]['children'] &&
-                                cacheData[p][i].length > 0
-                            ) {
-                                this._setExpandChildData(
-                                    cacheData[p][i]['children'],
-                                    newRowData,
-                                    parentId
-                                );
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return cacheData;
-    }
-    private _setExpandChildData(parentRowData, newRowData, parentId) {
-        for (let i = 0, len = parentRowData.length; i < len; i++) {
-            if (parentRowData['Id'] === parentId) {
-                // 向该节点下添加下级节点
-                if (!parentRowData[i]['children']) {
-                    parentRowData[i]['children'] = [];
-                }
-                newRowData['parent'] = parentRowData[i];
-                parentRowData[i]['children'].push(newRowData);
-                return parentRowData;
-            } else {
-                if (
-                    parentRowData[i]['children'] &&
-                    parentRowData[i].length > 0
-                ) {
-                    this._setExpandChildData(
-                        parentRowData[i]['children'],
-                        newRowData,
-                        parentId
-                    );
-                }
-            }
-        }
-    }
-    private _setDataList(cacheData) {
-        const resultList = [];
-        if (cacheData) {
-            for (const p in cacheData) {
-                if (cacheData && cacheData[p].length > 0) {
-                    // for (let i = 0, len = cacheData[p].length; i < len; i++) {
-                    //     resultList.push(cacheData[p][i]);
-                    //     if (cacheData[p][i]['children'] && cacheData[p][i]['children'].length > 0) {
-                    //         resultList.push(...this._setChildDataList(cacheData[p][i]['children']));
-                    //     }
-                    // }
-                    resultList.push({ ...cacheData[p][0] });
-                    if (
-                        cacheData[p][0]['children'] &&
-                        cacheData[p][0]['children'].length > 0
-                    ) {
-                        resultList.push(
-                            ...this._setChildDataList(
-                                cacheData[p][0]['children']
-                            )
-                        );
-                    }
-                }
-            }
-        }
-        return resultList;
-    }
-    private _setChildDataList(parentRowData) {
-        const childResultList = [];
-        for (let i = 0, len = parentRowData.length; i < len; i++) {
-            childResultList.push({ ...parentRowData[i] });
-            if (parentRowData[i]['children'] && parentRowData[i].length > 0) {
-                childResultList.push(
-                    ...this._setChildDataList(parentRowData[i]['children'])
-                );
-            }
-        }
-        return childResultList;
-    }
+    // private _setExpandDataCache(cacheData, newRowData, parentId) {
+    //     if (cacheData) {
+    //         for (const p in cacheData) {
+    //             if (cacheData[p] && cacheData[p].length > 0) {
+    //                 for (let i = 0, len = cacheData[p].length; i < len; i++) {
+    //                     if (cacheData[p][i]['Id'] === parentId) {
+    //                         // 向该节点下添加下级节点
+    //                         if (!cacheData[p][i]['children']) {
+    //                             cacheData[p][i]['children'] = [];
+    //                         }
+    //                         newRowData['parent'] = cacheData[p][i];
+    //                         cacheData[p][i]['children'].push(newRowData);
+    //                         return cacheData;
+    //                     } else {
+    //                         if (
+    //                             cacheData[p][i]['children'] &&
+    //                             cacheData[p][i].length > 0
+    //                         ) {
+    //                             this._setExpandChildData(
+    //                                 cacheData[p][i]['children'],
+    //                                 newRowData,
+    //                                 parentId
+    //                             );
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return cacheData;
+    // }
+
+    // private _setDataList(cacheData) {
+    //     const resultList = [];
+    //     if (cacheData) {
+    //         for (const p in cacheData) {
+    //             if (cacheData && cacheData[p].length > 0) {
+    //                 // for (let i = 0, len = cacheData[p].length; i < len; i++) {
+    //                 //     resultList.push(cacheData[p][i]);
+    //                 //     if (cacheData[p][i]['children'] && cacheData[p][i]['children'].length > 0) {
+    //                 //         resultList.push(...this._setChildDataList(cacheData[p][i]['children']));
+    //                 //     }
+    //                 // }
+    //                 resultList.push({ ...cacheData[p][0] });
+    //                 if (
+    //                     cacheData[p][0]['children'] &&
+    //                     cacheData[p][0]['children'].length > 0
+    //                 ) {
+    //                     resultList.push(
+    //                         ...this._setChildDataList(
+    //                             cacheData[p][0]['children']
+    //                         )
+    //                     );
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return resultList;
+    // }
+    // private _setChildDataList(parentRowData) {
+    //     const childResultList = [];
+    //     for (let i = 0, len = parentRowData.length; i < len; i++) {
+    //         childResultList.push({ ...parentRowData[i] });
+    //         if (parentRowData[i]['children'] && parentRowData[i].length > 0) {
+    //             childResultList.push(
+    //                 ...this._setChildDataList(parentRowData[i]['children'])
+    //             );
+    //         }
+    //     }
+    //     return childResultList;
+    // }
 
     private _addEditCache(): void {
         this.dataList.forEach(item => {
@@ -1839,27 +1797,6 @@ export class BsnTreeTableComponent extends GridBase
     private _startAdd(key: string): void {
         this.editCache[key]['edit'] = true;
     }
-
-    private _updateChildRowEditCache() {
-        this.dataList.forEach(item => {
-            if (!this.editCache[item.key]) {
-                if (item.key) {
-                    this.editCache[item.key] = {
-                        edit: false,
-                        data: { ...item }
-                    };
-                }
-            }
-        });
-    }
-
-    private _startChildRowAdd(key: string) {
-        this.editCache[key]['edit'] = true;
-    }
-
-    private _startChildRowAddRecurse() { }
-
-    private _startChildRowaddRecurse_2() { }
 
     public valueChange(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
@@ -2249,6 +2186,7 @@ export class BsnTreeTableComponent extends GridBase
 
         // console.log('*********', this.changeConfig_new[rowCasade]);
     }
+
     public caseLoad() {
         this.cascadeList = {};
         // region: 解析开始
@@ -2382,6 +2320,7 @@ export class BsnTreeTableComponent extends GridBase
 
         // console.log("级联配置简析", this.cascadeList);
     }
+
     public isEdit(fieldname) {
         let isEditState = false;
         this.config.columns.forEach(column => {
@@ -2401,53 +2340,6 @@ export class BsnTreeTableComponent extends GridBase
             }
         });
         return isEditState;
-    }
-
-    public expandChange(array: any[], data: any, $event: boolean) {
-        if ($event === false) {
-            if (data.children) {
-                data.children.forEach(d => {
-                    d['key'] = d[this.config.keyId];
-                    const target = array.find(
-                        a => a[this.config.keyId] === d['key']
-                    );
-                    if (target) {
-                        target['expand'] = false;
-                        this.expandChange(array, target, false);
-                    }
-                });
-            } else {
-                return;
-            }
-        }
-
-        // if ($event === false) {
-        //     if (data.Children) {
-        //         data.Children.forEach(d => {
-        //             const target = array.find(a => a.key === d.key);
-        //             target.expand = false;
-        //             this.collapse(array, target, false);
-        //         });
-        //     } else {
-        //         return;
-        //     }
-        // } else {
-        //     console.log('点击树节点展开->异步请求');
-        //     // data.children =  await this.expandLoad(data);
-        //     this.dataList[0]['children'] = await this.expandLoad(data);
-        //     console.log('组装结果', data.children);
-        //     if (data.Children) {
-        //         data.Children.forEach(d => {
-        //             // const target = array.find(a => a.key === d.key);
-        //             // target['expand'] = true;
-        //             // this.collapse(array, target, false);
-        //         });
-        //     } else {
-        //         return;
-        //     }
-        // }
-
-        // console.log('最终展示有关的数据', this.expandDataCache);
     }
 
     public convertTreeToList(root: object): any[] {

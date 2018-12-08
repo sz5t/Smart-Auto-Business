@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { getISOYear } from 'date-fns';
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'cn-year-picker',
     templateUrl: './cn-year-picker.component.html'
 })

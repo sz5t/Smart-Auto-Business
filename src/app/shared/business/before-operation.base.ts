@@ -80,7 +80,7 @@ export class BeforeOperation {
         this._apiResource = value;
     }
 
-    buildParameter(parameters, value) {
+    public buildParameter(parameters, value) {
         const params = CommonTools.parametersResolver({
             params: parameters,
             item: value,
@@ -92,7 +92,7 @@ export class BeforeOperation {
         return params;
     }
 
-    buildUrl(urlConfig) {
+    public buildUrl(urlConfig) {
         let url;
         if (CommonTools.isString(urlConfig)) {
             url = urlConfig;
@@ -103,7 +103,7 @@ export class BeforeOperation {
                 initValue: this.initValue,
                 cacheValue: this.cacheValue
             });
-            url = `${urlConfig.url["parent"]}/${pc}/${urlConfig.url["child"]}`;
+            url = `${urlConfig.url['parent']}/${pc}/${urlConfig.url['child']}`;
         }
         return url;
     } 
@@ -185,26 +185,26 @@ export class BeforeOperation {
                 let andResult = true;
                 // 选中行的解析处理
                 switch (item.checkType) {
-                    case "value":
+                    case 'value':
                         andResult = this.matchValueCondition(item);
                         break;
-                    case "regexp":
+                    case 'regexp':
                         andResult = this.matchRegexpCondition(item);
                         break;
-                    case "tempValue":
+                    case 'tempValue':
                         andResult = this.matchTempValueCondition(item);
                         break;
-                    case "initValue":
+                    case 'initValue':
                         andResult = this.matchInitValueCondition(item);
                         break;
-                    case "cacheValue":
+                    case 'cacheValue':
                         andResult = this.matchCacheValueCondition(item);
                         break;
-                    case "executeAjax":
+                    case 'executeAjax':
                         // 预留前置异步操作
                         // andResult = this.executeAjaxCondition(item);
                         break;
-                    case "ajaxValue":
+                    case 'ajaxValue':
                         // 预留前置异步校验
                         // andResult = this.matchAjaxValueCondition(item);
                         break;
@@ -228,8 +228,8 @@ export class BeforeOperation {
         let result = false;
         if (this.operationItemData) {
             result =
-                this.operationItemData[statusItem["name"]] ===
-                statusItem["value"];
+                this.operationItemData[statusItem['name']] ===
+                statusItem['value'];
         }
         return result;
     }
@@ -243,9 +243,9 @@ export class BeforeOperation {
         let result = false;
         if (this.operationItemData) {
             const reg = new RegExp(
-                statusItem["value"] ? statusItem["value"] : ""
+                statusItem['value'] ? statusItem['value'] : ''
             );
-            result = reg.test(this.operationItemData[statusItem["name"]]);
+            result = reg.test(this.operationItemData[statusItem['name']]);
         }
         return result;
     }
@@ -253,13 +253,13 @@ export class BeforeOperation {
     private matchTempValueCondition(statusItem) {
         // 判断与固定值做验证还是与当前行数据验证
         let result = false;
-        if (statusItem["name"]) {
+        if (statusItem['name']) {
             result =
-                this.operationItemData[statusItem["name"]] ===
-                this.tempValue[statusItem["valueName"]];
+                this.operationItemData[statusItem['name']] ===
+                this.tempValue[statusItem['valueName']];
         } else {
-            const reg = new RegExp(statusItem["value"]);
-            result = reg.test(this.tempValue[statusItem["valueName"]]);
+            const reg = new RegExp(statusItem['value']);
+            result = reg.test(this.tempValue[statusItem['valueName']]);
             //   if (this.tempValue[statusItem['valueName']] === statusItem['value']) {
             //     result = true;
             //   }
@@ -269,26 +269,26 @@ export class BeforeOperation {
 
     private matchInitValueCondition(statusItem) {
         let result = false;
-        if (statusItem["name"]) {
+        if (statusItem['name']) {
             result =
-                this.operationItemData[statusItem["name"]] ===
-                this.initValue[statusItem["valueName"]];
+                this.operationItemData[statusItem['name']] ===
+                this.initValue[statusItem['valueName']];
         } else {
-            const reg = new RegExp(statusItem["value"]);
-            result = reg.test(this.initValue[statusItem["valueName"]]);
+            const reg = new RegExp(statusItem['value']);
+            result = reg.test(this.initValue[statusItem['valueName']]);
         }
         return result;
     }
 
     private matchCacheValueCondition(statusItem) {
         let result = false;
-        if (statusItem["name"]) {
+        if (statusItem['name']) {
             result =
-                this.operationItemData[statusItem["name"]] ===
-                this.cacheValue[statusItem["valueName"]];
+                this.operationItemData[statusItem['name']] ===
+                this.cacheValue[statusItem['valueName']];
         } else {
-            const reg = new RegExp(statusItem["value"]);
-            result = reg.test(this.cacheValue[statusItem["valueName"]]);
+            const reg = new RegExp(statusItem['value']);
+            result = reg.test(this.cacheValue[statusItem['valueName']]);
         }
         return result;
     }
@@ -338,19 +338,19 @@ export class BeforeOperation {
                 let andResult = true;
                 // 选中行的解析处理
                 switch (item.checkType) {
-                    case "value":
+                    case 'value':
                         andResult = this.matchCheckedValueCondition(item);
                         break;
-                    case "regexp":
+                    case 'regexp':
                         andResult = this.matchCheckedRegexpCondition(item);
                         break;
-                    case "tempValue":
+                    case 'tempValue':
                         andResult = this.matchCheckedTempValueCondition(item);
                         break;
-                    case "initValue":
+                    case 'initValue':
                         andResult = this.matchCheckedInitValueCondition(item);
                         break;
-                    case "cacheValue":
+                    case 'cacheValue':
                         andResult = this.matchCheckedCacheValueCondition(item);
                         break;
                 }
@@ -370,15 +370,15 @@ export class BeforeOperation {
     private matchCheckedCacheValueCondition(statusItem) {
         let result = false;
         if (this.operationItemsData) {
-            if (statusItem["name"]) {
+            if (statusItem['name']) {
                 result = this.operationItemsData.some(
                     row =>
-                        row[statusItem["name"]] ===
-                        this.cacheValue[statusItem["valueName"]]
+                        row[statusItem['name']] ===
+                        this.cacheValue[statusItem['valueName']]
                 );
             } else {
-                const reg = new RegExp(statusItem["value"]);
-                result = reg.test(this.cacheValue[statusItem["valueName"]]);
+                const reg = new RegExp(statusItem['value']);
+                result = reg.test(this.cacheValue[statusItem['valueName']]);
             }
         }
         return result;
@@ -391,15 +391,15 @@ export class BeforeOperation {
     private matchCheckedTempValueCondition(statusItem) {
         let result = false;
         if (this.operationItemsData) {
-            if (statusItem["name"]) {
+            if (statusItem['name']) {
                 result = this.operationItemsData.some(
                     row =>
-                        row[statusItem["name"]] ===
-                        this.tempValue[statusItem["valueName"]]
+                        row[statusItem['name']] ===
+                        this.tempValue[statusItem['valueName']]
                 );
             } else {
-                const reg = new RegExp(statusItem["value"]);
-                result = reg.test(this.tempValue[statusItem["valueName"]]);
+                const reg = new RegExp(statusItem['value']);
+                result = reg.test(this.tempValue[statusItem['valueName']]);
             }
         }
         return result;
@@ -412,15 +412,15 @@ export class BeforeOperation {
     private matchCheckedInitValueCondition(statusItem) {
         let result = false;
         if (this.operationItemsData) {
-            if (statusItem["name"]) {
+            if (statusItem['name']) {
                 result = this.operationItemsData.some(
                     row =>
-                        row[statusItem["name"]] ===
-                        this.initValue[statusItem["valueName"]]
+                        row[statusItem['name']] ===
+                        this.initValue[statusItem['valueName']]
                 );
             } else {
-                const reg = new RegExp(statusItem["value"]);
-                result = reg.test(this.initValue[statusItem["valueName"]]);
+                const reg = new RegExp(statusItem['value']);
+                result = reg.test(this.initValue[statusItem['valueName']]);
             }
         }
         return result;
@@ -435,7 +435,7 @@ export class BeforeOperation {
         let result = false;
         if (this.operationItemsData.length > 0) {
             result = this.operationItemsData.some(
-                row => row[statusItem["name"]] === statusItem["value"]
+                row => row[statusItem['name']] === statusItem['value']
             );
         }
         return result;
@@ -449,12 +449,12 @@ export class BeforeOperation {
     private matchCheckedRegexpCondition(statusItem) {
         let result = false;
         if (this.operationItemsData.length > 0) {
-            const reg = new RegExp(statusItem.value ? statusItem.value : "");
+            const reg = new RegExp(statusItem.value ? statusItem.value : '');
             const txt = reg.test(
-                this.operationItemsData[0][statusItem["name"]]
+                this.operationItemsData[0][statusItem['name']]
             );
             result = this.operationItemsData.some(row =>
-                reg.test(row[statusItem["name"]])
+                reg.test(row[statusItem['name']])
             );
         }
         return result;
@@ -469,14 +469,14 @@ export class BeforeOperation {
         let result = true;
         if (action) {
             switch (action.execute) {
-                case "prevent":
+                case 'prevent':
                     if (actionResult) {
                         this.beforeOperationMessage(action, result);
                     } else {
                         result = false;
                     }
                     break;
-                case "continue":
+                case 'continue':
                     if (!actionResult) {
                         result = false;
                     } else {
@@ -495,10 +495,10 @@ export class BeforeOperation {
      * @param action
      */
     private beforeOperationMessage(action, result) {
-        if (action["type"] === "confirm") {
+        if (action['type'] === 'confirm') {
             this.modal.confirm({
-                nzTitle: action["title"],
-                nzContent: action["message"],
+                nzTitle: action['title'],
+                nzContent: action['message'],
                 nzOnOk: () => {
                     result = false;
                     // 调用后续操作
@@ -508,8 +508,8 @@ export class BeforeOperation {
                 }
             });
         } else {
-            this._message[action["type"]](action.message);
-            result = action.execute === "prevent" ? true : false;
+            this._message[action['type']](action.message);
+            result = action.execute === 'prevent' ? true : false;
         }
     }
 

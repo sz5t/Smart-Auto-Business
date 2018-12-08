@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { getISOWeek, getISOYear } from 'date-fns';  
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'cn-week-picker',
     templateUrl: './cn-week-picker.component.html'
 })

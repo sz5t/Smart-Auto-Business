@@ -331,8 +331,17 @@ export class BsnDataStepComponent extends CnComponentBase
                 this.tempValue['_selectedNode'] = ev.item.model;
                 if (
                     this.config.componentType &&
-                    this.config.componentType.child === true
+                    this.config.componentType.parent === true
                 ) {
+                    this.cascade.next(
+                        new BsnComponentMessage(
+                            BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                            this.config.viewId,
+                            {
+                                data: this.tempValue['_selectedNode']
+                            }
+                        )
+                    );
                 }
                 // 注册多界面切换消息
                 if (
