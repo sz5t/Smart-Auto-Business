@@ -7,5 +7,6 @@
     "prettier.printWidth": 300,
     "prettier.proseWrap": "never",
     "prettier.semi": false,
-    "prettier.tslintIntegration": true
+    "prettier.tslintIntegration": true,
+    "editor.fontFamily": "Monaco"
 }

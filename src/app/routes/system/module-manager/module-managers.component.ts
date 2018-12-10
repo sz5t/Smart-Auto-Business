@@ -37,7 +37,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                     config: {
                                         title: "模块管理",
                                         viewId: "bsnTreeTable",
-                                        component: "bsnTreeTable",
+                                        component: "bsnAsyncTreeTable",
                                         info: true,
                                         keyId: "Id",
                                         pagination: true, // 是否分页
@@ -74,7 +74,29 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                 {
                                                     name: "_deep",
                                                     type: "value",
-                                                    value: "3"
+                                                    value: "2"
+                                                }
+                                            ],
+                                            childrenParams: [
+                                                {
+                                                    name: '_root.parentId',
+                                                    type: 'selectedRow',
+                                                    valueName: 'Id'
+                                                },
+                                                {
+                                                    name: "refProjectId",
+                                                    type: "tempValue",
+                                                    valueName: "_parentId"
+                                                },
+                                                {
+                                                    name: "_sort",
+                                                    type: "value",
+                                                    value: "createDate desc"
+                                                },
+                                                {
+                                                    name: "_deep",
+                                                    type: "value",
+                                                    value: "2"
                                                 }
                                             ],
                                             filter: []
@@ -83,22 +105,13 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                             {
                                                 title: "Id",
                                                 field: "Id",
-                                                width: 80,
-                                                hidden: true,
-                                                expand: false,
-                                                editor: {
-                                                    type: "input",
-                                                    field: "Id",
-                                                    options: {
-                                                        type: "input",
-                                                        inputType: "text"
-                                                    }
-                                                }
+                                                width: 'auto',
+                                                hidden: true
                                             },
                                             {
                                                 title: "模块名称",
                                                 field: "name",
-                                                width: "90px",
+                                                width: "200px",
                                                 expand: true,
                                                 showFilter: false,
                                                 showSort: false,
@@ -150,7 +163,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                             {
                                                 title: "URL",
                                                 field: "url",
-                                                width: 100,
+                                                width: "150px",
                                                 hidden: false,
                                                 expand: false,
                                                 editor: {
@@ -165,7 +178,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                             {
                                                 title: "图标",
                                                 field: "icon",
-                                                width: 100,
+                                                width: "100px",
                                                 hidden: false,
                                                 expand: false,
                                                 editor: {
@@ -180,7 +193,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                             {
                                                 title: "父级",
                                                 field: "parentName",
-                                                width: 80,
+                                                width: "100px",
                                                 hidden: false,
                                                 showFilter: false,
                                                 showSort: false,
@@ -236,7 +249,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                             {
                                                 title: "配置文本",
                                                 field: "moduleBody",
-                                                width: 80,
+                                                width: "80px",
                                                 hidden: false,
                                                 expand: false,
                                                 showFilter: false,
@@ -253,7 +266,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                             {
                                                 title: "是否有效",
                                                 field: "isEnabled",
-                                                width: 80,
+                                                width: "80px",
                                                 hidden: false,
                                                 expand: false,
                                                 formatter: [
@@ -303,7 +316,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                             {
                                                 title: "是否发布",
                                                 field: "isNeedDeploy",
-                                                width: 80,
+                                                width: "80px",
                                                 hidden: false,
                                                 expand: false,
                                                 formatter: [
@@ -354,7 +367,7 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                             {
                                                 title: "所属平台",
                                                 field: "belongPlatformType",
-                                                width: 80,
+                                                width: "80px",
                                                 hidden: false,
                                                 expand: false,
                                                 formatter: [

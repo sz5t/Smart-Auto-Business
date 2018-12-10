@@ -1024,7 +1024,7 @@ export class GridBase extends CnComponentBase {
     }
 
     protected buildRecursive() {
-        return { _recursive: true, _deep: 2 };
+        return { _recursive: true};
     }
 
     public sort(sort: { key: string; value: string }) {

@@ -2643,7 +2643,7 @@ export class TreeTableComponent implements OnInit {
                                                 {
                                                     name: '_deep',
                                                     type: 'value',
-                                                    value: '1'
+                                                    value: '2'
                                                 }
                                             ],
                                             childrenParams: [
@@ -2655,7 +2655,7 @@ export class TreeTableComponent implements OnInit {
                                                 {
                                                     name: '_deep',
                                                     type: 'value',
-                                                    value: '1'
+                                                    value: '2'
                                                 }
                                             ]
                                         },
