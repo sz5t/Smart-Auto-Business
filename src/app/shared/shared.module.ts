@@ -95,6 +95,7 @@ import { BsnCardListItemComponent } from './business/bsn-card-list/bsn-card-list
 import { CnFormScancodeComponent } from './components/cn-form-scancode/cn-form-scancode.component';
 import { CnGridSearchComponent } from './components/cn-grid-search/cn-grid-search.component';
 import { CnGridBetweenInputComponent } from './components/cn-grid-between-input/cn-grid-between-input.component';
+import { CnFormInputSelectComponent } from './components/cn-form-input-select/cn-form-input-select.component'
 import { BsnReportComponent } from './business/bsn-report/bsn-report.component';
 import { SpreadSheetsModule } from 'app/lib/gc.spread.sheets.angular.12.0.0'
 import { BsnAsyncTreeTableComponent } from './business/bsn-treeTable/bsn-treeTable.component';
@@ -188,6 +189,7 @@ const COMPONENTS = [
     CnGridSearchComponent,
     CnGridBetweenInputComponent,
     BsnReportComponent,
+    CnFormInputSelectComponent,
     BsnAsyncTreeTableComponent
 ];
 const DIRECTIVES = [
