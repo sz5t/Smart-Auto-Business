@@ -1,0 +1,17 @@
+<p>
+  cn-form-input-select works!
+</p>
+<input nz-input
+(ngModelChange)="valueChange($event)"
+[ngStyle]="{'width':config.width}"
+type="{{config.inputType}}"
+[nzSize]="config.size"
+placeholder="{{config.placeholder}}"
+readonly="{{config.readonly}}"
+disabled="{{config.disabled}}"
+[(ngModel)]="_value"
+(blur)="onblur($event,'end')" (keyup)="onKeyPress($event,'end')"
+>
+<button nz-button  (click)="showModal()">
+  <i class="anticon anticon-edit"></i>
+</button>
