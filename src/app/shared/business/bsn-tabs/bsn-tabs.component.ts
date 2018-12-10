@@ -11,8 +11,9 @@ import { instantiateDefaultStyleNormalizer } from '@angular/platform-browser/ani
 import { Subscription, Observable, Observer } from 'rxjs';
 import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_CASCADE } from '@core/relative-Service/BsnTableStatus';
 import { NzTabComponent, NzTabChangeEvent } from 'ng-zorro-antd';
-import {current} from "codelyzer/util/syntaxKind";
+import {current} from 'codelyzer/util/syntaxKind';
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'bsn-tabs',
     templateUrl: './bsn-tabs.component.html',
     styles: [``]

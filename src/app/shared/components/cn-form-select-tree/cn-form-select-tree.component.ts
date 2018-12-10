@@ -6,74 +6,75 @@ import {
     Output,
     EventEmitter,
     OnChanges
-} from "@angular/core";
-import { _HttpClient } from "@delon/theme";
-import { ApiService } from "@core/utility/api-service";
-import { APIResource } from "@core/utility/api-resource";
-import { FormGroup } from "@angular/forms";
-import { NzTreeNode } from "ng-zorro-antd";
-import { CommonTools } from "@core/utility/common-tools";
+} from '@angular/core';
+import { _HttpClient } from '@delon/theme';
+import { ApiService } from '@core/utility/api-service';
+import { APIResource } from '@core/utility/api-resource';
+import { FormGroup } from '@angular/forms';
+import { NzTreeNode } from 'ng-zorro-antd';
+import { CommonTools } from '@core/utility/common-tools';
 
 @Component({
-    selector: "cn-form-select-tree",
-    templateUrl: "./cn-form-select-tree.component.html"
+    // tslint:disable-next-line:component-selector
+    selector: 'cn-form-select-tree',
+    templateUrl: './cn-form-select-tree.component.html'
 })
 export class CnFormSelectTreeComponent implements OnInit {
-    formGroup: FormGroup;
+    public formGroup: FormGroup;
     @Input()
-    value;
+    public value;
     @Input()
-    config;
+    public config;
     @Input()
-    bsnData;
-    @Output() updateValue = new EventEmitter();
-    @Input() dataSet;
-    @Input() casadeData;
-    @Input() initValue;
-    @Input() changeConfig;
-    treeData;
-    treeDatalist = [];
-    _tempValue = {};
-    checkedKeys = [];
-    selectedKeys = [];
-    cascadeValue = {};
-    selfEvent = {
+    public bsnData;
+    @Output() public updateValue = new EventEmitter();
+    @Input() public dataSet;
+    @Input() public casadeData;
+    @Input() public initValue;
+    @Input() public changeConfig;
+    public treeData;
+    public treeDatalist = [];
+    public _tempValue = {};
+    public checkedKeys = [];
+    public selectedKeys = [];
+    public cascadeValue = {};
+    public selfEvent = {
         clickNode: [],
         expandNode: [],
         load: []
     };
-    cascadeSetValue = {};
+    public cascadeSetValue = {};
     // value;
-    _selectedValue;
-    treecolumns = {};
+    public _selectedValue;
+    public treecolumns = {};
     constructor(private _http: ApiService) {}
 
-    ngOnInit() {
+    public ngOnInit() {
         if (this.config.columns) {
             this.config.columns.forEach(element => {
                 this.treecolumns[element.field] = element.valueName;
             });
         }
-        if (!this.config["multiple"]) {
-            this.config["multiple"] = false;
+        if (!this.config['multiple']) {
+            this.config['multiple'] = false;
         }
-        if (!this.config["Checkable"]) {
-            this.config["Checkable"] = false;
+        if (!this.config['Checkable']) {
+            this.config['Checkable'] = false;
         }
-        if (this.config["cascadeValue"]) {
+        if (this.config['cascadeValue']) {
             // cascadeValue
-            for (const key in this.config["cascadeValue"]) {
-                if (this.config["cascadeValue"].hasOwnProperty(key)) {
-                    this.cascadeValue[key] = this.config["cascadeValue"][key];
+            for (const key in this.config['cascadeValue']) {
+                if (this.config['cascadeValue'].hasOwnProperty(key)) {
+                    this.cascadeValue[key] = this.config['cascadeValue'][key];
                 }
             }
         }
         if (this.changeConfig) {
-            if (this.changeConfig["cascadeValue"]) {
+            if (this.changeConfig['cascadeValue']) {
                 // cascadeValue
-                for (const key in this.changeConfig["cascadeValue"]) {
-                    if (this.changeConfig["cascadeValue"].hasOwnProperty(key)) {
-                        this.cascadeValue[key] = this.changeConfig["cascadeValue"][key];
+                for (const key in this.changeConfig['cascadeValue']) {
+                    if (this.changeConfig['cascadeValue'].hasOwnProperty(key)) {
+                        this.cascadeValue[key] = this.changeConfig['cascadeValue'][key];
                     }
                 }
             }
@@ -87,11 +88,11 @@ export class CnFormSelectTreeComponent implements OnInit {
          }
     }
 
-    async getAsyncTreeData(nodeValue = null) {
-        return await this.execAjax(this.config.ajaxConfig, nodeValue, "load");
+    public async getAsyncTreeData(nodeValue = null) {
+        return await this.execAjax(this.config.ajaxConfig, nodeValue, 'load');
     }
 
-    loadTreeData() {
+    public loadTreeData() {
         (async () => {
             const data = await this.getAsyncTreeData();
             if (data) {
@@ -101,7 +102,7 @@ export class CnFormSelectTreeComponent implements OnInit {
                     TotreeBefore.forEach(d => {
                         if (this.config.columns) {
                             this.config.columns.forEach(col => {
-                                d[col["field"]] = d[col["valueName"]];
+                                d[col['field']] = d[col['valueName']];
                             });
                         }
                     });
@@ -110,17 +111,17 @@ export class CnFormSelectTreeComponent implements OnInit {
                     // 解析出 parentid ,一次性加载目前只考虑一个值
                     if (this.config.parent) {
                         this.config.parent.forEach(param => {
-                            if (param.type === "tempValue") {
+                            if (param.type === 'tempValue') {
                                 parent = this.bsnData[param.valueName];
-                            } else if (param.type === "value") {
-                                if (param.value === "null") {
+                            } else if (param.type === 'value') {
+                                if (param.value === 'null') {
                                     param.value = null;
                                 }
                                 parent = param.value;
-                            } else if (param.type === "GUID") {
+                            } else if (param.type === 'GUID') {
                                 const fieldIdentity = CommonTools.uuID(10);
                                 parent = fieldIdentity;
-                            } else if (param.type === "cascadeValue") {
+                            } else if (param.type === 'cascadeValue') {
                                 parent = this.cascadeValue[param.valueName];
                             }
                         });
@@ -145,26 +146,26 @@ export class CnFormSelectTreeComponent implements OnInit {
         })();
     }
 
-    listToAsyncTreeData(data, parentid): NzTreeNode[] {
+    public listToAsyncTreeData(data, parentid): NzTreeNode[] {
         const result: NzTreeNode[] = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
             if (data[i].parentId === parentid) {
                 temp = this.listToAsyncTreeData(data, data[i].key);
                 if (temp.length > 0) {
-                    data[i]["children"] = temp;
-                    data[i]["isLeaf"] = false;
+                    data[i]['children'] = temp;
+                    data[i]['isLeaf'] = false;
                 } else {
-                    data[i]["isLeaf"] = false;
+                    data[i]['isLeaf'] = false;
                 }
-                data[i].level = "";
+                data[i].level = '';
                 result.push(new NzTreeNode(data[i]));
             }
         }
         return result;
     }
 
-    async execAjax(p?, componentValue?, type?) {
+    public async execAjax(p?, componentValue?, type?) {
         const params = {};
         let url;
         let tag = true;
@@ -173,9 +174,9 @@ export class CnFormSelectTreeComponent implements OnInit {
          } */
         if (p) {
             p.params.forEach(param => {
-                if (param.type === "tempValue") {
+                if (param.type === 'tempValue') {
                     if (type) {
-                        if (type === "load") {
+                        if (type === 'load') {
                             if (this.bsnData[param.valueName]) {
                                 // params[param.name] = this._tempValue[param.valueName];
                                 params[param.name] = this.bsnData[
@@ -194,14 +195,14 @@ export class CnFormSelectTreeComponent implements OnInit {
                         // params[param.name] = this._tempValue[param.valueName];
                         params[param.name] = this.bsnData[param.valueName];
                     }
-                } else if (param.type === "value") {
+                } else if (param.type === 'value') {
                     params[param.name] = param.value;
-                } else if (param.type === "GUID") {
+                } else if (param.type === 'GUID') {
                     const fieldIdentity = CommonTools.uuID(10);
                     params[param.name] = fieldIdentity;
-                } else if (param.type === "componentValue") {
+                } else if (param.type === 'componentValue') {
                     params[param.name] = componentValue;
-                } else if (param.type === "cascadeValue") {
+                } else if (param.type === 'cascadeValue') {
                     params[param.name] = this.cascadeValue[param.valueName];
                 } else if (param.type === 'initValue') {
                     params[param.name] = this.initValue[param.valueName];
@@ -210,34 +211,34 @@ export class CnFormSelectTreeComponent implements OnInit {
             if (this.isString(p.url)) {
                 url = p.url;
             } else {
-                let pc = "null";
+                let pc = 'null';
                 p.url.params.forEach(param => {
-                    if (param["type"] === "value") {
+                    if (param['type'] === 'value') {
                         pc = param.value;
-                    } else if (param.type === "GUID") {
+                    } else if (param.type === 'GUID') {
                         const fieldIdentity = CommonTools.uuID(10);
                         pc = fieldIdentity;
-                    } else if (param.type === "componentValue") {
+                    } else if (param.type === 'componentValue') {
                         pc = componentValue.value;
-                    } else if (param.type === "tempValue") {
+                    } else if (param.type === 'tempValue') {
                         // pc = this._tempValue[param.valueName];
                         pc = this.bsnData[param.valueName];
                     }
                 });
-                url = p.url["parent"] + "/" + pc + "/" + p.url["child"];
+                url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
             }
         }
 
-        if (p.ajaxType === "get" && tag) {
+        if (p.ajaxType === 'get' && tag) {
             return this._http.get(url, params).toPromise();
         }
     }
 
-    onMouseAction(actionName, $event) {
+    public onMouseAction(actionName, $event) {
         this[actionName]($event);
     }
 
-    onChange($event: NzTreeNode) {
+    public onChange($event: NzTreeNode) {
         this.value = $event;
         // 表单树和列表不一致
         // let tkey = 'key';
@@ -246,9 +247,9 @@ export class CnFormSelectTreeComponent implements OnInit {
         // }
     }
 
-    valueChange(val?: NzTreeNode) {
+    public valueChange(val?: NzTreeNode) {
         if (val) {
-            const backValue = { name: this.config.name, value: name };
+            const backValue = { name: this.config.name, value: val };
             if (this.treeDatalist) {
                 let tkey = 'key';
                 if (this.treecolumns['key']) {
@@ -259,13 +260,13 @@ export class CnFormSelectTreeComponent implements OnInit {
             }
             this.updateValue.emit(backValue);
         } else {
-            const backValue = { name: this.config.name, value: name };
+            const backValue = { name: this.config.name, value: null };
             this.updateValue.emit(backValue);
         }
        // console.log('***下拉树返回值***' , this.value);
 
     }
-    expandNode = e => {
+    public expandNode = e => {
         (async () => {
             if (e.node.getChildren().length === 0 && e.node.isExpanded) {
                 const s = await Promise.all(
@@ -275,16 +276,16 @@ export class CnFormSelectTreeComponent implements OnInit {
                             const data = await this.execAjax(
                                 expand.ajaxConfig,
                                 e.node.key,
-                                "load"
+                                'load'
                             );
                             if (data.data.length > 0 && data.status === 200) {
                                 data.data.forEach(item => {
-                                    item["isLeaf"] = false;
-                                    item["children"] = [];
+                                    item['isLeaf'] = false;
+                                    item['children'] = [];
                                     if (this.config.columns) {
                                         this.config.columns.forEach(col => {
-                                            item[col["field"]] =
-                                                item[col["valueName"]];
+                                            item[col['field']] =
+                                                item[col['valueName']];
                                         });
                                     }
                                 });
@@ -296,8 +297,8 @@ export class CnFormSelectTreeComponent implements OnInit {
         })();
     };
 
-    isString(obj) {
+    public isString(obj) {
         // 判断对象是否是字符串
-        return Object.prototype.toString.call(obj) === "[object String]";
+        return Object.prototype.toString.call(obj) === '[object String]';
     }
 }

@@ -38,6 +38,7 @@ const component: { [type: string]: Type<any> } = {
 };
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'cn-bsn-table,[cn-bsn-table]',
     templateUrl: './bsn-table.component.html',
     styles: [
@@ -1564,32 +1565,39 @@ export class BsnTableComponent extends CnComponentBase
                         if (btn['name'] === 'save') {
                             (async () => {
                                 const result = await componentInstance.buttonAction(
-                                    btn
+                                    btn,
+                                    () => {
+                                        modal.close();
+                                        // todo: 操作完成当前数据后需要定位
+                                        this.load();
+                                        this.sendCascadeMessage();
+                                    }
                                 );
-                                if (result) {
-                                    modal.close();
-                                    // todo: 操作完成当前数据后需要定位
-                                    this.load();
-                                }
                             })();
                         } else if (btn['name'] === 'saveAndKeep') {
                             (async () => {
                                 const result = await componentInstance.buttonAction(
-                                    btn
+                                    btn,
+                                    () => {
+                                        // todo: 操作完成当前数据后需要定位
+                                        this.load();
+                                        this.sendCascadeMessage();
+                                    }
                                 );
                                 if (result) {
-                                    // todo: 操作完成当前数据后需要定位
-                                    this.load();
+                                    
                                 }
                             })();
                         } else if (btn['name'] === 'close') {
                             modal.close();
                             this.load();
+                            this.sendCascadeMessage();
                         } else if (btn['name'] === 'reset') {
                             this._resetForm(componentInstance);
                         } else if (btn['name'] === 'ok') {
                             modal.close();
                             this.load();
+                            this.sendCascadeMessage();
                             //
                         }
                     };
@@ -1597,6 +1605,23 @@ export class BsnTableComponent extends CnComponentBase
                 });
             }
         });
+    }
+
+    private sendCascadeMessage() {
+        if (
+            this.config.componentType &&
+            this.config.componentType.parent === true
+        ) {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                    this.config.viewId,
+                    {
+                        data: this._selectRow
+                    }
+                )
+            );
+        }
     }
 
     // region 批量确认提交数据，未完成与服务端的批量测试功能
@@ -3223,7 +3248,7 @@ export class BsnTableComponent extends CnComponentBase
                                                     rowCasade
                                                 ][key]['cascadeValue'][
                                                     ajaxItem['name']
-                                                ] =data.dataItem[ajaxItem['valueName']];
+                                                ] = data.dataItem[ajaxItem['valueName']];
                                             }
                                         }
 
@@ -3255,13 +3280,13 @@ export class BsnTableComponent extends CnComponentBase
                                         this.changeConfig_newSearch[rowCasade][key]['setValue'] = caseItem['setValue']['value'];
                                     }
                                     if (
-                                        caseItem['setValue']['type'] ==='selectValue'
+                                        caseItem['setValue']['type'] === 'selectValue'
                                     ) {
                                         // 选中行数据[这个是单值]
                                         this.changeConfig_newSearch[rowCasade][key]['setValue'] = data[caseItem['setValue']['valueName']];
                                     }
                                     if (
-                                        caseItem['setValue']['type'] ==='selectObjectValue'
+                                        caseItem['setValue']['type'] === 'selectObjectValue'
                                     ) {
                                         // 选中行对象数据
                                         if (data.dataItem) {

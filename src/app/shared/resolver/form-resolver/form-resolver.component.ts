@@ -133,7 +133,6 @@ export class FormResolverComponent extends CnFormBase
                 });
             });
         }
-
         this.initValue = this.initData ? this.initData : {};
         this.cacheValue = this.cacheService ? this.cacheService : {};
 
@@ -907,11 +906,10 @@ export class FormResolverComponent extends CnFormBase
     }
 
     public valueChange(data?) {
-        console.log('valueChange', data);
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
         const sendCasade = data.name;
-        const receiveCasade = ' ';
+        const receiveCasade = ' ';  
 
         // 第二步，根据配置，和返回值，来构建应答数据集合
         // 第三步，

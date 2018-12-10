@@ -31,6 +31,7 @@ import { CommonTools } from '@core/utility/common-tools';
 import { Observer, Observable, Subscription } from 'rxjs';
 import { CacheService } from '@delon/cache';
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'cn-bsn-tree',
     templateUrl: './bsn-tree.component.html',
     styles: [
@@ -147,9 +148,9 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
         private cascadeEvents: Observable<BsnComponentMessage>
     ) {
         super();
-        this.apiService = this._http;
-        this.message = this._msg;
-        this.modalService = this._modal;
+        this.apiResource = this._http;
+        this.baseMessage = this._msg;
+        this.baseModal = this._modal;
     }
 
     public ngOnInit() {
@@ -817,7 +818,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     }
 
     private _executeAjaxConfig(ajaxConfigObj, handleData) {
-        this.modalService.confirm({
+        this.baseModal.confirm({
             nzTitle: ajaxConfigObj.title ? ajaxConfigObj.title : '提示',
             nzContent: ajaxConfigObj.message ? ajaxConfigObj.message : '',
             nzOnOk: () => {
@@ -846,9 +847,9 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
             executeParam
         );
         if (response.isSuccess) {
-            this.message.success('操作成功');
+            this.baseMessage.success('操作成功');
         } else {
-            this.message.error(`操作失败 ${response.message}`);
+            this.baseMessage.error(`操作失败 ${response.message}`);
         }
     }
 
@@ -885,9 +886,9 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
             executeParams
         );
         if (response.isSuccess) {
-            this.message.success('操作成功');
+            this.baseMessage.success('操作成功');
         } else {
-            this.message.error(`操作失败 ${response.message}`);
+            this.baseMessage.error(`操作失败 ${response.message}`);
         }
     }
 

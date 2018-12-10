@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { getMonth, getISOYear } from 'date-fns';
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'cn-month-picker',
     templateUrl: './cn-month-picker.component.html'
 })

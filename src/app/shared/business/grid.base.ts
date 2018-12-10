@@ -7,7 +7,6 @@ import {
     BSN_OUTPOUT_PARAMETER_TYPE
 } from '@core/relative-Service/BsnTableStatus';
 import { NzModalService, NzMessageService } from 'ng-zorro-antd';
-import { ApiService } from '@core/utility/api-service';
 import { CommonTools } from '@core/utility/common-tools';
 import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
 import { CnFormWindowResolverComponent } from '@shared/resolver/form-resolver/form-window-resolver.component';
@@ -20,27 +19,6 @@ export class GridBase extends CnComponentBase {
     }
     public set dataList(value) {
         this._dataList = value;
-    }
-    private _modalService: NzModalService;
-    public get modalService(): NzModalService {
-        return this._modalService;
-    }
-    public set modalService(value: NzModalService) {
-        this._modalService = value;
-    }
-    private _message: NzMessageService;
-    public get message(): NzMessageService {
-        return this._message;
-    }
-    public set message(value: NzMessageService) {
-        this._message = value;
-    }
-    private _apiService: ApiService;
-    public get apiService(): ApiService {
-        return this._apiService;
-    }
-    public set apiService(value: ApiService) {
-        this._apiService = value;
     }
     private _callback: Function;
     public get callback(): Function {
@@ -213,7 +191,7 @@ export class GridBase extends CnComponentBase {
                         this.dataList.filter(item => item.checked === true)
                             .length <= 0
                     ) {
-                        this._message.create('info', '请选择要执行的数据');
+                        this.baseMessage.create('info', '请选择要执行的数据');
                         return false;
                     }
                     // 目前还未解决confirm确认操作后的后续执行问题
@@ -228,7 +206,7 @@ export class GridBase extends CnComponentBase {
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_SELECTED:
                     if (this.selectedItem['row_status'] === 'adding') {
-                        this.message.create(
+                        this.baseMessage.create(
                             'info',
                             '当前数据未保存无法进行处理'
                         );
@@ -241,14 +219,19 @@ export class GridBase extends CnComponentBase {
                     }
 
                     msg = '操作完成';
-                    this.buildConfirm(c, option.ajaxConfig, handleData, msg);
+                    if (handleData.length > 0) {
+                        this.buildConfirm(c, option.ajaxConfig, handleData, msg);
+                    } else {
+                        this.baseMessage.info('未选中任何数据,无法进行操作!');
+                    }
+                    
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_CHECKED_ID:
                     if (
                         this.dataList.filter(item => item.checked === true)
                             .length <= 0
                     ) {
-                        this._message.create('info', '请选择要执行的数据');
+                        this.baseMessage.create('info', '请勾选要执行操作的数据');
                         return false;
                     }
                     handleData = this.getCheckItemsId();
@@ -256,7 +239,6 @@ export class GridBase extends CnComponentBase {
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
                         return false;
                     }
-
                     msg = '操作完成';
                     this.buildConfirm(c, option.ajaxConfig, handleData, msg);
                     break;
@@ -264,9 +246,11 @@ export class GridBase extends CnComponentBase {
                     handleData = this.getEditedRows();
                     msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
-                        return;
+                        // this.baseMessage.info('请勾选要执行编辑的数据')
+                        return false;
+                    } else {
+                        this.buildConfirm(c, option.ajaxConfig, handleData, msg);
                     }
-                    this.buildConfirm(c, option.ajaxConfig, handleData, msg);
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_SAVE_ROW:
                     // 获取更新状态的数据
@@ -308,7 +292,7 @@ export class GridBase extends CnComponentBase {
 
     protected buildConfirm(c, ajaxConfigs, handleData, msg) {
         if (c.message) {
-            this._modalService.confirm({
+            this.baseModal.confirm({
                 nzTitle: c.title ? c.title : '提示',
                 nzContent: c.message ? c.message : '',
                 nzOnOk: () => {
@@ -368,15 +352,15 @@ export class GridBase extends CnComponentBase {
         }
     }
 
-    protected executeAjaxConfig(ajaxConfigObj, handleData) {
+    protected async executeAjaxConfig(ajaxConfigObj, handleData) {
         if (Array.isArray(handleData)) {
-            return this.executeBatchAction(ajaxConfigObj, handleData);
+            return await this.executeBatchAction(ajaxConfigObj, handleData);
         } else {
-            return this.executeAction(ajaxConfigObj, handleData);
+            return await this.executeAction(ajaxConfigObj, handleData);
         }
     }
 
-    protected executeBatchAction(ajaxConfigObj, handleData) {
+    protected async executeBatchAction(ajaxConfigObj, handleData) {
         const executeParams = [];
         if (Array.isArray(handleData)) {
             if (ajaxConfigObj.params) {
@@ -405,14 +389,14 @@ export class GridBase extends CnComponentBase {
             );
         }
         // 执行数据操作
-        return this.executeRequest(
+        return await this.executeRequest(
             ajaxConfigObj.url,
             ajaxConfigObj.ajaxType ? ajaxConfigObj.ajaxType : 'post',
             executeParams
         );
     }
 
-    protected executeAction(ajaxConfigObj, handleData) {
+    protected async executeAction(ajaxConfigObj, handleData) {
         const executeParam = CommonTools.parametersResolver({
             params: ajaxConfigObj.params,
             tempValue: this.tempValue,
@@ -421,7 +405,7 @@ export class GridBase extends CnComponentBase {
             cacheValue: this.cacheValue
         });
         // 执行数据操作
-        return this.executeRequest(
+        return await this.executeRequest(
             ajaxConfigObj.url,
             ajaxConfigObj.ajaxType ? ajaxConfigObj.ajaxType : 'post',
             executeParam
@@ -498,7 +482,7 @@ export class GridBase extends CnComponentBase {
     }
 
     protected async executeRequest(url, method, body) {
-        return this.apiService[method](url, body).toPromise();
+        return this.apiResource[method](url, body).toPromise();
     }
 
     protected getFocusIds(data) {
@@ -565,7 +549,7 @@ export class GridBase extends CnComponentBase {
                             nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
-                        this._modalService[messageType](options);
+                        this.baseModal[messageType](options);
                         break;
                     case 'error':
                         options = {
@@ -573,7 +557,7 @@ export class GridBase extends CnComponentBase {
                             nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
-                        this._modalService[messageType](options);
+                        this.baseModal[messageType](options);
                         break;
                     case 'confirm':
                         options = {
@@ -594,7 +578,7 @@ export class GridBase extends CnComponentBase {
                             },
                             nzOnCancel: () => {}
                         };
-                        this._modalService[messageType](options);
+                        this.baseModal[messageType](options);
                         break;
                     case 'warning':
                         options = {
@@ -602,7 +586,7 @@ export class GridBase extends CnComponentBase {
                             nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
-                        this._modalService[messageType](options);
+                        this.baseModal[messageType](options);
                         break;
                     case 'success':
                         options = {
@@ -610,7 +594,7 @@ export class GridBase extends CnComponentBase {
                             nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
-                        this._message.success(msgObj[1]);
+                        this.baseMessage.success(msgObj[1]);
                         callback && callback();
                         break;
                 }
@@ -623,12 +607,12 @@ export class GridBase extends CnComponentBase {
                 //     }
                 // }
             } else {
-                this._message.error(
+                this.baseMessage.error(
                     '存储过程返回结果异常：未获得输出的消息内容'
                 );
             }
         } else {
-            this._message.error('操作异常：', response.message);
+            this.baseMessage.error('操作异常：', response.message);
         }
     }
 
@@ -651,30 +635,30 @@ export class GridBase extends CnComponentBase {
                 }
             });
             if (rs.success) {
-                this._message.success(message);
+                this.baseMessage.success(message);
                 if (callback) {
                     callback();
                 }
             } else {
-                this._message.error(rs.msg.join('<br/>'));
+                this.baseMessage.error(rs.msg.join('<br/>'));
             }
         } else {
             if (result.isSuccess) {
-                this._message.success(message);
+                this.baseMessage.success(message);
                 if (callback) {
                     callback();
                 }
             } else {
-                this._message.error(result.message);
+                this.baseMessage.error(result.message);
             }
         }
     }
 
     protected showLayout(dialog) {
         const footer = [];
-        this._apiService.getLocalData(dialog.layoutName).subscribe(data => {
+        this.apiResource.getLocalData(dialog.layoutName).subscribe(data => {
             const temp = this.tempValue ? this.tempValue : {};
-            const modal = this.modalService.create({
+            const modal = this.baseModal.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
                 nzContent: LayoutResolverComponent,
@@ -744,7 +728,7 @@ export class GridBase extends CnComponentBase {
             const obj = {
                 checkedRow: checkedItems
             };
-            const modal = this.modalService.create({
+            const modal = this.baseModal.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
                 nzContent: CnFormWindowResolverComponent,
@@ -782,7 +766,7 @@ export class GridBase extends CnComponentBase {
                 });
             }
         } else {
-            this._message.create('warning', '请先选中需要处理的数据');
+            this.baseMessage.create('warning', '请先选中需要处理的数据');
         }
     }
     /**
@@ -795,7 +779,7 @@ export class GridBase extends CnComponentBase {
         if (dialog.type === 'add') {
         } else if (dialog.type === 'edit') {
             if (!this.selectedItem) {
-                this._message.warning('请选中一条需要添加附件的记录！');
+                this.baseMessage.warning('请选中一条需要添加附件的记录！');
                 return false;
             }
         }
@@ -810,7 +794,7 @@ export class GridBase extends CnComponentBase {
                 : ''
         };
         const footer = [];
-        const modal = this.modalService.create({
+        const modal = this.baseModal.create({
             nzTitle: dialog.title,
             nzWidth: dialog.width,
             nzContent: CnFormWindowResolverComponent,
@@ -885,7 +869,7 @@ export class GridBase extends CnComponentBase {
      */
     protected openUploadDialog(dialog): boolean {
         if (!this.selectedItem) {
-            this._message.warning('请选中一条需要添加附件的记录！');
+            this.baseMessage.warning('请选中一条需要添加附件的记录！');
             return false;
         }
         const footer = [];
@@ -893,7 +877,7 @@ export class GridBase extends CnComponentBase {
             _id: this.selectedItem[dialog.keyId],
             _parentId: this.tempValue['_parentId']
         };
-        const modal = this.modalService.create({
+        const modal = this.baseModal.create({
             nzTitle: dialog.title,
             nzWidth: dialog.width,
             nzContent: BsnUploadComponent,
@@ -917,7 +901,8 @@ export class GridBase extends CnComponentBase {
             filter = CommonTools.parametersResolver({
                 params: filterConfig,
                 tempValue: this.tempValue,
-                cacheValue: this.cacheValue
+                cacheValue: this.cacheValue,
+                initValue: this.initValue
             });
         }
         return filter;
@@ -928,14 +913,16 @@ export class GridBase extends CnComponentBase {
      * @returns {{}}
      * @protected
      */
-    protected buildParameters(paramsConfig): {} {
+    protected buildParameters(paramsConfig, data?): {} {
         let params = {};
         if (paramsConfig) {
             params = CommonTools.parametersResolver({
                 params: paramsConfig,
-                tempValue: this.tempValue,
-                initValue: this.initValue,
-                cacheValue: this.cacheValue
+                tempValue: this.tempValue ? this.tempValue : {},
+                initValue: this.initValue ? this.initValue : {},
+                cacheValue: this.cacheValue ? this.cacheValue : {},
+                item: data ? data : {},
+                componentValue: data ? data : {}
             });
         }
         return params;
@@ -1037,7 +1024,7 @@ export class GridBase extends CnComponentBase {
     }
 
     protected buildRecursive() {
-        return { _recursive: true, _deep: -1 };
+        return { _recursive: true, _deep: 2 };
     }
 
     public sort(sort: { key: string; value: string }) {

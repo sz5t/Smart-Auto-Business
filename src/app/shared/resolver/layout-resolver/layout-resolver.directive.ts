@@ -19,7 +19,7 @@ import {
     BsnComponentMessage
 } from '@core/relative-Service/BsnTableStatus';
 import { IBlockExclusionDescriptor } from 'tslint/lib/rules/completed-docs/blockExclusion';
-import {CommonTools} from "@core/utility/common-tools";
+import {CommonTools} from '@core/utility/common-tools';
 
 @Directive({
     // tslint:disable-next-line:directive-selector
@@ -50,7 +50,7 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
 
     public ngOnInit() {
         this.resolveRelation();
-        //this.buildComponent(this.config.viewCfg[0]);
+        this.buildComponent(this.config.viewCfg[0]);
     }
 
     public resolveRelation() {
