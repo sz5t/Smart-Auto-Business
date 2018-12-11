@@ -463,7 +463,7 @@ export class FormResolverComponent extends CnFormBase
                     BSN_COMPONENT_CASCADE_MODES.REFRESH,
                     this.config.viewId,
                     {
-                        data: this.value
+                        data: { ...this.returnValue, ...this.value}
                     }
                 )
             );

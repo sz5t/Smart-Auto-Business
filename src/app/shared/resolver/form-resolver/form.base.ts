@@ -344,13 +344,18 @@ export class CnFormBase extends CnComponentBase {
             //         '存储过程返回结果异常：未获得输出的消息内容'
             //     );
             // }
-            if (valueObj) {
-                this.returnValue = valueObj;
+            this.returnValue = valueObj;
+            if (this.returnValue) {
                 const childrenConfig = ajaxConfig.filter(
                     f => f.parentName && f.parentName === c.name
                 );
-                //  目前紧支持一次执行一个分之步骤
-                this.getAjaxConfig(childrenConfig[0], ajaxConfig, callback);
+                if (Array.isArray(childrenConfig) && childrenConfig.length > 0) {
+                    //  目前紧支持一次执行一个分之步骤
+                    this.getAjaxConfig(childrenConfig[0], ajaxConfig, callback);
+                } else {
+                    callback();
+                }
+                
             }
 
         } else {

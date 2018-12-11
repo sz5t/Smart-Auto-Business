@@ -260,6 +260,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
                             this.addNewRow();
                         break;
                     case BSN_COMPONENT_MODES.CREATE_CHILD:
+                    
                         this.beforeOperation.operationItemData = this.selectedItem;
                         !this.beforeOperation.beforeItemDataOperation(option) &&
                             this.addNewChildRow();
@@ -612,7 +613,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
     private _setChildRow(newRowData, parentId) {
         if (this.dataList) {
             const parentIndex = this.dataList.findIndex(d => d.Id === parentId);
-            if (parentIndex > 0) {
+            if (parentIndex > -1) {
                 const level = this.dataList[parentIndex]['level'];
                 if (level > 0) {
                     newRowData['level'] = level + 1;

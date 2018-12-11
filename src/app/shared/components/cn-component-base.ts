@@ -82,7 +82,7 @@ export class CnComponentBase {
         }
 
         if (this._cascadeSubscriptions) {
-            this.statusSubscriptions.unsubscribe();
+            this._cascadeSubscriptions.unsubscribe();
         }
     }
 
