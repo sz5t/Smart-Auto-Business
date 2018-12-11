@@ -13,7 +13,9 @@ import {
     OnDestroy,
     Inject,
     TemplateRef,
-    ViewChild
+    ViewChild,
+    Output,
+    EventEmitter
 } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/utility/api-service';
@@ -133,7 +135,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     public _checkItemList = [];
     public dropdown: NzDropdownContextComponent;
     public _selectedNode = {};
-    
+    @Output() public updateValue = new EventEmitter();
     constructor(
         private _http: ApiService,
         private _cacheService: CacheService,
@@ -754,6 +756,9 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
             ...this._toTreeBefore.find(n => n.key === e.node.key)
         };
         this.selectedItem = this.tempValue['_selectedNode'];
+       
+        // liu 20181210
+        this.updateValue.emit( this.selectedItem);
     };
 
     public checkboxChange = e => {

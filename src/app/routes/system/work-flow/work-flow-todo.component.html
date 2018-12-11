@@ -1,11 +1,25 @@
 <page-header [title]=""></page-header>
+<p>测试多选</p>
+<nz-tag *ngFor="let tag of tags; let i = index;" [nzMode]="i === 0 ? 'default' : 'closeable'" (nzAfterClose)="handleClose(tag)">
+    {{ sliceTagName(tag) }}
+</nz-tag>
+<nz-tag *ngIf="!inputVisible" class="editable-tag" (click)="showInput()">
+    <i nz-icon type="plus"></i> New Tag
+</nz-tag>
+<input #inputElement nz-input nzSize="small" *ngIf="inputVisible" type="text" [(ngModel)]="inputValue1" style="width: 78px;"
+    (blur)="handleInputConfirm()" (keydown.enter)="handleInputConfirm()">
+<hr>
 
-        <hr>
-        <ng-container *ngTemplateOutlet="svk; context: myContext"></ng-container>
-        <hr>
+
+<cn-form-input-select></cn-form-input-select>
+<hr>
+<ng-container *ngTemplateOutlet="svk; context: myContext"></ng-container>
+<hr>
 
 
-        <ng-template #svk let-person="localSk"><span> {{person}}!</span></ng-template>
+<ng-template #svk let-person="localSk">
+    <span> {{person}}!</span>
+</ng-template>
 
 <ng-template #defaultTabButtons let-person="children">
     <tr>
@@ -15,7 +29,7 @@
 
 <table>
     <ng-template ngFor let-data [ngForOf]="liu_list">
-            {{data||json}}
+        {{data||json}}
         <ng-container *ngTemplateOutlet="defaultTabButtons; context: data">
         </ng-container>
     </ng-template>

@@ -4,7 +4,7 @@
     <nz-card [nzTitle]="formTitle ? title : false" nzType="inner">
         <form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form" >
             <ng-container *ngFor="let formItem of config.forms">
-                <div nz-row [nzGutter]="24">
+                <div nz-row [nzGutter]="24"  *ngIf="!formItem.hidden">
                     <ng-container *ngFor="let control of formItem.controls">
                         <ng-container *ngIf="!control.hidden">
                             <!-- 垂直表单布局-->

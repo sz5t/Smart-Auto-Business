@@ -1,5 +1,5 @@
 <p>
-  cn-form-input-select works!
+  cn-form-input-select works!参考文本值组件
 </p>
 <input nz-input
 (ngModelChange)="valueChange($event)"
@@ -15,3 +15,18 @@ disabled="{{config.disabled}}"
 <button nz-button  (click)="showModal()">
   <i class="anticon anticon-edit"></i>
 </button>
+
+
+<nz-modal [(nzVisible)]="isVisible" [nzWidth]="config.select.nzWidth" [nzTitle]="config.select.title" (nzOnCancel)="handleCancel()"
+    (nzOnOk)="handleOk()">
+    <p>测试多选</p>
+<nz-tag *ngFor="let tag of tags; let i = index;" [nzMode]="i === 0 ? 'default' : 'closeable'" (nzAfterClose)="handleClose(tag)">
+    {{ sliceTagName(tag) }}
+</nz-tag>
+<hr>
+
+    <cn-bsn-tree #tree [config]="select[2].config"    (updateValue)="valueChangeByModal($event)"></cn-bsn-tree>
+    <cn-bsn-table #table [config]="select[0].config.selectGrid" [bsnData]="bsnData" [casadeData]="casadeData"  [permissions]="permissions"  (updateValue)="valueChangeByModal($event)"> </cn-bsn-table>
+    <hr>
+    <input nz-input placeholder="参考文本值" [(ngModel)]="ck_value">
+</nz-modal>

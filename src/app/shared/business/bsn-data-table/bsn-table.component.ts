@@ -19,7 +19,9 @@ import {
     OnDestroy,
     Type,
     Inject,
-    AfterViewInit
+    AfterViewInit,
+    Output,
+    EventEmitter
 } from '@angular/core';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { CommonTools } from '@core/utility/common-tools';
@@ -83,7 +85,7 @@ export class BsnTableComponent extends CnComponentBase
     @Input()
     public ref;
     // tempValue = {};
-
+    @Output() public updateValue = new EventEmitter();
     public loading = false;
     public pageIndex = 1;
     public pageSize = 10;
@@ -1585,7 +1587,7 @@ export class BsnTableComponent extends CnComponentBase
                                     }
                                 );
                                 if (result) {
-                                    
+
                                 }
                             })();
                         } else if (btn['name'] === 'close') {
@@ -1804,122 +1806,122 @@ export class BsnTableComponent extends CnComponentBase
     * 2、值类型的结果可以设置多个
     * 3、表类型的返回结果可以设置多个
     */
-   public outputParametersResolver(c, response, ajaxConfig, callback) {
-    const result = false;
-    if (response.isSuccess) {
+    public outputParametersResolver(c, response, ajaxConfig, callback) {
+        const result = false;
+        if (response.isSuccess) {
 
-        const msg =
-            c.outputParams[
-            c.outputParams.findIndex(
-                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
-            )
-            ];
-        const value =
-            c.outputParams[
-            c.outputParams.findIndex(
-                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
-            )
-            ];
-        const table =
-            c.outputParams[
-            c.outputParams.findIndex(
-                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
-            )
-            ];
-        const msgObj = msg
-            ? response.data[msg.name].split(':')
-            : null;
-        const valueObj = response.data ? response.data : {};
-        // const tableObj = response.data[table.name] ? response.data[table.name] : [];
-        if (msgObj && msgObj.length > 1) {
-            const messageType = msgObj[0];
-            let options;
-            switch (messageType) {
-                case 'info':
-                    options = {
-                        nzTitle: '提示',
-                        nzWidth: '350px',
-                        nzContent: msgObj[1]
-                    };
-                    this.baseModal[messageType](options);
-                    break;
-                case 'error':
-                    options = {
-                        nzTitle: '提示',
-                        nzWidth: '350px',
-                        nzContent: msgObj[1]
-                    };
-                    this.baseModal[messageType](options);
-                    break;
-                case 'confirm':
-                    options = {
-                        nzTitle: '提示',
-                        nzContent: msgObj[1],
-                        nzOnOk: () => {
-                            // 是否继续后续操作，根据返回状态结果
-                            const childrenConfig = ajaxConfig.filter(
-                                f => f.parentName && f.parentName === c.name
-                            );
-                            //  目前紧支持一次执行一个分之步骤
-                            this._getAjaxConfig(childrenConfig[0], ajaxConfig);
-                            // childrenConfig &&
-                            //     childrenConfig.map(currentAjax => {
-                            //         this.getAjaxConfig(
-                            //             currentAjax,
-                            //             ajaxConfig,
-                            //             callback
-                            //         );
-                            //     });
-                        },
-                        nzOnCancel: () => { }
-                    };
-                    this.baseModal[messageType](options);
-                    break;
-                case 'warning':
-                    options = {
-                        nzTitle: '提示',
-                        nzWidth: '350px',
-                        nzContent: msgObj[1]
-                    };
-                    this.baseModal[messageType](options);
-                    break;
-                case 'success':
-                    options = {
-                        nzTitle: '',
-                        nzWidth: '350px',
-                        nzContent: msgObj[1]
-                    };
-                    this.baseMessage.success(msgObj[1]);
-                    callback && callback();
-                    break;
+            const msg =
+                c.outputParams[
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
+                )
+                ];
+            const value =
+                c.outputParams[
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
+                )
+                ];
+            const table =
+                c.outputParams[
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
+                )
+                ];
+            const msgObj = msg
+                ? response.data[msg.name].split(':')
+                : null;
+            const valueObj = response.data ? response.data : {};
+            // const tableObj = response.data[table.name] ? response.data[table.name] : [];
+            if (msgObj && msgObj.length > 1) {
+                const messageType = msgObj[0];
+                let options;
+                switch (messageType) {
+                    case 'info':
+                        options = {
+                            nzTitle: '提示',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.baseModal[messageType](options);
+                        break;
+                    case 'error':
+                        options = {
+                            nzTitle: '提示',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.baseModal[messageType](options);
+                        break;
+                    case 'confirm':
+                        options = {
+                            nzTitle: '提示',
+                            nzContent: msgObj[1],
+                            nzOnOk: () => {
+                                // 是否继续后续操作，根据返回状态结果
+                                const childrenConfig = ajaxConfig.filter(
+                                    f => f.parentName && f.parentName === c.name
+                                );
+                                //  目前紧支持一次执行一个分之步骤
+                                this._getAjaxConfig(childrenConfig[0], ajaxConfig);
+                                // childrenConfig &&
+                                //     childrenConfig.map(currentAjax => {
+                                //         this.getAjaxConfig(
+                                //             currentAjax,
+                                //             ajaxConfig,
+                                //             callback
+                                //         );
+                                //     });
+                            },
+                            nzOnCancel: () => { }
+                        };
+                        this.baseModal[messageType](options);
+                        break;
+                    case 'warning':
+                        options = {
+                            nzTitle: '提示',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.baseModal[messageType](options);
+                        break;
+                    case 'success':
+                        options = {
+                            nzTitle: '',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.baseMessage.success(msgObj[1]);
+                        callback && callback();
+                        break;
+                }
+                // if(options) {
+                //     this.modalService[messageType](options);
+                //
+                //     // 如果成功则执行回调
+                //     if(messageType === 'success') {
+                //         callback && callback();
+                //     }
+                // }
             }
-            // if(options) {
-            //     this.modalService[messageType](options);
-            //
-            //     // 如果成功则执行回调
-            //     if(messageType === 'success') {
-            //         callback && callback();
-            //     }
+            // else {
+            //     this.baseMessage.error(
+            //         '存储过程返回结果异常：未获得输出的消息内容'
+            //     );
             // }
-        } 
-        // else {
-        //     this.baseMessage.error(
-        //         '存储过程返回结果异常：未获得输出的消息内容'
-        //     );
-        // }
-        if (valueObj) {
-            this.returnValue = valueObj;
-            const childrenConfig = ajaxConfig.filter(
-                f => f.parentName && f.parentName === c.name
-            );
-            //  目前紧支持一次执行一个分之步骤
-            this._getAjaxConfig(childrenConfig[0], ajaxConfig);
-        }
+            if (valueObj) {
+                this.returnValue = valueObj;
+                const childrenConfig = ajaxConfig.filter(
+                    f => f.parentName && f.parentName === c.name
+                );
+                //  目前紧支持一次执行一个分之步骤
+                this._getAjaxConfig(childrenConfig[0], ajaxConfig);
+            }
 
-    } else {
-        this.baseMessage.error('操作异常：', response.message);
+        } else {
+            this.baseMessage.error('操作异常：', response.message);
+        }
     }
-}
 
     private async _executeAjaxConfig(ajaxConfigObj, handleData) {
         if (Array.isArray(handleData)) {
@@ -2140,6 +2142,9 @@ export class BsnTableComponent extends CnComponentBase
                     : 'Id'
             ];
         }
+
+        // liu 20181210
+        this.updateValue.emit(this._selectRow);
     }
 
     // liu 赋值选中
@@ -3331,9 +3336,9 @@ export class BsnTableComponent extends CnComponentBase
             // console.log('级联结果数据集', this.changeConfig_new);
         }
 
-       // console.log('值变化后的数据结构', this.search_Row, this._buildSearch(), this.changeConfig_newSearch);
-       // console.log('查询缓存数据', this.editCache[data.key]);
+        // console.log('值变化后的数据结构', this.search_Row, this._buildSearch(), this.changeConfig_newSearch);
+        // console.log('查询缓存数据', this.editCache[data.key]);
         this.load();
-      
+
     }
 }

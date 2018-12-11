@@ -33,10 +33,10 @@ import {
 export class WorkFlowTodoComponent implements OnInit {
     // #table
     @ViewChild('table')
-    table: BsnTableComponent;
-    myContext = { $name1: 'World', localSk: 'Svet' };
+    public table: BsnTableComponent;
+    public myContext = { $name1: 'World', localSk: 'Svet' };
 
-    liu_list = [
+    public liu_list = [
         {
             Id: '1', name: '001', children:
                 { Id: '2', name: '001001' }
@@ -49,7 +49,7 @@ export class WorkFlowTodoComponent implements OnInit {
         }
     ];
 
-    configold = {
+    public configold = {
         rows: [
             {
                 row: {
@@ -6449,8 +6449,8 @@ export class WorkFlowTodoComponent implements OnInit {
             {
                 controls: [
                     {
-                        type: 'input',
-                        selectTreeGrids: 'selectGrid selectTreeGrid caseName',
+                        type: 'selectGridMultiple',
+                        selectTreeGrids: 'selectGrid selectTreeGrid caseName selectGridMultiple',
                         labelSize: '6',
                         controlSize: '16',
                         inputType: 'text',
@@ -7545,6 +7545,369 @@ export class WorkFlowTodoComponent implements OnInit {
                     }
                 }
 
+            },
+            {
+                name: 'caseName',
+                type: 'selectGridMultiple',
+                config: {
+                    nzWidth: 768,
+                    title: '多选列表',
+                    selectGridMultiple: {
+                        title: '扫码数据',
+                        viewId: 'businesskey_Table_ck',
+                        component: 'bsnTable',
+                        keyId: 'Id',
+                        pagination: true, // 是否分页
+                        showTotal: true, // 是否显示总数据量
+                        pageSize: 5, // 默pageSizeOptions认每页数据条数
+                        isSelectGrid: true, // 【弹出表格时用】弹出表格值为true
+                        selectGridValueName: 'Id', // 【弹出表格时用】指定绑定的value值
+                        pageSizeOptions: [
+                            5,
+                            10,
+                            20,
+                            30,
+                            40,
+                            50
+                        ],
+                        ajaxConfig: {
+                            url: 'common/CfgTable',
+                            ajaxType: 'get',
+                            params: [
+                                {
+                                    name: '_sort',
+                                    type: 'value',
+                                    valueName: '',
+                                    value: 'createDate desc'
+                                }
+                            ]
+                        },
+                        componentType: {
+                            parent: false,
+                            child: true,
+                            own: true
+                        },
+                        relations: [
+                            {
+                                relationViewId: 'tree_and_form_form',
+                                cascadeMode: 'Scan_Code_ROW',
+                                params: [
+                                    { pid: 'ScanCode', cid: '_ScanCode' },
+                                    { pid: 'ScanCodeObject', cid: '_ScanCodeObject' }
+                                ],
+                                relationReceiveContent: []
+                            },
+                            // {
+                            //   relationViewId: 'tree_and_form_form',
+                            //   cascadeMode: 'Scan_Code_Locate_ROW',
+                            //   params: [
+                            //     { pid: 'ScanCode', cid: '_ScanCode' },
+                            //     { pid: 'ScanCodeObject', cid: '_ScanCodeObject' }
+                            //   ],
+                            //   relationReceiveContent: []
+                            // }
+                        ],
+                        columns: [
+                            {
+                                title: 'Id',
+                                field: 'Id',
+                                width: 80,
+                                hidden: true,
+                                editor: {
+                                    type:
+                                        'input',
+                                    field: 'Id',
+                                    options: {
+                                        type:
+                                            'input',
+                                        labelSize:
+                                            '6',
+                                        controlSize:
+                                            '18',
+                                        inputType:
+                                            'text'
+                                    }
+                                },
+                                // searcheditor: {
+                                //     type: 'input',
+                                //     field: 'Id',
+                                //     options: {
+                                //         type: 'input',
+                                //         labelSize: '6',
+                                //         controlSize: '18',
+                                //         inputType: 'text'
+                                //     }
+                                // }
+                            },
+                            {
+                                title: '名称',
+                                field: 'name',
+                                width: 80,
+                                showFilter: false,
+                                showSort: false,
+                                /*  editor: {
+                                     type:
+                                         'input',
+                                     field:
+                                         'name',
+                                     options: {
+                                         type:
+                                             'input',
+                                         labelSize:
+                                             '6',
+                                         controlSize:
+                                             '18',
+                                         inputType:
+                                             'text'
+                                     }
+                                 },
+                                 searcheditor: {
+                                     type: 'input',
+                                     field: 'name',
+                                     options: {
+                                         type: 'input',
+                                         labelSize: '6',
+                                         controlSize: '18',
+                                         inputType: 'text'
+                                     }
+                                 } */
+                            },
+                            {
+                                title: '编号',
+                                field: 'code',
+                                width: 80,
+                                showFilter: false,
+                                showSort: false,
+                                editor: {
+                                    type:
+                                        'input',
+                                    field:
+                                        'code',
+                                    options: {
+                                        type:
+                                            'input',
+                                        labelSize:
+                                            '6',
+                                        controlSize:
+                                            '18',
+                                        inputType:
+                                            'text'
+                                    }
+                                },
+                                // searcheditor: {
+                                //     type: 'input',
+                                //     field: 'code',
+                                //     options: {
+                                //         type: 'input',
+                                //         labelSize: '6',
+                                //         controlSize: '18',
+                                //         inputType: 'text'
+                                //     }
+                                // }
+                            },
+
+                            {
+                                title: '备注',
+                                field: 'remark1',
+                                width: 80,
+                                hidden: false,
+                                editor: {
+                                    type:
+                                        'search',
+                                    field:
+                                        'remark1',
+                                    options: {
+                                        type:
+                                            'search',
+                                        labelSize:
+                                            '6',
+                                        controlSize:
+                                            '18',
+                                        inputType:
+                                            'text'
+                                    }
+                                },
+                                searcheditor: {
+                                    type: 'number',
+                                    field: 'remark1',
+                                    options: {
+                                        type: 'number',
+                                        labelSize: '6',
+                                        controlSize: '18',
+                                        inputType: 'text'
+                                    }
+                                }
+                            },
+                            {
+                                title: '备注',
+                                field: 'remark',
+                                width: 80,
+                                hidden: false,
+                                editor: {
+                                    type:
+                                        'input',
+                                    field:
+                                        'remark',
+                                    options: {
+                                        type:
+                                            'input',
+                                        labelSize:
+                                            '6',
+                                        controlSize:
+                                            '18',
+                                        inputType:
+                                            'text'
+                                    }
+                                },
+                                searcheditor: {
+                                    type: 'input',
+                                    field: 'remark',
+                                    options: {
+                                        type: 'input',
+                                        labelSize: '6',
+                                        controlSize: '18',
+                                        inputType: 'text'
+                                    }
+                                }
+                            },
+                            {
+                                title:
+                                    '创建时间',
+                                field:
+                                    'createDate',
+                                width: 80,
+                                hidden: false,
+                                showSort: true,
+                                editor: {
+                                    type:
+                                        'input',
+                                    field:
+                                        'createDate',
+                                    options: {
+                                        type:
+                                            'input',
+                                        labelSize:
+                                            '6',
+                                        controlSize:
+                                            '18',
+                                        inputType:
+                                            'text'
+                                    }
+                                },
+                                searcheditor: {
+                                    type: 'input',
+                                    field: 'createDate',
+                                    options: {
+                                        type: 'input',
+                                        labelSize: '6',
+                                        controlSize: '18',
+                                        inputType: 'text'
+                                    }
+                                }
+                            },
+                            {
+                                title: '操作',
+                                field: 'action',
+                                width: 80,
+                                type: 'button',
+                                toolbar: [
+                                    {   // 描述行状态 来展示 操作
+                                        rowState: {
+                                            type: true, // 是否启用 规则校验
+                                            // 校验条件
+                                        },
+                                        group: [
+                                            {
+                                                name: 'del',
+                                                class: 'editable-add-btn',
+                                                text: '删除',
+                                                action: 'DELETEROW',
+                                                cancelPermission: true
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        toolbar: [
+                            {
+                                group: [
+                                    {
+                                        name:
+                                            'refresh',
+                                        class:
+                                            'editable-add-btn',
+                                        text:
+                                            '刷新',
+                                        cancelPermission: true
+                                    },
+                                    {
+                                        name:
+                                            'addSearchRow',
+                                        class:
+                                            'editable-add-btn',
+                                        text:
+                                            '查询',
+                                        action:
+                                            'SEARCH',
+                                        actionType:
+                                            'addSearchRow',
+                                        actionName:
+                                            'addSearchRow',
+                                        cancelPermission: true
+                                    },
+                                    {
+                                        name:
+                                            'cancelSearchRow',
+                                        class:
+                                            'editable-add-btn',
+                                        text:
+                                            '取消查询',
+                                        action:
+                                            'SEARCH',
+                                        actionType:
+                                            'cancelSearchRow',
+                                        actionName:
+                                            'cancelSearchRow',
+                                        cancelPermission: true
+                                    },
+                                    {
+                                        name:
+                                            'cancelSelectRow',
+                                        class:
+                                            'editable-add-btn',
+                                        text:
+                                            '取消选中',
+                                        action:
+                                            'CANCEL_SELECTED',
+                                        cancelPermission: true
+                                    }
+                                ]
+                            }
+                        ],
+                        ScanCode: {
+                            addRow: {
+                                viewId: '', // 关系id 扩充后可多扫码适配
+                                columns: [
+                                    { field: 'name', type: 'tempValue', valueType: 'array', arrayName: '_ScanCodeObject', getValueType: 'first', valueName: 'name', value: '' },
+                                    { field: 'code', type: 'tempValue', valueType: 'value', valueName: '_ScanCode', value: '' },
+                                    { field: 'remark', type: 'value', valueType: 'value', value: 'remarkzhi' },
+                                    { field: 'createDate', type: 'tempValue', valueType: 'array', arrayName: '_ScanCodeObject', getValueType: 'first', valueName: 'createDate', value: '' }
+                                ]
+                            },
+                            locateRow: {
+                                columns: [
+                                    { field: 'Id', type: 'tempValue', valueType: 'value', valueName: '_ScanCode', value: '' },
+                                ],
+                                event: {
+                                    // 执行的操作,自行处理
+
+                                }
+                            }
+                        }
+                    }
+                }
+
             }
         ],
         cascadeRelation: [
@@ -7634,6 +7997,39 @@ export class WorkFlowTodoComponent implements OnInit {
 
     public click_rowButton() {
         console.log('点击按钮');
+    }
+
+    // tslint:disable-next-line:member-ordering
+    public tags = ['Unremovable', 'Tag 2', 'Tag 3'];
+    // tslint:disable-next-line:member-ordering
+    public inputVisible = false;
+    // tslint:disable-next-line:member-ordering
+    private inputValue1 = '';
+    // tslint:disable-next-line:member-ordering
+    @ViewChild('inputElement') public inputElement: ElementRef;
+
+    public handleClose(removedTag: {}): void {
+        this.tags = this.tags.filter(tag => tag !== removedTag);
+    }
+
+    public sliceTagName(tag: string): string {
+        const isLongTag = tag.length > 20;
+        return isLongTag ? `${tag.slice(0, 20)}...` : tag;
+    }
+
+    public showInput(): void {
+        this.inputVisible = true;
+        setTimeout(() => {
+            this.inputElement.nativeElement.focus();
+        }, 10);
+    }
+
+    public handleInputConfirm(): void {
+        if (this.inputValue1 && this.tags.indexOf(this.inputValue1) === -1) {
+            this.tags.push(this.inputValue1);
+        }
+        this.inputValue1 = '';
+        this.inputVisible = false;
     }
 
 
