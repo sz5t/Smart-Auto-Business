@@ -344,7 +344,6 @@ export class CnFormBase extends CnComponentBase {
             //         '存储过程返回结果异常：未获得输出的消息内容'
             //     );
             // }
-            debugger;
             this.returnValue = valueObj;
             if (this.returnValue) {
                 const childrenConfig = ajaxConfig.filter(
