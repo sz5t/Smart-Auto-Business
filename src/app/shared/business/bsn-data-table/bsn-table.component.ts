@@ -138,6 +138,9 @@ export class BsnTableComponent extends CnComponentBase
     ) {
         super();
         this.apiResource = this._http;
+        this.baseMessage = this._message;
+        this.baseModal = this.modalService;
+        this.cacheValue = this.cacheService;
     }
 
     public ngOnInit() {
@@ -190,9 +193,6 @@ export class BsnTableComponent extends CnComponentBase
             for (const p in this.ref) {
                 this.tempValue[p] = this.ref[p];
             }
-        }
-        if (this.cacheService) {
-            this.cacheValue = this.cacheService;
         }
         if (this.config.dataSet) {
             (async () => {
@@ -262,8 +262,8 @@ export class BsnTableComponent extends CnComponentBase
         // 初始化前置条件验证对象
         this.beforeOperation = new BeforeOperation({
             config: this.config,
-            message: this._message,
-            modal: this.modalService,
+            message: this.baseMessage,
+            modal: this.baseModal,
             tempValue: this.tempValue,
             initValue: this.initValue,
             cacheValue: this.cacheValue.get('userInfo').value
@@ -661,11 +661,11 @@ export class BsnTableComponent extends CnComponentBase
                     submitData
                 );
                 if (response && response.status === 200 && response.isSuccess) {
-                    this._message.create('success', '保存成功');
+                    this.baseMessage.create('success', '保存成功');
                     this.focusIds = this._getFocusIds(response.data);
                     isSuccess = true;
                 } else {
-                    this._message.create('error', response.message);
+                    this.baseMessage.create('error', response.message);
                 }
             }
             if (isSuccess) {
@@ -778,10 +778,10 @@ export class BsnTableComponent extends CnComponentBase
                 });
                 const response = await this[option.type](cfg[i].url, newParam);
                 if (response.isSuccess) {
-                    this._message.create('success', '执行成功');
+                    this.baseMessage.create('success', '执行成功');
                     isSuccess = true;
                 } else {
-                    this._message.create('error', response.message);
+                    this.baseMessage.create('error', response.message);
                 }
             }
             this.load();
@@ -976,7 +976,7 @@ export class BsnTableComponent extends CnComponentBase
             }
         });
         if (checkedCount === 0) {
-            this._message.info('请勾选数据记录后进行编辑');
+            this.baseMessage.info('请勾选数据记录后进行编辑');
         }
     }
 
@@ -1400,15 +1400,15 @@ export class BsnTableComponent extends CnComponentBase
 
     public executeSelectedRow(option) {
         if (!this._selectRow) {
-            this._message.create('info', '请选选择要执行的数据');
+            this.baseMessage.create('info', '请选选择要执行的数据');
             return false;
         }
-        this.modalService.confirm({
+        this.baseModal.confirm({
             nzTitle: '是否将选中的数据执行当前操作？',
             nzContent: '',
             nzOnOk: () => {
                 if (this._selectRow['row_status'] === 'adding') {
-                    this._message.create('info', '当前数据未保存无法进行处理');
+                    this.baseMessage.create('info', '当前数据未保存无法进行处理');
                     return false;
                 }
 
@@ -1420,10 +1420,10 @@ export class BsnTableComponent extends CnComponentBase
 
     public executeCheckedRow(option) {
         if (this.dataList.filter(item => item.checked === true).length <= 0) {
-            this._message.create('info', '请选择要执行的数据');
+            this.baseMessage.create('info', '请选择要执行的数据');
             return false;
         }
-        this.modalService.confirm({
+        this.baseModal.confirm({
             nzTitle: '是否将选中的数据执行当前操作？',
             nzContent: '',
             nzOnOk: () => {
@@ -1459,14 +1459,14 @@ export class BsnTableComponent extends CnComponentBase
 
     public deleteRow(option) {
         if (this.dataList.filter(item => item.checked === true).length <= 0) {
-            this._message.create('info', '请选择要删除的数据');
+            this.baseMessage.create('info', '请选择要删除的数据');
         } else {
             if (
                 option.ajaxConfig.delete &&
                 option.ajaxConfig.delete.length > 0
             ) {
                 option.ajaxConfig.delete.map(async delConfig => {
-                    this.modalService.confirm({
+                    this.baseModal.confirm({
                         nzTitle: delConfig.title ? delConfig.title : '提示',
                         nzContent: delConfig.message ? delConfig.message : '',
                         nzOnOk: () => {
@@ -1513,7 +1513,7 @@ export class BsnTableComponent extends CnComponentBase
         };
         const response = await this['delete'](deleteConfig.url, params);
         if (response && response.status === 200 && response.isSuccess) {
-            this._message.create('success', '删除成功');
+            this.baseMessage.create('success', '删除成功');
             isSuccess = true;
             this.focusIds = null;
             this.load();
@@ -1529,7 +1529,7 @@ export class BsnTableComponent extends CnComponentBase
                 );
             }
         } else {
-            this._message.create('error', response.message);
+            this.baseMessage.create('error', response.message);
         }
 
         return isSuccess;
@@ -1544,7 +1544,7 @@ export class BsnTableComponent extends CnComponentBase
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
             const selectedRow = this._selectRow ? this._selectRow : {};
             const tmpValue = this.tempValue ? this.tempValue : {};
-            const modal = this.modalService.create({
+            const modal = this.baseModal.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
                 nzContent: component['layout'],
@@ -1654,7 +1654,7 @@ export class BsnTableComponent extends CnComponentBase
                         this.dataList.filter(item => item.checked === true)
                             .length <= 0
                     ) {
-                        this._message.create('info', '请选择要执行的数据');
+                        this.baseMessage.create('info', '请选择要执行的数据');
                         return false;
                     }
                     handleData = this._getCheckedItems();
@@ -1667,7 +1667,7 @@ export class BsnTableComponent extends CnComponentBase
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_SELECTED:
                     if (this._selectRow['row_status'] === 'adding') {
-                        this._message.create(
+                        this.baseMessage.create(
                             'info',
                             '当前数据未保存无法进行处理'
                         );
@@ -1686,7 +1686,7 @@ export class BsnTableComponent extends CnComponentBase
                         this.dataList.filter(item => item.checked === true)
                             .length <= 0
                     ) {
-                        this._message.create('info', '请选择要执行的数据');
+                        this.baseMessage.create('info', '请选择要执行的数据');
                         return false;
                     }
                     handleData = this._getCheckItemsId();
@@ -1715,7 +1715,7 @@ export class BsnTableComponent extends CnComponentBase
                     break;
             }
             if (c.message) {
-                this.modalService.confirm({
+                this.baseModal.confirm({
                     nzTitle: c.title ? c.title : '提示',
                     nzContent: c.message ? c.message : '',
                     nzOnOk: () => {
@@ -1894,7 +1894,7 @@ export class BsnTableComponent extends CnComponentBase
                     break;
             }
             // if(options) {
-            //     this.modalService[messageType](options);
+            //     this.baseMessage[messageType](options);
             //
             //     // 如果成功则执行回调
             //     if(messageType === 'success') {
@@ -2004,10 +2004,10 @@ export class BsnTableComponent extends CnComponentBase
                 }
                 const response = await this[option.type](cfg[i].url, params);
                 if (response.isSuccess) {
-                    this._message.create('success', '执行成功');
+                    this.baseMessage.create('success', '执行成功');
                     isSuccess = true;
                 } else {
-                    this._message.create('error', response.message);
+                    this.baseMessage.create('error', response.message);
                 }
             }
             this.load();
@@ -2485,7 +2485,7 @@ export class BsnTableComponent extends CnComponentBase
                 ...this.tempValue,
                 checkedId: checkedIds
             };
-            const modal = this.modalService.create({
+            const modal = this.baseModal.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
                 nzContent: component['form'],
@@ -2523,7 +2523,7 @@ export class BsnTableComponent extends CnComponentBase
                 });
             }
         } else {
-            this._message.create('warning', '请先选中需要处理的数据');
+            this.baseMessage.create('warning', '请先选中需要处理的数据');
         }
     }
     /**
@@ -2545,21 +2545,21 @@ export class BsnTableComponent extends CnComponentBase
                 }
             });
             if (rs.success) {
-                this._message.success(message);
+                this.baseMessage.success(message);
                 if (callback) {
                     callback();
                 }
             } else {
-                this._message.error(rs.msg.join('<br/>'));
+                this.baseMessage.error(rs.msg.join('<br/>'));
             }
         } else {
             if (result.isSuccess) {
-                this._message.success(message);
+                this.baseMessage.success(message);
                 if (callback) {
                     callback();
                 }
             } else {
-                this._message.error(result.message);
+                this.baseMessage.error(result.message);
             }
         }
     }
@@ -2573,7 +2573,7 @@ export class BsnTableComponent extends CnComponentBase
         if (dialog.type === 'add') {
         } else if (dialog.type === 'edit') {
             if (!this._selectRow) {
-                this._message.warning('请选中一条需要添加附件的记录！');
+                this.baseMessage.warning('请选中一条需要添加附件的记录！');
                 return false;
             }
         }
@@ -2587,7 +2587,7 @@ export class BsnTableComponent extends CnComponentBase
         };
 
         const footer = [];
-        const modal = this.modalService.create({
+        const modal = this.baseModal.create({
             nzTitle: dialog.title,
             nzWidth: dialog.width,
             nzContent: component['form'],
@@ -2647,7 +2647,7 @@ export class BsnTableComponent extends CnComponentBase
      */
     private openUploadDialog(dialog) {
         if (!this._selectRow) {
-            this._message.warning('请选中一条需要添加附件的记录！');
+            this.baseMessage.warning('请选中一条需要添加附件的记录！');
             return false;
         }
         const footer = [];
@@ -2655,7 +2655,7 @@ export class BsnTableComponent extends CnComponentBase
             _id: this._selectRow[dialog.keyId],
             _parentId: this.tempValue['_parentId']
         };
-        const modal = this.modalService.create({
+        const modal = this.baseModal.create({
             nzTitle: dialog.title,
             nzWidth: dialog.width,
             nzContent: component['upload'],
