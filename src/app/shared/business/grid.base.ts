@@ -882,7 +882,7 @@ export class GridBase extends CnComponentBase {
             nzWidth: dialog.width,
             nzContent: BsnUploadComponent,
             nzComponentParams: {
-                config: dialog,
+                config: dialog.ajaxConfig,
                 refObj: obj
             },
             nzFooter: footer

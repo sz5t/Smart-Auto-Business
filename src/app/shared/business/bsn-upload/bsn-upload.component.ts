@@ -104,15 +104,21 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
             formData.append(`remark_${index}`, this.remark);
         });
         formData.append('refDataId', this.refObj._id);
-        this.uploading = true;
+        setTimeout(() => {
+            this.uploading = true;
+        });
         this._apiService.post(this.config.url, formData).subscribe(
             result => {
-                this.uploading = false;
+                setTimeout(() => {
+                    this.uploading = false;    
+                });
                 this._message.success('上传成功！');
                 this.loadUploadList();
             },
             error => {
-                this.uploading = false;
+                setTimeout(() => {
+                    this.uploading = false;    
+                });
                 this._message.error('上传失败！');
             }
         );

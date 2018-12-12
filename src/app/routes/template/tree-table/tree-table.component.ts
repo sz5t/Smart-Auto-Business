@@ -5173,7 +5173,7 @@ export class TreeTableComponent implements OnInit {
                                                     ajaxType: 'post',
                                                     params: [
                                                         {
-                                                            name: 'Id',
+                                                            name: 'refDataId',
                                                             type: 'tempValue',
                                                             valueName: '_id'
                                                         }
