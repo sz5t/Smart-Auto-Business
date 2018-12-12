@@ -79,7 +79,7 @@
                                     <span>{{!col.dataType?data[col.field]:data[col.field] | date}}</span>
                                 </div>
                                 <ng-container [bsnData]="tempValue" [initData]="initData" [rowData]="editCache[data.key].data" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
-                                    CnGridEditorDirective *ngIf="editCache[data.key].edit" [config]="col.editor.options" [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field]?editCache[data.key].data[col.editor.field]:undefined,dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
+                                    CnGridEditorDirective *ngIf="editCache[data.key].edit" [config]="col.editor.options" [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field],dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
                                     [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
                                     (updateValue)="valueChange($event)">
                                 </ng-container>
