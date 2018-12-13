@@ -59,18 +59,23 @@ export class CommonTools {
                                 // 判断组件取值是否为null
                                 if (
                                     model.componentValue[param['valueName']] ===
-                                        null ||
+                                    null ||
                                     model.componentValue[param['valueName']] ===
-                                        undefined
+                                    undefined
                                 ) {
                                     if (param['value'] !== undefined) {
-                                        result[param['name']] = param['value'];
+                                        if (param['datatype']) {
+                                            result[param['name']] = this.getParameters(param['datatype'], param['value']);
+                                        } else {
+                                            result[param['name']] = param['value'];
+                                        }
                                     }
                                 } else {
-                                    result[param['name']] =
-                                        model.componentValue[
-                                            param['valueName']
-                                        ];
+                                    if (param['datatype']) {
+                                        result[param['name']] = this.getParameters(param['datatype'], model.componentValue[param['valueName']]);
+                                    } else {
+                                        result[param['name']] = model.componentValue[param['valueName']];
+                                    }
                                 }
 
                                 // if (
@@ -140,16 +145,16 @@ export class CommonTools {
                         case BSN_PARAMETER_TYPE.CASCADE_VALUE:
                             if (model.cascadeValue) {
                                 result[param['name']] =
-                                model.cascadeValue[param['valueName']];
+                                    model.cascadeValue[param['valueName']];
                             }
                             break;
                         case BSN_PARAMETER_TYPE.RETURN_VALUE:
                             if (model.returnValue) {
                                 result[param['name']] =
-                                model.returnValue[param['valueName']];
+                                    model.returnValue[param['valueName']];
                             }
-                        break;
-                            
+                            break;
+
                     }
                 }
             });
@@ -157,8 +162,61 @@ export class CommonTools {
         return result;
     }
 
+
     public static isString(obj) {
         // 判断对象是否是字符串
         return Object.prototype.toString.call(obj) === '[object String]';
+    }
+
+    // liu 20181213  参数简析[可适配后台多条件查询]
+    public static getParameters(datatype?, inputValue?) {
+        let strQ;
+        if (!inputValue) {
+            // return strQ;
+        }
+        switch (datatype) {
+            case 'eq': // =
+                strQ = strQ + 'eq(' + inputValue + ')';
+                break;
+            case 'neq': // !=
+                strQ = strQ + '!eq(' + inputValue + ')';
+                break;
+            case 'ctn': // like
+                strQ = strQ + 'ctn(\'%' + inputValue + '%\')';
+                break;
+            case 'nctn': // not like
+                strQ = strQ + '!ctn(\'%' + inputValue + '%\')';
+                break;
+            case 'in': // in  如果是input 是这样取值，其他则是多选取值
+                strQ = strQ + 'in(' + inputValue + ')';
+                break;
+            case 'nin': // not in  如果是input 是这样取值，其他则是多选取值
+                strQ = strQ + '!in(' + inputValue + ')';
+                break;
+            case 'btn': // between  
+                strQ = strQ + 'btn(' + inputValue + ')';
+                break;
+            case 'ge': // >=  
+                strQ = strQ + 'ge(' + inputValue + ')';
+                break;
+            case 'gt': // >  
+                strQ = strQ + 'gt(' + inputValue + ')';
+                break;
+            case 'le': // <=  
+                strQ = strQ + 'le(' + inputValue + ')';
+                break;
+            case 'lt': // <  
+                strQ = strQ + 'lt(' + inputValue + ')';
+                break;
+            default:
+                strQ = inputValue;
+                break;
+        }
+
+        if (!inputValue) {
+            strQ = null;
+        }
+        console.log('liu查询参数：', strQ);
+        return strQ;
     }
 }

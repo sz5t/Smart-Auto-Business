@@ -567,6 +567,35 @@ export class BsnTableComponent extends CnComponentBase
         console.log('异步获取当前值:', selectrowdata);
         return selectrowdata;
     }
+
+        // liu 20181212 获取 文本值，当前选中多行数据 返回的是数据集
+        public async loadByselectMultiple(
+            ajaxConfig,
+            componentValue?,
+            selecttempValue?,
+            cascadeValue?
+        ) {
+            const url = this._buildURL(ajaxConfig.url);
+            const params = {
+                ...this._buildParametersByselect(
+                    ajaxConfig.params,
+                    componentValue,
+                    selecttempValue,
+                    cascadeValue
+                )
+            };
+            let selectrowdata = [];
+            const loadData = await this._load(url, params);
+            if (loadData && loadData.status === 200 && loadData.isSuccess) {
+                if (loadData.data) {
+                    if (loadData.data.length > 0) {
+                        selectrowdata = loadData.data;
+                    }
+                }
+            }
+            console.log('异步获取当前值集合[]:', selectrowdata);
+            return selectrowdata;
+        }
     // 构建获取文本值参数
     private _buildParametersByselect(
         paramsConfig,

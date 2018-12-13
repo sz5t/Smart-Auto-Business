@@ -28,8 +28,16 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
   public _value;
   public _valuetext;
   public permissions = [];
+
+  public tags = [];
+  // 缓存
+  public tags_mode = [];
+  public inputVisible = false;
+  private inputValue1 = '';
+
   constructor() { }
   public nzWidth = 1024;
+
   // 模板配置
 
   public ngOnInit(): void {
@@ -81,7 +89,7 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
       this.config.valueName = 'Id';
     }
     //  console.log('ngOnInit this.value:', this.value);
-    this.resultData = this.table.dataList;
+
 
     if (this.cascadeSetValue.hasOwnProperty('setValue')) {
       // this.selectedBycascade();
@@ -93,14 +101,15 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
 
   public showModal(): void {
     this.isVisible = true;
+    this.tags_mode = this.tags;
     // this.table.value = this._value;
   }
 
   public handleOk(): void {
+    this.tags = this.tags_mode;
     this.isVisible = false;
     // console.log('选中行' , this.table._selectRow);
     // 此处简析 多选，单选【个人建议两种组件，返回值不相同，单值（ID值），多值（ID数组）】
-
     let labels = '';
     let values = '';
     this.tags.forEach(element => {
@@ -118,102 +127,137 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
     // console.log('数据', this._value);
   }
 
+  // 获取多选文本值
+  public getMultipleValue() {
+    let labels = '';
+    let values = '';
+    this.tags.forEach(element => {
+      labels = labels + element.label + ',';
+      values = values + element.value + ',';
+    });
+    if (labels.length > 0) {
+      this._valuetext = this._valuetext.substring(0, labels.length - 1);
+    } else {
+      this._valuetext = null;
+    }
+    if (values.length > 0) {
+      this._value = this._value.substring(0, values.length - 1);
+    } else {
+      this._value = null;
+    }
+  }
+
+  public getMultipleTags(dlist?) {
+    const labelName = this.config.labelName ? this.config.labelName : 'name';
+    const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
+    dlist.array.forEach(data => {
+      const b_lable = data[labelName];
+      const b_value = data[valueName]; // 取值时动态读取的
+      const newobj = { label: b_lable, value: b_value };
+
+      let isInsert = true;
+      this.tags.forEach(element => {
+        if (element.value === b_value) {
+          isInsert = false;
+        }
+      });
+      if (newobj && isInsert) {
+        this.tags.push(newobj);
+      }
+    });
+
+  }
+
   public handleCancel(): void {
     // console.log('点击取消');
     this.isVisible = false;
   }
 
   public async valueChange(name?) {
-    console.log('valueChangeSelectGridMultiple', name);
-    // this.resultData = this.table.dataList ? this.table.dataList : [];
-    // const labelName = this.config.labelName ? this.config.labelName : 'name';
-    // const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
-    // if (name) {
-    //   const backValue = { name: this.config.name, value: name };
-    //   // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
-    //   // console.log('this.resultData:', this.resultData);
-    //   if (this.resultData) {
-    //     // valueName
-    //     const index = this.resultData.findIndex(
-    //       item => item[valueName] === name
-    //     );
-    //     if (this.resultData) {
-    //       if (index >= 0) {
-    //         if (this.resultData[index][labelName]) {
-    //           this._valuetext = this.resultData[index][labelName];
-    //         }
-    //         backValue['dataItem'] = this.resultData[index];
-    //       } else {
-    //         // 取值
-    //         const componentvalue = {};
-    //         componentvalue[valueName] = name;
-    //         if (this.config.ajaxConfig) {
-    //           const backselectdata = await this.table.loadByselect(
-    //             this.config.ajaxConfig,
-    //             componentvalue,
-    //             this.bsnData,
-    //             this.casadeData
-    //           );
-    //           if (backselectdata.hasOwnProperty(labelName)) {
-    //             this._valuetext = backselectdata[labelName];
-    //           } else {
-    //             this._valuetext = this._value;
-    //           }
-    //           backValue['dataItem'] = backselectdata;
-    //         } else {
-    //           this._valuetext = this._value;
-    //         }
-    //         // console.log('loadByselect: ',  backselectdata) ;
-    //       }
-    //     }
+    // console.log('valueChangeSelectGridMultiple', name);
 
-    //     // console.log('iftrue弹出表格返回数据', backValue);
-    //   }
-    //   // this.value['dataText'] = this._valuetext;
-    //   this.updateValue.emit(backValue);
-    // } else {
-    //   const backValue = { name: this.config.name, value: name };
-    //   this.updateValue.emit(backValue);
-    //   // console.log('iffalse弹出表格返回数据', backValue);
-    // }
+    const labelName = this.config.labelName ? this.config.labelName : 'name';
+    const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
+    if (name) {
+      const backValue = { name: this.config.name, value: name };
+      // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
+      // console.log('this.resultData:', this.resultData);
+      if (this.tags) {
+        // valueName
+        const index = this.tags.length;
+        if (this.tags) {
+          if (index >= 0) {
+            this.getMultipleValue();
+          } else {
+            // 取值
+            const componentvalue = {};
+            componentvalue[valueName] = name;
+            if (this.config.ajaxConfig) {
+              const backselectdata = await this.table.loadByselectMultiple(
+                this.config.ajaxConfig,
+                componentvalue,
+                this.bsnData,
+                this.casadeData
+              );
+              this.getMultipleTags(backselectdata);
+              this.getMultipleValue();
+
+            } else {
+              this._valuetext = this._value;
+            }
+            // console.log('loadByselect: ',  backselectdata) ;
+          }
+        }
+
+        // console.log('iftrue弹出表格返回数据', backValue);
+      }
+      // this.value['dataText'] = this._valuetext;
+      this.updateValue.emit(backValue);
+    } else {
+      const backValue = { name: this.config.name, value: name };
+      this.updateValue.emit(backValue);
+      // console.log('iffalse弹出表格返回数据', backValue);
+    }
   }
 
   // tslint:disable-next-line:member-ordering
   public ck_value;
   public valueChangeByModal(data?) {
-    console.log('树选中', data);
-    this.ck_value = data['name'] ? data['name'] : data['title'];
-    const b_value = data['Id']; // 取值时动态读取的
-    const newobj = { label: this.ck_value, value: b_value };
+    // console.log('树选中', data);
+    const labelName = this.config.labelName ? this.config.labelName : 'name';
+    const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
+    const b_label = data[labelName];
+    const b_value = data[valueName]; // 取值时动态读取的
+    const newobj = { label: b_label, value: b_value };
 
     let isInsert = true;
-    this.tags.forEach(element => {
+    this.tags_mode.forEach(element => {
       if (element.value === b_value) {
         isInsert = false;
       }
     });
     if (newobj && isInsert) {
-      this.tags.push(newobj);
+      this.tags_mode.push(newobj);
     }
   }
 
-  // tslint:disable-next-line:member-ordering
-  public tags = [
 
-  ];
-  // tslint:disable-next-line:member-ordering
-  public inputVisible = false;
-  // tslint:disable-next-line:member-ordering
-  private inputValue1 = '';
-  // tslint:disable-next-line:member-ordering
   public handleClose(removedTag: {}): void {
-    this.tags = this.tags.filter(tag => tag !== removedTag);
+    this.tags_mode = this.tags_mode.filter(tag => tag !== removedTag);
   }
+
+  public handleClosetag(removedTag: {}): void {
+    this.tags = this.tags.filter(tag => tag !== removedTag);
+    this.getMultipleValue();
+    this.valueChange(this._value);
+  }
+
 
   public sliceTagName(tag: any): string {
     const isLongTag = tag['label'].length > 20;
     return isLongTag ? `${tag['label'].slice(0, 20)}...` : tag['label'];
   }
 
+  // 问题：多选初值？？？？ 需要异步取值，处理成json数组
 
 }

@@ -6470,6 +6470,7 @@ export class WorkFlowTodoComponent implements OnInit {
                             params: [
                                 {
                                     name: 'Id',
+                                    datatype: 'in', // liu 1212 新增属性，兼容参数多类型
                                     type: 'componentValue',
                                     valueName: 'Id',
                                     value: '63fc58ae67604ae0912a93c81ddcb3ca'

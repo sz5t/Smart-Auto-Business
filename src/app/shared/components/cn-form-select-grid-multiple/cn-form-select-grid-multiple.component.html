@@ -1,6 +1,6 @@
 <nz-modal [(nzVisible)]="isVisible" [nzWidth]="config.select.nzWidth" [nzTitle]="config.select.title" (nzOnCancel)="handleCancel()"
     (nzOnOk)="handleOk()">
-    <nz-tag *ngFor="let tag of tags; let i = index;" [nzColor]="'blue'"  [nzMode]="'closeable'" (nzAfterClose)="handleClose(tag)">
+    <nz-tag *ngFor="let tag of tags_mode; let i = index;" [nzColor]="'blue'"  [nzMode]="'closeable'" (nzAfterClose)="handleClose(tag)">
         {{ sliceTagName(tag) }}
     </nz-tag>
     <hr>
@@ -17,8 +17,13 @@
 
 <nz-form-control [nzSpan]="config.controlSize">
         <nz-input-group nzSearch [nzSuffix]="suffixIconButton">
-                <input nz-input style=" padding-right: 30px;" [ngStyle]="{'width':config.width}" type="{{config.inputType}}" [nzSize]="config.size"
-                    placeholder="{{config.placeholder}}" [(ngModel)]="_valuetext">
+                <!-- <input nz-input style=" padding-right: 30px;" [ngStyle]="{'width':config.width}" type="{{config.inputType}}" [nzSize]="config.size"
+                    placeholder="{{config.placeholder}}" [(ngModel)]="_valuetext"> -->
+                    <nz-card style=" padding-right: 30px;"  nzType="inner"  [ngStyle]="{'width':config.width}">
+                        <nz-tag *ngFor="let tag of tags; let i = index;"  [nzMode]="'closeable'" (nzAfterClose)="handleClosetag(tag)">
+                            {{ sliceTagName(tag) }}
+                        </nz-tag>
+                    </nz-card>
             </nz-input-group>
             <ng-template #suffixIconButton>
                 <button nz-button nzSearch [nzType]="'default'" (click)="showModal()">
