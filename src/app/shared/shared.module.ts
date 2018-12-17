@@ -101,6 +101,7 @@ import { SpreadSheetsModule } from 'app/lib/gc.spread.sheets.angular.12.0.0'
 import { BsnAsyncTreeTableComponent } from './business/bsn-treeTable/bsn-treeTable.component';
 import { CnFormSelectGridMultipleComponent } from './components/cn-form-select-grid-multiple/cn-form-select-grid-multiple.component';
 import { CnGridSelectGridMultipleComponent } from './components/cn-grid-select-grid-multiple/cn-grid-select-grid-multiple.component';
+import { TsDataTableComponent } from './business/ts-data-table/ts-data-table.component';
 
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -194,7 +195,8 @@ const COMPONENTS = [
     CnFormInputSelectComponent,
     BsnAsyncTreeTableComponent,
     CnFormSelectGridMultipleComponent,
-    CnGridSelectGridMultipleComponent
+    CnGridSelectGridMultipleComponent,
+    TsDataTableComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
@@ -223,7 +225,6 @@ const DIRECTIVES = [
         ...COMPONENTS,
         ...DIRECTIVES,
         BtnTableFieldLimit
-        
     ],
     exports: [
         CommonModule,
