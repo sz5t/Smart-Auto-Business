@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'cn-report-template',
     templateUrl: './report-template.component.html'
 })
