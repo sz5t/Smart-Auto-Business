@@ -28,6 +28,7 @@
                                 </nz-select>
                                 业务类型:
                                 <nz-select style="width: 100px" [nzSize]="'default'" [(ngModel)]="bsnTypeMode">
+                                        <nz-option [nzValue]="'select'" [nzLabel]="'查询数据'"></nz-option>
                                         <nz-option [nzValue]="'insert'" [nzLabel]="'新增数据'"></nz-option>
                                         <nz-option [nzValue]="'update'" [nzLabel]="'更新数据'"></nz-option>
                                         <nz-option [nzValue]="'delete'" [nzLabel]="'删除数据'"></nz-option>
