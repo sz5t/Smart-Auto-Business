@@ -1,20 +1,21 @@
 import {Component, Input, OnInit, EventEmitter, Output} from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 @Component({
+  // tslint:disable-next-line:component-selector
   selector: 'cn-grid-number',
   templateUrl: './cn-grid-number.component.html',
 })
 export class CnGridNumberComponent implements OnInit {
-    @Input() config;
-    @Output() updateValue = new EventEmitter();
-    @Input()  value;
-    @Input() casadeData;
-    _value;
-    cascadeSetValue = {};
+    @Input() public config;
+    @Output() public updateValue = new EventEmitter();
+    @Input()  public value;
+    @Input() public casadeData;
+    public _value;
+    public cascadeSetValue = {};
     constructor(
         private http: _HttpClient
     ) { }
-    ngOnInit() {
+    public ngOnInit() {
         // console.log('input' , this.casadeData);
         if (this.value) {
             this._value = this.value.data;
@@ -34,16 +35,38 @@ export class CnGridNumberComponent implements OnInit {
          }
     }
 
-    setValue(value) {
+    public setValue(value) {
        this.value = value;
     }
 
-    getValue() {
+    public getValue() {
         return this.value;
     }
 
-    valueChange(name?) {
+    public valueChange(name?) {
       this.value.data = name;
       this.updateValue.emit(this.value);
     }
+
+    public formatter = value => {
+        if (this.config.beforeFormatter) {
+          return `${this.config.beforeFormatter ? this.config.beforeFormatter : ''}${value ? value : ''}`;
+        } else if (this.config.afterFormatter) {
+          return `${value ? value : ''}${this.config.afterFormatter ? this.config.afterFormatter : ''}`;
+        } else {
+          return value;
+        }
+      }
+  
+      public parser = value => {
+        if (this.config.beforeFormatter) {
+          return value.replace(this.config.beforeFormatter, '');
+        } else if (this.config.afterFormatter) {
+          return value.replace(this.config.afterFormatter, '');
+        } else {
+          return value;
+        }
+        
+      }
+  
 }

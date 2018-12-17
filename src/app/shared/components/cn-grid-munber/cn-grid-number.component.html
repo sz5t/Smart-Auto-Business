@@ -4,6 +4,6 @@
     [nzStep]="config.step"
     [nzFormatter]="formatter"
     [nzParser]="parser"
-
+    (ngModelChange)="valueChange($event)"
     [nzSize]="config.size"
-    [(ngModel)]="model"></nz-input-number>
+    [(ngModel)]="_value"></nz-input-number>

@@ -260,7 +260,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
                             this.addNewRow();
                         break;
                     case BSN_COMPONENT_MODES.CREATE_CHILD:
-                    
+
                         this.beforeOperation.operationItemData = this.selectedItem;
                         !this.beforeOperation.beforeItemDataOperation(option) &&
                             this.addNewChildRow();
@@ -504,7 +504,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
         data['key'] = data['Id'];
         // data['edit'] = false;
         // 将当前行数据添加到编辑缓存对象当中
-        this.editCache[data['key']] = {edit: false, data: data};
+        this.editCache[data['key']] = { edit: false, data: data };
     }
 
     private insertChildrenListToTree(parent, childrenList) {
@@ -564,7 +564,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
      */
     public createNewRowData(parentId?) {
         const newRow = { ...this.rowContent };
-        const  newRowId = CommonTools.uuID(6);
+        const newRowId = CommonTools.uuID(6);
         newRow['key'] = newRowId;
         newRow['Id'] = newRowId;
         newRow['checked'] = true;
@@ -581,7 +581,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
     private addNewRow() {
         // 初始化新行数据
         const newRow = this.createNewRowData();
-        this.editCache[newRow['Id']] = {edit: true, data : newRow};
+        this.editCache[newRow['Id']] = { edit: true, data: newRow };
         this.dataList.splice(0, 0, newRow);
         return true;
     }
@@ -595,7 +595,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
                 this.config.keyId ? this.config.keyId : 'Id'
             ];
             const newRow = this.createNewRowData(parentId);
-            this.editCache[newRow['Id']] = {edit: true, data : newRow};
+            this.editCache[newRow['Id']] = { edit: true, data: newRow };
             // 数据添加到具体选中行的下方
             this.dataList = this._setChildRow(newRow, parentId);
         } else {
@@ -683,9 +683,9 @@ export class BsnAsyncTreeTableComponent extends GridBase
                 if (checkedData) {
                     cancelRowMap.set(dataItem.Id, {
                         key: dataItem.Id,
-                                status: dataItem['row_status']
-                                    ? dataItem['row_status']
-                                    : 'updating'
+                        status: dataItem['row_status']
+                            ? dataItem['row_status']
+                            : 'updating'
                     });
                 }
             })
@@ -704,7 +704,10 @@ export class BsnAsyncTreeTableComponent extends GridBase
 
     private _cancelEdit(key: string): void {
         const itemList = this.treeDataOrigin;
-        const index = itemList.findIndex(item => item.Id === key);
+        let index = itemList.findIndex(item => item.Id === key);
+        if (index === -1) {
+            index = this.treeData.findIndex(item => item.Id === key);
+        }
         this.editCache[key].edit = false;
         this.editCache[key].data = JSON.parse(JSON.stringify(itemList[index]));
     }
@@ -719,12 +722,12 @@ export class BsnAsyncTreeTableComponent extends GridBase
     public refChecked() {
         let allCount = 0;
         // parent count
-        this.checkedCount = 0; 
+        this.checkedCount = 0;
         // child count
         this.dataList.forEach(r => {
             allCount += r.checked ? 1 : 0;
         });
-        
+
         this.indeterminate = this.allChecked ? false : allCount > 0;
     }
 
@@ -989,7 +992,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
 
 
     // 获取 文本值，当前选中行数据
-    public async loadByselect( ajaxConfig, componentValue?, selecttempValue?, cascadeValue?) {
+    public async loadByselect(ajaxConfig, componentValue?, selecttempValue?, cascadeValue?) {
         const url = this.buildURL(ajaxConfig.url);
         const params = {
             ...this._buildParametersByselect(
@@ -1013,7 +1016,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
     }
 
     // 构建获取文本值参数
-    private _buildParametersByselect( paramsConfig, componentValue?, selecttempValue?, cascadeValue?) {
+    private _buildParametersByselect(paramsConfig, componentValue?, selecttempValue?, cascadeValue?) {
         let params = {};
         if (paramsConfig) {
             params = CommonTools.parametersResolver({
@@ -1115,7 +1118,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
     //     }
     // }
 
-    
+
     /** --------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 
@@ -1258,7 +1261,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
     //     return list;
     // }
 
-    
+
 
 
     public executeSelectedRow(option) {
@@ -1477,7 +1480,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
         }
     }
 
-   
+
 
     // private _deleteEdit(i: string): void {
     //     const dataSet = this._getAllItemList().filter(d => d.key !== i);
@@ -1485,7 +1488,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
     //     this.dataList = dataSet;
     // }
 
-    
+
 
     // 初始化可编辑的数据结构
     private _initEditDataCache() {
@@ -1649,7 +1652,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
     //     }
     // }
 
-   
+
 
     // public addRow() {
     //     const rowContentNew = { ...this.rowContent };

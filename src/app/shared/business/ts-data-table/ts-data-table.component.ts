@@ -19,6 +19,7 @@ import {
     OnDestroy,
     Type,
     Inject,
+    AfterViewInit,
     Output,
     EventEmitter
 } from '@angular/core';
@@ -30,6 +31,8 @@ import { Observer } from 'rxjs';
 import { Subscription } from 'rxjs';
 import { BsnUploadComponent } from '@shared/business/bsn-upload/bsn-upload.component';
 import { CnFormWindowResolverComponent } from '@shared/resolver/form-resolver/form-window-resolver.component';
+import { BeforeOperation } from '../before-operation.base';
+import { createEmitAndSemanticDiagnosticsBuilderProgram } from 'typescript';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: CnFormWindowResolverComponent,
@@ -38,8 +41,8 @@ const component: { [type: string]: Type<any> } = {
 
 @Component({
     // tslint:disable-next-line:component-selector
-    selector: 'cn-bsn-static-table,[cn-bsn-static-table]',
-    templateUrl: './bsn-static-table.component.html',
+    selector: 'ts-data-table',
+    templateUrl: './ts-data-table.component.html',
     styles: [
         `
             .table-operations {
@@ -63,8 +66,8 @@ const component: { [type: string]: Type<any> } = {
         `
     ]
 })
-export class BsnStaticTableComponent extends CnComponentBase
-    implements OnInit, OnDestroy {
+export class TsDataTableComponent extends CnComponentBase
+    implements OnInit, AfterViewInit, OnDestroy {
     @Input()
     public config; // dataTables 的配置参数
     @Input()
@@ -81,10 +84,8 @@ export class BsnStaticTableComponent extends CnComponentBase
     public bsnData;
     @Input()
     public ref;
-    @Output()
-    public updateValue = new EventEmitter();
     // tempValue = {};
-
+    @Output() public updateValue = new EventEmitter();
     public loading = false;
     public pageIndex = 1;
     public pageSize = 10;
@@ -115,14 +116,16 @@ export class BsnStaticTableComponent extends CnComponentBase
     // 查询标识
     public is_Search = false;
     public search_Row = {};
+    public cascadeList = {};
 
     // 下拉属性 liu
     public is_Selectgrid = true;
     public cascadeValue = {}; // 级联数据
     public selectGridValueName;
     public changeConfig_new = {};
-    // 级联
-    public cascadeList = {};
+    public changeConfig_newSearch = {};
+    // 前置条件集合
+    public beforeOperation;
     constructor(
         private _http: ApiService,
         private _message: NzMessageService,
@@ -136,48 +139,13 @@ export class BsnStaticTableComponent extends CnComponentBase
         private cascadeEvents: Observable<BsnComponentMessage>
     ) {
         super();
+        this.apiResource = this._http;
+        this.baseMessage = this._message;
+        this.baseModal = this.modalService;
+        this.cacheValue = this.cacheService;
     }
 
-    public loadData = {
-        rows: [],
-        total: 0
-    };
-    public async ngOnInit() {
-
-        // for (let i = 0; i < 46; i++) {
-        //     this.loadData.rows.push({
-        //         Id: `${i}`,
-        //         key: `${i}`,
-        //         code: `${i}`,
-        //         name: `Edward King ${i}`,
-        //         age: 32,
-        //         address: `London, Park Lane no. ${i}`,
-        //         checked: false
-        //     });
-        // }
-        // this.Initload();
-        const url = this._buildURL(this.config.ajaxConfig.url);
-        const params = {
-            ...this._buildParameters(this.config.ajaxConfig.params),
-            // ...this._buildPaging(),
-            ...this._buildFilter(this.config.ajaxConfig.filter),
-            ...this._buildSort(),
-            ...this._buildColumnFilter(),
-            ...this._buildFocusId(),
-            ...this._buildSearch()
-        };
-
-        const aloadData = await this._load(url, params);
-        if (aloadData && aloadData.status === 200 && aloadData.isSuccess) {
-            this.loadData.rows = aloadData.data;
-            const keyIdCode = this.config.keyId ? this.config.keyId : 'Id';
-            aloadData.data.forEach(element => {
-                element['key'] = element[keyIdCode];
-            });
-        }
-        this.loadData.total = this.loadData.rows.length;
-        this.total = this.loadData.total;
-       // console.log('this.loadData:', this.loadData);
+    public ngOnInit() {
         if (this.config.select) {
             this.config.select.forEach(selectItem => {
                 this.config.columns.forEach(columnItem => {
@@ -228,9 +196,6 @@ export class BsnStaticTableComponent extends CnComponentBase
                 this.tempValue[p] = this.ref[p];
             }
         }
-        if (this.cacheService) {
-            this.cacheValue = this.cacheService;
-        }
         if (this.config.dataSet) {
             (async () => {
                 for (
@@ -238,13 +203,13 @@ export class BsnStaticTableComponent extends CnComponentBase
                     i < len;
                     i++
                 ) {
-                    const urlset = this._buildURL(
+                    const url = this._buildURL(
                         this.config.dataSet[i].ajaxConfig.url
                     );
-                    const paramsset = this._buildParameters(
+                    const params = this._buildParameters(
                         this.config.dataSet[i].ajaxConfig.params
                     );
-                    const data = await this.get(urlset, paramsset);
+                    const data = await this.get(url, params);
                     if (data.isSuccess) {
                         if (this.config.dataSet[i].fields) {
                             const dataSetObjs = [];
@@ -282,6 +247,9 @@ export class BsnStaticTableComponent extends CnComponentBase
         this.pageSize = this.config.pageSize
             ? this.config.pageSize
             : this.pageSize;
+    }
+
+    public ngAfterViewInit() {
         if (this.config.componentType) {
             if (!this.config.componentType.child) {
                 this.load();
@@ -291,11 +259,21 @@ export class BsnStaticTableComponent extends CnComponentBase
         } else {
             this.load();
         }
-
         // 初始化级联
         this.caseLoad();
+        // 初始化前置条件验证对象
+        this.beforeOperation = new BeforeOperation({
+            config: this.config,
+            message: this.baseMessage,
+            modal: this.baseModal,
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            cacheValue: this.cacheValue.get('userInfo').value
+                ? this.cacheValue.get('userInfo').value
+                : {},
+            apiResource: this.apiResource
+        });
     }
-
     private resolverRelation() {
         // 注册按钮状态触发接收器
         this._statusSubscription = this.stateEvents.subscribe(updateState => {
@@ -306,45 +284,73 @@ export class BsnStaticTableComponent extends CnComponentBase
                         this.load();
                         break;
                     case BSN_COMPONENT_MODES.CREATE:
-                        this.addRow();
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
+                            this.addRow();
                         break;
+                    // case BSN_COMPONENT_MODES.ADD_ROW_DATA:
+                    //     !this.beforeOperation.beforeItemDataOperation(option) &&
+                    //     this._resolveAjaxConfig(option);
+                    //     break;
                     case BSN_COMPONENT_MODES.CANCEL_SELECTED:
                         this.cancelSelectRow();
                         break;
-
                     case BSN_COMPONENT_MODES.EDIT:
-                        this.updateRow();
+                        this.beforeOperation.operationItemsData = this._getCheckedItems();
+                        !this.beforeOperation.beforeItemsDataOperation(
+                            option
+                        ) && this.updateRow();
                         break;
                     case BSN_COMPONENT_MODES.CANCEL:
                         this.cancelRow();
                         break;
                     case BSN_COMPONENT_MODES.SAVE:
-                        this.saveRow(option);
+                        this.beforeOperation.operationItemsData = [
+                            ...this._getCheckedItems(),
+                            ...this._getAddedRows()
+                        ];
+                        !this.beforeOperation.beforeItemsDataOperation(
+                            option
+                        ) && this.saveRow(option);
                         break;
                     case BSN_COMPONENT_MODES.DELETE:
-                        this.deleteRow(option);
+                        this.beforeOperation.operationItemsData = this._getCheckedItems();
+                        !this.beforeOperation.beforeItemsDataOperation(
+                            option
+                        ) && this.deleteRow(option);
                         break;
                     case BSN_COMPONENT_MODES.DIALOG:
-                        this.dialog(option);
+                        this.beforeOperation.operationItemData = this._selectRow;
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
+                            this.dialog(option);
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE:
                         // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
                         this._resolveAjaxConfig(option);
                         break;
                     case BSN_COMPONENT_MODES.WINDOW:
-                        this.windowDialog(option);
+                        this.beforeOperation.operationItemData = this._selectRow;
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
+                            this.windowDialog(option);
                         break;
                     case BSN_COMPONENT_MODES.FORM:
-                        this.formDialog(option);
+                        this.beforeOperation.operationItemData = this._selectRow;
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
+                            this.formDialog(option);
                         break;
                     case BSN_COMPONENT_MODES.SEARCH:
-                        this.SearchRow(option);
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
+                            this.SearchRow(option);
                         break;
                     case BSN_COMPONENT_MODES.UPLOAD:
-                        this.uploadDialog(option);
+                        this.beforeOperation.operationItemData = this._selectRow;
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
+                            this.uploadDialog(option);
                         break;
                     case BSN_COMPONENT_MODES.FORM_BATCH:
-                        this.formBatchDialog(option);
+                        this.beforeOperation.operationItemsData = this._getCheckedItems();
+                        !this.beforeOperation.beforeItemsDataOperation(
+                            option
+                        ) && this.formBatchDialog(option);
                         break;
                 }
             }
@@ -385,12 +391,10 @@ export class BsnStaticTableComponent extends CnComponentBase
                                 relation.relationViewId === cascadeEvent._viewId
                             ) {
                                 // 获取当前设置的级联的模式
-                                const modeold =
+                                const mode =
                                     BSN_COMPONENT_CASCADE_MODES[
                                     relation.cascadeMode
                                     ];
-                                const mode = cascadeEvent._mode;
-
                                 // 获取传递的消息数据
                                 const option = cascadeEvent.option;
                                 if (option) {
@@ -408,7 +412,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                                         });
                                     }
                                 }
-                               // console.log('匹配及联模式:', mode, cascadeEvent);
+
                                 // 匹配及联模式
                                 switch (mode) {
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH:
@@ -424,15 +428,6 @@ export class BsnStaticTableComponent extends CnComponentBase
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
                                         break;
-                                    case BSN_COMPONENT_CASCADE_MODES.Scan_Code_ROW:
-                                        // ScanCodeObject
-                                        this.scanCodeROW();
-                                        break;
-                                    case BSN_COMPONENT_CASCADE_MODES.Scan_Code_Locate_ROW:
-                                        // ScanCodeObject
-                                        this.locateRow();
-                                        break;
-
                                 }
                             }
                         });
@@ -442,11 +437,14 @@ export class BsnStaticTableComponent extends CnComponentBase
         }
     }
 
-    public load1() {
+    public load() {
         this.changeConfig_new = {};
         // this._selectRow = {};
         // this.pageIndex = pageIndex;
-        this.loading = true;
+        setTimeout(() => {
+            this.loading = true;
+        });
+
         this.allChecked = false;
         this.checkedCount = 0;
         const url = this._buildURL(this.config.ajaxConfig.url);
@@ -535,334 +533,10 @@ export class BsnStaticTableComponent extends CnComponentBase
                 this.setSelectRow();
             }
 
-            this.loading = false;
+            setTimeout(() => {
+                this.loading = false;
+            });
         })();
-    }
-
-    public async Initload() {
-        this.changeConfig_new = {};
-        this.loading = true;
-        this.allChecked = false;
-        this.checkedCount = 0;
-        const url = this._buildURL(this.config.ajaxConfig.url);
-        const params = {
-            ...this._buildParameters(this.config.ajaxConfig.params),
-            // ...this._buildPaging(),
-            ...this._buildFilter(this.config.ajaxConfig.filter),
-            ...this._buildSort(),
-            ...this._buildColumnFilter(),
-            ...this._buildFocusId(),
-            ...this._buildSearch()
-        };
-
-        const loadData = await this._load(url, params);
-       //  console.log('Initload:', loadData);
-        if (loadData && loadData.status === 200 && loadData.isSuccess) {
-            if (loadData.data) {
-                // 设置聚焦ID
-                // 默认第一行选中，如果操作后有focusId则聚焦ID为FocusId
-                if (loadData.data.length > 0) {
-                    this.loadData.rows = loadData.data;
-                    this.loadData.total = this.loadData.rows.length;
-                    this.total = this.loadData.total;
-                } else {
-                    this.loadData.rows = [];
-                    this.loadData.total = this.loadData.rows.length;
-                    this.total = this.loadData.total;
-                }
-            } else {
-                this.loadData.rows = [];
-                this.loadData.total = this.loadData.rows.length;
-                this.total = this.loadData.total;
-            }
-        } else {
-            this.loadData.rows = [];
-            this.loadData.total = this.loadData.rows.length;
-            this.total = this.loadData.total;
-        }
-        this.loading = false;
-      //  console.log(' this.loadData.rows:', this.loadData.rows);
-    }
-
-    public pageIndexPlan() {
-        if (this.pageIndex > 1) {
-            const p_pindex = ((this.pageIndex - 1) * this.pageSize);
-            if (this.loadData.total <= p_pindex) {
-                this.pageIndex = this.pageIndex - 1;
-                this.load();
-            } else {
-                this.load();
-            }
-        }
-    }
-    public load() {
-        if (typeof this.pageIndex !== 'undefined') {
-            this.pageIndex = this.pageIndex || 1;
-        }
-
-        // 当前页无数据则退回到上一页
-        if (this.pageIndex > 1) {
-            const p_pindex = ((this.pageIndex - 1) * this.pageSize);
-            if (this.loadData.total <= p_pindex) {
-                this.pageIndex = this.pageIndex - 1;
-                this.pageIndexPlan();
-            }
-        }
-
-        const pagedata = [];
-        let j = 0;
-        for (let i = 0; i < this.pageSize; i++) {
-            j = ((this.pageIndex - 1) * this.pageSize) + i;
-            if (j < this.loadData.total) {
-                pagedata.push(this.loadData.rows[j]);
-            }
-        }
-        this._updateEditCacheByLoad(pagedata);
-        this.dataList = pagedata;
-
-
-      //  console.log('load', this.pageIndex, this.pageSize);
-    }
-
-    // load 分组
-    // 原始数据【olddata】 数据缓存【update】 
-    // 注意 撤销、删除 对数据的影响
-    public loadStatic() {
-
-    }
-
-    public scanCodeROW() {
-
-      //  console.log('_ScanCode', this.tempValue['_ScanCode']);
-        this.scanCodeaddRow();
-    }
-
-    public locateRow() {
-        // 定位行
-        // this.loadData.rows.push(rowContentNew);
-        const code = this.config.ScanCode.locateRow.columns[0]['field'];
-        const codeName = this.config.ScanCode.locateRow.columns[0]['valueName'];
-        const codeValue = this.tempValue[codeName];
-
-        const index = this.loadData.rows.findIndex(item => item[code] === codeValue);
-        if (index !== -1) {
-            const rowValue = this.loadData.rows[index]['key'];
-            this.pageIndex = Math.ceil((index + 1) / this.pageSize);
-            this.load();
-            this.scanCodeSetSelectRow(rowValue);
-            // 如果有操作，再选中行后执行
-           //  console.log('执行方法！，调用后执行load方法，并且定位到当前数据');
-        } else {
-            this._message.info('当前扫码未能匹配到数据！');
-        }
-    }
-
-    // 行定位，先计算出行数据的索引，定位到页面，然后选中数据
-    private scanCodeSetSelectRow(rowValue?) {
-
-        this.dataList &&
-            this.dataList.map(row => {
-                row.selected = false;
-            });
-        this.dataList.forEach(row => {
-            if (row['key'] === rowValue) {
-                row.selected = true;
-            }
-        });
-    }
-
-    public scanCodeaddRow() {
-        //  'judge':{'name':'_ScanCodeObject'},
-        let _ScanCode = '_ScanCode';
-        if (this.config.ScanCode.addRow.judge) {
-            _ScanCode = this.config.ScanCode.addRow.judge.name;
-        }
-        if (this.tempValue[_ScanCode]) {
-            if (this.tempValue[_ScanCode].length <= 0) {
-                this._message.info('扫码没有匹配到数据！');
-                return true;
-            }
-        }
-
-        const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
-        const fieldIdentity = CommonTools.uuID(6);
-        rowContentNew['key'] = fieldIdentity;
-        rowContentNew['checked'] = true;
-        rowContentNew['row_status'] = 'adding';
-        rowContentNew['$operDataType$'] = 'add';
-        rowContentNew['edit'] = true;
-        let isback = false;
-        if (this.config.ScanCode.addRow.type) {
-            if (this.config.ScanCode.addRow.type === 'distinct') {
-                let distinctValue = null;
-                if (this.config.ScanCode.addRow.distinct.type === 'tempValue') {
-                    if (this.config.ScanCode.addRow.distinct.valueType === 'value') {
-                        distinctValue = this.tempValue[this.config.ScanCode.addRow.distinct.valueName];
-                    } else if (this.config.ScanCode.addRow.distinct.valueType === 'array') {
-                        if (this.config.ScanCode.addRow.distinct.arrayName) {
-                            if (this.tempValue[this.config.ScanCode.addRow.distinct.arrayName].length > 0) {
-                                distinctValue = this.tempValue[this.config.ScanCode.addRow.distinct.arrayName][0][this.config.ScanCode.addRow.distinct.valueName];
-                            }
-                        }
-                    }
-                } else if (this.config.ScanCode.addRow.distinct.type === 'value') {
-                    distinctValue = this.config.ScanCode.addRow.distinct['value'];
-                }
-                const index = this.loadData.rows.findIndex(
-                    item => item[this.config.ScanCode.addRow.distinct['field']] === distinctValue
-                );
-                if (index !== -1) {
-                    isback = true;
-                    if (this.config.ScanCode.addRow.superposition) {
-                        this.config.ScanCode.addRow.superposition.forEach(element => {
-                            let superpositionValue = null;
-                            if (element.superpositionType === 'identity') {
-                                superpositionValue = element.superpositionNumber;
-                            } else {
-                                if (element.type === 'tempValue') {
-                                    if (element.valueType === 'value') {
-                                        superpositionValue = this.tempValue[element.valueName];
-                                    } else if (element.valueType === 'array') {
-                                        if (element.arrayName) {
-                                            if (this.tempValue[element.arrayName].length > 0) {
-                                                superpositionValue = this.tempValue[element.arrayName][0][element.valueName];
-                                            }
-                                        }
-                                    }
-                                } else if (this.config.ScanCode.addRow.distinct.type === 'value') {
-                                    superpositionValue = this.config.ScanCode.addRow.distinct['value'];
-                                }
-                            }
-                            if (element.dataType === 'number') {
-                                if (!this.loadData.rows[index][element.field]) {
-                                    this.loadData.rows[index][element.field] = element.defaultValue;
-                                    // this. editCache[ this.loadData.rows[index]['key']].data[element.field] =  this.loadData.rows[index][element.field]; // 1214
-                                }
-                            }
-
-                            this.loadData.rows[index][element.field] = this.loadData.rows[index][element.field] + superpositionValue;
-                            // liu 20181214 注释 字段叠加 有问题，编辑状态无响应 
-                            for (const CacheItem in this.editCache) {
-                                if (this.editCache.hasOwnProperty(CacheItem)) {
-                                    const element1 = this.editCache[CacheItem];
-                                    if (element1.data[this.config.ScanCode.addRow.distinct['field']] === distinctValue) {
-                                        //  console.log('定位自增行标识：', CacheItem, this.loadData.rows[index][element.field]);
-                                        this.editCache[CacheItem].data[element.field] = this.loadData.rows[index][element.field];
-                                        //   this.editCache[CacheItem] = JSON.parse(JSON.stringify(this.editCache[CacheItem]));
-                                        // this._cancelEdit(CacheItem);
-                                        //  this._startEdit(CacheItem);
-                                      //  console.log('变更配置数据：', this.changeConfig_new, element.field);
-                                        if (!this.changeConfig_new[CacheItem].hasOwnProperty(element.field)) {
-                                            this.changeConfig_new[CacheItem][element.field] = {};
-                                        }
-                                        this.changeConfig_new[CacheItem][element.field]['setValue'] = this.loadData.rows[index][element.field];
-                                    }
-                                }
-                            }
-
-                            //  this. editCache[ this.loadData.rows[index]['key']].data[element.field] =  this.loadData.rows[index][element.field]; // 1214
-                        });
-                    }
-                    // this.pageIndex = Math.ceil((index + 1) / this.pageSize);
-                    // this.load();
-                    // this.scanCodeSetSelectRow(this.loadData.rows[index]['key'] ? this.loadData.rows[index]['key'] : this.loadData.rows[index][this.config['keyId']] );
-                    // this._updateEditCache();
-                    // this._startEdit(this.loadData.rows[index]['key'] ? this.loadData.rows[index]['key'] : this.loadData.rows[index][this.config['keyId']] );
-
-                } else {
-                    if (this.config.ScanCode.addRow.superposition) {
-                        this.config.ScanCode.addRow.superposition.forEach(element => {
-                            let superpositionValue = null;
-                            if (element.superpositionType === 'identity') {
-                                superpositionValue = element.superpositionNumber;
-                            } else {
-                                if (element.type === 'tempValue') {
-                                    if (element.valueType === 'value') {
-                                        superpositionValue = this.tempValue[element.valueName];
-                                    } else if (element.valueType === 'array') {
-                                        if (element.arrayName) {
-                                            if (this.tempValue[element.arrayName].length > 0) {
-                                                superpositionValue = this.tempValue[element.arrayName][0][element.valueName];
-                                            }
-                                        }
-                                    }
-                                } else if (this.config.ScanCode.addRow.distinct.type === 'value') {
-                                    superpositionValue = this.config.ScanCode.addRow.distinct['value'];
-                                }
-                            }
-                            if (element.dataType === 'number') {
-                                if (!rowContentNew[element.field]) {
-                                    rowContentNew[element.field] = element.defaultValue;
-                                }
-                            }
-                            rowContentNew[element.field] = superpositionValue;
-                        });
-                    }
-
-                }
-            }
-        }
-
-        if (isback) {
-            if (this.config.ScanCode.addRow.superposition) {
-            } else {
-                this._message.info('重复扫码！');
-            }
-            // console.log('802', this.loadData.rows, this.editCache);
-            return true;
-        }
-
-        if (this.config.ScanCode.addRow) {
-
-            this.config.ScanCode.addRow.columns.forEach(column => {
-                if (column.type === 'tempValue') {
-                    if (column.valueType === 'value') {
-                        rowContentNew[column.field] = this.tempValue[column.valueName];
-                    } else if (column.valueType === 'array') {
-                        if (column.arrayName) {
-                            if (this.tempValue[column.arrayName].length > 0) {
-                                rowContentNew[column.field] = this.tempValue[column.arrayName][0][column.valueName];
-                            }
-                        }
-                    }
-                } else if (column.type === 'value') {
-                    rowContentNew[column.field] = column['value'];
-                }
-            });
-        }
-        // rowContentNew['code'] = this.tempValue['_ScanCode'];
-        // if (this.tempValue['_ScanCodeObject'].length > 0) {
-        //     rowContentNew['name'] = this.tempValue['_ScanCodeObject'][0]['name'];
-        // }
-        // 针对查询和新增行处理
-        if (this.is_Search) {
-            this.dataList.splice(1, 0, rowContentNew);
-        } else {
-            this.dataList = [rowContentNew, ...this.dataList];
-        }
-        if (!this.changeConfig_new[fieldIdentity]) {
-            this.changeConfig_new[fieldIdentity] = {};
-        }
-        // this.dataList.push(this.rowContent);
-        this._updateEditCache();
-        this._startEdit(fieldIdentity.toString());
-
-        this.loadData.rows.unshift(rowContentNew);
-        this.loadData.total = this.loadData.rows.length;
-        this.total = this.loadData.total;
-        this.scanCodeValueChange(); // 扫码后将结果返回
-        this.pageIndex = 1; // 【目前只新增在最前，日后扩充可前可后】
-        this.load(); // 扫码后页数切换【目前未考虑排序】
-        return true;
-
-    }
-
-    // 静态数据发生变化的时候，反馈给form 表单
-    // 行内所有的操作，均将数据反馈回form 表单
-    public scanCodeValueChange() {
-      //  console.log('scanCodeValueChange', this.loadData.rows);
-        // liu 【重点返回信息】
-        this.updateValue.emit(this.loadData.rows);
     }
 
     // 获取 文本值，当前选中行数据
@@ -893,6 +567,35 @@ export class BsnStaticTableComponent extends CnComponentBase
         console.log('异步获取当前值:', selectrowdata);
         return selectrowdata;
     }
+
+        // liu 20181212 获取 文本值，当前选中多行数据 返回的是数据集
+        public async loadByselectMultiple(
+            ajaxConfig,
+            componentValue?,
+            selecttempValue?,
+            cascadeValue?
+        ) {
+            const url = this._buildURL(ajaxConfig.url);
+            const params = {
+                ...this._buildParametersByselect(
+                    ajaxConfig.params,
+                    componentValue,
+                    selecttempValue,
+                    cascadeValue
+                )
+            };
+            let selectrowdata = [];
+            const loadData = await this._load(url, params);
+            if (loadData && loadData.status === 200 && loadData.isSuccess) {
+                if (loadData.data) {
+                    if (loadData.data.length > 0) {
+                        selectrowdata = loadData.data;
+                    }
+                }
+            }
+            console.log('异步获取当前值集合[]:', selectrowdata);
+            return selectrowdata;
+        }
     // 构建获取文本值参数
     private _buildParametersByselect(
         paramsConfig,
@@ -914,15 +617,6 @@ export class BsnStaticTableComponent extends CnComponentBase
         return params;
     }
 
-    // 行内删除 
-    public deleteRowStatic() {
-        this.dataList.forEach(d => {
-            this.dataList.splice(
-                this.dataList.indexOf(d),
-                1
-            );
-        });
-    }
     // 获取当前选中的值 liu 扩展部分，目前不实现，原因是会多请求数据（主要是对级联赋值的扩充）
     public selectload(selectparams?: any[], selectvalue?) {
         const url = this._buildURL(this.config.ajaxConfig.url);
@@ -998,11 +692,11 @@ export class BsnStaticTableComponent extends CnComponentBase
                     submitData
                 );
                 if (response && response.status === 200 && response.isSuccess) {
-                    this._message.create('success', '保存成功');
+                    this.baseMessage.create('success', '保存成功');
                     this.focusIds = this._getFocusIds(response.data);
                     isSuccess = true;
                 } else {
-                    this._message.create('error', response.message);
+                    this.baseMessage.create('error', response.message);
                 }
             }
             if (isSuccess) {
@@ -1115,10 +809,10 @@ export class BsnStaticTableComponent extends CnComponentBase
                 });
                 const response = await this[option.type](cfg[i].url, newParam);
                 if (response.isSuccess) {
-                    this._message.create('success', '执行成功');
+                    this.baseMessage.create('success', '执行成功');
                     isSuccess = true;
                 } else {
-                    this._message.create('error', response.message);
+                    this.baseMessage.create('error', response.message);
                 }
             }
             this.load();
@@ -1233,20 +927,22 @@ export class BsnStaticTableComponent extends CnComponentBase
             this.is_Search = true;
         } else {
             // 执行行查询
-            this.load(); // 查询后将页面置1
-            let len = this.dataList.length;
-            for (let i = 0; i < len; i++) {
-                if (this.dataList[i]['row_status'] === 'search') {
-                    this.dataList.splice(
-                        this.dataList.indexOf(this.dataList[i]),
-                        1
-                    );
-                    i--;
-                    len--;
-                }
-            }
-            this.is_Search = false;
-            this.search_Row = {};
+            // this.load(); // 查询后将页面置1 liu 20181204 去除查询按钮的load功能
+            // let len = this.dataList.length;
+            // for (let i = 0; i < len; i++) {
+            //     if (this.dataList[i]['row_status'] === 'search') {
+            //         this.dataList.splice(
+            //             this.dataList.indexOf(this.dataList[i]),
+            //             1
+            //         );
+            //         i--;
+            //         len--;
+            //     }
+            // }
+
+            // this.is_Search = false;
+            // this.search_Row = {};
+            this.cancelSearchRow();
         }
     }
 
@@ -1311,21 +1007,13 @@ export class BsnStaticTableComponent extends CnComponentBase
             }
         });
         if (checkedCount === 0) {
-            this._message.info('请勾选数据记录后进行编辑');
+            this.baseMessage.info('请勾选数据记录后进行编辑');
         }
     }
 
     public valueChange(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
-       //  console.log('值变化', data);
-
-        if (this.editCache[data.key].data[data.name] !== data.data) {
-            if ( this.changeConfig_new[data.key].hasOwnProperty(data.name) ){
-                if ( this.changeConfig_new[data.key][ data.name ].hasOwnProperty('setValue') ) {
-                    delete this.changeConfig_new[data.key][ data.name ]['setValue'];
-                }
-            }
-        }
+        // console.log('值变化', data);
         this.editCache[data.key].data[data.name] = data.data;
         this.editCache[data.key].data[data.name] = JSON.parse(
             JSON.stringify(this.editCache[data.key].data[data.name])
@@ -1519,7 +1207,10 @@ export class BsnStaticTableComponent extends CnComponentBase
                                     caseItem.regularType === 'selectObjectValue'
                                 ) {
                                     if (data['dataItem']) {
-                                        regularData = data['dataItem'][caseItem['valueName']];
+                                        regularData =
+                                            data['dataItem'][
+                                            caseItem['valueName']
+                                            ];
                                     } else {
                                         regularData = data.data;
                                     }
@@ -1715,24 +1406,6 @@ export class BsnStaticTableComponent extends CnComponentBase
         // console.log('级联结果数据集', this.changeConfig_new[rowCasade]);
         // this.changeConfig_new = JSON.parse(JSON.stringify(this.changeConfig_new));
         // console.log('当前编辑缓存行内容', this.editCache[data.key].data);
-        const index = this.loadData.rows.findIndex(
-            item => item['key'] === data.key
-        );
-        if (index > -1) {
-            this.loadData.rows[index][data.name] = data.data;
-        }
-        this.scanCodeValueChange(); // 回写数据
-    }
-
-    public valueChangeSearch(data) {
-        // const index = this.dataList.findIndex(item => item.key === data.key);
-        console.log('值变化valueChangeSearch', data);
-        this.search_Row[data.name] = data.data;
-
-        console.log('值变化后的数据结构', this.search_Row, this._buildSearch());
-        // console.log('级联结果数据集', this.changeConfig_new[rowCasade]);
-        // this.changeConfig_new = JSON.parse(JSON.stringify(this.changeConfig_new));
-        // console.log('当前编辑缓存行内容', this.editCache[data.key].data);
     }
 
     public isEdit(fieldname) {
@@ -1758,15 +1431,15 @@ export class BsnStaticTableComponent extends CnComponentBase
 
     public executeSelectedRow(option) {
         if (!this._selectRow) {
-            this._message.create('info', '请选选择要执行的数据');
+            this.baseMessage.create('info', '请选选择要执行的数据');
             return false;
         }
-        this.modalService.confirm({
+        this.baseModal.confirm({
             nzTitle: '是否将选中的数据执行当前操作？',
             nzContent: '',
             nzOnOk: () => {
                 if (this._selectRow['row_status'] === 'adding') {
-                    this._message.create('info', '当前数据未保存无法进行处理');
+                    this.baseMessage.create('info', '当前数据未保存无法进行处理');
                     return false;
                 }
 
@@ -1778,10 +1451,10 @@ export class BsnStaticTableComponent extends CnComponentBase
 
     public executeCheckedRow(option) {
         if (this.dataList.filter(item => item.checked === true).length <= 0) {
-            this._message.create('info', '请选择要执行的数据');
+            this.baseMessage.create('info', '请选择要执行的数据');
             return false;
         }
-        this.modalService.confirm({
+        this.baseModal.confirm({
             nzTitle: '是否将选中的数据执行当前操作？',
             nzContent: '',
             nzOnOk: () => {
@@ -1817,14 +1490,14 @@ export class BsnStaticTableComponent extends CnComponentBase
 
     public deleteRow(option) {
         if (this.dataList.filter(item => item.checked === true).length <= 0) {
-            this._message.create('info', '请选择要删除的数据');
+            this.baseMessage.create('info', '请选择要删除的数据');
         } else {
             if (
                 option.ajaxConfig.delete &&
                 option.ajaxConfig.delete.length > 0
             ) {
                 option.ajaxConfig.delete.map(async delConfig => {
-                    this.modalService.confirm({
+                    this.baseModal.confirm({
                         nzTitle: delConfig.title ? delConfig.title : '提示',
                         nzContent: delConfig.message ? delConfig.message : '',
                         nzOnOk: () => {
@@ -1863,8 +1536,6 @@ export class BsnStaticTableComponent extends CnComponentBase
         }
     }
 
-
-
     public async _executeDelete(deleteConfig, ids) {
         let isSuccess;
         // 默认删除数据，无需进行参数的设置，删除数据的ids将会从列表勾选中自动获得
@@ -1873,7 +1544,7 @@ export class BsnStaticTableComponent extends CnComponentBase
         };
         const response = await this['delete'](deleteConfig.url, params);
         if (response && response.status === 200 && response.isSuccess) {
-            this._message.create('success', '删除成功');
+            this.baseMessage.create('success', '删除成功');
             isSuccess = true;
             this.focusIds = null;
             this.load();
@@ -1889,7 +1560,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                 );
             }
         } else {
-            this._message.create('error', response.message);
+            this.baseMessage.create('error', response.message);
         }
 
         return isSuccess;
@@ -1904,15 +1575,14 @@ export class BsnStaticTableComponent extends CnComponentBase
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
             const selectedRow = this._selectRow ? this._selectRow : {};
             const tmpValue = this.tempValue ? this.tempValue : {};
-            console.log({ ...selectedRow, ...tmpValue });
-            const modal = this.modalService.create({
+            const modal = this.baseModal.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
                 nzContent: component['layout'],
                 nzComponentParams: {
                     permissions: this.permissions,
                     config: data,
-                    initData: { ...selectedRow, ...tmpValue }
+                    initData: { ...tmpValue, ...selectedRow }
                 },
                 nzFooter: footer
             });
@@ -1926,32 +1596,39 @@ export class BsnStaticTableComponent extends CnComponentBase
                         if (btn['name'] === 'save') {
                             (async () => {
                                 const result = await componentInstance.buttonAction(
-                                    btn
+                                    btn,
+                                    () => {
+                                        modal.close();
+                                        // todo: 操作完成当前数据后需要定位
+                                        this.load();
+                                        this.sendCascadeMessage();
+                                    }
                                 );
-                                if (result) {
-                                    modal.close();
-                                    // todo: 操作完成当前数据后需要定位
-                                    this.load();
-                                }
                             })();
                         } else if (btn['name'] === 'saveAndKeep') {
                             (async () => {
                                 const result = await componentInstance.buttonAction(
-                                    btn
+                                    btn,
+                                    () => {
+                                        // todo: 操作完成当前数据后需要定位
+                                        this.load();
+                                        this.sendCascadeMessage();
+                                    }
                                 );
                                 if (result) {
-                                    // todo: 操作完成当前数据后需要定位
-                                    this.load();
+
                                 }
                             })();
                         } else if (btn['name'] === 'close') {
                             modal.close();
                             this.load();
+                            this.sendCascadeMessage();
                         } else if (btn['name'] === 'reset') {
                             this._resetForm(componentInstance);
                         } else if (btn['name'] === 'ok') {
                             modal.close();
                             this.load();
+                            this.sendCascadeMessage();
                             //
                         }
                     };
@@ -1959,6 +1636,23 @@ export class BsnStaticTableComponent extends CnComponentBase
                 });
             }
         });
+    }
+
+    private sendCascadeMessage() {
+        if (
+            this.config.componentType &&
+            this.config.componentType.parent === true
+        ) {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                    this.config.viewId,
+                    {
+                        data: this._selectRow
+                    }
+                )
+            );
+        }
     }
 
     // region 批量确认提交数据，未完成与服务端的批量测试功能
@@ -1980,26 +1674,42 @@ export class BsnStaticTableComponent extends CnComponentBase
             // 使用时可以通过临时变量定义的固定属性访问
             // 使用时乐意通过内置的参数类型进行访问
             switch (c.action) {
+                case BSN_EXECUTE_ACTION.EXECUTE_ADD_ROW_DATA:
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return false;
+                    }
+                    handleData = {};
+                    break;
                 case BSN_EXECUTE_ACTION.EXECUTE_CHECKED:
                     if (
                         this.dataList.filter(item => item.checked === true)
                             .length <= 0
                     ) {
-                        this._message.create('info', '请选择要执行的数据');
+                        this.baseMessage.create('info', '请选择要执行的数据');
                         return false;
                     }
                     handleData = this._getCheckedItems();
+                    this.beforeOperation.operationItemsData = handleData;
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return false;
+                    }
+
                     msg = '操作完成';
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_SELECTED:
                     if (this._selectRow['row_status'] === 'adding') {
-                        this._message.create(
+                        this.baseMessage.create(
                             'info',
                             '当前数据未保存无法进行处理'
                         );
                         return false;
                     }
                     handleData = this._getSelectedItem();
+                    this.beforeOperation.operationItemData = handleData;
+                    if (this.beforeOperation.beforeItemDataOperation(option)) {
+                        return false;
+                    }
+
                     msg = '操作完成';
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_CHECKED_ID:
@@ -2007,10 +1717,15 @@ export class BsnStaticTableComponent extends CnComponentBase
                         this.dataList.filter(item => item.checked === true)
                             .length <= 0
                     ) {
-                        this._message.create('info', '请选择要执行的数据');
+                        this.baseMessage.create('info', '请选择要执行的数据');
                         return false;
                     }
                     handleData = this._getCheckItemsId();
+                    this.beforeOperation.operationItemsData = this._getCheckedItems();
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return false;
+                    }
+
                     msg = '操作完成';
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_ROW:
@@ -2031,7 +1746,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                     break;
             }
             if (c.message) {
-                this.modalService.confirm({
+                this.baseModal.confirm({
                     nzTitle: c.title ? c.title : '提示',
                     nzContent: c.message ? c.message : '',
                     nzOnOk: () => {
@@ -2042,7 +1757,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                             );
                             // 处理输出参数
                             if (c.outputParams) {
-                                this._outputParametersResolver(
+                                this.outputParametersResolver(
                                     c,
                                     response,
                                     option.ajaxConfig,
@@ -2074,7 +1789,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                     );
                     // 处理输出参数
                     if (c.outputParams) {
-                        this._outputParametersResolver(
+                        this.outputParametersResolver(
                             c,
                             response,
                             option.ajaxConfig,
@@ -2110,19 +1825,20 @@ export class BsnStaticTableComponent extends CnComponentBase
     }
 
     /**
-     *
-     * @param outputParams
-     * @param response
-     * @param callback
-     * @returns {Array}
-     * @private
-     * 1、输出参数的配置中，消息类型的参数只能设置一次
-     * 2、值类型的结果可以设置多个
-     * 3、表类型的返回结果可以设置多个
-     */
-    private _outputParametersResolver(c, response, ajaxConfig, callback) {
+    *
+    * @param outputParams
+    * @param response
+    * @param callback
+    * @returns {Array}
+    * @private
+    * 1、输出参数的配置中，消息类型的参数只能设置一次
+    * 2、值类型的结果可以设置多个
+    * 3、表类型的返回结果可以设置多个
+    */
+    public outputParametersResolver(c, response, ajaxConfig, callback) {
         const result = false;
         if (response.isSuccess) {
+
             const msg =
                 c.outputParams[
                 c.outputParams.findIndex(
@@ -2141,10 +1857,10 @@ export class BsnStaticTableComponent extends CnComponentBase
                     m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
                 )
                 ];
-            const msgObj = response.data[msg.name]
+            const msgObj = msg
                 ? response.data[msg.name].split(':')
-                : '';
-            // const valueObj = response.data[value.name] ? response.data[value.name] : [];
+                : null;
+            const valueObj = response.data ? response.data : {};
             // const tableObj = response.data[table.name] ? response.data[table.name] : [];
             if (msgObj && msgObj.length > 1) {
                 const messageType = msgObj[0];
@@ -2156,7 +1872,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                             nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
-                        this.modalService[messageType](options);
+                        this.baseModal[messageType](options);
                         break;
                     case 'error':
                         options = {
@@ -2164,7 +1880,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                             nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
-                        this.modalService[messageType](options);
+                        this.baseModal[messageType](options);
                         break;
                     case 'confirm':
                         options = {
@@ -2175,17 +1891,20 @@ export class BsnStaticTableComponent extends CnComponentBase
                                 const childrenConfig = ajaxConfig.filter(
                                     f => f.parentName && f.parentName === c.name
                                 );
-                                childrenConfig &&
-                                    childrenConfig.map(currentAjax => {
-                                        this._getAjaxConfig(
-                                            currentAjax,
-                                            ajaxConfig
-                                        );
-                                    });
+                                //  目前紧支持一次执行一个分之步骤
+                                this._getAjaxConfig(childrenConfig[0], ajaxConfig);
+                                // childrenConfig &&
+                                //     childrenConfig.map(currentAjax => {
+                                //         this.getAjaxConfig(
+                                //             currentAjax,
+                                //             ajaxConfig,
+                                //             callback
+                                //         );
+                                //     });
                             },
                             nzOnCancel: () => { }
                         };
-                        this.modalService[messageType](options);
+                        this.baseModal[messageType](options);
                         break;
                     case 'warning':
                         options = {
@@ -2193,7 +1912,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                             nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
-                        this.modalService[messageType](options);
+                        this.baseModal[messageType](options);
                         break;
                     case 'success':
                         options = {
@@ -2201,7 +1920,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                             nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
-                        this._message.success(msgObj[1]);
+                        this.baseMessage.success(msgObj[1]);
                         callback && callback();
                         break;
                 }
@@ -2213,13 +1932,26 @@ export class BsnStaticTableComponent extends CnComponentBase
                 //         callback && callback();
                 //     }
                 // }
-            } else {
-                this._message.error(
-                    '存储过程返回结果异常：未获得输出的消息内容'
-                );
             }
+            // if(options) {
+            //     this.baseMessage[messageType](options);
+            //
+            //     // 如果成功则执行回调
+            //     if(messageType === 'success') {
+            //         callback && callback();
+            //     }
+            // }
+            if (valueObj) {
+                this.returnValue = valueObj;
+                const childrenConfig = ajaxConfig.filter(
+                    f => f.parentName && f.parentName === c.name
+                );
+                //  目前紧支持一次执行一个分之步骤
+                this._getAjaxConfig(childrenConfig[0], ajaxConfig);
+            }
+
         } else {
-            this._message.error('操作异常：', response.message);
+            this.baseMessage.error('操作异常：', response.message);
         }
     }
 
@@ -2237,7 +1969,8 @@ export class BsnStaticTableComponent extends CnComponentBase
             tempValue: this.tempValue,
             item: handleData,
             initValue: this.initValue,
-            cacheValue: this.cacheService
+            cacheValue: this.cacheService,
+            returnValue: this.returnValue
         });
         // 执行数据操作
         return this._executeRequest(
@@ -2258,7 +1991,8 @@ export class BsnStaticTableComponent extends CnComponentBase
                         item: dataItem,
                         componentValue: dataItem,
                         initValue: this.initValue,
-                        cacheValue: this.cacheService
+                        cacheValue: this.cacheService,
+                        returnValue: this.returnValue
                     });
                     executeParams.push(newParam);
                 });
@@ -2271,7 +2005,8 @@ export class BsnStaticTableComponent extends CnComponentBase
                     item: handleData,
                     componentValue: handleData,
                     initValue: this.initValue,
-                    cacheValue: this.cacheService
+                    cacheValue: this.cacheService,
+                    returnValue: this.returnValue
                 })
             );
         }
@@ -2303,10 +2038,10 @@ export class BsnStaticTableComponent extends CnComponentBase
                 }
                 const response = await this[option.type](cfg[i].url, params);
                 if (response.isSuccess) {
-                    this._message.create('success', '执行成功');
+                    this.baseMessage.create('success', '执行成功');
                     isSuccess = true;
                 } else {
-                    this._message.create('error', response.message);
+                    this.baseMessage.create('error', response.message);
                 }
             }
             this.load();
@@ -2409,17 +2144,10 @@ export class BsnStaticTableComponent extends CnComponentBase
         // 处理每组表单内部的交互
         dataList.forEach(item => {
             if (!this.editCache[item.key]) {
-                if (item.edit) {
-                    this.editCache[item.key] = {
-                        edit: true, // liu 20181117 false
-                        data: JSON.parse(JSON.stringify(item))
-                    };
-                } else {
-                    this.editCache[item.key] = {
-                        edit: false, // liu 20181117 false
-                        data: JSON.parse(JSON.stringify(item))
-                    };
-                }
+                this.editCache[item.key] = {
+                    edit: false,
+                    data: JSON.parse(JSON.stringify(item))
+                };
             }
         });
     }
@@ -2446,6 +2174,9 @@ export class BsnStaticTableComponent extends CnComponentBase
                     : 'Id'
             ];
         }
+
+        // liu 20181210
+        this.updateValue.emit(this._selectRow);
     }
 
     // liu 赋值选中
@@ -2514,10 +2245,10 @@ export class BsnStaticTableComponent extends CnComponentBase
                 data.checked = value;
             }
         });
-        this.refChecked();
+        this.refChecked(value);
     }
 
-    public refChecked() {
+    public refChecked($event?) {
         this.checkedCount = this.dataList.filter(w => w.checked).length;
         this.allChecked = this.checkedCount === this.dataList.length;
         this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
@@ -2568,6 +2299,7 @@ export class BsnStaticTableComponent extends CnComponentBase
     private _cancelEdit(key: string): void {
         const index = this.dataList.findIndex(item => item.key === key);
         this.dataList[index].checked = false;
+        this.dataList[index]['row_status'] = '';
         this.editCache[key].edit = false;
         this.editCache[key].data = JSON.parse(
             JSON.stringify(this.dataList[index])
@@ -2777,18 +2509,20 @@ export class BsnStaticTableComponent extends CnComponentBase
      */
     private showBatchForm(dialog) {
         const footer = [];
-        const checkedItems = [];
-        this.dataList.map(item => {
-            if (item.checked) {
-                checkedItems.push(item);
-            }
-        });
-        if (checkedItems.length > 0) {
+        // const checkedItems = [];
+        // this.dataList.map(item => {
+        //     if (item.checked) {
+        //         checkedItems.push(item);
+        //     }
+        // });
+
+        const checkedIds = this._getCheckItemsId();
+        if (checkedIds.length > 0) {
             const obj = {
-                checkedRow: checkedItems,
-                ...this.tempValue
+                ...this.tempValue,
+                checkedId: checkedIds
             };
-            const modal = this.modalService.create({
+            const modal = this.baseModal.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
                 nzContent: component['form'],
@@ -2808,12 +2542,13 @@ export class BsnStaticTableComponent extends CnComponentBase
                         if (btn['name'] === 'batchSave') {
                             (async () => {
                                 const result = await componentInstance.buttonAction(
-                                    btn
+                                    btn,
+                                    () => {
+                                        modal.close();
+                                        this.load();
+                                    }
                                 );
-                                this.showAjaxMessage(result, '保存成功', () => {
-                                    modal.close();
-                                    this.load();
-                                });
+
                             })();
                         } else if (btn['name'] === 'close') {
                             modal.close();
@@ -2825,7 +2560,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                 });
             }
         } else {
-            this._message.create('warning', '请先选中需要处理的数据');
+            this.baseMessage.create('warning', '请先选中需要处理的数据');
         }
     }
     /**
@@ -2847,21 +2582,21 @@ export class BsnStaticTableComponent extends CnComponentBase
                 }
             });
             if (rs.success) {
-                this._message.success(message);
+                this.baseMessage.success(message);
                 if (callback) {
                     callback();
                 }
             } else {
-                this._message.error(rs.msg.join('<br/>'));
+                this.baseMessage.error(rs.msg.join('<br/>'));
             }
         } else {
             if (result.isSuccess) {
-                this._message.success(message);
+                this.baseMessage.success(message);
                 if (callback) {
                     callback();
                 }
             } else {
-                this._message.error(result.message);
+                this.baseMessage.error(result.message);
             }
         }
     }
@@ -2875,27 +2610,28 @@ export class BsnStaticTableComponent extends CnComponentBase
         if (dialog.type === 'add') {
         } else if (dialog.type === 'edit') {
             if (!this._selectRow) {
-                this._message.warning('请选中一条需要添加附件的记录！');
+                this.baseMessage.warning('请选中一条需要添加附件的记录！');
                 return false;
             }
         }
+
         obj = {
+            ...this.tempValue,
             ...this._selectRow,
             _id: this._selectRow[dialog.keyId]
                 ? this._selectRow[dialog.keyId]
-                : '',
-            // _parentId: this.tempValue['_parentId'] ? this.tempValue['_parentId'] : ''
-            ...this.tempValue
+                : ''
         };
 
         const footer = [];
-        const modal = this.modalService.create({
+        const modal = this.baseModal.create({
             nzTitle: dialog.title,
             nzWidth: dialog.width,
             nzContent: component['form'],
             nzComponentParams: {
                 config: dialog,
-                tempValue: obj
+                tempValue: obj,
+                editable: dialog.type === 'add' ? 'post' : 'put'
             },
             nzFooter: footer
         });
@@ -2907,26 +2643,23 @@ export class BsnStaticTableComponent extends CnComponentBase
                 button['type'] = btn.type ? btn.type : 'default';
                 button['onClick'] = componentInstance => {
                     if (btn['name'] === 'save') {
-                        (async () => {
-                            const result = await componentInstance.buttonAction(
-                                btn
-                            );
-                            this.showAjaxMessage(result, '保存成功', () => {
+                        componentInstance.buttonAction(
+                            btn,
+                            () => {
                                 modal.close();
                                 this.load();
-                            });
-                        })();
+                            }
+                        );
                     } else if (btn['name'] === 'saveAndKeep') {
-                        (async () => {
-                            const result = await componentInstance.buttonAction(
-                                btn
-                            );
-                            this.showAjaxMessage(result, '保存成功', () => {
-                                modal.close();
+                        componentInstance.buttonAction(
+                            btn,
+                            () => {
+                                this._resetForm(componentInstance);
                                 this.load();
-                            });
-                        })();
+                            }
+                        );
                     } else if (btn['name'] === 'close') {
+                        this.load();
                         modal.close();
                     } else if (btn['name'] === 'reset') {
                         this._resetForm(componentInstance);
@@ -2951,7 +2684,7 @@ export class BsnStaticTableComponent extends CnComponentBase
      */
     private openUploadDialog(dialog) {
         if (!this._selectRow) {
-            this._message.warning('请选中一条需要添加附件的记录！');
+            this.baseMessage.warning('请选中一条需要添加附件的记录！');
             return false;
         }
         const footer = [];
@@ -2959,7 +2692,7 @@ export class BsnStaticTableComponent extends CnComponentBase
             _id: this._selectRow[dialog.keyId],
             _parentId: this.tempValue['_parentId']
         };
-        const modal = this.modalService.create({
+        const modal = this.baseModal.create({
             nzTitle: dialog.title,
             nzWidth: dialog.width,
             nzContent: component['upload'],
@@ -3146,6 +2879,7 @@ export class BsnStaticTableComponent extends CnComponentBase
         }
     }*/
 
+    // 级联
 
 
     public caseLoad() {
@@ -3279,7 +3013,7 @@ export class BsnStaticTableComponent extends CnComponentBase
             });
         // endregion： 解析结束
 
-        console.log('级联配置简析', this.cascadeList);
+        // console.log("级联配置简析", this.cascadeList);
     }
 
     public isEmptyObject(e) {
@@ -3288,32 +3022,356 @@ export class BsnStaticTableComponent extends CnComponentBase
         return !0;
     }
 
-    public execFun(name?, key?) {
-        switch (name) {
-            case 'deleteRow':
-                // this.config.actions['deleteRow'] ? this.config.actions['deleteRow'] : null
-                this.deleteRowOnSelected(key);
-                break;
-            default:
-                break;
+    // liu 2018 12 04 
+    public valueChangeSearch(data) {
+        // const index = this.dataList.findIndex(item => item.key === data.key);
+        console.log('值变化valueChangeSearch', data);
+        if (data.data === null) {
+            if (this.search_Row.hasOwnProperty(data.name)) {
+                delete this.search_Row[data.name];
+            }
+        } else {
+            this.search_Row[data.name] = data.data;
         }
-    }
+        const rowCasade = data.key;
+        const sendCasade = data.name;
+        // const changeConfig_new = {};
 
-    // 行内删除
-    public deleteRowOnSelected(key) {
+        // {hang：[name:{具体属性}]}
+        if (this.cascadeList[sendCasade]) {
+            // 判断当前组件是否有级联
+            if (!this.changeConfig_newSearch[rowCasade]) {
+                this.changeConfig_newSearch[rowCasade] = {};
+            }
+            // console.log('当前组件有被级联的子对象');
+            for (const key in this.cascadeList[sendCasade]) {
+                // 处理当前级联
+                //  console.log('处理当前级联', key);
+                if (!this.changeConfig_newSearch[rowCasade][key]) {
+                    this.changeConfig_newSearch[rowCasade][key] = {};
+                }
 
-        //  console.log('行内删除', key);
-        // 注意，末页删除需要将数据页数上移
-        const index = this.loadData.rows.findIndex(item => item['key'] === key);
-        if (index !== -1) {
-            const rowValue = this.loadData.rows[index];
-            this.loadData.rows.splice(this.loadData.rows.indexOf(rowValue), 1);
-            this.loadData.total = this.loadData.rows.length;
-            this.total = this.loadData.total;
-            this.load();
+                if (this.cascadeList[sendCasade][key]['dataType']) {
+                    this.cascadeList[sendCasade][key]['dataType'].forEach(
+                        caseItem => {
+                            // console.log('dataType-caseItem', caseItem);
+                            // region: 解析开始 根据组件类型组装新的配置【静态option组装】
+                            if (caseItem['type'] === 'option') {
+                                // 在做判断前，看看值是否存在，如果在，更新，值不存在，则创建新值
+                                this.changeConfig_newSearch[rowCasade][key][
+                                    'options'
+                                ] = caseItem['option'];
+                            } else {
+                                if (
+                                    this.changeConfig_newSearch[rowCasade][key][
+                                    'options'
+                                    ]
+                                ) {
+                                    delete this.changeConfig_newSearch[rowCasade][
+                                        key
+                                    ]['options'];
+                                }
+                            }
+                            if (caseItem['type'] === 'ajax') {
+                                // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
+                                // 解析参数
+
+                                // const cascadeValue = {};
+                                if (
+                                    !this.changeConfig_newSearch[rowCasade][key][
+                                    'cascadeValue'
+                                    ]
+                                ) {
+                                    this.changeConfig_newSearch[rowCasade][key][
+                                        'cascadeValue'
+                                    ] = {};
+                                }
+                                caseItem['ajax'].forEach(ajaxItem => {
+                                    if (ajaxItem['type'] === 'value') {
+                                        // 静态数据
+                                        this.changeConfig_newSearch[rowCasade][key][
+                                            'cascadeValue'
+                                        ][ajaxItem['name']] = ajaxItem['value'];
+                                    }
+                                    if (ajaxItem['type'] === 'selectValue') {
+                                        // 选中行数据[这个是单值]
+                                        this.changeConfig_newSearch[rowCasade][key][
+                                            'cascadeValue'
+                                        ][ajaxItem['name']] =
+                                            data[ajaxItem['valueName']];
+                                    }
+                                    if (
+                                        ajaxItem['type'] === 'selectObjectValue'
+                                    ) {
+                                        // 选中行对象数据
+                                        if (data.dataItem) {
+                                            this.changeConfig_newSearch[rowCasade][
+                                                key
+                                            ]['cascadeValue'][
+                                                ajaxItem['name']
+                                            ] =
+                                                data.dataItem[
+                                                ajaxItem['valueName']
+                                                ];
+                                        }
+                                    }
+
+                                    // 其他取值【日后扩展部分】value
+                                });
+                                // changeConfig_newSearch[rowCasade][key]['cascadeValue'] = cascadeValue;
+                            } /*  else {
+                            if (this.changeConfig_newSearch[rowCasade][key]['cascadeValue'] ) {
+                                delete this.changeConfig_newSearch[rowCasade][key]['cascadeValue'];
+                            }
+                        } */
+                            if (caseItem['type'] === 'setValue') {
+                                // console.log('setValueinput' , caseItem['setValue'] );
+
+                                if (caseItem['setValue']['type'] === 'value') {
+                                    // 静态数据
+                                    this.changeConfig_newSearch[rowCasade][key][
+                                        'setValue'
+                                    ] = caseItem['setValue']['value'];
+                                }
+                                if (
+                                    caseItem['setValue']['type'] ===
+                                    'selectValue'
+                                ) {
+                                    // 选中行数据[这个是单值]
+                                    this.changeConfig_newSearch[rowCasade][key][
+                                        'setValue'
+                                    ] = data[caseItem['setValue']['valueName']];
+                                }
+                                if (
+                                    caseItem['setValue']['type'] ===
+                                    'selectObjectValue'
+                                ) {
+                                    // 选中行对象数据
+                                    if (data.dataItem) {
+                                        this.changeConfig_newSearch[rowCasade][key][
+                                            'setValue'
+                                        ] =
+                                            data.dataItem[
+                                            caseItem['setValue'][
+                                            'valueName'
+                                            ]
+                                            ];
+                                    }
+                                }
+                                if (data.data === null) {
+                                    this.changeConfig_newSearch[rowCasade][key][
+                                        'setValue'
+                                    ] = null;
+                                }
+                                if (
+                                    caseItem['setValue']['type'] ===
+                                    'notsetValue'
+                                ) {
+                                    // 选中行对象数据
+                                    if (
+                                        this.changeConfig_newSearch[rowCasade][
+                                            key
+                                        ].hasOwnProperty('setValue')
+                                    ) {
+                                        delete this.changeConfig_newSearch[rowCasade][
+                                            key
+                                        ]['setValue'];
+                                    }
+                                }
+                            } else {
+                                if (
+                                    this.changeConfig_newSearch[rowCasade][
+                                        key
+                                    ].hasOwnProperty('setValue')
+                                ) {
+                                    delete this.changeConfig_newSearch[rowCasade][
+                                        key
+                                    ]['setValue'];
+                                }
+                            }
+
+                            // 扩充：判断当前字段是否有 edit ，如果无编辑，则将该字段赋值
+                            if (this.changeConfig_newSearch[rowCasade][key]) {
+                                if (this.changeConfig_newSearch[rowCasade][key]) {
+                                    //
+                                    if (this.isEdit(key)) {
+                                        this.editCache[data.key].data[
+                                            key
+                                        ] = this.changeConfig_newSearch[rowCasade][
+                                        key
+                                        ]['setValue'];
+                                    }
+                                }
+                            }
+
+                            // endregion  解析结束
+                        }
+                    );
+                }
+                if (this.cascadeList[sendCasade][key]['valueType']) {
+                    this.cascadeList[sendCasade][key]['valueType'].forEach(
+                        caseItem => {
+                            // console.log('分析' + key, caseItem);
+                            // region: 解析开始  正则表达
+                            const reg1 = new RegExp(caseItem.regular);
+                            let regularData;
+                            if (caseItem.regularType) {
+                                if (
+                                    caseItem.regularType === 'selectObjectValue'
+                                ) {
+                                    if (data['dataItem']) {
+                                        regularData =
+                                            data['dataItem'][
+                                            caseItem['valueName']
+                                            ];
+                                    } else {
+                                        regularData = data.data;
+                                    }
+                                } else {
+                                    regularData = data.data;
+                                }
+                            } else {
+                                regularData = data.data;
+                            }
+                            const regularflag = reg1.test(regularData);
+                            // console.log('正则结果：', regularflag);
+                            // endregion  解析结束 正则表达
+                            if (regularflag) {
+                                // region: 解析开始 根据组件类型组装新的配置【静态option组装】
+                                if (caseItem['type'] === 'option') {
+                                    this.changeConfig_newSearch[rowCasade][key][
+                                        'options'
+                                    ] = caseItem['option'];
+                                } else {
+                                    if (
+                                        this.changeConfig_newSearch[rowCasade][key][
+                                        'options'
+                                        ]
+                                    ) {
+                                        delete this.changeConfig_newSearch[rowCasade][
+                                            key
+                                        ]['options'];
+                                    }
+                                }
+                                if (caseItem['type'] === 'ajax') {
+                                    // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
+                                    if (
+                                        !this.changeConfig_newSearch[rowCasade][key][
+                                        'cascadeValue'
+                                        ]
+                                    ) {
+                                        this.changeConfig_newSearch[rowCasade][key][
+                                            'cascadeValue'
+                                        ] = {};
+                                    }
+                                    caseItem['ajax'].forEach(ajaxItem => {
+                                        if (ajaxItem['type'] === 'value') {
+                                            // 静态数据
+                                            this.changeConfig_newSearch[rowCasade][key]['cascadeValue'][ajaxItem['name']] = ajaxItem['value'];
+                                        }
+                                        if (
+                                            ajaxItem['type'] === 'selectValue'
+                                        ) {
+                                            // 选中行数据[这个是单值]
+                                            this.changeConfig_newSearch[rowCasade][key]['cascadeValue'][ajaxItem['name']] = data[ajaxItem['valueName']];
+                                        }
+                                        if (
+                                            ajaxItem['type'] ===
+                                            'selectObjectValue'
+                                        ) {
+                                            // 选中行对象数据
+                                            if (data.dataItem) {
+                                                this.changeConfig_newSearch[
+                                                    rowCasade
+                                                ][key]['cascadeValue'][
+                                                    ajaxItem['name']
+                                                ] = data.dataItem[ajaxItem['valueName']];
+                                            }
+                                        }
+
+                                        // 其他取值【日后扩展部分】value
+                                    });
+                                }
+                                /*   else {
+                                 if (this.changeConfig_newSearch[rowCasade][key]['cascadeValue'] ) {
+                                     delete this.changeConfig_newSearch[rowCasade][key]['cascadeValue'];
+                                 }
+                               
+                             } */
+                                if (caseItem['type'] === 'show') {
+                                    if (caseItem['show']) {
+                                        //
+                                        // control['hidden'] = caseItem['show']['hidden'];
+                                    }
+                                    // changeConfig_newSearch[rowCasade]['show'] = caseItem['option'];
+                                }
+                                if (caseItem['type'] === 'setValue') {
+                                    console.log(
+                                        'setValue2',
+                                        caseItem['setValue']
+                                    );
+                                    if (
+                                        caseItem['setValue']['type'] === 'value'
+                                    ) {
+                                        // 静态数据
+                                        this.changeConfig_newSearch[rowCasade][key]['setValue'] = caseItem['setValue']['value'];
+                                    }
+                                    if (
+                                        caseItem['setValue']['type'] === 'selectValue'
+                                    ) {
+                                        // 选中行数据[这个是单值]
+                                        this.changeConfig_newSearch[rowCasade][key]['setValue'] = data[caseItem['setValue']['valueName']];
+                                    }
+                                    if (
+                                        caseItem['setValue']['type'] === 'selectObjectValue'
+                                    ) {
+                                        // 选中行对象数据
+                                        if (data.dataItem) {
+                                            this.changeConfig_newSearch[rowCasade][key]['setValue'] =
+                                                data.dataItem[caseItem['setValue']['valueName']];
+                                        }
+                                    }
+                                    if (data.data === null) {
+                                        this.changeConfig_newSearch[rowCasade][key]['setValue'] = null;
+                                    }
+                                    if (caseItem['setValue']['type'] === 'notsetValue') {
+                                        // 选中行对象数据
+                                        if (this.changeConfig_newSearch[rowCasade][key].hasOwnProperty('setValue')) {
+                                            delete this.changeConfig_newSearch[rowCasade][key]['setValue'];
+                                        }
+                                    }
+                                } else {
+                                    if (
+                                        this.changeConfig_newSearch[rowCasade][key].hasOwnProperty('setValue')
+                                    ) {
+                                        delete this.changeConfig_newSearch[rowCasade][key]['setValue'];
+                                    }
+                                }
+                            }
+                            // endregion  解析结束
+                            // 扩充：判断当前字段是否有 edit ，如果无编辑，则将该字段赋值
+                            if (this.changeConfig_newSearch[rowCasade][key]) {
+                                if (this.changeConfig_newSearch[rowCasade][key]) {
+                                    //
+                                    if (this.isEdit(key)) {
+                                        this.editCache[data.key].data[key] = this.changeConfig_newSearch[rowCasade][key]['setValue'];
+                                    }
+                                }
+                            }
+                        }
+                    );
+                }
+                this.changeConfig_newSearch[rowCasade][key] = JSON.parse(
+                    JSON.stringify(this.changeConfig_newSearch[rowCasade][key])
+                );
+            }
+            // console.log('级联结果数据集', this.changeConfig_new);
         }
-        this.scanCodeValueChange();
 
+        // console.log('值变化后的数据结构', this.search_Row, this._buildSearch(), this.changeConfig_newSearch);
+        // console.log('查询缓存数据', this.editCache[data.key]);
+        this.load();
 
     }
 }
+
