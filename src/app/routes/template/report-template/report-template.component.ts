@@ -79,50 +79,6 @@ export class ReportTemplateComponent implements OnInit {
                                                         }
                                                     ] 
                                                 }
-                                                
-
-                                                // children: [
-                                                //     {
-                                                //         name: 'guocheng',
-                                                //         type: '',
-                                                //         value: ''
-                                                //     },
-                                                //     {
-                                                //         name: '$operDataType$',
-                                                //         type: 'value',
-                                                //         value: 'select'
-                                                //     },
-                                                //     {
-                                                //         name: 'processrouteid',
-                                                //         type: 'value',
-                                                //         value: '1'
-                                                //     },
-                                                //     {
-                                                //         name: 'processrouteid',
-                                                //         type: 'value',
-                                                //         value: '1'
-                                                //     }
-                                                // ]
-                                                // {
-                                                //     Id: '1ca111ea09514483a1175f0118916cb0',
-                                                //    
-                                                //     guocheng: [
-                                                //         {
-                                                //             processrouteid: '1',
-                                                //             processtype: '1',
-                                                //             // name: '$operDataType$',
-                                                //             // type: 'value',
-                                                //             // value: 'select',
-                                                //             gongxuka: [
-                                                //                 {
-                                                //                     // name: '$operDataType$',
-                                                //                     // type: 'value',
-                                                //                     // value: 'select'
-                                                //                 }
-                                                //             ]
-                                                //         }
-                                                //     ]
-                                                // }
                                             ]
                                         }
                                     },

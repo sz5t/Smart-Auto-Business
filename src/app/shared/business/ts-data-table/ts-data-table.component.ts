@@ -32,7 +32,6 @@ import { Subscription } from 'rxjs';
 import { BsnUploadComponent } from '@shared/business/bsn-upload/bsn-upload.component';
 import { CnFormWindowResolverComponent } from '@shared/resolver/form-resolver/form-window-resolver.component';
 import { BeforeOperation } from '../before-operation.base';
-import { createEmitAndSemanticDiagnosticsBuilderProgram } from 'typescript';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: CnFormWindowResolverComponent,
