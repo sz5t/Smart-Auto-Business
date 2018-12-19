@@ -112,17 +112,17 @@ export class CnGridSearchComponent implements OnInit {
     }
   }
   public op = [
-    { lable: '=', value: 'eq', select: true },
-    { lable: '!=', value: 'neq', select: false },
+    { lable: '等于', value: 'eq', select: true },
+    { lable: '不等于', value: 'neq', select: false },
     { lable: '部分一致', value: 'ctn', select: false },
     { lable: '不属于', value: 'nctn', select: false },
     { lable: '包含', value: 'in', select: false },
     { lable: '不包含', value: 'nin', select: false },
     { lable: '范围', value: 'btn', select: false },
-    { lable: '>=', value: 'ge', select: false },
-    { lable: '>', value: 'gt', select: false },
-    { lable: '<=', value: 'le', select: false },
-    { lable: '<', value: 'lt', select: false }
+    { lable: '大于等于', value: 'ge', select: false },
+    { lable: '大于', value: 'gt', select: false },
+    { lable: '小于等于', value: 'le', select: false },
+    { lable: '小于', value: 'lt', select: false }
     // { lable: '自定义', value: 'zdy', select: false }
   ];
   public searchValue;
@@ -154,16 +154,16 @@ export class CnGridSearchComponent implements OnInit {
 
     if (this.config.type === 'select') {
       const newOp = [
-        { lable: '=', value: 'eq', select: true },
-        { lable: '!=', value: 'neq', select: false },
+        { lable: '等于', value: 'eq', select: true },
+        { lable: '不等于', value: 'neq', select: false },
         { lable: '包含', value: 'in', select: false },
         { lable: '不包含', value: 'nin', select: false },
       ];
       this.op = newOp;
     } else if (this.config.type === 'input') {
       const newOp = [
-        { lable: '=', value: 'eq', select: true },
-        { lable: '!=', value: 'neq', select: false },
+        { lable: '等于', value: 'eq', select: true },
+        { lable: '不等于', value: 'neq', select: false },
         { lable: '部分一致', value: 'ctn', select: false },
         { lable: '不属于', value: 'nctn', select: false },
         { lable: '包含', value: 'in', select: false },
@@ -173,8 +173,8 @@ export class CnGridSearchComponent implements OnInit {
 
     } else if (this.config.type === 'number') {
       const newOp = [
-        { lable: '=', value: 'eq', select: true },
-        { lable: '!=', value: 'neq', select: false },
+        { lable: '等于', value: 'eq', select: true },
+        { lable: '不等于', value: 'neq', select: false },
         { lable: '范围', value: 'btn', select: false },
       ];
       this.op = newOp;
