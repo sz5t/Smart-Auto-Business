@@ -139,6 +139,7 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
 
 
     private async getReportData() {
+        // 尝试采用加载多个数据源配置,异步加载所有数据后,进行数据整合,然后进行绑定    
         const url = this.buildUrl(this.config.ajaxConfig.url);
         const params = this.resolverParameters(this.config.ajaxConfig.params);
         return this.apiResource.post(url, params).toPromise();

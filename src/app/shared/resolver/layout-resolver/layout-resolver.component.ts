@@ -24,5 +24,6 @@ export class LayoutResolverComponent implements OnInit {
     tempValue;
     constructor() {}
 
-    ngOnInit() {}
+    ngOnInit() {
+    }
 }

@@ -136,6 +136,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
                                 relation.relationViewId === cascadeEvent._viewId
                             ) {
                                 // 获取当前设置的级联的模式
+                                
                                 const mode =
                                     BSN_COMPONENT_CASCADE_MODES[
                                         relation.cascadeMode

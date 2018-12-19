@@ -6,61 +6,62 @@ import {
     Output,
     EventEmitter,
     OnChanges
-} from "@angular/core";
-import { _HttpClient } from "@delon/theme";
-import { ApiService } from "@core/utility/api-service";
-import { APIResource } from "@core/utility/api-resource";
-import { FormGroup } from "@angular/forms";
+} from '@angular/core';
+import { _HttpClient } from '@delon/theme';
+import { ApiService } from '@core/utility/api-service';
+import { APIResource } from '@core/utility/api-resource';
+import { FormGroup } from '@angular/forms';
 
 @Component({
-    selector: "cn-form-select",
-    templateUrl: "./cn-form-select.component.html"
+    // tslint:disable-next-line:component-selector
+    selector: 'cn-form-select',
+    templateUrl: './cn-form-select.component.html'
 })
 export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
     @Input()
-    config;
+    public config;
     @Input()
-    value;
+    public value;
     @Input()
-    bsnData;
+    public bsnData;
     @Input()
-    rowData;
+    public rowData;
     @Input()
-    dataSet;
+    public dataSet;
     @Input()
-    initValue;
+    public initValue;
     @Input()
-    changeConfig;
-    formGroup: FormGroup;
+    private changeConfig;
+    private formGroup: FormGroup;
     // @Output() updateValue = new EventEmitter();
     @Output()
-    updateValue = new EventEmitter();
-    _options = [];
-    cascadeValue = {};
-    resultData;
+    public updateValue = new EventEmitter();
+    private _options = [];
+    private cascadeValue = {};
+    private resultData;
     // _selectedMultipleOption:any[];
     constructor(private apiService: ApiService) { }
-    _selectedOption;
+    public _selectedOption;
 
-    ngOnInit() {
-        if (!this.config["multiple"]) {
-            this.config["multiple"] = "default";
+    public ngOnInit() {
+        if (!this.config['multiple']) {
+            this.config['multiple'] = 'default';
         }
-        if (this.config["cascadeValue"]) {
+        if (this.config['cascadeValue']) {
             // cascadeValue
-            for (const key in this.config["cascadeValue"]) {
-                if (this.config["cascadeValue"].hasOwnProperty(key)) {
-                    this.cascadeValue[key] = this.config["cascadeValue"][key];
+            for (const key in this.config['cascadeValue']) {
+                if (this.config['cascadeValue'].hasOwnProperty(key)) {
+                    this.cascadeValue[key] = this.config['cascadeValue'][key];
                 }
             }
         }
         // console.log('select加载固定数据', this.config);
         if (this.changeConfig) {
-            if (this.changeConfig["cascadeValue"]) {
+            if (this.changeConfig['cascadeValue']) {
                 // cascadeValue
-                for (const key in this.changeConfig["cascadeValue"]) {
-                    if (this.changeConfig["cascadeValue"].hasOwnProperty(key)) {
-                        this.cascadeValue[key] = this.changeConfig["cascadeValue"][key];
+                for (const key in this.changeConfig['cascadeValue']) {
+                    if (this.changeConfig['cascadeValue'].hasOwnProperty(key)) {
+                        this.cascadeValue[key] = this.changeConfig['cascadeValue'][key];
                     }
                 }
             }
@@ -82,16 +83,16 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
         }
     }
 
-    async load() {
+    public async load() {
         const result = await this.asyncLoadOptions(
             this.config.ajaxConfig,
             this.formGroup.value
         );
         // console.log('select_result', result);
         this.resultData = result;
-        if (this.config.valueType && this.config.valueType === "list") {
-            const labels = this.config.labelName.split(".");
-            const values = this.config.valueName.split(".");
+        if (this.config.valueType && this.config.valueType === 'list') {
+            const labels = this.config.labelName.split('.');
+            const values = this.config.valueName.split('.');
             result.data.forEach(d => {
                 d[this.config.valueName].forEach(v => {
                     this._options.push({
@@ -113,22 +114,22 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
         this.selectedByLoaded();
     }
 
-    ngOnChanges() {
+    public ngOnChanges() {
          console.log('select加载固定数据ngOnChanges', this.changeConfig);
         // console.log('变化时临时参数' , this.bsnData);
     }
-    ngAfterViewInit() { }
+    public ngAfterViewInit() { }
 
-    async asyncLoadOptions(p?, componentValue?, type?) {
+    public async asyncLoadOptions(p?, componentValue?, type?) {
         // console.log('select load 异步加载', componentValue); // liu
         const params = {};
         let tag = true;
         let url;
         if (p) {
             p.params.forEach(param => {
-                if (param.type === "tempValue") {
+                if (param.type === 'tempValue') {
                     if (type) {
-                        if (type === "load") {
+                        if (type === 'load') {
                             if (this.bsnData[param.valueName]) {
                                 params[param.name] = this.bsnData[
                                     param.valueName
@@ -147,11 +148,11 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                             params[param.name] = this.bsnData[param.valueName];
                         }
                     }
-                } else if (param.type === "value") {
+                } else if (param.type === 'value') {
                     params[param.name] = param.value;
-                } else if (param.type === "componentValue") {
+                } else if (param.type === 'componentValue') {
                     params[param.name] = componentValue[param.valueName];
-                } else if (param.type === "cascadeValue") {
+                } else if (param.type === 'cascadeValue') {
                     params[param.name] = this.cascadeValue[param.valueName];
                 } else if (param.type === 'initValue') {
                     params[param.name] = this.initValue[param.valueName];
@@ -160,21 +161,21 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
             if (this.isString(p.url)) {
                 url = p.url;
             } else {
-                let pc = "null";
+                let pc = 'null';
                 p.url.params.forEach(param => {
-                    if (param["type"] === "value") {
+                    if (param['type'] === 'value') {
                         pc = param.value;
-                    } else if (param.type === "componentValue") {
+                    } else if (param.type === 'componentValue') {
                         pc = componentValue[param.valueName];
-                    } else if (param.type === "tempValue") {
+                    } else if (param.type === 'tempValue') {
                         pc = this.bsnData[param.valueName];
                     }
                 });
 
-                url = p.url["parent"] + "/" + pc + "/" + p.url["child"];
+                url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
             }
         }
-        if (p.ajaxType === "get" && tag) {
+        if (p.ajaxType === 'get' && tag) {
             /*  const dd=await this._http.getProj(APIResource[p.url], params).toPromise();
        if (dd && dd.Status === 200) {
        console.log("服务器返回执行成功返回",dd.Data);
@@ -195,7 +196,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
         // }
     }
 
-    selectedByLoaded() {
+    public selectedByLoaded() {
         let selected;
         if (!this.value) {
             this.value = this.config.defaultValue;
@@ -217,7 +218,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
         this._selectedOption = selected;
     }
 
-    async valueChange(name?) {
+    public async valueChange(name?) {
         // if (name) {
         //   const backValue = { name: this.config.name, value: name };
         //   this.updateValue.emit(backValue);
@@ -230,10 +231,10 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
             if (this.resultData) {
                 // console.log('221', this.resultData, name);
                 const index = this.resultData.data.findIndex(
-                    item => item[this.config["valueName"]] === name
+                    item => item[this.config['valueName']] === name
                 );
                 this.resultData.data &&
-                    (backValue["dataItem"] = this.resultData.data[index]);
+                    (backValue['dataItem'] = this.resultData.data[index]);
             } else {
                 if (this.config.ajaxConfig) {
                     const result = await this.asyncLoadOptions(
@@ -242,11 +243,11 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                     );
                    // console.log('229', result, name);
                     const index = result.data.findIndex(
-                        item => item[this.config["valueName"]] === name
+                        item => item[this.config['valueName']] === name
                     );
                     if (index > -1) {
                         result.data &&
-                            (backValue["dataItem"] = result.data[index]);
+                            (backValue['dataItem'] = result.data[index]);
                     }
                 }
 
@@ -258,8 +259,8 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
         }
     }
 
-    isString(obj) {
+    public isString(obj) {
         // 判断对象是否是字符串
-        return Object.prototype.toString.call(obj) === "[object String]";
+        return Object.prototype.toString.call(obj) === '[object String]';
     }
 }

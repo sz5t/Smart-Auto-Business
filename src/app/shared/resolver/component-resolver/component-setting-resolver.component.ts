@@ -639,14 +639,12 @@ export class ComponentSettingResolverComponent
         this.apiService
             .get("common/ViewSettingBuffer", params)
             .subscribe(result => {
-                console.log(result);
                 if (
                     result &&
                     result.status === 200 &&
                     result.isSuccess &&
                     result.data.length > 0
                 ) {
-                    console.log(result.data);
                     const d = {};
                     d["config"] = JSON.parse(result.data[0].metadata);
                     d["layoutId"] = result.data[0].parentId;

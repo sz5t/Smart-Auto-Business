@@ -51,7 +51,10 @@ export const BSN_PARAMETER_TYPE = {
     INIT_VALUE: 'initValue',
     CACHE_VALUE: 'cacheValue',
     CASCADE_VALUE: 'cascadeValue',
-    RETURN_VALUE: 'returnValue'
+    RETURN_VALUE: 'returnValue',
+    DEFAULT_WEEK: 'defaultWeek',
+    DEFAULT_DAY: 'defaultDay',
+    DEFAULT_MONTH: 'defaultMonth'
 };
 
 export const BSN_EXECUTE_ACTION = {

@@ -101,7 +101,7 @@ export class HeaderUserComponent implements OnInit {
                 this.tokenService.clear();
                 this.cacheService.clear();
                 this.menuService.clear();
-                console.log(this.tokenService.login_url);
+                // console.log(this.tokenService.login_url);
                 this.router.navigateByUrl(this.tokenService.login_url);
                 // new Promise((resolve, reject) => {
                 //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);

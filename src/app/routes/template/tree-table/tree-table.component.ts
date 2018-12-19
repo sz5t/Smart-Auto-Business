@@ -4591,35 +4591,35 @@ export class TreeTableComponent implements OnInit {
                                                                         label:
                                                                             '表',
                                                                         value:
-                                                                            '1',
+                                                                            1,
                                                                         disabled: false
                                                                     },
                                                                     {
                                                                         label:
                                                                             '树',
                                                                         value:
-                                                                            '2',
+                                                                            2,
                                                                         disabled: false
                                                                     },
                                                                     {
                                                                         label:
                                                                             '树表',
                                                                         value:
-                                                                            '3',
+                                                                            3,
                                                                         disabled: false
                                                                     },
                                                                     {
                                                                         label:
                                                                             '表单',
                                                                         value:
-                                                                            '4',
+                                                                            4,
                                                                         disabled: false
                                                                     },
                                                                     {
                                                                         label:
                                                                             '标签页',
                                                                         value:
-                                                                            '5',
+                                                                            5,
                                                                         disabled: false
                                                                     }
                                                                 ],

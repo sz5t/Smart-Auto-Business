@@ -851,7 +851,7 @@ export class SqlSettingComponent implements OnInit , OnDestroy {
           _moduleId: this._funcValue[this._funcValue.length - 1],
         }
       };
-      console.log('选中行发消息事件', receiver);
+      // console.log('选中行发消息事件', receiver);
       this.relativeMessage.sendMessage({ type: 'initParameters' }, receiver);
       /* const sqlCommondData = await this.sqlRefreshData();
        this._loading = false;

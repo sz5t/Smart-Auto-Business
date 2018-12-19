@@ -135,6 +135,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     public _checkItemList = [];
     public dropdown: NzDropdownContextComponent;
     public _selectedNode = {};
+    private isLoading = false;
     @Output() public updateValue = new EventEmitter();
     constructor(
         private _http: ApiService,
@@ -230,7 +231,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
             this.config.componentType.parent === true
         ) {
             this.after(this, 'clickNode', () => {
-                console.log('send casacde data')
+                // console.log('send casacde data')
                 this.selectedItem &&
                     this.cascade.next(
                         new BsnComponentMessage(
@@ -363,9 +364,11 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     }
 
     public loadTreeData() {
+       
         (async () => {
+            this.isLoading = true;
             const data = await this.getTreeData();
-            if (data.data && data.isSuccess) {
+            if (data.isSuccess) {
                 if (data.data.length > 0) {
                     this._toTreeBefore = data.data;
                     for (
@@ -562,9 +565,14 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                             );
                     }
                 } else {
-                    this.treeData = [];
+                    this.treeData = [{
+                        title   : '未添加任何节点数据',
+                        key     : '-1',
+                        expanded : false
+                      }];
                 }
             }
+            this.isLoading = false;
         })();
     }
     public _checkDefaultSelection(d, level, index) {

@@ -54,7 +54,7 @@ export class PertComponent implements OnInit, AfterViewInit {
       `);
 
     chart.listen('click', function(e) {
-      console.log('hello', e);
+      // console.log('hello', e);
     });
     // set settings for tasks
     const tasks = chart.tasks();

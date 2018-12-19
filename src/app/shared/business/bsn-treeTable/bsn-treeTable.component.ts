@@ -22,6 +22,7 @@ import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { Observable, Observer, Subscription } from 'rxjs';
 import { GridBase } from '../grid.base';
 import { BeforeOperation } from '../before-operation.base';
+import { debug } from 'util';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: FormResolverComponent
@@ -473,6 +474,10 @@ export class BsnAsyncTreeTableComponent extends GridBase
     }
 
     public expandChange(childrenData, data: any, $event: boolean) {
+        setTimeout(() => {
+            this.loading = true;
+        }, 10);
+        
         if ($event === true) {
             (async () => {
                 const response = await this.expandLoad(data);
@@ -482,6 +487,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
                     });
                     // childrenData = data;
                     this.insertChildrenListToTree(data, response.data);
+                    this.loading = false;
                 }
             })();
         } else {
@@ -491,9 +497,15 @@ export class BsnAsyncTreeTableComponent extends GridBase
                     if (target && target.parent) {
                         target.parent.expand = false;
                     }
-                    this.expandChange(target.children, target, false)
+                    if (target && target.children) {
+                        this.expandChange(target.children, target, false)
+                    }
+                    
                 })
             }
+            setTimeout(() => {
+                this.loading = false;
+            }, 10);
         }
     }
 
@@ -509,6 +521,12 @@ export class BsnAsyncTreeTableComponent extends GridBase
 
     private insertChildrenListToTree(parent, childrenList) {
         const index = this.treeData.findIndex(d => d.Id === parent.Id);
+        // 删除重复添加的子节点数据
+        childrenList.forEach((child, i) => {
+            if (this.treeData.includes(child)) {
+                childrenList.splice(i, 1);
+            }
+        })
         this.treeData.splice(index + 1, 0, ...childrenList);
     }
 

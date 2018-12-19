@@ -75,14 +75,17 @@ export class ApiService {
 
     // region: read inner config data
     public getLocalData(name) {
-        const urls =
-            // environment.SERVER_URL +
-            SystemResource.localResource.url +
-            '/assets/data/' +
-            name +
-            '.json?rtc=' +
-            CommonTools.uuID(10);
-        return this.http.get<any>(urls);
+        // const urls =
+        //     // environment.SERVER_URL +
+        //     SystemResource.localResource.url +
+        //     '/assets/data/' +
+        //     name +
+        //     '.json?rtc=' +
+        //     CommonTools.uuID(10);
+        // return this.http.get<any>(urls);
+
+        const urls = `${SystemResource.localResourceConfigJson.url + name}.json?rtc=${CommonTools.uuID(10)}`;
+        return this.httpClient.request('GET', urls);
     }
 
     public getLocalReportTemplate(name) {

@@ -1,4 +1,5 @@
 import { BSN_PARAMETER_TYPE } from '@core/relative-Service/BsnTableStatus';
+import { getISOYear, getMonth, getISOWeek } from 'date-fns';
 export interface ParametersResolverModel {
     params;
     tempValue?;
@@ -45,6 +46,24 @@ export class CommonTools {
                                     param['value'] === 0
                                 ) {
                                     result[param['name']] = param.value;
+                                } else if (param['defaultDate']) {
+                                    const dateType = param['defaultDate'];
+                                    let dValue;
+                                    switch (dateType) {
+                                        case 'defaultWeek':
+                                        dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
+                                        break;
+                                        case 'defaultDay':
+
+                                        break;
+                                        case 'defaultMonth':
+                                        dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1 }`;
+                                        break;
+                                        case 'defaultYear':
+                                        dValue = `${getISOYear(Date.now())}`;
+                                        break;
+                                    }
+                                    result[param['name']] = dValue;
                                 }
                             }
                             break;
@@ -66,6 +85,24 @@ export class CommonTools {
                                     if (param['value'] !== undefined) {
                                         if (param['datatype']) {
                                             result[param['name']] = this.getParameters(param['datatype'], param['value']);
+                                        } else if (param['defaultDate']) {
+                                            const dateType = param['defaultDate'];
+                                            let dValue;
+                                            switch (dateType) {
+                                                case 'defaultWeek':
+                                                dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
+                                                break;
+                                                case 'defaultDay':
+
+                                                break;
+                                                case 'defaultMonth':
+                                                dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1 }`;
+                                                break;
+                                                case 'defaultYear':
+                                                dValue = `${getISOYear(Date.now())}`;
+                                                break;
+                                            }
+                                            result[param['name']] = dValue;
                                         } else {
                                             result[param['name']] = param['value'];
                                         }
@@ -154,7 +191,6 @@ export class CommonTools {
                                     model.returnValue[param['valueName']];
                             }
                             break;
-
                     }
                 }
             });

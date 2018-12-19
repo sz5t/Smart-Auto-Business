@@ -12,6 +12,6 @@ export class StepFormComponent implements AfterViewInit {
     constructor(public item: TransferService) {}
 
     ngAfterViewInit() {
-        console.log('item', this.item);
+        // console.log('item', this.item);
     }
 }

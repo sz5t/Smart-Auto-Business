@@ -1,20 +1,24 @@
 export class SystemResource {
     public static settingSystem = {
-        name: "setting",
-         Server: "http://192.168.1.111:8081/api.cfg/"
+        name: 'setting',
+         Server: 'http://192.168.1.111:8081/api.cfg/'
         // 'Server': 'http://192.168.1.252:8081/api.cfg/'
     };
 
     public static appSystem = {
-        name: "app",
-         Server: "http://192.168.1.111:8081/api.cfg/"
+        name: 'app',
+         Server: 'http://192.168.1.111:8081/api.cfg/'
         // 'Server': 'http://192.168.1.252:8081/api.cfg/'
     };
 
     public static localResource = {
          // url: "http://192.168.1.111:8083"
-          url: "http://localhost:4200"
+          url: 'http://localhost:4200'
     };
+
+    public static localResourceConfigJson = {
+        url: 'files/moduleConfig/'
+    }
 }
 
 // {

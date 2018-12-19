@@ -331,9 +331,9 @@ export class SqlEditorComponent extends CnComponentBase
             .subscribe(result => {
                 if (result.isSuccess) {
                     this.changeEdit(data, false);
-                    console.log('保存成功');
+                    // console.log('保存成功');
                 } else {
-                    console.log('保存异常');
+                    // console.log('保存异常');
                 }
             });
     }
