@@ -51,6 +51,7 @@ export class ApiService {
             resource = `${resource}/${params['Id']}`;
         }
         return this.httpClient.request('GET', resource, {
+            params: params,
             responseType: 'json',
             headers: this.setHeaders()
         });
@@ -68,6 +69,13 @@ export class ApiService {
         return this.httpClient.request('DELETE', resource, {
             params: params,
             headers: this.setHeaders()
+        });
+    }
+
+    public getWidthNoHeader(resource, params) {
+        return this.httpClient.request('GET', resource, {
+            responseType: 'json',
+            params: params
         });
     }
 

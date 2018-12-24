@@ -16,7 +16,7 @@
                         </div>
                     </ng-container>
                 </ng-container>
-                <div nz-col [nzSpan]="8" *ngIf="!expandForm">
+                <div nz-col [nzSpan]="8" *ngIf="!expandForm && config.showButton">
                     <nz-form-item style="margin-bottom:0px">
                         <button nz-button [nzType]="'primary'" [nzLoading]="loading">
                             <i class="anticon anticon-search"></i>查询</button>
@@ -44,7 +44,7 @@
                 </standard-form-row>
             </ng-template>
         </div>
-        <standard-form-row *ngIf="expandForm">
+        <standard-form-row *ngIf="expandForm && config.showButton">
             <div nz-col [nzSpan]="6" [nzOffset]="18">
                 <nz-form-item style="margin-bottom:0px">
                     <button nz-button [nzType]="'primary'" [nzLoading]="loading">

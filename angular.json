@@ -38,7 +38,9 @@
                             "src/assets/vender/code-edit/mode/markdown/markdown.js",
                             "src/assets/vender/code-edit/addon/hint/show-hint.js",
                             "src/assets/vender/code-edit/addon/hint/sql-hint.js",
-                            "src/assets/vender/showndown/showdown.min.js"
+                            "src/assets/vender/showndown/showdown.min.js",
+                            "src/assets/vender/GridPP/grhtml5-6.6-min.js"
+
                         ]
                     },
                     "configurations": {

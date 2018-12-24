@@ -34,51 +34,51 @@ export class ReportTemplateComponent implements OnInit {
                                     config: {
                                         viewId: 'tree_and_mulit_tree',
                                         component: 'bsnReport',
-                                        reportName: 'getMpmBaseProcess',
+                                        reportName: 'R_gongyibaobiao.grf',
                                         componentType: {
                                             parent: false,
                                             child: false,
                                             own: true
                                         },
                                         ajaxConfig: {
-                                            url: 'common/RepMPM',
-                                            ajaxType: 'post',
+                                            url: 'common/RepDMPM',
+                                            ajaxType: 'get',
                                             params: [
                                                 {
-                                                    name: 'Id',
+                                                    name: 'mpfid',
                                                     type: 'value',
-                                                    value: '1ca111ea09514483a1175f0118916cb0',
-                                                },
-                                                {
-                                                    name: 'guocheng',
-                                                    children: [
-                                                        {
-                                                            name: '$operDataType$',
-                                                            type: 'value',
-                                                            value: 'select'
-                                                        },
-                                                        {
-                                                            name: 'processrouteid',
-                                                            type: 'value',
-                                                            value: '1'
-                                                        },
-                                                        {
-                                                            name: 'processtype',
-                                                            type: 'value',
-                                                            value: '1'
-                                                        },
-                                                        {
-                                                            name: 'gongxuka',
-                                                            children: [
-                                                                {
-                                                                    name: '$operDataType$',
-                                                                    type: 'value',
-                                                                    value: 'select'
-                                                                }
-                                                            ]
-                                                        }
-                                                    ] 
+                                                    value: 'f9a5bda095c449d79240119366a2c47d',
                                                 }
+                                                // {
+                                                //     name: 'guocheng',
+                                                //     children: [
+                                                //         {
+                                                //             name: '$operDataType$',
+                                                //             type: 'value',
+                                                //             value: 'select'
+                                                //         },
+                                                //         {
+                                                //             name: 'processrouteid',
+                                                //             type: 'value',
+                                                //             value: '1'
+                                                //         },
+                                                //         {
+                                                //             name: 'processtype',
+                                                //             type: 'value',
+                                                //             value: '1'
+                                                //         },
+                                                //         {
+                                                //             name: 'gongxuka',
+                                                //             children: [
+                                                //                 {
+                                                //                     name: '$operDataType$',
+                                                //                     type: 'value',
+                                                //                     value: 'select'
+                                                //                 }
+                                                //             ]
+                                                //         }
+                                                //     ] 
+                                                // }
                                             ]
                                         }
                                     },

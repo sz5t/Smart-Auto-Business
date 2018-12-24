@@ -7,58 +7,59 @@ import {
     OnDestroy,
     OnInit,
     Output
-} from "@angular/core";
-import { _HttpClient } from "@delon/theme";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { ApiService } from "@core/utility/api-service";
-import { NzMessageService, NzModalService } from "ng-zorro-antd";
+} from '@angular/core';
+import { _HttpClient } from '@delon/theme';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ApiService } from '@core/utility/api-service';
+import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import {
     RelativeService,
     RelativeResolver
-} from "@core/relative-Service/relative-service";
-import { CommonTools } from "@core/utility/common-tools";
-import { APIResource } from "@core/utility/api-resource";
-import { concat, Observable, Observer, Subscription } from "rxjs";
-import { CnComponentBase } from "@shared/components/cn-component-base";
+} from '@core/relative-Service/relative-service';
+import { CommonTools } from '@core/utility/common-tools';
+import { APIResource } from '@core/utility/api-resource';
+import { concat, Observable, Observer, Subscription } from 'rxjs';
+import { CnComponentBase } from '@shared/components/cn-component-base';
 import {
     BSN_COMPONENT_CASCADE,
     BSN_COMPONENT_CASCADE_MODES,
     BSN_COMPONENT_MODES,
     BsnComponentMessage
-} from "@core/relative-Service/BsnTableStatus";
+} from '@core/relative-Service/BsnTableStatus';
 
 @Component({
-    selector: "cn-search-resolver,[cn-search-resolver]",
-    templateUrl: "./search-resolver.component.html"
+    // tslint:disable-next-line:component-selector
+    selector: 'cn-search-resolver,[cn-search-resolver]',
+    templateUrl: './search-resolver.component.html'
 })
 export class SearchResolverComponent extends CnComponentBase
     implements OnInit, OnChanges, OnDestroy {
     @Input()
-    config;
+    public config;
     @Input()
-    permissions;
+    public permissions;
     @Input()
-    dataList;
+    public dataList;
     @Input()
-    ref;
-    form: FormGroup;
+    public ref;
+    public form: FormGroup;
     @Output()
-    submit: EventEmitter<any> = new EventEmitter<any>();
-    _relativeResolver;
-    selfEvent = {
+    public submit: EventEmitter<any> = new EventEmitter<any>();
+    public _relativeResolver;
+    public selfEvent = {
         initParameters: [],
         saveForm: [],
         searchFormByValue: []
     };
-    _tempParameters = {};
-    isSpinning = false;
-    expandForm = false;
-    changeConfig = [];
-    formconfigcontrol = {}; // liu 表单配置
-    change_config = {};
-    _statusSubscription: Subscription;
-    _cascadeSubscription: Subscription;
-    loading = false;
+    public _tempParameters = {};
+    public isSpinning = false;
+    public expandForm = false;
+    public changeConfig = [];
+    public formconfigcontrol = {}; // liu 表单配置
+    public change_config = {};
+    public _statusSubscription: Subscription;
+    public _cascadeSubscription: Subscription;
+    public loading = false;
     constructor(
         private formBuilder: FormBuilder,
         private apiService: ApiService,
@@ -75,7 +76,7 @@ export class SearchResolverComponent extends CnComponentBase
     }
 
     // region: 组件生命周期事件
-    ngOnInit() {
+    public ngOnInit() {
         // 做参数简析
         if (this.config.select) {
             this.config.select.forEach(selectItem => {
@@ -83,7 +84,7 @@ export class SearchResolverComponent extends CnComponentBase
                     formItem.controls.forEach(control => {
                         if (control) {
                             if (control.name === selectItem.name) {
-                                control["select"] = selectItem.config;
+                                control['select'] = selectItem.config;
                             }
                         }
                     });
@@ -101,9 +102,9 @@ export class SearchResolverComponent extends CnComponentBase
         });
     }
 
-    ngOnChanges() { }
+    public ngOnChanges() { }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         if (this._statusSubscription) {
             this._statusSubscription.unsubscribe();
         }
@@ -120,7 +121,7 @@ export class SearchResolverComponent extends CnComponentBase
         ) {
             // 注册消息发送方法
             // 注册行选中事件发送消息
-            this.after(this, "searchFormByValue", () => {
+            this.after(this, 'searchFormByValue', () => {
                 const that = this;
                 this.cascade.next(
                     new BsnComponentMessage(
@@ -140,7 +141,7 @@ export class SearchResolverComponent extends CnComponentBase
         const controls = [];
         this.config.forms.map(formItem => {
             const items = formItem.controls.filter(({ type }) => {
-                return type !== "button" && type !== "submit";
+                return type !== 'button' && type !== 'submit';
             });
             controls.push(...items);
         });
@@ -159,11 +160,11 @@ export class SearchResolverComponent extends CnComponentBase
         return this.form.value;
     }
 
-    resetForm() {
+    public resetForm() {
         this.form.reset();
     }
 
-    createGroup() {
+    public createGroup() {
         const group = this.formBuilder.group({});
         this.controls.forEach(control =>
             group.addControl(control.name, this.createControl(control))
@@ -171,29 +172,29 @@ export class SearchResolverComponent extends CnComponentBase
         return group;
     }
 
-    createControl(config) {
+    public createControl(config) {
         const { disabled, validation, value } = config;
         return this.formBuilder.control({ disabled, value }, validation);
     }
 
-    getFormControl(name) {
+    public getFormControl(name) {
         return this.form.controls[name];
     }
 
-    _submitForm($event) {
+    public _submitForm($event) {
         event.preventDefault();
         event.stopPropagation();
         this.submit.emit(this.value);
     }
 
-    setValue(name: string, value: any) {
+    public setValue(name: string, value: any) {
         const control = this.form.controls[name];
         if (control) {
             control.setValue(value, { emitEvent: true });
         }
     }
 
-    setFormValue(data) {
+    public setFormValue(data) {
         if (data) {
             for (const d in data) {
                 if (data.hasOwnProperty(d)) {
@@ -206,16 +207,16 @@ export class SearchResolverComponent extends CnComponentBase
     // endregion
 
     // region: 数据处理
-    async execAjax(p?, componentValue?, type?) {
+    public async execAjax(p?, componentValue?, type?) {
         const params = {};
         let tag = true;
         let url;
         if (p) {
             if (p.params) {
                 p.params.forEach(param => {
-                    if (param.type === "tempValue") {
+                    if (param.type === 'tempValue') {
                         if (type) {
-                            if (type === "load") {
+                            if (type === 'load') {
                                 if (this._tempParameters[param.valueName]) {
                                     params[param.name] = this._tempParameters[
                                         param.valueName
@@ -235,12 +236,12 @@ export class SearchResolverComponent extends CnComponentBase
                                 param.valueName
                             ];
                         }
-                    } else if (param.type === "value") {
+                    } else if (param.type === 'value') {
                         params[param.name] = param.value;
-                    } else if (param.type === "GUID") {
+                    } else if (param.type === 'GUID') {
                         const fieldIdentity = CommonTools.uuID(10);
                         params[param.name] = fieldIdentity;
-                    } else if (param.type === "componentValue") {
+                    } else if (param.type === 'componentValue') {
                         params[param.name] = componentValue[param.valueName];
                     }
                 });
@@ -249,30 +250,30 @@ export class SearchResolverComponent extends CnComponentBase
             if (this.isString(p.url)) {
                 url = p.url;
             } else {
-                let pc = "null";
+                let pc = 'null';
                 p.url.params.forEach(param => {
-                    if (param["type"] === "value") {
+                    if (param['type'] === 'value') {
                         pc = param.value;
-                    } else if (param.type === "GUID") {
+                    } else if (param.type === 'GUID') {
                         const fieldIdentity = CommonTools.uuID(10);
                         pc = fieldIdentity;
-                    } else if (param.type === "componentValue") {
+                    } else if (param.type === 'componentValue') {
                         pc = componentValue[param.valueName];
-                    } else if (param.type === "tempValue") {
+                    } else if (param.type === 'tempValue') {
                         pc = this._tempParameters[param.valueName];
                     }
                 });
 
-                url = p.url["parent"] + "/" + pc + "/" + p.url["child"];
+                url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
             }
         }
-        if (p.ajaxType === "get" && tag) {
+        if (p.ajaxType === 'get' && tag) {
             // console.log('get参数', params);
             return this.apiService.get(url, params).toPromise();
-        } else if (p.ajaxType === "put") {
+        } else if (p.ajaxType === 'put') {
             // console.log('put参数', params);
             return this.apiService.put(url, params).toPromise();
-        } else if (p.ajaxType === "post") {
+        } else if (p.ajaxType === 'post') {
             // console.log('post参数', params);
             return this.apiService.post(url, params).toPromise();
         } else {
@@ -280,51 +281,51 @@ export class SearchResolverComponent extends CnComponentBase
         }
     }
 
-    isString(obj) {
+    public isString(obj) {
         // 判断对象是否是字符串
-        return Object.prototype.toString.call(obj) === "[object String]";
+        return Object.prototype.toString.call(obj) === '[object String]';
     }
 
-    async load() {
+    public async load() {
         const ajaxData = await this.execAjax(
             this.config.ajaxConfig,
             null,
-            "load"
+            'load'
         );
         if (ajaxData) {
             if (ajaxData.Data) {
                 this.setFormValue(ajaxData.Data[0]);
                 // 给主键赋值
                 if (this.config.keyId) {
-                    this._tempParameters["_id"] =
+                    this._tempParameters['_id'] =
                         ajaxData.Data[0][this.config.keyId];
                 } else {
-                    if (ajaxData.Data[0]["Id"]) {
-                        this._tempParameters["_id"] = ajaxData.Data[0]["Id"];
+                    if (ajaxData.Data[0]['Id']) {
+                        this._tempParameters['_id'] = ajaxData.Data[0]['Id'];
                     }
                 }
             } else {
-                this._tempParameters["_id"] &&
-                    delete this._tempParameters["_id"];
+                this._tempParameters['_id'] &&
+                    delete this._tempParameters['_id'];
             }
         } else {
-            this._tempParameters["_id"] && delete this._tempParameters["_id"];
+            this._tempParameters['_id'] && delete this._tempParameters['_id'];
         }
     }
 
-    async saveForm() {
+    public async saveForm() {
         if (this.config.toolbar) {
             const index = this.config.toolbar.findIndex(
-                item => item.name === "saveForm"
+                item => item.name === 'saveForm'
             );
             if (this.config.toolbar[index].ajaxConfig) {
                 const pconfig = JSON.parse(
                     JSON.stringify(this.config.toolbar[index].ajaxConfig)
                 );
-                if (this._tempParameters["_id"]) {
+                if (this._tempParameters['_id']) {
                     // 修改保存
                     const ajaxData = await this.execAjax(
-                        pconfig["update"],
+                        pconfig['update'],
                         this.value
                     );
                     if (ajaxData) {
@@ -333,29 +334,29 @@ export class SearchResolverComponent extends CnComponentBase
                     }
                 } else {
                     // 新增保存
-                    if (Array.isArray(pconfig["add"])) {
-                        for (let i = 0; i < pconfig["add"].length; i++) {
+                    if (Array.isArray(pconfig['add'])) {
+                        for (let i = 0; i < pconfig['add'].length; i++) {
                             const ajaxData = await this.execAjax(
-                                pconfig["add"][i],
+                                pconfig['add'][i],
                                 this.value
                             );
                             if (ajaxData) {
                                 // console.log(ajaxData, pconfig['add'][i]);
-                                if (pconfig["add"][i]["output"]) {
-                                    pconfig["add"][i]["output"].forEach(out => {
+                                if (pconfig['add'][i]['output']) {
+                                    pconfig['add'][i]['output'].forEach(out => {
                                         this._tempParameters[out.name] =
-                                            ajaxData.Data[out["dataName"]];
+                                            ajaxData.Data[out['dataName']];
                                     });
                                 }
                             }
                         }
                     } else {
                         const ajaxData = await this.execAjax(
-                            pconfig["add"],
+                            pconfig['add'],
                             this.value
                         );
                         if (ajaxData) {
-                            console.log("新增保存成功", ajaxData);
+                            console.log('新增保存成功', ajaxData);
                         }
                     }
                 }
@@ -363,12 +364,12 @@ export class SearchResolverComponent extends CnComponentBase
         }
     }
 
-    execFun(name?) {
+    public execFun(name?) {
         switch (name) {
-            case "saveForm":
+            case 'saveForm':
                 this.saveForm();
                 break;
-            case "initParametersLoad":
+            case 'initParametersLoad':
                 this.initParametersLoad();
                 break;
             default:
@@ -376,7 +377,7 @@ export class SearchResolverComponent extends CnComponentBase
         }
     }
 
-    searchForm() {
+    public searchForm() {
         this.loading = true;
         this.searchFormByValue(this.value);
         setTimeout(_ => {
@@ -384,17 +385,17 @@ export class SearchResolverComponent extends CnComponentBase
         }, 500);
     }
 
-    searchFormByValue(data) { }
+    public searchFormByValue(data) { }
 
-    collapseForm($event) {
+    public collapseForm($event) {
         this.expandForm = !this.expandForm;
     }
 
-    clickExpand() {
+    public clickExpand() {
         this.expandForm = !this.expandForm;
     }
 
-    async buttonAction(btn) {
+    public async buttonAction(btn) {
         // console.log(btn);
         let result = false;
         if (this[btn.name] && btn.ajaxConfig) {
@@ -405,7 +406,7 @@ export class SearchResolverComponent extends CnComponentBase
         return result;
     }
 
-    async save(ajaxConfig) {
+    public async save(ajaxConfig) {
         if (ajaxConfig.post) {
             return this.post(ajaxConfig.post);
         }
@@ -422,10 +423,10 @@ export class SearchResolverComponent extends CnComponentBase
             const res = await this._post(url, body);
             if (res && res.Status === 200) {
                 result = true;
-                this.message.create("success", "保存成功");
+                this.message.create('success', '保存成功');
                 // 发送消息 刷新其他界面
             } else {
-                this.message.create("error", res.Message);
+                this.message.create('error', res.Message);
             }
         }
         return result;
@@ -439,10 +440,10 @@ export class SearchResolverComponent extends CnComponentBase
             const res = await this._put(url, body);
             if (res && res.Status === 200) {
                 result = true;
-                this.message.create("success", "保存成功");
+                this.message.create('success', '保存成功');
                 // 发送消息 刷新其他界面
             } else {
-                this.message.create("error", res.Message);
+                this.message.create('error', res.Message);
             }
         }
         return result;
@@ -452,16 +453,16 @@ export class SearchResolverComponent extends CnComponentBase
         const params = {};
         if (paramsConfig) {
             paramsConfig.map(param => {
-                if (param["type"] === "tempValue") {
-                    params[param["name"]] = this._tempParameters[
-                        param["valueName"]
+                if (param['type'] === 'tempValue') {
+                    params[param['name']] = this._tempParameters[
+                        param['valueName']
                     ];
-                } else if (param["type"] === "value") {
+                } else if (param['type'] === 'value') {
                     params[param.name] = param.value;
-                } else if (param["type"] === "GUID") {
+                } else if (param['type'] === 'GUID') {
                     const fieldIdentity = CommonTools.uuID(10);
                     params[param.name] = fieldIdentity;
-                } else if (param["type"] === "componentValue") {
+                } else if (param['type'] === 'componentValue') {
                     params[param.name] = this.value[param.valueName];
                 }
             });
@@ -470,23 +471,23 @@ export class SearchResolverComponent extends CnComponentBase
     }
 
     private _buildURL(urlConfig) {
-        let url = "";
+        let url = '';
         if (urlConfig && this._isUrlString(urlConfig)) {
             url = urlConfig;
         } else if (urlConfig) {
-            let parent = "";
+            let parent = '';
             urlConfig.params.map(param => {
-                if (param["type"] === "tempValue") {
+                if (param['type'] === 'tempValue') {
                     parent = this._tempParameters[param.value];
-                } else if (param["type"] === "value") {
-                    if (param.value === "null") {
+                } else if (param['type'] === 'value') {
+                    if (param.value === 'null') {
                         param.value = null;
                     }
                     parent = param.value;
-                } else if (param["type"] === "GUID") {
+                } else if (param['type'] === 'GUID') {
                     // todo: 扩展功能
-                } else if (param["type"] === "componentValue") {
-                    parent = this.value[param["valueName"]];
+                } else if (param['type'] === 'componentValue') {
+                    parent = this.value[param['valueName']];
                 }
             });
         }
@@ -494,7 +495,7 @@ export class SearchResolverComponent extends CnComponentBase
     }
 
     private _isUrlString(url) {
-        return Object.prototype.toString.call(url) === "[object String]";
+        return Object.prototype.toString.call(url) === '[object String]';
     }
 
     private setParamsValue(params) { }
@@ -507,14 +508,14 @@ export class SearchResolverComponent extends CnComponentBase
         return this.apiService.put(url, body).toPromise();
     }
 
-    initParameters(data?) {
+    public initParameters(data?) {
         for (const d in data) {
             this._tempParameters[d] = data[d];
         }
         // console.log('初始化参数', this._tempParameters);
     }
 
-    initParametersLoad(data?) {
+    public initParametersLoad(data?) {
         for (const d in data) {
             this._tempParameters[d] = data[d];
         }
@@ -523,9 +524,9 @@ export class SearchResolverComponent extends CnComponentBase
     }
 
     // endregion
-    cascadeList = {};
+    public cascadeList = {};
 
-    caseLoad() {
+    public caseLoad() {
         this.cascadeList = {};
         // region: 解析开始
         if (this.config.cascade)
@@ -538,118 +539,118 @@ export class SearchResolverComponent extends CnComponentBase
 
                     const dataType = [];
                     const valueType = [];
-                    cobj["cascadeDataItems"].forEach(item => {
+                    cobj['cascadeDataItems'].forEach(item => {
                         // 数据关联 （只是单纯的数据关联，内容只有ajax）
                         // cobj.data
                         const dataTypeItem = {};
-                        if (item["caseValue"]) {
+                        if (item['caseValue']) {
                             // 取值， 解析 正则表达式
                             // item.case.regular; 正则
-                            dataTypeItem["regularType"] = item.caseValue.type;
-                            dataTypeItem["valueName"] =
+                            dataTypeItem['regularType'] = item.caseValue.type;
+                            dataTypeItem['valueName'] =
                                 item.caseValue.valueName;
-                            dataTypeItem["regular"] = item.caseValue.regular;
+                            dataTypeItem['regular'] = item.caseValue.regular;
                         }
-                        this.cascadeList[c.name][cobj.cascadeName]["type"] =
+                        this.cascadeList[c.name][cobj.cascadeName]['type'] =
                             item.data.type;
-                        dataTypeItem["type"] = item.data.type;
-                        if (item.data.type === "option") {
+                        dataTypeItem['type'] = item.data.type;
+                        if (item.data.type === 'option') {
                             // 静态数据集
                             this.cascadeList[c.name][cobj.cascadeName][
-                                "option"
+                                'option'
                             ] = item.data.option_data.option;
-                            dataTypeItem["option"] =
+                            dataTypeItem['option'] =
                                 item.data.option_data.option;
                         }
-                        if (item.data.type === "ajax") {
+                        if (item.data.type === 'ajax') {
                             // 异步请求参数取值
-                            this.cascadeList[c.name][cobj.cascadeName]["ajax"] =
+                            this.cascadeList[c.name][cobj.cascadeName]['ajax'] =
                                 item.data.ajax_data.option;
-                            dataTypeItem["ajax"] = item.data.ajax_data.option;
+                            dataTypeItem['ajax'] = item.data.ajax_data.option;
                         }
-                        if (item.data.type === "setValue") {
+                        if (item.data.type === 'setValue') {
                             // 组件赋值
                             this.cascadeList[c.name][cobj.cascadeName][
-                                "setValue"
+                                'setValue'
                             ] = item.data.setValue_data.option;
-                            dataTypeItem["setValue"] =
+                            dataTypeItem['setValue'] =
                                 item.data.setValue_data.option;
                         }
-                        if (item.data.type === "show") {
+                        if (item.data.type === 'show') {
                             // 页面显示控制
-                            this.cascadeList[c.name][cobj.cascadeName]["show"] =
+                            this.cascadeList[c.name][cobj.cascadeName]['show'] =
                                 item.data.show_data.option;
-                            dataTypeItem["show"] = item.data.show_data.option;
+                            dataTypeItem['show'] = item.data.show_data.option;
                         }
-                        if (item.data.type === "relation") {
+                        if (item.data.type === 'relation') {
                             // 消息交互
                             this.cascadeList[c.name][cobj.cascadeName][
-                                "relation"
+                                'relation'
                             ] = item.data.relation_data.option;
-                            dataTypeItem["relation"] =
+                            dataTypeItem['relation'] =
                                 item.data.relation_data.option;
                         }
 
                         dataType.push(dataTypeItem);
                     });
 
-                    cobj["cascadeValueItems"].forEach(item => {
+                    cobj['cascadeValueItems'].forEach(item => {
                         const valueTypeItem = {};
                         if (item.caseValue) {
                             // 取值， 解析 正则表达式
                             // item.case.regular; 正则
-                            valueTypeItem["regularType"] = item.caseValue.type;
-                            valueTypeItem["valueName"] =
+                            valueTypeItem['regularType'] = item.caseValue.type;
+                            valueTypeItem['valueName'] =
                                 item.caseValue.valueName;
-                            valueTypeItem["regular"] = item.caseValue.regular;
+                            valueTypeItem['regular'] = item.caseValue.regular;
                         }
-                        this.cascadeList[c.name][cobj.cascadeName]["type"] =
+                        this.cascadeList[c.name][cobj.cascadeName]['type'] =
                             item.data.type;
-                        valueTypeItem["type"] = item.data.type;
-                        if (item.data.type === "option") {
+                        valueTypeItem['type'] = item.data.type;
+                        if (item.data.type === 'option') {
                             // 静态数据集
                             this.cascadeList[c.name][cobj.cascadeName][
-                                "option"
+                                'option'
                             ] = item.data.option_data.option;
-                            valueTypeItem["option"] =
+                            valueTypeItem['option'] =
                                 item.data.option_data.option;
                         }
-                        if (item.data.type === "ajax") {
+                        if (item.data.type === 'ajax') {
                             // 异步请求参数取值
-                            this.cascadeList[c.name][cobj.cascadeName]["ajax"] =
+                            this.cascadeList[c.name][cobj.cascadeName]['ajax'] =
                                 item.data.ajax_data.option;
-                            valueTypeItem["ajax"] = item.data.ajax_data.option;
+                            valueTypeItem['ajax'] = item.data.ajax_data.option;
                         }
-                        if (item.data.type === "setValue") {
+                        if (item.data.type === 'setValue') {
                             // 组件赋值
                             this.cascadeList[c.name][cobj.cascadeName][
-                                "setValue"
+                                'setValue'
                             ] = item.data.setValue_data.option;
-                            valueTypeItem["setValue"] =
+                            valueTypeItem['setValue'] =
                                 item.data.setValue_data.option;
                         }
-                        if (item.data.type === "show") {
+                        if (item.data.type === 'show') {
                             // 页面显示控制
-                            this.cascadeList[c.name][cobj.cascadeName]["show"] =
+                            this.cascadeList[c.name][cobj.cascadeName]['show'] =
                                 item.data.show_data.option;
-                            valueTypeItem["show"] = item.data.show_data.option;
+                            valueTypeItem['show'] = item.data.show_data.option;
                         }
-                        if (item.data.type === "relation") {
+                        if (item.data.type === 'relation') {
                             // 消息交互
                             this.cascadeList[c.name][cobj.cascadeName][
-                                "relation"
+                                'relation'
                             ] = item.data.relation_data.option;
-                            valueTypeItem["relation"] =
+                            valueTypeItem['relation'] =
                                 item.data.relation_data.option;
                         }
                         valueType.push(valueTypeItem);
                     });
 
                     this.cascadeList[c.name][cobj.cascadeName][
-                        "dataType"
+                        'dataType'
                     ] = dataType;
                     this.cascadeList[c.name][cobj.cascadeName][
-                        "valueType"
+                        'valueType'
                     ] = valueType;
                 });
                 // endregion: 解析对象结束
@@ -657,11 +658,11 @@ export class SearchResolverComponent extends CnComponentBase
         // endregion： 解析结束
     }
 
-    valueChange(data?) {
+    public valueChange(data?) {
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
         const sendCasade = data.name;
-        const receiveCasade = " ";
+        const receiveCasade = ' ';
 
         // 第二步，根据配置，和返回值，来构建应答数据集合
         // 第三步，
@@ -679,13 +680,13 @@ export class SearchResolverComponent extends CnComponentBase
                 this.config.forms.forEach(formsItems => {
                     formsItems.controls.forEach(control => {
                         if (control.name === key) {
-                            if (this.cascadeList[sendCasade][key]["dataType"]) {
+                            if (this.cascadeList[sendCasade][key]['dataType']) {
                                 this.cascadeList[sendCasade][key][
-                                    "dataType"
+                                    'dataType'
                                 ].forEach(caseItem => {
-                                    console.log("dataType", caseItem);
+                                    console.log('dataType', caseItem);
                                     // region: 解析开始 根据组件类型组装新的配置【静态option组装】
-                                    if (caseItem["type"] === "option") {
+                                    if (caseItem['type'] === 'option') {
                                         // 在做判断前，看看值是否存在，如果在，更新，值不存在，则创建新值
                                         let Exist = false;
                                         changeConfig_new.forEach(config_new => {
@@ -693,49 +694,49 @@ export class SearchResolverComponent extends CnComponentBase
                                                 config_new.name === control.name
                                             ) {
                                                 Exist = true;
-                                                config_new["options"] =
-                                                    caseItem["option"];
+                                                config_new['options'] =
+                                                    caseItem['option'];
                                             }
                                         });
                                         if (!Exist) {
                                             control.options =
-                                                caseItem["option"];
+                                                caseItem['option'];
                                             control = JSON.parse(
                                                 JSON.stringify(control)
                                             );
                                             changeConfig_new.push(control);
                                         }
                                     }
-                                    if (caseItem["type"] === "ajax") {
+                                    if (caseItem['type'] === 'ajax') {
                                         // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
                                         // 解析参数
 
                                         const cascadeValue = {};
-                                        caseItem["ajax"].forEach(ajaxItem => {
-                                            if (ajaxItem["type"] === "value") {
-                                                cascadeValue[ajaxItem["name"]] =
-                                                    ajaxItem["value"];
+                                        caseItem['ajax'].forEach(ajaxItem => {
+                                            if (ajaxItem['type'] === 'value') {
+                                                cascadeValue[ajaxItem['name']] =
+                                                    ajaxItem['value'];
                                             }
                                             if (
-                                                ajaxItem["type"] ===
-                                                "selectValue"
+                                                ajaxItem['type'] ===
+                                                'selectValue'
                                             ) {
                                                 // 选中行数据[这个是单值]
-                                                cascadeValue[ajaxItem["name"]] =
-                                                    data["value"];
+                                                cascadeValue[ajaxItem['name']] =
+                                                    data['value'];
                                             }
                                             if (
-                                                ajaxItem["type"] ===
-                                                "selectObjectValue"
+                                                ajaxItem['type'] ===
+                                                'selectObjectValue'
                                             ) {
                                                 // 选中行对象数据
                                                 if (data.dataItem) {
                                                     cascadeValue[
-                                                        ajaxItem["name"]
+                                                        ajaxItem['name']
                                                     ] =
                                                         data.dataItem[
                                                         ajaxItem[
-                                                        "valueName"
+                                                        'valueName'
                                                         ]
                                                         ];
                                                 }
@@ -749,13 +750,13 @@ export class SearchResolverComponent extends CnComponentBase
                                             ) {
                                                 Exist = true;
                                                 config_new[
-                                                    "cascadeValue"
+                                                    'cascadeValue'
                                                 ] = cascadeValue;
                                             }
                                         });
                                         if (!Exist) {
                                             control[
-                                                "cascadeValue"
+                                                'cascadeValue'
                                             ] = cascadeValue;
                                             control = JSON.parse(
                                                 JSON.stringify(control)
@@ -763,51 +764,51 @@ export class SearchResolverComponent extends CnComponentBase
                                             changeConfig_new.push(control);
                                         }
                                     }
-                                    if (caseItem["type"] === "setValue") {
+                                    if (caseItem['type'] === 'setValue') {
                                         // console.log('setValueinput' , caseItem['setValue'] );
 
                                         const setValuedata = {};
                                         if (
-                                            caseItem["setValue"]["type"] ===
-                                            "value"
+                                            caseItem['setValue']['type'] ===
+                                            'value'
                                         ) {
                                             // 静态数据
-                                            setValuedata["data"] =
-                                                caseItem["setValue"]["value"];
+                                            setValuedata['data'] =
+                                                caseItem['setValue']['value'];
                                         }
                                         if (
-                                            caseItem["setValue"]["type"] ===
-                                            "selectValue"
+                                            caseItem['setValue']['type'] ===
+                                            'selectValue'
                                         ) {
                                             // 选中行数据[这个是单值]
-                                            setValuedata["data"] =
+                                            setValuedata['data'] =
                                                 data[
-                                                caseItem["setValue"][
-                                                "valueName"
+                                                caseItem['setValue'][
+                                                'valueName'
                                                 ]
                                                 ];
                                         }
                                         if (
-                                            caseItem["setValue"]["type"] ===
-                                            "selectObjectValue"
+                                            caseItem['setValue']['type'] ===
+                                            'selectObjectValue'
                                         ) {
                                             // 选中行对象数据
                                             if (data.dataItem) {
-                                                setValuedata["data"] =
+                                                setValuedata['data'] =
                                                     data.dataItem[
-                                                    caseItem["setValue"][
-                                                    "valueName"
+                                                    caseItem['setValue'][
+                                                    'valueName'
                                                     ]
                                                     ];
                                             }
                                         }
                                         // 手动给表单赋值，将值
                                         if (
-                                            setValuedata.hasOwnProperty("data")
+                                            setValuedata.hasOwnProperty('data')
                                         ) {
                                             this.setValue(
                                                 key,
-                                                setValuedata["data"]
+                                                setValuedata['data']
                                             );
                                         }
                                     }
@@ -816,10 +817,10 @@ export class SearchResolverComponent extends CnComponentBase
                                 });
                             }
                             if (
-                                this.cascadeList[sendCasade][key]["valueType"]
+                                this.cascadeList[sendCasade][key]['valueType']
                             ) {
                                 this.cascadeList[sendCasade][key][
-                                    "valueType"
+                                    'valueType'
                                 ].forEach(caseItem => {
                                     // region: 解析开始  正则表达
                                     const reg1 = new RegExp(caseItem.regular);
@@ -827,12 +828,12 @@ export class SearchResolverComponent extends CnComponentBase
                                     if (caseItem.regularType) {
                                         if (
                                             caseItem.regularType ===
-                                            "selectObjectValue"
+                                            'selectObjectValue'
                                         ) {
-                                            if (data["dataItem"]) {
+                                            if (data['dataItem']) {
                                                 regularData =
-                                                    data["dataItem"][
-                                                    caseItem["valueName"]
+                                                    data['dataItem'][
+                                                    caseItem['valueName']
                                                     ];
                                             } else {
                                                 regularData = data.data;
@@ -848,7 +849,7 @@ export class SearchResolverComponent extends CnComponentBase
                                     // endregion  解析结束 正则表达
                                     if (regularflag) {
                                         // region: 解析开始 根据组件类型组装新的配置【静态option组装】
-                                        if (caseItem["type"] === "option") {
+                                        if (caseItem['type'] === 'option') {
                                             let Exist = false;
                                             changeConfig_new.forEach(
                                                 config_new => {
@@ -857,54 +858,54 @@ export class SearchResolverComponent extends CnComponentBase
                                                         control.name
                                                     ) {
                                                         Exist = true;
-                                                        config_new["options"] =
-                                                            caseItem["option"];
+                                                        config_new['options'] =
+                                                            caseItem['option'];
                                                     }
                                                 }
                                             );
                                             if (!Exist) {
                                                 control.options =
-                                                    caseItem["option"];
+                                                    caseItem['option'];
                                                 control = JSON.parse(
                                                     JSON.stringify(control)
                                                 );
                                                 changeConfig_new.push(control);
                                             }
                                         }
-                                        if (caseItem["type"] === "ajax") {
+                                        if (caseItem['type'] === 'ajax') {
                                             // 需要将参数值解析回去，？当前变量，其他组件值，则只能从form 表单取值。
                                             const cascadeValue = {};
-                                            caseItem["ajax"].forEach(
+                                            caseItem['ajax'].forEach(
                                                 ajaxItem => {
                                                     if (
-                                                        ajaxItem["type"] ===
-                                                        "value"
+                                                        ajaxItem['type'] ===
+                                                        'value'
                                                     ) {
                                                         cascadeValue[
-                                                            ajaxItem["name"]
-                                                        ] = ajaxItem["value"];
+                                                            ajaxItem['name']
+                                                        ] = ajaxItem['value'];
                                                     }
                                                     if (
-                                                        ajaxItem["type"] ===
-                                                        "selectValue"
+                                                        ajaxItem['type'] ===
+                                                        'selectValue'
                                                     ) {
                                                         // 选中行数据[这个是单值]
                                                         cascadeValue[
-                                                            ajaxItem["name"]
-                                                        ] = data["value"];
+                                                            ajaxItem['name']
+                                                        ] = data['value'];
                                                     }
                                                     if (
-                                                        ajaxItem["type"] ===
-                                                        "selectObjectValue"
+                                                        ajaxItem['type'] ===
+                                                        'selectObjectValue'
                                                     ) {
                                                         // 选中行对象数据
                                                         if (data.dataItem) {
                                                             cascadeValue[
-                                                                ajaxItem["name"]
+                                                                ajaxItem['name']
                                                             ] =
                                                                 data.dataItem[
                                                                 ajaxItem[
-                                                                "valueName"
+                                                                'valueName'
                                                                 ]
                                                                 ];
                                                         }
@@ -921,14 +922,14 @@ export class SearchResolverComponent extends CnComponentBase
                                                     ) {
                                                         Exist = true;
                                                         config_new[
-                                                            "cascadeValue"
+                                                            'cascadeValue'
                                                         ] = cascadeValue;
                                                     }
                                                 }
                                             );
                                             if (!Exist) {
                                                 control[
-                                                    "cascadeValue"
+                                                    'cascadeValue'
                                                 ] = cascadeValue;
                                                 control = JSON.parse(
                                                     JSON.stringify(control)
@@ -936,62 +937,62 @@ export class SearchResolverComponent extends CnComponentBase
                                                 changeConfig_new.push(control);
                                             }
                                         }
-                                        if (caseItem["type"] === "show") {
-                                            if (caseItem["show"]) {
+                                        if (caseItem['type'] === 'show') {
+                                            if (caseItem['show']) {
                                                 //
-                                                control["hidden"] =
-                                                    caseItem["show"]["hidden"];
+                                                control['hidden'] =
+                                                    caseItem['show']['hidden'];
                                             }
                                         }
-                                        if (caseItem["type"] === "setValue") {
+                                        if (caseItem['type'] === 'setValue') {
                                             // console.log('setValueinput' , caseItem['setValue'] );
 
                                             const setValuedata = {};
                                             if (
-                                                caseItem["setValue"]["type"] ===
-                                                "value"
+                                                caseItem['setValue']['type'] ===
+                                                'value'
                                             ) {
                                                 // 静态数据
-                                                setValuedata["data"] =
-                                                    caseItem["setValue"][
-                                                    "value"
+                                                setValuedata['data'] =
+                                                    caseItem['setValue'][
+                                                    'value'
                                                     ];
                                             }
                                             if (
-                                                caseItem["setValue"]["type"] ===
-                                                "selectValue"
+                                                caseItem['setValue']['type'] ===
+                                                'selectValue'
                                             ) {
                                                 // 选中行数据[这个是单值]
-                                                setValuedata["data"] =
+                                                setValuedata['data'] =
                                                     data[
-                                                    caseItem["setValue"][
-                                                    "valueName"
+                                                    caseItem['setValue'][
+                                                    'valueName'
                                                     ]
                                                     ];
                                             }
                                             if (
-                                                caseItem["setValue"]["type"] ===
-                                                "selectObjectValue"
+                                                caseItem['setValue']['type'] ===
+                                                'selectObjectValue'
                                             ) {
                                                 // 选中行对象数据
                                                 if (data.dataItem) {
-                                                    setValuedata["data"] =
+                                                    setValuedata['data'] =
                                                         data.dataItem[
                                                         caseItem[
-                                                        "setValue"
-                                                        ]["valueName"]
+                                                        'setValue'
+                                                        ]['valueName']
                                                         ];
                                                 }
                                             }
                                             // 手动给表单赋值，将值
                                             if (
                                                 setValuedata.hasOwnProperty(
-                                                    "data"
+                                                    'data'
                                                 )
                                             ) {
                                                 this.setValue(
                                                     key,
-                                                    setValuedata["data"]
+                                                    setValuedata['data']
                                                 );
                                             }
                                         }
@@ -1030,38 +1031,38 @@ export class SearchResolverComponent extends CnComponentBase
                 if (element.name === data.name) {
                     if (element.cascadeField) {
                         element.cascadeField.forEach(feild => {
-                            if (!feild["type"]) {
+                            if (!feild['type']) {
                                 if (data[feild.valueName]) {
                                     sendData[feild.name] =
                                         data[feild.valueName];
                                 }
                             } else {
-                                if (feild["type"] === "selectObject") {
+                                if (feild['type'] === 'selectObject') {
                                     if (data[feild.valueName]) {
                                         sendData[feild.name] =
                                             data[feild.valueName];
                                     }
                                 } else if (
-                                    feild["type"] === "tempValueObject"
+                                    feild['type'] === 'tempValueObject'
                                 ) {
                                     sendData[feild.name] = this.tempValue;
-                                } else if (feild["type"] === "tempValue") {
+                                } else if (feild['type'] === 'tempValue') {
                                     if (this.tempValue[feild.valueName]) {
                                         sendData[feild.name] = this.tempValue[
                                             feild.valueName
                                         ];
                                     }
                                 } else if (
-                                    feild["type"] === "initValueObject"
+                                    feild['type'] === 'initValueObject'
                                 ) {
                                     sendData[feild.name] = this.initValue;
-                                } else if (feild["type"] === "initValue") {
+                                } else if (feild['type'] === 'initValue') {
                                     if (this.initValue[feild.valueName]) {
                                         sendData[feild.name] = this.initValue[
                                             feild.valueName
                                         ];
                                     }
-                                } else if (feild["type"] === "value") {
+                                } else if (feild['type'] === 'value') {
                                     sendData[feild.name] = feild.value;
                                 }
                             }

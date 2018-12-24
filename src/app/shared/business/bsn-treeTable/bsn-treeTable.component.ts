@@ -721,13 +721,20 @@ export class BsnAsyncTreeTableComponent extends GridBase
     }
 
     private _cancelEdit(key: string): void {
-        const itemList = this.treeDataOrigin;
+        let itemList = this.treeDataOrigin;
+        // 检查当前原始列表中是否存在编辑对象(不包含子节点集合)
         let index = itemList.findIndex(item => item.Id === key);
         if (index === -1) {
+            // 如果不存在,检查当前列表中是否存在编辑对象(包含所有子节点集合)
+            itemList = this.treeData;
             index = this.treeData.findIndex(item => item.Id === key);
         }
-        this.editCache[key].edit = false;
-        this.editCache[key].data = JSON.parse(JSON.stringify(itemList[index]));
+        // 包含子节点对象,则将编辑状态进行取消, 并重新绑定之前数据
+        if (index !== -1) {
+            this.editCache[key].edit = false;
+            this.editCache[key].data = JSON.parse(JSON.stringify(itemList[index]));
+        }
+        
     }
 
     public checkAll(value) {
