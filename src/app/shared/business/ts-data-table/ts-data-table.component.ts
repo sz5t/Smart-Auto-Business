@@ -3385,9 +3385,9 @@ export class TsDataTableComponent extends CnComponentBase
     public new_config = {
 
         supplementaryline: true, // 是否进行行补充【当前页数据不够时动态填充空行】
-                                           // 问题：需要有新的行状态，当前行是不能有其他操作
-                                           //           当有新增或者其他对行有影响的操作，则不允许取补充行信息（多选取值）
-                                           //  注意：删除后的补充，新增前的计算，如果有补充行，则先删除一行
+        // 问题：需要有新的行状态，当前行是不能有其他操作
+        //           当有新增或者其他对行有影响的操作，则不允许取补充行信息（多选取值）
+        //  注意：删除后的补充，新增前的计算，如果有补充行，则先删除一行
         columns: [
             {
                 title: 'Id',
@@ -3408,7 +3408,7 @@ export class TsDataTableComponent extends CnComponentBase
                     {
                         // 正则表达 根据状态渲染组件，默认处理模式只支持第一个满足条件的
                         caseValue: { valueName: 'value', regular: '^2$' },
-                         // 问题？特殊描述 多字段组合条件，新增行处理？呈现什么状态
+                        // 问题？特殊描述 多字段组合条件，新增行处理？呈现什么状态
                         type: 'input',
                         field: 'Id',
                         options: {
@@ -3440,16 +3440,143 @@ export class TsDataTableComponent extends CnComponentBase
                 ]
             }
         ],
-        rowEvent: [  // 行事件、列事件
+        events: [  // 行事件、列事件
             {
                 EditableSave: {
-                   name: '', action: ''
+                    name: '', action: ''
                 }
             }
 
         ]
     };
 
+
+    //  执行行内事件【】
+    public ExecRowEvent(updateState?, enentname?) {
+        //  name
+        // const option = updateState.option;
+        let option;
+        const index = this.toolbarConfig.findIndex(
+            item => item['name'] === enentname
+        );
+        if (index > -1) {
+           option = this.toolbarConfig[index];
+        }
+        // option 操作的详细配置
+        // 根据当前行绑定操作名称-》找到对应的操作配置
+     
+        switch (updateState._mode) {
+            case BSN_COMPONENT_MODES.REFRESH:
+                this.load();
+                break;
+            case BSN_COMPONENT_MODES.CREATE:
+                !this.beforeOperation.beforeItemDataOperation(option) &&
+                    this.addRow();
+                break;
+            // case BSN_COMPONENT_MODES.ADD_ROW_DATA:
+            //     !this.beforeOperation.beforeItemDataOperation(option) &&
+            //     this._resolveAjaxConfig(option);
+            //     break;
+            case BSN_COMPONENT_MODES.CANCEL_SELECTED:
+                this.cancelSelectRow();
+                break;
+            case BSN_COMPONENT_MODES.EDIT:
+                this.beforeOperation.operationItemsData = this._getCheckedItems();
+                !this.beforeOperation.beforeItemsDataOperation(
+                    option
+                ) && this.updateRow();
+                break;
+            case BSN_COMPONENT_MODES.CANCEL:
+                this.cancelRow();
+                break;
+            case BSN_COMPONENT_MODES.SAVE:
+                this.beforeOperation.operationItemsData = [
+                    ...this._getCheckedItems(),
+                    ...this._getAddedRows()
+                ];
+                !this.beforeOperation.beforeItemsDataOperation(
+                    option
+                ) && this.saveRow(option);
+                break;
+            case BSN_COMPONENT_MODES.DELETE:
+                this.beforeOperation.operationItemsData = this._getCheckedItems();
+                !this.beforeOperation.beforeItemsDataOperation(
+                    option
+                ) && this.deleteRow(option);
+                break;
+            case BSN_COMPONENT_MODES.DIALOG:
+                this.beforeOperation.operationItemData = this._selectRow;
+                !this.beforeOperation.beforeItemDataOperation(option) &&
+                    this.dialog(option);
+                break;
+            case BSN_COMPONENT_MODES.EXECUTE:
+                // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
+                this._resolveAjaxConfig(option);
+                break;
+            case BSN_COMPONENT_MODES.WINDOW:
+                this.beforeOperation.operationItemData = this._selectRow;
+                !this.beforeOperation.beforeItemDataOperation(option) &&
+                    this.windowDialog(option);
+                break;
+            case BSN_COMPONENT_MODES.FORM:
+                this.beforeOperation.operationItemData = this._selectRow;
+                !this.beforeOperation.beforeItemDataOperation(option) &&
+                    this.formDialog(option);
+                break;
+            case BSN_COMPONENT_MODES.SEARCH:
+                !this.beforeOperation.beforeItemDataOperation(option) &&
+                    this.SearchRow(option);
+                break;
+            case BSN_COMPONENT_MODES.UPLOAD:
+                this.beforeOperation.operationItemData = this._selectRow;
+                !this.beforeOperation.beforeItemDataOperation(option) &&
+                    this.uploadDialog(option);
+                break;
+            case BSN_COMPONENT_MODES.FORM_BATCH:
+                this.beforeOperation.operationItemsData = this._getCheckedItems();
+                !this.beforeOperation.beforeItemsDataOperation(
+                    option
+                ) && this.formBatchDialog(option);
+                break;
+        }
+
+    }
+
+
+    // tslint:disable-next-line:member-ordering
+    public toolbarConfig = [];
+    //  获取event 事件的配置 
+    public GetToolbarEvents() {
+        if (this.config.events && Array.isArray(this.config.events)) {
+            this.config.events.forEach(item => {
+                if (item.group) {
+                    const groups = [];
+                    item.group.forEach(g => {
+                        groups.push({ ...g });
+                    });
+
+                    this.toolbarConfig.push({ group: groups });
+                } else if (item.dropdown) {
+                    const dropdown = [];
+                    item.dropdown.forEach(b => {
+                        const down = {};
+                        const { name, text, icon } = b;
+                        down['name'] = name;
+                        down['text'] = text;
+                        down['icon'] = icon;
+                        down['buttons'] = [];
+                        b.buttons.forEach(btn => {
+                            down['buttons'].push({ ...btn });
+                        });
+                        dropdown.push(down);
+                    });
+                    this.toolbarConfig.push({ dropdown: dropdown });
+                }
+            });
+        }
+
+
+    }
 
 }
 

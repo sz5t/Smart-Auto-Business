@@ -39,7 +39,7 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
     // _selectedMultipleOption:any[];
     constructor(private apiService: ApiService) {}
 
-    public ngOnInit() {
+    public async ngOnInit() {
         // console.log('变化时临时参数', this.casadeData);
         // console.log('变化配置', this.config);
         // console.log('下拉选中的本来值: ** ', this.value);
@@ -74,7 +74,7 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
             this._options = this.dataSet;
         } else if (this.config.ajaxConfig) {
             // 异步加载options
-            (async() => {
+            // (async() => {
                 this.resultData = await this.asyncLoadOptions(
                     this.config.ajaxConfig
                 );
@@ -101,7 +101,7 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
                         this._options = [];
                     }
                 }
-            })();
+           //  })();
             
         } else {
             // 加载固定数据

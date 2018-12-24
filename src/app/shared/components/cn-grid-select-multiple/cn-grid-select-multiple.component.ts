@@ -37,7 +37,7 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
     private cascadeValue = {};
     private cascadeSetValue = {};
     // _selectedMultipleOption:any[];
-    constructor(private apiService: ApiService) {}
+    constructor(private apiService: ApiService) { }
 
     public async ngOnInit() {
         // console.log('变化时临时参数', this.casadeData);
@@ -74,41 +74,41 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
             this._options = this.dataSet;
         } else if (this.config.ajaxConfig) {
             // 异步加载options
-          //  (async() => {
-                this.resultData = await this.asyncLoadOptions(
-                    this.config.ajaxConfig
-                );
-                if (this.config.valueType && this.config.valueType === 'list') {
-                    const labels = this.config.labelName.split('.');
-                    const values = this.config.valueName.split('.');
+            //  (async() => {
+            this.resultData = await this.asyncLoadOptions(
+                this.config.ajaxConfig
+            );
+            if (this.config.valueType && this.config.valueType === 'list') {
+                const labels = this.config.labelName.split('.');
+                const values = this.config.valueName.split('.');
+                this.resultData.data.forEach(d => {
+                    d[this.config.valueName].forEach(v => {
+                        this._options.push({
+                            label: v.ParameterName,
+                            value: v.ParameterName
+                        });
+                    });
+                });
+            } else {
+                if (this.resultData) {
                     this.resultData.data.forEach(d => {
-                        d[this.config.valueName].forEach(v => {
-                            this._options.push({
-                                label: v.ParameterName,
-                                value: v.ParameterName
-                            });
+                        this._options.push({
+                            label: d[this.config.labelName],
+                            value: d[this.config.valueName]
                         });
                     });
                 } else {
-                    if (this.resultData) {
-                        this.resultData.data.forEach(d => {
-                            this._options.push({
-                                label: d[this.config.labelName],
-                                value: d[this.config.valueName]
-                            });
-                        });
-                    } else {
-                        this._options = [];
-                    }
+                    this._options = [];
                 }
-           // })();
-            
+            }
+            // })();
+
         } else {
             // 加载固定数据
             this._options = this.config.options;
         }
 
-      //  this.selectedByLoaded(); // liu 20181221多选级联不能赋值
+        //  this.selectedByLoaded(); // liu 20181221多选级联不能赋值
         // if (this.cascadeSetValue.hasOwnProperty('setValue')) {
         //     this.selectedBycascade();
         // } else {
@@ -116,13 +116,13 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
         // }
 
         if (this.value) {
-            if( this.value.data!=undefined){
-                this._selectedOption = this. getSetComponentValue(this.value.data);
+            if (this.value.data != undefined) {
+                this._selectedOption = this.getSetComponentValue(this.value.data);
             }
-          }
+        }
     }
 
-    public ngAfterViewInit() {}
+    public ngAfterViewInit() { }
     // casadeData
     public ngOnChanges() {
         // console.log('select加载固定数据ngOnChanges', this.config);
@@ -248,12 +248,12 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
         // 使用当前rowData['Id'] 作为当前编辑行的唯一标识
         // 所有接收数据的组件都已自己当前行为标识进行数据及联
         // dataItem
-       // console.log('CnGridSelectMultiple:', name,  this._selectedOption);
+        // console.log('CnGridSelectMultiple:', name,  this._selectedOption);
         if (name) {
-            const c_value =this.getComponentValue(name);
+            const c_value = this.getComponentValue(name);
             this.value.data = c_value;
             // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
-          //  console.log('thisvalue:',this.value);
+            //  console.log('thisvalue:',this.value);
             this.updateValue.emit(this.value);
         } else {
             this.value.data = null;
@@ -261,10 +261,10 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
         }
     }
 
-    getComponentValue(name?){
+    public getComponentValue(name?) {
         let labels = '';
         let values = '';
-        if(name){
+        if (name) {
 
             name.forEach(element => {
                 labels = labels + element.label + ',';
@@ -278,9 +278,9 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
         return values;
     }
 
-    getSetComponentValue(data?){
+    public getSetComponentValue(data?) {
         let ArrayValue = [];
-        let c_value = [];
+        const c_value = [];
         if (data) {
             if (data.length > 0) {
                 ArrayValue = data.split(',');
@@ -290,7 +290,7 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
             const index = this._options.findIndex(
                 item => item['value'] === element
             );
-            if(index>-1){
+            if (index > -1) {
                 c_value.push(this._options[index]);
             }
         });
