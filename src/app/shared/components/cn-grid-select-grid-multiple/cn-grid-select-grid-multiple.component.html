@@ -6,7 +6,7 @@ disabled="{{configtanchuInput.disabled}}" -->
     {{ sliceTagName(tag) }}
 </nz-tag>
 <hr>
-  <cn-bsn-table #table [config]="config.select.selectGrid" [bsnData]="bsnData" [initData]="initData" [casadeData]="casadeData" > </cn-bsn-table>
+  <cn-bsn-table #table [config]="config.select.selectGridMultiple" [bsnData]="bsnData" [initData]="initData" [casadeData]="casadeData"   (updateValue)="valueChangeByModal($event)"> </cn-bsn-table>
 </nz-modal>
 
 <div>

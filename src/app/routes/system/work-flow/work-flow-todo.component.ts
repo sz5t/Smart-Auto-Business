@@ -1701,7 +1701,46 @@ export class WorkFlowTodoComponent implements OnInit {
                                                     }
                                                 }
                                             },
-
+                                            {
+                                                title: '绑定业务类型多选',
+                                                field: 'businesstype1',
+                                                width: 120,
+                                                hidden: false,
+                                                editor: {
+                                                    type: 'selectMultiple',
+                                                    field: 'businesstype1',
+                                                    options: {
+                                                        type: 'selectMultiple',
+                                                        inputType: 'submit',
+                                                        name: 'businesstype1',
+                                                        notFoundContent: '',
+                                                        selectModel: false,
+                                                        showSearch: true,
+                                                        multiple: true,
+                                                        placeholder:
+                                                            '-请选择数据-',
+                                                        disabled: false,
+                                                        size: 'default',
+                                                        clear: true,
+                                                        width: '100%',
+                                                        defaultValue: 1,
+                                                        options: [
+                                                            {
+                                                                label:
+                                                                    '数据建模',
+                                                                value: 1,
+                                                                disabled: false
+                                                            },
+                                                            {
+                                                                label:
+                                                                    '业务建模',
+                                                                value: 2,
+                                                                disabled: false
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            },
                                             {
                                                 title: '绑定业务类型',
                                                 field: 'businesstype',

@@ -567,34 +567,34 @@ export class TsDataTableComponent extends CnComponentBase
         return selectrowdata;
     }
 
-        // liu 20181212 获取 文本值，当前选中多行数据 返回的是数据集
-        public async loadByselectMultiple(
-            ajaxConfig,
-            componentValue?,
-            selecttempValue?,
-            cascadeValue?
-        ) {
-            const url = this._buildURL(ajaxConfig.url);
-            const params = {
-                ...this._buildParametersByselect(
-                    ajaxConfig.params,
-                    componentValue,
-                    selecttempValue,
-                    cascadeValue
-                )
-            };
-            let selectrowdata = [];
-            const loadData = await this._load(url, params);
-            if (loadData && loadData.status === 200 && loadData.isSuccess) {
-                if (loadData.data) {
-                    if (loadData.data.length > 0) {
-                        selectrowdata = loadData.data;
-                    }
+    // liu 20181212 获取 文本值，当前选中多行数据 返回的是数据集
+    public async loadByselectMultiple(
+        ajaxConfig,
+        componentValue?,
+        selecttempValue?,
+        cascadeValue?
+    ) {
+        const url = this._buildURL(ajaxConfig.url);
+        const params = {
+            ...this._buildParametersByselect(
+                ajaxConfig.params,
+                componentValue,
+                selecttempValue,
+                cascadeValue
+            )
+        };
+        let selectrowdata = [];
+        const loadData = await this._load(url, params);
+        if (loadData && loadData.status === 200 && loadData.isSuccess) {
+            if (loadData.data) {
+                if (loadData.data.length > 0) {
+                    selectrowdata = loadData.data;
                 }
             }
-            console.log('异步获取当前值集合[]:', selectrowdata);
-            return selectrowdata;
         }
+        console.log('异步获取当前值集合[]:', selectrowdata);
+        return selectrowdata;
+    }
     // 构建获取文本值参数
     private _buildParametersByselect(
         paramsConfig,
@@ -3372,5 +3372,84 @@ export class TsDataTableComponent extends CnComponentBase
         this.load();
 
     }
+
+
+    // 触摸屏配置草稿
+
+    // 将操作统一配置在 toolbar  中 ，属性是hidden：true  这样渲染不会有影响
+    // 权限也可控制，类别是执行事件，非toolbar操作
+    // 【需要调整部分】，toolbar 的模板 添加 ng-if  config.hidden
+    // 【难点调整】其他组件中，无法对操作权限控制，【这部分影响以后扩充灵活性，目前难度大，日后扩充】
+
+    // tslint:disable-next-line:member-ordering
+    public new_config = {
+
+        supplementaryline: true, // 是否进行行补充【当前页数据不够时动态填充空行】
+                                           // 问题：需要有新的行状态，当前行是不能有其他操作
+                                           //           当有新增或者其他对行有影响的操作，则不允许取补充行信息（多选取值）
+                                           //  注意：删除后的补充，新增前的计算，如果有补充行，则先删除一行
+        columns: [
+            {
+                title: 'Id',
+                field: 'Id',
+                width: 80,
+                hidden: true,
+                editor: {
+                    type: 'input',
+                    field: 'Id',
+                    options: {
+                        type: 'input',
+                        labelSize: '6',
+                        controlSize: '18',
+                        inputType: 'text'
+                    }
+                },
+                ts_editor: [  // 数组 表示当前行有多种组件 一行多组件，需要有条件来适配
+                    {
+                        // 正则表达 根据状态渲染组件，默认处理模式只支持第一个满足条件的
+                        caseValue: { valueName: 'value', regular: '^2$' },
+                         // 问题？特殊描述 多字段组合条件，新增行处理？呈现什么状态
+                        type: 'input',
+                        field: 'Id',
+                        options: {
+                            type: 'input',
+                            labelSize: '6',
+                            controlSize: '18',
+                            inputType: 'text'
+                        }
+                    }
+                ]
+            }],
+
+        toolbar: [
+            {
+                gutter: 24,
+                offset: 12,
+                span: 10,
+                position: 'right',
+                group: [
+                    {
+                        name: 'Tab1_GYGC_refresh',
+                        class: 'editable-add-btn',
+                        text: '刷新',
+                        icon: 'anticon anticon-reload',
+                        color: 'text-primary',
+                        toolbartype: 'action ',  // 此类别标识当前组件属性，操作、按钮
+                        hidden: true   //  此属性
+                    }
+                ]
+            }
+        ],
+        rowEvent: [  // 行事件、列事件
+            {
+                EditableSave: {
+                   name: '', action: ''
+                }
+            }
+
+        ]
+    };
+
+
 }
 

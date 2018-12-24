@@ -40,7 +40,7 @@ export class CnGridSelectGridMultipleComponent implements OnInit {
   // 模板配置
 
   public ngOnInit(): void {
-    // console.log('ngOnInitvalue: ', this.value);
+    console.log('ngOnInitvalue: ', this.config, this.value);
     // this._value = this.formGroup.value[this.config.name];
     // console.log('被级联数据', this.casadeData);
     if (this.casadeData) {
@@ -96,6 +96,15 @@ export class CnGridSelectGridMultipleComponent implements OnInit {
     } else {
       // this.selectedByLoaded();
     }
+   
+    if (this.value) {
+      if( this.value.data!=undefined){
+        this._value = this.value.data;
+        this.valueChange(this._value);
+      }
+    }
+
+
   }
 
   public showModal(): void {
@@ -116,14 +125,15 @@ export class CnGridSelectGridMultipleComponent implements OnInit {
       values = values + element.value + ',';
     });
     this._valuetext = labels;
-    this._value = values;
+
     if (this._valuetext.length > 0) {
       this._valuetext = this._valuetext.substring(0, this._valuetext.length - 1);
     }
-    if (this._value.length > 0) {
-      this._value = this._value.substring(0, this._value.length - 1);
+    if (values.length > 0) {
+      values = values.substring(0, values.length - 1);
     }
-    // console.log('数据', this._value);
+    this._value =    values;
+    this.valueChange(this._value);
   }
 
   // 获取多选文本值
@@ -135,12 +145,12 @@ export class CnGridSelectGridMultipleComponent implements OnInit {
       values = values + element.value + ',';
     });
     if (labels.length > 0) {
-      this._valuetext = this._valuetext.substring(0, labels.length - 1);
+      this._valuetext = labels.substring(0, labels.length - 1);
     } else {
       this._valuetext = null;
     }
     if (values.length > 0) {
-      this._value = this._value.substring(0, values.length - 1);
+      this._value = values.substring(0, values.length - 1);
     } else {
       this._value = null;
     }
@@ -149,7 +159,7 @@ export class CnGridSelectGridMultipleComponent implements OnInit {
   public getMultipleTags(dlist?) {
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
-    dlist.array.forEach(data => {
+    dlist.forEach(data => {
       const b_lable = data[labelName];
       const b_value = data[valueName]; // 取值时动态读取的
       const newobj = { label: b_lable, value: b_value };
@@ -181,12 +191,12 @@ export class CnGridSelectGridMultipleComponent implements OnInit {
      //  const backValue = { name: this.config.name, value: name };
       this.value.data = name;
       // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
-      // console.log('this.resultData:', this.resultData);
       if (this.tags) {
+
         // valueName
         const index = this.tags.length;
         if (this.tags) {
-          if (index >= 0) {
+          if (index > 0) {
             this.getMultipleValue();
           } else {
             // 取值

@@ -102,6 +102,7 @@ import { BsnAsyncTreeTableComponent } from './business/bsn-treeTable/bsn-treeTab
 import { CnFormSelectGridMultipleComponent } from './components/cn-form-select-grid-multiple/cn-form-select-grid-multiple.component';
 import { CnGridSelectGridMultipleComponent } from './components/cn-grid-select-grid-multiple/cn-grid-select-grid-multiple.component';
 import { TsDataTableComponent } from './business/ts-data-table/ts-data-table.component';
+import { CnGridSelectMultipleComponent } from '@shared/components/cn-grid-select-multiple/cn-grid-select-multiple.component';
 
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -196,7 +197,8 @@ const COMPONENTS = [
     BsnAsyncTreeTableComponent,
     CnFormSelectGridMultipleComponent,
     CnGridSelectGridMultipleComponent,
-    TsDataTableComponent
+    TsDataTableComponent,
+    CnGridSelectMultipleComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

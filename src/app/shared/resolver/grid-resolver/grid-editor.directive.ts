@@ -31,6 +31,8 @@ import { CnGridNumberComponent } from '@shared/components/cn-grid-munber/cn-grid
 import { CnGridSelectGridComponent } from '@shared/components/cn-grid-select-grid/cn-grid-select-grid.component';
 import { CnGridSelectTreegridComponent } from '@shared/components/cn-grid-select-treegrid/cn-grid-select-treegrid.component';
 import { CnGridSearchComponent } from '@shared/components/cn-grid-search/cn-grid-search.component';
+import { CnGridSelectMultipleComponent } from '@shared/components/cn-grid-select-multiple/cn-grid-select-multiple.component';
+import { CnGridSelectGridMultipleComponent } from '@shared/components/cn-grid-select-grid-multiple/cn-grid-select-grid-multiple.component';
 const components: { [type: string]: Type<any> } = {
     input: CnGridInputComponent,
     select: CnGridSelectComponent,
@@ -45,7 +47,9 @@ const components: { [type: string]: Type<any> } = {
     number: CnGridNumberComponent,
     selectGrid: CnGridSelectGridComponent,
     selectTreeGrid: CnGridSelectTreegridComponent,
-    search: CnGridSearchComponent
+    search: CnGridSearchComponent,
+    selectMultiple: CnGridSelectMultipleComponent,
+    selectGridMultiple: CnGridSelectGridMultipleComponent
 };
 
 // export const EXE_COUNTER_VALUE_ACCESSOR: any = {
