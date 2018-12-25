@@ -565,7 +565,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
                                         if (
                                             setValuedata.hasOwnProperty('data')
                                         ) {
-                                            this.setValue(
+                                            this.setValues(
                                                 key,
                                                 setValuedata['data']
                                             );
@@ -750,7 +750,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
                                                     'data'
                                                 )
                                             ) {
-                                                this.setValue(
+                                                this.setValues(
                                                     key,
                                                     setValuedata['data']
                                                 );

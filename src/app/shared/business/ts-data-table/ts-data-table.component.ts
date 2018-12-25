@@ -3451,21 +3451,25 @@ export class TsDataTableComponent extends CnComponentBase
     };
 
 
-    //  执行行内事件【】
-    public ExecRowEvent(updateState?, enentname?) {
+    //  执行行内事件【】,不展示的按钮事件，日后扩充
+    public ExecRowEvent( enentname?) {
         //  name
         // const option = updateState.option;
-        let option;
+        let option = {};
+        let model = '';
         const index = this.toolbarConfig.findIndex(
             item => item['name'] === enentname
         );
         if (index > -1) {
-           option = this.toolbarConfig[index];
+            option = this.toolbarConfig[index];
+        }
+        if (option['action']) {
+            model = BSN_COMPONENT_MODES[option['action']];
         }
         // option 操作的详细配置
         // 根据当前行绑定操作名称-》找到对应的操作配置
-     
-        switch (updateState._mode) {
+
+        switch (model) {
             case BSN_COMPONENT_MODES.REFRESH:
                 this.load();
                 break;

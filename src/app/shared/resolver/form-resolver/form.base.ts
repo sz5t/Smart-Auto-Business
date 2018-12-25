@@ -120,6 +120,28 @@ export class CnFormBase extends CnComponentBase {
         }
     }
 
+    // 多选值赋值
+    public setValues(name: string, value: any) {
+        if (this.formConfigControl[name]) {
+            if (
+                this.formConfigControl[name]['type'] === 'selectMultiple' ||
+                this.formConfigControl[name]['type'] === 'selectTreeMultiple'
+            ) {
+                let ArrayValue = [];
+                if (value) {
+                    if (value.length > 0) {
+                        ArrayValue = value.split(',');
+                    }
+                }
+                this.setValue(name, ArrayValue);
+            } else {
+                this.setValue(name, value);
+            }
+        } else {
+            this.setValue(name, value);
+        }
+    }
+
     public setFormValue(data) {
         if (data) {
             for (const d in data) {
@@ -338,7 +360,7 @@ export class CnFormBase extends CnComponentBase {
                 //         callback && callback();
                 //     }
                 // }
-            } 
+            }
             // else {
             //     this.baseMessage.error(
             //         '存储过程返回结果异常：未获得输出的消息内容'
@@ -355,7 +377,7 @@ export class CnFormBase extends CnComponentBase {
                 } else {
                     callback();
                 }
-                
+
             }
 
         } else {
@@ -486,13 +508,13 @@ export class CnFormBase extends CnComponentBase {
             let msg = '';
             switch (formState) {
                 case 'text':
-                msg = '预览状态下无法执行此操作!'
-                break;
+                    msg = '预览状态下无法执行此操作!'
+                    break;
                 case 'post':
-                msg = '';
-                break;
-                case 'put': 
-                break;   
+                    msg = '';
+                    break;
+                case 'put':
+                    break;
             }
             this.baseMessage.warning('配置异常,无法执行请求!');
         }
