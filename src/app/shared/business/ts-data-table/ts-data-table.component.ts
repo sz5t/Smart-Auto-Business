@@ -3442,9 +3442,10 @@ export class TsDataTableComponent extends CnComponentBase
         ],
         events: [  // 行事件、列事件
             {
-                EditableSave: {
-                    name: '', action: ''
-                }
+                name: '', // 名称唯一，为日后扩充权限做准备
+                onEvent: '',  // 什么条件触发  例如：oncolumnValueChange   onSelectedRow  on CheckedRow    
+                type: 'EditableSave',
+                action: ''
             }
 
         ]

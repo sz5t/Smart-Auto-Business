@@ -28,7 +28,8 @@ declare var rubylong: any;
 export class BsnReportComponent extends CnComponentBase implements OnInit, AfterViewInit, OnDestroy {
     @Input()
     public config;
-    
+    @Input() public initData;
+
     private data: any;
     private autoGenerateColumns;
     private hostStyle = {
@@ -36,7 +37,7 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
         height: '500px'
     }
 
-    @ViewChild('report') 
+    @ViewChild('report')
     private reportView: ElementRef;
     private reportObject;
 
@@ -58,10 +59,11 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
         private cascadeEvents: Observable<BsnComponentMessage>
     ) {
         super();
-        this.apiResource = _api;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+        this.apiResource = _api;
     }
 
     public ngOnInit() {
+        this.initValue = this.initData ? this.initData : {};
         this.resolverRelation();
 
     }
@@ -72,16 +74,16 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
         }
     }
 
-    public async load () {
+    public async load() {
         // 加载报表数据
         const data = await this.getReportData();
         if (data.isSuccess) {
-                // 生成表表
+            // 生成表表
             const server = SystemResource.reportServer.url;
             const reportViewer = rubylong.grhtml5.insertReportViewer(
-                'report', 
+                'report',
                 `${server + this.config.reportName}`
-                );
+            );
             reportViewer.loadData(data.data, true);
             reportViewer.start(); //启动报表运行，生成报表
         }
@@ -152,7 +154,7 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
         } else {
             console.log('未配置报表模版!');
         }
-        
+
     }
 
 
@@ -169,8 +171,8 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
             if (Array.isArray(cfg.children) && cfg.children.length > 0) {
                 const p = {};
                 p[cfg.name] = this.resolverParameters(cfg.children);
-                params = {...params, ...p};
-            }    
+                params = { ...params, ...p };
+            }
         });
         return params;
     }
@@ -179,15 +181,15 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
         const reportData = await this.getReportData();
         const reportTemplateData = await this.getReportTemplate();
 
-        this.reportObject = new GC.Spread.Sheets.Workbook(this.reportView.nativeElement, {sheetCount: 3});
+        this.reportObject = new GC.Spread.Sheets.Workbook(this.reportView.nativeElement, { sheetCount: 3 });
         this.reportObject.suspendPaint();
         this.reportObject.fromJSON(reportTemplateData);
 
         const sheet = this.reportObject.getSheet(0);
         const sheet2 = this.reportObject.getSheet(1);
         const sheet3 = this.reportObject.getSheet(2)
-        sheet.autoGenerateColumns = false;        
-        
+        sheet.autoGenerateColumns = false;
+
         // sheet.tables.findByName('data').bindingPath('table');
         const source = new GC.Spread.Sheets.Bindings.CellBindingSource(reportData.data);
         sheet.setDataSource(source);
@@ -213,11 +215,11 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
             url = urlConfig;
         }
         return url;
-    } 
+    }
 
 
     private async buildTableReport() {
-    
+
     }
 
 }
