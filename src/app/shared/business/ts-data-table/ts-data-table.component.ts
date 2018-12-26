@@ -1405,6 +1405,48 @@ export class TsDataTableComponent extends CnComponentBase
         // console.log('级联结果数据集', this.changeConfig_new[rowCasade]);
         // this.changeConfig_new = JSON.parse(JSON.stringify(this.changeConfig_new));
         // console.log('当前编辑缓存行内容', this.editCache[data.key].data);
+
+      
+//  开始解析 当前feild 的适配条件【重点】 参数 conditions  返回 true/false 
+        this.beforeOperation.handleOperationConditions([]);
+
+
+     const ss =   { events: [  // 行事件、列事件
+            {
+                // 首先 判断 onTrigger 什么类别触发，其次 ，看当前是新增、修改， 最后 执行onEvent 
+                name: '', // 名称唯一，为日后扩充权限做准备
+                onTrigger: 'onColumnValueChange',  // 什么条件触发  例如：oncolumnValueChange   onSelectedRow  on CheckedRow    
+                type: 'EditableSave',  // 需要区分 新增 修改
+                actiontype: 'add、update', // 不满足条件的 均可
+                onEvent: [
+                    {
+                        type: 'field',
+                        field: 'code',
+                        execEvent: [  // 当前字段的 执行事件，如果 没有 conditions 则执行action
+                            {
+                                conditions: [
+                                    // 描述 ：【】 之间 或者or {} 之间 并且 and 条件
+                                    [
+                                        {
+                                            name: 'enabled',
+                                            value: '[0-1]',
+                                            checkType: 'regexp'  //  'value'  'regexp' 'tempValue' 'initValue'  'cacheValue' 
+                                        }
+                                    ]
+                                ],
+                                action: '', // action 就是 toolbar 里配置的执行操作配置
+                            }
+                        ]
+
+                    },
+                    {
+                        type: 'default',
+                        action: '', // 方法名称
+                    }
+                ]
+            }
+        ]}
+
     }
 
     public isEdit(fieldname) {
@@ -3442,18 +3484,46 @@ export class TsDataTableComponent extends CnComponentBase
         ],
         events: [  // 行事件、列事件
             {
+                // 首先 判断 onTrigger 什么类别触发，其次 ，看当前是新增、修改， 最后 执行onEvent 
                 name: '', // 名称唯一，为日后扩充权限做准备
-                onEvent: '',  // 什么条件触发  例如：oncolumnValueChange   onSelectedRow  on CheckedRow    
-                type: 'EditableSave',
-                action: ''
+                onTrigger: 'onColumnValueChange',  // 什么条件触发  例如：oncolumnValueChange   onSelectedRow  on CheckedRow    
+                type: 'EditableSave',  // 需要区分 新增 修改
+                actiontype: 'add、update', // 不满足条件的 均可
+                onEvent: [
+                    {
+                        type: 'field',
+                        field: 'code',
+                        execEvent: [  // 当前字段的 执行事件，如果 没有 conditions 则执行action
+                            {
+                                conditions: [
+                                    // 描述 ：【】 之间 或者or {} 之间 并且 and 条件
+                                    [
+                                        {
+                                            name: 'enabled',
+                                            value: '[0-1]',
+                                            checkType: 'regexp'  //  'value'  'regexp' 'tempValue' 'initValue'  'cacheValue' 
+                                        }
+                                    ]
+                                ],
+                                action: '', // action 就是 toolbar 里配置的执行操作配置
+                            }
+                        ]
+
+                    },
+                    {
+                        type: 'default',
+                        action: '', // 方法名称
+                    }
+                ]
             }
 
         ]
     };
 
+    // handleOperationConditions  // 选中行消息简析
 
     //  执行行内事件【】,不展示的按钮事件，日后扩充
-    public ExecRowEvent( enentname?) {
+    public ExecRowEvent(enentname?) {
         //  name
         // const option = updateState.option;
         let option = {};

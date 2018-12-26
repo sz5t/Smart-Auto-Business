@@ -944,8 +944,8 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
 
     private _getSelectedNodeId() {
         const selectedNodes = this.treeObj.getSelectedNodeList();
-        this.tempValue['_selectedNode'] = selectedNodes[0];
-        return selectedNodes[0];
+        this.tempValue['_selectedNode'] = selectedNodes[0].origin;
+        return selectedNodes[0].origin;
     }
 
     private async _execute(url, method, body) {
