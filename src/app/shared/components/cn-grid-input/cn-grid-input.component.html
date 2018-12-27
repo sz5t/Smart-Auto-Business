@@ -1,5 +1,5 @@
 <input nz-input
-(ngModelChange)="valueChange($event)"
+
 [ngStyle]="{'width':config.width}"
 type="{{config.inputType}}"
 [nzSize]="config.size"
@@ -9,3 +9,4 @@ disabled="{{config.disabled}}"
 [(ngModel)]="_value"
 (blur)="onblur($event,'end')" (keyup)="onKeyPress($event,'end')"
 >
+<!-- (ngModelChange)="valueChange($event)" -->

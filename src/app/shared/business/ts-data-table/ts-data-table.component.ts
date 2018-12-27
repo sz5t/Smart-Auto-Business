@@ -272,6 +272,8 @@ export class TsDataTableComponent extends CnComponentBase
                 : {},
             apiResource: this.apiResource
         });
+        //  初始化 事件 liu 20181226
+        this.GetToolbarEvents();
     }
     private resolverRelation() {
         // 注册按钮状态触发接收器
@@ -531,6 +533,12 @@ export class TsDataTableComponent extends CnComponentBase
             if (!this.is_Selectgrid) {
                 this.setSelectRow();
             }
+
+            // 初始化datagrid 编辑状态 liu 20181226
+            // this.dataList.forEach(row => {
+            //     this._startEdit(row['key'].toString());
+            // });
+
 
             setTimeout(() => {
                 this.loading = false;
@@ -1012,7 +1020,15 @@ export class TsDataTableComponent extends CnComponentBase
 
     public valueChange(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
-        // console.log('值变化', data);
+        console.log('值变化', data, 'this.editCache[data.key].data[data.name] :', this.editCache[data.key]);
+        let isValueChange = true;
+        if (data.data === undefined) {
+            data.data = null;
+        }
+        if (this.editCache[data.key].data[data.name] === data.data) {
+            isValueChange = false;
+        }
+        console.log('值变化比较', isValueChange, this.editCache[data.key].data[data.name], data.data);
         this.editCache[data.key].data[data.name] = data.data;
         this.editCache[data.key].data[data.name] = JSON.parse(
             JSON.stringify(this.editCache[data.key].data[data.name])
@@ -1406,46 +1422,104 @@ export class TsDataTableComponent extends CnComponentBase
         // this.changeConfig_new = JSON.parse(JSON.stringify(this.changeConfig_new));
         // console.log('当前编辑缓存行内容', this.editCache[data.key].data);
 
-      
-//  开始解析 当前feild 的适配条件【重点】 参数 conditions  返回 true/false 
-        this.beforeOperation.handleOperationConditions([]);
+
+        //  开始解析 当前feild 的适配条件【重点】 参数 conditions  返回 true/false 
+        // this.beforeOperation.handleOperationConditions([]);
+
+        // 执行列事件
+        if (isValueChange) {
+            this.ExecEventByValueChange(data);
+        }
 
 
-     const ss =   { events: [  // 行事件、列事件
-            {
-                // 首先 判断 onTrigger 什么类别触发，其次 ，看当前是新增、修改， 最后 执行onEvent 
-                name: '', // 名称唯一，为日后扩充权限做准备
-                onTrigger: 'onColumnValueChange',  // 什么条件触发  例如：oncolumnValueChange   onSelectedRow  on CheckedRow    
-                type: 'EditableSave',  // 需要区分 新增 修改
-                actiontype: 'add、update', // 不满足条件的 均可
-                onEvent: [
-                    {
-                        type: 'field',
-                        field: 'code',
-                        execEvent: [  // 当前字段的 执行事件，如果 没有 conditions 则执行action
-                            {
-                                conditions: [
-                                    // 描述 ：【】 之间 或者or {} 之间 并且 and 条件
-                                    [
-                                        {
-                                            name: 'enabled',
-                                            value: '[0-1]',
-                                            checkType: 'regexp'  //  'value'  'regexp' 'tempValue' 'initValue'  'cacheValue' 
-                                        }
-                                    ]
-                                ],
-                                action: '', // action 就是 toolbar 里配置的执行操作配置
-                            }
-                        ]
+    }
 
-                    },
-                    {
-                        type: 'default',
-                        action: '', // 方法名称
-                    }
-                ]
+    /**
+     * 执行值变化触发的事件 liu 20181226
+     * @param data 
+     */
+    public ExecEventByValueChange(data?) {
+        const ss = {
+            events: [  // 行事件、列事件
+                {
+                    // 首先 判断 onTrigger 什么类别触发，其次 ，看当前是新增、修改， 最后 执行onEvent 
+                    name: '', // 名称唯一，为日后扩充权限做准备
+                    onTrigger: 'onColumnValueChange',  // 什么条件触发  例如：oncolumnValueChange   onSelectedRow  on CheckedRow    
+                    type: 'EditableSave',  // 需要区分 新增 修改
+                    actiontype: 'add、update', // 不满足条件的 均可
+                    onEvent: [
+                        {
+                            type: 'field',
+                            field: 'code',
+                            action: '',
+                            execEvent: [  // 【预留目前不实现】 当前字段的 执行事件，如果 没有 conditions 则执行action
+                                {
+                                    conditions: [
+                                        // 描述 ：【】 之间 或者or {} 之间 并且 and 条件
+                                        [
+                                            {
+                                                name: 'enabled',
+                                                value: '[0-1]',
+                                                checkType: 'regexp'  //  'value'  'regexp' 'tempValue' 'initValue'  'cacheValue' 
+                                            }
+                                        ]
+                                    ],
+                                    action: '', // action 就是 toolbar 里配置的执行操作配置
+                                }
+                            ]
+
+                        },
+                        {
+                            type: 'default',
+                            action: '', // 方法名称
+                        }
+                    ]
+                }
+            ]
+        }
+
+        const vc_field = data.name;
+        //  ts_saveEdit data.key
+        const vc_rowdata = this.ts_getEditRow(data.key, data.name);
+        this.EditSelectedRow = [];
+        this.EditSelectedRow.push(vc_rowdata);
+
+        console.log('当前行数据：', vc_rowdata);
+        // 判断是否存在配置
+        if (this.config.events) {
+            const index = this.config.events.findIndex(item => item['onTrigger'] === 'onColumnValueChange');
+            let c_eventConfig = {};
+            if (index > -1) {
+                c_eventConfig = this.config.events[index];
+            } else {
+                return true;
             }
-        ]}
+
+            let isField = true; // 列变化触发
+            // 首先适配类别、字段，不满足的时候 看是否存在default 若存在 取default
+            c_eventConfig['onEvent'].forEach(eventConfig => {
+                // 指定具体feild的操作
+                if (eventConfig.type === 'field') {
+                    if (eventConfig.field === vc_field) {
+                        isField = false;
+                        // 调用 执行方法，方法
+                        this.ExecRowEvent(eventConfig.action);
+                        return true;
+                    }
+                }
+            });
+            if (isField) {
+                c_eventConfig['onEvent'].forEach(eventConfig => {
+                    // 无配置 的默认项
+                    if (eventConfig.type === 'default') {
+                        this.ExecRowEvent(eventConfig.action);
+                    }
+                });
+            }
+
+
+
+        }
 
     }
 
@@ -1772,11 +1846,28 @@ export class TsDataTableComponent extends CnComponentBase
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_ROW:
                     // 获取保存状态的数据
                     handleData = this._getEditedRows();
+                    console.log('简析参数1838 ', handleData);
                     msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
                     }
                     break;
+                case BSN_EXECUTE_ACTION.EXECUTE_EDIT_SELECTED_ROW:
+                    // 获取保存状态的数据
+                    handleData = this.EditSelectedRow;
+                    console.log('简析参数1838 ', handleData);
+                    msg = '编辑数据保存成功';
+                    if (handleData && handleData.length <= 0) {
+                        return;
+                    }
+                    break;
+                // liu 20181226
+                // handleData = this._getSelectedItem();
+                // msg = '编辑数据保存成功';
+                // if (handleData && handleData.length <= 0) {
+                //     return;
+                // }
+                // break;
                 case BSN_EXECUTE_ACTION.EXECUTE_SAVE_ROW:
                     // 获取更新状态的数据
                     handleData = this._getAddedRows();
@@ -1786,6 +1877,9 @@ export class TsDataTableComponent extends CnComponentBase
                     }
                     break;
             }
+
+            console.log('简析参数1860 ', handleData);
+
             if (c.message) {
                 this.baseModal.confirm({
                     nzTitle: c.title ? c.title : '提示',
@@ -2183,14 +2277,26 @@ export class TsDataTableComponent extends CnComponentBase
         // 按照行主键划分每行的组件
         // 根据配置构建编辑组的配置表单组件
         // 处理每组表单内部的交互
-        dataList.forEach(item => {
-            if (!this.editCache[item.key]) {
-                this.editCache[item.key] = {
-                    edit: false,
-                    data: JSON.parse(JSON.stringify(item))
-                };
-            }
-        });
+        if (this.config.Edit) {
+            dataList.forEach(item => {
+                if (!this.editCache[item.key]) {
+                    this.editCache[item.key] = {
+                        edit: true,
+                        data: JSON.parse(JSON.stringify(item))
+                    };
+                }
+            });
+        } else {
+            dataList.forEach(item => {
+                if (!this.editCache[item.key]) {
+                    this.editCache[item.key] = {
+                        edit: false,
+                        data: JSON.parse(JSON.stringify(item))
+                    };
+                }
+            });
+        }
+
     }
 
     private selectRow(data?, $event?) {
@@ -2372,6 +2478,8 @@ export class TsDataTableComponent extends CnComponentBase
 
         this.editCache[key].edit = false;
     }
+
+
     /**
      * 删除编辑
      */
@@ -3462,8 +3570,8 @@ export class TsDataTableComponent extends CnComponentBase
                     }
                 ]
             }],
-
-        toolbar: [
+        // 事件 配置
+        toolbarEvent: [
             {
                 gutter: 24,
                 offset: 12,
@@ -3519,6 +3627,8 @@ export class TsDataTableComponent extends CnComponentBase
 
         ]
     };
+    // 一列 多组件，需要类似查询，需要一个中间组件来简析当前组件
+    // tslint:disable-next-line:member-ordering
 
     // handleOperationConditions  // 选中行消息简析
 
@@ -3536,10 +3646,13 @@ export class TsDataTableComponent extends CnComponentBase
         }
         if (option['action']) {
             model = BSN_COMPONENT_MODES[option['action']];
+        } else {
+            model = BSN_COMPONENT_MODES['EXECUTE'];
         }
+        console.log('列值变化触发事件：', model, enentname, this.toolbarConfig, option);
         // option 操作的详细配置
         // 根据当前行绑定操作名称-》找到对应的操作配置
-
+        // const model_c = '';
         switch (model) {
             case BSN_COMPONENT_MODES.REFRESH:
                 this.load();
@@ -3586,6 +3699,7 @@ export class TsDataTableComponent extends CnComponentBase
                 break;
             case BSN_COMPONENT_MODES.EXECUTE:
                 // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
+                console.log('执行列3665：', option);
                 this._resolveAjaxConfig(option);
                 break;
             case BSN_COMPONENT_MODES.WINDOW:
@@ -3622,15 +3736,14 @@ export class TsDataTableComponent extends CnComponentBase
     public toolbarConfig = [];
     //  获取event 事件的配置 
     public GetToolbarEvents() {
-        if (this.config.events && Array.isArray(this.config.events)) {
-            this.config.events.forEach(item => {
+        if (this.config.toolbarEvent && Array.isArray(this.config.toolbarEvent)) {
+            this.config.toolbarEvent.forEach(item => {
                 if (item.group) {
-                    const groups = [];
                     item.group.forEach(g => {
-                        groups.push({ ...g });
+                        this.toolbarConfig.push(g);
                     });
 
-                    this.toolbarConfig.push({ group: groups });
+
                 } else if (item.dropdown) {
                     const dropdown = [];
                     item.dropdown.forEach(b => {
@@ -3641,16 +3754,35 @@ export class TsDataTableComponent extends CnComponentBase
                         down['icon'] = icon;
                         down['buttons'] = [];
                         b.buttons.forEach(btn => {
-                            down['buttons'].push({ ...btn });
+                            this.toolbarConfig.push(btn);
                         });
-                        dropdown.push(down);
                     });
-                    this.toolbarConfig.push({ dropdown: dropdown });
+
                 }
             });
         }
 
 
+    }
+
+
+
+    // tslint:disable-next-line:member-ordering
+    public EditSelectedRow = [];
+    /**
+    * 列保存数据
+    * @param key
+    * @private
+    */
+    private ts_getEditRow(key: string, name: string) {
+        const index = this.dataList.findIndex(item => item.key === key);
+        this.dataList[index] = JSON.parse(
+            JSON.stringify(this.editCache[key].data)
+        );
+        const row = this.dataList[index];
+        row['currentValue'] = this.dataList[index][name];
+        row['currentName'] = name;
+        return row;
     }
 
 }
