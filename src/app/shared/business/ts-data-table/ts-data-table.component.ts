@@ -3171,6 +3171,9 @@ export class TsDataTableComponent extends CnComponentBase
         return !0;
     }
 
+    public _isArray(a) {
+        return (Object.prototype.toString.call(a)  === '[object Array]');
+    }
     // liu 2018 12 04 
     public valueChangeSearch(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
@@ -3567,6 +3570,9 @@ export class TsDataTableComponent extends CnComponentBase
                             controlSize: '18',
                             inputType: 'text'
                         }
+                    },
+                    {
+                        default: '', // 默认编辑结构
                     }
                 ]
             }],

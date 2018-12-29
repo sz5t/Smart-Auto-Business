@@ -103,6 +103,7 @@ import { CnFormSelectGridMultipleComponent } from './components/cn-form-select-g
 import { CnGridSelectGridMultipleComponent } from './components/cn-grid-select-grid-multiple/cn-grid-select-grid-multiple.component';
 import { TsDataTableComponent } from './business/ts-data-table/ts-data-table.component';
 import { CnGridSelectMultipleComponent } from '@shared/components/cn-grid-select-multiple/cn-grid-select-multiple.component';
+import { CnGridEditComponent } from './components/cn-grid-edit/cn-grid-edit.component';
 
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -226,7 +227,8 @@ const DIRECTIVES = [
         // your components
         ...COMPONENTS,
         ...DIRECTIVES,
-        BtnTableFieldLimit
+        BtnTableFieldLimit,
+        CnGridEditComponent
     ],
     exports: [
         CommonModule,

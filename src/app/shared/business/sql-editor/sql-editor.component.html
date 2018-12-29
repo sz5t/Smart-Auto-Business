@@ -164,6 +164,7 @@
                                                                                         <td>{{ data.valueFrom}}</td>
 
                                                                                         <td>
+                                                                                                <a  (click)="codeRuleSQL(data)" ><i nz-icon type="setting" theme="outline"></i> 规则</a> |
                                                                                                 <a *ngIf="!data.edit" (click)="changeEdit(data, true)"><i nz-icon type="edit" theme="outline"></i> 编辑</a>
                                                                                                 <a *ngIf="data.edit" (click)="saveParams(data)"><i nz-icon type="save" theme="outline"></i> 保存</a> |
                                                                                                 <a *ngIf="data.edit" (click)="changeEdit(data, false)" >取消</a>

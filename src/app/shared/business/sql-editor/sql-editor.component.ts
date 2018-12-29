@@ -6,8 +6,9 @@ import {
     RelativeResolver,
     RelativeService
 } from '@core/relative-Service/relative-service';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { CnComponentBase } from '@shared/components/cn-component-base';
+import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -109,9 +110,12 @@ export class SqlEditorComponent extends CnComponentBase
     constructor(
         private _http: ApiService,
         private _relativeService: RelativeService,
-        private _message: NzMessageService
+        private _message: NzMessageService,
+        private modalService: NzModalService
     ) {
+
         super();
+        this.baseModal = this.modalService;
     }
 
     public async ngOnInit() {
@@ -264,7 +268,7 @@ export class SqlEditorComponent extends CnComponentBase
     }
 
     // 删除SQL 参数
-    public deleteParam(id) {}
+    public deleteParam(id) { }
 
     private async addSql(sql) {
         const params = {
@@ -295,7 +299,7 @@ export class SqlEditorComponent extends CnComponentBase
         return this._http.delete(`common/CfgSql`, { _ids: id }).toPromise();
     }
 
-    private async delSqlParam(id) {}
+    private async delSqlParam(id) { }
     // 删除SQL关联表数据
     private async delSqlRelative(id) {
         const params = {
@@ -348,15 +352,112 @@ export class SqlEditorComponent extends CnComponentBase
 
     public search($event: KeyboardEvent) {
         if ($event.keyCode === 13) {
-            const condition =  this.rname ? {resourceName: `ctn(%${this.rname}%)`} : {}
+            const condition = this.rname ? { resourceName: `ctn(%${this.rname}%)` } : {}
             this.load(condition);
         }
-        
+
     }
 
-    public ngOnDestroy() {}
+    public ngOnDestroy() { }
 
-    public cancel() {}
+    public cancel() { }
 
     // 添加参数修改: 数据类型, 是否可为空, 默认值 调用更新参数接口
+
+    // 设置规则 liu
+    public codeRuleSQL(data?) {
+
+       // console.log('规则', data);
+        this.showLayout(this.dialog, data);
+    }
+
+    // tslint:disable-next-line:member-ordering
+    public dialog = {
+        'title': '规则设置',
+        'name': 'ShowCaseWindow',
+        'layoutName': 'CodeRuleSQL',
+        'width': 800,
+        'buttons': [
+            // {
+            //     'name': 'ok1',
+            //     'text': '确定',
+            //     'type': 'primary'
+            // },
+            {
+                'name': 'close',
+                'text': '关闭'
+            }
+        ]
+    };
+    
+    private showLayout(dialog, rowdata?) {
+        const footer = [];
+        this._http.getLocalData(dialog.layoutName).subscribe(data => {
+           //  console.log('getLocalData:', data);
+            const selectedRow = rowdata ? rowdata : {};
+            const tmpValue = this.tempValue ? this.tempValue : {};
+            const modal = this.baseModal.create({
+                nzTitle: dialog.title,
+                nzWidth: dialog.width,
+                nzContent: LayoutResolverComponent,
+                nzComponentParams: {
+                    //  permissions: this.permissions,
+                    config: data,
+                    initData: { ...tmpValue, ...selectedRow }
+                },
+                nzFooter: footer
+            });
+            if (dialog.buttons) {
+                dialog.buttons.forEach(btn => {
+                    const button = {};
+                    button['label'] = btn.text;
+                    button['type'] = btn.type ? btn.type : 'default';
+                    button['show'] = true;
+                    button['onClick'] = componentInstance => {
+                        if (btn['name'] === 'save') {
+                            (async () => {
+                                const result = await componentInstance.buttonAction(
+                                    btn,
+                                    () => {
+                                        modal.close();
+                                        // todo: 操作完成当前数据后需要定位
+                                        // this.load();
+                                        //  this.sendCascadeMessage();
+                                    }
+                                );
+                            })();
+                        } else if (btn['name'] === 'saveAndKeep') {
+                            (async () => {
+                                const result = await componentInstance.buttonAction(
+                                    btn,
+                                    () => {
+                                        // todo: 操作完成当前数据后需要定位
+                                        //  this.load();
+                                        // this.sendCascadeMessage();
+                                    }
+                                );
+                                if (result) {
+
+                                }
+                            })();
+                        } else if (btn['name'] === 'close') {
+                            modal.close();
+                            // this.load();
+                            // this.sendCascadeMessage();
+                        } else if (btn['name'] === 'reset') {
+                            // this._resetForm(componentInstance);
+                        } else if (btn['name'] === 'ok') {
+                            modal.close();
+                            //  this.load();
+                            // this.sendCascadeMessage();
+                            //
+                        }
+                    };
+                    footer.push(button);
+                });
+            }
+        });
+    }
+
+
 }
