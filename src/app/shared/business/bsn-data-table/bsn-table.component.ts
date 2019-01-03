@@ -21,9 +21,10 @@ import {
     Inject,
     AfterViewInit,
     Output,
-    EventEmitter
+    EventEmitter,
+    TemplateRef
 } from '@angular/core';
-import { NzMessageService, NzModalService } from 'ng-zorro-antd';
+import { NzMessageService, NzModalService, NzDropdownService } from 'ng-zorro-antd';
 import { CommonTools } from '@core/utility/common-tools';
 import { ApiService } from '@core/utility/api-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
@@ -131,6 +132,7 @@ export class BsnTableComponent extends CnComponentBase
         private _message: NzMessageService,
         private modalService: NzModalService,
         private cacheService: CacheService,
+        private _dropdownService: NzDropdownService,
         @Inject(BSN_COMPONENT_MODES)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
@@ -3373,4 +3375,137 @@ export class BsnTableComponent extends CnComponentBase
         this.load();
 
     }
+
+
+// 【表格高级设置】
+    // tslint:disable-next-line:member-ordering
+    public dropdown; // NzDropdownContextComponent;
+    // tslint:disable-next-line:member-ordering
+    public isVisible = false;
+    // tslint:disable-next-line:member-ordering
+    public c_data = [];
+    // tslint:disable-next-line:member-ordering
+    public d_row = {};
+    // tslint:disable-next-line:member-ordering
+    public is_drag = true;
+    // tslint:disable-next-line:member-ordering
+    public tablewidth;
+    // tslint:disable-next-line:member-ordering
+    public tableheight;
+    // tslint:disable-next-line:member-ordering
+    public s_scroll; // config.scroll ? config.scroll : {}
+    // tslint:disable-next-line:member-ordering
+    public menus = [
+        [
+            {
+                icon: 'setting',
+                color: 'blue',
+                text: '设置',
+            }
+        ]
+    ];
+    public contextMenu($event: MouseEvent, template: TemplateRef<void>): void {
+        //  console.log('右键事件');
+        this.dropdown = this._dropdownService.create($event, template);
+    }
+
+    public selectMenu(btn?, group?) {
+        this.showModal();
+        this.dropdown.close();
+    }
+
+
+    public showModal(): void {
+        this.isVisible = true;
+        this.c_data = JSON.parse(JSON.stringify(this.config.columns));
+        this.is_drag = true;
+        this.s_scroll = this.config.scroll ? this.config.scroll : {};
+        // { x:'1300px',y: '240px' }
+        if (this.s_scroll['x']) {
+            this.tablewidth = this.s_scroll['x'];
+        }
+        if (this.s_scroll['y']) {
+            this.tableheight = this.s_scroll['y'];
+        }
+    }
+
+    public handleOk(): void {
+        //  console.log('Button ok clicked!');
+        this.config.columns = this.c_data;
+        this.isVisible = false;
+        // { x:'1300px',y: '240px' }
+        if (this.tablewidth) {
+            this.s_scroll['x'] = this.tablewidth;
+        }
+        if (this.tableheight) {
+            this.s_scroll['y'] = this.tableheight;
+        }
+        this.config['scroll'] = this.s_scroll ? this.s_scroll : {};
+    }
+
+    public handleCancel(): void {
+        //  console.log('Button cancel clicked!');
+        this.isVisible = false;
+    }
+
+    // 拖动行
+
+    public f_ondragstart(e?, d?) {
+        this.d_row = d;
+    }
+
+
+    public f_ondrop(e?, d?) {
+        e.preventDefault();
+        const c_config = this.c_data;
+        const index = c_config.findIndex(
+            item => item.field === this.d_row['field']
+        );
+        const tindex = c_config.findIndex(
+            item => item.field === d['field']
+        );
+        // console.log('拖放后的位置：', index, tindex);
+        this.c_data = JSON.parse(JSON.stringify(this.droparr(c_config, index, tindex)));
+        // console.log('最终数据：', this.c_data );
+    }
+
+    // index是当前元素下标，tindex是拖动到的位置下标。
+    public droparr(arr, index, tindex) {
+        // 如果当前元素在拖动目标位置的下方，先将当前元素从数组拿出，数组长度-1，我们直接给数组拖动目标位置的地方新增一个和当前元素值一样的元素，
+        // 我们再把数组之前的那个拖动的元素删除掉，所以要len+1
+        if (index > tindex) {
+            arr.splice(tindex, 0, arr[index]);
+            arr.splice(index + 1, 1);
+        } else {
+            // 如果当前元素在拖动目标位置的上方，先将当前元素从数组拿出，数组长度-1，我们直接给数组拖动目标位置+1的地方新增一个和当前元素值一样的元素，
+            // 这时，数组len不变，我们再把数组之前的那个拖动的元素删除掉，下标还是index
+            arr.splice(tindex + 1, 0, arr[index]);
+            arr.splice(index, 1);
+        }
+        return arr;
+    }
+
+
+
+    public f_ondragover(e?, d?) {
+        // 进入，就设置可以拖放进来（设置不执行默认：【默认的是不可以拖动进来】）
+        if (this.is_drag)
+            e.preventDefault();
+        // --05--设置具体效果copy
+        e.dataTransfer.dropEffect = 'copy';
+    }
+
+    // ondrag 事件在元素或者选取的文本被拖动时触发。
+    public f_drag(e?) {
+        console.log('f_drag', e);
+    }
+
+    public onblur(e?, d?) {
+        this.is_drag = true;
+    }
+    public onfocus(e?, d?) {
+        this.is_drag = false;
+    }
+
+
 }

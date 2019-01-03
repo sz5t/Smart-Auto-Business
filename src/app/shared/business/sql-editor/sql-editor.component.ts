@@ -395,6 +395,7 @@ export class SqlEditorComponent extends CnComponentBase
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
            //  console.log('getLocalData:', data);
             const selectedRow = rowdata ? rowdata : {};
+            selectedRow['ruleid'] = selectedRow['Id'];
             const tmpValue = this.tempValue ? this.tempValue : {};
             const modal = this.baseModal.create({
                 nzTitle: dialog.title,

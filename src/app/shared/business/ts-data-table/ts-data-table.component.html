@@ -5,7 +5,7 @@
     [nzFooter]="footer" [nzNoResult]="noResult" [nzLoadingDelay]="50" [nzScroll]="config.scroll ? config.scroll : {}" nzBordered>
 
     <thead (nzSortChange)="sort($event)" nzSingleSort>
-        <tr>
+        <tr (contextmenu)="contextMenu($event,contextTemplate)">
             <th *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox ? config.showCheckBox : false" [(nzChecked)]="allChecked"
                 [nzIndeterminate]="indeterminate" (nzCheckedChange)="checkAll($event)">
             </th>
@@ -79,12 +79,12 @@
                                     <span>{{!col.dataType?data[col.field]:data[col.field] | date}}</span>
                                 </div>
                                 <ng-container *ngIf="_isArray(col.editor)">
-                                       <p>调用新的简析方法,将配置简析</p>
-                                   
-                                       <cn-grid-edit *ngIf="col.editor" [searchConfigType]="'default'" [bsnData]="tempValue" [initData]="initData"
-                                       [rowData]="editCache[data.key].data" [dataSet]="null" [config]="col" [value]="{key:data.key,name:col.field,data:null,dataText:null}"
-                                       [changeConfig]="changeConfig_newSearch.hasOwnProperty(data.key) ? changeConfig_newSearch[data.key][col.field]:''"
-                                       (updateValue)="valueChange($event)"></cn-grid-edit>
+                                    <p>调用新的简析方法,将配置简析</p>
+
+                                    <cn-grid-edit *ngIf="col.editor" [searchConfigType]="'default'" [bsnData]="tempValue" [initData]="initData" [rowData]="editCache[data.key].data"
+                                        [dataSet]="null" [config]="col" [value]="{key:data.key,name:col.field,data:null,dataText:null}"
+                                        [changeConfig]="changeConfig_newSearch.hasOwnProperty(data.key) ? changeConfig_newSearch[data.key][col.field]:''"
+                                        (updateValue)="valueChange($event)"></cn-grid-edit>
 
                                 </ng-container>
                                 <ng-container *ngIf="!_isArray(col.editor)">
@@ -121,3 +121,52 @@
         未查询到任何数据...
     </ng-template>
 </nz-table>
+<ng-template #contextTemplate>
+    <!-- <cn-bsn-tree-menu [config]="menus" [dropdown]="dropdown"></cn-bsn-tree-menu> -->
+    <ul nz-menu nzInDropDown *ngFor="let group of menus">
+        <li *ngFor="let btn of group" nz-menu-item (click)="selectMenu(btn, group)">
+            <span style="padding-left:15px;padding-right:15px;">
+                <strong>
+                    <i nz-icon type="setting" theme="outline"></i> {{btn.text}}</strong>
+            </span>
+        </li>
+    </ul>
+</ng-template>
+
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="高级设置" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+        <nz-card>
+            <div nz-row>
+                <div nz-col nzSpan="12">
+                    <label>表格宽度：</label>
+                    <input [(ngModel)]="tablewidth" style="width:80px; border:none; border-bottom:1px solid #1890ff;">
+                </div>
+                <div nz-col nzSpan="12">
+                    <label>表格高度：</label>
+                    <input [(ngModel)]="tableheight" style="width:80px; border:none; border-bottom:1px solid #1890ff;">
+                </div>
+            </div>
+        </nz-card>
+        <nz-table #basicTable [nzData]="c_data" [nzFrontPagination]="false"  [nzShowPagination]="false"  [nzScroll]="{y:'400px'}" nzSize="middle">
+            <thead>
+                <tr>
+                        <th nzWidth="100px">列名称</th>
+                        <th nzWidth="100px">是否隐藏</th>
+                        <th nzWidth="100px">宽度</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of basicTable.data" [draggable]="is_drag" (dragstart)="f_ondragstart($event,data)" (dragover)="f_ondragover($event,data)"
+                    (drop)="f_ondrop($event,data)">
+                    <td>{{data.title?data.title:data.field}}</td>
+                    <td>
+                        <nz-switch [(ngModel)]="data.hidden" name="bordered"></nz-switch>
+                    </td>
+                    <td>
+                        <input draggable="false"  [(ngModel)]="data.width" (blur)="onblur($event,data)" (focus)="onfocus($event,data)"
+                            style="width:80px; border:none; border-bottom:1px solid #1890ff;">
+                    </td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </nz-modal>
