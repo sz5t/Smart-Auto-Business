@@ -6,12 +6,13 @@
 
     <thead (nzSortChange)="sort($event)" nzSingleSort>
         <tr (contextmenu)="contextMenu($event,contextTemplate)">
-            <th *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox ? config.showCheckBox : false" [(nzChecked)]="allChecked"
+            <th *ngIf="config.showCheckBox"  [nzWidth]="'10px'" [nzShowCheckbox]="config.showCheckBox ? config.showCheckBox : false" [(nzChecked)]="allChecked"
                 [nzIndeterminate]="indeterminate" (nzCheckedChange)="checkAll($event)">
             </th>
             <ng-template ngFor let-col [ngForOf]="config.columns">
                 <th [nzWidth]="col.width" [nzShowSort]="col.showSort" [nzShowFilter]="col.showFilter" *ngIf="!col.hidden" [nzSortKey]="col.field"
-                    [ngClass]="[col.titleAlign ? col.titleAlign : '']">
+                    [ngClass]="[col.titleAlign ? col.titleAlign : '']"
+                     (mousedown)="th_onmousedown($event)" (mouseup)="th_onmouseup($event)" (mousemove)="th_onmousemove($event,col)">
                     <!--  [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" (nzFilterChange)="columnFilter(col.editor.field, $event)" -->
                     <span>{{col.title}}</span>
                 </th>
@@ -149,8 +150,10 @@
         </nz-card>
         <nz-table #basicTable [nzData]="c_data" [nzFrontPagination]="false"  [nzShowPagination]="false"  [nzScroll]="{y:'400px'}" nzSize="middle">
             <thead>
-                <tr>
-                        <th nzWidth="100px">列名称</th>
+                <tr #bt>
+                        <th nzWidth="100px" >
+                            列名称
+                        </th>
                         <th nzWidth="100px">是否隐藏</th>
                         <th nzWidth="100px">宽度</th>
                 </tr>

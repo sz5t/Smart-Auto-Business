@@ -87,12 +87,12 @@
                                             <input nz-input name="id" type="text" id="id" [(ngModel)]="edgeinfo.id" readonly="readonly">
                                         </nz-form-control>
                                     </nz-form-item>
-                                    <!--   <nz-form-item>
-                                      <nz-form-label [nzSpan]="7" nzFor="label">名称：</nz-form-label>
-                                      <nz-form-control [nzSpan]="16">
-                                          <input nz-input name="label" type="text" id="label"  [(ngModel)]="edgeinfo.label" (ngModelChange)="edgevalueChange()" >
-                                      </nz-form-control>
-                                  </nz-form-item> -->
+                                    <nz-form-item>
+                                        <nz-form-label [nzSpan]="7" nzFor="label">名称：</nz-form-label>
+                                        <nz-form-control [nzSpan]="16">
+                                            <input nz-input name="label" type="text" id="label" [(ngModel)]="edgeinfo.label" (ngModelChange)="edgevalueChange()">
+                                        </nz-form-control>
+                                    </nz-form-item>
                                 </form>
                             </nz-collapse-panel>
                             <nz-collapse-panel [nzHeader]="edge_panels[1].name" [nzActive]="edge_panels[1].active" [nzDisabled]="edge_panels[1].disabled">

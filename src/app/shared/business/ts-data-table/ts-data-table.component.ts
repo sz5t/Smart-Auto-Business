@@ -3939,5 +3939,69 @@ export class TsDataTableComponent extends CnComponentBase
     }
 
 
+
+    // tslint:disable-next-line:member-ordering
+    public tTD; // 用来存储当前更改宽度的Table Cell,避免快速移动鼠标的问题
+    // tslint:disable-next-line:member-ordering
+    @ViewChild('bt') public bt: ElementRef;
+
+    /**
+     * th_onmousedown
+     */
+    public th_onmousedown(event?) {
+        console.log('th_onmousedown');
+        this.tTD = event.target;
+        if (event.offsetX > this.tTD.offsetWidth - 10) {
+            this.tTD.mouseDown = true;
+            this.tTD.oldX = event.x;
+            this.tTD.oldWidth = this.tTD.offsetWidth;
+        }
+        console.log('3959', this.tTD.mouseDown);
+    }
+
+    /**
+     * th_onmouseup
+     */
+    public th_onmouseup(event?) {
+        console.log('th_onmouseup');
+        if (this.tTD === undefined) {
+            this.tTD = event.target;
+        }
+        this.tTD.mouseDown = false;
+        this.tTD.style.cursor = 'default';
+    }
+
+    /**
+     * th_onmousemove
+     */
+    public th_onmousemove(event?, col?) {
+        // console.log('th_onmousemove');
+        // 更改鼠标样式 
+        if (event.offsetX > event.target.offsetWidth - 10) {
+            event.target.style.cursor = 'col-resize';
+        } else {
+            event.target.style.cursor = 'default';
+        }
+
+        // 取出暂存的Table Cell 
+        if (this.tTD === undefined) {
+            this.tTD = event.target;
+        }
+        console.log('3988', this.tTD.mouseDown);
+        // 调整宽度 
+        if (this.tTD.mouseDown != null && this.tTD.mouseDown === true) {
+            this.tTD.style.cursor = 'default';
+            console.log('原来宽度', this.tTD.oldWidth, col.width);
+            if (this.tTD.oldWidth + (event.x - this.tTD.oldX) > 0)
+                this.tTD.width = this.tTD.oldWidth + (event.x - this.tTD.oldX);
+            // 调整列宽 
+            this.tTD.style.width = this.tTD.width;
+            this.tTD.style.cursor = 'col-resize';
+            col.width = this.tTD.width + 'px';
+            console.log('移动的宽度', this.tTD.width, col.width);
+
+        }
+    }
+
 }
 

@@ -91,6 +91,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
         targetAnchor: 0,
         id: '7989ac70',
         index: 4,
+        label: 'ddd'
       },
       {
         source: 'ea1184e7',
@@ -99,6 +100,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
         targetAnchor: 0,
         id: '7989ac71',
         index: 5,
+        label: 'ddd'
       },
       {
         source: 'ea1184e6',
@@ -107,6 +109,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
         targetAnchor: 0,
         id: '7989ac72',
         index: 6,
+        label: 'ddd'
       }
     ],
   };
@@ -283,6 +286,9 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     this.page.read(this.data);
 
     const graph = this.page.getGraph();
+    graph.edge({
+      shape: 'flow-polyline-round'
+    });
     graph.on('click', ev => {
       console.log('click');
     });          // 任意点击事件
@@ -292,15 +298,15 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
         const s_data = this.page.save();
         this.data.edges = s_data.edges;
 
-        // s_data.nodes.forEach(nodeItem => {
+        // s_data.edges.forEach(nodeItem => {
         //   let nodeState = false;
-        //   this.data.nodes.forEach(n => {
+        //   this.data.edges.forEach(n => {
         //     if (n.id === nodeItem.id) {
         //       nodeState = true;
         //     }
         //   });
         //   if (!nodeState) {
-        //     this.data.nodes.push(nodeItem);
+        //     this.data.edges.push(nodeItem);
         //   }
         // });
 
@@ -425,6 +431,15 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     graph.on('edge:click', ev => {
       // console.log('edge:click', ev);
       if (ev.item) {
+        // console.log('edge:ev.item:', ev.item);
+        // ev.item.model['label'] = 'bian';
+        // ev.item.model['label'] = {   // 文本标签 || 文本图形配置
+        //   text: '文本标签',
+        //   fill: 'green'
+        // };
+        // ev.item.model['labelRectStyle'] = {      // 文本矩形底的样式
+        //   fill: 'blue'
+        // };
         const s_data = this.page.save();
         this.data.edges = s_data.edges;
 
@@ -444,6 +459,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
         this.data.edges.forEach(n => {
           if (n.id === ev.item.model.id) {
             this.edgeinfo.id = n.id;
+            this.edgeinfo.label = n.label;
             nodestate = false;
           }
         });
@@ -453,10 +469,74 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
           this.data.edges.forEach(n => {
             if (n.id === ev.item.model.id) {
               this.edgeinfo.id = n.id;
+              this.edgeinfo.label = n.label;
             }
           });
         }
       }
+      // *******************************
+      // 点击中节点发出消息
+      let sendData = {};
+      let nodeData = {};
+      this.data.edges.forEach(n => {
+        if (n.id === ev.item.model.id) {
+          sendData = n;
+          nodeData = n;
+        }
+      });
+      console.log('*******************');
+      console.log('选中边发出消息：', sendData);
+      if (this.config.cascadeRelation) {
+        this.config.cascadeRelation.forEach(element => {
+          if (element.name === 'node') {
+            if (element.cascadeField) {
+              element.cascadeField.forEach(feild => {
+                if (!feild['type']) {
+                  if (nodeData[feild.valueName]) {
+                    sendData[feild.name] = nodeData[feild.valueName];
+                  }
+                } else {
+                  if (feild['type'] === 'selectObject') {
+                    if (nodeData[feild.valueName]) {
+                      sendData[feild.name] = nodeData[feild.valueName];
+                    }
+                  } else if (feild['type'] === 'tempValueObject') {
+
+                    sendData[feild.name] = this.tempValue;
+
+                  } else if (feild['type'] === 'tempValue') {
+                    if (this.tempValue[feild.valueName]) {
+                      sendData[feild.name] = this.tempValue[feild.valueName];
+                    }
+                  } else if (feild['type'] === 'initValueObject') {
+
+                    sendData[feild.name] = this.initValue;
+
+                  } else if (feild['type'] === 'initValue') {
+                    if (this.initValue[feild.valueName]) {
+                      sendData[feild.name] = this.initValue[feild.valueName];
+                    }
+                  } else if (feild['type'] === 'value') {
+                    sendData[feild.name] = feild.value;
+                  }
+
+                }
+
+              });
+            }
+            this.cascade.next(
+              new BsnComponentMessage(
+                BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],
+                this.config.viewId,
+                {
+                  data: sendData
+                }
+              )
+            );
+          }
+        });
+      }
+      // *******************************
       // console.log('当前边节点数据', this.data);
     });     // 边点击事件
     graph.on('group:click', ev => {
@@ -525,16 +605,17 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
         n.label = this.nodeinfo.label;
       }
     });
+
     this.page.read(this.data);
   }
   // 看以后是否维护边信息
   public edgevalueChange() {
-    //   this.data.edges.forEach(n => {
-    //     if (n.id === this.edgeinfo.id ) {
-    //      //  n.label = this.edgeinfo.label;
-    //     }
-    //  });
-    //  this.page.read(this.data);
+    this.data.edges.forEach(n => {
+      if (n.id === this.edgeinfo.id) {
+        n.label = this.edgeinfo.label;
+      }
+    });
+    this.page.read(this.data);
   }
 
   public getNodeType(label) {
