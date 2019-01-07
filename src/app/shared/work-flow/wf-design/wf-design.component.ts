@@ -600,22 +600,24 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
   }
 
   public valueChange() {
-    this.data.nodes.forEach(n => {
+    const s_data = this.page.save();
+    s_data.nodes.forEach(n => {
       if (n.id === this.nodeinfo.id) {
         n.label = this.nodeinfo.label;
       }
     });
 
-    this.page.read(this.data);
+    this.page.read(s_data);
   }
   // 看以后是否维护边信息
   public edgevalueChange() {
-    this.data.edges.forEach(n => {
+    const s_data = this.page.save();
+    s_data.edges.forEach(n => {
       if (n.id === this.edgeinfo.id) {
         n.label = this.edgeinfo.label;
       }
     });
-    this.page.read(this.data);
+    this.page.read(s_data);
   }
 
   public getNodeType(label) {

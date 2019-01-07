@@ -2771,11 +2771,32 @@ export class BsnTableComponent extends CnComponentBase
      * @param format
      * @returns {string}
      */
-    public setCellFont(value, format) {
+    public setCellFont(value, format, row) {
         let fontColor = '';
         if (format) {
             format.map(color => {
-                if (color.value === value) {
+                if (color.caseValue) {
+                    const reg1 = new RegExp(color.caseValue.regular);
+                    let regularData;
+                    if (color.caseValue.type) {
+                        if (color.caseValue.type === 'row') {
+                            if (row) {
+                                regularData = row[color.caseValue['valueName']];
+                            } else {
+                                regularData = value;
+                            }
+                        } else {
+                            regularData = value;
+                        }
+                    } else {
+                        regularData = value;
+                    }
+                    const regularflag = reg1.test(regularData);
+                   // console.log(color.caseValue.regular,regularData,regularflag,color);
+                    if (regularflag) {
+                        fontColor = color.fontcolor;
+                    }
+                } else if (color.value === value) {
                     fontColor = color.fontcolor;
                 }
             });

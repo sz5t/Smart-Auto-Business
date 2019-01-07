@@ -35,6 +35,7 @@ import { Subscription } from 'rxjs';
 import { BsnUploadComponent } from '@shared/business/bsn-upload/bsn-upload.component';
 import { CnFormWindowResolverComponent } from '@shared/resolver/form-resolver/form-window-resolver.component';
 import { BeforeOperation } from '../before-operation.base';
+import { isArray } from 'util';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: CnFormWindowResolverComponent,
@@ -190,6 +191,10 @@ export class TsDataTableComponent extends CnComponentBase
                 }
             }
         }
+        // liu 测试动态表格
+        if (this.config.columnsAjax) {
+            this.loadDynamicColumns();
+        }
         this.resolverRelation();
         if (this.initData) {
             this.initValue = this.initData;
@@ -250,6 +255,10 @@ export class TsDataTableComponent extends CnComponentBase
         this.pageSize = this.config.pageSize
             ? this.config.pageSize
             : this.pageSize;
+
+
+
+
     }
 
     public ngAfterViewInit() {
@@ -2922,11 +2931,32 @@ export class TsDataTableComponent extends CnComponentBase
      * @param format
      * @returns {string}
      */
-    public setCellFont(value, format) {
+    public setCellFont(value, format, row) {
         let fontColor = '';
         if (format) {
             format.map(color => {
-                if (color.value === value) {
+                if (color.caseValue) {
+                    const reg1 = new RegExp(color.caseValue.regular);
+                    let regularData;
+                    if (color.caseValue.type) {
+                        if (color.caseValue.type === 'row') {
+                            if (row) {
+                                regularData = row[color.caseValue['valueName']];
+                            } else {
+                                regularData = value;
+                            }
+                        } else {
+                            regularData = value;
+                        }
+                    } else {
+                        regularData = value;
+                    }
+                    const regularflag = reg1.test(regularData);
+                    // console.log(color.caseValue.regular,regularData,regularflag,color);
+                    if (regularflag) {
+                        fontColor = color.fontcolor;
+                    }
+                } else if (color.value === value) {
                     fontColor = color.fontcolor;
                 }
             });
@@ -2934,6 +2964,14 @@ export class TsDataTableComponent extends CnComponentBase
 
         return fontColor;
     }
+    // "formatter": [
+    //     {
+    //         caseValue: { type: "selectValue", valueName: "value", regular: "^1$" }, // 哪个字段的值触发，正则表达 type：selectValue （当前值） selectObjectValue（当前选中对象）  
+    //         "value": "起草",
+    //         "bgcolor": "",
+    //         "fontcolor": "text-blue",
+    //         "valueas": "起草"
+    //     },
 
     private async _load(url, params) {
         return this._http.get(url, params).toPromise();
@@ -3545,6 +3583,41 @@ export class TsDataTableComponent extends CnComponentBase
         // 问题：需要有新的行状态，当前行是不能有其他操作
         //           当有新增或者其他对行有影响的操作，则不允许取补充行信息（多选取值）
         //  注意：删除后的补充，新增前的计算，如果有补充行，则先删除一行
+        columnsAjax: {
+            'url': 'common/guagedaterecord',
+            'ajaxType': 'get',
+            'params': [
+                {
+                    'name': 'bid',
+                    'type': 'initValue',
+                    'valueName': 'Id'
+                }
+            ]
+        },
+        columnsConfig: [
+            { 'name': 'title', 'feild': '' },
+            { 'name': 'field', 'feild': '' },
+            { 'name': 'width', 'feild': '' },
+            { 'name': 'hidden', 'feild': '' },
+            { 'name': 'isEdit', 'feild': '' },
+            { 'name': 'editType', 'feild': '' },
+            { 'name': 'editConfig', 'feild': '' },
+            { 'name': 'sort', 'feild': '' }
+        ],
+        defaultcolumns: [
+            {
+                'title': '序号',
+                'field': '_serilize',
+                'width': '20%',
+                'hidden': false
+            },
+            {
+                'title': 'ID',
+                'field': 'Id',
+                'width': '20%',
+                'hidden': false
+            }
+        ],
         columns: [
             {
                 title: 'Id',
@@ -4002,6 +4075,156 @@ export class TsDataTableComponent extends CnComponentBase
 
         }
     }
+
+    // [
+    //     {
+    //      name:'列属性',
+    //      feild:'属性取值字段'，
+    //      是否显示，
+    //      是否编辑，
+    //      编辑组件类别【input、number、datetime、select(目前只支持静态)】
+    //    }
+    //  ]
+    // tslint:disable-next-line:member-ordering
+    public fieldConfig = [
+        {
+            name: '',
+            title: '温度',
+            field: 'value001',
+            width: '100',
+            hidden: false,
+            isEdit: true,
+            editType: 'input',
+            sort: 1
+        },
+        {
+            name: '',
+            title: '湿度',
+            field: 'value002',
+            width: '100',
+            hidden: false,
+            isEdit: true,
+            editType: 'input',
+            sort: 2
+        }
+    ];
+
+    // tslint:disable-next-line:member-ordering
+    public defaultcolumns =
+        [
+            {
+                'title': '序号',
+                'field': '_serilize',
+                'width': '20%',
+                'hidden': false
+            },
+            {
+                'title': 'ID',
+                'field': 'Id',
+                'width': '20%',
+                'hidden': false
+            },
+        ];
+    /**
+     * setFieldBycou
+     */
+    public setFieldByColumns(fieldConfig?) {
+        const cf_config = [];
+        fieldConfig.forEach(f => {
+            const cf = {};
+            cf['title'] = f.title;
+            cf['field'] = f.field;
+            cf['width'] = f.width;
+            cf['hidden'] = f.hidden;
+            if (f.isEdit) {
+                cf['editor'] = this.setEditConfig(f);
+            }
+            cf_config.push(cf);
+        });
+        console.log('动态表格的列', cf_config)
+        return cf_config;
+    }
+
+    /**
+     * setEditConfig
+     */
+    public setEditConfig(d?) {
+        let c;
+        if (d.editType === 'input') {
+            c = {
+                'type': 'input',
+                'field': d.field,
+                'options': {
+                    'type': 'input',
+                    'inputType': 'text'
+                }
+            }
+        } else if (d.editType === 'select') {
+            // 无法实现动态数据源，这部分信息只能由视图补充
+            c = {
+                'type': 'select',
+                'field': d.field,
+                'options': {
+                    'type': 'select',
+                    'inputType': 'text'
+                }
+            }
+        }
+        return c;
+
+    }
+    // editor 分两部分，以视图信息为主，缺省值则由内置配置自动补齐
+
+    /**
+     * mergedColumns 合并列【默认列+异步生成列】 重复异步覆盖默认列
+     */
+    public mergedColumns(fieldConfig?) {
+        const dynamicColumns = this.setFieldByColumns(fieldConfig);
+        const dynamicdefaultcolumns = [];
+        this.config.defaultcolumns.forEach(c => {
+            const index = dynamicColumns.findIndex(item => item.feild === c.field);
+            if (index > -1) {
+                // 动态列重复，覆盖默认列
+            } else {
+                dynamicdefaultcolumns.push(c);
+            }
+        });
+
+        const columns = [...dynamicdefaultcolumns, ...dynamicColumns];
+        console.log('最终生成列', columns);
+        return columns;
+    }
+
+    public async loadDynamicColumns() {
+        const url = this._buildURL(this.config.columnsAjax.url);
+        const params = {
+            ...this._buildParameters(this.config.columnsAjax.params)
+            // ...selectparams
+        };
+        const loadColumns = [];
+        const loadData = await this.get(url, params);
+        if (loadData && loadData.status === 200 && loadData.isSuccess) {
+            if (loadData.data) {
+                console.log('异步请求列信息', loadData.data);
+                if (loadData.data.length > 0) {
+                    if (loadData.data.length < 50) { // 异常处理，超过50个
+                        loadData.data.forEach(element => {
+                            const column = {};
+                            this.config.columnsConfig.forEach(cc => {
+                                column[cc.name] = element[cc.feild];
+                            });
+                            loadColumns.push(column);
+                        });
+                    }
+                }
+            }
+        }
+        const Columns = this.mergedColumns(loadColumns);
+        this.config.columns = Columns; 
+    }
+
+
+
 
 }
 

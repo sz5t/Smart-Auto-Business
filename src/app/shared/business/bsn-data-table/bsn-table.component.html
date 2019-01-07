@@ -27,7 +27,7 @@
                     <ng-template ngFor let-col [ngForOf]="config.columns">
                         <td *ngIf="!col.hidden">
                             <ng-container *ngIf="col.editor || col.searcheditor">
-                                <div *ngIf="!editCache[data.key]['edit']" [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'',col.fieldAlign ? col.fieldAlign : '']">
+                                <div *ngIf="!editCache[data.key]['edit']" [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter,data):'',col.fieldAlign ? col.fieldAlign : '']">
                                     <span>{{!col.dataType?data[col.field]:data[col.field] | date}}
                                     </span>
                                 </div>
@@ -75,7 +75,7 @@
                     <ng-template ngFor let-col [ngForOf]="config.columns">
                         <td *ngIf="!col.hidden">
                             <ng-container *ngIf="col.editor">
-                                <div *ngIf="!editCache[data.key]['edit']" [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'',col.fieldAlign ? col.fieldAlign : '']">
+                                <div *ngIf="!editCache[data.key]['edit']" [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter,data):'',col.fieldAlign ? col.fieldAlign : '']">
                                     <span>{{!col.dataType?data[col.field]:data[col.field] | date}}</span>
                                 </div>
                                 <ng-container [bsnData]="tempValue" [initData]="initData" [rowData]="editCache[data.key].data" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
@@ -85,7 +85,7 @@
                                 </ng-container>
                             </ng-container>
                             <ng-container *ngIf="!col.editor">
-                                <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'']">{{data[col.field]}}</span>
+                                <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter,data):'']">{{data[col.field]}}</span>
                             </ng-container>
 
                         </td>
