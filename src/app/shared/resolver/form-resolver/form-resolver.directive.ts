@@ -36,6 +36,7 @@ import { CnFormSelectTreegridComponent } from '@shared/components/cn-form-select
 import { CnFormScancodeComponent } from '@shared/components/cn-form-scancode/cn-form-scancode.component';
 import { CnFormGridComponent } from '@shared/components/cn-form-grid/cn-form-grid.component';
 import { CnFormSelectGridMultipleComponent } from '@shared/components/cn-form-select-grid-multiple/cn-form-select-grid-multiple.component';
+import { CnFormSelectCustomComponent } from '@shared/components/cn-form-select-custom/cn-form-select-custom.component';
 
 const components: { [type: string]: Type<any> } = {
     input: CnFormInputComponent,
@@ -61,7 +62,8 @@ const components: { [type: string]: Type<any> } = {
     weekPicker: CnWeekPickerComponent,
     scanCode: CnFormScancodeComponent,
     datagrid: CnFormGridComponent,
-    selectGridMultiple: CnFormSelectGridMultipleComponent
+    selectGridMultiple: CnFormSelectGridMultipleComponent,
+    selectCustom: CnFormSelectCustomComponent
 };
 @Directive({
     selector: '[cnFormResolverDirective]'

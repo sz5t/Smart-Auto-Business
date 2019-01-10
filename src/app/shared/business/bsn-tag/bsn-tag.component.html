@@ -1,0 +1,5 @@
+
+<nz-tag *ngFor="let tag of tags; let i = index;" [nzColor]="'blue'"  [nzMode]="'closeable'" (nzAfterClose)="handleClose(tag)">
+  {{ sliceTagName(tag) }}
+</nz-tag>
+<hr>

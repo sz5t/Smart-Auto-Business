@@ -104,6 +104,9 @@ import { CnGridSelectGridMultipleComponent } from './components/cn-grid-select-g
 import { TsDataTableComponent } from './business/ts-data-table/ts-data-table.component';
 import { CnGridSelectMultipleComponent } from '@shared/components/cn-grid-select-multiple/cn-grid-select-multiple.component';
 import { CnGridEditComponent } from './components/cn-grid-edit/cn-grid-edit.component';
+import { BsnTagComponent } from './business/bsn-tag/bsn-tag.component';
+import { CnFormSelectCustomComponent } from './components/cn-form-select-custom/cn-form-select-custom.component';
+import { CnGridSelectCustomComponent } from './components/cn-grid-select-custom/cn-grid-select-custom.component';
 
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -199,7 +202,11 @@ const COMPONENTS = [
     CnFormSelectGridMultipleComponent,
     CnGridSelectGridMultipleComponent,
     TsDataTableComponent,
-    CnGridSelectMultipleComponent
+    CnGridSelectMultipleComponent,
+    CnGridEditComponent,
+    BsnTagComponent,
+    CnFormSelectCustomComponent,
+    CnGridSelectCustomComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
@@ -227,8 +234,7 @@ const DIRECTIVES = [
         // your components
         ...COMPONENTS,
         ...DIRECTIVES,
-        BtnTableFieldLimit,
-        CnGridEditComponent
+        BtnTableFieldLimit
     ],
     exports: [
         CommonModule,

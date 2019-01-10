@@ -122,7 +122,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     public initData;
     @Input()
     public permissions = [];
-    @ViewChild('treeObj') 
+    @ViewChild('treeObj')
     private treeObj: NzTreeComponent;
     public treeData: NzTreeNodeOptions[];
     public _relativeResolver;
@@ -135,6 +135,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     public _checkItemList = [];
     public dropdown: NzDropdownContextComponent;
     public _selectedNode = {};
+    public is_Selectgrid = true;
     private isLoading = false;
     @Output() public updateValue = new EventEmitter();
     constructor(
@@ -161,6 +162,10 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
         this.cacheValue = this._cacheService ? this._cacheService : {};
         this.permission = this.permissions ? this.permissions : [];
         this.callback = this.load;
+        // liu 20190110
+        if (this.config.isSelectGrid) {
+            this.is_Selectgrid = false;
+        }
         this.resolverRelation();
         if (this.config.componentType) {
             if (this.config.componentType.parent === true) {
@@ -316,7 +321,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                                 // 获取当前设置的级联的模式
                                 const mode =
                                     BSN_COMPONENT_CASCADE_MODES[
-                                        relation.cascadeMode
+                                    relation.cascadeMode
                                     ];
                                 // 获取传递的消息数据
                                 const option = cascadeEvent.option;
@@ -364,7 +369,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     }
 
     public loadTreeData() {
-       
+
         (async () => {
             this.isLoading = true;
             const data = await this.getTreeData();
@@ -393,10 +398,10 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                         //             this._toTreeBefore[i][m.name] === m.value
                         //         ) {
                         //             if (this._toTreeBefore[i]['parentId'] !== null) {
-                                        
+
                         //             }
                         //             this._toTreeBefore[i]['checked'] = true;
-                                    
+
                         //         }
                         //     });
                         // }
@@ -472,7 +477,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                                         if (
                                             level ===
                                             defaultSelection[
-                                                defaultSelection.length - 1
+                                            defaultSelection.length - 1
                                             ]['level']
                                         ) {
                                             allData['selected'] = true;
@@ -495,9 +500,9 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                     this.treeData = d;
                     // 发送消息
                     if (
-                        this.config.componentType 
-                        && this.config.componentType.parent === true 
-                        && this.treeData 
+                        this.config.componentType
+                        && this.config.componentType.parent === true
+                        && this.treeData
                         && this.treeData.length > 0
                     ) {
                         // console.log('send cascade data')
@@ -513,9 +518,9 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                             );
                     }
                     if (
-                        this.config.componentType 
-                        && this.config.componentType.sub === true 
-                        && this.treeData 
+                        this.config.componentType
+                        && this.config.componentType.sub === true
+                        && this.treeData
                         && this.treeData.length > 0
                     ) {
                         // console.log('send tree sub', this.initValue);
@@ -566,10 +571,10 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                     }
                 } else {
                     this.treeData = [{
-                        title   : '未添加任何节点数据',
-                        key     : '-1',
-                        expanded : false
-                      }];
+                        title: '未添加任何节点数据',
+                        key: '-1',
+                        expanded: false
+                    }];
                 }
             }
             this.isLoading = false;
@@ -677,10 +682,10 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                                     d[m.name] === m.value
                                 ) {
                                     if (d['parentId'] !== null) {
-                                        
+
                                     }
                                     d['checked'] = true;
-                                    
+
                                 }
                             });
                         }
@@ -764,9 +769,11 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
             ...this._toTreeBefore.find(n => n.key === e.node.key)
         };
         this.selectedItem = this.tempValue['_selectedNode'];
-       
+
         // liu 20181210
-        this.updateValue.emit( this.selectedItem);
+        if (!this.is_Selectgrid) {
+            this.updateValue.emit(this.selectedItem);
+        }
     };
 
     public checkboxChange = e => {
@@ -841,7 +848,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                     this._executeAction(ajaxConfigObj, handleData);
                 }
             },
-            nzOnCancel() {}
+            nzOnCancel() { }
         });
     }
 
@@ -911,18 +918,18 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
             treeNode.children.forEach(d => {
                 list = list.concat(this._getCheckedNodesFromParent(d));
             });
-        } 
-        list.push(treeNode); 
+        }
+        list.push(treeNode);
         return list;
     }
 
 
     private _getCheckedNodes() {
-        
+
         let checkedNodes = [];
         const currentNodes = [...this.treeObj.getCheckedNodeList()];
         currentNodes.forEach(node => {
-           checkedNodes = checkedNodes.concat([...this._getCheckedNodesFromParent(node)]);
+            checkedNodes = checkedNodes.concat([...this._getCheckedNodesFromParent(node)]);
         });
         checkedNodes.push(...this.treeObj.getHalfCheckedNodeList());
 
@@ -934,9 +941,9 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
         const checkedIds = [];
         const checkedNodes = this._getCheckedNodes();
         if (checkedNodes && checkedNodes.length > 0) {
-           checkedNodes.forEach(node => {
-               checkedIds.push(node.key);
-           })
+            checkedNodes.forEach(node => {
+                checkedIds.push(node.key);
+            })
         }
         this.tempValue['_checkedIds'] = checkedIds.join(',');
         return checkedIds.join(',');

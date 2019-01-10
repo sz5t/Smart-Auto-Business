@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
 
 @Component({
     selector: "cn-layout-resolver",
@@ -22,8 +22,17 @@ export class LayoutResolverComponent implements OnInit {
     initData;
     @Input()
     tempValue;
+    @Output()
+    public updateValue = new EventEmitter();
+    public value;
     constructor() {}
 
     ngOnInit() {
+    }
+
+    public valueChange(data?) {
+       this.value = data;
+        console.log('布局信息返回');
+
     }
 }

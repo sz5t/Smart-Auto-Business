@@ -570,34 +570,34 @@ export class BsnTableComponent extends CnComponentBase
         return selectrowdata;
     }
 
-        // liu 20181212 获取 文本值，当前选中多行数据 返回的是数据集
-        public async loadByselectMultiple(
-            ajaxConfig,
-            componentValue?,
-            selecttempValue?,
-            cascadeValue?
-        ) {
-            const url = this._buildURL(ajaxConfig.url);
-            const params = {
-                ...this._buildParametersByselect(
-                    ajaxConfig.params,
-                    componentValue,
-                    selecttempValue,
-                    cascadeValue
-                )
-            };
-            let selectrowdata = [];
-            const loadData = await this._load(url, params);
-            if (loadData && loadData.status === 200 && loadData.isSuccess) {
-                if (loadData.data) {
-                    if (loadData.data.length > 0) {
-                        selectrowdata = loadData.data;
-                    }
+    // liu 20181212 获取 文本值，当前选中多行数据 返回的是数据集
+    public async loadByselectMultiple(
+        ajaxConfig,
+        componentValue?,
+        selecttempValue?,
+        cascadeValue?
+    ) {
+        const url = this._buildURL(ajaxConfig.url);
+        const params = {
+            ...this._buildParametersByselect(
+                ajaxConfig.params,
+                componentValue,
+                selecttempValue,
+                cascadeValue
+            )
+        };
+        let selectrowdata = [];
+        const loadData = await this._load(url, params);
+        if (loadData && loadData.status === 200 && loadData.isSuccess) {
+            if (loadData.data) {
+                if (loadData.data.length > 0) {
+                    selectrowdata = loadData.data;
                 }
             }
-            console.log('异步获取当前值集合[]:', selectrowdata);
-            return selectrowdata;
         }
+        console.log('异步获取当前值集合[]:', selectrowdata);
+        return selectrowdata;
+    }
     // 构建获取文本值参数
     private _buildParametersByselect(
         paramsConfig,
@@ -2175,10 +2175,11 @@ export class BsnTableComponent extends CnComponentBase
                     ? this.config.selectGridValueName
                     : 'Id'
             ];
+            console.log(' this.updateValue.emit(this._selectRow)', this._selectRow);
+            // liu 20181210
+            this.updateValue.emit(this._selectRow);
         }
 
-        // liu 20181210
-        this.updateValue.emit(this._selectRow);
     }
 
     // liu 赋值选中
@@ -2188,15 +2189,18 @@ export class BsnTableComponent extends CnComponentBase
         if (rowValue) {
             r_value = rowValue;
         }
-        this.dataList &&
-            this.dataList.map(row => {
-                row.selected = false;
+        if (r_value) {
+            this.dataList &&
+                this.dataList.map(row => {
+                    row.selected = false;
+                });
+            this.dataList.forEach(row => {
+                if (row[this.selectGridValueName] === r_value) {
+                    row.selected = true;
+                }
             });
-        this.dataList.forEach(row => {
-            if (row[this.selectGridValueName] === r_value) {
-                row.selected = true;
-            }
-        });
+        }
+
     }
     // 取消选中行 liu20181023
     private cancelSelectRow() {
@@ -2792,7 +2796,7 @@ export class BsnTableComponent extends CnComponentBase
                         regularData = value;
                     }
                     const regularflag = reg1.test(regularData);
-                   // console.log(color.caseValue.regular,regularData,regularflag,color);
+                    // console.log(color.caseValue.regular,regularData,regularflag,color);
                     if (regularflag) {
                         fontColor = color.fontcolor;
                     }
@@ -3398,7 +3402,7 @@ export class BsnTableComponent extends CnComponentBase
     }
 
 
-// 【表格高级设置】
+    // 【表格高级设置】
     // tslint:disable-next-line:member-ordering
     public dropdown; // NzDropdownContextComponent;
     // tslint:disable-next-line:member-ordering

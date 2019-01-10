@@ -257,6 +257,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     });
     const itempannel = new Editor.Itempannel({
       container: this.itempannel.nativeElement,
+      // width: 100
     });
     const detailpannel = new Editor.Detailpannel({
       container: this.detailpannel.nativeElement,
@@ -586,16 +587,20 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
 
   // 获取组件值
   public getComponentValue() {
-    const s_data = this.page.save();
-    s_data.nodes.forEach(n => {
-      if (!n.hasOwnProperty('nodetype')) {
-        n['nodetype'] = this.getNodeType(n.label);
-      }
-    });
     const submitData = {};
-    submitData['configjson'] = JSON.stringify(s_data);
-    submitData['nodejson'] = JSON.stringify(s_data.nodes);
-    submitData['edgejson'] = JSON.stringify(s_data.edges);
+    if (this.page) {
+      const s_data = this.page.save();
+      s_data.nodes.forEach(n => {
+        if (!n.hasOwnProperty('nodetype')) {
+          n['nodetype'] = this.getNodeType(n.label);
+        }
+      });
+
+      submitData['configjson'] = JSON.stringify(s_data);
+      submitData['nodejson'] = JSON.stringify(s_data.nodes);
+      submitData['edgejson'] = JSON.stringify(s_data.edges);
+    }
+
     return submitData;
   }
 

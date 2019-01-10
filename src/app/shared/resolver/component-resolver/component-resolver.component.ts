@@ -18,7 +18,9 @@ import {
     Type,
     ViewChild,
     ViewContainerRef,
-    ViewEncapsulation
+    ViewEncapsulation,
+    Output,
+    EventEmitter
 } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { BsnDataTableComponent } from '@shared/business/bsn-data-table/bsn-data-table.component';
@@ -34,6 +36,7 @@ import { WfDesignComponent } from '@shared/work-flow/wf-design/wf-design.compone
 import { BsnCarouselComponent } from '@shared/business/bsn-carousel/bsn-carousel';
 import { BsnAsyncTreeTableComponent } from '@shared/business/bsn-treeTable/bsn-treeTable.component';
 import { TsDataTableComponent } from '@shared/business/ts-data-table/ts-data-table.component';
+import { WfDashboardComponent } from '@shared/work-flow/wf-dashboard/wf-dashboard.component';
 const components: { [type: string]: Type<any> } = {
     code_edit: CnCodeEditComponent,
     bsnTable: BsnTableComponent,
@@ -51,6 +54,7 @@ const components: { [type: string]: Type<any> } = {
     bsnTransfer: BsnTransferComponent,
     dataSteps: BsnDataStepComponent,
     wf_design: WfDesignComponent,
+    wf_dashboard: WfDashboardComponent,
     bsnCarousel: BsnCarouselComponent,
     bsnCardList: BsnCardListComponent,
     bsnToolbar: BsnToolbarComponent,
@@ -79,6 +83,8 @@ export class ComponentResolverComponent
     public initData;
     @Input()
     public editable = true;
+    @Output()
+    public updateValue = new EventEmitter();
     public componentRef: ComponentRef<any>;
     @ViewChild('dynamicComponent', { read: ViewContainerRef })
     public container: ViewContainerRef;
@@ -132,8 +138,15 @@ export class ComponentResolverComponent
 
             this.componentRef.instance.layoutId = this.layoutId;
             this.componentRef.instance.blockId = this.blockId;
+            this.componentRef.instance.updateValue.subscribe(event => {
+                this.setValue(event);
+            });
         }
     }
+    public setValue(data?) {
+        this.updateValue.emit(data);
+    }
+
     public ngOnDestroy() {
         this.componentRef.destroy();
     }

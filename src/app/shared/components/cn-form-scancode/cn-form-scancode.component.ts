@@ -48,14 +48,14 @@ export class CnFormScancodeComponent implements OnInit {
         @Inject(BSN_COMPONENT_CASCADE)
         private cascadeEvents: Observable<BsnComponentMessage>,
         private apiService: ApiService
-    ) {}
+    ) { }
 
-    ngOnInit() {}
+    ngOnInit() { }
     isScan = true;
     oldvalue = null;
     async onKeyPress(e) {
         // console.log('onKeyPress', e);
-        if (e.code === "Enter") {
+        if (e.code === 'Enter') {
             this.isScan = false;
             this.oldvalue = this._value;
             console.log("huiche", this._value);
@@ -82,12 +82,16 @@ export class CnFormScancodeComponent implements OnInit {
             //   )
             // );
         } else {
-            if (!this.isScan) {
-                const newvalue = this._value;
-                this._value = newvalue.substring(
-                    this.oldvalue.length ? this.oldvalue.length : 0
-                );
-                this.isScan = true;
+            if (e.code === 'ArrowDown') {
+
+            } else {
+                if (!this.isScan) {
+                    const newvalue = this._value;
+                    this._value = newvalue.substring(
+                        this.oldvalue.length ? this.oldvalue.length : 0
+                    );
+                    this.isScan = true;
+                }
             }
         }
     }

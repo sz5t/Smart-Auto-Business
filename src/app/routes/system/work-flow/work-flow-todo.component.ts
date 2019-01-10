@@ -3,7 +3,8 @@ import {
     Injectable,
     OnInit,
     ElementRef,
-    ViewChild
+    ViewChild,
+    Type
 } from '@angular/core';
 import { APIResource } from '@core/utility/api-resource';
 import { ApiService } from '@core/utility/api-service';
@@ -25,12 +26,17 @@ import {
     NzTreeNode,
     NzTreeNodeOptions
 } from 'ng-zorro-antd';
+import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
+import { CnComponentBase } from '@shared/components/cn-component-base';
+const component: { [type: string]: Type<any> } = {
+    layout: LayoutResolverComponent
+};
 @Component({
     selector: 'cn-work-flow-todo, [work-flow-todo]',
     templateUrl: './work-flow-todo.component.html',
     styles: []
 })
-export class WorkFlowTodoComponent implements OnInit {
+export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
     // #table
     @ViewChild('table')
     public table: BsnTableComponent;
@@ -6537,7 +6543,56 @@ export class WorkFlowTodoComponent implements OnInit {
                     }
                 ]
             },
+            {
+                controls: [
+                    {
+                        type: 'selectCustom',
+                        labelSize: '6',
+                        controlSize: '16',
+                        inputType: 'text',
+                        name: 'textLiu',
+                        label: '自定义选则',
+                        placeholder: '',
+                        disabled: false,
+                        readonly: false,
+                        size: 'default',
+                        layout: 'column',
+                        labelName: 'realName',
+                        valueName: 'Id',
+                        span: '24',
+                        dialog: {
+                            layoutName: 'liu',
+                            title: '自定义参考页面',
+                            width: '850px',
+                            buttons: [
+                                {
+                                    name: 'ok',
+                                    text: '确定'
+                                },
+                                {
+                                    name: 'close',
+                                    text: '关闭',
+                                    type: 'default'
+                                }
+                            ]
+                        },
+                        ajaxConfig: {
+                            url: 'common/SysUser',
+                            ajaxType: 'get',
+                            params: [
 
+                                {
+                                    name: 'Id',
+                                    valueName: 'Id',
+                                    type: 'componentValue',
+                                    value: ''
+                                }
+
+                            ]
+                        }
+                    }
+                ]
+            },
             {
                 controls: [
                     {
@@ -7956,7 +8011,15 @@ export class WorkFlowTodoComponent implements OnInit {
         ],
     };
 
-    constructor(private http: _HttpClient) { }
+    constructor(private http: _HttpClient,
+        private modalService: NzModalService,
+        private _http: ApiService) {
+        super();
+        this.apiResource = this._http;
+        // this.baseMessage = this._message;
+        this.baseModal = this.modalService;
+        //  this.cacheValue = this.cacheService;
+    }
 
     public isVisible = false;
     public isConfirmLoading = false;
@@ -8072,5 +8135,98 @@ export class WorkFlowTodoComponent implements OnInit {
         this.inputVisible = false;
     }
 
+
+
+    // tslint:disable-next-line:member-ordering
+    public searchValue;
+    // liu ceshi
+    public showLayout() {
+        const dialog = {
+            layoutName: 'liu',
+            title: '自由弹出页面',
+            width: '800px',
+            buttons: [
+                {
+                    name: 'ok',
+                    text: '确定',
+                    type: 'default'
+                },
+                {
+                    name: 'close',
+                    text: '关闭',
+                    type: 'default'
+                }
+            ]
+        };
+        const footer = [];
+        this._http.getLocalData(dialog.layoutName).subscribe(data => {
+            // const selectedRow = this._selectRow ? this._selectRow : {};
+            //  const tmpValue = this.tempValue ? this.tempValue : {};
+            const modal = this.baseModal.create({
+                nzTitle: dialog.title,
+                nzWidth: dialog.width,
+                nzContent: component['layout'],
+                nzComponentParams: {
+                    permissions: this.permissions,
+                    config: data,
+                    initData: {} // ...tmpValue, ...selectedRow
+                },
+                nzFooter: footer
+            });
+            if (dialog.buttons) {
+                dialog.buttons.forEach(btn => {
+                    const button = {};
+                    button['label'] = btn.text;
+                    button['type'] = btn.type ? btn.type : 'default';
+                    button['show'] = true;
+                    button['onClick'] = componentInstance => {
+                        if (btn['name'] === 'save') {
+                            (async () => {
+                                const result = await componentInstance.buttonAction(
+                                    btn,
+                                    () => {
+                                        modal.close();
+                                        // todo: 操作完成当前数据后需要定位
+                                        //  this.load();
+                                        //  this.sendCascadeMessage();
+                                    }
+                                );
+                            })();
+                        } else if (btn['name'] === 'saveAndKeep') {
+                            (async () => {
+                                const result = await componentInstance.buttonAction(
+                                    btn,
+                                    () => {
+                                        // todo: 操作完成当前数据后需要定位
+                                        //  this.load();
+                                        //  this.sendCascadeMessage();
+                                    }
+                                );
+                                if (result) {
+
+                                }
+                            })();
+                        } else if (btn['name'] === 'close') {
+                            modal.close();
+                            // this.load();
+                            // this.sendCascadeMessage();
+                        } else if (btn['name'] === 'reset') {
+                            //  this._resetForm(componentInstance);
+                        } else if (btn['name'] === 'ok') {
+                            console.log('ok');
+                            console.log(componentInstance.value);
+                            if (componentInstance.value)
+                                this.searchValue = componentInstance.value['realName'];
+                            modal.close();
+                            //  this.load();
+                            //  this.sendCascadeMessage();
+                            //
+                        }
+                    };
+                    footer.push(button);
+                });
+            }
+        });
+    }
 
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, Input } from '@angular/core';
 import { BsnTreeTableComponent } from '@shared/business/bsn-tree-table/bsn-tree-table.component';
+import { BsnAsyncTreeTableComponent } from '@shared/business/bsn-treeTable/bsn-treeTable.component';
 
 @Component({
   selector: 'cn-grid-select-treegrid,[cn-grid-select-treegrid]',
@@ -15,7 +16,7 @@ export class CnGridSelectTreegridComponent implements OnInit {
   @Input() casadeData;
   @Output() updateValue = new EventEmitter();
 
-  @ViewChild('table') table: BsnTreeTableComponent;
+  @ViewChild('table') table: BsnTreeTableComponent; //  BsnAsyncTreeTableComponent;
 
   resultData;
   cascadeValue = {};

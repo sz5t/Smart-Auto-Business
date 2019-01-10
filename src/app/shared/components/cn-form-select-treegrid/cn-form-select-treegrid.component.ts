@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, ViewChild, EventEmitter, OnChanges, AfterViewInit, AfterContentInit, AfterViewChecked, AfterContentChecked } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BsnTreeTableComponent } from '@shared/business/bsn-tree-table/bsn-tree-table.component';
+import { BsnAsyncTreeTableComponent } from '@shared/business/bsn-treeTable/bsn-treeTable.component';
 
 @Component({
   selector: 'cn-form-select-treegrid',
@@ -17,7 +18,7 @@ export class CnFormSelectTreegridComponent implements OnInit, OnChanges {
   @Input() changeConfig;
   @Output() updateValue = new EventEmitter();
   formGroup: FormGroup;
-  @ViewChild("table") table: BsnTreeTableComponent;
+  @ViewChild("table") table: BsnTreeTableComponent;  //BsnAsyncTreeTableComponent;
   resultData;
   cascadeValue = {};
   cascadeSetValue = {};

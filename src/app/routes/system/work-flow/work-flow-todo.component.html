@@ -1,5 +1,20 @@
 <page-header [title]=""></page-header>
-
+<hr>
+<div>
+    <p>测试弹出自由配置选中页面</p>
+    <span>
+            <input type="text" nz-input placeholder="Search name" [(ngModel)]="searchValue" style="width: 200px;">
+            <button nz-button nzSearch [nzType]="'default'" (click)="showLayout()">
+                    <i class="anticon anticon-edit"></i>
+            </button> 
+    </span>
+   
+   
+</div>
+<hr>
+<p>测试弹出自由配置选中页面，多选</p>
+<bsn-tag></bsn-tag>
+<hr>
 <nz-card style="width:300px;">
     <nz-tag *ngFor="let tag of tags; let i = index;" [nzMode]="i === 0 ? 'default' : 'closeable'" (nzAfterClose)="handleClose(tag)">
         {{ sliceTagName(tag) }}
