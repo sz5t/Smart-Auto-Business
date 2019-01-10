@@ -3267,6 +3267,14 @@ export class TreeTableComponent implements OnInit {
                                                                 params: [
                                                                     {
                                                                         name:
+                                                                            'Id',
+                                                                        type:
+                                                                            'componentValue',
+                                                                        valueName:
+                                                                            'Id'
+                                                                    },
+                                                                    {
+                                                                        name:
                                                                             'caseName',
                                                                         type:
                                                                             'componentValue',

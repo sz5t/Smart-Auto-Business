@@ -126,8 +126,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
         this.apiResource = this._api;
 
         this.callback = focusId => {
-            // this._cancelEditRows();
-            this.load();
+            this._cancelSavedRow();
         };
     }
 
@@ -582,7 +581,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
      */
     public createNewRowData(parentId?) {
         const newRow = { ...this.rowContent };
-        const newRowId = CommonTools.uuID(6);
+        const newRowId = CommonTools.uuID(32);
         newRow['key'] = newRowId;
         newRow['Id'] = newRowId;
         newRow['checked'] = true;
@@ -601,7 +600,8 @@ export class BsnAsyncTreeTableComponent extends GridBase
         const newRow = this.createNewRowData();
         this.editCache[newRow['Id']] = { edit: true, data: newRow };
         this.dataList.splice(0, 0, newRow);
-        return true;
+        this.treeDataOrigin.push(newRow);
+        return newRow;
     }
 
     /**
@@ -613,9 +613,11 @@ export class BsnAsyncTreeTableComponent extends GridBase
                 this.config.keyId ? this.config.keyId : 'Id'
             ];
             const newRow = this.createNewRowData(parentId);
+            newRow['level'] = this.selectedItem.level ? this.selectedItem + 1 : 1;
             this.editCache[newRow['Id']] = { edit: true, data: newRow };
             // 数据添加到具体选中行的下方
             this.dataList = this._setChildRow(newRow, parentId);
+            this.treeData.push(newRow);
         } else {
             console.log('未选择任何行,无法添加下级');
             return false;
@@ -650,6 +652,19 @@ export class BsnAsyncTreeTableComponent extends GridBase
         this.editCache[key]['edit'] = true;
     }
 
+    private _cancelSavedRow() {
+        const cancelRowMap = this._getCheckedRowStatusMap();
+        for (let i = 0, len = this.dataList.length ; i < len; i++) {
+             const key = this.dataList[i].key;
+             const checkedRow = cancelRowMap.get(key);
+             if (checkedRow) {
+                delete this.dataList[i]['row_status'];
+                this._cancelEdit(key);
+             }
+             
+        }
+    }
+
     private _cancelEditRows() {
         const cancelRowMap = this._getCheckedRowStatusMap();
         // 删除dataList中数据
@@ -667,6 +682,8 @@ export class BsnAsyncTreeTableComponent extends GridBase
                 checkedRowStatus &&
                 checkedRowStatus.status === 'updating'
             ) {
+                this._cancelEdit(key);
+            } else {
                 this._cancelEdit(key);
             }
         }
@@ -723,17 +740,19 @@ export class BsnAsyncTreeTableComponent extends GridBase
     private _cancelEdit(key: string): void {
         let itemList = this.treeDataOrigin;
         // 检查当前原始列表中是否存在编辑对象(不包含子节点集合)
-        let index = itemList.findIndex(item => item.Id === key);
+        const index = itemList.findIndex(item => item.Id === key);
+        let childIndex;
         if (index === -1) {
             // 如果不存在,检查当前列表中是否存在编辑对象(包含所有子节点集合)
             itemList = this.treeData;
-            index = this.treeData.findIndex(item => item.Id === key);
+            childIndex = this.treeData.findIndex(item => item.Id === key);
+             // 包含子节点对象,则将编辑状态进行取消, 并重新绑定之前数据
+            if (childIndex && childIndex !== -1) {
+                this.editCache[key].data = JSON.parse(JSON.stringify(itemList[childIndex]));
+            }
         }
-        // 包含子节点对象,则将编辑状态进行取消, 并重新绑定之前数据
-        if (index !== -1) {
-            this.editCache[key].edit = false;
-            this.editCache[key].data = JSON.parse(JSON.stringify(itemList[index]));
-        }
+        this.editCache[key].edit = false; 
+       
         
     }
 
@@ -888,6 +907,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
                 }
             }
             if (isSuccess) {
+                // 
                 this.load();
             }
         }
@@ -961,10 +981,15 @@ export class BsnAsyncTreeTableComponent extends GridBase
                 }
             }
             if (isSuccess) {
+                rowsData.forEach(d => {
+                    d['row_status'] = '';
+                });
                 // rowsData.map(row => {
                 //     this._saveEdit(row.key);
                 // });
-                this.load();
+                // this.load();
+                // 取消编辑状态
+                this._cancelEditRows();
             }
         }
         if (isSuccess === true) {
@@ -1229,7 +1254,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
             const newSearchContent = JSON.parse(
                 JSON.stringify(this.rowContent)
             );
-            const fieldIdentity = CommonTools.uuID(6);
+            const fieldIdentity = CommonTools.uuID(32);
             newSearchContent['key'] = fieldIdentity;
             newSearchContent['checked'] = false;
             newSearchContent['row_status'] = 'search';
