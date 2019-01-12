@@ -107,6 +107,8 @@ import { CnGridEditComponent } from './components/cn-grid-edit/cn-grid-edit.comp
 import { BsnTagComponent } from './business/bsn-tag/bsn-tag.component';
 import { CnFormSelectCustomComponent } from './components/cn-form-select-custom/cn-form-select-custom.component';
 import { CnGridSelectCustomComponent } from './components/cn-grid-select-custom/cn-grid-select-custom.component';
+import { CnFormSelectCustomMultipleComponent } from './components/cn-form-select-custom-multiple/cn-form-select-custom-multiple.component';
+import { CnGridSelectCustomMultipleComponent } from './components/cn-grid-select-custom-multiple/cn-grid-select-custom-multiple.component';
 
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -206,7 +208,9 @@ const COMPONENTS = [
     CnGridEditComponent,
     BsnTagComponent,
     CnFormSelectCustomComponent,
-    CnGridSelectCustomComponent
+    CnGridSelectCustomComponent,
+    CnFormSelectCustomMultipleComponent,
+    CnGridSelectCustomMultipleComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

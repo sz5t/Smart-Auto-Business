@@ -7,20 +7,21 @@ const component: { [type: string]: Type<any> } = {
   layout: LayoutResolverComponent
 };
 @Component({
-  selector: 'cn-grid-select-custom',
-  templateUrl: './cn-grid-select-custom.component.html',
-  styleUrls: ['./cn-grid-select-custom.component.css']
+  selector: 'cn-grid-select-custom-multiple',
+  templateUrl: './cn-grid-select-custom-multiple.component.html',
+  styleUrls: ['./cn-grid-select-custom-multiple.component.css']
 })
-export class CnGridSelectCustomComponent extends CnComponentBase implements OnInit {
+export class CnGridSelectCustomMultipleComponent  extends CnComponentBase  implements OnInit {
+
   @Input() public config;
   @Input() public value;
   @Input() public bsnData;
   @Input() public rowData;
   @Input() public dataSet;
   @Input() public casadeData;
-  @Input() public initData;
-
+  @Input() public changeConfig;
   @Output() public updateValue = new EventEmitter();
+
   public resultData;
   public cascadeValue = {};
   public cascadeSetValue = {};
@@ -30,8 +31,9 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
   public _value;
   public _valuetext;
   public permissions = [];
-  public selectedValue;
+  public tags = [];
 
+  public selectedValue;
   constructor(private modalService: NzModalService,
     private _http: ApiService) {
     super();
@@ -47,65 +49,77 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
         // 临时变量的整理
         if (key === 'cascadeValue') {
           for (const casekey in this.casadeData['cascadeValue']) {
-            if (
-              this.casadeData['cascadeValue'].hasOwnProperty(
-                casekey
-              )
-            ) {
-              this.cascadeValue[casekey] = this.casadeData[
-                'cascadeValue'
-              ][casekey];
+            if (this.casadeData['cascadeValue'].hasOwnProperty(casekey)) {
+              this.cascadeValue[casekey] = this.casadeData['cascadeValue'][casekey];
             }
           }
         } else if (key === 'options') {
           // 目前版本，静态数据集 优先级低
-          this.config.options = this.casadeData['options'];
+          this.config['options'] = this.casadeData['options'];
         } else if (key === 'setValue') {
-          this.cascadeSetValue['setValue'] = JSON.parse(
-            JSON.stringify(this.casadeData['setValue'])
-          );
+          this.cascadeSetValue['setValue'] = JSON.parse(JSON.stringify(this.casadeData['setValue']));
           delete this.casadeData['setValue'];
         }
       }
     }
-    if (this.cascadeSetValue.hasOwnProperty('setValue')) {
-      this.selectedBycascade();
-    } else {
-      this.selectedByLoaded();
+    if (!this.config.labelName) {
+      this.config.labelName = 'name';
+    }
+    if (!this.config.valueName) {
+      this.config.valueName = 'Id';
     }
   }
 
-  public selectedByLoaded() {
-    let selected;
-    if (this.value && this.value.hasOwnProperty('data') && this.value['data'] !== undefined) {
-      selected = this.value.data;
-    } else {
-      selected = this.config.defaultValue;
-    }
-    this._value = selected;
-    if (this.value && this.value.hasOwnProperty('dataText') && this.value['dataText'] !== undefined) {
-      this._valuetext = this.value['dataText'];
-    }
-    if (this._value) {
-      this.valueChange(this._value);
-      // console.log('调用selectload');
-      //  this.table.selectload();
-    }
-  }
-
-  // 级联赋值
-  public selectedBycascade() {
-    // 假如有级联赋值，则需要取文本值
-    let selected;
-    if (this.cascadeSetValue.hasOwnProperty('setValue')) {
-      selected = this.cascadeSetValue['setValue'];
-      this._value = selected;
-      delete this.cascadeSetValue['setValue'];
-    }
-
+  public handleClosetag(removedTag: {}): void {
+    this.tags = this.tags.filter(tag => tag !== removedTag);
+    this.getMultipleValue();
     this.valueChange(this._value);
   }
 
+  public sliceTagName(tag: any): string {
+    const isLongTag = tag['label'].length > 20;
+    return isLongTag ? `${tag['label'].slice(0, 20)}...` : tag['label'];
+  }
+
+  // 获取多选文本值
+  public getMultipleValue() {
+    let labels = '';
+    let values = '';
+    this.tags.forEach(element => {
+      labels = labels + element.label + ',';
+      values = values + element.value + ',';
+    });
+    if (labels.length > 0) {
+      this._valuetext = this._valuetext.substring(0, labels.length - 1);
+    } else {
+      this._valuetext = null;
+    }
+    if (values.length > 0) {
+      this._value = this._value.substring(0, values.length - 1);
+    } else {
+      this._value = null;
+    }
+  }
+  public getMultipleTags(dlist?) {
+    const labelName = this.config.labelName ? this.config.labelName : 'name';
+    const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
+    dlist.array.forEach(data => {
+      const b_lable = data[labelName];
+      const b_value = data[valueName]; // 取值时动态读取的
+      const newobj = { label: b_lable, value: b_value };
+
+      let isInsert = true;
+      this.tags.forEach(element => {
+        if (element.value === b_value) {
+          isInsert = false;
+        }
+      });
+      if (newobj && isInsert) {
+        this.tags.push(newobj);
+      }
+    });
+
+  }
   public async asyncLoadOptions(p?, componentValue?, type?) {
     // console.log('select load 异步加载', componentValue); // liu
     const params = {};
@@ -201,6 +215,7 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
     this._http.getLocalData(dialog.layoutName).subscribe(data => {
       // const selectedRow = this._selectRow ? this._selectRow : {};
       //  const tmpValue = this.tempValue ? this.tempValue : {};
+      const layoutTag = { ROW: this.tags };
       const modal = this.baseModal.create({
         nzTitle: dialog.title,
         nzWidth: dialog.width,
@@ -208,7 +223,7 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
         nzComponentParams: {
           permissions: this.permissions,
           config: data,
-          initData: {} // ...tmpValue, ...selectedRow
+          initData: {...layoutTag, ...this.rowData, ...this.initValue} // ...tmpValue, ...selectedRow
         },
         nzFooter: footer
       });
@@ -256,11 +271,26 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
               console.log(componentInstance.value);
               const labelName = this.config.labelName ? this.config.labelName : 'name';
               const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
+              //  this.tags = [{ label: componentInstance.value[labelName], value: componentInstance.value[valueName] }];
               if (componentInstance.value) {
-                this._valuetext = componentInstance.value[labelName];
+                this.tags = componentInstance.value;
                 this.selectedValue = componentInstance.value;
+                let labels = '';
+                let values = '';
+                this.tags.forEach(element => {
+                  labels = labels + element.label + ',';
+                  values = values + element.value + ',';
+                });
+                this._valuetext = labels;
+                this._value = values;
+                if (this._valuetext.length > 0) {
+                  this._valuetext = this._valuetext.substring(0, this._valuetext.length - 1);
+                }
+                if (this._value.length > 0) {
+                  this._value = this._value.substring(0, this._value.length - 1);
+                }
                 // this.valueChange(this._valuetext, this.selectedValue);
-                this.valueChange(componentInstance.value[valueName], this.selectedValue);
+                this.valueChange(componentInstance.value[valueName]);
               }
 
               modal.close();
@@ -276,44 +306,56 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
   }
 
   public async valueChange(name?, dataItemValue?) {
-    // console.log('valueChange' , name);
+    console.log('valueChangeSelectGridMultiple', name);
 
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
     if (name) {
       this.value.data = name;
-      if (dataItemValue) {
-        this.value['dataItem'] = dataItemValue;
-      } else {
-        let selectrowdata = {};
-        const componentvalue = {};
-        componentvalue[valueName] = name;
-        const loadData = await this.asyncLoadOptions(this.config.ajaxConfig, componentvalue);
-        console.log('自定义数据：', loadData);
-        if (loadData && loadData.status === 200 && loadData.isSuccess) {
-          if (loadData.data) {
-            if (loadData.data.length > 0) {
-              selectrowdata = loadData.data[0];
+      // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
+      // console.log('this.resultData:', this.resultData);
+      if (this.tags) {
+        // valueName
+        const index = this.tags.length;
+        if (this.tags) {
+          if (index >= 0) {
+            this.getMultipleValue();
+          } else {
+            // 取值
+            const componentvalue = {};
+            componentvalue[valueName] = name;
+            if (this.config.ajaxConfig) {
+              const loadData = await this.asyncLoadOptions(this.config.ajaxConfig, componentvalue);
+              console.log('自定义数据：', loadData);
+              let selectrowdata = [];
+              if (loadData && loadData.status === 200 && loadData.isSuccess) {
+                if (loadData.data) {
+                  if (loadData.data.length > 0) {
+                    selectrowdata = loadData.data;
+                  }
+                }
+              }
+              this.getMultipleTags(selectrowdata);
+              this.getMultipleValue();
+
+            } else {
+              this._valuetext = this._value;
             }
+            // console.log('loadByselect: ',  backselectdata) ;
           }
         }
-        if (selectrowdata.hasOwnProperty(labelName)) {
-          this._valuetext = selectrowdata[labelName];
-        } else {
-          this._valuetext = this._value;
-        }
-        this.value['dataItem']  = selectrowdata;
-      }
-      this.updateValue.emit( this.value);
-    } else {
-        this.value.data = null;
-        this.value.dataText = null;
-        this.updateValue.emit(this.value);
 
+        // console.log('iftrue弹出表格返回数据', backValue);
+      }
+      // this.value['dataText'] = this._valuetext;
+      console.log('iftrue弹出表格返回数据', this.value);
+      this.updateValue.emit(this.value);
+    } else {
+      this.value.data = null;
+      this.updateValue.emit( this.value);
       // console.log('iffalse弹出表格返回数据', backValue);
     }
   }
-
 
   public isString(obj) {
     // 判断对象是否是字符串

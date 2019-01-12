@@ -32,7 +32,7 @@ export class LayoutResolverComponent implements OnInit {
 
     public valueChange(data?) {
        this.value = data;
-        console.log('布局信息返回');
-
+        console.log('布局信息返回', data, this.config);
+        this.updateValue.emit(data);
     }
 }

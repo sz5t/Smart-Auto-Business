@@ -2175,9 +2175,28 @@ export class BsnTableComponent extends CnComponentBase
                     ? this.config.selectGridValueName
                     : 'Id'
             ];
-            console.log(' this.updateValue.emit(this._selectRow)', this._selectRow);
+           //  console.log(' this.updateValue.emit(this._selectRow)', this._selectRow);
             // liu 20181210
-            this.updateValue.emit(this._selectRow);
+            if (this.config.multiple) {
+                // liu 20190111 选中行发消息
+                const sendData = {};
+                sendData['ROW'] = this._selectRow;
+                this.cascade.next(
+                    new BsnComponentMessage(
+                        BSN_COMPONENT_CASCADE_MODES['SELECTED_ROW'],
+                        this.config.viewId,
+                        {
+                            data: sendData
+                        }
+                    )
+                );
+              //  console.log('****send*', sendData);
+            } else {
+                this.updateValue.emit(this._selectRow);
+            }
+
+
+
         }
 
     }

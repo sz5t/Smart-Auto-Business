@@ -11,6 +11,7 @@ import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/utility/api-service';
 import { APIResource } from '@core/utility/api-resource';
 import { FormGroup } from '@angular/forms';
+import { CacheService } from '@delon/cache';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -39,8 +40,11 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
     private _options = [];
     private cascadeValue = {};
     private resultData;
+    public cacheValue;
     // _selectedMultipleOption:any[];
-    constructor(private apiService: ApiService) { }
+    constructor(private apiService: ApiService,   private cacheService: CacheService) { 
+        this.cacheValue = this.cacheService;
+    }
     public _selectedOption;
 
     public ngOnInit() {
@@ -131,31 +135,72 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                     if (type) {
                         if (type === 'load') {
                             if (this.bsnData[param.valueName]) {
-                                params[param.name] = this.bsnData[
-                                    param.valueName
-                                ];
+                               //  params[param.name] = this.bsnData[param.valueName ];
+                                if (param['datatype']) {
+                                    params[param.name] = this.getParameters(param['datatype'],   this.bsnData[param.valueName ]);
+                                } else {
+                                    params[param.name] = this.bsnData[param.valueName ];
+                                }
                             } else {
                                 // console.log('参数不全不能加载');
                                 tag = false;
                                 return;
                             }
                         } else {
-                            params[param.name] = this.bsnData[param.valueName];
+                          //  params[param.name] = this.bsnData[param.valueName];
+                            if (param['datatype']) {
+                                params[param.name] = this.getParameters(param['datatype'],  this.bsnData[param.valueName]);
+                            } else {
+                                params[param.name] = this.bsnData[param.valueName ];
+                            }
                         }
                     } else {
                         if (this.bsnData && this.bsnData[param.valueName]) {
                             // liu 参数非空判断
-                            params[param.name] = this.bsnData[param.valueName];
+                           //  params[param.name] = this.bsnData[param.valueName];
+                            if (param['datatype']) {
+                                params[param.name] = this.getParameters(param['datatype'],  this.bsnData[param.valueName]);
+                            } else {
+                                params[param.name] = this.bsnData[param.valueName ];
+                            }
                         }
                     }
                 } else if (param.type === 'value') {
-                    params[param.name] = param.value;
+                  //  params[param.name] = param.value;
+                    if (param['datatype']) {
+                        params[param.name] = this.getParameters(param['datatype'],  param.value);
+                    } else {
+                        params[param.name] = param.value;
+                    }
                 } else if (param.type === 'componentValue') {
-                    params[param.name] = componentValue[param.valueName];
+                   // params[param.name] = componentValue[param.valueName];
+                    if (param['datatype']) {
+                        params[param.name] = this.getParameters(param['datatype'],  componentValue[param.valueName]);
+                    } else {
+                        params[param.name] = componentValue[param.valueName];
+                    }
                 } else if (param.type === 'cascadeValue') {
-                    params[param.name] = this.cascadeValue[param.valueName];
+                   // params[param.name] = this.cascadeValue[param.valueName];
+                    if (param['datatype']) {
+                        params[param.name] = this.getParameters(param['datatype'],  this.cascadeValue[param.valueName]);
+                    } else {
+                        params[param.name] = this.cascadeValue[param.valueName];
+                    }
                 } else if (param.type === 'initValue') {
-                    params[param.name] = this.initValue[param.valueName];
+                    // params[param.name] = this.initValue[param.valueName];
+                    if (param['datatype']) {
+                        params[param.name] = this.getParameters(param['datatype'],   this.initValue[param.valueName]);
+                    } else {
+                        params[param.name] = this.initValue[param.valueName];
+                    }
+                } else if (param.type === 'cacheValue') {
+                    
+                    const cache = this. cacheValue.get('userInfo');
+                        if (param['datatype']) {
+                            params[param.name]  = this.getParameters(param['datatype'], cache.value[param['valueName']]);
+                        } else {
+                            params[param.name] = cache.value[param['valueName']];
+                        }
                 }
             });
             if (this.isString(p.url)) {
@@ -195,6 +240,8 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
         //   return null;
         // }
     }
+
+    
 
     public selectedByLoaded() {
         let selected;
@@ -263,4 +310,56 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
         // 判断对象是否是字符串
         return Object.prototype.toString.call(obj) === '[object String]';
     }
+
+        // liu 20181213  参数简析[可适配后台多条件查询]
+        public  getParameters(datatype?, inputValue?) {
+            let strQ = '';
+            if (!inputValue) {
+                // return strQ;
+            }
+            switch (datatype) {
+                case 'eq': // =
+                    strQ = strQ + 'eq(' + inputValue + ')';
+                    break;
+                case 'neq': // !=
+                    strQ = strQ + '!eq(' + inputValue + ')';
+                    break;
+                case 'ctn': // like
+                    strQ = strQ + 'ctn(\'%' + inputValue + '%\')';
+                    break;
+                case 'nctn': // not like
+                    strQ = strQ + '!ctn(\'%' + inputValue + '%\')';
+                    break;
+                case 'in': // in  如果是input 是这样取值，其他则是多选取值
+                    strQ = strQ + 'in(' + inputValue + ')';
+                    break;
+                case 'nin': // not in  如果是input 是这样取值，其他则是多选取值
+                    strQ = strQ + '!in(' + inputValue + ')';
+                    break;
+                case 'btn': // between  
+                    strQ = strQ + 'btn(' + inputValue + ')';
+                    break;
+                case 'ge': // >=  
+                    strQ = strQ + 'ge(' + inputValue + ')';
+                    break;
+                case 'gt': // >  
+                    strQ = strQ + 'gt(' + inputValue + ')';
+                    break;
+                case 'le': // <=  
+                    strQ = strQ + 'le(' + inputValue + ')';
+                    break;
+                case 'lt': // <  
+                    strQ = strQ + 'lt(' + inputValue + ')';
+                    break;
+                default:
+                    strQ = inputValue;
+                    break;
+            }
+    
+            if (!inputValue) {
+                strQ = null;
+            }
+            // console.log('liu查询参数：', strQ);
+            return strQ;
+        }
 }

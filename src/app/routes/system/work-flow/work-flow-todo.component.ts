@@ -6596,6 +6596,56 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
             {
                 controls: [
                     {
+                        type: 'selectCustomMultiple',
+                        labelSize: '6',
+                        controlSize: '16',
+                        inputType: 'text',
+                        name: 'textLiuMultiple',
+                        label: '自定义多选',
+                        placeholder: '',
+                        disabled: false,
+                        readonly: false,
+                        size: 'default',
+                        layout: 'column',
+                        labelName: 'realName',
+                        valueName: 'Id',
+                        span: '24',
+                        dialog: {
+                            layoutName: 'lium',
+                            title: '自定义参考页面',
+                            width: '850px',
+                            buttons: [
+                                {
+                                    name: 'ok',
+                                    text: '确定'
+                                },
+                                {
+                                    name: 'close',
+                                    text: '关闭',
+                                    type: 'default'
+                                }
+                            ]
+                        },
+                        ajaxConfig: {
+                            url: 'common/SysUser',
+                            ajaxType: 'get',
+                            params: [
+
+                                {
+                                    name: 'Id',
+                                    valueName: 'Id',
+                                    type: 'componentValue',
+                                    value: ''
+                                }
+
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                controls: [
+                    {
                         type: 'scanCode',
                         labelSize: '6',
                         controlSize: '16',

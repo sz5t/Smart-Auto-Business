@@ -37,15 +37,24 @@ export class CommonTools {
                                 model.tempValue &&
                                 model.tempValue[param['valueName']]
                             ) {
-                                result[param['name']] =
-                                    model.tempValue[param['valueName']];
+                               // result[param['name']] = model.tempValue[param['valueName']];
+                                if (param['datatype']) {
+                                    result[param['name']] = this.getParameters(param['datatype'],  model.tempValue[param['valueName']]);
+                                } else {
+                                    result[param['name']] =  model.tempValue[param['valueName']];
+                                }
                             } else {
                                 if (
                                     param['value'] === null ||
                                     param['value'] === '' ||
                                     param['value'] === 0
                                 ) {
-                                    result[param['name']] = param.value;
+                                    // result[param['name']] = param.value;
+                                    if (param['datatype']) {
+                                        result[param['name']] = this.getParameters(param['datatype'],   param.value);
+                                    } else {
+                                        result[param['name']] =  param.value;
+                                    }
                                 } else if (param['defaultDate']) {
                                     const dateType = param['defaultDate'];
                                     let dValue;
@@ -63,7 +72,12 @@ export class CommonTools {
                                         dValue = `${getISOYear(Date.now())}`;
                                         break;
                                     }
-                                    result[param['name']] = dValue;
+                                    // result[param['name']] = dValue;
+                                    if (param['datatype']) {
+                                        result[param['name']] = this.getParameters(param['datatype'],   dValue);
+                                    } else {
+                                        result[param['name']] =  dValue;
+                                    }
                                 }
                             }
                             break;
@@ -71,7 +85,12 @@ export class CommonTools {
                             if (param['value'] === 'null') {
                                 param['value'] = null;
                             }
-                            result[param['name']] = param.value;
+                            // result[param['name']] = param.value;
+                            if (param['datatype']) {
+                                result[param['name']] = this.getParameters(param['datatype'],  param.value);
+                            } else {
+                                result[param['name']] =  param.value;
+                            }
                             break;
                         case BSN_PARAMETER_TYPE.COMPONENT_VALUE:
                             if (model.componentValue) {
@@ -135,29 +154,51 @@ export class CommonTools {
                             }
                             break;
                         case BSN_PARAMETER_TYPE.GUID:
-                            result[param['name']] = CommonTools.uuID(32);
+                            // result[param['name']] = CommonTools.uuID(32);
+                            if (param['datatype']) {
+                                result[param['name']] = this.getParameters(param['datatype'],   CommonTools.uuID(32));
+                            } else {
+                                result[param['name']] =   CommonTools.uuID(32);
+                            }
                             break;
                         case BSN_PARAMETER_TYPE.CHECKED:
                             if (model.item) {
-                                result[param['name']] =
-                                    model.item[param['valueName']];
+                               // result[param['name']] = model.item[param['valueName']];
+                                    if (param['datatype']) {
+                                        result[param['name']] = this.getParameters(param['datatype'],  model.item[param['valueName']]);
+                                    } else {
+                                        result[param['name']] =   model.item[param['valueName']];
+                                    }
                             }
                             break;
                         case BSN_PARAMETER_TYPE.SELECTED:
                             if (model.item) {
-                                result[param['name']] =
-                                    model.item[param['valueName']];
+                               //  result[param['name']] = model.item[param['valueName']];
+                                    if (param['datatype']) {
+                                        result[param['name']] = this.getParameters(param['datatype'],  model.item[param['valueName']]);
+                                    } else {
+                                        result[param['name']] =  model.item[param['valueName']];
+                                    }
                             }
                             break;
                         case BSN_PARAMETER_TYPE.CHECKED_ID:
                             if (model.item) {
-                                result[param['name']] = model.item;
+                                // result[param['name']] = model.item;
+                                if (param['datatype']) {
+                                    result[param['name']] = this.getParameters(param['datatype'],  model.item);
+                                } else {
+                                    result[param['name']] =  model.item;
+                                }
                             }
                             break;
                         case BSN_PARAMETER_TYPE.CHECKED_ROW: // 后续替换为 CHECKED
                             if (model.item) {
-                                result[param['name']] =
-                                    model.item[param['valueName']];
+                             //   result[param['name']] = model.item[param['valueName']];
+                                    if (param['datatype']) {
+                                        result[param['name']] = this.getParameters(param['datatype'], model.item[param['valueName']]);
+                                    } else {
+                                        result[param['name']] = model.item[param['valueName']];
+                                    }
                             }
                             break;
                         case BSN_PARAMETER_TYPE.SELECTED_ROW: // 后续替换 SELECTED
@@ -168,21 +209,33 @@ export class CommonTools {
                             break;
                         case BSN_PARAMETER_TYPE.INIT_VALUE:
                             if (model.initValue) {
-                                result[param['name']] =
-                                    model.initValue[param['valueName']];
+                              //  result[param['name']] = model.initValue[param['valueName']];
+                                    if (param['datatype']) {
+                                        result[param['name']] = this.getParameters(param['datatype'], model.initValue[param['valueName']]);
+                                    } else {
+                                        result[param['name']] = model.initValue[param['valueName']];
+                                    }
                             }
                             break;
                         case BSN_PARAMETER_TYPE.CACHE_VALUE:
                             if (model.cacheValue) {
                                 const cache = model.cacheValue.get('userInfo');
-                                result[param['name']] =
-                                    cache.value[param['valueName']];
+                                // result[param['name']] = cache.value[param['valueName']];
+                                    if (param['datatype']) {
+                                        result[param['name']] = this.getParameters(param['datatype'], cache.value[param['valueName']]);
+                                    } else {
+                                        result[param['name']] = cache.value[param['valueName']];
+                                    }
                             }
                             break;
                         case BSN_PARAMETER_TYPE.CASCADE_VALUE:
                             if (model.cascadeValue) {
-                                result[param['name']] =
-                                    model.cascadeValue[param['valueName']];
+                               // result[param['name']] = model.cascadeValue[param['valueName']];
+                                    if (param['datatype']) {
+                                        result[param['name']] = this.getParameters(param['datatype'], model.cascadeValue[param['valueName']]);
+                                    } else {
+                                        result[param['name']] = model.cascadeValue[param['valueName']];
+                                    }
                             }
                             break;
                         case BSN_PARAMETER_TYPE.RETURN_VALUE:
