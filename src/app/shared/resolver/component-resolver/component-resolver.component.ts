@@ -94,7 +94,7 @@ export class ComponentResolverComponent
     constructor(
         private http: _HttpClient,
         private resolver: ComponentFactoryResolver
-    ) {}
+    ) { }
 
     public ngOnInit() {
         if (this.config) {
@@ -115,7 +115,7 @@ export class ComponentResolverComponent
                 const supportedTypes = Object.keys(components).join(', ');
                 throw new Error(
                     `Trying to use an unsupported types (${
-                        this.config.config.component
+                    this.config.config.component
                     }).Supported types: ${supportedTypes}`
                 );
             }
@@ -140,9 +140,11 @@ export class ComponentResolverComponent
 
             this.componentRef.instance.layoutId = this.layoutId;
             this.componentRef.instance.blockId = this.blockId;
-            this.componentRef.instance.updateValue.subscribe(event => {
-                this.setValue(event);
-            });
+            if (this.componentRef.instance.hasOwnProperty('updateValue')) {
+                this.componentRef.instance.updateValue.subscribe(event => {
+                    this.setValue(event);
+                });
+            }
         }
     }
     public setValue(data?) {
