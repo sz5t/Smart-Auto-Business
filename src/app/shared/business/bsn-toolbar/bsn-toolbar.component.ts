@@ -43,10 +43,11 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
     public model;
     public _cascadeState;
     public toolbars;
+    public toolbarsisLoading = [];
     constructor(
         @Inject(BSN_COMPONENT_MODES)
         private state: Observer<BsnComponentMessage>
-    ) {}
+    ) { }
 
     public ngOnInit() {
 
@@ -57,9 +58,9 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
                 this.toolbars = this.config.toolbar;
             }
         }
-        
+
         // if (this.config.toolbar) {
-            
+
         // } else {
         //     this.toolbars = this.config;
         // }
@@ -69,13 +70,16 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
     public getPermissions() {
         const permissionMap = new Map();
         this.permissions.forEach(item => {
-            permissionMap.set(item.code, item); 
+            permissionMap.set(item.code, item);
         });
         if (this.toolbars && Array.isArray(this.toolbars)) {
             this.toolbars.forEach(item => {
                 if (item.group) {
                     const groups = [];
                     item.group.forEach(g => {
+                        const Loading = {};
+                        Loading[g.name] = false;
+                        this.toolbarsisLoading.push(Loading);
                         if (permissionMap.has(g.name)) {
                             groups.push({ ...g });
                         } else if (g['cancelPermission']) {
@@ -103,6 +107,9 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
                         down['icon'] = icon;
                         down['buttons'] = [];
                         b.buttons.forEach(btn => {
+                          //  const Loading = {};
+                          //  Loading[btn.name] = false;
+                          //  this.toolbarsisLoading.push(Loading);
                             if (permissionMap.has(btn.name)) {
                                 down['buttons'].push({ ...btn });
                             } else if (btn['cancelPermission']) {
@@ -126,6 +133,10 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
         // 判断操作action的状态，根据状态发送具体消息
         // 消息的内容是什么？如何将消息与组件和数据进行关联
         // 根据按钮是否包含action属性，区别组件的内部状态操作还是进行数据操作
+        this.toolbarsisLoading[btn.name] = true;
+        setTimeout(_ => {
+            this.toolbarsisLoading[btn.name]  = false;
+        }, 150);
         const action = btn.action
             ? BSN_COMPONENT_MODES[btn.action]
             : BSN_COMPONENT_MODES['EXECUTE'];

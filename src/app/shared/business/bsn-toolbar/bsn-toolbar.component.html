@@ -9,6 +9,7 @@
                         nz-button
                         *ngFor="let btn of toolbar.group"
                         (click)="toolbarAction(btn)"
+                        [nzLoading]="toolbarsisLoading[btn.name]"
                         [attr.disabled]="btn.disabled">
                             <!-- <strong><i class="{{btn.icon}} {{btn.color}}"></i> {{btn.text}}</strong> -->
                             <i nz-icon [type]="btn.icon" [theme]="btn.theme ? btn.theme : 'outline'"></i>{{btn.text}}
