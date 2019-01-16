@@ -473,10 +473,10 @@ export class BsnAsyncTreeTableComponent extends GridBase
     }
 
     public expandChange(childrenData, data: any, $event: boolean) {
-        setTimeout(() => {
-            this.loading = true;
-        }, 10);
-        
+        // setTimeout(() => {
+        //     this.loading = true;
+        // }, 10);
+        this.loading = true;
         if ($event === true) {
             (async () => {
                 const response = await this.expandLoad(data);
@@ -486,6 +486,8 @@ export class BsnAsyncTreeTableComponent extends GridBase
                     });
                     // childrenData = data;
                     this.insertChildrenListToTree(data, response.data);
+                    this.loading = false;
+                } else {
                     this.loading = false;
                 }
             })();
@@ -501,6 +503,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
                     }
                     
                 })
+                // console.log('505');
             }
             setTimeout(() => {
                 this.loading = false;
@@ -617,7 +620,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
             this.editCache[newRow['Id']] = { edit: true, data: newRow };
             // 数据添加到具体选中行的下方
             this.dataList = this._setChildRow(newRow, parentId);
-            this.treeData.push(newRow);
+           // this.treeData.push(newRow);  //【 liu 20190115】 注释 注释调这行后不会新增下级多行重复
         } else {
             console.log('未选择任何行,无法添加下级');
             return false;
