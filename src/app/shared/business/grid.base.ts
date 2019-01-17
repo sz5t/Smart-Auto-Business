@@ -28,6 +28,14 @@ export class GridBase extends CnComponentBase {
         this._callback = value;
     }
 
+    private _windowCallback: Function;
+    public get windowCallback(): Function {
+        return this._windowCallback;
+    }
+    public set windowCallback(value: Function) {
+        this._windowCallback = value;
+    }
+
     private _checkedItems: any[];
     public get checkedItems(): any[] {
         return this._checkedItems;
@@ -683,7 +691,7 @@ export class GridBase extends CnComponentBase {
                                     () => {
                                         modal.close();
                                         // todo: 操作完成当前数据后需要定位
-                                        this.callback();
+                                        this.windowCallback();
                                     }
                                 );
                             })();
@@ -693,16 +701,16 @@ export class GridBase extends CnComponentBase {
                                     btn,
                                     () => {
                                         // todo: 操作完成当前数据后需要定位
-                                        this.callback();
+                                        this.windowCallback();
                                     }
                                 );
                             })();
                         } else if (btn['name'] === 'close') {
                             modal.close();
-                            this.callback();
+                            this.windowCallback();
                         } else if (btn['name'] === 'ok') {
                             modal.close();
-                            this.callback();
+                            this.windowCallback();
                             //
                         }
                     };

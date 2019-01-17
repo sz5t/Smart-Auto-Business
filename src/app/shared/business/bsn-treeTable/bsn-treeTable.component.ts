@@ -128,6 +128,10 @@ export class BsnAsyncTreeTableComponent extends GridBase
         this.callback = focusId => {
             this._cancelSavedRow();
         };
+
+        this.windowCallback = () => {
+            this.expandCurrentRow();
+        }
     }
 
     // 生命周期事件
@@ -472,11 +476,17 @@ export class BsnAsyncTreeTableComponent extends GridBase
         }
     }
 
+    public expandCurrentRow() {
+        const children = this.selectedItem['children'] ? this.selectedItem['children'] : null;
+        this.expandChange(children, this.selectedItem, true);
+    }
+
     public expandChange(childrenData, data: any, $event: boolean) {
-        // setTimeout(() => {
-        //     this.loading = true;
-        // }, 10);
-        this.loading = true;
+
+        setTimeout(() => {
+            this.loading = true;
+        }, 10);
+        
         if ($event === true) {
             (async () => {
                 const response = await this.expandLoad(data);
@@ -486,10 +496,8 @@ export class BsnAsyncTreeTableComponent extends GridBase
                     });
                     // childrenData = data;
                     this.insertChildrenListToTree(data, response.data);
-                    this.loading = false;
-                } else {
-                    this.loading = false;
                 }
+                this.loading = false;
             })();
         } else {
             if (childrenData) {
@@ -503,7 +511,6 @@ export class BsnAsyncTreeTableComponent extends GridBase
                     }
                     
                 })
-                // console.log('505');
             }
             setTimeout(() => {
                 this.loading = false;
@@ -522,14 +529,22 @@ export class BsnAsyncTreeTableComponent extends GridBase
     }
 
     private insertChildrenListToTree(parent, childrenList) {
-        const index = this.treeData.findIndex(d => d.Id === parent.Id);
+        // *重写当前节点的子节点数据,保证折叠之后数据完整性*
+        parent['children'] = childrenList;
+        const index = this.dataList.findIndex(d => d.Id === parent.Id);
         // 删除重复添加的子节点数据
-        childrenList.forEach((child, i) => {
-            if (this.treeData.includes(child)) {
-                childrenList.splice(i, 1);
-            }
-        })
-        this.treeData.splice(index + 1, 0, ...childrenList);
+        for (let i = 0, len = this.dataList.length; i < len; i++) {
+            childrenList.forEach(child => {
+                if (this.dataList[i].Id === child.Id) {
+                    this.dataList.splice(i, 1);
+                    i--;
+                    len--;
+                }
+            });
+        }
+
+        
+        this.dataList.splice(index + 1, 0, ...childrenList);
     }
 
     private expandLoad(parentData) {
@@ -558,6 +573,10 @@ export class BsnAsyncTreeTableComponent extends GridBase
      * @param $event 
      */
     private selectRow(data, $event) {
+        
+        if ($event.srcElement.className === 'ant-table-row-expand-icon ng-star-inserted ant-table-row-collapsed') {
+            return;
+        }
         if (
             $event.srcElement.type === 'checkbox' ||
             $event.target.type === 'checkbox'
@@ -577,6 +596,8 @@ export class BsnAsyncTreeTableComponent extends GridBase
                     : 'Id'
             ];
         }
+        this.selectedItem.expand = true;
+        this.expandChange(data.children, data, true);
     }
 
     /**
@@ -620,7 +641,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
             this.editCache[newRow['Id']] = { edit: true, data: newRow };
             // 数据添加到具体选中行的下方
             this.dataList = this._setChildRow(newRow, parentId);
-           // this.treeData.push(newRow);  //【 liu 20190115】 注释 注释调这行后不会新增下级多行重复
+            this.treeData.push(newRow);
         } else {
             console.log('未选择任何行,无法添加下级');
             return false;
