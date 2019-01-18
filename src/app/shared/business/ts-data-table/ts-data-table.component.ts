@@ -127,6 +127,7 @@ export class TsDataTableComponent extends CnComponentBase
     public selectGridValueName;
     public changeConfig_new = {};
     public changeConfig_newSearch = {};
+    public ajaxColumns; // 动态列
     // 前置条件集合
     public beforeOperation;
     constructor(
@@ -4208,6 +4209,7 @@ export class TsDataTableComponent extends CnComponentBase
                 console.log('异步请求列信息', loadData.data);
                 if (loadData.data.length > 0) {
                     if (loadData.data.length < 50) { // 异常处理，超过50个
+                      this.ajaxColumns =  loadData.data;
                         loadData.data.forEach(element => {
                             const column = {};
                             this.config.columnsConfig.forEach(cc => {
@@ -4229,7 +4231,7 @@ export class TsDataTableComponent extends CnComponentBase
      * 标题操作 titletToolbarAction  liu 20191017
      */
     public titletToolbarAction(col?) {
-
+       //  this. ajaxColumns;  // 动态列信息，也就是检测项目信息
         console.log('点击', col, this._getCheckedItems());
 
         const sendData = {
