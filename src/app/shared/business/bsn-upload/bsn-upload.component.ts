@@ -43,15 +43,17 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
         private _apiService: ApiService
     ) {}
 
-    public ngOnInit() {}
-
-    public ngAfterViewInit() {
+    public ngOnInit() {
         this.loadUploadList();
     }
 
-    public loadUploadList() {
+    public ngAfterViewInit() {
+       // this.loadUploadList();
+    }
+
+    public async loadUploadList() {
         this.loading = true;
-        this._apiService
+           this._apiService
             .get(
                 this.config.listUrl,
                 CommonTools.parametersResolver({
@@ -62,10 +64,10 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
             .subscribe(
                 result => {
                     this.uploadList = result.data;
-                    this.loading = false;
+                        this.loading = false;
                 },
                 error => {
-                    this.loading = false;
+                        this.loading = false;
                 }
             );
     }
