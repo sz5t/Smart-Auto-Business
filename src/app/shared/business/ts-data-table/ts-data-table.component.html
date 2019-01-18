@@ -6,16 +6,23 @@
 
     <thead (nzSortChange)="sort($event)" nzSingleSort>
         <tr (contextmenu)="contextMenu($event,contextTemplate)">
-            <th *ngIf="config.showCheckBox"  [nzWidth]="'10px'" [nzShowCheckbox]="config.showCheckBox ? config.showCheckBox : false" [(nzChecked)]="allChecked"
-                [nzIndeterminate]="indeterminate" (nzCheckedChange)="checkAll($event)">
+            <th *ngIf="config.showCheckBox" [nzWidth]="config.checkedConfig.width?config.checkedConfig.width:'10px'" [nzShowCheckbox]="config.showCheckBox ? config.showCheckBox : false"
+                [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="checkAll($event)">
             </th>
             <ng-template ngFor let-col [ngForOf]="config.columns">
                 <th [nzWidth]="col.width" [nzShowSort]="col.showSort" [nzShowFilter]="col.showFilter" *ngIf="!col.hidden" [nzSortKey]="col.field"
-                    [ngClass]="[col.titleAlign ? col.titleAlign : '']"
-                     >
-                     <!-- (mousedown)="th_onmousedown($event)" (mouseup)="th_onmouseup($event)" (mousemove)="th_onmousemove($event,col)" -->
+                    [ngClass]="[col.titleAlign ? col.titleAlign : '']">
+                    <!-- (mousedown)="th_onmousedown($event)" (mouseup)="th_onmouseup($event)" (mousemove)="th_onmousemove($event,col)" -->
                     <!--  [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" (nzFilterChange)="columnFilter(col.editor.field, $event)" -->
-                    <span>{{col.title}}</span>
+                    <ng-container *ngIf="config.checkedConfig">
+                        <span *ngIf="col.text">{{col.title}}</span>
+                        <button *ngIf="!col.text" nz-button nzType="primary" nzBlock    (click)="titletToolbarAction(col)">{{col.title}}</button>
+                    </ng-container>
+                    <ng-container *ngIf="!config.checkedConfig">
+                        <span *ngIf="!col.button">{{col.title}}</span>
+                        <button *ngIf="col.button" nz-button nzType="primary" nzBlock    (click)="titletToolbarAction(col)">{{col.title}}</button>
+                    </ng-container>
+
                 </th>
             </ng-template>
         </tr>
@@ -24,8 +31,18 @@
         <ng-template ngFor let-data [ngForOf]="nzTable.data">
             <ng-container *ngIf="data.row_status === 'search'">
                 <tr>
-                    <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked()">
-                    </td>
+                    <ng-container *ngIf="config.checkedConfig">
+                        <td *ngIf="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
+                            <!-- [nzShowCheckbox]="config.showCheckBox" _serilize  nzCheckedChildren="data[config.columns[0].field]" nzUnCheckedChildren="data[config.columns[0].field]" -->
+                            <nz-switch [ngModel]="data.checked" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
+                            <ng-template #checkedTemplate>{{data[config.checkedConfig.feild]}}</ng-template>
+                            <ng-template #unCheckedTemplate>{{data[config.checkedConfig.feild]}}</ng-template>
+                        </td>
+                    </ng-container>
+                    <ng-container *ngIf="!config.checkedConfig">
+                        <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
+                        </td>
+                    </ng-container>
                     <ng-template ngFor let-col [ngForOf]="config.columns">
                         <td *ngIf="!col.hidden">
                             <ng-container *ngIf="col.editor || col.searcheditor">
@@ -72,8 +89,20 @@
             </ng-container>
             <ng-container *ngIf="data.row_status != 'search'">
                 <tr (click)="selectRow(data, $event)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
-                    <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
-                    </td>
+
+                    <ng-container *ngIf="config.checkedConfig">
+                        <td *ngIf="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
+                            <!-- [nzShowCheckbox]="config.showCheckBox" _serilize  nzCheckedChildren="data[config.columns[0].field]" nzUnCheckedChildren="data[config.columns[0].field]" -->
+                            <nz-switch [ngModel]="data.checked" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
+                            <ng-template #checkedTemplate>{{data[config.checkedConfig.feild]}}</ng-template>
+                            <ng-template #unCheckedTemplate>{{data[config.checkedConfig.feild]}}</ng-template>
+                        </td>
+                    </ng-container>
+                    <ng-container *ngIf="!config.checkedConfig">
+                        <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
+                        </td>
+                    </ng-container>
+
                     <ng-template ngFor let-col [ngForOf]="config.columns">
                         <td *ngIf="!col.hidden">
                             <ng-container *ngIf="col.editor">
@@ -137,40 +166,39 @@
 
 
 <nz-modal [(nzVisible)]="isVisible" nzTitle="高级设置" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
-        <nz-card>
-            <div nz-row>
-                <div nz-col nzSpan="12">
-                    <label>表格宽度：</label>
-                    <input [(ngModel)]="tablewidth" style="width:80px; border:none; border-bottom:1px solid #1890ff;">
-                </div>
-                <div nz-col nzSpan="12">
-                    <label>表格高度：</label>
-                    <input [(ngModel)]="tableheight" style="width:80px; border:none; border-bottom:1px solid #1890ff;">
-                </div>
+    <nz-card>
+        <div nz-row>
+            <div nz-col nzSpan="12">
+                <label>表格宽度：</label>
+                <input [(ngModel)]="tablewidth" style="width:80px; border:none; border-bottom:1px solid #1890ff;">
             </div>
-        </nz-card>
-        <nz-table #basicTable [nzData]="c_data" [nzFrontPagination]="false"  [nzShowPagination]="false"  [nzScroll]="{y:'400px'}" nzSize="middle">
-            <thead>
-                <tr #bt>
-                        <th nzWidth="100px" >
-                            列名称
-                        </th>
-                        <th nzWidth="100px">是否隐藏</th>
-                        <th nzWidth="100px">宽度</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of basicTable.data" [draggable]="is_drag" (dragstart)="f_ondragstart($event,data)" (dragover)="f_ondragover($event,data)"
-                    (drop)="f_ondrop($event,data)">
-                    <td>{{data.title?data.title:data.field}}</td>
-                    <td>
-                        <nz-switch [(ngModel)]="data.hidden" name="bordered"></nz-switch>
-                    </td>
-                    <td>
-                        <input draggable="false"  [(ngModel)]="data.width" (blur)="onblur($event,data)" (focus)="onfocus($event,data)"
-                            style="width:80px; border:none; border-bottom:1px solid #1890ff;">
-                    </td>
-                </tr>
-            </tbody>
-        </nz-table>
-    </nz-modal>
+            <div nz-col nzSpan="12">
+                <label>表格高度：</label>
+                <input [(ngModel)]="tableheight" style="width:80px; border:none; border-bottom:1px solid #1890ff;">
+            </div>
+        </div>
+    </nz-card>
+    <nz-table #basicTable [nzData]="c_data" [nzFrontPagination]="false" [nzShowPagination]="false" [nzScroll]="{y:'400px'}" nzSize="middle">
+        <thead>
+            <tr #bt>
+                <th nzWidth="100px">
+                    列名称
+                </th>
+                <th nzWidth="100px">是否隐藏</th>
+                <th nzWidth="100px">宽度</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of basicTable.data" [draggable]="is_drag" (dragstart)="f_ondragstart($event,data)" (dragover)="f_ondragover($event,data)"
+                (drop)="f_ondrop($event,data)">
+                <td>{{data.title?data.title:data.field}}</td>
+                <td>
+                    <nz-switch [(ngModel)]="data.hidden" name="bordered"></nz-switch>
+                </td>
+                <td>
+                    <input draggable="false" [(ngModel)]="data.width" (blur)="onblur($event,data)" (focus)="onfocus($event,data)" style="width:80px; border:none; border-bottom:1px solid #1890ff;">
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+</nz-modal>

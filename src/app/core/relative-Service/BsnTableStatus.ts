@@ -80,6 +80,7 @@ export const BSN_OUTPOUT_PARAMETER_TYPE = {
 };
 
 export const BSN_COMPONENT_CASCADE_MODES = {
+    AUTO_RESIZE: 'autoResize',
     // grid, tree
     REFRESH_AS_CHILD: 'refreshAsChild',
     RELOAD: 'reload',

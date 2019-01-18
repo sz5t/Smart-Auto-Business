@@ -4220,10 +4220,45 @@ export class TsDataTableComponent extends CnComponentBase
             }
         }
         const Columns = this.mergedColumns(loadColumns);
-        this.config.columns = Columns; 
+        this.config.columns = Columns;
     }
 
 
+
+    /**
+     * 标题操作 titletToolbarAction  liu 20191017
+     */
+    public titletToolbarAction(col?) {
+
+        console.log('点击', col, this._getCheckedItems());
+
+        const sendData = {
+            autoResize: [{
+                viewId: 'col001',
+                span: 0,
+                size: {
+                    nzXs: 0,
+                    nzSm: 0,
+                    nzMd: 0,
+                    nzLg: 0,
+                    ngXl: 0
+                }
+            }]
+        };
+
+        this.cascade.next(
+            new BsnComponentMessage(
+                BSN_COMPONENT_CASCADE_MODES['AUTO_RESIZE'],
+                this.config.viewId,
+                {
+                    data: sendData
+                }
+            )
+        );
+        console.log('sendData', sendData);
+
+
+    }
 
 
 }
