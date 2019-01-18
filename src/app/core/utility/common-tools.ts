@@ -112,7 +112,6 @@ export class CommonTools {
                                                 dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
                                                 break;
                                                 case 'defaultDay':
-
                                                 break;
                                                 case 'defaultMonth':
                                                 dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1 }`;
@@ -209,12 +208,44 @@ export class CommonTools {
                             break;
                         case BSN_PARAMETER_TYPE.INIT_VALUE:
                             if (model.initValue) {
-                              //  result[param['name']] = model.initValue[param['valueName']];
+                                if (
+                                    model.initValue[param['valueName']] ===
+                                    null ||
+                                    model.initValue[param['valueName']] ===
+                                    undefined
+                                ) {
+                                    if (param['value'] !== undefined) {
+                                        if (param['datatype']) {
+                                            result[param['name']] = this.getParameters(param['datatype'], model.initValue['value']);
+                                        } else if (param['defaultDate']) {
+                                            const dateType = param['defaultDate'];
+                                            let dValue;
+                                            switch (dateType) {
+                                                case 'defaultWeek':
+                                                dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
+                                                break;
+                                                case 'defaultDay':
+                                                break;
+                                                case 'defaultMonth':
+                                                dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1 }`;
+                                                break;
+                                                case 'defaultYear':
+                                                dValue = `${getISOYear(Date.now())}`;
+                                                break;
+                                            }
+                                            result[param['name']] = dValue;
+                                        } else {
+                                            result[param['name']] = param['value'];
+                                        }
+                                    }
+                                } else {
                                     if (param['datatype']) {
                                         result[param['name']] = this.getParameters(param['datatype'], model.initValue[param['valueName']]);
                                     } else {
                                         result[param['name']] = model.initValue[param['valueName']];
                                     }
+                                }
+                                    
                             }
                             break;
                         case BSN_PARAMETER_TYPE.CACHE_VALUE:

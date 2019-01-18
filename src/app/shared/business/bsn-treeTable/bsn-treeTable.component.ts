@@ -481,15 +481,10 @@ export class BsnAsyncTreeTableComponent extends GridBase
         this.expandChange(children, this.selectedItem, true);
     }
 
-    public expandChange(childrenData, data: any, $event: boolean) {
-
-        setTimeout(() => {
-            this.loading = true;
-        }, 10);
-        
+    public async expandChange(childrenData, data: any, $event: boolean) {
+        this.loading = true;
         if ($event === true) {
-            (async () => {
-                const response = await this.expandLoad(data);
+            const response = await this.expandLoad(data);
                 if (response.isSuccess && response.data.length > 0) {
                     response.data.forEach(d => {
                         this.setChildExpand(d, data['level'] + 1);
@@ -498,7 +493,6 @@ export class BsnAsyncTreeTableComponent extends GridBase
                     this.insertChildrenListToTree(data, response.data);
                 }
                 this.loading = false;
-            })();
         } else {
             if (childrenData) {
                 childrenData.forEach(d => {
@@ -512,9 +506,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
                     
                 })
             }
-            setTimeout(() => {
-                this.loading = false;
-            }, 10);
+            this.loading = false;
         }
     }
 

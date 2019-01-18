@@ -1,30 +1,30 @@
-import { CnComponentBase } from "@shared/components/cn-component-base";
-import { Component, OnInit, ViewChild, Inject } from "@angular/core";
-import { _HttpClient } from "@delon/theme";
-import { SimpleTableColumn, SimpleTableComponent } from "@delon/abc";
-import { ApiService } from "@core/utility/api-service";
+import { CnComponentBase } from '@shared/components/cn-component-base';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { _HttpClient } from '@delon/theme';
+import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
+import { ApiService } from '@core/utility/api-service';
 import {
     BSN_COMPONENT_CASCADE,
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE_MODES
-} from "@core/relative-Service/BsnTableStatus";
-import { Observer } from "rxjs";
+} from '@core/relative-Service/BsnTableStatus';
+import { Observer } from 'rxjs';
 
 @Component({
-    selector: "cn-module-managers",
-    templateUrl: "./module-managers.component.html"
+    selector: 'cn-module-managers',
+    templateUrl: './module-managers.component.html'
 })
 export class ModuleManagersComponent extends CnComponentBase implements OnInit {
-    config = {
+    public config = {
         rows: [
             {
                 row: {
                     cols: [
                         {
-                            id: "area1",
-                            title: "数据网格",
+                            id: 'area1',
+                            title: '数据网格',
                             span: 24,
-                            icon: "icon-list",
+                            icon: 'icon-list',
                             size: {
                                 nzXs: 24,
                                 nzSm: 24,
@@ -35,11 +35,11 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                             viewCfg: [
                                 {
                                     config: {
-                                        title: "模块管理",
-                                        viewId: "bsnTreeTable",
-                                        component: "bsnAsyncTreeTable",
+                                        title: '模块管理',
+                                        viewId: 'bsnTreeTable',
+                                        component: 'bsnAsyncTreeTable',
                                         info: true,
-                                        keyId: "Id",
+                                        keyId: 'Id',
                                         pagination: true, // 是否分页
                                         showTotal: true, // 是否显示总数据量
                                         pageSize: 15, // 默认每页数据条数
@@ -53,28 +53,33 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                         ],
                                         ajaxConfig: {
                                             url:
-                                                "common/CfgProjectModule/_root/CfgProjectModule",
-                                            ajaxType: "get",
+                                                'common/CfgProjectModule/_root/CfgProjectModule',
+                                            ajaxType: 'get',
                                             params: [
                                                 {
-                                                    name: "refProjectId",
-                                                    type: "tempValue",
-                                                    valueName: "_parentId"
+                                                    name: 'refProjectId',
+                                                    type: 'tempValue',
+                                                    valueName: '_projectId'
                                                 },
                                                 {
-                                                    name: "_sort",
-                                                    type: "value",
-                                                    value: "createDate desc"
+                                                    name: '_root.refProjectId',
+                                                    type: 'tempValue',
+                                                    valueName: '_projectId'
                                                 },
                                                 {
-                                                    name: "_root.parentId",
-                                                    type: "value",
+                                                    name: '_sort',
+                                                    type: 'value',
+                                                    value: 'createDate desc'
+                                                },
+                                                {
+                                                    name: '_root.parentId',
+                                                    type: 'value',
                                                     value: null
                                                 },
                                                 {
-                                                    name: "_deep",
-                                                    type: "value",
-                                                    value: "2"
+                                                    name: '_deep',
+                                                    type: 'value',
+                                                    value: '2'
                                                 }
                                             ],
                                             childrenParams: [
@@ -84,228 +89,233 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                     valueName: 'Id'
                                                 },
                                                 {
-                                                    name: "refProjectId",
-                                                    type: "tempValue",
-                                                    valueName: "_parentId"
+                                                    name: 'refProjectId',
+                                                    type: 'tempValue',
+                                                    valueName: '_projectId'
                                                 },
                                                 {
-                                                    name: "_sort",
-                                                    type: "value",
-                                                    value: "createDate desc"
+                                                    name: 'projectId',
+                                                    type: 'tempValue',
+                                                    valueName: '_projectId'
                                                 },
                                                 {
-                                                    name: "_deep",
-                                                    type: "value",
-                                                    value: "2"
+                                                    name: '_sort',
+                                                    type: 'value',
+                                                    value: 'createDate desc'
+                                                },
+                                                {
+                                                    name: '_deep',
+                                                    type: 'value',
+                                                    value: '2'
                                                 }
                                             ],
                                             filter: []
                                         },
                                         columns: [
                                             {
-                                                title: "Id",
-                                                field: "Id",
+                                                title: 'Id',
+                                                field: 'Id',
                                                 width: 'auto',
                                                 hidden: true
                                             },
                                             {
-                                                title: "模块名称",
-                                                field: "name",
-                                                width: "200px",
+                                                title: '模块名称',
+                                                field: 'name',
+                                                width: '200px',
                                                 expand: true,
                                                 showFilter: false,
                                                 showSort: false,
                                                 editor: {
-                                                    type: "input",
-                                                    field: "name",
+                                                    type: 'input',
+                                                    field: 'name',
                                                     options: {
-                                                        type: "input",
-                                                        inputType: "text",
-                                                        width: "100px"
+                                                        type: 'input',
+                                                        inputType: 'text',
+                                                        width: '100px'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: "排序编号",
-                                                field: "orderCode",
-                                                width: "90px",
+                                                title: '排序编号',
+                                                field: 'orderCode',
+                                                width: '90px',
                                                 expand: false,
                                                 showFilter: false,
                                                 showSort: false,
                                                 editor: {
-                                                    type: "input",
-                                                    field: "orderCode",
+                                                    type: 'input',
+                                                    field: 'orderCode',
                                                     options: {
-                                                        type: "input",
-                                                        inputType: "text",
-                                                        width: "100px"
+                                                        type: 'input',
+                                                        inputType: 'text',
+                                                        width: '100px'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: "模块编码",
-                                                field: "code",
-                                                width: "100px",
+                                                title: '模块编码',
+                                                field: 'code',
+                                                width: '100px',
                                                 hidden: false,
                                                 expand: false,
                                                 showFilter: false,
                                                 showSort: false,
                                                 editor: {
-                                                    type: "input",
-                                                    field: "code",
+                                                    type: 'input',
+                                                    field: 'code',
                                                     options: {
-                                                        type: "input",
-                                                        inputType: "text",
-                                                        width: "100px"
+                                                        type: 'input',
+                                                        inputType: 'text',
+                                                        width: '100px'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: "URL",
-                                                field: "url",
-                                                width: "150px",
+                                                title: 'URL',
+                                                field: 'url',
+                                                width: '150px',
                                                 hidden: false,
                                                 expand: false,
                                                 editor: {
-                                                    type: "input",
-                                                    field: "url",
+                                                    type: 'input',
+                                                    field: 'url',
                                                     options: {
-                                                        type: "input",
-                                                        inputType: "text"
+                                                        type: 'input',
+                                                        inputType: 'text'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: "图标",
-                                                field: "icon",
-                                                width: "100px",
+                                                title: '图标',
+                                                field: 'icon',
+                                                width: '100px',
                                                 hidden: false,
                                                 expand: false,
                                                 editor: {
-                                                    type: "input",
-                                                    field: "icon",
+                                                    type: 'input',
+                                                    field: 'icon',
                                                     options: {
-                                                        type: "input",
-                                                        inputType: "text"
+                                                        type: 'input',
+                                                        inputType: 'text'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: "父级",
-                                                field: "parentName",
-                                                width: "100px",
+                                                title: '父级',
+                                                field: 'parentName',
+                                                width: '100px',
                                                 hidden: false,
                                                 showFilter: false,
                                                 showSort: false,
                                                 editor: {
-                                                    type: "input",
-                                                    field: "parentId",
+                                                    type: 'input',
+                                                    field: 'parentId',
                                                     options: {
-                                                        type: "selectTree",
-                                                        name: "parentId",
-                                                        label: "父类别",
-                                                        notFoundContent: "",
+                                                        type: 'selectTree',
+                                                        name: 'parentId',
+                                                        label: '父类别',
+                                                        notFoundContent: '',
                                                         selectModel: false,
                                                         showSearch: true,
                                                         placeholder:
-                                                            "--请选择--",
+                                                            '--请选择--',
                                                         disabled: false,
                                                         expandAll: false,
-                                                        size: "default",
+                                                        size: 'default',
                                                         columns: [
                                                             // 字段映射，映射成树结构所需
                                                             {
-                                                                title: "主键",
-                                                                field: "key",
-                                                                valueName: "Id"
+                                                                title: '主键',
+                                                                field: 'key',
+                                                                valueName: 'Id'
                                                             },
                                                             {
-                                                                title: "父节点",
+                                                                title: '父节点',
                                                                 field:
-                                                                    "parentId",
+                                                                    'parentId',
                                                                 valueName:
-                                                                    "parentId"
+                                                                    'parentId'
                                                             },
                                                             {
-                                                                title: "标题",
-                                                                field: "title",
+                                                                title: '标题',
+                                                                field: 'title',
                                                                 valueName:
-                                                                    "name"
+                                                                    'name'
                                                             }
                                                         ],
                                                         ajaxConfig: {
                                                             url:
-                                                                "common/CfgProjectModule",
-                                                            ajaxType: "get",
+                                                                'common/CfgProjectModule',
+                                                            ajaxType: 'get',
                                                             params: [
                                                                 // { name: 'LayoutId', type: 'tempValue', valueName: '_LayoutId', value: '' }
                                                             ]
                                                         },
-                                                        layout: "column",
-                                                        span: "24"
+                                                        layout: 'column',
+                                                        span: '24'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: "配置文本",
-                                                field: "moduleBody",
-                                                width: "80px",
+                                                title: '配置文本',
+                                                field: 'moduleBody',
+                                                width: '80px',
                                                 hidden: false,
                                                 expand: false,
                                                 showFilter: false,
                                                 showSort: false,
                                                 editor: {
-                                                    type: "input",
-                                                    field: "moduleBody",
+                                                    type: 'input',
+                                                    field: 'moduleBody',
                                                     options: {
-                                                        type: "input",
-                                                        inputType: "text"
+                                                        type: 'input',
+                                                        inputType: 'text'
                                                     }
                                                 }
                                             },
                                             {
-                                                title: "是否有效",
-                                                field: "isEnabled",
-                                                width: "80px",
+                                                title: '是否有效',
+                                                field: 'isEnabled',
+                                                width: '80px',
                                                 hidden: false,
                                                 expand: false,
                                                 formatter: [
                                                     {
-                                                        value: "1",
-                                                        bgcolor: "",
-                                                        fontcolor: "text-blue",
-                                                        valueas: "有效"
+                                                        value: '1',
+                                                        bgcolor: '',
+                                                        fontcolor: 'text-blue',
+                                                        valueas: '有效'
                                                     },
                                                     {
-                                                        value: "0",
-                                                        bgcolor: "",
-                                                        fontcolor: "text-red",
-                                                        valueas: "无效"
+                                                        value: '0',
+                                                        bgcolor: '',
+                                                        fontcolor: 'text-red',
+                                                        valueas: '无效'
                                                     }
                                                 ],
                                                 editor: {
-                                                    type: "select",
-                                                    field: "isEnabled",
+                                                    type: 'select',
+                                                    field: 'isEnabled',
                                                     options: {
-                                                        type: "select",
-                                                        name: "isEnabled",
-                                                        notFoundContent: "",
+                                                        type: 'select',
+                                                        name: 'isEnabled',
+                                                        notFoundContent: '',
                                                         selectModel: false,
                                                         showSearch: true,
-                                                        placeholder: "-请选择-",
+                                                        placeholder: '-请选择-',
                                                         disabled: false,
-                                                        size: "default",
+                                                        size: 'default',
                                                         clear: true,
-                                                        width: "80px",
+                                                        width: '80px',
                                                         defaultValue: true,
                                                         options: [
                                                             {
-                                                                label: "启用",
+                                                                label: '启用',
                                                                 value: true,
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "禁用",
+                                                                label: '禁用',
                                                                 value: false,
                                                                 disabled: false
                                                             }
@@ -314,49 +324,49 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                 }
                                             },
                                             {
-                                                title: "是否发布",
-                                                field: "isNeedDeploy",
-                                                width: "80px",
+                                                title: '是否发布',
+                                                field: 'isNeedDeploy',
+                                                width: '80px',
                                                 hidden: false,
                                                 expand: false,
                                                 formatter: [
                                                     {
-                                                        value: "1",
-                                                        bgcolor: "",
-                                                        fontcolor: "text-blue",
-                                                        valueas: "发布"
+                                                        value: '1',
+                                                        bgcolor: '',
+                                                        fontcolor: 'text-blue',
+                                                        valueas: '发布'
                                                     },
                                                     {
-                                                        value: "0",
-                                                        bgcolor: "",
-                                                        fontcolor: "text-red",
-                                                        valueas: "未发布"
+                                                        value: '0',
+                                                        bgcolor: '',
+                                                        fontcolor: 'text-red',
+                                                        valueas: '未发布'
                                                     }
                                                 ],
                                                 editor: {
-                                                    type: "select",
-                                                    field: "isNeedDeploy",
+                                                    type: 'select',
+                                                    field: 'isNeedDeploy',
                                                     options: {
-                                                        type: "select",
-                                                        inputType: "submit",
-                                                        name: "isNeedDeploy",
-                                                        notFoundContent: "",
+                                                        type: 'select',
+                                                        inputType: 'submit',
+                                                        name: 'isNeedDeploy',
+                                                        notFoundContent: '',
                                                         selectModel: false,
                                                         showSearch: true,
-                                                        placeholder: "-请选择-",
+                                                        placeholder: '-请选择-',
                                                         disabled: false,
-                                                        size: "default",
+                                                        size: 'default',
                                                         clear: true,
-                                                        width: "80px",
+                                                        width: '80px',
                                                         defaultValue: true,
                                                         options: [
                                                             {
-                                                                label: "启用",
+                                                                label: '启用',
                                                                 value: true,
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "禁用",
+                                                                label: '禁用',
                                                                 value: false,
                                                                 disabled: false
                                                             }
@@ -365,64 +375,64 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                 }
                                             },
                                             {
-                                                title: "所属平台",
-                                                field: "belongPlatformType",
-                                                width: "80px",
+                                                title: '所属平台',
+                                                field: 'belongPlatformType',
+                                                width: '80px',
                                                 hidden: false,
                                                 expand: false,
                                                 formatter: [
                                                     {
-                                                        value: "1",
-                                                        bgcolor: "",
-                                                        fontcolor: "text-blue",
-                                                        valueas: "配置平台"
+                                                        value: '1',
+                                                        bgcolor: '',
+                                                        fontcolor: 'text-blue',
+                                                        valueas: '配置平台'
                                                     },
                                                     {
-                                                        value: "2",
-                                                        bgcolor: "",
-                                                        fontcolor: "text-red",
-                                                        valueas: "运行平台"
+                                                        value: '2',
+                                                        bgcolor: '',
+                                                        fontcolor: 'text-red',
+                                                        valueas: '运行平台'
                                                     },
                                                     {
-                                                        value: "3",
-                                                        bgcolor: "",
-                                                        fontcolor: "text-green",
-                                                        valueas: "通用"
+                                                        value: '3',
+                                                        bgcolor: '',
+                                                        fontcolor: 'text-green',
+                                                        valueas: '通用'
                                                     }
                                                 ],
                                                 editor: {
-                                                    type: "select",
-                                                    field: "belongPlatformType",
+                                                    type: 'select',
+                                                    field: 'belongPlatformType',
                                                     options: {
-                                                        type: "select",
-                                                        inputType: "submit",
+                                                        type: 'select',
+                                                        inputType: 'submit',
                                                         name:
-                                                            "belongPlatformType",
-                                                        notFoundContent: "",
+                                                            'belongPlatformType',
+                                                        notFoundContent: '',
                                                         selectModel: false,
                                                         showSearch: true,
-                                                        placeholder: "-请选择-",
+                                                        placeholder: '-请选择-',
                                                         disabled: false,
-                                                        size: "default",
+                                                        size: 'default',
                                                         clear: true,
-                                                        width: "80px",
-                                                        defaultValue: "2",
+                                                        width: '80px',
+                                                        defaultValue: '2',
                                                         options: [
                                                             {
                                                                 label:
-                                                                    "配置平台",
-                                                                value: "1",
+                                                                    '配置平台',
+                                                                value: '1',
                                                                 disabled: false
                                                             },
                                                             {
                                                                 label:
-                                                                    "运行平台",
-                                                                value: "2",
+                                                                    '运行平台',
+                                                                value: '2',
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "通用",
-                                                                value: "3",
+                                                                label: '通用',
+                                                                value: '3',
                                                                 disabled: false
                                                             }
                                                         ]
@@ -438,12 +448,12 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                         relations: [
                                             {
                                                 relationViewId:
-                                                    "projectId_module",
-                                                cascadeMode: "REFRESH_AS_CHILD",
+                                                    'projectId_module',
+                                                cascadeMode: 'REFRESH_AS_CHILD',
                                                 params: [
                                                     {
-                                                        pid: "Id",
-                                                        cid: "_parentId"
+                                                        pid: 'Id',
+                                                        cid: '_projectId'
                                                     }
                                                 ],
                                                 relationReceiveContent: []
@@ -453,339 +463,345 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                             {
                                                 group: [
                                                     {
-                                                        name: "refresh",
-                                                        text: "刷新",
+                                                        name: 'refresh',
+                                                        text: '刷新',
                                                         cancelPermission: true
                                                     },
                                                     {
-                                                        name: "addRow",
-                                                        text: "新增",
-                                                        action: "CREATE",
+                                                        name: 'addRow',
+                                                        text: '新增',
+                                                        action: 'CREATE',
                                                         cancelPermission: true
                                                     },
                                                     {
-                                                        name: "addRow",
-                                                        text: "新增下级模块",
-                                                        action: "CREATE_CHILD",
+                                                        name: 'addRow',
+                                                        text: '新增下级模块',
+                                                        action: 'CREATE_CHILD',
                                                         cancelPermission: true
                                                     },
                                                     {
-                                                        name: "updateRow",
-                                                        text: "编辑",
-                                                        action: "EDIT",
+                                                        name: 'updateRow',
+                                                        text: '编辑',
+                                                        action: 'EDIT',
                                                         cancelPermission: true
                                                     },
                                                     {
-                                                        name: "deleteRow",
+                                                        name: 'deleteRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "删除",
-                                                        action: "DELETE",
+                                                            'editable-add-btn',
+                                                        text: '删除',
+                                                        action: 'DELETE',
                                                         cancelPermission: true,
                                                         ajaxConfig: {
                                                             delete: [
                                                                 {
                                                                     actionName:
-                                                                        "delete",
+                                                                        'delete',
                                                                     url:
-                                                                        "common/CfgProjectModule",
+                                                                        'common/CfgProjectModule',
                                                                     ajaxType:
-                                                                        "delete"
+                                                                        'delete'
                                                                 }
                                                             ]
                                                         }
                                                     },
                                                     {
-                                                        name: "saveRow",
-                                                        text: "保存",
+                                                        name: 'saveRow',
+                                                        text: '保存',
                                                         icon:
-                                                            "anticon anticon-save",
+                                                            'anticon anticon-save',
                                                         cancelPermission: true,
                                                         ajaxConfig: [
                                                             {
                                                                 action:
-                                                                    "EXECUTE_SAVE_TREE_ROW",
+                                                                    'EXECUTE_SAVE_TREE_ROW',
                                                                 url:
-                                                                    "common/CfgProjectModule",
+                                                                    'common/CfgProjectModule',
                                                                 ajaxType:
-                                                                    "post",
+                                                                    'post',
                                                                 params: [
                                                                     {
-                                                                        name:
-                                                                            "parentId",
-                                                                        type:
-                                                                            "componentValue",
-                                                                        valueName:
-                                                                            "parentId",
-                                                                        value:
-                                                                            ""
+                                                                        name: 'refProjectId',
+                                                                        type: 'tempValue',
+                                                                        valueName: '_projectId'
+                                                                    },
+                                                                    {
+                                                                        name: 'projectId',
+                                                                        type: 'tempValue',
+                                                                        valueName: '_projectId'
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "name",
+                                                                            'parentId',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "name",
-                                                                        value:
-                                                                            ""
+                                                                            'parentId'
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "code",
+                                                                            'name',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "code",
+                                                                            'name',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "url",
+                                                                            'code',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "url",
+                                                                            'code',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "icon",
+                                                                            'url',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "icon",
+                                                                            'url',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "orderCode",
+                                                                            'icon',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "orderCode",
+                                                                            'icon',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "moduleBody",
+                                                                            'orderCode',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "moduleBody",
+                                                                            'orderCode',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "isEnabled",
+                                                                            'moduleBody',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "isEnabled",
+                                                                            'moduleBody',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "isNeedDeploy",
+                                                                            'isEnabled',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "isNeedDeploy",
+                                                                            'isEnabled',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "belongPlatformType",
+                                                                            'isNeedDeploy',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "belongPlatformType",
+                                                                            'isNeedDeploy',
                                                                         value:
-                                                                            ""
+                                                                            ''
+                                                                    },
+                                                                    {
+                                                                        name:
+                                                                            'belongPlatformType',
+                                                                        type:
+                                                                            'componentValue',
+                                                                        valueName:
+                                                                            'belongPlatformType',
+                                                                        value:
+                                                                            ''
                                                                     }
                                                                 ]
                                                             },
                                                             {
                                                                 action:
-                                                                    "EXECUTE_EDIT_TREE_ROW",
+                                                                    'EXECUTE_EDIT_TREE_ROW',
                                                                 url:
-                                                                    "common/CfgProjectModule",
-                                                                ajaxType: "put",
+                                                                    'common/CfgProjectModule',
+                                                                ajaxType: 'put',
                                                                 params: [
                                                                     {
                                                                         name:
-                                                                            "Id",
+                                                                            'Id',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "Id",
+                                                                            'Id',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "parentId",
+                                                                            'parentId',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "parentId",
-                                                                        value:
-                                                                            ""
+                                                                            'parentId'
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "name",
+                                                                            'name',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "name",
+                                                                            'name',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "code",
+                                                                            'code',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "code",
+                                                                            'code',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "url",
+                                                                            'url',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "url",
+                                                                            'url',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "icon",
+                                                                            'icon',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "icon",
+                                                                            'icon',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "orderCode",
+                                                                            'orderCode',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "orderCode",
+                                                                            'orderCode',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "moduleBody",
+                                                                            'moduleBody',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "moduleBody",
+                                                                            'moduleBody',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "isEnabled",
+                                                                            'isEnabled',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "isEnabled",
+                                                                            'isEnabled',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "isNeedDeploy",
+                                                                            'isNeedDeploy',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "isNeedDeploy",
+                                                                            'isNeedDeploy',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "belongPlatformType",
+                                                                            'belongPlatformType',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "belongPlatformType",
+                                                                            'belongPlatformType',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     }
                                                                 ]
                                                             }
                                                         ]
                                                     },
                                                     {
-                                                        name: "cancelRow",
+                                                        name: 'cancelRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "取消",
-                                                        action: "CANCEL",
+                                                            'editable-add-btn',
+                                                        text: '取消',
+                                                        action: 'CANCEL',
                                                         cancelPermission: true
                                                     },
                                                     {
-                                                        name: "addForm",
-                                                        text: "新增模块",
+                                                        name: 'addForm',
+                                                        text: '新增模块',
                                                         icon:
-                                                            "anticon anticon-plus",
-                                                        action: "FORM",
+                                                            'anticon anticon-plus',
+                                                        action: 'FORM',
                                                         actionType:
-                                                            "formDialog",
-                                                        actionName: "addModule",
-                                                        type: "showForm",
+                                                            'formDialog',
+                                                        actionName: 'addModule',
+                                                        type: 'showForm',
                                                         cancelPermission: true
                                                     },
                                                     {
-                                                        name: "editForm",
-                                                        text: "编辑模块",
-                                                        action: "FORM",
+                                                        name: 'editForm',
+                                                        text: '编辑模块',
+                                                        action: 'FORM',
                                                         actionType:
-                                                            "formDialog",
+                                                            'formDialog',
                                                         actionName:
-                                                            "updateModule",
-                                                        type: "showForm",
+                                                            'updateModule',
+                                                        type: 'showForm',
                                                         cancelPermission: true
                                                     },
                                                     {
-                                                        name: "addSearchRow",
+                                                        name: 'addSearchRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "查询",
-                                                        action: "SEARCH",
+                                                            'editable-add-btn',
+                                                        text: '查询',
+                                                        action: 'SEARCH',
                                                         actionType:
-                                                            "addSearchRow",
+                                                            'addSearchRow',
                                                         actionName:
-                                                            "addSearchRow",
+                                                            'addSearchRow',
                                                         cancelPermission: true
                                                     },
                                                     {
-                                                        name: "cancelSearchRow",
+                                                        name: 'cancelSearchRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "取消查询",
-                                                        action: "SEARCH",
+                                                            'editable-add-btn',
+                                                        text: '取消查询',
+                                                        action: 'SEARCH',
                                                         actionType:
-                                                            "cancelSearchRow",
+                                                            'cancelSearchRow',
                                                         actionName:
-                                                            "cancelSearchRow",
+                                                            'cancelSearchRow',
                                                         cancelPermission: true
                                                     }
                                                 ]
@@ -794,11 +810,11 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                     },
                                     formDialog: [
                                         {
-                                            keyId: "Id",
-                                            name: "addModule",
-                                            layout: "horizontal",
-                                            title: "新增模块",
-                                            width: "800",
+                                            keyId: 'Id',
+                                            name: 'addModule',
+                                            layout: 'horizontal',
+                                            title: '新增模块',
+                                            width: '800',
                                             isCard: true,
                                             componentType: {
                                                 parent: false,
@@ -809,84 +825,84 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "selectTree",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            name: "parentId",
-                                                            label: "父模块",
-                                                            labelName: "name",
-                                                            valueName: "Id",
-                                                            notFoundContent: "",
+                                                            type: 'selectTree',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            name: 'parentId',
+                                                            label: '父模块',
+                                                            labelName: 'name',
+                                                            valueName: 'Id',
+                                                            notFoundContent: '',
                                                             selectModel: false,
                                                             showSearch: true,
                                                             placeholder:
-                                                                "--请选择--",
+                                                                '--请选择--',
                                                             disabled: false,
-                                                            size: "default",
+                                                            size: 'default',
                                                             columns: [
                                                                 // 字段映射，映射成树结构所需
                                                                 {
                                                                     title:
-                                                                        "主键",
+                                                                        '主键',
                                                                     field:
-                                                                        "key",
+                                                                        'key',
                                                                     valueName:
-                                                                        "Id"
+                                                                        'Id'
                                                                 },
                                                                 {
                                                                     title:
-                                                                        "父节点",
+                                                                        '父节点',
                                                                     field:
-                                                                        "parentId",
+                                                                        'parentId',
                                                                     valueName:
-                                                                        "parentId"
+                                                                        'parentId'
                                                                 },
                                                                 {
                                                                     title:
-                                                                        "标题",
+                                                                        '标题',
                                                                     field:
-                                                                        "title",
+                                                                        'title',
                                                                     valueName:
-                                                                        "name"
+                                                                        'name'
                                                                 }
                                                             ],
                                                             ajaxConfig: {
                                                                 url:
-                                                                    "common/CfgProjectModule",
-                                                                ajaxType: "get",
+                                                                    'common/CfgProjectModule',
+                                                                ajaxType: 'get',
                                                                 params: []
                                                             },
-                                                            layout: "column",
-                                                            span: "24"
+                                                            layout: 'column',
+                                                            span: '24'
                                                         }
                                                     ]
                                                 },
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "input",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            inputType: "text",
-                                                            name: "name",
-                                                            label: "模块名称",
+                                                            type: 'input',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            inputType: 'text',
+                                                            name: 'name',
+                                                            label: '模块名称',
                                                             isRequired: true,
                                                             placeholder:
-                                                                "请输入模块名称",
+                                                                '请输入模块名称',
                                                             perfix:
-                                                                "anticon anticon-edit",
-                                                            suffix: "",
+                                                                'anticon anticon-edit',
+                                                            suffix: '',
                                                             disabled: false,
                                                             readonly: false,
-                                                            size: "default",
-                                                            layout: "column",
-                                                            span: "24",
+                                                            size: 'default',
+                                                            layout: 'column',
+                                                            span: '24',
                                                             validations: [
                                                                 {
                                                                     validator:
-                                                                        "required",
+                                                                        'required',
                                                                     errorMessage:
-                                                                        "请输入模块名称!!!!"
+                                                                        '请输入模块名称!!!!'
                                                                 }
                                                             ]
                                                         }
@@ -895,25 +911,25 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "input",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            inputType: "text",
-                                                            name: "code",
-                                                            label: "模块编码",
+                                                            type: 'input',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            inputType: 'text',
+                                                            name: 'code',
+                                                            label: '模块编码',
                                                             isRequired: true,
-                                                            placeholder: "",
+                                                            placeholder: '',
                                                             disabled: false,
                                                             readonly: false,
-                                                            size: "default",
-                                                            layout: "column",
-                                                            span: "24",
+                                                            size: 'default',
+                                                            layout: 'column',
+                                                            span: '24',
                                                             validations: [
                                                                 {
                                                                     validator:
-                                                                        "required",
+                                                                        'required',
                                                                     errorMessage:
-                                                                        "请输编码"
+                                                                        '请输编码'
                                                                 }
                                                             ]
                                                         }
@@ -922,25 +938,25 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "input",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            inputType: "text",
-                                                            name: "url",
-                                                            label: "URL",
+                                                            type: 'input',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            inputType: 'text',
+                                                            name: 'url',
+                                                            label: 'URL',
                                                             isRequired: true,
-                                                            placeholder: "",
+                                                            placeholder: '',
                                                             disabled: false,
                                                             readonly: false,
-                                                            size: "default",
-                                                            layout: "column",
-                                                            span: "24",
+                                                            size: 'default',
+                                                            layout: 'column',
+                                                            span: '24',
                                                             validations: [
                                                                 {
                                                                     validator:
-                                                                        "required",
+                                                                        'required',
                                                                     errorMessage:
-                                                                        "请输入数量"
+                                                                        '请输入数量'
                                                                 }
                                                             ]
                                                         }
@@ -949,277 +965,277 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "input",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            inputType: "text",
-                                                            name: "icon",
-                                                            label: "图标",
-                                                            placeholder: "",
+                                                            type: 'input',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            inputType: 'text',
+                                                            name: 'icon',
+                                                            label: '图标',
+                                                            placeholder: '',
                                                             disabled: false,
                                                             readonly: false,
-                                                            size: "default",
-                                                            layout: "column",
-                                                            span: "24"
+                                                            size: 'default',
+                                                            layout: 'column',
+                                                            span: '24'
                                                         }
                                                     ]
                                                 },
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "input",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            inputType: "text",
-                                                            name: "codeOrder",
-                                                            label: "排序",
-                                                            placeholder: "",
+                                                            type: 'input',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            inputType: 'text',
+                                                            name: 'codeOrder',
+                                                            label: '排序',
+                                                            placeholder: '',
                                                             disabled: false,
                                                             readonly: false,
-                                                            size: "default",
-                                                            layout: "column",
-                                                            span: "24"
+                                                            size: 'default',
+                                                            layout: 'column',
+                                                            span: '24'
                                                         }
                                                     ]
                                                 },
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "input",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            inputType: "text",
-                                                            name: "codeOrder",
-                                                            label: "排序",
-                                                            placeholder: "",
+                                                            type: 'input',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            inputType: 'text',
+                                                            name: 'codeOrder',
+                                                            label: '排序',
+                                                            placeholder: '',
                                                             disabled: false,
                                                             readonly: false,
-                                                            size: "default",
-                                                            layout: "column",
-                                                            span: "24"
+                                                            size: 'default',
+                                                            layout: 'column',
+                                                            span: '24'
                                                         }
                                                     ]
                                                 },
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "select",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
+                                                            type: 'select',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
                                                             name:
-                                                                "isNeedDeploy",
-                                                            label: "是否有效",
-                                                            notFoundContent: "",
+                                                                'isNeedDeploy',
+                                                            label: '是否有效',
+                                                            notFoundContent: '',
                                                             selectModel: false,
                                                             showSearch: true,
                                                             placeholder:
-                                                                "--请选择--",
+                                                                '--请选择--',
                                                             disabled: false,
-                                                            size: "default",
+                                                            size: 'default',
                                                             options: [
                                                                 {
-                                                                    label: "是",
-                                                                    value: "1",
+                                                                    label: '是',
+                                                                    value: '1',
                                                                     disabled: false
                                                                 },
                                                                 {
-                                                                    label: "否",
-                                                                    value: "0",
+                                                                    label: '否',
+                                                                    value: '0',
                                                                     disabled: false
                                                                 }
                                                             ],
-                                                            layout: "column",
-                                                            span: "24"
+                                                            layout: 'column',
+                                                            span: '24'
                                                         }
                                                     ]
                                                 },
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "select",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            inputType: "submit",
-                                                            name: "isEnabled",
-                                                            label: "是否有效",
-                                                            notFoundContent: "",
+                                                            type: 'select',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            inputType: 'submit',
+                                                            name: 'isEnabled',
+                                                            label: '是否有效',
+                                                            notFoundContent: '',
                                                             selectModel: false,
                                                             showSearch: true,
                                                             placeholder:
-                                                                "--请选择--",
+                                                                '--请选择--',
                                                             disabled: false,
-                                                            size: "default",
+                                                            size: 'default',
                                                             options: [
                                                                 {
                                                                     label:
-                                                                        "有效",
-                                                                    value: "1",
+                                                                        '有效',
+                                                                    value: '1',
                                                                     disabled: false
                                                                 },
                                                                 {
                                                                     label:
-                                                                        "无效",
-                                                                    value: "0",
+                                                                        '无效',
+                                                                    value: '0',
                                                                     disabled: false
                                                                 }
                                                             ],
-                                                            layout: "column",
-                                                            span: "24"
+                                                            layout: 'column',
+                                                            span: '24'
                                                         }
                                                     ]
                                                 },
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "select",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
+                                                            type: 'select',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
                                                             name:
-                                                                "belongPlatformType",
-                                                            label: "所属平台",
-                                                            notFoundContent: "",
+                                                                'belongPlatformType',
+                                                            label: '所属平台',
+                                                            notFoundContent: '',
                                                             selectModel: false,
                                                             showSearch: true,
                                                             placeholder:
-                                                                "--请选择--",
+                                                                '--请选择--',
                                                             disabled: false,
-                                                            size: "default",
+                                                            size: 'default',
                                                             options: [
                                                                 {
                                                                     label:
-                                                                        "配置平台",
-                                                                    value: "1",
+                                                                        '配置平台',
+                                                                    value: '1',
                                                                     disabled: false
                                                                 },
                                                                 {
                                                                     label:
-                                                                        "运行平台",
-                                                                    value: "2",
+                                                                        '运行平台',
+                                                                    value: '2',
                                                                     disabled: false
                                                                 },
                                                                 {
                                                                     label:
-                                                                        "通用",
-                                                                    value: "3",
+                                                                        '通用',
+                                                                    value: '3',
                                                                     disabled: false
                                                                 }
                                                             ],
-                                                            layout: "column",
-                                                            span: "24"
+                                                            layout: 'column',
+                                                            span: '24'
                                                         }
                                                     ]
                                                 }
                                             ],
                                             buttons: [
                                                 {
-                                                    name: "save",
-                                                    text: "保存",
-                                                    type: "primary",
+                                                    name: 'save',
+                                                    text: '保存',
+                                                    type: 'primary',
                                                     ajaxConfig: {
                                                         post: [
                                                             {
                                                                 url:
-                                                                    "common/CfgProjectModule",
+                                                                    'common/CfgProjectModule',
                                                                 params: [
                                                                     {
                                                                         name:
-                                                                            "parentId",
+                                                                            'parentId',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "parentId",
+                                                                            'parentId',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "name",
+                                                                            'name',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "name",
+                                                                            'name',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "code",
+                                                                            'code',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "code",
+                                                                            'code',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "url",
+                                                                            'url',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "url",
+                                                                            'url',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "icon",
+                                                                            'icon',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "icon",
+                                                                            'icon',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "orderCode",
+                                                                            'orderCode',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "orderCode",
+                                                                            'orderCode',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "moduleBody",
+                                                                            'moduleBody',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "moduleBody",
+                                                                            'moduleBody',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "isEnabled",
+                                                                            'isEnabled',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "isEnabled",
+                                                                            'isEnabled',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "isNeedDeploy",
+                                                                            'isNeedDeploy',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "isNeedDeploy",
+                                                                            'isNeedDeploy',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "belongPlatformType",
+                                                                            'belongPlatformType',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "belongPlatformType",
+                                                                            'belongPlatformType',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     }
                                                                 ]
                                                             }
@@ -1227,138 +1243,138 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                     }
                                                 },
                                                 {
-                                                    name: "saveAndKeep",
-                                                    text: "保存并继续",
-                                                    type: "primary",
+                                                    name: 'saveAndKeep',
+                                                    text: '保存并继续',
+                                                    type: 'primary',
                                                     ajaxConfig: {
                                                         post: [
                                                             {
                                                                 url:
-                                                                    "common/ProjectModuleUpdate",
+                                                                    'common/ProjectModuleUpdate',
                                                                 params: [
                                                                     {
                                                                         name:
-                                                                            "parentId",
+                                                                            'parentId',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "parentId",
+                                                                            'parentId',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "name",
+                                                                            'name',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "name",
+                                                                            'name',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "code",
+                                                                            'code',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "code",
+                                                                            'code',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "url",
+                                                                            'url',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "url",
+                                                                            'url',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "icon",
+                                                                            'icon',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "icon",
+                                                                            'icon',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "orderCode",
+                                                                            'orderCode',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "orderCode",
+                                                                            'orderCode',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "moduleBody",
+                                                                            'moduleBody',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "moduleBody",
+                                                                            'moduleBody',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "isEnabled",
+                                                                            'isEnabled',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "isEnabled",
+                                                                            'isEnabled',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "isNeedDeploy",
+                                                                            'isNeedDeploy',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "isNeedDeploy",
+                                                                            'isNeedDeploy',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "belongPlatformType",
+                                                                            'belongPlatformType',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "belongPlatformType",
+                                                                            'belongPlatformType',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     }
                                                                 ]
                                                             }
                                                         ]
                                                     }
                                                 },
-                                                { name: "reset", text: "重置" },
-                                                { name: "close", text: "关闭" }
+                                                { name: 'reset', text: '重置' },
+                                                { name: 'close', text: '关闭' }
                                             ]
                                         },
                                         {
-                                            keyId: "Id",
-                                            name: "updateModule",
-                                            title: "编辑模块",
-                                            width: "600",
+                                            keyId: 'Id',
+                                            name: 'updateModule',
+                                            title: '编辑模块',
+                                            width: '600',
                                             ajaxConfig: {
-                                                url: "common/CfgProjectModule",
-                                                ajaxType: "getById",
+                                                url: 'common/CfgProjectModule',
+                                                ajaxType: 'getById',
                                                 params: [
                                                     {
-                                                        name: "Id",
-                                                        type: "tempValue",
-                                                        valueName: "_id",
-                                                        value: ""
+                                                        name: 'Id',
+                                                        type: 'tempValue',
+                                                        valueName: '_id',
+                                                        value: ''
                                                     }
                                                 ]
                                             },
@@ -1371,28 +1387,28 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "input",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            inputType: "text",
-                                                            name: "Id",
-                                                            label: "Id",
+                                                            type: 'input',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            inputType: 'text',
+                                                            name: 'Id',
+                                                            label: 'Id',
                                                             isRequired: false,
-                                                            placeholder: "",
+                                                            placeholder: '',
                                                             perfix:
-                                                                "anticon anticon-edit",
-                                                            suffix: "",
+                                                                'anticon anticon-edit',
+                                                            suffix: '',
                                                             disabled: true,
                                                             readonly: false,
-                                                            size: "default",
-                                                            layout: "column",
-                                                            span: "24",
+                                                            size: 'default',
+                                                            layout: 'column',
+                                                            span: '24',
                                                             validations: [
                                                                 {
                                                                     validator:
-                                                                        "required",
+                                                                        'required',
                                                                     errorMessage:
-                                                                        "请输入模块名称!!!!"
+                                                                        '请输入模块名称!!!!'
                                                                 }
                                                             ]
                                                         }
@@ -1401,84 +1417,84 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "selectTree",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            name: "parentId",
-                                                            label: "父模块",
-                                                            labelName: "name",
-                                                            valueName: "Id",
-                                                            notFoundContent: "",
+                                                            type: 'selectTree',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            name: 'parentId',
+                                                            label: '父模块',
+                                                            labelName: 'name',
+                                                            valueName: 'Id',
+                                                            notFoundContent: '',
                                                             selectModel: false,
                                                             showSearch: true,
                                                             placeholder:
-                                                                "--请选择--",
+                                                                '--请选择--',
                                                             disabled: false,
-                                                            size: "default",
+                                                            size: 'default',
                                                             columns: [
                                                                 // 字段映射，映射成树结构所需
                                                                 {
                                                                     title:
-                                                                        "主键",
+                                                                        '主键',
                                                                     field:
-                                                                        "key",
+                                                                        'key',
                                                                     valueName:
-                                                                        "Id"
+                                                                        'Id'
                                                                 },
                                                                 {
                                                                     title:
-                                                                        "父节点",
+                                                                        '父节点',
                                                                     field:
-                                                                        "parentId",
+                                                                        'parentId',
                                                                     valueName:
-                                                                        "parentId"
+                                                                        'parentId'
                                                                 },
                                                                 {
                                                                     title:
-                                                                        "标题",
+                                                                        '标题',
                                                                     field:
-                                                                        "title",
+                                                                        'title',
                                                                     valueName:
-                                                                        "name"
+                                                                        'name'
                                                                 }
                                                             ],
                                                             ajaxConfig: {
                                                                 url:
-                                                                    "common/CfgProjectModule",
-                                                                ajaxType: "get",
+                                                                    'common/CfgProjectModule',
+                                                                ajaxType: 'get',
                                                                 params: []
                                                             },
-                                                            layout: "column",
-                                                            span: "24"
+                                                            layout: 'column',
+                                                            span: '24'
                                                         }
                                                     ]
                                                 },
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "input",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            inputType: "text",
-                                                            name: "name",
-                                                            label: "模块名称",
+                                                            type: 'input',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            inputType: 'text',
+                                                            name: 'name',
+                                                            label: '模块名称',
                                                             isRequired: true,
                                                             placeholder:
-                                                                "请输入模块名称",
+                                                                '请输入模块名称',
                                                             perfix:
-                                                                "anticon anticon-edit",
-                                                            suffix: "",
+                                                                'anticon anticon-edit',
+                                                            suffix: '',
                                                             disabled: false,
                                                             readonly: false,
-                                                            size: "default",
-                                                            layout: "column",
-                                                            span: "24",
+                                                            size: 'default',
+                                                            layout: 'column',
+                                                            span: '24',
                                                             validations: [
                                                                 {
                                                                     validator:
-                                                                        "required",
+                                                                        'required',
                                                                     errorMessage:
-                                                                        "请输入模块名称!!!!"
+                                                                        '请输入模块名称!!!!'
                                                                 }
                                                             ]
                                                         }
@@ -1487,25 +1503,25 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "input",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            inputType: "text",
-                                                            name: "code",
-                                                            label: "模块编码",
+                                                            type: 'input',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            inputType: 'text',
+                                                            name: 'code',
+                                                            label: '模块编码',
                                                             isRequired: true,
-                                                            placeholder: "",
+                                                            placeholder: '',
                                                             disabled: false,
                                                             readonly: false,
-                                                            size: "default",
-                                                            layout: "column",
-                                                            span: "24",
+                                                            size: 'default',
+                                                            layout: 'column',
+                                                            span: '24',
                                                             validations: [
                                                                 {
                                                                     validator:
-                                                                        "required",
+                                                                        'required',
                                                                     errorMessage:
-                                                                        "请输编码"
+                                                                        '请输编码'
                                                                 }
                                                             ]
                                                         }
@@ -1514,25 +1530,25 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "input",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            inputType: "text",
-                                                            name: "url",
-                                                            label: "URL",
+                                                            type: 'input',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            inputType: 'text',
+                                                            name: 'url',
+                                                            label: 'URL',
                                                             isRequired: true,
-                                                            placeholder: "",
+                                                            placeholder: '',
                                                             disabled: false,
                                                             readonly: false,
-                                                            size: "default",
-                                                            layout: "column",
-                                                            span: "24",
+                                                            size: 'default',
+                                                            layout: 'column',
+                                                            span: '24',
                                                             validations: [
                                                                 {
                                                                     validator:
-                                                                        "required",
+                                                                        'required',
                                                                     errorMessage:
-                                                                        "请输入数量"
+                                                                        '请输入数量'
                                                                 }
                                                             ]
                                                         }
@@ -1541,287 +1557,287 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "input",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            inputType: "text",
-                                                            name: "icon",
-                                                            label: "图标",
-                                                            placeholder: "",
+                                                            type: 'input',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            inputType: 'text',
+                                                            name: 'icon',
+                                                            label: '图标',
+                                                            placeholder: '',
                                                             disabled: false,
                                                             readonly: false,
-                                                            size: "default",
-                                                            layout: "column",
-                                                            span: "24"
+                                                            size: 'default',
+                                                            layout: 'column',
+                                                            span: '24'
                                                         }
                                                     ]
                                                 },
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "input",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            inputType: "text",
-                                                            name: "codeOrder",
-                                                            label: "排序",
-                                                            placeholder: "",
+                                                            type: 'input',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            inputType: 'text',
+                                                            name: 'codeOrder',
+                                                            label: '排序',
+                                                            placeholder: '',
                                                             disabled: false,
                                                             readonly: false,
-                                                            size: "default",
-                                                            layout: "column",
-                                                            span: "24"
+                                                            size: 'default',
+                                                            layout: 'column',
+                                                            span: '24'
                                                         }
                                                     ]
                                                 },
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "input",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            inputType: "text",
-                                                            name: "codeOrder",
-                                                            label: "排序",
-                                                            placeholder: "",
+                                                            type: 'input',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            inputType: 'text',
+                                                            name: 'codeOrder',
+                                                            label: '排序',
+                                                            placeholder: '',
                                                             disabled: false,
                                                             readonly: false,
-                                                            size: "default",
-                                                            layout: "column",
-                                                            span: "24"
+                                                            size: 'default',
+                                                            layout: 'column',
+                                                            span: '24'
                                                         }
                                                     ]
                                                 },
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "select",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
+                                                            type: 'select',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
                                                             name:
-                                                                "isNeedDeploy",
-                                                            label: "是否有效",
-                                                            notFoundContent: "",
+                                                                'isNeedDeploy',
+                                                            label: '是否有效',
+                                                            notFoundContent: '',
                                                             selectModel: false,
                                                             showSearch: true,
                                                             placeholder:
-                                                                "--请选择--",
+                                                                '--请选择--',
                                                             disabled: false,
-                                                            size: "default",
+                                                            size: 'default',
                                                             options: [
                                                                 {
-                                                                    label: "是",
-                                                                    value: "1",
+                                                                    label: '是',
+                                                                    value: '1',
                                                                     disabled: false
                                                                 },
                                                                 {
-                                                                    label: "否",
-                                                                    value: "0",
+                                                                    label: '否',
+                                                                    value: '0',
                                                                     disabled: false
                                                                 }
                                                             ],
-                                                            layout: "column",
-                                                            span: "24"
+                                                            layout: 'column',
+                                                            span: '24'
                                                         }
                                                     ]
                                                 },
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "select",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
-                                                            inputType: "submit",
-                                                            name: "isEnabled",
-                                                            label: "是否有效",
-                                                            notFoundContent: "",
+                                                            type: 'select',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
+                                                            inputType: 'submit',
+                                                            name: 'isEnabled',
+                                                            label: '是否有效',
+                                                            notFoundContent: '',
                                                             selectModel: false,
                                                             showSearch: true,
                                                             placeholder:
-                                                                "--请选择--",
+                                                                '--请选择--',
                                                             disabled: false,
-                                                            size: "default",
+                                                            size: 'default',
                                                             options: [
                                                                 {
                                                                     label:
-                                                                        "有效",
-                                                                    value: "1",
+                                                                        '有效',
+                                                                    value: '1',
                                                                     disabled: false
                                                                 },
                                                                 {
                                                                     label:
-                                                                        "无效",
-                                                                    value: "0",
+                                                                        '无效',
+                                                                    value: '0',
                                                                     disabled: false
                                                                 }
                                                             ],
-                                                            layout: "column",
-                                                            span: "24"
+                                                            layout: 'column',
+                                                            span: '24'
                                                         }
                                                     ]
                                                 },
                                                 {
                                                     controls: [
                                                         {
-                                                            type: "select",
-                                                            labelSize: "6",
-                                                            controlSize: "16",
+                                                            type: 'select',
+                                                            labelSize: '6',
+                                                            controlSize: '16',
                                                             name:
-                                                                "belongPlatformType",
-                                                            label: "所属平台",
-                                                            notFoundContent: "",
+                                                                'belongPlatformType',
+                                                            label: '所属平台',
+                                                            notFoundContent: '',
                                                             selectModel: false,
                                                             showSearch: true,
                                                             placeholder:
-                                                                "--请选择--",
+                                                                '--请选择--',
                                                             disabled: false,
-                                                            size: "default",
+                                                            size: 'default',
                                                             options: [
                                                                 {
                                                                     label:
-                                                                        "配置平台",
-                                                                    value: "1",
+                                                                        '配置平台',
+                                                                    value: '1',
                                                                     disabled: false
                                                                 },
                                                                 {
                                                                     label:
-                                                                        "运行平台",
-                                                                    value: "2",
+                                                                        '运行平台',
+                                                                    value: '2',
                                                                     disabled: false
                                                                 },
                                                                 {
                                                                     label:
-                                                                        "通用",
-                                                                    value: "3",
+                                                                        '通用',
+                                                                    value: '3',
                                                                     disabled: false
                                                                 }
                                                             ],
-                                                            layout: "column",
-                                                            span: "24"
+                                                            layout: 'column',
+                                                            span: '24'
                                                         }
                                                     ]
                                                 }
                                             ],
                                             buttons: [
                                                 {
-                                                    name: "save",
-                                                    text: "保存",
-                                                    type: "primary",
+                                                    name: 'save',
+                                                    text: '保存',
+                                                    type: 'primary',
                                                     ajaxConfig: {
                                                         put: [
                                                             {
                                                                 url:
-                                                                    "common/CfgProjectModule",
+                                                                    'common/CfgProjectModule',
                                                                 params: [
                                                                     {
                                                                         name:
-                                                                            "Id",
+                                                                            'Id',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "_id",
+                                                                            '_id',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "parentId",
+                                                                            'parentId',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "parentId",
+                                                                            'parentId',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "name",
+                                                                            'name',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "name",
+                                                                            'name',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "code",
+                                                                            'code',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "code",
+                                                                            'code',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "url",
+                                                                            'url',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "url",
+                                                                            'url',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "icon",
+                                                                            'icon',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "icon",
+                                                                            'icon',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "orderCode",
+                                                                            'orderCode',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "orderCode",
+                                                                            'orderCode',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "moduleBody",
+                                                                            'moduleBody',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "moduleBody",
+                                                                            'moduleBody',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "isEnabled",
+                                                                            'isEnabled',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "isEnabled",
+                                                                            'isEnabled',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "isNeedDeploy",
+                                                                            'isNeedDeploy',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "isNeedDeploy",
+                                                                            'isNeedDeploy',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "belongPlatformType",
+                                                                            'belongPlatformType',
                                                                         type:
-                                                                            "componentValue",
+                                                                            'componentValue',
                                                                         valueName:
-                                                                            "belongPlatformType",
+                                                                            'belongPlatformType',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     }
                                                                 ]
                                                             }
@@ -1829,14 +1845,14 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                     }
                                                 },
                                                 {
-                                                    name: "close",
-                                                    class: "editable-add-btn",
-                                                    text: "关闭"
+                                                    name: 'close',
+                                                    class: 'editable-add-btn',
+                                                    text: '关闭'
                                                 },
                                                 {
-                                                    name: "reset",
-                                                    class: "editable-add-btn",
-                                                    text: "重置"
+                                                    name: 'reset',
+                                                    class: 'editable-add-btn',
+                                                    text: '重置'
                                                 }
                                             ]
                                         }
@@ -2073,11 +2089,11 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
         ]
     };
 
-    _projOptions: any[] = [];
-    _projValue;
-    _selectedModuleText;
-    loading = false;
-    _tableDataSource;
+    public _projOptions: any[] = [];
+    public _projValue;
+    public _selectedModuleText;
+    public loading = false;
+    public _tableDataSource;
 
     constructor(
         private apiService: ApiService,
@@ -2087,27 +2103,27 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
         super();
     }
 
-    async ngOnInit() {
+    public async ngOnInit() {
         const moduleData = await this.getProjectData();
         this._projOptions = this.arrayToTree(moduleData.data);
     }
 
-    _changeModuleValue($event) {
+    public _changeModuleValue($event) {
         this._loadModules();
     }
 
-    _onSelectionChange(selectedOptions: any[]) {
+    public _onSelectionChange(selectedOptions: any[]) {
         this._selectedModuleText = `${selectedOptions
             .map(o => o.label)
-            .join(" / ")}`;
+            .join(' / ')}`;
     }
 
-    _loadModules() {
+    public _loadModules() {
         if (this._projValue.length > 0) {
             this.cascade.next(
                 new BsnComponentMessage(
                     BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
-                    "projectId_module",
+                    'projectId_module',
                     {
                         data: {
                             Id: this._projValue[this._projValue.length - 1]
@@ -2119,8 +2135,8 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
     }
 
     private async getProjectData() {
-        const params = { _select: "Id,name" };
-        return this.apiService.get("common/CfgProject", params).toPromise();
+        const params = { _select: 'Id,name' };
+        return this.apiService.get('common/CfgProject', params).toPromise();
     }
 
     private arrayToTree(data) {
