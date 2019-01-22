@@ -107,9 +107,9 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
                         down['icon'] = icon;
                         down['buttons'] = [];
                         b.buttons.forEach(btn => {
-                          //  const Loading = {};
-                          //  Loading[btn.name] = false;
-                          //  this.toolbarsisLoading.push(Loading);
+                            //  const Loading = {};
+                            //  Loading[btn.name] = false;
+                            //  this.toolbarsisLoading.push(Loading);
                             if (permissionMap.has(btn.name)) {
                                 down['buttons'].push({ ...btn });
                             } else if (btn['cancelPermission']) {
@@ -133,21 +133,24 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
         // 判断操作action的状态，根据状态发送具体消息
         // 消息的内容是什么？如何将消息与组件和数据进行关联
         // 根据按钮是否包含action属性，区别组件的内部状态操作还是进行数据操作
-        this.toolbarsisLoading[btn.name] = true;
+
         setTimeout(_ => {
-            this.toolbarsisLoading[btn.name]  = false;
+            this.toolbarsisLoading[btn.name] = false;
         }, 150);
-        const action = btn.action
-            ? BSN_COMPONENT_MODES[btn.action]
-            : BSN_COMPONENT_MODES['EXECUTE'];
-        this._cascadeState = this.state.next(
-            new BsnComponentMessage(action, this.viewId, {
-                type: btn.actionType ? btn.actionType : null,
-                name: btn.name ? btn.name : '',
-                actionName: btn.actionName ? btn.actionName : null,
-                ajaxConfig: btn.ajaxConfig ? btn.ajaxConfig : null
-            })
-        );
+        if (!this.toolbarsisLoading[btn.name]) {
+            const action = btn.action
+                ? BSN_COMPONENT_MODES[btn.action]
+                : BSN_COMPONENT_MODES['EXECUTE'];
+            this._cascadeState = this.state.next(
+                new BsnComponentMessage(action, this.viewId, {
+                    type: btn.actionType ? btn.actionType : null,
+                    name: btn.name ? btn.name : '',
+                    actionName: btn.actionName ? btn.actionName : null,
+                    ajaxConfig: btn.ajaxConfig ? btn.ajaxConfig : null
+                })
+            );
+            this.toolbarsisLoading[btn.name] = true;
+        }
     }
 
     public ngOnDestroy() {

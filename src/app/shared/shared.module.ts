@@ -109,6 +109,8 @@ import { CnFormSelectCustomComponent } from './components/cn-form-select-custom/
 import { CnGridSelectCustomComponent } from './components/cn-grid-select-custom/cn-grid-select-custom.component';
 import { CnFormSelectCustomMultipleComponent } from './components/cn-form-select-custom-multiple/cn-form-select-custom-multiple.component';
 import { CnGridSelectCustomMultipleComponent } from './components/cn-grid-select-custom-multiple/cn-grid-select-custom-multiple.component';
+import { CnGridUploadComponent } from './components/cn-grid-upload/cn-grid-upload.component';
+import { CnGridUploadListComponent } from '@shared/components/cn-grid-upload-list/cn-grid-upload-list.component';
 
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -210,7 +212,9 @@ const COMPONENTS = [
     CnFormSelectCustomComponent,
     CnGridSelectCustomComponent,
     CnFormSelectCustomMultipleComponent,
-    CnGridSelectCustomMultipleComponent
+    CnGridSelectCustomMultipleComponent,
+    CnGridUploadComponent,
+    CnGridUploadListComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

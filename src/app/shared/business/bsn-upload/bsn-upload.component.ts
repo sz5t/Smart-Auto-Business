@@ -38,20 +38,27 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
     public securityLevel;
     public remark;
 
+    public isUpload = true;
     constructor(
         private _message: NzMessageService,
         private _apiService: ApiService
     ) {}
 
-    public ngOnInit() {}
-
-    public ngAfterViewInit() {
+    public ngOnInit() {
+        console.log('upload:', this.config);
+        if (this.config.showList) {
+            this.isUpload = false;
+        }
         this.loadUploadList();
     }
 
-    public loadUploadList() {
+    public ngAfterViewInit() {
+       // this.loadUploadList();
+    }
+
+    public async loadUploadList() {
         this.loading = true;
-        this._apiService
+           this._apiService
             .get(
                 this.config.listUrl,
                 CommonTools.parametersResolver({
@@ -62,10 +69,10 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
             .subscribe(
                 result => {
                     this.uploadList = result.data;
-                    this.loading = false;
+                        this.loading = false;
                 },
                 error => {
-                    this.loading = false;
+                        this.loading = false;
                 }
             );
     }

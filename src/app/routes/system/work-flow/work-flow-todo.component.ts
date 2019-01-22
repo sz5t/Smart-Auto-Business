@@ -1690,7 +1690,60 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
                                                     }
                                                 }
                                             },
-
+                                            {
+                                                title: '附件',
+                                                field: 'code',
+                                                width: 80,
+                                                showFilter: false,
+                                                showSort: false,
+                                                editor: {
+                                                    type: 'upload',
+                                                    field: 'code1',
+                                                    options: {
+                                                        type: 'upload',
+                                                        labelSize: '6',
+                                                        name: 'code1',
+                                                        controlSize: '18',
+                                                        inputType: 'text'
+                                                    }
+                                                },
+                                                showFormat: {
+                                                    type: 'uploadList',
+                                                    field: 'code1',
+                                                    options: {
+                                                        type: 'uploadList',
+                                                        labelSize: '6',
+                                                        name: 'code1',
+                                                        controlSize: '18',
+                                                        inputType: 'text',
+                                                        select: {
+                                                            nzWidth: 768,
+                                                            title: '预览',
+                                                            uploadList: {
+                                                                keyId: 'key',
+                                                                title: '',
+                                                                width: '600px',
+                                                                name: 'upload_MPF',
+                                                                ajaxConfig: {
+                                                                    showList: true,
+                                                                    deleteUrl: 'file/delete',
+                                                                    listUrl: 'common/SysFile',
+                                                                    url: 'file/upload',
+                                                                    downloadUrl: 'file/download',
+                                                                    ajaxType: 'post',
+                                                                    params: [
+                                                                        {
+                                                                            'name': 'refDataId',
+                                                                            'type': 'tempValue',
+                                                                            'valueName': '_id'
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
                                             {
                                                 title: '版本号',
                                                 field: 'version',
@@ -2942,6 +2995,35 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
                                                                 ]
                                                             }
                                                         ]
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                name: 'code1',
+                                                type: 'upload',
+                                                config: {
+                                                    nzWidth: 768,
+                                                    title: '上传',
+                                                    upload: {
+                                                        keyId: 'key',
+                                                        title: '',
+                                                        width: '600px',
+                                                        name: 'upload_MPF',
+                                                        ajaxConfig: {
+                                                            showList: true,
+                                                            deleteUrl: 'file/delete',
+                                                            listUrl: 'common/SysFile',
+                                                            url: 'file/upload',
+                                                            downloadUrl: 'file/download',
+                                                            ajaxType: 'post',
+                                                            params: [
+                                                                {
+                                                                    'name': 'refDataId',
+                                                                    'type': 'tempValue',
+                                                                    'valueName': '_id'
+                                                                }
+                                                            ]
+                                                        }
                                                     }
                                                 }
                                             }
