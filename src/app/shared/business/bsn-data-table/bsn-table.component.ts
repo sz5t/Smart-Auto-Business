@@ -125,6 +125,7 @@ export class BsnTableComponent extends CnComponentBase
     public selectGridValueName;
     public changeConfig_new = {};
     public changeConfig_newSearch = {};
+    public checkedWidth = '10px';
     // 前置条件集合
     public beforeOperation;
     constructor(
@@ -148,6 +149,12 @@ export class BsnTableComponent extends CnComponentBase
     }
 
     public ngOnInit() {
+
+      if ( this.config.checkedConfig) {
+          if (this.config.checkedConfig.width) {
+            this.checkedWidth = this.config.checkedConfig.width;
+          }
+      } 
         if (this.config.select) {
             this.config.select.forEach(selectItem => {
                 this.config.columns.forEach(columnItem => {

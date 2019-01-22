@@ -38,12 +38,17 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
     public securityLevel;
     public remark;
 
+    public isUpload = true;
     constructor(
         private _message: NzMessageService,
         private _apiService: ApiService
     ) {}
 
     public ngOnInit() {
+        console.log('upload:', this.config);
+        if (this.config.showList) {
+            this.isUpload = false;
+        }
         this.loadUploadList();
     }
 
