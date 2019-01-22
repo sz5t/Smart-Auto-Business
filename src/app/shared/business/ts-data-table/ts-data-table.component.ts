@@ -2414,6 +2414,15 @@ export class TsDataTableComponent extends CnComponentBase
         this.allChecked = this.checkedCount === this.dataList.length;
         this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
     }
+    // 开关选择
+    public swichChecked(d?) {
+        const index = this.dataList.findIndex(item => item.key === d.key);
+        this.dataList[index].checked = !d.checked;
+
+        this.checkedCount = this.dataList.filter(w => w.checked).length;
+        this.allChecked = this.checkedCount === this.dataList.length;
+        this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
+    }
 
     public cancelRow() {
         let len = this.dataList.length;
@@ -4232,7 +4241,7 @@ export class TsDataTableComponent extends CnComponentBase
      */
     public titletToolbarAction(col?) {
        //  this. ajaxColumns;  // 动态列信息，也就是检测项目信息
-        console.log('点击', col, this._getCheckedItems());
+        console.log('点击', col, this._getCheckItemsId());
 
         const sendData = {
             autoResize: [{
@@ -4248,7 +4257,7 @@ export class TsDataTableComponent extends CnComponentBase
             }]
         };
 
-        this.cascade.next(
+     /*    this.cascade.next(
             new BsnComponentMessage(
                 BSN_COMPONENT_CASCADE_MODES['AUTO_RESIZE'],
                 this.config.viewId,
@@ -4256,11 +4265,59 @@ export class TsDataTableComponent extends CnComponentBase
                     data: sendData
                 }
             )
-        );
-        console.log('sendData', sendData);
-
+        ); */
+        console.log('sendData', sendData, this.dataList);
+     
 
     }
+
+    public ExecEventByTitleClick(data?) {
+
+        const vc_field = data.name;
+        //  ts_saveEdit data.key
+        const vc_rowdata = this.ts_getEditRow(data.key, data.name);
+        this.EditSelectedRow = [];
+        this.EditSelectedRow.push(vc_rowdata);
+
+        console.log('当前行数据：', vc_rowdata);
+        // 判断是否存在配置
+        if (this.config.events) {
+            const index = this.config.events.findIndex(item => item['onTrigger'] === 'onTitleClick');
+            let c_eventConfig = {};
+            if (index > -1) {
+                c_eventConfig = this.config.events[index];
+            } else {
+                return true;
+            }
+
+            let isField = true; // 列变化触发
+            // 首先适配类别、字段，不满足的时候 看是否存在default 若存在 取default
+            c_eventConfig['onEvent'].forEach(eventConfig => {
+                // 指定具体feild的操作
+                if (eventConfig.type === 'field') {
+                    if (eventConfig.field === vc_field) {
+                        isField = false;
+                        // 调用 执行方法，方法
+                        this.ExecRowEvent(eventConfig.action);
+                        return true;
+                    }
+                }
+            });
+            if (isField) {
+                c_eventConfig['onEvent'].forEach(eventConfig => {
+                    // 无配置 的默认项
+                    if (eventConfig.type === 'default') {
+                        this.ExecRowEvent(eventConfig.action);
+                    }
+                });
+            }
+
+
+
+        }
+
+    }
+
 
 
 }

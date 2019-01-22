@@ -34,7 +34,7 @@
                     <ng-container *ngIf="config.checkedConfig">
                         <td *ngIf="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
                             <!-- [nzShowCheckbox]="config.showCheckBox" _serilize  nzCheckedChildren="data[config.columns[0].field]" nzUnCheckedChildren="data[config.columns[0].field]" -->
-                            <nz-switch [ngModel]="data.checked" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
+                            <nz-switch [ngModel]="data.checked" (ngModelChange)="swichChecked(data)" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
                             <ng-template #checkedTemplate>{{data[config.checkedConfig.feild]}}</ng-template>
                             <ng-template #unCheckedTemplate>{{data[config.checkedConfig.feild]}}</ng-template>
                         </td>
@@ -93,7 +93,7 @@
                     <ng-container *ngIf="config.checkedConfig">
                         <td *ngIf="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
                             <!-- [nzShowCheckbox]="config.showCheckBox" _serilize  nzCheckedChildren="data[config.columns[0].field]" nzUnCheckedChildren="data[config.columns[0].field]" -->
-                            <nz-switch [ngModel]="data.checked" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
+                            <nz-switch [ngModel]="data.checked" (ngModelChange)="swichChecked(data)"  [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
                             <ng-template #checkedTemplate>{{data[config.checkedConfig.feild]}}</ng-template>
                             <ng-template #unCheckedTemplate>{{data[config.checkedConfig.feild]}}</ng-template>
                         </td>

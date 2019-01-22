@@ -6,7 +6,7 @@
 
     <thead (nzSortChange)="sort($event)" nzSingleSort>
         <tr (contextmenu)="contextMenu($event,contextTemplate)">
-            <th *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox ? config.showCheckBox : false" [(nzChecked)]="allChecked"
+            <th *ngIf="config.showCheckBox"  [nzWidth]="config.checkedConfig.width?config.checkedConfig.width:'10px'"  [nzShowCheckbox]="config.showCheckBox ? config.showCheckBox : false" [(nzChecked)]="allChecked"
                 [nzIndeterminate]="indeterminate" (nzCheckedChange)="checkAll($event)">
             </th>
             <ng-template ngFor let-col [ngForOf]="config.columns">

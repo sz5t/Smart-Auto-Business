@@ -888,7 +888,7 @@ export class BsnTableComponent extends CnComponentBase
 
     public addRow() {
         const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
-        const fieldIdentity = CommonTools.uuID(6);
+        const fieldIdentity = CommonTools.uuID(32);
         rowContentNew['key'] = fieldIdentity;
         rowContentNew['checked'] = true;
         rowContentNew['row_status'] = 'adding';
