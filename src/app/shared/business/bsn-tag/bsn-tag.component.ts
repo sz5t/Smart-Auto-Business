@@ -41,6 +41,9 @@ export class BsnTagComponent extends CnComponentBase implements OnInit, OnDestro
         this.tags = this.initData['ROW'];
       }
     }
+    if (this.initData) {
+      this.initValue = this.initData;
+    }
     if (this.config.ajaxConfig.url) {
       this.load(); // 自加载
     }
