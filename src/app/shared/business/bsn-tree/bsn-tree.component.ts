@@ -4,7 +4,8 @@ import {
     BSN_COMPONENT_MODES,
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
-    BSN_EXECUTE_ACTION
+    BSN_EXECUTE_ACTION,
+    BSN_OUTPOUT_PARAMETER_TYPE
 } from '@core/relative-Service/BsnTableStatus';
 import {
     Component,
@@ -811,45 +812,241 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     // region 数据操作逻辑
     private _resolveAjaxConfig(option) {
         if (option.ajaxConfig && option.ajaxConfig.length > 0) {
-            option.ajaxConfig.map(async c => {
-                if (c.action) {
-                    let handleData;
-                    // 所有获取数据的方法都会将数据保存至tempValue
-                    // 使用是可以通过临时变量定义的固定属性访问
-                    // 可已使用内置的参数类型进行访问
-                    switch (c.action) {
-                        case BSN_COMPONENT_MODES.REFRESH:
-                            this.load();
-                            break;
-                        case BSN_EXECUTE_ACTION.EXECUTE_NODES_CHECKED_KEY:
-                            handleData = this._getCheckedNodesIds();
-                            break;
-                        case BSN_EXECUTE_ACTION.EXECUTE_NODE_SELECTED:
-                            handleData = this._getSelectedNodeId();
-                            break;
-                        case BSN_EXECUTE_ACTION.EXECUTE_NODE_CHECKED:
-                            handleData = this._getCheckedNodes();
-                            break;
-                    }
-                    this._executeAjaxConfig(c, handleData);
-                }
+            option.ajaxConfig.filter(c => !c.parentName).map(c => {
+                this._getAjaxConfig(c, option);
             });
         }
     }
 
+    private _getAjaxConfig(c, option) {
+        let msg;
+        if (c.action) {
+            let handleData;
+            // 所有获取数据的方法都会将数据保存至tempValue
+            // 使用是可以通过临时变量定义的固定属性访问
+            // 可已使用内置的参数类型进行访问
+            switch (c.action) {
+                case BSN_COMPONENT_MODES.REFRESH:
+                    this.load();
+                    break;
+                case BSN_EXECUTE_ACTION.EXECUTE_NODES_CHECKED_KEY:
+                    handleData = this._getCheckedNodesIds();
+                    break;
+                case BSN_EXECUTE_ACTION.EXECUTE_NODE_SELECTED:
+                    handleData = this._getSelectedNodeId();
+                    break;
+                case BSN_EXECUTE_ACTION.EXECUTE_NODE_CHECKED:
+                    handleData = this._getCheckedNodes();
+                    break;
+            }
+            if (c.message) {
+                this.baseModal.confirm({
+                    nzTitle: c.title ? c.title : '提示',
+                    nzContent: c.message ? c.message : '',
+                    nzOnOk: () => {
+                        (async () => {
+                            const response = await this._executeAjaxConfig(
+                                c,
+                                handleData
+                            );
+                            debugger;
+                            // 处理输出参数
+                            if (c.outputParams) {
+                                this.outputParametersResolver(
+                                    c,
+                                    response,
+                                    option.ajaxConfig,
+                                    () => {
+                                        this.load();
+                                    }
+                                );
+                            } else {
+                                // 没有输出参数，进行默认处理
+                                this.showAjaxMessage(response, msg, () => {
+                                    this.load();
+                                });
+                            }
+                        })();
+                    },
+                    nzOnCancel() { }
+                });
+            } else {
+                (async () => {
+                    const response = await this._executeAjaxConfig(
+                        c,
+                        handleData
+                    );
+                    // 处理输出参数
+                    if (c.outputParams) {
+                        this.outputParametersResolver(
+                            c,
+                            response,
+                            option.ajaxConfig,
+                            () => {
+                                this.cascade.next(
+                                    new BsnComponentMessage(
+                                        BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                                        this.config.viewId
+                                    )
+                                );
+                                this.load();
+                            }
+                        );
+                    } else {
+                        // 没有输出参数，进行默认处理
+                        this.showAjaxMessage(response, msg, () => {
+                            this.cascade.next(
+                                new BsnComponentMessage(
+                                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                                    this.config.viewId
+                                )
+                            );
+                            this.load();
+                        });
+                    }
+                })();
+            }
+        }
+    }
+
+        /**
+    *
+    * @param outputParams
+    * @param response
+    * @param callback
+    * @returns {Array}
+    * @private
+    * 1、输出参数的配置中，消息类型的参数只能设置一次
+    * 2、值类型的结果可以设置多个
+    * 3、表类型的返回结果可以设置多个
+    */
+   public outputParametersResolver(c, response, ajaxConfig, callback) {
+       debugger;
+    const result = false;
+    if (response.isSuccess) {
+
+        const msg =
+            c.outputParams[
+            c.outputParams.findIndex(
+                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
+            )
+            ];
+        const value =
+            c.outputParams[
+            c.outputParams.findIndex(
+                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
+            )
+            ];
+        const table =
+            c.outputParams[
+            c.outputParams.findIndex(
+                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
+            )
+            ];
+        const msgObj = msg
+            ? response.data[msg.name].split(':')
+            : null;
+        const valueObj = response.data ? response.data : {};
+        // const tableObj = response.data[table.name] ? response.data[table.name] : [];
+        if (msgObj && msgObj.length > 1) {
+            const messageType = msgObj[0];
+            let options;
+            switch (messageType) {
+                case 'info':
+                    options = {
+                        nzTitle: '提示',
+                        nzWidth: '350px',
+                        nzContent: msgObj[1]
+                    };
+                    this.baseModal[messageType](options);
+                    break;
+                case 'error':
+                    options = {
+                        nzTitle: '提示',
+                        nzWidth: '350px',
+                        nzContent: msgObj[1]
+                    };
+                    this.baseModal[messageType](options);
+                    break;
+                case 'confirm':
+                    options = {
+                        nzTitle: '提示',
+                        nzContent: msgObj[1],
+                        nzOnOk: () => {
+                            // 是否继续后续操作，根据返回状态结果
+                            const childrenConfig = ajaxConfig.filter(
+                                f => f.parentName && f.parentName === c.name
+                            );
+                            //  目前紧支持一次执行一个分之步骤
+                            this._getAjaxConfig(childrenConfig[0], ajaxConfig);
+                            // childrenConfig &&
+                            //     childrenConfig.map(currentAjax => {
+                            //         this.getAjaxConfig(
+                            //             currentAjax,
+                            //             ajaxConfig,
+                            //             callback
+                            //         );
+                            //     });
+                        },
+                        nzOnCancel: () => { }
+                    };
+                    this.baseModal[messageType](options);
+                    break;
+                case 'warning':
+                    options = {
+                        nzTitle: '提示',
+                        nzWidth: '350px',
+                        nzContent: msgObj[1]
+                    };
+                    this.baseModal[messageType](options);
+                    break;
+                case 'success':
+                    options = {
+                        nzTitle: '',
+                        nzWidth: '350px',
+                        nzContent: msgObj[1]
+                    };
+                    this.baseMessage.success(msgObj[1]);
+                    callback && callback();
+                    break;
+            }
+            // if(options) {
+            //     this.modalService[messageType](options);
+            //
+            //     // 如果成功则执行回调
+            //     if(messageType === 'success') {
+            //         callback && callback();
+            //     }
+            // }
+        }
+        // if(options) {
+        //     this.baseMessage[messageType](options);
+        //
+        //     // 如果成功则执行回调
+        //     if(messageType === 'success') {
+        //         callback && callback();
+        //     }
+        // }
+        if (valueObj) {
+            this.returnValue = valueObj;
+            const childrenConfig = ajaxConfig.filter(
+                f => f.parentName && f.parentName === c.name
+            );
+            //  目前紧支持一次执行一个分之步骤
+            this._getAjaxConfig(childrenConfig[0], ajaxConfig);
+        }
+
+    } else {
+        this.baseMessage.error('操作异常：', response.message);
+    }
+}
+
     private _executeAjaxConfig(ajaxConfigObj, handleData) {
-        this.baseModal.confirm({
-            nzTitle: ajaxConfigObj.title ? ajaxConfigObj.title : '提示',
-            nzContent: ajaxConfigObj.message ? ajaxConfigObj.message : '',
-            nzOnOk: () => {
-                if (Array.isArray(handleData)) {
-                    this._executeBatchAction(ajaxConfigObj, handleData);
-                } else {
-                    this._executeAction(ajaxConfigObj, handleData);
-                }
-            },
-            nzOnCancel() { }
-        });
+        if (Array.isArray(handleData)) {
+           return this._executeBatchAction(ajaxConfigObj, handleData);
+        } else {
+           return this._executeAction(ajaxConfigObj, handleData);
+        }
     }
 
     private async _executeAction(ajaxConfigObj, handleData) {
@@ -861,16 +1058,16 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
             cacheValue: this.cacheValue
         });
         // 执行数据操作
-        const response = await this._execute(
+        return this._execute(
             ajaxConfigObj.url,
             ajaxConfigObj.ajaxType,
             executeParam
         );
-        if (response.isSuccess) {
-            this.baseMessage.success('操作成功');
-        } else {
-            this.baseMessage.error(`操作失败 ${response.message}`);
-        }
+        // if (response.isSuccess) {
+        //     this.baseMessage.success('操作成功');
+        // } else {
+        //     this.baseMessage.error(`操作失败 ${response.message}`);
+        // }
     }
 
     private async _executeBatchAction(ajaxConfigObj, handleData) {
@@ -900,16 +1097,16 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
             );
         }
         // 执行数据操作
-        const response = await this._execute(
+        return this._execute(
             ajaxConfigObj.url,
             ajaxConfigObj.ajaxType,
             executeParams
         );
-        if (response.isSuccess) {
-            this.baseMessage.success('操作成功');
-        } else {
-            this.baseMessage.error(`操作失败 ${response.message}`);
-        }
+        // if (response.isSuccess) {
+        //     this.baseMessage.success('操作成功');
+        // } else {
+        //     this.baseMessage.error(`操作失败 ${response.message}`);
+        // }
     }
 
     private _getCheckedNodesFromParent(treeNode) {

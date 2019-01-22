@@ -20,9 +20,8 @@ import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resol
 import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { Observable, Observer, Subscription } from 'rxjs';
-import { GridBase } from '../grid.base';
 import { BeforeOperation } from '../before-operation.base';
-import { debug } from 'util';
+import { TreeGridBase } from '../treegrid.base';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: FormResolverComponent
@@ -45,7 +44,7 @@ const component: { [type: string]: Type<any> } = {
         `
     ]
 })
-export class BsnAsyncTreeTableComponent extends GridBase
+export class BsnAsyncTreeTableComponent extends TreeGridBase
     implements OnInit, AfterViewInit, OnDestroy {
     @Input()
     public config;
@@ -482,7 +481,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
     }
 
     public async expandChange(childrenData, data: any, $event: boolean) {
-        this.loading = true;
+        // this.loading = true;
         if ($event === true) {
             const response = await this.expandLoad(data);
                 if (response.isSuccess && response.data.length > 0) {
@@ -492,7 +491,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
                     // childrenData = data;
                     this.insertChildrenListToTree(data, response.data);
                 }
-                this.loading = false;
+                // this.loading = false;
         } else {
             if (childrenData) {
                 childrenData.forEach(d => {
@@ -506,7 +505,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
                     
                 })
             }
-            this.loading = false;
+            // this.loading = false;
         }
     }
 
