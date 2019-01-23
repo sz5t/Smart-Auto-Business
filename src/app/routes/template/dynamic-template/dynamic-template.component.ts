@@ -8,18 +8,19 @@ import { ActivatedRoute } from '@angular/router';
     templateUrl: './dynamic-template.component.html',
 })
 export class DynamicTemplateComponent implements OnInit, OnDestroy {
-    title;
-    permissions;
-    config = {
+    public title;
+    public permissions;
+    public config = {
         rows: []
     };
+    public isLoadLayout = false;
     constructor(
         private _http: ApiService,
         private _cacheService: CacheService,
         private _route: ActivatedRoute
     ) { }
 
-    ngOnInit() {
+    public ngOnInit() {
         this._route.params.subscribe(params => {
             this._http.getLocalData(params.name).subscribe(data => {
                 (async() => {
@@ -29,6 +30,7 @@ export class DynamicTemplateComponent implements OnInit, OnDestroy {
                     if (permission.isSuccess) {
                         this.config = data;
                         this.permissions = permission.data;
+                        this.isLoadLayout = true;
                     } else {
                         console.log('出现异常:未能获取权限信息');
                     }
@@ -39,11 +41,11 @@ export class DynamicTemplateComponent implements OnInit, OnDestroy {
 
     }
 
-    ngOnDestroy(): void {
+    public ngOnDestroy(): void {
         this.config = null;
     }
 
-    async _getOperationPermission(moduleCode, roleId, type) {
+    public async _getOperationPermission(moduleCode, roleId, type) {
         return this._http.get('common/GetButtonData', {type: type, moduleCode: moduleCode, roleId: roleId}).toPromise();
     }
 

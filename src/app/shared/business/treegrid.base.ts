@@ -20,6 +20,14 @@ export class TreeGridBase extends CnComponentBase {
     public set dataList(value) {
         this._dataList = value;
     }
+
+    private _operationCallback: Function;
+    public get operationCallback() {
+        return this._operationCallback;
+    }
+    public set operationCallback(value) {
+        this._operationCallback = value;
+    }
     private _callback: Function;
     public get callback(): Function {
         return this._callback;
@@ -249,7 +257,6 @@ export class TreeGridBase extends CnComponentBase {
                     }
                     msg = '操作完成';
                     this.buildConfirm(c, option.ajaxConfig, handleData, msg);
-                    debugger;
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_ROW:
                     handleData = this.getEditedRows();
@@ -320,7 +327,8 @@ export class TreeGridBase extends CnComponentBase {
                                     const focusIds = this.getFocusIds(
                                         response.data
                                     );
-                                    this._callback(focusIds);
+                                    // this._callback(focusIds);
+                                    this._operationCallback(focusIds);
                                     
                                 }
                             );
@@ -330,7 +338,8 @@ export class TreeGridBase extends CnComponentBase {
                                 const focusIds = this.getFocusIds(
                                     response.data
                                 );
-                                this._callback(focusIds);
+                                // this._callback(focusIds);
+                                this._operationCallback(focusIds);
                                 
                             });
                         }
@@ -349,7 +358,8 @@ export class TreeGridBase extends CnComponentBase {
                         ajaxConfigs,
                         () => {
                             const focusIds = this.getFocusIds(response.data);
-                            this._callback(focusIds);
+                            // this._callback(focusIds);
+                            this._operationCallback(focusIds);
                             // this.windowCallback();
                         }
                     );
@@ -357,8 +367,9 @@ export class TreeGridBase extends CnComponentBase {
                     // 没有输出参数，进行默认处理
                     this.showAjaxMessage(response, msg, () => {
                         const focusIds = this.getFocusIds(response.data);
-                        this._callback(focusIds);
+                        // this._callback(focusIds);
                         // this.windowCallback();
+                        this._operationCallback(focusIds);
                     });
                 }
             })();

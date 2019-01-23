@@ -124,6 +124,10 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         }
         this.apiResource = this._api;
 
+        this.operationCallback = focusId => {
+            this.load();
+        }
+
         this.callback = focusId => {
             this._cancelSavedRow();
         };
@@ -632,7 +636,6 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
             this.editCache[newRow['Id']] = { edit: true, data: newRow };
             // 数据添加到具体选中行的下方
             this.dataList = this._setChildRow(newRow, parentId);
-            this.treeData.push(newRow);
         } else {
             console.log('未选择任何行,无法添加下级');
             return false;
