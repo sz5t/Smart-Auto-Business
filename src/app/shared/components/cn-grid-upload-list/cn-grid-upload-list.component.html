@@ -1,4 +1,4 @@
 
-    <button  nz-button nzType="primary" (click)="openUploadDialog()">
+    <button  *ngIf="!isUpload"  nz-button nzType="primary" (click)="openUploadDialog()">
         <i nz-icon type="file-search" theme="outline"></i>查看
     </button>

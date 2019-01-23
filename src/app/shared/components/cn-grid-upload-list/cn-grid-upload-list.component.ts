@@ -32,7 +32,7 @@ export class CnGridUploadListComponent extends CnComponentBase implements OnInit
 
   @Output()
   public updateValue = new EventEmitter();
-  public isUpload = true;
+  public isUpload = false;
   constructor(private modalService: NzModalService) {
     super();
     this.baseModal = this.modalService;
@@ -56,6 +56,29 @@ export class CnGridUploadListComponent extends CnComponentBase implements OnInit
     //   this.isUpload = false;
     // }
 
+    if (this.config.formatConfig) {
+      this.config.formatConfig.forEach(formatConfig => {
+        const reg1 = new RegExp(formatConfig.regular);
+        let regularData;
+        if (formatConfig.type) {
+          if (formatConfig.type === 'row') {
+            if (this.rowData) {
+              regularData = this.rowData[formatConfig['valueName']];
+            }
+          }
+        }
+        // console.log('regularData', regularData);
+        const regularflag = reg1.test(regularData);
+        if (regularflag) {
+          this.isUpload = formatConfig.responseConfig.hidden;                                                              
+          return true;
+        }
+
+      });
+
+
+    }
+
   }
 
   /**
@@ -64,7 +87,7 @@ export class CnGridUploadListComponent extends CnComponentBase implements OnInit
  * @returns {boolean}
  */
   public openUploadDialog() {
-   // console.log('this.rowData:', this.rowData);
+    // console.log('this.rowData:', this.rowData);
     const dialog = this.config.select.uploadList;
     if (!dialog) {
       return false;
