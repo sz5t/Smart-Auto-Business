@@ -7,6 +7,9 @@ import { CacheService } from '@delon/cache';
     templateUrl: './header.component.html',
     styles: [
         `
+        .logo{
+            width:260px;
+        }
             .title {
             color: whitesmoke;
             font-size: 25px;

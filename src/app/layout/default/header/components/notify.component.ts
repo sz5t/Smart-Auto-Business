@@ -25,7 +25,7 @@ export class HeaderNotifyComponent {
         { title: '消息', list: [], emptyText: '您已读完所有消息', emptyImage: 'https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg', clearText: '清空消息' },
         { title: '待办', list: [], emptyText: '你已完成所有待办', emptyImage: 'https://gw.alipayobjects.com/zos/rmsportal/HsIsxMZiWKrNUavQUXqx.svg', clearText: '清空待办' }
     ];
-    count = 5;
+    count = 0;
     loading = false;
 
     constructor(private msg: NzMessageService) {}
@@ -52,7 +52,7 @@ export class HeaderNotifyComponent {
     }
 
     loadData() {
-        if (this.loading) return;
+     /*    if (this.loading) return;
         this.loading = true;
         setTimeout(() => {
             this.data = this.updateNoticeData([{
@@ -138,7 +138,7 @@ export class HeaderNotifyComponent {
             }]);
 
             this.loading = false;
-        }, 1000);
+        }, 1000); */
     }
 
     clear(type: string) {

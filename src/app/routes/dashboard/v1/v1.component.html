@@ -13,8 +13,8 @@
     <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
         <div nz-row nzType="flex" nzAlign="middle" class="bg-primary rounded-md">
             <div nz-col nzSpan="12" class="p-md text-white">
-                <div class="h2 mt0">123,456</div>
-                <p class="text-nowrap mb0">Website Traffics</p>
+                <div class="h2 mt0">10000</div>
+                <p class="text-nowrap mb0">计划数量</p>
             </div>
             <div nz-col nzSpan="12">
                 <g2-mini-bar height="35" color="#fff" borderWidth="3" [padding]="[36, 30, 30, 30]" [data]="webSite"></g2-mini-bar>
@@ -24,8 +24,8 @@
     <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
         <div nz-row nzType="flex" nzAlign="middle" class="bg-success rounded-md">
             <div nz-col nzSpan="12" class="p-md text-white">
-                <div class="h2 mt0">234,567K</div>
-                <p class="text-nowrap mb0">Website Impressions</p>
+                <div class="h2 mt0">8000</div>
+                <p class="text-nowrap mb0">完成数量</p>
             </div>
             <div nz-col nzSpan="12">
                 <g2-mini-bar height="35" color="#fff" borderWidth="3" [padding]="[36, 30, 30, 30]" [data]="webSite"></g2-mini-bar>
@@ -35,8 +35,8 @@
     <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md">
         <div nz-row nzType="flex" nzAlign="middle" class="bg-orange rounded-md">
             <div nz-col nzSpan="12" class="p-md text-white">
-                <div class="h2 mt0">$458,778</div>
-                <p class="text-nowrap mb0">Total Sales</p>
+                <div class="h2 mt0">2000</div>
+                <p class="text-nowrap mb0">未完成</p>
             </div>
             <div nz-col nzSpan="12">
                 <g2-mini-bar height="35" color="#fff" borderWidth="3" [padding]="[36, 30, 30, 30]" [data]="webSite"></g2-mini-bar>
@@ -47,7 +47,7 @@
         <div nz-row nzType="flex" nzAlign="middle" class="bg-magenta rounded-md">
             <div nz-col nzSpan="12" class="p-md text-white">
                 <div class="h2 mt0">456</div>
-                <p class="text-nowrap mb0">Support Tickets</p>
+                <p class="text-nowrap mb0">问题产品</p>
             </div>
             <div nz-col nzSpan="12">
                 <g2-mini-bar height="35" color="#fff" borderWidth="3" [padding]="[36, 30, 30, 30]" [data]="webSite"></g2-mini-bar>
@@ -57,7 +57,7 @@
 </div>
 <div nz-row nzGutter="16">
     <div nz-col nzXs="24" nzMd="12">
-        <nz-card [nzBordered]="false" [nzTitle]="title">
+        <nz-card [nzBordered]="false" [nzTitle]="'生产计划'">
             <ng-template #title>
                 Sales Statistics
                 <small class="text-sm font-weight-normal">Business Expectations & Retail Sales Statistics</small>
@@ -68,17 +68,17 @@
         </nz-card>
     </div>
     <div nz-col nzXs="24" nzMd="12">
-        <nz-card [nzTitle]="title" [nzBordered]="false">
+        <nz-card [nzTitle]="'实时进度'" [nzBordered]="false">
             <ng-template #title>
                 Growth Rate
                 <small class="text-sm font-weight-normal">Business Expectations & Retail Sales Statistics</small>
             </ng-template>
             <g2-timeline [data]="offlineChartData" [height]="239" [padding]="[0, 0, 0, 0]"
-                      [titleMap]="{ y1: '客流量', y2: '支付笔数' }"></g2-timeline>
+                      [titleMap]="{ y1: '计划数量', y2: '完成数量' }"></g2-timeline>
         </nz-card>
     </div>
 </div>
-<div nz-row nzGutter="16">
+<div nz-row nzGutter="16" style="display: none">
     <div nz-col nzXs="24" nzMd="12">
         <nz-card [nzBordered]="false" class="ant-card__img">
             <img class="img" src="//os.alipayobjects.com/rmsportal/GhjqstwSgxBXrZS.png">
@@ -99,8 +99,8 @@
     <div nz-col nzXs="24" nzMd="12">
         <nz-card [nzTitle]="title" [nzBordered]="false" class="ant-card__body-nopadding">
             <ng-template #title>
-                Recent Posts
-                <small class="text-sm font-weight-normal">Venenatis portauam Inceptos ameteiam</small>
+                生产计划
+                <small class="text-sm font-weight-normal"></small>
             </ng-template>
             <div nz-row [nzType]="'flex'" [nzJustify]="'center'" [nzAlign]="'middle'" class="py-sm bg-grey-lighter-h point"
                 *ngFor="let item of todoData">
@@ -114,7 +114,7 @@
             </div>
         </nz-card>
     </div>
-    <div nz-col nzXs="24" nzMd="12">
+    <div nz-col nzXs="24" nzMd="12" >
         <nz-card nzTitle="Todo lists" [nzBordered]="false" class="ant-card__body-nopadding">
             <div nz-row [nzType]="'flex'" [nzJustify]="'center'" [nzAlign]="'middle'" class="py-sm bg-grey-lighter-h point"
                 *ngFor="let item of todoData">
