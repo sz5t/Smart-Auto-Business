@@ -1716,6 +1716,16 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
                                                         name: 'code1',
                                                         controlSize: '18',
                                                         inputType: 'text',
+                                                        formatConfig: [
+                                                             {
+                                                                type: 'row',
+                                                                valueName: 'code1',
+                                                                regular: '^2$',
+                                                                responseConfig: {
+                                                                  hidden: true
+                                                                }
+                                                            },
+                                                        ],
                                                         select: {
                                                             nzWidth: 768,
                                                             title: '预览',
