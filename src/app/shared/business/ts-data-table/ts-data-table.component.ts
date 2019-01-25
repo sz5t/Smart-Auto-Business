@@ -4146,6 +4146,7 @@ export class TsDataTableComponent extends CnComponentBase
             cf['field'] = f.field;
             cf['width'] = f.width;
             cf['hidden'] = f.hidden;
+            cf['titleField'] = f.titleField;
             if (f.isEdit) {
                 cf['editor'] = this.setEditConfig(f);
             }

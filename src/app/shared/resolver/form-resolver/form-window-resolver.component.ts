@@ -498,10 +498,8 @@ export class CnFormWindowResolverComponent extends CnFormBase
                                                         ];
                                                 }
                                             }
-
                                             // 其他取值【日后扩展部分】
                                         });
-
                                         let Exist = false;
                                         changeConfig_new.forEach(config_new => {
                                             if (
@@ -604,7 +602,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
                                         regularData = data.data;
                                     }
                                     const regularflag = reg1.test(regularData);
-                                    //  console.log("正则结果：", regularflag);
+                                    // console.log("正则结果：", regularflag);
                                     // endregion  解析结束 正则表达
                                     if (regularflag) {
                                         // region: 解析开始 根据组件类型组装新的配置【静态option组装】
@@ -669,7 +667,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
                                                                 ];
                                                         }
                                                     }
-
                                                     // 其他取值【日后扩展部分】
                                                 }
                                             );

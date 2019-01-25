@@ -14,7 +14,7 @@ export class CnFormSelectTreegridComponent implements OnInit, OnChanges {
   @Input() bsnData;
   @Input() rowData;
   @Input() dataSet;
-  @Input() casadeData;
+  @Input() casadeData = {};
   @Input() changeConfig;
   @Output() updateValue = new EventEmitter();
   formGroup: FormGroup;
@@ -34,7 +34,24 @@ export class CnFormSelectTreegridComponent implements OnInit, OnChanges {
   // 模板配置
 
   ngOnInit() {
-   // console.log('config:  ', this.config);
+    // console.log('config:  ', this.config);
+    if (this.changeConfig) {
+      if (this.changeConfig['cascadeValue']) {
+        // cascadeValue
+        for (const key in this.changeConfig['cascadeValue']) {
+          if (this.changeConfig['cascadeValue'].hasOwnProperty(key)) {
+            this.cascadeValue[key] = this.changeConfig['cascadeValue'][key];
+          }
+        }
+      }
+    }
+
+    if (this.cascadeValue) {
+      if (this.casadeData) {
+        this.casadeData = {};
+      }
+      this.casadeData['cascadeValue'] = this.cascadeValue;
+    }
     if (this.casadeData) {
       for (const key in this.casadeData) {
         // 临时变量的整理
@@ -169,12 +186,12 @@ export class CnFormSelectTreegridComponent implements OnInit, OnChanges {
             } else {
               this._valuetext = this._value;
             }
-           // console.log('_valuetext: ', this._valuetext);
+            // console.log('_valuetext: ', this._valuetext);
           }
         }
 
         console.log('iftrue弹出表格返回数据', backValue);
-      } 
+      }
       // this.value['dataText'] = this._valuetext;
       this.updateValue.emit(backValue);
     } else {

@@ -65,6 +65,7 @@ export class FormResolverComponent extends CnFormBase
     public beforeOperation: BeforeOperation;
     public change_config = {};
     public cascadeList = {};
+    public toolbarConfig = [];
     constructor(
         private builder: FormBuilder,
         private apiService: ApiService,
@@ -1429,9 +1430,15 @@ export class FormResolverComponent extends CnFormBase
     /**
      * ce
      */
-    public ExecRowEvent(updateState) {
-
-        const option = updateState.option;
+    public ExecRowEvent(enentname) {
+        let updateState;
+        const index = this.toolbarConfig.findIndex(
+            item => item['name'] === enentname
+        );
+        if (index > -1) {
+            updateState = this.toolbarConfig[index];
+        }
+        const option = updateState;
         this.beforeOperation.operationItemData = this.value;
         if (!this.beforeOperation.beforeItemDataOperation(option)) {
             switch (updateState.action) {
@@ -1496,6 +1503,40 @@ export class FormResolverComponent extends CnFormBase
 
 
     }
+
+        // tslint:disable-next-line:member-ordering
+
+        //  获取event 事件的配置 
+        public GetToolbarEvents() {
+            if (this.config.toolbarEvent && Array.isArray(this.config.toolbarEvent)) {
+                this.config.toolbarEvent.forEach(item => {
+                    if (item.group) {
+                        item.group.forEach(g => {
+                            this.toolbarConfig.push(g);
+                        });
+    
+    
+                    } else if (item.dropdown) {
+                        const dropdown = [];
+                        item.dropdown.forEach(b => {
+                            const down = {};
+                            const { name, text, icon } = b;
+                            down['name'] = name;
+                            down['text'] = text;
+                            down['icon'] = icon;
+                            down['buttons'] = [];
+                            b.buttons.forEach(btn => {
+                                this.toolbarConfig.push(btn);
+                            });
+                        });
+    
+                    }
+                });
+            }
+    
+    
+        }
+    
     // 【20181126】 针对级联编辑状态目前问题处理
     // 原来的结构不合理，在于变化的检测均是完全修改配置
     // 现在调整为，将级联包装成对象，给小组件，小组件自行完成

@@ -14,7 +14,7 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
   @Input() public bsnData;
   @Input() public rowData;
   @Input() public dataSet;
-  @Input() public casadeData;
+  @Input() public casadeData = {};
   @Input() public changeConfig;
   @Output() public updateValue = new EventEmitter();
   public formGroup: FormGroup;
@@ -44,6 +44,23 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
     // console.log('ngOnInitvalue: ', this.value);
     // this._value = this.formGroup.value[this.config.name];
     // console.log('被级联数据', this.casadeData);
+    if (this.changeConfig) {
+      if (this.changeConfig['cascadeValue']) {
+        // cascadeValue
+        for (const key in this.changeConfig['cascadeValue']) {
+          if (this.changeConfig['cascadeValue'].hasOwnProperty(key)) {
+            this.cascadeValue[key] = this.changeConfig['cascadeValue'][key];
+          }
+        }
+      }
+    }
+
+    if (this.cascadeValue) {
+      if (this.casadeData) {
+        this.casadeData = {};
+      }
+      this.casadeData['cascadeValue'] = this.cascadeValue;
+    }
     if (this.casadeData) {
       for (const key in this.casadeData) {
         // 临时变量的整理

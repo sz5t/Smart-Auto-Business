@@ -26,7 +26,7 @@ export class CnFormSelectGridComponent implements OnInit {
     @Input()
     dataSet;
     @Input()
-    casadeData;
+    casadeData={};
     @Input()
     changeConfig;
     @Output()
@@ -43,27 +43,40 @@ export class CnFormSelectGridComponent implements OnInit {
     _value;
     _valuetext;
     permissions = [];
-    constructor() {}
+    constructor() { }
     nzWidth = 1024;
     // 模板配置
 
     ngOnInit(): void {
         // console.log('ngOnInitvalue: ', this.value);
         // this._value = this.formGroup.value[this.config.name];
-        // console.log('被级联数据', this.casadeData);
+        if (this.changeConfig) {
+            if (this.changeConfig['cascadeValue']) {
+                // cascadeValue
+                for (const key in this.changeConfig['cascadeValue']) {
+                    if (this.changeConfig['cascadeValue'].hasOwnProperty(key)) {
+                        this.cascadeValue[key] = this.changeConfig['cascadeValue'][key];
+                    }
+                }
+            }
+        }
+
+        if (this.cascadeValue) {
+            if (this.casadeData) {
+                this.casadeData = {};
+            }
+            this.casadeData['cascadeValue'] = this.cascadeValue;
+        }
+
         if (this.casadeData) {
             for (const key in this.casadeData) {
                 // 临时变量的整理
                 if (key === "cascadeValue") {
                     for (const casekey in this.casadeData["cascadeValue"]) {
                         if (
-                            this.casadeData["cascadeValue"].hasOwnProperty(
-                                casekey
-                            )
+                            this.casadeData["cascadeValue"].hasOwnProperty(casekey)
                         ) {
-                            this.cascadeValue[casekey] = this.casadeData[
-                                "cascadeValue"
-                            ][casekey];
+                            this.cascadeValue[casekey] = this.casadeData["cascadeValue"][casekey];
                         }
                     }
                 } else if (key === "options") {
@@ -162,7 +175,7 @@ export class CnFormSelectGridComponent implements OnInit {
                                 this.bsnData,
                                 this.casadeData
                             );
-                            if ( backselectdata.hasOwnProperty( labelName )) {
+                            if (backselectdata.hasOwnProperty(labelName)) {
                                 this._valuetext = backselectdata[labelName];
                             } else {
                                 this._valuetext = this._value;

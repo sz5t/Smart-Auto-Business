@@ -54,7 +54,7 @@
                         <nz-collapse>
                             <nz-collapse-panel [nzHeader]="node_panels[0].name" [nzActive]="node_panels[0].active" [nzDisabled]="node_panels[0].disabled">
                                 <form nz-form>
-                                    <nz-form-item>
+                                    <nz-form-item style="display: none">
                                         <nz-form-label [nzSpan]="7" nzFor="id">id</nz-form-label>
                                         <nz-form-control [nzSpan]="16">
                                             <input nz-input name="id" type="text" id="id" [(ngModel)]="nodeinfo.id" readonly="readonly">
@@ -69,9 +69,9 @@
                                 </form>
                                 <!-- <cn-form-resolver [config]="from_config"></cn-form-resolver> -->
                             </nz-collapse-panel>
-                            <nz-collapse-panel [nzHeader]="node_panels[1].name" [nzActive]="node_panels[1].active" [nzDisabled]="node_panels[1].disabled">
+                      <!--       <nz-collapse-panel [nzHeader]="node_panels[1].name" [nzActive]="node_panels[1].active" [nzDisabled]="node_panels[1].disabled">
                                 <p>ceshi</p>
-                            </nz-collapse-panel>
+                            </nz-collapse-panel> -->
                         </nz-collapse>
                     </div>
                 </div>
@@ -81,7 +81,7 @@
                         <nz-collapse>
                             <nz-collapse-panel [nzHeader]="edge_panels[0].name" [nzActive]="edge_panels[0].active" [nzDisabled]="edge_panels[0].disabled">
                                 <form nz-form>
-                                    <nz-form-item>
+                                    <nz-form-item  style="display: none">
                                         <nz-form-label [nzSpan]="7" nzFor="id">id</nz-form-label>
                                         <nz-form-control [nzSpan]="16">
                                             <input nz-input name="id" type="text" id="id" [(ngModel)]="edgeinfo.id" readonly="readonly">
@@ -95,9 +95,9 @@
                                     </nz-form-item>
                                 </form>
                             </nz-collapse-panel>
-                            <nz-collapse-panel [nzHeader]="edge_panels[1].name" [nzActive]="edge_panels[1].active" [nzDisabled]="edge_panels[1].disabled">
+<!--                             <nz-collapse-panel [nzHeader]="edge_panels[1].name" [nzActive]="edge_panels[1].active" [nzDisabled]="edge_panels[1].disabled">
                                 <p>ceshi</p>
-                            </nz-collapse-panel>
+                            </nz-collapse-panel> -->
                         </nz-collapse>
                     </div>
                 </div>
