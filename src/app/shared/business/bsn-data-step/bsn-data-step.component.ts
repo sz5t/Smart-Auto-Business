@@ -79,11 +79,7 @@ export class BsnDataStepComponent extends CnComponentBase
             this.get().then(response => {
                 if (response.isSuccess) {
                     // 构建数据源
-                    const rgNodes = this.listToAsyncTreeData(
-                        response.data,
-                        null
-                    );
-                    const crNodes = this.convertTreeToNodes(rgNodes);
+                    const crNodes = this.sortingNode(response.data, null);
                     const copy = JSON.parse(JSON.stringify(crNodes));
                     if (crNodes.length > 1) {
                         const edges = this.convertTreeToEdges(copy);
@@ -97,19 +93,112 @@ export class BsnDataStepComponent extends CnComponentBase
         })();
     }
 
-    public listToAsyncTreeData(data, parentid) {
+    public sortingNode(dataSource, parentId) {
+        // 获取所有根节点的数据
+        const parentNodes = dataSource.filter(d => d.parentId === parentId);
+        // 获取所有非根节点数据
+        const restNodes = dataSource.filter(d => d.parentId !== parentId);
+        const resultNodes = [];
+        if (Array.isArray(restNodes) && restNodes.length > 0) { 
+            parentNodes.forEach(parentNode => {
+                resultNodes.push(...this.addRestNodesToParent(parentNode, restNodes, 0));    
+            });
+        } else {
+            resultNodes.push(...this.sortData(parentNodes, 'parent'));
+            resultNodes.forEach(nodeData => {
+                this.decorateNode(nodeData, 0);
+            });   
+        }
+        resultNodes.forEach((nodeData, i) => {
+            if (this.config.direction === 'horizontal') {
+                nodeData['x'] =
+                    this.config.startX * i === 0
+                        ? this.config.startX
+                        : this.config.startX + this.config.startX * i;
+                        nodeData['y'] = this.config.startY + 25;
+            } else if (this.config.direction === 'vertical') {
+                nodeData['y'] =
+                    this.config.startY * i === 0
+                        ? this.config.startY
+                        : this.config.startY + this.config.startY * i;
+            }
+    
+            nodeData['label'] = nodeData[this.config.textField];
+            if (nodeData['type'] === 'child') {
+                
+            }
+        });
+        return resultNodes;
+    }
+
+    public sortData(data, type) {
+        if (type === 'children' && this.config.childSortField && this.config.childSortField.length > 0) {
+            return data.sort((x ,y) => x['childSortField'] - y['childSortField']);
+        } else if (type === 'parent' && this.config.parentSortField && this.config.parentSortField.length > 0) {
+            return data.sort((x ,y) => x['parentSortField'] - y['parentSortField']);
+        } else {
+            return data;
+        }
+    };
+
+    public decorateNode(nodeData, level) {
+        const style = this.config.styles[level];
+        nodeData['level'] = level;
+        nodeData['style'] = { stroke: style.stroke };
+        nodeData['color'] = style.background;
+        nodeData['id'] = nodeData['Id'];
+        // data[i]['shape'] = 'customNode';
+        nodeData['labelOffsetX'] = this.config.labelOffsetX
+            ? this.config.labelOffsetX
+            : 0;
+        nodeData['labelOffsetY'] = this.config.labelOffsetY
+            ? this.config.labelOffsetY
+            : -30;
+        nodeData['size'] = this.config.size - (5 * level);
+    }
+
+    public addRestNodesToParent(parentNode, restNodes, level) {
+        const childNodes = [];
+        this.decorateNode(parentNode, level);
+        for (let i = 0, len = restNodes.length; i < len; i++) {
+            if (parentNode.Id === restNodes[i].parentId) {
+                childNodes.push(restNodes[i]);
+                restNodes.splice(i, 1);
+                i--;
+                len--;
+            }
+        }
+        let matchNodes = this.sortData(childNodes, 'children');
+        const res = [];
+        if (matchNodes.length > 0) {
+            level ++;
+            matchNodes.forEach(match => {
+                res.push(...this.addRestNodesToParent(match, restNodes, level));
+            });
+            matchNodes = res;
+        }
+        
+        return [parentNode, ...matchNodes];
+        // const matchNodes = restNodes.filter(rest => rest.parentId === parentNode.Id);
+        // const 
+        // // 设置排序
+        // matchNodes.sort((x, y) => x - y);
+        // return [parentNode, ...matchNodes];
+    }
+
+    public listToAsyncTreeData(data, parentid, level) {
         const result: any[] = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
             if (data[i].parentId === parentid) {
                 const temps = [];
-                temp = this.listToAsyncTreeData(data, data[i].Id);
+                temp = this.listToAsyncTreeData(data, data[i].Id, level + 1);
                 if (temp.length > 0) {
                     temp.forEach(item => {
                         item['type'] = 'child';
-                        item['size'] = this.config.size - 10;
+                        item['size'] = this.config.size - (5 * level);
                         // item['shape'] = 'childNode';
-                        item['style'] = { stroke: '#333' };
+                        item['style'] = { stroke: '#666' };
                         temps.push(item);
                     });
                 } else {
@@ -316,15 +405,10 @@ export class BsnDataStepComponent extends CnComponentBase
                     graph.update(ev.item, {
                         color: this.sNodeClickColor
                     });
-                    if (this._lastNode.model.type === 'parent') {
-                        graph.update(this._lastNode, {
-                            color: '#4596FC'
-                        });
-                    } else {
-                        graph.update(this._lastNode, {
-                            color: this.sNodeColor
-                        });
-                    }
+
+                    graph.update(this._lastNode, {
+                        color: this.config.styles[this._lastNode.model.level].background
+                    });
                     this._lastNode = ev.item;
                 }
 

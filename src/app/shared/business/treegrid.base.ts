@@ -727,7 +727,9 @@ export class TreeGridBase extends CnComponentBase {
                         } else if (btn['name'] === 'ok') {
                             modal.close();
                             this.windowCallback();
-                            //
+                        } else if (btn['name'] === 'close_refresh_parent') {
+                            modal.close();
+                            this.operationCallback();
                         }
                     };
                     footer.push(button);
