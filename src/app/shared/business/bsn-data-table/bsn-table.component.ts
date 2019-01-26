@@ -428,9 +428,11 @@ export class BsnTableComponent extends CnComponentBase
                                         this.load();
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
-                                        this.load();
+                                    this.focusIds = null;    
+                                    this.load();
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN:
+                                    this.focusIds = null;
                                         this.load();
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:

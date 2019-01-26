@@ -7,7 +7,8 @@ import {
     AfterViewInit,
     Input,
     Inject,
-    OnDestroy
+    OnDestroy,
+    TemplateRef
 } from '@angular/core';
 import G6 from '@antv/g6';
 import { ApiService } from '@core/utility/api-service';
@@ -22,12 +23,14 @@ import { Observable, Observer } from 'rxjs';
 import { CommonTools } from '@core/utility/common-tools';
 import { initDomAdapter } from '@angular/platform-browser/src/browser';
 import { AdNumberToChineseModule } from '@delon/abc';
+import { NzDropdownService, NzDropdownContextComponent, NzMenuItemDirective } from 'ng-zorro-antd';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'bsn-data-step',
     template: `
     <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
         <div 
+            (contextmenu)="contextMenu($event,template)"
             [ngStyle]="{overflow: 'auto',height: config.scrollHeight, width: config.scrollWidth}"
             infiniteScroll
             [infiniteScrollDistance]="1"
@@ -35,6 +38,13 @@ import { AdNumberToChineseModule } from '@delon/abc';
             [scrollWindow]="false">
             <div #dataSteps></div>
         </div>
+        <ng-template #template>
+        <ul nz-menu nzInDropDown (nzClick)="close($event)">
+          <li nz-menu-item>一级数据</li>
+          <li nz-menu-item>二级数据</li>
+          <li nz-menu-item>三级数据</li> 
+        </ul>
+      </ng-template>
     </nz-spin>`,
     styles: [``]
 })
@@ -49,15 +59,21 @@ export class BsnDataStepComponent extends CnComponentBase
     public isLoading = true;
     public bNodeColor;
     public sNodeColor = '#eee';
-    public sNodeEnterColor = '#00B2EE';
+    public sNodeEnterColor = '#00B2EE';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
     public sNodeClickColor = '#9BCD9B';
     public _lastNode;
     public _statusSubscription;
     public _cascadeSubscription;
     public graph;
+    private dropdown: NzDropdownContextComponent;
+    private defaultStyle = {
+            color: '#ccc',
+            background: '#ddd'
+        };
     constructor(
         private _apiService: ApiService,
         private _cacheService: CacheService,
+        private nzDropdownService: NzDropdownService,
         @Inject(BSN_COMPONENT_MODES)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
@@ -72,6 +88,13 @@ export class BsnDataStepComponent extends CnComponentBase
         this.initValue = this.initData ? this.initData : {};
         this.resolverRelation();
     }
+    public contextMenu($event: MouseEvent, template: TemplateRef<void>): void {
+        this.dropdown = this.nzDropdownService.create($event, template);
+      }
+    
+    public close(e: NzMenuItemDirective): void {
+        this.dropdown.close();
+    }
 
     public load() {
         this.isLoading = true;
@@ -80,9 +103,12 @@ export class BsnDataStepComponent extends CnComponentBase
                 if (response.isSuccess) {
                     // 构建数据源
                     const crNodes = this.sortingNode(response.data, null);
+                    // 拷贝数据源(构建连线会破坏原属数据的结构,所以要对数据源进行重新拷贝)
                     const copy = JSON.parse(JSON.stringify(crNodes));
                     if (crNodes.length > 1) {
+                        // 构建连线
                         const edges = this.convertTreeToEdges(copy);
+                        // 绘制徒刑 
                         this.graph.read({ nodes: crNodes, edges: edges });
                     } else {
                         this.graph.read({ nodes: crNodes});
@@ -110,6 +136,24 @@ export class BsnDataStepComponent extends CnComponentBase
             });   
         }
         resultNodes.forEach((nodeData, i) => {
+            if (i === 0) {
+                nodeData['color'] = this.sNodeClickColor;
+                this.tempValue['_selectedNode'] = nodeData;
+                if (
+                    this.config.componentType &&
+                    this.config.componentType.parent === true
+                ) {
+                    this.cascade.next(
+                        new BsnComponentMessage(
+                            BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                            this.config.viewId,
+                            {
+                                data: this.tempValue['_selectedNode']
+                            }
+                        )
+                    );
+                }
+            }
             if (this.config.direction === 'horizontal') {
                 nodeData['x'] =
                     this.config.startX * i === 0
@@ -142,7 +186,8 @@ export class BsnDataStepComponent extends CnComponentBase
     };
 
     public decorateNode(nodeData, level) {
-        const style = this.config.styles[level];
+        const style = this.config.styles ? this.config.styles[level] : this.defaultStyle;
+
         nodeData['level'] = level;
         nodeData['style'] = { stroke: style.stroke };
         nodeData['color'] = style.background;
@@ -154,7 +199,7 @@ export class BsnDataStepComponent extends CnComponentBase
         nodeData['labelOffsetY'] = this.config.labelOffsetY
             ? this.config.labelOffsetY
             : -30;
-        nodeData['size'] = this.config.size - (5 * level);
+        nodeData['size'] = this.config.size - (8 * level);
     }
 
     public addRestNodesToParent(parentNode, restNodes, level) {
@@ -179,11 +224,6 @@ export class BsnDataStepComponent extends CnComponentBase
         }
         
         return [parentNode, ...matchNodes];
-        // const matchNodes = restNodes.filter(rest => rest.parentId === parentNode.Id);
-        // const 
-        // // 设置排序
-        // matchNodes.sort((x, y) => x - y);
-        // return [parentNode, ...matchNodes];
     }
 
     public listToAsyncTreeData(data, parentid, level) {
@@ -394,6 +434,7 @@ export class BsnDataStepComponent extends CnComponentBase
         });
 
         G6.registerBehaviour('onclick', graph => {
+            
             graph.on('node:click', ev => {
                 if (!this._lastNode) {
                     graph.update(ev.item, {
@@ -407,7 +448,7 @@ export class BsnDataStepComponent extends CnComponentBase
                     });
 
                     graph.update(this._lastNode, {
-                        color: this.config.styles[this._lastNode.model.level].background
+                        color: this.config.styles ? this.config.styles[this._lastNode.model.level].background : this.defaultStyle.background
                     });
                     this._lastNode = ev.item;
                 }
