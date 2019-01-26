@@ -6,6 +6,7 @@ export const BSN_COMPONENT_MODES = {
     CREATE_CHILD: 'create_child',
     EDIT: 'edit',
     DELETE: 'delete',
+    DELETE_SELECTED: 'delete_select',
     DIALOG: 'dialog',
     WINDOW: 'window',
     SAVE: 'save',
@@ -69,7 +70,8 @@ export const BSN_EXECUTE_ACTION = {
     EXECUTE_NODE_CHECKED: 'EXECUTE_NODE_CHECKED',
     EXECUTE_NODES_CHECKED_KEY: 'EXECUTE_NODES_CHECKED_KEY',
     EXECUTE_SAVE_TREE_ROW: 'EXECUTE_SAVE_TREE_ROW',
-    EXECUTE_EDIT_TREE_ROW: 'EXECUTE_EDIT_TREE_ROW'
+    EXECUTE_EDIT_TREE_ROW: 'EXECUTE_EDIT_TREE_ROW',
+    EXECUTE_AND_LOAD: 'EXECUTE_AND_LOAD',
 };
 
 export const BSN_OUTPOUT_PARAMETER_TYPE = {
@@ -114,7 +116,7 @@ export class BsnComponentMessage {
         public _mode: string,
         public _viewId: string,
         public option?: any
-    ) {}
+    ) { }
 }
 
 /*
