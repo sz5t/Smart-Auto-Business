@@ -16,7 +16,7 @@ export class CnGridSelectTreegridComponent implements OnInit {
   @Input() casadeData;
   @Output() updateValue = new EventEmitter();
 
-  @ViewChild('table') table: BsnTreeTableComponent; //  BsnAsyncTreeTableComponent;
+  @ViewChild('table') table: BsnAsyncTreeTableComponent; //  ; BsnTreeTableComponent
 
   resultData;
   cascadeValue = {};

@@ -18,7 +18,7 @@ export class CnFormSelectTreegridComponent implements OnInit, OnChanges {
   @Input() changeConfig;
   @Output() updateValue = new EventEmitter();
   formGroup: FormGroup;
-  @ViewChild("table") table: BsnTreeTableComponent;  //BsnAsyncTreeTableComponent;
+  @ViewChild("table") table:BsnAsyncTreeTableComponent ;  //;BsnTreeTableComponent
   resultData;
   cascadeValue = {};
   cascadeSetValue = {};
