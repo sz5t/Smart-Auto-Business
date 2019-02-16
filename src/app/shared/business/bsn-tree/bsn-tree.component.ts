@@ -1236,7 +1236,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
         } else {// 找到
             const index = objtext.indexOf(searchtext);
             if (index > 0) {
-                back[0] = objtext.substring(0, index + 1);
+                back[0] = objtext.substring(0, index);
             }
             back[1] = searchtext;
             const indexEnd = index + searchtext.length;
