@@ -2973,6 +2973,30 @@ export class TreeTableComponent implements OnInit {
                                                         cancelPermission: true
                                                     },
                                                     {
+                                                        name: 'addSearchRow',
+                                                        class:
+                                                            'editable-add-btn',
+                                                        text: '查询',
+                                                        action: 'SEARCH',
+                                                        actionType:
+                                                            'addSearchRow',
+                                                        actionName:
+                                                            'addSearchRow',
+                                                            cancelPermission: true
+                                                    },
+                                                    {
+                                                        name: 'cancelSearchRow',
+                                                        class:
+                                                            'editable-add-btn',
+                                                        text: '取消查询',
+                                                        action: 'SEARCH',
+                                                        actionType:
+                                                            'cancelSearchRow',
+                                                        actionName:
+                                                            'cancelSearchRow',
+                                                            cancelPermission: true
+                                                    },
+                                                    {
                                                         name: 'addRow',
                                                         text: '新增',
                                                         action: 'CREATE',

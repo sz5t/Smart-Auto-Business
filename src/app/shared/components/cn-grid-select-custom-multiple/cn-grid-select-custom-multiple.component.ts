@@ -103,7 +103,7 @@ export class CnGridSelectCustomMultipleComponent  extends CnComponentBase  imple
   public getMultipleTags(dlist?) {
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
-    dlist.array.forEach(data => {
+    dlist.forEach(data => {
       const b_lable = data[labelName];
       const b_value = data[valueName]; // 取值时动态读取的
       const newobj = { label: b_lable, value: b_value };
@@ -267,8 +267,8 @@ export class CnGridSelectCustomMultipleComponent  extends CnComponentBase  imple
             } else if (btn['name'] === 'reset') {
               //  this._resetForm(componentInstance);
             } else if (btn['name'] === 'ok') {
-              console.log('ok');
-              console.log(componentInstance.value);
+              // console.log('ok');
+             //  console.log(componentInstance.value);
               const labelName = this.config.labelName ? this.config.labelName : 'name';
               const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
               //  this.tags = [{ label: componentInstance.value[labelName], value: componentInstance.value[valueName] }];
@@ -306,7 +306,7 @@ export class CnGridSelectCustomMultipleComponent  extends CnComponentBase  imple
   }
 
   public async valueChange(name?, dataItemValue?) {
-    console.log('valueChangeSelectGridMultiple', name);
+   // console.log('valueChangeSelectGridMultiple', name);
 
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
@@ -318,7 +318,7 @@ export class CnGridSelectCustomMultipleComponent  extends CnComponentBase  imple
         // valueName
         const index = this.tags.length;
         if (this.tags) {
-          if (index >= 0) {
+          if (index > 0) {
             this.getMultipleValue();
           } else {
             // 取值
@@ -326,7 +326,7 @@ export class CnGridSelectCustomMultipleComponent  extends CnComponentBase  imple
             componentvalue[valueName] = name;
             if (this.config.ajaxConfig) {
               const loadData = await this.asyncLoadOptions(this.config.ajaxConfig, componentvalue);
-              console.log('自定义数据：', loadData);
+              // console.log('自定义数据：', loadData);
               let selectrowdata = [];
               if (loadData && loadData.status === 200 && loadData.isSuccess) {
                 if (loadData.data) {
@@ -348,7 +348,7 @@ export class CnGridSelectCustomMultipleComponent  extends CnComponentBase  imple
         // console.log('iftrue弹出表格返回数据', backValue);
       }
       // this.value['dataText'] = this._valuetext;
-      console.log('iftrue弹出表格返回数据', this.value);
+     // console.log('iftrue弹出表格返回数据', this.value);
       this.updateValue.emit(this.value);
     } else {
       this.value.data = null;
