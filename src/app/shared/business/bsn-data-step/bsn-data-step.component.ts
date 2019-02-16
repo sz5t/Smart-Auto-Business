@@ -113,6 +113,7 @@ export class BsnDataStepComponent extends CnComponentBase
                     } else {
                         this.graph.read({ nodes: crNodes});
                     }
+                    this._lastNode = this.graph._cfg._itemMap[crNodes[0].Id];
                     this.isLoading = false;
                 }
             });
@@ -138,6 +139,7 @@ export class BsnDataStepComponent extends CnComponentBase
         resultNodes.forEach((nodeData, i) => {
             if (i === 0) {
                 nodeData['color'] = this.sNodeClickColor;
+                nodeData['style'] = {'stroke': '#000'};
                 this.tempValue['_selectedNode'] = nodeData;
                 if (
                     this.config.componentType &&
@@ -438,17 +440,20 @@ export class BsnDataStepComponent extends CnComponentBase
             graph.on('node:click', ev => {
                 if (!this._lastNode) {
                     graph.update(ev.item, {
-                        color: this.sNodeClickColor
+                        color: this.sNodeClickColor,
+                        style: {'stroke': '#000'}
                     });
                     this._lastNode = ev.item;
                 }
                 if (this._lastNode !== ev.item) {
                     graph.update(ev.item, {
-                        color: this.sNodeClickColor
+                        color: this.sNodeClickColor,
+                        style: {'stroke': '#000'}
                     });
 
                     graph.update(this._lastNode, {
-                        color: this.config.styles ? this.config.styles[this._lastNode.model.level].background : this.defaultStyle.background
+                        color: this.config.styles ? this.config.styles[this._lastNode.model.level].background : this.defaultStyle.background,
+                        style: {'stroke': this.config.styles ? this.config.styles[this._lastNode.model.level].stroke : this.defaultStyle.color}
                     });
                     this._lastNode = ev.item;
                 }
