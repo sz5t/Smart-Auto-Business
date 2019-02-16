@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { CacheService } from '@delon/cache';
 import { Observable } from 'rxjs';
 import {
@@ -26,7 +27,7 @@ import {
     ViewChild,
     ElementRef
 } from '@angular/core';
-import { NzMessageService, NzModalService, NzDropdownService } from 'ng-zorro-antd';
+import { NzMessageService, NzModalService, NzDropdownService, NzDrawerService } from 'ng-zorro-antd';
 import { CommonTools } from '@core/utility/common-tools';
 import { ApiService } from '@core/utility/api-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
@@ -135,6 +136,8 @@ export class TsDataTableComponent extends CnComponentBase
         private _message: NzMessageService,
         private modalService: NzModalService,
         private cacheService: CacheService,
+        private router: Router,
+        private drawerService: NzDrawerService,
         private _dropdownService: NzDropdownService,
         @Inject(BSN_COMPONENT_MODES)
         private stateEvents: Observable<BsnComponentMessage>,
@@ -150,7 +153,10 @@ export class TsDataTableComponent extends CnComponentBase
         this.cacheValue = this.cacheService;
     }
 
-    public ngOnInit() {
+    public async ngOnInit() {
+        if (this.initData) {
+            this.initValue = this.initData;
+        }
         if (this.config.select) {
             this.config.select.forEach(selectItem => {
                 this.config.columns.forEach(columnItem => {
@@ -197,9 +203,7 @@ export class TsDataTableComponent extends CnComponentBase
             this.loadDynamicColumns();
         }
         this.resolverRelation();
-        if (this.initData) {
-            this.initValue = this.initData;
-        }
+
         if (this.ref) {
             for (const p in this.ref) {
                 this.tempValue[p] = this.ref[p];
@@ -262,7 +266,7 @@ export class TsDataTableComponent extends CnComponentBase
 
     }
 
-    public ngAfterViewInit() {
+    public async ngAfterViewInit() {
         if (this.config.componentType) {
             if (!this.config.componentType.child) {
                 this.load();
@@ -333,6 +337,13 @@ export class TsDataTableComponent extends CnComponentBase
                             option
                         ) && this.deleteRow(option);
                         break;
+                    case BSN_COMPONENT_MODES.DELETE_SELECTED:
+                        this.beforeOperation.operationItemData = this._getSelectedItem();
+                        !this.beforeOperation.beforeItemsDataOperation(
+                            option
+                        ) && this.deleteRowSelected(option, this._getSelectedItem());
+                        break;
+
                     case BSN_COMPONENT_MODES.DIALOG:
                         this.beforeOperation.operationItemData = this._selectRow;
                         !this.beforeOperation.beforeItemDataOperation(option) &&
@@ -367,10 +378,18 @@ export class TsDataTableComponent extends CnComponentBase
                             option
                         ) && this.formBatchDialog(option);
                         break;
+            /*         case BSN_EXECUTE_ACTION.EXECUTE_CHECKED_ID_LINK:
+                        const itemIds = this._getCheckItemsId();
+                        this.linkToPage(option, itemIds);
+                        return;
+                    case BSN_EXECUTE_ACTION.EXECCUTE_SELECTED_LINK:
+                        const itemId = this._getSelectedItem();
+                        this.linkToPage(option, itemId);
+                        return; */
                 }
             }
         });
-        // 通过配置中的组件关系类型设置对应的事件接受者
+        // 通过配置中的组件关系类型设置对应的事件接受者 
         // 表格内部状态触发接收器console.log(this.config);
         if (
             this.config.componentType &&
@@ -388,6 +407,20 @@ export class TsDataTableComponent extends CnComponentBase
                         }
                     )
                 );
+                // if (this.config.drawerDialog) {
+                //     if (this.config.drawerDialog.drawerType === 'condition') {
+                //         this.config.drawerDialog.drawerMapping.forEach(m => {
+                //             if (this._selectRow[m['field']] && this._selectRow[m['field']] === m['value']) {
+                //                 const drawer = this.config.drawerDialog.drawers.find(d => d.name === m['name']);
+                //                 this.showDrawer(drawer);
+                //                 return;
+                //             }
+                //         });
+                //     } else {
+                //         this.showDrawer(this.config.drawerDialog.drawers[0]);
+                //     }
+
+                // }
             });
         }
         if (
@@ -443,6 +476,10 @@ export class TsDataTableComponent extends CnComponentBase
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
                                         break;
+                                    case BSN_COMPONENT_CASCADE_MODES.Scan_Code_ROW:
+                                        this.scanCodeROW();
+                                        break;
+
                                 }
                             }
                         });
@@ -452,6 +489,23 @@ export class TsDataTableComponent extends CnComponentBase
         }
     }
 
+
+    /**
+     * 根据表单组件routeParams属性配置参数,执行页面跳转
+     * @param option 按钮操作配置参数
+     */
+    private linkToPage(option, handleData) {
+        const params = CommonTools.parametersResolver({
+            params: this.config.routeParams,
+            // componentValue: this.loadData ? this.loadData : this.value,
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            cacheValue: this.cacheValue,
+            item: handleData
+        });
+        this.router.navigate([option.link], { queryParams: params });
+    }
+
     public load() {
         this.changeConfig_new = {};
         // this._selectRow = {};
@@ -459,7 +513,6 @@ export class TsDataTableComponent extends CnComponentBase
         setTimeout(() => {
             this.loading = true;
         });
-
         this.allChecked = false;
         this.checkedCount = 0;
         const url = this._buildURL(this.config.ajaxConfig.url);
@@ -473,65 +526,80 @@ export class TsDataTableComponent extends CnComponentBase
             ...this._buildSearch()
         };
         (async () => {
-            const loadData = await this._load(url, params);
-            if (loadData && loadData.status === 200 && loadData.isSuccess) {
-                if (loadData.data && loadData.data.rows) {
-                    // 设置聚焦ID
-                    // 默认第一行选中，如果操作后有focusId则聚焦ID为FocusId
-                    let focusId;
-                    if (loadData.FocusId) {
-                        focusId = loadData.FocusId;
-                    } else {
-                        loadData.data.rows.length > 0 &&
-                            (focusId = loadData.data.rows[0].Id);
-                    }
-                    if (loadData.data.rows.length > 0) {
-                        loadData.data.rows.forEach((row, index) => {
-                            row['key'] = row[this.config.keyId]
-                                ? row[this.config.keyId]
-                                : 'Id';
-                            if (this.is_Selectgrid) {
-                                if (row.Id === focusId) {
-                                    this.selectRow(row);
-                                }
-                            }
-                            if (loadData.data.page === 1) {
-                                row['_serilize'] = index + 1;
-                            } else {
-                                row['_serilize'] =
-                                    (loadData.data.page - 1) *
-                                    loadData.data.pageSize +
-                                    index +
-                                    1;
-                            }
+            const method = this.config.ajaxConfig.ajaxType;
+            console.log(this.initValue);
+            const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
 
-                            if (this.config.checkedMapping) {
-                                this.config.checkedMapping.forEach(m => {
-                                    if (
-                                        row[m.name] &&
-                                        row[m.name] === m.value
-                                    ) {
-                                        row['checked'] = true;
-                                    }
-                                });
-                            }
-                        });
-                    } else {
-                        this._selectRow = {};
-                    }
-
-                    this._updateEditCacheByLoad(loadData.data.rows);
-                    this.dataList = loadData.data.rows;
-                    this.total = loadData.data.total;
-                    if (this.is_Search) {
-                        this.createSearchRow();
-                    }
+            if (loadData.isSuccess) {
+                let data;
+                if (method === 'proc') {
+                    data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
+                    this.dataList = data;
+                    this.dataList.forEach(d => {
+                        d['key'] = d[this.config.keyId]
+                            ? d[this.config.keyId]
+                            : 'Id';
+                    })
                 } else {
-                    this._updateEditCacheByLoad([]);
-                    this.dataList = loadData.data;
-                    this.total = 0;
-                    if (this.is_Search) {
-                        this.createSearchRow();
+                    data = loadData.data.rows;
+                    if (data) {
+                        // 设置聚焦ID
+                        // 默认第一行选中，如果操作后有focusId则聚焦ID为FocusId
+                        let focusId;
+                        if (loadData.FocusId) {
+                            focusId = loadData.FocusId;
+                        } else {
+                            loadData.data.rows.length > 0 &&
+                                (focusId = loadData.data.rows[0].Id);
+                        }
+                        if (loadData.data.rows.length > 0) {
+                            loadData.data.rows.forEach((row, index) => {
+                                row['key'] = row[this.config.keyId]
+                                    ? row[this.config.keyId]
+                                    : 'Id';
+                                if (this.is_Selectgrid) {
+                                    if (row.Id === focusId) {
+                                        this.selectRow(row);
+                                    }
+                                }
+                                if (loadData.data.page === 1) {
+                                    row['_serilize'] = index + 1;
+                                } else {
+                                    row['_serilize'] =
+                                        (loadData.data.page - 1) *
+                                        loadData.data.pageSize +
+                                        index +
+                                        1;
+                                }
+
+                                if (this.config.checkedMapping) {
+                                    this.config.checkedMapping.forEach(m => {
+                                        if (
+                                            row[m.name] &&
+                                            row[m.name] === m.value
+                                        ) {
+                                            row['checked'] = true;
+                                        }
+                                    });
+                                }
+                            });
+                        } else {
+                            this._selectRow = {};
+                        }
+
+                        this._updateEditCacheByLoad(loadData.data.rows);
+                        this.dataList = loadData.data.rows;
+                        this.total = loadData.data.total;
+                        if (this.is_Search) {
+                            this.createSearchRow();
+                        }
+                    } else {
+                        this._updateEditCacheByLoad([]);
+                        this.dataList = loadData.data;
+                        this.total = 0;
+                        if (this.is_Search) {
+                            this.createSearchRow();
+                        }
                     }
                 }
             } else {
@@ -577,7 +645,7 @@ export class TsDataTableComponent extends CnComponentBase
             )
         };
         let selectrowdata = {};
-        const loadData = await this._load(url, params);
+        const loadData = await this._load(url, params, ajaxConfig.ajaxType);
         if (loadData && loadData.status === 200 && loadData.isSuccess) {
             if (loadData.data) {
                 if (loadData.data.length > 0) {
@@ -606,7 +674,7 @@ export class TsDataTableComponent extends CnComponentBase
             )
         };
         let selectrowdata = [];
-        const loadData = await this._load(url, params);
+        const loadData = await this._load(url, params, ajaxConfig.ajaxType);
         if (loadData && loadData.status === 200 && loadData.isSuccess) {
             if (loadData.data) {
                 if (loadData.data.length > 0) {
@@ -647,7 +715,7 @@ export class TsDataTableComponent extends CnComponentBase
         };
 
         (async () => {
-            const loadData = await this._load(url, params);
+            const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
             if (loadData && loadData.status === 200 && loadData.isSuccess) {
                 if (loadData.data && loadData.data.rows) {
                     console.log('loadData.data', loadData.data);
@@ -1665,6 +1733,50 @@ export class TsDataTableComponent extends CnComponentBase
         }
     }
 
+    public deleteRowSelected(option, row) {
+        if (this.dataList.filter(item => item.key === row.key).length <= 0) {
+            this.baseMessage.create('info', '请选择要删除的数据');
+        } else {
+            if (option.ajaxConfig.length > 0) {
+                option.ajaxConfig.map(async delConfig => {
+                    this.baseModal.confirm({
+                        nzTitle: delConfig.title ? delConfig.title : '提示',
+                        nzContent: delConfig.message ? delConfig.message : '',
+                        nzOnOk: () => {
+                            const newData = [];
+                            const serverData = [];
+                            this.dataList.forEach(item => {
+                                if (item.key === row.key) {
+                                    if (item['row_status'] === 'adding') {
+                                        // 删除新增临时数据
+                                        newData.push(item.key);
+                                    } else {
+                                        // 删除服务端数据
+                                        serverData.push(item.Id);
+                                    }
+                                }
+
+                            });
+                            if (newData.length > 0) {
+                                newData.forEach(d => {
+                                    this.dataList.splice(
+                                        this.dataList.indexOf(d),
+                                        1
+                                    );
+                                });
+                            }
+                            if (serverData.length > 0) {
+                                // 目前对应单个操作可以正确执行，多个操作由于异步的问题，需要进一步调整实现方式
+                                this._executeDelete(delConfig, serverData);
+                            }
+                        },
+                        nzOnCancel: () => { }
+                    });
+                });
+            }
+        }
+    }
+
     public async _executeDelete(deleteConfig, ids) {
         let isSuccess;
         // 默认删除数据，无需进行参数的设置，删除数据的ids将会从列表勾选中自动获得
@@ -1850,7 +1962,7 @@ export class TsDataTableComponent extends CnComponentBase
                         return false;
                     }
                     handleData = this._getCheckItemsId();
-                    this.beforeOperation.operationItemsData = this._getCheckedItems();
+                    this.beforeOperation.operationItemsData = this._getCheckItemsId();
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
                         return false;
                     }
@@ -1860,7 +1972,7 @@ export class TsDataTableComponent extends CnComponentBase
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_ROW:
                     // 获取保存状态的数据
                     handleData = this._getEditedRows();
-                    console.log('简析参数1838 ', handleData);
+                   // console.log('简析参数1838 ', handleData);
                     msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
@@ -1869,7 +1981,7 @@ export class TsDataTableComponent extends CnComponentBase
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_SELECTED_ROW:
                     // 获取保存状态的数据
                     handleData = this.EditSelectedRow;
-                    console.log('简析参数1838 ', handleData);
+                   // console.log('简析参数1838 ', handleData);
                     msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
@@ -1890,9 +2002,15 @@ export class TsDataTableComponent extends CnComponentBase
                         return;
                     }
                     break;
+                case BSN_EXECUTE_ACTION.EXECUTE_AND_LOAD:
+                    // 获取更新状态的数据
+                    handleData = {};
+                    msg = '新增数据保存成功';
+                    break;
+
             }
 
-            console.log('简析参数1860 ', handleData);
+            // console.log('简析参数1860 ', handleData);
 
             if (c.message) {
                 this.baseModal.confirm({
@@ -2414,15 +2532,6 @@ export class TsDataTableComponent extends CnComponentBase
         this.allChecked = this.checkedCount === this.dataList.length;
         this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
     }
-    // 开关选择
-    public swichChecked(d?) {
-        const index = this.dataList.findIndex(item => item.key === d.key);
-        this.dataList[index].checked = !d.checked;
-
-        this.checkedCount = this.dataList.filter(w => w.checked).length;
-        this.allChecked = this.checkedCount === this.dataList.length;
-        this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
-    }
 
     public cancelRow() {
         let len = this.dataList.length;
@@ -2474,7 +2583,7 @@ export class TsDataTableComponent extends CnComponentBase
         this.editCache[key].data = JSON.parse(
             JSON.stringify(this.dataList[index])
         );
-        console.log('取消行数据', this.editCache[key].data);
+       // console.log('取消行数据', this.editCache[key].data);
     }
     /**
      * 保存编辑状态的数据
@@ -2899,6 +3008,21 @@ export class TsDataTableComponent extends CnComponentBase
             this.showLayout(this.config.windowDialog[index]);
         }
     }
+
+    /**
+     * 弹出抽屉
+     * @param option
+     */
+    public drawerDialog(option) {
+        if (this.config.drawerDialog.drawers && this.config.drawerDialog.drawers.length > 0) {
+            const index = this.config.drawerDialog.drawers.findIndex(
+                item => item.name === option.actionName
+            );
+           //  this.showDrawer(this.config.drawerDialog.drawers[index]);
+        }
+    }
+
+
     /**
      * 弹出上传对话
      * @param option
@@ -2983,8 +3107,9 @@ export class TsDataTableComponent extends CnComponentBase
     //         "valueas": "起草"
     //     },
 
-    private async _load(url, params) {
-        return this._http.get(url, params).toPromise();
+    private async _load(url, params, method) {
+        const mtd = method === 'proc' ? 'post' : method;
+        return this._http[mtd](url, params).toPromise();
     }
 
     private async post(url, body) {
@@ -3726,7 +3851,7 @@ export class TsDataTableComponent extends CnComponentBase
     // handleOperationConditions  // 选中行消息简析
 
     //  执行行内事件【】,不展示的按钮事件，日后扩充
-    public ExecRowEvent(enentname?) {
+    public ExecRowEvent(enentname?, row?) {
         //  name
         // const option = updateState.option;
         let option = {};
@@ -3785,6 +3910,10 @@ export class TsDataTableComponent extends CnComponentBase
                     option
                 ) && this.deleteRow(option);
                 break;
+            case BSN_COMPONENT_MODES.DELETE_SELECTED:
+                this.beforeOperation.operationItemData = row;
+                this.deleteRowSelected(option, row);
+                break;
             case BSN_COMPONENT_MODES.DIALOG:
                 this.beforeOperation.operationItemData = this._selectRow;
                 !this.beforeOperation.beforeItemDataOperation(option) &&
@@ -3792,7 +3921,7 @@ export class TsDataTableComponent extends CnComponentBase
                 break;
             case BSN_COMPONENT_MODES.EXECUTE:
                 // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
-                console.log('执行列3665：', option);
+                // console.log('执行列3665：', option);
                 this._resolveAjaxConfig(option);
                 break;
             case BSN_COMPONENT_MODES.WINDOW:
@@ -4219,7 +4348,7 @@ export class TsDataTableComponent extends CnComponentBase
                 console.log('异步请求列信息', loadData.data);
                 if (loadData.data.length > 0) {
                     if (loadData.data.length < 50) { // 异常处理，超过50个
-                      this.ajaxColumns =  loadData.data;
+                        this.ajaxColumns = loadData.data;
                         loadData.data.forEach(element => {
                             const column = {};
                             this.config.columnsConfig.forEach(cc => {
@@ -4235,52 +4364,71 @@ export class TsDataTableComponent extends CnComponentBase
         this.config.columns = Columns;
     }
 
+    public swichChecked(d?) {
+        const index = this.dataList.findIndex(item => item.key === d.key);
+        this.dataList[index].checked = !d.checked;
 
-
-    /**
-     * 标题操作 titletToolbarAction  liu 20191017
-     */
-    public titletToolbarAction(col?) {
-       //  this. ajaxColumns;  // 动态列信息，也就是检测项目信息
-        console.log('点击', col, this._getCheckItemsId());
-
-        const sendData = {
-            autoResize: [{
-                viewId: 'col001',
-                span: 0,
-                size: {
-                    nzXs: 0,
-                    nzSm: 0,
-                    nzMd: 0,
-                    nzLg: 0,
-                    ngXl: 0
-                }
-            }]
-        };
-
-     /*    this.cascade.next(
-            new BsnComponentMessage(
-                BSN_COMPONENT_CASCADE_MODES['AUTO_RESIZE'],
-                this.config.viewId,
-                {
-                    data: sendData
-                }
-            )
-        ); */
-        console.log('sendData', sendData, this.dataList);
-     
-
+        this.checkedCount = this.dataList.filter(w => w.checked).length;
+        this.allChecked = this.checkedCount === this.dataList.length;
+        this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
     }
 
-    public ExecEventByTitleClick(data?) {
+    /**
+         * 标题操作 titletToolbarAction  liu 20191017
+         */
+    public titleToolbarAction(col?) {
+        //  this. ajaxColumns;  // 动态列信息，也就是检测项目信息
+        console.log('点击', this.ajaxColumns, this._getCheckedItems(), this._getCheckItemsId());
+        if (this.ajaxColumns && this.ajaxColumns.length > 0) {
+            const d = this.ajaxColumns.findIndex(c => c['Id'] === col['titleField']);
+            console.log('ajaxColumns', this.ajaxColumns);
+            console.log('d', d);
+            console.log('col', col);
+            if (d > -1) {
+                // 找到当前点击标题按钮后的数据
+                // 解析配置执行具体跳转或者切换、抽屉等页面操作
+                this.ExecEventByTitleClick(this.ajaxColumns[d]);
+            }
+        }
+        // const sendData = {
+        //     autoResize: [{
+        //         viewId: 'col001',
+        //         span: 0,
+        //         size: {
+        //             nzXs: 0,
+        //             nzSm: 0,
+        //             nzMd: 0,
+        //             nzLg: 0,
+        //             ngXl: 0
+        //         }
+        //     }]
+        // };
 
+        // this.cascade.next(
+        //     new BsnComponentMessage(
+        //         BSN_COMPONENT_CASCADE_MODES['AUTO_RESIZE'],
+        //         this.config.viewId,
+        //         {
+        //             data: sendData
+        //         }
+        //     )
+        // );
+        // console.log('sendData', sendData);
+    }
+
+    /**
+ * 执行值变化触发的事件 liu 20181226
+ * @param data 
+ */
+    public ExecEventByTitleClick(data?) {
+        console.log(data);
         const vc_field = data.name;
         //  ts_saveEdit data.key
-        const vc_rowdata = this.ts_getEditRow(data.key, data.name);
-        this.EditSelectedRow = [];
-        this.EditSelectedRow.push(vc_rowdata);
+        // const vc_rowdata = this.ts_getEditRow(data.key, data.name);
+        // this.EditSelectedRow = [];
+        // this.EditSelectedRow.push(vc_rowdata);
 
-        console.log('当前行数据：', vc_rowdata);
+        // console.log('当前行数据：', vc_rowdata);
         // 判断是否存在配置
         if (this.config.events) {
             const index = this.config.events.findIndex(item => item['onTrigger'] === 'onTitleClick');
@@ -4308,7 +4456,8 @@ export class TsDataTableComponent extends CnComponentBase
                 c_eventConfig['onEvent'].forEach(eventConfig => {
                     // 无配置 的默认项
                     if (eventConfig.type === 'default') {
-                        this.ExecRowEvent(eventConfig.action);
+                        const checkedItems = this._getCheckedItems();
+                        !this.beforeOperation.beforeItemsDataOperation(checkedItems) && this.resolverOperation(data);
                     }
                 });
             }
@@ -4319,7 +4468,146 @@ export class TsDataTableComponent extends CnComponentBase
 
     }
 
+    public resolverOperation(handleData) {
+        if (this.config.operationMapping) {
+            this.config.operationMapping.forEach(operation => {
+                if (handleData[operation['field']] && handleData[operation['field']] === operation['value']) {
+                    this[operation['operation']](handleData);
+                }
+            });
+        } else if (this.config.drawerDialog) {
+            this.drawerDialogs(handleData);
+        } else if (this.config.linkConfig) {
+            this.link(handleData);
+        }
+    }
 
+
+    private drawerDialogs(handleData) {
+        if (this.config.drawerDialog) {
+            if (this.config.drawerDialog.drawerType === 'condition') {
+                this.config.drawerDialog.drawers.forEach(drawer => {
+                    let isMatch;
+                    if (drawer.fieldMapping) {
+                        drawer.fieldMapping.forEach(m => {
+                            if (handleData[m['field']] && handleData[m['field']] === m['value']) {
+                                isMatch = true;
+                            }
+                        });
+                    }
+                    if (isMatch === true) {
+                      //  this.showDrawer(drawer, handleData);
+                    }
+                });
+            } else {
+               // this.showDrawer(this.config.drawerDialog.drawers[0]);
+            }
+
+        }
+    }
+
+    private link(handleData) {
+        this.config.linkConfig.forEach(link => {
+            let isMapping = false;
+            if (link.fieldMapping) {
+                link.fieldMapping.forEach(field => {
+                    if (handleData[field['field']] && handleData[field['field']] === field['value']) {
+                        isMapping = true;
+                    }
+                });
+            }
+            if (isMapping) {
+                this.linkToPages({ data: handleData, link: link.link, params: link.routeParams }, link)
+            }
+        });
+    }
+
+    /**
+     * 根据表单组件routeParams属性配置参数,执行页面跳转
+     * @param option 按钮操作配置参数
+     */
+    private linkToPages(option, link?) {
+        const params = CommonTools.parametersResolver({
+            params: link.routeParams ? link.routeParams : {},
+            componentValue: option.data ? option.data : {},
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            cacheValue: this.cacheValue
+        });
+        this.router.navigate([option.link], { queryParams: params });
+    }
+
+    public execFun(name?, key?) {
+        switch (name) {
+            case 'deleteRow':
+                // this.config.actions['deleteRow'] ? this.config.actions['deleteRow'] : null
+                this.deleteRowOnSelected(key);
+                break;
+            default:
+                break;
+        }
+    }
+
+    // 行内删除
+    public deleteRowOnSelected(key) {
+        const row = this.dataList.filter(item => item.key === key)[0];
+        // console.log('删除行', row);
+        if (this.config.events) {
+            const index = this.config.events.findIndex(item => item['onTrigger'] === 'deleteRow');
+            let c_eventConfig = {};
+            if (index > -1) {
+                c_eventConfig = this.config.events[index];
+            } else {
+                return true;
+            }
+
+            const isField = true; // 列变化触发
+            // 首先适配类别、字段，不满足的时候 看是否存在default 若存在 取default
+            if (isField) {
+                c_eventConfig['onEvent'].forEach(eventConfig => {
+                    // 无配置 的默认项
+                    if (eventConfig.type === 'default') {
+                        this.ExecRowEvent(eventConfig.action, row);
+                    }
+                });
+            }
+        }
+        console.log('行内删除', key);
+        // 注意，末页删除需要将数据页数上移
+
+
+    }
+
+    // 扫码响应
+    public scanCodeROW() {
+        const _ScanCode = '_ScanCode';
+        if (this.tempValue[_ScanCode]) {
+            if (this.tempValue[_ScanCode].length <= 0) {
+                //  this._message.info('扫码没有匹配到数据！');
+                return true;
+            }
+        }
+        if (this.config.events) {
+            const index = this.config.events.findIndex(item => item['onTrigger'] === 'scanCodeROW');
+            let c_eventConfig = {};
+            if (index > -1) {
+                c_eventConfig = this.config.events[index];
+            } else {
+                return true;
+            }
+
+            const isField = true; // 列变化触发
+            // 首先适配类别、字段，不满足的时候 看是否存在default 若存在 取default
+            if (isField) {
+                c_eventConfig['onEvent'].forEach(eventConfig => {
+                    // 无配置 的默认项
+                    if (eventConfig.type === 'default') {
+                        this.ExecRowEvent(eventConfig.action);
+                    }
+                });
+            }
+        }
+    }
 
 }
 

@@ -1,7 +1,7 @@
 
 <nz-modal [(nzVisible)]="isVisible" [nzWidth]="config.select.nzWidth" [nzTitle]="config.select.title" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
     <!-- bsn-tree-table bsn-async-tree-table -->
-    <bsn-tree-table #table [config]="config.select.selectTreeGrid"   [value]="_value" > </bsn-tree-table>
+    <bsn-async-tree-table #table [config]="config.select.selectTreeGrid"   [value]="_value" > </bsn-async-tree-table>
     <!-- [casadeData]="casadeData" [value]="_value" -->
 </nz-modal>
 

@@ -103,7 +103,7 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
   public getMultipleTags(dlist?) {
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
-    dlist.array.forEach(data => {
+    dlist.forEach(data => {
       const b_lable = data[labelName];
       const b_value = data[valueName]; // 取值时动态读取的
       const newobj = { label: b_lable, value: b_value };
@@ -306,7 +306,7 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
   }
 
   public async valueChange(name?, dataItemValue?) {
-    console.log('valueChangeSelectGridMultiple', name);
+   // console.log('valueChangeSelectGridMultiple', name);
 
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
@@ -318,7 +318,7 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
         // valueName
         const index = this.tags.length;
         if (this.tags) {
-          if (index >= 0) {
+          if (index > 0) {
             this.getMultipleValue();
           } else {
             // 取值
@@ -326,7 +326,7 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
             componentvalue[valueName] = name;
             if (this.config.ajaxConfig) {
               const loadData = await this.asyncLoadOptions(this.config.ajaxConfig, componentvalue);
-              console.log('自定义数据：', loadData);
+             // console.log('自定义数据：', loadData);
               let selectrowdata = [];
               if (loadData && loadData.status === 200 && loadData.isSuccess) {
                 if (loadData.data) {

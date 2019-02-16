@@ -16,11 +16,11 @@
                     <!--  [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" (nzFilterChange)="columnFilter(col.editor.field, $event)" -->
                     <ng-container *ngIf="config.checkedConfig">
                         <span *ngIf="col.text">{{col.title}}</span>
-                        <button *ngIf="!col.text" nz-button nzType="primary" nzBlock    (click)="titletToolbarAction(col)">{{col.title}}</button>
+                        <button *ngIf="!col.text" nz-button nzType="primary" nzBlock (click)="titleToolbarAction(col)">{{col.title}}</button>
                     </ng-container>
                     <ng-container *ngIf="!config.checkedConfig">
                         <span *ngIf="!col.button">{{col.title}}</span>
-                        <button *ngIf="col.button" nz-button nzType="primary" nzBlock    (click)="titletToolbarAction(col)">{{col.title}}</button>
+                        <button *ngIf="col.button" nz-button nzType="primary" nzBlock (click)="titleToolbarAction(col)">{{col.title}}</button>
                     </ng-container>
 
                 </th>
@@ -34,7 +34,7 @@
                     <ng-container *ngIf="config.checkedConfig">
                         <td *ngIf="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
                             <!-- [nzShowCheckbox]="config.showCheckBox" _serilize  nzCheckedChildren="data[config.columns[0].field]" nzUnCheckedChildren="data[config.columns[0].field]" -->
-                            <nz-switch [ngModel]="data.checked" (ngModelChange)="swichChecked(data)" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
+                            <nz-switch [ngModel]="data.checked" [nzCheckedChildren]="checkedTemplate" (ngModelChange)="swichChecked(data)" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
                             <ng-template #checkedTemplate>{{data[config.checkedConfig.feild]}}</ng-template>
                             <ng-template #unCheckedTemplate>{{data[config.checkedConfig.feild]}}</ng-template>
                         </td>
@@ -77,7 +77,7 @@
                                 </ng-container>
                                 <ng-container *ngIf="col.type">
                                     <div class="editable-row-operations">
-                                        <a href="#">删除</a>
+                                            <button  nz-button nzType="primary" nzBlock (click)="execFun('deleteRow',data.key)">删除</button>
                                     </div>
                                 </ng-container>
 
@@ -93,7 +93,7 @@
                     <ng-container *ngIf="config.checkedConfig">
                         <td *ngIf="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
                             <!-- [nzShowCheckbox]="config.showCheckBox" _serilize  nzCheckedChildren="data[config.columns[0].field]" nzUnCheckedChildren="data[config.columns[0].field]" -->
-                            <nz-switch [ngModel]="data.checked" (ngModelChange)="swichChecked(data)"  [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
+                            <nz-switch [ngModel]="data.checked" [nzCheckedChildren]="checkedTemplate" (ngModelChange)="swichChecked(data)" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
                             <ng-template #checkedTemplate>{{data[config.checkedConfig.feild]}}</ng-template>
                             <ng-template #unCheckedTemplate>{{data[config.checkedConfig.feild]}}</ng-template>
                         </td>
@@ -106,30 +106,43 @@
                     <ng-template ngFor let-col [ngForOf]="config.columns">
                         <td *ngIf="!col.hidden">
                             <ng-container *ngIf="col.editor">
-                                <div *ngIf="!editCache[data.key]['edit']" [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter,data):'',col.fieldAlign ? col.fieldAlign : '']">
-                                    <span>{{!col.dataType?data[col.field]:data[col.field] | date}}</span>
-                                </div>
-                                <ng-container *ngIf="_isArray(col.editor)">
-                                    <!-- <p>调用新的简析方法,将配置简析</p> -->
+                                <ng-container *ngIf="!col.type">
+                                    <div *ngIf="!editCache[data.key]['edit']" [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter,data):'',col.fieldAlign ? col.fieldAlign : '']">
+                                        <span>{{!col.dataType?data[col.field]:data[col.field] | date}}</span>
+                                    </div>
+                                    <ng-container *ngIf="_isArray(col.editor)">
+                                        <!-- <p>调用新的简析方法,将配置简析</p> -->
 
-                                    <cn-grid-edit *ngIf="col.editor" [searchConfigType]="'default'" [bsnData]="tempValue" [initData]="initData" [rowData]="editCache[data.key].data"
-                                        [dataSet]="null" [config]="col" [value]="{key:data.key,name:col.field,data:null,dataText:null}"
-                                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.field]:''"
-                                        (updateValue)="valueChange($event)"></cn-grid-edit>
+                                        <cn-grid-edit *ngIf="col.editor" [searchConfigType]="'default'" [bsnData]="tempValue" [initData]="initData" [rowData]="editCache[data.key].data"
+                                            [dataSet]="null" [config]="col" [value]="{key:data.key,name:col.field,data:null,dataText:null}"
+                                            [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.field]:''"
+                                            (updateValue)="valueChange($event)"></cn-grid-edit>
 
-                                </ng-container>
-                                <ng-container *ngIf="!_isArray(col.editor)">
-                                    <ng-container [bsnData]="tempValue" [initData]="initData" [rowData]="editCache[data.key].data" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
-                                        CnGridEditorDirective *ngIf="editCache[data.key].edit" [config]="col.editor.options"
-                                        [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field],dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
-                                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
-                                        (updateValue)="valueChange($event)">
+                                    </ng-container>
+                                    <ng-container *ngIf="!_isArray(col.editor)">
+                                        <ng-container [bsnData]="tempValue" [initData]="initData" [rowData]="editCache[data.key].data" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                                            CnGridEditorDirective *ngIf="editCache[data.key].edit" [config]="col.editor.options"
+                                            [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field],dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
+                                            [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
+                                            (updateValue)="valueChange($event)">
+                                        </ng-container>
                                     </ng-container>
                                 </ng-container>
-
+                                <ng-container *ngIf="col.type">
+                                    <div class="editable-row-operations">
+                                            <button  nz-button nzType="primary" nzBlock (click)="execFun('deleteRow',data.key)">删除</button>
+                                    </div>
+                                </ng-container>
                             </ng-container>
                             <ng-container *ngIf="!col.editor">
-                                <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter,data):'']">{{data[col.field]}}</span>
+                                <ng-container *ngIf="!col.type">
+                                    <span [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'']">{{data[col.field]}}</span>
+                                </ng-container>
+                                <ng-container *ngIf="col.type">
+                                    <div class="editable-row-operations">
+                                        <button  nz-button nzType="primary" nzBlock (click)="execFun('deleteRow',data.key)">删除</button>
+                                    </div>
+                                </ng-container>
                             </ng-container>
 
                         </td>
