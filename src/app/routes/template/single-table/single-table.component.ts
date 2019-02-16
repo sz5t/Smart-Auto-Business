@@ -538,7 +538,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 field: "enableText",
                                                 width: "10%",
                                                 hidden: false,
-                                                titleAlign: "text-right",
+                                                titleAlign: "text-  `",
                                                 fieldAlign: "text-center",
                                                 formatter: [
                                                     {

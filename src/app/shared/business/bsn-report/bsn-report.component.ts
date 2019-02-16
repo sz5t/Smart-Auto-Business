@@ -37,8 +37,8 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
         height: '500px'
     }
 
-    @ViewChild('report')
-    private reportView: ElementRef;
+    // @ViewChild('report')
+    // private reportView: ElementRef;
     private reportObject;
 
     private _lines = ['Computers', 'Washers', 'Stoves'];
@@ -82,7 +82,7 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
             const server = SystemResource.reportServer.url;
             const reportViewer = rubylong.grhtml5.insertReportViewer(
                 'report',
-                `${server + this.config.reportName}`
+                `${server + this.config.reportName }?cts=${new Date().getMilliseconds()}`
             );
             reportViewer.loadData(data.data, true);
             reportViewer.start(); //启动报表运行，生成报表
@@ -175,28 +175,6 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
             }
         });
         return params;
-    }
-
-    private async buildAsyncDataReport() {
-        const reportData = await this.getReportData();
-        const reportTemplateData = await this.getReportTemplate();
-
-        this.reportObject = new GC.Spread.Sheets.Workbook(this.reportView.nativeElement, { sheetCount: 3 });
-        this.reportObject.suspendPaint();
-        this.reportObject.fromJSON(reportTemplateData);
-
-        const sheet = this.reportObject.getSheet(0);
-        const sheet2 = this.reportObject.getSheet(1);
-        const sheet3 = this.reportObject.getSheet(2)
-        sheet.autoGenerateColumns = false;
-
-        // sheet.tables.findByName('data').bindingPath('table');
-        const source = new GC.Spread.Sheets.Bindings.CellBindingSource(reportData.data);
-        sheet.setDataSource(source);
-        sheet2.setDataSource(source);
-        sheet3.setDataSource(source);
-        this.reportObject.resumePaint();
-
     }
 
     public buildParameter(parameters) {
