@@ -14,7 +14,7 @@
                                                                 [infiniteScrollDistance]="2"
                                                                 [infiniteScrollThrottle]="50"
                                                                 [scrollWindow]="false">
-                                                                <nz-input-group [nzSuffix]="suffixIcon">
+                                                                <nz-input-group *ngIf="config.search"  [nzSuffix]="suffixIcon">
                                                                         <input type="text" nz-input placeholder="Search" [(ngModel)]="searchValue">
                                                                       </nz-input-group>
                                                                       <ng-template #suffixIcon>
