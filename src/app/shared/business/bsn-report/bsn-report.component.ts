@@ -30,12 +30,7 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
     public config;
     @Input() public initData;
 
-    private data: any;
-    private autoGenerateColumns;
-    private hostStyle = {
-        width: '100%',
-        height: '500px'
-    }
+    private reportURL;
 
     // @ViewChild('report')
     // private reportView: ElementRef;
@@ -60,6 +55,7 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
     ) {
         super();
         this.apiResource = _api;
+        this.cacheValue = this._cacheService
     }
 
     public ngOnInit() {
@@ -73,6 +69,24 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
             this.load();
         }
     }
+
+    public async loadReport() {
+        
+        const url = [];
+        const d_params = this.buildParameter(this.config.ajaxConfig.params);
+        const inline = this.config.inline;
+        const report = this.config.reportName;
+        const token = d_params['token'];
+
+        for (const d in d_params ) {
+            if (d_params.hasOwnProperty(d)) {
+                url.push(`${d}=${d_params[d]}`);
+            }
+        }
+
+        const resource = `${this.config.ajaxConfig.url}?${url.join('&')}`;
+        this.reportURL = `${SystemResource.reportServer.url}?inline=${inline}&report=${report}&type=pdf&resource=${resource}`; 
+    } 
 
     public async load() {
         // 加载报表数据
@@ -134,10 +148,10 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
                                 // 匹配及联模式
                                 switch (mode) {
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH:
-                                        this.load();
+                                        this.loadReport();
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
-                                        this.load();
+                                        this.loadReport();
                                         break;
                                 }
                             }

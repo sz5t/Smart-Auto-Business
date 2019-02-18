@@ -111,6 +111,7 @@ import { CnFormSelectCustomMultipleComponent } from './components/cn-form-select
 import { CnGridSelectCustomMultipleComponent } from './components/cn-grid-select-custom-multiple/cn-grid-select-custom-multiple.component';
 import { CnGridUploadComponent } from './components/cn-grid-upload/cn-grid-upload.component';
 import { CnGridUploadListComponent } from '@shared/components/cn-grid-upload-list/cn-grid-upload-list.component';
+import { SafeUrlPipe } from '@core/pipe/safe-url.pipe';
 
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -242,7 +243,8 @@ const DIRECTIVES = [
         // your components
         ...COMPONENTS,
         ...DIRECTIVES,
-        BtnTableFieldLimit
+        BtnTableFieldLimit,
+        SafeUrlPipe
     ],
     exports: [
         CommonModule,
