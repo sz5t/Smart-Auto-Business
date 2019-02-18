@@ -27,7 +27,8 @@ import {
     NzDropdownContextComponent,
     NzDropdownService,
     NzTreeNodeOptions,
-    NzTreeComponent
+    NzTreeComponent,
+    NzFormatEmitEvent
 } from 'ng-zorro-antd';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
@@ -113,6 +114,9 @@ import { CacheService } from '@delon/cache';
                 overflow: auto;
                 height: 300px;
             }
+            .highlight{
+                color: red;
+            }
         `
     ]
 })
@@ -138,6 +142,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     public _selectedNode = {};
     public is_Selectgrid = true;
     private isLoading = false;
+    public searchValue;
     @Output() public updateValue = new EventEmitter();
     constructor(
         private _http: ApiService,
@@ -909,143 +914,143 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
         }
     }
 
-        /**
-    *
-    * @param outputParams
-    * @param response
-    * @param callback
-    * @returns {Array}
-    * @private
-    * 1、输出参数的配置中，消息类型的参数只能设置一次
-    * 2、值类型的结果可以设置多个
-    * 3、表类型的返回结果可以设置多个
-    */
-   public outputParametersResolver(c, response, ajaxConfig, callback) {
-       debugger;
-    const result = false;
-    if (response.isSuccess) {
+    /**
+*
+* @param outputParams
+* @param response
+* @param callback
+* @returns {Array}
+* @private
+* 1、输出参数的配置中，消息类型的参数只能设置一次
+* 2、值类型的结果可以设置多个
+* 3、表类型的返回结果可以设置多个
+*/
+    public outputParametersResolver(c, response, ajaxConfig, callback) {
+        debugger;
+        const result = false;
+        if (response.isSuccess) {
 
-        const msg =
-            c.outputParams[
-            c.outputParams.findIndex(
-                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
-            )
-            ];
-        const value =
-            c.outputParams[
-            c.outputParams.findIndex(
-                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
-            )
-            ];
-        const table =
-            c.outputParams[
-            c.outputParams.findIndex(
-                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
-            )
-            ];
-        const msgObj = msg
-            ? response.data[msg.name].split(':')
-            : null;
-        const valueObj = response.data ? response.data : {};
-        // const tableObj = response.data[table.name] ? response.data[table.name] : [];
-        if (msgObj && msgObj.length > 1) {
-            const messageType = msgObj[0];
-            let options;
-            switch (messageType) {
-                case 'info':
-                    options = {
-                        nzTitle: '提示',
-                        nzWidth: '350px',
-                        nzContent: msgObj[1]
-                    };
-                    this.baseModal[messageType](options);
-                    break;
-                case 'error':
-                    options = {
-                        nzTitle: '提示',
-                        nzWidth: '350px',
-                        nzContent: msgObj[1]
-                    };
-                    this.baseModal[messageType](options);
-                    break;
-                case 'confirm':
-                    options = {
-                        nzTitle: '提示',
-                        nzContent: msgObj[1],
-                        nzOnOk: () => {
-                            // 是否继续后续操作，根据返回状态结果
-                            const childrenConfig = ajaxConfig.filter(
-                                f => f.parentName && f.parentName === c.name
-                            );
-                            //  目前紧支持一次执行一个分之步骤
-                            this._getAjaxConfig(childrenConfig[0], ajaxConfig);
-                            // childrenConfig &&
-                            //     childrenConfig.map(currentAjax => {
-                            //         this.getAjaxConfig(
-                            //             currentAjax,
-                            //             ajaxConfig,
-                            //             callback
-                            //         );
-                            //     });
-                        },
-                        nzOnCancel: () => { }
-                    };
-                    this.baseModal[messageType](options);
-                    break;
-                case 'warning':
-                    options = {
-                        nzTitle: '提示',
-                        nzWidth: '350px',
-                        nzContent: msgObj[1]
-                    };
-                    this.baseModal[messageType](options);
-                    break;
-                case 'success':
-                    options = {
-                        nzTitle: '',
-                        nzWidth: '350px',
-                        nzContent: msgObj[1]
-                    };
-                    this.baseMessage.success(msgObj[1]);
-                    callback && callback();
-                    break;
+            const msg =
+                c.outputParams[
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
+                )
+                ];
+            const value =
+                c.outputParams[
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
+                )
+                ];
+            const table =
+                c.outputParams[
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
+                )
+                ];
+            const msgObj = msg
+                ? response.data[msg.name].split(':')
+                : null;
+            const valueObj = response.data ? response.data : {};
+            // const tableObj = response.data[table.name] ? response.data[table.name] : [];
+            if (msgObj && msgObj.length > 1) {
+                const messageType = msgObj[0];
+                let options;
+                switch (messageType) {
+                    case 'info':
+                        options = {
+                            nzTitle: '提示',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.baseModal[messageType](options);
+                        break;
+                    case 'error':
+                        options = {
+                            nzTitle: '提示',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.baseModal[messageType](options);
+                        break;
+                    case 'confirm':
+                        options = {
+                            nzTitle: '提示',
+                            nzContent: msgObj[1],
+                            nzOnOk: () => {
+                                // 是否继续后续操作，根据返回状态结果
+                                const childrenConfig = ajaxConfig.filter(
+                                    f => f.parentName && f.parentName === c.name
+                                );
+                                //  目前紧支持一次执行一个分之步骤
+                                this._getAjaxConfig(childrenConfig[0], ajaxConfig);
+                                // childrenConfig &&
+                                //     childrenConfig.map(currentAjax => {
+                                //         this.getAjaxConfig(
+                                //             currentAjax,
+                                //             ajaxConfig,
+                                //             callback
+                                //         );
+                                //     });
+                            },
+                            nzOnCancel: () => { }
+                        };
+                        this.baseModal[messageType](options);
+                        break;
+                    case 'warning':
+                        options = {
+                            nzTitle: '提示',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.baseModal[messageType](options);
+                        break;
+                    case 'success':
+                        options = {
+                            nzTitle: '',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.baseMessage.success(msgObj[1]);
+                        callback && callback();
+                        break;
+                }
+                // if(options) {
+                //     this.modalService[messageType](options);
+                //
+                //     // 如果成功则执行回调
+                //     if(messageType === 'success') {
+                //         callback && callback();
+                //     }
+                // }
             }
             // if(options) {
-            //     this.modalService[messageType](options);
+            //     this.baseMessage[messageType](options);
             //
             //     // 如果成功则执行回调
             //     if(messageType === 'success') {
             //         callback && callback();
             //     }
             // }
-        }
-        // if(options) {
-        //     this.baseMessage[messageType](options);
-        //
-        //     // 如果成功则执行回调
-        //     if(messageType === 'success') {
-        //         callback && callback();
-        //     }
-        // }
-        if (valueObj) {
-            this.returnValue = valueObj;
-            const childrenConfig = ajaxConfig.filter(
-                f => f.parentName && f.parentName === c.name
-            );
-            //  目前紧支持一次执行一个分之步骤
-            this._getAjaxConfig(childrenConfig[0], ajaxConfig);
-        }
+            if (valueObj) {
+                this.returnValue = valueObj;
+                const childrenConfig = ajaxConfig.filter(
+                    f => f.parentName && f.parentName === c.name
+                );
+                //  目前紧支持一次执行一个分之步骤
+                this._getAjaxConfig(childrenConfig[0], ajaxConfig);
+            }
 
-    } else {
-        this.baseMessage.error('操作异常：', response.message);
+        } else {
+            this.baseMessage.error('操作异常：', response.message);
+        }
     }
-}
 
     private _executeAjaxConfig(ajaxConfigObj, handleData) {
         if (Array.isArray(handleData)) {
-           return this._executeBatchAction(ajaxConfigObj, handleData);
+            return this._executeBatchAction(ajaxConfigObj, handleData);
         } else {
-           return this._executeAction(ajaxConfigObj, handleData);
+            return this._executeAction(ajaxConfigObj, handleData);
         }
     }
 
@@ -1217,5 +1222,28 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
         }
     }
 
+    public nzEvent(event: NzFormatEmitEvent): void {
+      //  console.log(event, this.treeObj.getMatchedNodeList().map(v => v.title));
+    }
+
+    public searchTargetString(objtext) { // 查找处理
+        const searchtext = this.searchValue;
+        const reg = new RegExp(searchtext, 'g');
+        const back = ['', '', ''];
+        if (!reg.test(objtext)) {// 没找到
+
+            return back;
+        } else {// 找到
+            const index = objtext.indexOf(searchtext);
+            if (index > 0) {
+                back[0] = objtext.substring(0, index);
+            }
+            back[1] = searchtext;
+            const indexEnd = index + searchtext.length;
+            back[2] = objtext.substring(indexEnd);
+            return back;
+        }
+
+    }
     // endregion
 }
