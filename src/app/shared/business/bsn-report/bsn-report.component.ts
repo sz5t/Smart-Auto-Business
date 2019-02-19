@@ -28,7 +28,8 @@ declare var rubylong: any;
 export class BsnReportComponent extends CnComponentBase implements OnInit, AfterViewInit, OnDestroy {
     @Input()
     public config;
-    @Input() public initData;
+    @Input() 
+    public initData;
 
     private reportURL;
 
@@ -66,12 +67,12 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
 
     public async ngAfterViewInit() {
         if (this.config.componentType.own) {
-            this.load();
+            this.loadReport();
         }
     }
 
     public async loadReport() {
-        
+
         const url = [];
         const d_params = this.buildParameter(this.config.ajaxConfig.params);
         const inline = this.config.inline;
@@ -84,9 +85,13 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
             }
         }
 
-        const resource = `${this.config.ajaxConfig.url}?${url.join('&')}`;
-        this.reportURL = `${SystemResource.reportServer.url}?inline=${inline}&report=${report}&type=pdf&resource=${resource}`; 
-    } 
+        const resource = `${this.config.ajaxConfig.url}&${url.join('&')}`;
+        setTimeout(s => {
+            this.reportURL = `${SystemResource.reportServer.url}?inline=${inline}&report=${report}&type=pdf&resource=${resource}`;
+            console.log(this.reportURL);
+        });
+
+    }
 
     public async load() {
         // 加载报表数据
@@ -173,7 +178,7 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
 
 
     private async getReportData() {
-        // 尝试采用加载多个数据源配置,异步加载所有数据后,进行数据整合,然后进行绑定    
+        // 尝试采用加载多个数据源配置,异步加载所有数据后,进行数据整合,然后进行绑定
         const url = this.buildUrl(this.config.ajaxConfig.url);
         const params = this.resolverParameters(this.config.ajaxConfig.params);
         return this.apiResource[this.config.ajaxConfig.ajaxType](url, params).toPromise();
