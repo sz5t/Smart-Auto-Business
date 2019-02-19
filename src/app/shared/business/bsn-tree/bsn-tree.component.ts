@@ -343,6 +343,8 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                                 }
                                 switch (mode) {
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                                        // 主子刷新的时候需要清理掉当前选中节点的值,让树重新选中配置的默认节点 
+                                        this.tempValue['_selectedNode'] = null;
                                         this.load();
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH:
@@ -579,7 +581,8 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                     this.treeData = [{
                         title: '未添加任何节点数据',
                         key: '-1',
-                        expanded: false
+                        expanded: false,
+                        selected: true
                     }];
                 }
             }
@@ -854,7 +857,6 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                                 c,
                                 handleData
                             );
-                            debugger;
                             // 处理输出参数
                             if (c.outputParams) {
                                 this.outputParametersResolver(
@@ -926,7 +928,6 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
 * 3、表类型的返回结果可以设置多个
 */
     public outputParametersResolver(c, response, ajaxConfig, callback) {
-        debugger;
         const result = false;
         if (response.isSuccess) {
 

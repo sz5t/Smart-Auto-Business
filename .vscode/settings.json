@@ -8,5 +8,5 @@
     "prettier.proseWrap": "never",
     "prettier.semi": false,
     "prettier.tslintIntegration": true,
-    "editor.fontFamily": "Segoe UI, SimHei,Manaco"
+    "editor.fontFamily": "Monaco"
 }
