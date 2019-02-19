@@ -20,6 +20,8 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
   @Input() public dataSet;
   @Input() public casadeData;
   @Input() public changeConfig;
+  @Input() public initValue;
+  
   @Output() public updateValue = new EventEmitter();
   public formGroup: FormGroup;
   public resultData;
@@ -193,6 +195,7 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
     }
   }
   public showLayout() {
+  //  console.log('**2019*****' , this.initValue, this.bsnData);
     const dialog = this.config.dialog;
     //  {
     //   layoutName: 'liu',
@@ -223,7 +226,7 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
         nzComponentParams: {
           permissions: this.permissions,
           config: data,
-          initData: {...layoutTag, ...this.rowData, ...this.initValue} // ...tmpValue, ...selectedRow
+          initData: {...layoutTag, ...this.bsnData, ...this.initValue} // ...tmpValue, ...selectedRow
         },
         nzFooter: footer
       });
