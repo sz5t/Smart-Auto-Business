@@ -40,6 +40,9 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
     // #table
     @ViewChild('table')
     public table: BsnTableComponent;
+    @ViewChild('barContainer')
+    public chartElement: ElementRef;
+    public chart;
     public myContext = { $name1: 'World', localSk: 'Svet' };
 
     public liu_list = [
@@ -1589,6 +1592,50 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
                 row: {
                     cols: [
                         {
+                            id: 'area21',
+                            title: '图表例子',
+                            span: 24,
+                            size: {
+                                nzXs: 24,
+                                nzSm: 24,
+                                nzMd: 24,
+                                nzLg: 24,
+                                ngXl: 24
+                            },
+                            viewCfg: [
+                                {
+                                    config: {
+                                        viewId: 'wfdesign_Version_Chart',
+                                        component: 'bsnChart',
+                                        ajaxConfig: {
+                                            url: 'common/WfVersion',
+                                            ajaxType: 'get',
+                                            params: [
+                                                //  { name: 'wfid', type: 'tempValue', valueName: '_parentId', value: '' }
+                                            ]
+                                        },
+                                        componentType: {
+                                            parent: true,
+                                            child: true,
+                                            own: false
+                                        },
+                                        relations: [
+                                            {
+                                                'relationViewId': 'tree_and_form_form',
+                                                'cascadeMode': 'REFRESH_AS_CHILD',
+                                                'params': [
+                                                    { pid: 'caseName', cid: '_parentId' }
+                                                ],
+                                                'relationReceiveContent': []
+                                            }
+                                        ],
+                                        dataSet: []
+                                    },
+                                    dataList: []
+                                }
+                            ]
+                        },
+                        {
                             id: 'area2',
                             title: '工作流版本',
                             span: 24,
@@ -1717,12 +1764,12 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
                                                         controlSize: '18',
                                                         inputType: 'text',
                                                         formatConfig: [
-                                                             {
+                                                            {
                                                                 type: 'row',
                                                                 valueName: 'code1',
                                                                 regular: '^2$',
                                                                 responseConfig: {
-                                                                  hidden: true
+                                                                    hidden: true
                                                                 }
                                                             },
                                                         ],
@@ -8166,7 +8213,56 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
     public isVisible = false;
     public isConfirmLoading = false;
     public _value;
-    public ngOnInit(): void { }
+    public ngOnInit(): void {
+
+        const data = [{
+            year: '1951 年',
+            sales: 38
+        }, {
+            year: '1952 年',
+            sales: 52
+        }, {
+            year: '1956 年',
+            sales: 61
+        }, {
+            year: '1957 年',
+            sales: 145
+        }, {
+            year: '1958 年',
+            sales: 48
+        }, {
+            year: '1959 年',
+            sales: 38
+        }, {
+            year: '1960 年',
+            sales: 38
+        }, {
+            year: '1962 年',
+            sales: 38
+        }];
+        this.chart = new G2.Chart({
+            container: this.chartElement.nativeElement, // 指定图表容器 ID
+            forceFit: true,
+            width: 400,
+            height: 400,
+            // width: this.config.width ? this.config.width : 300, // 指定图表宽度
+            //   height: this.config.height ? this.config.height : 300, // 指定图表高度
+            // options: this.config.options ? this.config.options : {}
+            // data: [{ genre: 'Sports', sold: 275 },
+            // { genre: 'Strategy', sold: 115 },
+            // { genre: 'Action', sold: 120 },
+            // { genre: 'Shooter', sold: 350 },
+            // { genre: 'Other', sold: 150 }]
+        });
+        this.chart.source(data);
+        this.chart.scale('sales', {
+            alias: '销售额(万)',
+          //  tickInterval: 20
+        });
+      
+        this.chart.interval().position('year*sales');  // 创建柱图特殊写法  X*Y 
+        this.chart.render();
+    }
 
     public showModal(): void {
         this.isVisible = true;

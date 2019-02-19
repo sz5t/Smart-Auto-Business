@@ -38,6 +38,7 @@ import { BsnAsyncTreeTableComponent } from '@shared/business/bsn-treeTable/bsn-t
 import { TsDataTableComponent } from '@shared/business/ts-data-table/ts-data-table.component';
 import { WfDashboardComponent } from '@shared/work-flow/wf-dashboard/wf-dashboard.component';
 import { BsnTagComponent } from '@shared/business/bsn-tag/bsn-tag.component';
+import { BsnChartComponent } from '@shared/business/bsn-chart/bsn-chart.component';
 const components: { [type: string]: Type<any> } = {
     code_edit: CnCodeEditComponent,
     bsnTable: BsnTableComponent,
@@ -61,7 +62,8 @@ const components: { [type: string]: Type<any> } = {
     bsnToolbar: BsnToolbarComponent,
     bsnReport: BsnReportComponent,
     tsTable: TsDataTableComponent,
-    bsnTag: BsnTagComponent
+    bsnTag: BsnTagComponent,
+    bsnChart: BsnChartComponent
 };
 @Component({
     // tslint:disable-next-line:component-selector

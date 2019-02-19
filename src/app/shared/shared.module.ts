@@ -112,6 +112,7 @@ import { CnGridSelectCustomMultipleComponent } from './components/cn-grid-select
 import { CnGridUploadComponent } from './components/cn-grid-upload/cn-grid-upload.component';
 import { CnGridUploadListComponent } from '@shared/components/cn-grid-upload-list/cn-grid-upload-list.component';
 import { SafeUrlPipe } from '@core/pipe/safe-url.pipe';
+import { BsnChartComponent } from './business/bsn-chart/bsn-chart.component';
 
 const THIRDMODULES = [
     NgZorroAntdModule,
@@ -215,7 +216,8 @@ const COMPONENTS = [
     CnFormSelectCustomMultipleComponent,
     CnGridSelectCustomMultipleComponent,
     CnGridUploadComponent,
-    CnGridUploadListComponent
+    CnGridUploadListComponent,
+    BsnChartComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
