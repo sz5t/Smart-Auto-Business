@@ -2,6 +2,7 @@ import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { NzMessageService, UploadFile } from 'ng-zorro-antd';
 import { ApiService } from '@core/utility/api-service';
 import { CommonTools } from '@core/utility/common-tools';
+import { SystemResource } from '@core/utility/system-resource';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -39,13 +40,13 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
     public remark;
 
     public isUpload = true;
+    public url = SystemResource.appSystem.Server;
     constructor(
         private _message: NzMessageService,
         private _apiService: ApiService
     ) {}
 
     public ngOnInit() {
-        console.log('upload:', this.config);
         if (this.config.showList) {
             this.isUpload = false;
         }

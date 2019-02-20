@@ -4,6 +4,7 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'cn-dynamic-template',
     templateUrl: './dynamic-template.component.html',
 })
