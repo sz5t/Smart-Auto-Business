@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, Inject, AfterViewInit, AfterContentInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, Inject, AfterViewInit, AfterContentInit, OnDestroy } from '@angular/core';
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService, NzDropdownService } from 'ng-zorro-antd';
 import { CacheService } from '@delon/cache';
-import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage } from '@core/relative-Service/BsnTableStatus';
-import { Observer, Observable } from 'rxjs';
+import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
+import { Observer, Observable, Subscription } from 'rxjs';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
 
@@ -12,7 +12,7 @@ import { CommonTools } from '@core/utility/common-tools';
   templateUrl: './bsn-chart.component.html',
   // styleUrls: ['./bsn-chart.component.css']
 })
-export class BsnChartComponent extends CnComponentBase implements OnInit, AfterViewInit, AfterContentInit {
+export class BsnChartComponent extends CnComponentBase implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
   @Input() public config; // 配置参数
   @Input() public permissions = [];
   @Input() public dataList = []; // 表格数据集合
@@ -25,7 +25,9 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   @Output() public updateValue = new EventEmitter();
   @ViewChild('chartContainer') public chartElement: ElementRef;
   public chart;
-  cascadeValue: any;
+  public cascadeValue: any;
+  public _statusSubscription: Subscription;
+  public _cascadeSubscription: Subscription;
   constructor(
     private _http: ApiService,
     private _message: NzMessageService,
@@ -44,59 +46,186 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   }
 
   public ngOnInit() {
-    console.log('ngOnInit');
-
+    this.resolverRelation();
   }
 
   public ngAfterViewInit() {
-    console.log('ngAfterViewInit');
-
-    console.log('宽度：', this.chartElement.nativeElement.scrollHeight);
-    this.CreateChart();
-    console.log('宽度new：', this.chartElement.nativeElement.scrollHeight);
+    this.load();
   }
   public ngAfterContentInit() {
-    console.log('ngAfterContentInit');
+
 
   }
 
-  public async CreateChart() {
+  public async load() {
 
-    await this.load();
-    console.log('准备数据', this.dataList);
+    await this.load_data();
+ 
+    if (this.config.type) {
+      const key = this.config.type;
+      switch (key) {
+        case 'bar':
+          this.CreateChart_Bar()
+          break;
+        case 'pie':
+          this.CreateChart_Pie()
+          break;
+        case 'line':
+          this.CreateChart_Line()
+          break;
+
+        default:
+          break;
+      }
+    }
+  }
+
+  /**
+   * CreateChart_Bar  生成柱状图
+   */
+  public CreateChart_Bar() {
+    console.log('****生成柱状图***');
     this.chart = new G2.Chart({
       container: this.chartElement.nativeElement, // 指定图表容器 ID
       animate: true, // 动画 默认true
       forceFit: true,  // 图表的宽度自适应开关，默认为 false，设置为 true 时表示自动取 dom（实例容器）的宽度。
       // width: 600,  // 当 forceFit: true  时宽度配置不生效
-      height: 400
-      // width: this.config.width ? this.config.width : 300, // 指定图表宽度
-      //   height: this.config.height ? this.config.height : 300, // 指定图表高度
-      // options: this.config.options ? this.config.options : {}
+      height: this.config.height ? this.config.height : 300, // 指定图表高度
+      padding: 'auto'
     });
     this.chart.source(this.dataList);
-    this.chart.scale(this.config.y, {
-      alias: this.config.scale.alias,
-      //  tickInterval: 20
-    });
+    if (this.config.y.scale) {
+      this.chart.scale(this.config.y.name, this.config.y.scale);
+    }
+    if (this.config.x.scale) {
+      this.chart.scale(this.config.x.name, this.config.x.scale);
+    }
+    if (this.config.x.axis) {
+      this.chart.axis(this.config.x.name, this.config.x.axis);
+    }
+    if (this.config.y.axis) {
+      this.chart.axis(this.config.y.name, this.config.y.axis);
+    }
+
+    if (this.config.legend) {
+      this.chart.legend(this.config.legend);
+    }
 
     if (this.config.groupName) {
-      this.chart.interval().position(this.config.x + '*' + this.config.y).color(this.config.groupName).opacity(1).adjust([{
+      this.chart.interval().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).opacity(1).adjust([{
         type: 'dodge',
         marginRatio: 1 / 32
       }]);  // 创建柱图特殊写法  X*Y  'caseName*caseCount' year*sales
     } else {
-      this.chart.interval().position(this.config.x + '*' + this.config.y);  // 创建柱图特殊写法  X*Y  'caseName*caseCount' year*sales
+      this.chart.interval().position(this.config.x.name + '*' + this.config.y.name);  // 创建柱图特殊写法  X*Y  'caseName*caseCount' year*sales
     }
 
     this.chart.render();
-    console.log('*******');
+  }
+  /**
+   * CreateChart_Pie  生成饼图
+   */
+  public CreateChart_Pie() {
+    console.log('****生成饼图***');
+    this.chart = new G2.Chart({
+      container: this.chartElement.nativeElement, // 指定图表容器 ID
+      forceFit: true,
+      height: this.config.height ? this.config.height : 300, // 指定图表高度
+      padding: 'auto'
+    });
+    this.chart.source(this.dataList, {
+      percent: {
+        formatter: function formatter(val) {
+          val = val * 100 + '%';
+          return val;
+        }
+      }
+    });
+    this.chart.coord('theta', {
+      radius: 0.75
+    });
+    this.chart.tooltip({
+      showTitle: false,
+      itemTpl: '<li><span style="background-color:{color};" class="g2-tooltip-marker"></span>{name}: {value}</li>'
+    });
+
+    if (this.config.legend) {
+      this.chart.legend(this.config.legend);
+    }
+    this.chart.intervalStack().position(this.config.y.name).color(this.config.x.name).label(this.config.y.name, {
+      formatter: (val, item) => {
+        return item.point[this.config.x.name] + ': ' + val;
+      }
+    }).tooltip(this.config.x.name + '*' + this.config.y.name, function (item, percent) {
+      percent = percent * 100 + '%';
+      return {
+        name: item,
+        value: percent
+      };
+    }).style({
+      lineWidth: 1,
+      stroke: '#fff'
+    });
+    this.chart.render();
+  }
+
+  /**
+   * CreateChart_Line  生成折线图
+   */
+  public CreateChart_Line() {
+    console.log('****生成折线图***');
+
+    this.chart = new G2.Chart({
+      container: this.chartElement.nativeElement, // 指定图表容器 ID
+      animate: true, // 动画 默认true
+      forceFit: true,  // 图表的宽度自适应开关，默认为 false，设置为 true 时表示自动取 dom（实例容器）的宽度。
+      height: this.config.height ? this.config.height : 300, // 指定图表高度
+      padding: 'auto'
+    });
+    this.chart.source(this.dataList);
+    if (this.config.y.scale) {
+      this.chart.scale(this.config.y.name, this.config.y.scale);
+    }
+    if (this.config.x.scale) {
+      this.chart.scale(this.config.x.name, this.config.x.scale);
+    }
+    if (this.config.x.axis) {
+      this.chart.axis(this.config.x.name, this.config.x.axis);
+    }
+    if (this.config.y.axis) {
+      this.chart.axis(this.config.y.name, this.config.y.axis);
+    }
+
+
+    if (this.config.legend) {
+      this.chart.legend(this.config.legend);
+    }
+    this.chart.tooltip({
+      crosshairs: {
+        type: 'line'
+      }
+    });
+
+    if (this.config.groupName) {
+      this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).shape(this.config.shape ? this.config.shape : 'circle');
+      this.chart.point().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).size(4).shape('circle').style({
+        stroke: '#fff',
+        lineWidth: 1
+      });
+
+    } else {
+      this.chart.line().position(this.config.x.name + '*' + this.config.y.name).shape(this.config.shape ? this.config.shape : 'circle');
+      this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('circle').style({
+        stroke: '#fff',
+        lineWidth: 1
+      });
+    }
+
+    this.chart.render();
   }
 
 
-
-
-  public async load() {
+  public async load_data() {
 
     const url = this._buildURL(this.config.ajaxConfig.url);
     const params = {
@@ -193,4 +322,90 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     return this._http[mtd](url, params).toPromise();
   }
 
+
+  private resolverRelation() {
+    // 注册按钮状态触发接收器
+    this._statusSubscription = this.stateEvents.subscribe(updateState => {
+      if (updateState._viewId === this.config.viewId) {
+        const option = updateState.option;
+        switch (updateState._mode) {
+          case BSN_COMPONENT_MODES.REFRESH:
+            this.load();
+            break;
+        }
+      }
+    });
+    // 通过配置中的组件关系类型设置对应的事件接受者
+    // 表格内部状态触发接收器console.log(this.config);
+
+    if (
+      this.config.componentType &&
+      this.config.componentType.child === true
+    ) {
+      this._cascadeSubscription = this.cascadeEvents.subscribe(
+        cascadeEvent => {
+          // 解析子表消息配置
+          if (
+            this.config.relations &&
+            this.config.relations.length > 0
+          ) {
+            this.config.relations.forEach(relation => {
+              if (
+                relation.relationViewId === cascadeEvent._viewId
+              ) {
+                // 获取当前设置的级联的模式
+                const mode =
+                  BSN_COMPONENT_CASCADE_MODES[
+                  relation.cascadeMode
+                  ];
+                // 获取传递的消息数据
+                const option = cascadeEvent.option;
+                if (option) {
+                  // 解析参数
+                  if (
+                    relation.params &&
+                    relation.params.length > 0
+                  ) {
+                    relation.params.forEach(param => {
+                      if (!this.tempValue) {
+                        this.tempValue = {};
+                      }
+                      this.tempValue[param['cid']] =
+                        option.data[param['pid']];
+                    });
+                  }
+                }
+
+                // 匹配及联模式
+                switch (mode) {
+                  case BSN_COMPONENT_CASCADE_MODES.REFRESH:
+                    this.load();
+                    break;
+                  case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                    this.load();
+                    break;
+                  case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN:
+                    this.load();
+                    break;
+                  case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
+                    break;
+                  case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
+                    break;
+                }
+              }
+            });
+          }
+        }
+      );
+    }
+  }
+
+  public ngOnDestroy() {
+    if (this._statusSubscription) {
+      this._statusSubscription.unsubscribe();
+    }
+    if (this._cascadeSubscription) {
+      this._cascadeSubscription.unsubscribe();
+    }
+  }
 }
