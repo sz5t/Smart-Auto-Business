@@ -911,7 +911,6 @@ export class FormResolverComponent extends CnFormBase
         // { name: this.config.name, value: name }
         const sendCasade = data.name;
         const receiveCasade = ' ';
-
         // 第二步，根据配置，和返回值，来构建应答数据集合
         // 第三步，
         if (this.cascadeList[sendCasade]) {
@@ -1083,16 +1082,16 @@ export class FormResolverComponent extends CnFormBase
                                                     caseItem['valueName']
                                                     ];
                                             } else {
-                                                regularData = data.data;
+                                                regularData = data.value;
                                             }
                                         } else {
-                                            regularData = data.data;
+                                            regularData = data.value;
                                         }
                                     } else {
-                                        regularData = data.data;
+                                        regularData = data.value;
                                     }
                                     const regularflag = reg1.test(regularData);
-                                    // console.log("正则结果：", regularflag);
+                                    // console.log('正则结果：', regularflag , '判断值',  regularData , data, caseItem);
                                     // endregion  解析结束 正则表达
                                     if (regularflag) {
                                         // region: 解析开始 根据组件类型组装新的配置【静态option组装】
@@ -1185,6 +1184,7 @@ export class FormResolverComponent extends CnFormBase
                                             }
                                         }
                                         if (caseItem['type'] === 'show') {
+                                            console.log('1188', caseItem);
                                             if (caseItem['show']) {
                                                 //
                                                 control['hidden'] =

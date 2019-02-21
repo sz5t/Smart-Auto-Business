@@ -60,18 +60,25 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   public async load() {
 
     await this.load_data();
- 
+
     if (this.config.type) {
       const key = this.config.type;
       switch (key) {
         case 'bar':
           this.CreateChart_Bar()
           break;
+        case 'mini_bar':
+          this.CreateChart_MiniBar()
+          break;
+
         case 'pie':
           this.CreateChart_Pie()
           break;
         case 'line':
           this.CreateChart_Line()
+          break;
+        case 'mini_line':
+          this.CreateChart_MiniLine()
           break;
 
         default:
@@ -110,7 +117,52 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     if (this.config.legend) {
       this.chart.legend(this.config.legend);
     }
+    if (this.config.groupName) {
+      this.chart.interval().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).opacity(1).adjust([{
+        type: 'dodge',
+        marginRatio: 1 / 32
+      }]);  // 创建柱图特殊写法  X*Y  'caseName*caseCount' year*sales
+    } else {
+      this.chart.interval().position(this.config.x.name + '*' + this.config.y.name);  // 创建柱图特殊写法  X*Y  'caseName*caseCount' year*sales
+    }
 
+    this.chart.render();
+  }
+
+  public CreateChart_MiniBar() {
+    console.log('****生成柱状图***');
+    this.chart = new G2.Chart({
+      container: this.chartElement.nativeElement, // 指定图表容器 ID
+      animate: true, // 动画 默认true
+      forceFit: true,  // 图表的宽度自适应开关，默认为 false，设置为 true 时表示自动取 dom（实例容器）的宽度。
+      // width: 600,  // 当 forceFit: true  时宽度配置不生效
+      height: this.config.height ? this.config.height : 300, // 指定图表高度
+      padding: 'auto'
+    });
+    this.chart.source(this.dataList);
+    if (this.config.y.scale) {
+      this.chart.scale(this.config.y.name, this.config.y.scale);
+    }
+    if (this.config.x.scale) {
+      this.chart.scale(this.config.x.name, this.config.x.scale);
+    }
+    if (this.config.x.axis) {
+      this.chart.axis(this.config.x.name, this.config.x.axis);
+    }
+    if (this.config.y.axis) {
+      this.chart.axis(this.config.y.name, this.config.y.axis);
+    }
+
+    if (this.config.legend) {
+      this.chart.legend(this.config.legend);
+    }
+    if (this.config.tooltipMini) {
+      this.chart.legend(false);
+      this.chart.axis(false);
+      this.chart.tooltip(
+        this.config.tooltipMini
+      );
+    }
     if (this.config.groupName) {
       this.chart.interval().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).opacity(1).adjust([{
         type: 'dodge',
@@ -151,6 +203,13 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
 
     if (this.config.legend) {
       this.chart.legend(this.config.legend);
+    }
+    if (this.config.tooltipMini) {
+      this.chart.legend(false);
+      this.chart.axis(false);
+      this.chart.tooltip(
+        this.config.tooltipMini
+      );
     }
     this.chart.intervalStack().position(this.config.y.name).color(this.config.x.name).label(this.config.y.name, {
       formatter: (val, item) => {
@@ -205,6 +264,69 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         type: 'line'
       }
     });
+    if (this.config.groupName) {
+      this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).shape(this.config.shape ? this.config.shape : 'circle');
+      this.chart.point().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).size(4).shape('circle').style({
+        stroke: '#fff',
+        lineWidth: 1
+      });
+
+    } else {
+      this.chart.line().position(this.config.x.name + '*' + this.config.y.name).shape(this.config.shape ? this.config.shape : 'circle');
+      this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('circle').style({
+        stroke: '#fff',
+        lineWidth: 1
+      });
+    }
+
+    this.chart.render();
+  }
+
+  public CreateChart_MiniLine() {
+    console.log('****生成mini折线图***');
+
+    this.chart = new G2.Chart({
+      container: this.chartElement.nativeElement, // 指定图表容器 ID
+      animate: true, // 动画 默认true
+      forceFit: true,  // 图表的宽度自适应开关，默认为 false，设置为 true 时表示自动取 dom（实例容器）的宽度。
+      height: this.config.height ? this.config.height : 300, // 指定图表高度
+      padding: 'auto'
+    });
+    this.chart.source(this.dataList);
+    if (this.config.y.scale) {
+      this.chart.scale(this.config.y.name, this.config.y.scale);
+    }
+    if (this.config.x.scale) {
+      this.chart.scale(this.config.x.name, this.config.x.scale);
+    }
+    if (this.config.x.axis) {
+      this.chart.axis(this.config.x.name, this.config.x.axis);
+    }
+    if (this.config.y.axis) {
+      this.chart.axis(this.config.y.name, this.config.y.axis);
+    }
+
+
+    if (this.config.legend) {
+      this.chart.legend(this.config.legend);
+    }
+    this.chart.tooltip({
+      crosshairs: {
+        type: 'line'
+      }
+    });
+    if (this.config.tooltipMini) {
+      this.chart.legend(false);
+      this.chart.axis(false);
+      this.chart.tooltip(
+        this.config.tooltipMini
+      );
+      this.chart.guide().html({
+        position: ['120%', '0%'],
+        html: '<div class="g2-guide-html"><p class="title">总计</p><p class="value">' + '' + '</p></div>'
+      });
+    }
+
 
     if (this.config.groupName) {
       this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).shape(this.config.shape ? this.config.shape : 'circle');
