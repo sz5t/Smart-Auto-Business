@@ -1,3 +1,4 @@
+import { SystemModule } from './../../../routes/system/system.module';
 import { GridBase } from './../grid.base';
 import {
     BSN_COMPONENT_CASCADE_MODES,
@@ -34,6 +35,7 @@ import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
 import { Observer, Observable, Subscription } from 'rxjs';
 import { CacheService } from '@delon/cache';
+import { SystemResource } from '@core/utility/system-resource';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'cn-bsn-tree',
@@ -846,6 +848,10 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                 case BSN_EXECUTE_ACTION.EXECUTE_NODE_CHECKED:
                     handleData = this._getCheckedNodes();
                     break;
+                case BSN_EXECUTE_ACTION.EXECUTE_DOWNLOAD:
+                    handleData = this._getSelectedNodeId();
+                    window.open(`${SystemResource.appSystem.Server}file/download?_ids=${handleData['Id']}`)
+                    return;
             }
             if (c.message) {
                 this.baseModal.confirm({

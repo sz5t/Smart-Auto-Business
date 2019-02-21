@@ -41,7 +41,7 @@ const routes: Routes = [
             { path: 'system', loadChildren: './system/system.module#SystemModule'},
             { path: 'settings', loadChildren: './settings/settings.module#SettingsModule'},
             { path: 'test', loadChildren: './cn-test/cn-test.module#CnTestModule'},
-            { path: 'template', loadChildren: './template/template.module#TemplateModule'},
+            { path: 'template', loadChildren: './template/template.module#TemplateModule'}
         ]
     },
     // 全屏布局
@@ -57,10 +57,20 @@ const routes: Routes = [
         path: 'passport',
         component: LayoutPassportComponent,
         children: [
-            { path: 'login', component: UserLoginComponent },
+            { path: 'login', component: UserLoginComponent},
             { path: 'register', component: UserRegisterComponent },
             { path: 'register-result', component: UserRegisterResultComponent }
-        ]
+        ],
+        data: {title: '西安航天动力测控技术研究所', sub: '质量数据包管理系统'} 
+    },
+    // passport2
+    {
+        path: 'passport2',
+        component: LayoutPassportComponent,
+        children: [
+            { path: 'login', component: UserLoginComponent},
+        ],
+        data: {title: '西安航天动力测控技术研究所', sub: '检验数据采集系统'} 
     },
     // 单页不包裹Layout
     { path: 'callback/:type', component: CallbackComponent },
