@@ -7,7 +7,8 @@ import {
     ViewChild,
     ElementRef,
     Input,
-    Inject
+    Inject,
+    OnDestroy
 } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/utility/api-service';
@@ -23,9 +24,9 @@ declare var anychart: any;
     // tslint:disable-next-line:component-selector
     selector: 'bsn-gantt',
     templateUrl: './bsn-gantt.component.html',
-    styleUrls: ['./bsn-gantt.css']
+    styleUrls: ['./bsn-gantt.less']
 })
-export class BsnGanttComponent extends CnComponentBase implements OnInit, AfterViewInit {
+export class BsnGanttComponent extends CnComponentBase implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('container')
     // @Input() 
     public config;
@@ -36,978 +37,10 @@ export class BsnGanttComponent extends CnComponentBase implements OnInit, AfterV
     private _cascadeSubscription: Subscription;
 
     public container: ElementRef;
-    public dataSet = {
-        'data': [
-          {
-            'idtext': '1',
-            'remark': null,
-            'productcodeid': '061b346a5bd1470a8ff6b5828f16ab6e',
-            'materialname': '成品5',
-            'taskid': 'vNLxzUjFfYzUwiehHzTDFfiB20EiSMxB',
-            'children': [],
-            'ordernumber': 'SC-20190117-001',
-            'taskplannumble': 1,
-            'systemcodeid': null,
-            'serialnumber': '1901',
-            'parentId': 'BCA80C45-0908-414B-9317-A4E5B0FCEC0C',
-            'bomproductid': '831a96b381bf493a8d9ebaff21acf64e',
-            'periodday': 15,
-            'productid': '8f3b03ca0235415ba7cfecd461cecdb2',
-            'priority': 1,
-            'prioritytext': '正常',
-            'tasktime': '2019-2',
-            'mpmprocessid': null,
-            'createDate': '2019-01-25 17:18:20',
-            'depname': '第八研究室',
-            'xhname': 'F-117',
-            'taskplanname': '半成品5',
-            'securitylevel': null,
-            'bomid': 'ffea749f30da4439ac6ba11a99af4fd7',
-            'plantype': null,
-            'stageid': '1875b9c37dfc42ee9f099ac467b528d1',
-            'planenddate': '2019-01-31',
-            'taskplantypesortcode': 4,
-            'taskstatustext': '已下达',
-            'technicalid': null,
-            'plantypeid': 'bf4cd77fa563486d828d6562f836845b',
-            'taskplantype': 2,
-            'taskplanid': '35EDCACE-5417-4435-A48F-A799D5C89ED1',
-            'taskstatus': 5,
-            'jdname': 'T',
-            'figurenumber': 'GAX--1-005',
-            'workcentreid': '019ea3b98db3405aa4858053bb39e965',
-            'planbegindate': '2019-01-17',
-            'Id': '23E59EB1-01FF-49A7-A605-0CE5C367',
-            'taskplantypetext': '零部件任务',
-            'dataflagtext': null
-          },
-          {
-            'idtext': '2',
-            'remark': null,
-            'productcodeid': '061b346a5bd1470a8ff6b5828f16ab6e',
-            'materialname': '成品5',
-            'taskid': 'vNLxzUjFfYzUwiehHzTDFfiB20EiSMxB',
-            'children': [
-              {
-                'idtext': '1',
-                'remark': null,
-                'productcodeid': '061b346a5bd1470a8ff6b5828f16ab6e',
-                'materialname': '成品5',
-                'taskid': 'vNLxzUjFfYzUwiehHzTDFfiB20EiSMxB',
-                'children': [],
-                'ordernumber': 'SC-20190117-001',
-                'taskplannumble': 1,
-                'systemcodeid': null,
-                'serialnumber': '1901',
-                'parentId': '2ABA7E42-E34A-4D85-94AB-17252DC0',
-                'bomproductid': 'ff6fdd73a12248598bbd078d83f05990',
-                'periodday': 15,
-                'productid': '8f3b03ca0235415ba7cfecd461cecdb2',
-                'priority': 1,
-                'prioritytext': '正常',
-                'tasktime': '2019-2',
-                'mpmprocessid': null,
-                'createDate': '2019-01-25 17:18:20',
-                'depname': '第七研究室',
-                'xhname': 'F-117',
-                'taskplanname': '机加',
-                'securitylevel': null,
-                'bomid': 'ffea749f30da4439ac6ba11a99af4fd7',
-                'plantype': null,
-                'stageid': '1875b9c37dfc42ee9f099ac467b528d1',
-                'planenddate': '2019-01-31',
-                'taskplantypesortcode': 5,
-                'taskstatustext': '已下达',
-                'technicalid': null,
-                'plantypeid': 'bf4cd77fa563486d828d6562f836845b',
-                'taskplantype': null,
-                'taskplanid': '35EDCACE-5417-4435-A48F-A799D5C89ED1',
-                'taskstatus': 5,
-                'jdname': 'T',
-                'figurenumber': 'GAX--1-005',
-                'workcentreid': '0c86d2d64a4e4fdd8e332ab3efca4050',
-                'planbegindate': '2019-01-17',
-                'Id': '4179D27A-5732-4E8D-B185-546A4A165CC4',
-                'taskplantypetext': '工艺任务',
-                'dataflagtext': null
-              }
-            ],
-            'ordernumber': 'SC-20190117-001',
-            'taskplannumble': 1,
-            'systemcodeid': null,
-            'serialnumber': '1901',
-            'parentId': 'BCA80C45-0908-414B-9317-A4E5B0FCEC0C',
-            'bomproductid': 'ff6fdd73a12248598bbd078d83f05990',
-            'periodday': 15,
-            'productid': '8f3b03ca0235415ba7cfecd461cecdb2',
-            'priority': 1,
-            'prioritytext': '正常',
-            'tasktime': '2019-2',
-            'mpmprocessid': null,
-            'createDate': '2019-01-25 17:18:20',
-            'depname': '第七研究室',
-            'xhname': 'F-117',
-            'taskplanname': '半成品4',
-            'securitylevel': null,
-            'bomid': 'ffea749f30da4439ac6ba11a99af4fd7',
-            'plantype': null,
-            'stageid': '1875b9c37dfc42ee9f099ac467b528d1',
-            'planenddate': '2019-01-31',
-            'taskplantypesortcode': 4,
-            'taskstatustext': '已下达',
-            'technicalid': null,
-            'plantypeid': 'bf4cd77fa563486d828d6562f836845b',
-            'taskplantype': 2,
-            'taskplanid': '35EDCACE-5417-4435-A48F-A799D5C89ED1',
-            'taskstatus': 5,
-            'jdname': 'T',
-            'figurenumber': 'GAX--1-005',
-            'workcentreid': '0c86d2d64a4e4fdd8e332ab3efca4050',
-            'planbegindate': '2019-01-17',
-            'Id': '2ABA7E42-E34A-4D85-94AB-17252DC0',
-            'taskplantypetext': '零部件任务',
-            'dataflagtext': null
-          },
-          {
-            'idtext': '2',
-            'remark': null,
-            'productcodeid': '061b346a5bd1470a8ff6b5828f16ab6e',
-            'materialname': '成品5',
-            'taskid': 'vNLxzUjFfYzUwiehHzTDFfiB20EiSMxB',
-            'children': [
-              {
-                'idtext': '2',
-                'remark': null,
-                'productcodeid': '061b346a5bd1470a8ff6b5828f16ab6e',
-                'materialname': '成品5',
-                'taskid': 'vNLxzUjFfYzUwiehHzTDFfiB20EiSMxB',
-                'children': [
-                  {
-                    'idtext': '1',
-                    'remark': null,
-                    'productcodeid': '061b346a5bd1470a8ff6b5828f16ab6e',
-                    'materialname': '成品5',
-                    'taskid': 'vNLxzUjFfYzUwiehHzTDFfiB20EiSMxB',
-                    'children': [],
-                    'ordernumber': 'SC-20190117-001',
-                    'taskplannumble': 1,
-                    'systemcodeid': null,
-                    'serialnumber': '1901',
-                    'parentId': '30386500-AD92-4C8C-82A4-EDA6F2E07B59',
-                    'bomproductid': '52c813d14116499dbbefbd41e7a505c9',
-                    'periodday': 15,
-                    'productid': '8f3b03ca0235415ba7cfecd461cecdb2',
-                    'priority': 1,
-                    'prioritytext': '正常',
-                    'tasktime': '2019-2',
-                    'mpmprocessid': 'b53e0dd2a7f2451c9baf0abfa373343d',
-                    'createDate': '2019-01-25 17:45:49',
-                    'depname': null,
-                    'xhname': 'F-117',
-                    'taskplanname': '铣',
-                    'securitylevel': null,
-                    'bomid': 'ffea749f30da4439ac6ba11a99af4fd7',
-                    'plantype': null,
-                    'stageid': '1875b9c37dfc42ee9f099ac467b528d1',
-                    'planenddate': '2019-01-31',
-                    'taskplantypesortcode': 7,
-                    'taskstatustext': '外协中',
-                    'technicalid': null,
-                    'plantypeid': 'bf4cd77fa563486d828d6562f836845b',
-                    'taskplantype': null,
-                    'taskplanid': '35EDCACE-5417-4435-A48F-A799D5C89ED1',
-                    'taskstatus': 11,
-                    'jdname': 'T',
-                    'figurenumber': 'GAX--1-005',
-                    'workcentreid': null,
-                    'planbegindate': '2019-01-17',
-                    'Id': '345C38EF-BC07-47B8-9A7A-4709A1E7A0AD',
-                    'taskplantypetext': '工序任务',
-                    'dataflagtext': null
-                  },
-                  {
-                    'idtext': '1',
-                    'remark': null,
-                    'productcodeid': '061b346a5bd1470a8ff6b5828f16ab6e',
-                    'materialname': '成品5',
-                    'taskid': 'vNLxzUjFfYzUwiehHzTDFfiB20EiSMxB',
-                    'children': [],
-                    'ordernumber': 'SC-20190117-001',
-                    'taskplannumble': 1,
-                    'systemcodeid': null,
-                    'serialnumber': '1901',
-                    'parentId': '30386500-AD92-4C8C-82A4-EDA6F2E07B59',
-                    'bomproductid': '52c813d14116499dbbefbd41e7a505c9',
-                    'periodday': 15,
-                    'productid': '8f3b03ca0235415ba7cfecd461cecdb2',
-                    'priority': 1,
-                    'prioritytext': '正常',
-                    'tasktime': '2019-2',
-                    'mpmprocessid': 'b53e0dd2a7f2451c9baf0abfa373343d',
-                    'createDate': '2019-01-25 17:45:02',
-                    'depname': null,
-                    'xhname': 'F-117',
-                    'taskplanname': '铣',
-                    'securitylevel': null,
-                    'bomid': 'ffea749f30da4439ac6ba11a99af4fd7',
-                    'plantype': null,
-                    'stageid': '1875b9c37dfc42ee9f099ac467b528d1',
-                    'planenddate': '2019-01-31',
-                    'taskplantypesortcode': 7,
-                    'taskstatustext': '起草',
-                    'technicalid': null,
-                    'plantypeid': 'bf4cd77fa563486d828d6562f836845b',
-                    'taskplantype': null,
-                    'taskplanid': '35EDCACE-5417-4435-A48F-A799D5C89ED1',
-                    'taskstatus': 1,
-                    'jdname': 'T',
-                    'figurenumber': 'GAX--1-005',
-                    'workcentreid': null,
-                    'planbegindate': '2019-01-17',
-                    'Id': '684A9E28-512A-4B0E-8B18-D9A9AB584F76',
-                    'taskplantypetext': '工序任务',
-                    'dataflagtext': null
-                  },
-                  {
-                    'idtext': '2',
-                    'remark': null,
-                    'productcodeid': '061b346a5bd1470a8ff6b5828f16ab6e',
-                    'materialname': '成品5',
-                    'taskid': 'vNLxzUjFfYzUwiehHzTDFfiB20EiSMxB',
-                    'children': [
-                      {
-                        'idtext': '1',
-                        'remark': null,
-                        'productcodeid': '061b346a5bd1470a8ff6b5828f16ab6e',
-                        'materialname': '成品5',
-                        'taskid': 'vNLxzUjFfYzUwiehHzTDFfiB20EiSMxB',
-                        'children': [],
-                        'ordernumber': 'SC-20190117-001',
-                        'taskplannumble': 1,
-                        'systemcodeid': null,
-                        'serialnumber': '1901',
-                        'parentId': '9A8FFFA0-335D-4C40-9AE8-DD61173731B8',
-                        'bomproductid': '52c813d14116499dbbefbd41e7a505c9',
-                        'periodday': 15,
-                        'productid': '8f3b03ca0235415ba7cfecd461cecdb2',
-                        'priority': 1,
-                        'prioritytext': '正常',
-                        'tasktime': '2019-2',
-                        'mpmprocessid': 'b53e0dd2a7f2451c9baf0abfa373343d',
-                        'createDate': '2019-01-25 17:50:30',
-                        'depname': null,
-                        'xhname': 'F-117',
-                        'taskplanname': '铣',
-                        'securitylevel': null,
-                        'bomid': 'ffea749f30da4439ac6ba11a99af4fd7',
-                        'plantype': null,
-                        'stageid': '1875b9c37dfc42ee9f099ac467b528d1',
-                        'planenddate': '2019-01-31',
-                        'taskplantypesortcode': 7,
-                        'taskstatustext': '起草',
-                        'technicalid': null,
-                        'plantypeid': 'bf4cd77fa563486d828d6562f836845b',
-                        'taskplantype': null,
-                        'taskplanid': '35EDCACE-5417-4435-A48F-A799D5C89ED1',
-                        'taskstatus': 1,
-                        'jdname': 'T',
-                        'figurenumber': 'GAX--1-005',
-                        'workcentreid': null,
-                        'planbegindate': '2019-01-17',
-                        'Id': '79A961D2-2C87-4503-B3BB-D44F94D1195C',
-                        'taskplantypetext': '工序任务',
-                        'dataflagtext': null
-                      },
-                      {
-                        'idtext': '1',
-                        'remark': null,
-                        'productcodeid': '061b346a5bd1470a8ff6b5828f16ab6e',
-                        'materialname': '成品5',
-                        'taskid': 'vNLxzUjFfYzUwiehHzTDFfiB20EiSMxB',
-                        'children': [],
-                        'ordernumber': 'SC-20190117-001',
-                        'taskplannumble': 1,
-                        'systemcodeid': null,
-                        'serialnumber': '1901',
-                        'parentId': '9A8FFFA0-335D-4C40-9AE8-DD61173731B8',
-                        'bomproductid': '52c813d14116499dbbefbd41e7a505c9',
-                        'periodday': 15,
-                        'productid': '8f3b03ca0235415ba7cfecd461cecdb2',
-                        'priority': 1,
-                        'prioritytext': '正常',
-                        'tasktime': '2019-2',
-                        'mpmprocessid': 'b53e0dd2a7f2451c9baf0abfa373343d',
-                        'createDate': '2019-01-25 17:56:27',
-                        'depname': null,
-                        'xhname': 'F-117',
-                        'taskplanname': '铣',
-                        'securitylevel': null,
-                        'bomid': 'ffea749f30da4439ac6ba11a99af4fd7',
-                        'plantype': null,
-                        'stageid': '1875b9c37dfc42ee9f099ac467b528d1',
-                        'planenddate': '2019-01-31',
-                        'taskplantypesortcode': 7,
-                        'taskstatustext': '起草',
-                        'technicalid': null,
-                        'plantypeid': 'bf4cd77fa563486d828d6562f836845b',
-                        'taskplantype': null,
-                        'taskplanid': '35EDCACE-5417-4435-A48F-A799D5C89ED1',
-                        'taskstatus': 1,
-                        'jdname': 'T',
-                        'figurenumber': 'GAX--1-005',
-                        'workcentreid': null,
-                        'planbegindate': '2019-01-17',
-                        'Id': '9EC84D20-2F14-4B2F-99AB-A74F355DA2FE',
-                        'taskplantypetext': '工序任务',
-                        'dataflagtext': null
-                      }
-                    ],
-                    'ordernumber': 'SC-20190117-001',
-                    'taskplannumble': 1,
-                    'systemcodeid': null,
-                    'serialnumber': '1901',
-                    'parentId': '30386500-AD92-4C8C-82A4-EDA6F2E07B59',
-                    'bomproductid': '52c813d14116499dbbefbd41e7a505c9',
-                    'periodday': 15,
-                    'productid': '8f3b03ca0235415ba7cfecd461cecdb2',
-                    'priority': 1,
-                    'prioritytext': '正常',
-                    'tasktime': '2019-2',
-                    'mpmprocessid': null,
-                    'createDate': '2019-01-25 17:50:09',
-                    'depname': '第七研究室',
-                    'xhname': 'F-117',
-                    'taskplanname': '01',
-                    'securitylevel': null,
-                    'bomid': 'ffea749f30da4439ac6ba11a99af4fd7',
-                    'plantype': null,
-                    'stageid': '1875b9c37dfc42ee9f099ac467b528d1',
-                    'planenddate': '2019-01-31',
-                    'taskplantypesortcode': 6,
-                    'taskstatustext': '已下达',
-                    'technicalid': null,
-                    'plantypeid': 'bf4cd77fa563486d828d6562f836845b',
-                    'taskplantype': null,
-                    'taskplanid': '35EDCACE-5417-4435-A48F-A799D5C89ED1',
-                    'taskstatus': 5,
-                    'jdname': 'T',
-                    'figurenumber': 'GAX--1-005',
-                    'workcentreid': '0c86d2d64a4e4fdd8e332ab3efca4050',
-                    'planbegindate': '2019-01-17',
-                    'Id': '9A8FFFA0-335D-4C40-9AE8-DD61173731B8',
-                    'taskplantypetext': '分组任务',
-                    'dataflagtext': null
-                  },
-                  {
-                    'idtext': '1',
-                    'remark': null,
-                    'productcodeid': '061b346a5bd1470a8ff6b5828f16ab6e',
-                    'materialname': '成品5',
-                    'taskid': 'vNLxzUjFfYzUwiehHzTDFfiB20EiSMxB',
-                    'children': [],
-                    'ordernumber': 'SC-20190117-001',
-                    'taskplannumble': 1,
-                    'systemcodeid': null,
-                    'serialnumber': '1901',
-                    'parentId': '30386500-AD92-4C8C-82A4-EDA6F2E07B59',
-                    'bomproductid': '52c813d14116499dbbefbd41e7a505c9',
-                    'periodday': 15,
-                    'productid': '8f3b03ca0235415ba7cfecd461cecdb2',
-                    'priority': 1,
-                    'prioritytext': '正常',
-                    'tasktime': '2019-2',
-                    'mpmprocessid': 'b53e0dd2a7f2451c9baf0abfa373343d',
-                    'createDate': '2019-01-25 17:44:23',
-                    'depname': null,
-                    'xhname': 'F-117',
-                    'taskplanname': '铣',
-                    'securitylevel': null,
-                    'bomid': 'ffea749f30da4439ac6ba11a99af4fd7',
-                    'plantype': null,
-                    'stageid': '1875b9c37dfc42ee9f099ac467b528d1',
-                    'planenddate': '2019-01-31',
-                    'taskplantypesortcode': 7,
-                    'taskstatustext': '起草',
-                    'technicalid': null,
-                    'plantypeid': 'bf4cd77fa563486d828d6562f836845b',
-                    'taskplantype': null,
-                    'taskplanid': '35EDCACE-5417-4435-A48F-A799D5C89ED1',
-                    'taskstatus': 1,
-                    'jdname': 'T',
-                    'figurenumber': 'GAX--1-005',
-                    'workcentreid': null,
-                    'planbegindate': '2019-01-17',
-                    'Id': 'F1E8BEC7-6AD9-4352-8400-A3C47431B8BC',
-                    'taskplantypetext': '工序任务',
-                    'dataflagtext': null
-                  }
-                ],
-                'ordernumber': 'SC-20190117-001',
-                'taskplannumble': 1,
-                'systemcodeid': null,
-                'serialnumber': '1901',
-                'parentId': '5C635516-F0B9-4EEE-A2E7-9E885E41',
-                'bomproductid': '52c813d14116499dbbefbd41e7a505c9',
-                'periodday': 15,
-                'productid': '8f3b03ca0235415ba7cfecd461cecdb2',
-                'priority': 1,
-                'prioritytext': '正常',
-                'tasktime': '2019-2',
-                'mpmprocessid': null,
-                'createDate': '2019-01-25 17:18:20',
-                'depname': '第七研究室',
-                'xhname': 'F-117',
-                'taskplanname': '机加',
-                'securitylevel': null,
-                'bomid': 'ffea749f30da4439ac6ba11a99af4fd7',
-                'plantype': null,
-                'stageid': '1875b9c37dfc42ee9f099ac467b528d1',
-                'planenddate': '2019-01-31',
-                'taskplantypesortcode': 5,
-                'taskstatustext': '已下达',
-                'technicalid': null,
-                'plantypeid': 'bf4cd77fa563486d828d6562f836845b',
-                'taskplantype': null,
-                'taskplanid': '35EDCACE-5417-4435-A48F-A799D5C89ED1',
-                'taskstatus': 5,
-                'jdname': 'T',
-                'figurenumber': 'GAX--1-005',
-                'workcentreid': '0c86d2d64a4e4fdd8e332ab3efca4050',
-                'planbegindate': '2019-01-17',
-                'Id': '30386500-AD92-4C8C-82A4-EDA6F2E07B59',
-                'taskplantypetext': '工艺任务',
-                'dataflagtext': null
-              }
-            ],
-            'ordernumber': 'SC-20190117-001',
-            'taskplannumble': 1,
-            'systemcodeid': null,
-            'serialnumber': '1901',
-            'parentId': 'BCA80C45-0908-414B-9317-A4E5B0FCEC0C',
-            'bomproductid': '52c813d14116499dbbefbd41e7a505c9',
-            'periodday': 15,
-            'productid': '8f3b03ca0235415ba7cfecd461cecdb2',
-            'priority': 1,
-            'prioritytext': '正常',
-            'tasktime': '2019-2',
-            'mpmprocessid': null,
-            'createDate': '2019-01-25 17:18:20',
-            'depname': '第七研究室',
-            'xhname': 'F-117',
-            'taskplanname': '半成品4',
-            'securitylevel': null,
-            'bomid': 'ffea749f30da4439ac6ba11a99af4fd7',
-            'plantype': null,
-            'stageid': '1875b9c37dfc42ee9f099ac467b528d1',
-            'planenddate': '2019-01-31',
-            'taskplantypesortcode': 4,
-            'taskstatustext': '已下达',
-            'technicalid': null,
-            'plantypeid': 'bf4cd77fa563486d828d6562f836845b',
-            'taskplantype': 2,
-            'taskplanid': '35EDCACE-5417-4435-A48F-A799D5C89ED1',
-            'taskstatus': 5,
-            'jdname': 'T',
-            'figurenumber': 'GAX--1-005',
-            'workcentreid': '0c86d2d64a4e4fdd8e332ab3efca4050',
-            'planbegindate': '2019-01-17',
-            'Id': '5C635516-F0B9-4EEE-A2E7-9E885E41',
-            'taskplantypetext': '零部件任务',
-            'dataflagtext': null
-          },
-          {
-            'idtext': '1',
-            'remark': null,
-            'productcodeid': '061b346a5bd1470a8ff6b5828f16ab6e',
-            'materialname': '成品5',
-            'taskid': 'vNLxzUjFfYzUwiehHzTDFfiB20EiSMxB',
-            'children': [],
-            'ordernumber': 'SC-20190117-001',
-            'taskplannumble': 2,
-            'systemcodeid': null,
-            'serialnumber': '1901',
-            'parentId': 'BCA80C45-0908-414B-9317-A4E5B0FCEC0C',
-            'bomproductid': '4b69d83c43364e138a9794e968d7b751',
-            'periodday': 15,
-            'productid': '8f3b03ca0235415ba7cfecd461cecdb2',
-            'priority': 1,
-            'prioritytext': '正常',
-            'tasktime': '2019-2',
-            'mpmprocessid': null,
-            'createDate': '2019-01-25 17:18:20',
-            'depname': '第八研究室',
-            'xhname': 'F-117',
-            'taskplanname': '半成品1',
-            'securitylevel': null,
-            'bomid': 'ffea749f30da4439ac6ba11a99af4fd7',
-            'plantype': null,
-            'stageid': '1875b9c37dfc42ee9f099ac467b528d1',
-            'planenddate': '2019-01-31',
-            'taskplantypesortcode': 4,
-            'taskstatustext': '外协中',
-            'technicalid': null,
-            'plantypeid': 'bf4cd77fa563486d828d6562f836845b',
-            'taskplantype': 2,
-            'taskplanid': '35EDCACE-5417-4435-A48F-A799D5C89ED1',
-            'taskstatus': 11,
-            'jdname': 'T',
-            'figurenumber': 'GAX--1-005',
-            'workcentreid': '019ea3b98db3405aa4858053bb39e965',
-            'planbegindate': '2019-01-17',
-            'Id': '6307B48F-D7E0-4A63-9D66-78160148',
-            'taskplantypetext': '零部件任务',
-            'dataflagtext': null
-          }
-        ],
-        'isSuccess': true,
-        'message': null,
-        'status': 200
-    }
-    public data = {
-        gantt: {
-            enabled: true,
-            credits: {
-                enabled: false
-            },
-            type: 'gantt-project',
-            splitterPosition: 200,
-            defaultRowHeight: 40,
-            controller: {
-                treeData: {
-                    rootMapping: {},
-                    children: [
-                        {
-                            treeDataItemData: {
-                                id: 1,
-                                name: 'AA_安全机构',
-                                rowHeight: 40
-                            },
-                            children: [
-                                {
-                                    treeDataItemData: {
-                                        id: 4,
-                                        name: '动作组件',
-                                        rowHeight: 40,
-                                        actualStart: '2019.1.05',
-                                        actualEnd: '2019.1.10',
-                                        progressValue: '40%',
-                                        connector: [
-                                            {
-                                                connectTo: 2
-                                            }
-                                        ]
-                                    },
-                                    treeDataItemMeta: {},
-                                    children: [
-                                        {
-                                            treeDataItemData: {
-                                                id: 2,
-                                                name: '工序 1',
-                                                actualStart: 1533810200000,
-                                                actualEnd: 1534540200000,
-                                                rowHeight: 40,
-                                                connector: [
-                                                    {
-                                                        connectTo: 3
-                                                    }
-                                                ]
-                                            },
-                                            treeDataItemMeta: {}
-                                        },
-                                        {
-                                            treeDataItemData: {
-                                                id: 3,
-                                                name: '工序 2',
-                                                actualStart: 1533427200000,
-                                                actualEnd: 1533859200000,
-                                                rowHeight: 40
-                                                // "connector": [
-                                                //     {
-                                                //         "connectTo": 7
-                                                //     }
-                                                // ]
-                                            },
-                                            treeDataItemMeta: {}
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ],
-                    index: ['id']
-                },
-                verticalOffset: 0,
-                startIndex: 0
-            },
-            dataGrid: {
-                enabled: true,
-                headerHeight: 70,
-                edit: {},
-                horizontalOffset: 0,
-                buttons: {
-                    enabled: true,
-                    hovered: {
-                        background: {}
-                    },
-                    selected: {
-                        background: {}
-                    }
-                },
-                columns: [
-                    {
-                        enabled: true,
-                        width: 50,
-                        collapseExpandButtons: false,
-                        depthPaddingMultiplier: 0,
-                        labels: {
-                            zIndex: 0,
-                            enabled: true,
-                            background: {
-                                enabled: false,
-                                fill: '#ffffff',
-                                stroke: 'none',
-                                cornerType: 'round',
-                                corners: 0
-                            },
-                            padding: {
-                                left: 5,
-                                top: 0,
-                                bottom: 0,
-                                right: 5
-                            },
-                            minFontSize: 8,
-                            maxFontSize: 72,
-                            adjustFontSize: {
-                                width: false,
-                                height: false
-                            },
-                            fontSize: 16,
-                            fontFamily: 'Verdana, Helvetica, Arial, sans-serif',
-                            fontColor: '#7c868e',
-                            fontOpacity: 1,
-                            fontDecoration: 'none',
-                            fontStyle: 'normal',
-                            fontVariant: 'normal',
-                            fontWeight: 'normal',
-                            letterSpacing: 'normal',
-                            textDirection: 'ltr',
-                            lineHeight: 'normal',
-                            textIndent: 0,
-                            vAlign: 'middle',
-                            hAlign: 'start',
-                            wordWrap: 'normal',
-                            wordBreak: 'break-all',
-                            textOverflow: '',
-                            selectable: false,
-                            disablePointerEvents: true,
-                            useHtml: false,
-                            format: '{%linearIndex}',
-                            anchor: 'left-top',
-                            offsetX: 0,
-                            offsetY: 0,
-                            rotation: 0
-                        },
-                        title: {
-                            enabled: true,
-                            fontSize: 16,
-                            fontFamily: 'Verdana, Helvetica, Arial, sans-serif',
-                            fontColor: '#7c868e',
-                            fontOpacity: 1,
-                            fontDecoration: 'none',
-                            fontStyle: 'normal',
-                            fontVariant: 'normal',
-                            fontWeight: 'normal',
-                            letterSpacing: 'normal',
-                            textDirection: 'ltr',
-                            lineHeight: 'normal',
-                            textIndent: 0,
-                            vAlign: 'middle',
-                            hAlign: 'center',
-                            wordWrap: 'normal',
-                            wordBreak: 'normal',
-                            textOverflow: '',
-                            selectable: false,
-                            disablePointerEvents: false,
-                            useHtml: false,
-                            height: 70,
-                            align: 'center',
-                            text: '序号',
-                            background: {
-                                enabled: false,
-                                fill: '#ffffff',
-                                stroke: 'none',
-                                cornerType: 'round',
-                                corners: 0
-                            }
-                        }
-                    },
-                    {
-                        enabled: true,
-                        width: 170,
-                        collapseExpandButtons: true,
-                        depthPaddingMultiplier: 15,
-                        labels: {
-                            zIndex: 0,
-                            enabled: true,
-                            background: {
-                                enabled: false,
-                                fill: '#03f5f4',
-                                stroke: 'none',
-                                cornerType: 'round',
-                                corners: 0
-                            },
-                            padding: {
-                                left: 5,
-                                top: 0,
-                                bottom: 0,
-                                right: 5
-                            },
-                            minFontSize: 8,
-                            maxFontSize: 72,
-                            adjustFontSize: {
-                                width: false,
-                                height: false
-                            },
-                            fontSize: 16,
-                            fontFamily: 'Verdana, Helvetica, Arial, sans-serif',
-                            fontColor: '#333',
-                            fontOpacity: 1,
-                            fontDecoration: 'none',
-                            fontStyle: 'normal',
-                            fontVariant: 'normal',
-                            fontWeight: 'normal',
-                            letterSpacing: 'normal',
-                            textDirection: 'ltr',
-                            lineHeight: 'normal',
-                            textIndent: 0,
-                            vAlign: 'middle',
-                            hAlign: 'start',
-                            wordWrap: 'normal',
-                            wordBreak: 'break-all',
-                            textOverflow: '',
-                            selectable: false,
-                            disablePointerEvents: true,
-                            useHtml: false,
-                            format: '{%name}',
-                            anchor: 'left-top',
-                            offsetX: 0,
-                            offsetY: 0,
-                            rotation: 0
-                        },
-                        title: {
-                            enabled: true,
-                            fontSize: 16,
-                            fontFamily: 'Verdana, Helvetica, Arial, sans-serif',
-                            fontColor: '#7c868e',
-                            fontOpacity: 1,
-                            fontDecoration: 'none',
-                            fontStyle: 'normal',
-                            fontVariant: 'normal',
-                            fontWeight: 'normal',
-                            letterSpacing: 'normal',
-                            textDirection: 'ltr',
-                            lineHeight: 'normal',
-                            textIndent: 0,
-                            vAlign: 'middle',
-                            hAlign: 'center',
-                            wordWrap: 'normal',
-                            wordBreak: 'normal',
-                            textOverflow: '',
-                            selectable: false,
-                            disablePointerEvents: false,
-                            useHtml: false,
-                            height: 70,
-                            align: 'center',
-                            text: '任务名称',
-                            background: {
-                                enabled: false,
-                                fill: '#ffffff',
-                                stroke: 'none',
-                                cornerType: 'round',
-                                corners: 0
-                            }
-                        }
-                    }
-                ],
-                horizontalScrollBar: {
-                    enabled: true,
-                    backgroundStroke: {
-                        color: '#d5d5d5',
-                        opacity: 0.25
-                    },
-                    backgroundFill: {
-                        color: '#e0e0e0',
-                        opacity: 0.25
-                    },
-                    sliderFill: {
-                        color: '#d5d5d5',
-                        opacity: 0.25
-                    },
-                    sliderStroke: {
-                        color: '#656565',
-                        opacity: 0.25
-                    }
-                }
-            },
-            timeline: {
-                enabled: true,
-                edit: {},
-                scale: {
-                    visibleMinimum: 1514764800000,
-                    visibleMaximum: 1546214400000,
-                    dataMinimum: 1514764800000,
-                    dataMaximum: 1546214400000,
-                    minimumGap: 0.01,
-                    maximumGap: 0.01
-                },
-                markers: {
-                    enabled: null
-                },
-                header: {
-                    zIndex: 80,
-                    enabled: true,
-                    background: {
-                        zIndex: 0,
-                        enabled: false
-                    },
-                    levels: [{}]
-                },
-                elements: {
-                    edit: {
-                        start: {
-                            thumb: {},
-                            connectorThumb: {}
-                        },
-                        end: {
-                            thumb: {},
-                            connectorThumb: {}
-                        }
-                    }
-                },
-                tasks: {
-                    edit: {
-                        start: {
-                            thumb: {},
-                            connectorThumb: {}
-                        },
-                        end: {
-                            thumb: {},
-                            connectorThumb: {}
-                        }
-                    },
-                    progress: {
-                        normal: {},
-                        selected: {},
-                        edit: {
-                            thumbs: {},
-                            connectorThumbs: {},
-                            start: {
-                                thumb: {},
-                                connectorThumb: {}
-                            },
-                            end: {
-                                thumb: {},
-                                connectorThumb: {}
-                            }
-                        }
-                    }
-                },
-                groupingTasks: {
-                    edit: {
-                        start: {
-                            thumb: {},
-                            connectorThumb: {}
-                        },
-                        end: {
-                            thumb: {},
-                            connectorThumb: {}
-                        }
-                    },
-                    progress: {
-                        normal: {},
-                        selected: {},
-                        edit: {
-                            thumbs: {},
-                            connectorThumbs: {},
-                            start: {
-                                thumb: {},
-                                connectorThumb: {}
-                            },
-                            end: {
-                                thumb: {},
-                                connectorThumb: {}
-                            }
-                        }
-                    }
-                },
-                baselines: {
-                    edit: {
-                        start: {
-                            thumb: {},
-                            connectorThumb: {}
-                        },
-                        end: {
-                            thumb: {},
-                            connectorThumb: {}
-                        }
-                    }
-                },
-                milestones: {
-                    edit: {
-                        start: {
-                            thumb: {},
-                            connectorThumb: {}
-                        },
-                        end: {
-                            thumb: {},
-                            connectorThumb: {}
-                        }
-                    }
-                },
-                horizontalScrollBar: {
-                    enabled: true,
-                    backgroundStroke: {
-                        color: '#d5d5d5',
-                        opacity: 0.25
-                    },
-                    backgroundFill: {
-                        color: '#e0e0e0',
-                        opacity: 0.25
-                    },
-                    sliderFill: {
-                        color: '#d5d5d5',
-                        opacity: 0.25
-                    },
-                    sliderStroke: {
-                        color: '#656565',
-                        opacity: 0.25
-                    }
-                },
-                verticalScrollBar: {
-                    zIndex: 20,
-                    enabled: true,
-                    backgroundStroke: {
-                        color: '#d5d5d5',
-                        opacity: 0.25
-                    },
-                    backgroundFill: {
-                        color: '#e0e0e0',
-                        opacity: 0.25
-                    },
-                    sliderFill: {
-                        color: '#d5d5d5',
-                        opacity: 0.25
-                    },
-                    sliderStroke: {
-                        color: '#656565',
-                        opacity: 0.25
-                    }
-                }
-            }
-        }
-    };
+    private scale;
+    private timeline;
     public change = false;
-
+    private chart: any;
     constructor(
         private _api: ApiService,
         private _cacheService: CacheService,
@@ -1028,36 +61,112 @@ export class BsnGanttComponent extends CnComponentBase implements OnInit, AfterV
         this.config = {
             viewId: 'ganttDemo',
             splitterPosition: 250,
-            defaultRowHeight: 30,
+            defaultRowHeight: 32,
             ajaxConfig: {
-                url: 'common/GetCase',
+                url: 'common/GETWORKORDER/_root/GETWORKORDER',
                 ajaxType: 'get',
-                params: []
+                params: [
+                    // {
+                    //     "name": "_sort",
+                    //     "type": "value",
+                    //     "value": "createDate desc"
+                    // },
+                    {
+                        "name": "_root.parentId",
+                        "type": "value",
+                        "value": null
+                    },
+                    {
+                        "name": "_deep",
+                        "type": "value",
+                        "value": -1
+                    }
+                    // {
+                    //     "name": "plantypeid",
+                    //     "type": "value",
+                    //     "value": "bf4cd77fa563486d828d6562f836845b"
+                    // },
+                    // {
+                    //     "name": "tasktime",
+                    //     "type": "value",
+                    //     "value": "2019-3"
+                    // } 
+                ]
             },
             componentType: {
                 parent: false,
-                child: true,
+                child: false,
                 own: true
             },
-            columnField : 'taskplanname',
-            planStart: 'planbegindate',
-            planEnd: 'planenddate',
+            columnField: 'taskname',
+            // planStart: 'planbegindate',
+            // planEnd: 'planenddate',
+            actualStart: 'planbegindate',
+            actualEnd: 'planenddate',
             columns: [
                 {
-                    title: 'taskplanname'
+                    title: '任务名称',
+                    field: 'taskname',
+                    isCollapseExpand: true,
+                    width: 100
+                },
+                {
+                    title: '产品名称',
+                    field: 'productname',
+                    isCollapseExpand: false,
+                    width: 100
                 }
             ]
         };
+        this.resolverRelation();
+    }
+
+    public ngAfterViewInit(): void {
+        this.load();
+    }
+
+    public ngOnDestroy() {
+        if (this._statusSubscription) {
+            this._statusSubscription.unsubscribe();
+        }
+        if (this._cascadeSubscription) {
+            this._cascadeSubscription.unsubscribe();
+        }   
     }
 
     private load() {
+        this.getAsyncData().then(result => {
+            if (result.isSuccess) {
+                const data = [];
+                this.recurceData(data, result.data);
+                this.initChart(data);
+            }
+        });
+    }
 
+    private recurceData(data, result , parentId = null) {
+        if (Array.isArray(result) && result.length > 0) {
+            result.forEach(r => {
+                r['id'] = r['Id'];
+                if (parentId === null) {
+                    delete r['parentId'];
+                } else {
+                    r['parent'] = parentId;
+                }
+                data.push(r);
+                if (Array.isArray(r.children) && r.children.length > 0) {
+                    this.recurceData(data, r.children, r['Id']);
+                    delete r.children;
+                }
+            });
+        }
     }
 
     private async getAsyncData() {
         // 尝试采用加载多个数据源配置,异步加载所有数据后,进行数据整合,然后进行绑定
         const url = this.buildUrl(this.config.ajaxConfig.url);
         const params = this.resolverParameters(this.config.ajaxConfig.params);
+        params['_recursive'] = true;
         return this.apiResource[this.config.ajaxConfig.ajaxType](url, params).toPromise();
     }
 
@@ -1150,147 +259,361 @@ export class BsnGanttComponent extends CnComponentBase implements OnInit, AfterV
         // }
     }
 
-    public ngAfterViewInit(): void {
+    private initChart(data) {
+        const that = this;
+        anychart.theme('lightBlue');
         anychart.format.inputLocale('zh-cn');
-        anychart.format.inputDateTimeFormat('yyyy.MM.dd'); // Like '2015.03.12'
+        // anychart.format.inputDateTimeFormat('yyyy-MM-dd'); // Like '2015.03.12'
         anychart.format.outputLocale('zh-cn');
-        const resolver = new GanttResolver(this.dataSet.data, this.config);
-        
-        const chart = anychart.fromJson(resolver.resolver());
-        chart.container('container');
-        chart.draw();
-        chart.fitAll();
-        // this.getGantt_1();
-    }
+        const chartData = anychart.data.tree(data, 'as-table');
+        const mapping = chartData.mapAs({
+            'actualStart': this.config.actualStart,
+            'actualEnd': this.config.actualEnd,
+            'id': 'Id',
+            // 'name': this.config.columnField,
+            'parent': 'parentId'
+        });
 
-    public getGantt_1() {
-        const chart = anychart.fromJson(this.data);
-        chart.container('container');
-        chart.draw();
-        chart.fitAll();
-    }
-
-    public getGantt_2() {
-        // create data
-        const treeData = anychart.data.tree(this.getData(), 'as-table');
-
-        // create gantt-project chart
-        const chart = anychart.ganttProject();
-
-        // set data
-        chart.data(treeData);
-
-        // setting common rows separation stroke
-        // chart.rowStroke('#90caf9');
-
-        // set main splitter's pixel position
-        // chart.splitterPosition(300);
-
-        // datagrid settings
-        const dataGrid = chart.dataGrid();
-
-        dataGrid
-            .rowEvenFill('#e3f2fd')
-            .rowOddFill('#f6fbfe')
-            .rowHoverFill('#fff8e1')
-            .rowSelectedFill('#ffecb3');
-        // .columnStroke('2 #90caf9');
-
+        this.chart = anychart.ganttProject();
+        this.chart.data(mapping);
+        this.chart.defaultRowHeight(this.config.defaultRowHeight);
+        this.chart.splitterPosition(this.config.splitterPosition);
+        const dataGrid = this.chart.dataGrid();
         dataGrid
             .column(0)
-            .title()
-            .text('编号');
-        dataGrid
-            .column(1)
-            .width(250)
-            .title('标题');
-        dataGrid
-            .column(2)
-            .labels()
-            .format(function() {
-                const start = this['actualStart'] || this['autoStart'];
-                return anychart.format.date(start);
+            .width(30)
+            .labels({
+                hAlign: 'center'
             });
-        dataGrid.column(2).title('开始');
-
-        dataGrid
-            .column(3)
-            .labels()
-            .format(function() {
-                const end = this['actualEnd'] || this['autoEnd'];
-                return end === void 0 ? '' : anychart.format.date(end); // can be milestone
+        if (this.config.columns) {
+            this.config.columns.forEach((col: any, index: number) => {
+                dataGrid.column(index + 1)
+                    .title(this.config.columns[index]['title'])
+                    .collapseExpandButtons(this.config.columns[index]['isCollapseExpand'])
+                    .width(this.config.columns[index]['width']);
+                
+                dataGrid.column(index + 1)
+                .labels()
+                .format(function() {
+                    return this.item.get(that.config.columns[index]['field']);
+                })
             });
-        dataGrid.column(3).title('结束');
-
-        // tooltip settings
-        dataGrid.tooltip().format(this.tooltipFormatter);
-        chart
-            .getTimeline()
-            .tooltip()
-            .format(this.tooltipFormatter);
-
-        // set container id for the chart
-        chart.container('container');
-
-        // initiate chart drawing
-        chart.draw();
-    }
-
-    // formatter for timeline and datagrid tooltips
-    public tooltipFormatter() {
-        const startDate = this['actualStart'] || this['autoStart'];
-        const endDate = this['actualEnd'] || this['autoEnd'];
-        let progress = this['progressValue'];
-
-        if (progress === void 0) {
-            const auto = this['autoProgress'] * 100;
-            progress = (Math.round(auto * 100) / 100 || 0) + '%';
+            // for (let i = 0, len = this.config.columns.length; i < len; i++) {
+            //     if (len - 1 === i) {
+            //         break;
+            //     }
+            //     dataGrid.column(i + 1)
+            //         .title(this.config.columns[i + 1]['title'])
+            //         .collapseExpandButtons(this.config.columns[i]['isCollapseExpand'])
+            //         .width(this.config.columns[i + 1]['width']);
+            // }
         }
 
-        return (
-            (startDate ? '开始时间: ' + anychart.format.date(startDate) : '') +
-            (endDate ? '\n结束时间: ' + anychart.format.date(endDate) : '') +
-            (progress ? '\n进度: ' + progress : '')
-        );
+        dataGrid.tooltip().useHtml(true);
+        dataGrid.tooltip().format(function () {
+            if (!this.item.numChildren()) { // formatter for the timeline task
+                const begin: any = new Date(this.item.get(that.config.actualStart));
+                const end: any = new Date(this.item.get(that.config.actualEnd));
+                return '<h4 style="color: #80A291">计划周期: (' +
+                    Math.round((end - begin) / (24 * 60 * 60 * 1000)) +
+                    ' 天):</h4><ul><li>开始: - ' +
+                    anychart.format.dateTime(this.item.get(that.config.actualStart), 'yyyy年MM月dd日') +
+                    '</li><li>结束 - ' +
+                    anychart.format.dateTime(this.item.get(that.config.actualEnd), 'yyyy年MM月dd日') +
+                    '</li></ul>' + '<hr>';
+                // '<h4 style="color: #00A6DA">Most Likely (' +
+                // Math.round((this.item.get('mostLikelyEnd') - this.item.get('mostLikelyStart')) / (24 * 60 * 60 * 1000)) +
+                // ' days):</h4><ul><li>Start - ' +
+                // anychart.format.dateTime(this.item.get('mostLikelyStart'), 'dd.MM.yyyy') +
+                // '</li><li>End - ' +
+                // anychart.format.dateTime(this.item.get('mostLikelyEnd'), 'dd.MM.yyyy') +
+                // '</li></ul><hr>' +
+                // '<h4 style="color: #E24B26">Pessimistic (' +
+                // Math.round((this.item.get('pessimisticEnd') - this.item.get('pessimisticStart')) / (24 * 60 * 60 * 1000)) +
+                // ' days):</h4><ul><li>Start - ' +
+                // anychart.format.dateTime(this.item.get('pessimisticStart'), 'dd.MM.yyyy') +
+                // '</li><li>End - ' +
+                // anychart.format.dateTime(this.item.get('pessimisticEnd'), 'dd.MM.yyyy') +
+                // '</li></ul>'
+            } else { // formatter for the grouping task
+                return '计划周期: ' + Math.round((this.autoEnd - this.autoStart) / (24 * 60 * 60 * 1000)) + ' 天'
+            }
+        });
+
+        this.timeline = this.chart.getTimeline();
+        this.timeline.tooltip().useHtml(true);
+        this.timeline.tooltip().format(function () {
+            if (!this.item.numChildren()) { // formatter for the timeline task
+                const begin: any = new Date(this.item.get(that.config.actualStart));
+                const end: any = new Date(this.item.get(that.config.actualEnd));
+                return '<h4 style="color: #80A291">周期: (' +
+                    Math.round((end - begin) / (24 * 60 * 60 * 1000)) +
+                    ' 天):</h4><ul><li>开始 - ' +
+                    anychart.format.dateTime(this.item.get(that.config.actualStart), 'yyyy年MM月dd日') +
+                    '</li><li>结束 - ' +
+                    anychart.format.dateTime(this.item.get(that.config.actualEnd), 'yyyy年MM月dd日') +
+                    '</li></ul>' + '<hr>';
+                // '<h4 style="color: #00A6DA">Most Likely (' +
+                // Math.round((this.item.get('mostLikelyEnd') - this.item.get('mostLikelyStart')) / (24 * 60 * 60 * 1000)) +
+                // ' days):</h4><ul><li>Start - ' +
+                // anychart.format.dateTime(this.item.get('mostLikelyStart'), 'dd.MM.yyyy') +
+                // '</li><li>End - ' +
+                // anychart.format.dateTime(this.item.get('mostLikelyEnd'), 'dd.MM.yyyy') +
+                // '</li></ul><hr>' +
+                // '<h4 style="color: #E24B26">Pessimistic (' +
+                // Math.round((this.item.get('pessimisticEnd') - this.item.get('pessimisticStart')) / (24 * 60 * 60 * 1000)) +
+                // ' days):</h4><ul><li>Start - ' +
+                // anychart.format.dateTime(this.item.get('pessimisticStart'), 'dd.MM.yyyy') +
+                // '</li><li>End - ' +
+                // anychart.format.dateTime(this.item.get('pessimisticEnd'), 'dd.MM.yyyy') +
+                // '</li></ul>'
+            } else { // formatter for the grouping task
+                return '周期: ' + Math.round((this.autoEnd - this.autoStart) / (24 * 60 * 60 * 1000)) + ' 天'
+            }
+        });
+        this.timeline.tasks().selected().fill('#DAA520 .8');
+        this.timeline.tasks().progress().selected().fill('#D8BFD8 .8');
+        this.timeline.groupingTasks()
+            .labels()
+            .padding(0, 0, 5, 0)
+            .position('center')
+            .anchor('center');
+
+        this.timeline.groupingTasks().labels().format(function () {
+            return `周期: ${Math.round((this.autoEnd - this.autoStart) / (24 * 60 * 60 * 1000))} 天`;
+        });
+
+        // set shapes for timeline tasks rendering
+        this.timeline.tasks().rendering().shapes([
+            {
+                name: 'planTask',
+                shapeType: 'path',
+                disablePointerEvents: false
+            },
+            {
+                name: 'actualTask',
+                shapeType: 'path',
+                disablePointerEvents: false
+            }
+            // {
+            //     name: 'optimisticTask',
+            //     shapeType: 'path',
+            //     disablePointerEvents: false
+            // }
+        ]);
+
+        this.timeline.groupingTasks().rendering().shapes([{
+            name: 'actualTask',
+            shapeType: 'path',
+            disablePointerEvents: false
+        }]);
+
+        this.scale = this.timeline.scale();
+
+        // get timeline's scale
+
+        // setup custom drawer for timeline tasks
+
+        this.timeline.tasks().rendering().drawer(function () {
+            let path, shift,
+                left, top, width, height,
+                itemBounds, startRatio, endRatio
+
+            // get timeline width and left border coordinates
+            const tlBounds = that.timeline.getPixelBounds();
+            const tlWidth = tlBounds.width;
+            const tlLeft = tlBounds.left;
+
+            // get recommended bounds for drawing
+            const bounds = this.predictedBounds;
+
+            // get bar height
+            const barHeight = Math.round(bounds.height / 2) + that.config.defaultRowHeight / 6;
+
+            if (that.config.planStart && that.config.planEnd) {
+                /* OPTIMISTIC BAR */
+                // get path from shapes
+                path = this.shapes['planTask'];
+
+                // set path's fill and stroke settings
+                path.fill('#90D6C1 .6');
+                path.stroke('#80A291 .8');
+
+                // get shift value
+                shift = that.halfShift(path.strokeThickness());
+
+
+                // calculate start and end ratio for the optimistic bar using it's data
+                startRatio = that.scale.transform(this.item.get(that.config.planStart));
+                endRatio = that.scale.transform(this.item.get(that.config.planEnd));
+
+                // calculate X coordinate for the optimistic bar
+                left = Math.round(tlWidth * startRatio + tlLeft) + shift;
+
+                // calculate Y coordinate for the optimistic bar
+                top = Math.round(bounds.top) - 4 + shift;
+
+                // calculate optimistic bar's width
+                width = Math.round(tlWidth * (endRatio - startRatio));
+
+                // set optimistic bar's height
+                height = barHeight;
+
+                // set optimistic bar's bounds
+                itemBounds = anychart.math.rect(left, top, width, height);
+
+                // draw rounded rectangle on the path
+                anychart.graphics.vector.primitives.roundedRect(path, itemBounds, 3);
+            }
+
+            if (that.config.actualStart && that.config.actualEnd) {
+                /* MOST LIKELY BAR */
+                // get path prom shapes
+                path = this.shapes['actualTask'];
+
+                // set stroke color and opacity
+                path.stroke('#666');
+                path.fill('#00BFFF .8');
+
+                // get shift value
+                shift = that.halfShift(path.strokeThickness());
+
+                // calculate start and end ratio for the most-likely bar using it's data
+                startRatio = that.scale.transform(this.item.get(that.config.actualStart));
+                endRatio = that.scale.transform(this.item.get(that.config.actualEnd));
+
+                // calculate X coordinate for the most-likely bar
+                left = Math.round(tlWidth * startRatio + tlLeft) + shift;
+
+                // calculate Y coordinate for the most-likely bar
+                top = Math.round(bounds.top + (bounds.height - barHeight) / 2) - 1 + shift;
+
+                // calculate most-likely bar's width
+                width = Math.round(tlWidth * (endRatio - startRatio));
+
+                // set most-likely bar's height
+                height = barHeight;
+
+                // set most-likely bar's bounds
+                itemBounds = anychart.math.rect(left, top, width, height);
+
+                // draw rounded rectangle on the path
+                anychart.graphics.vector.primitives.roundedRect(path, itemBounds, 3);
+            }
+
+            /*
+            
+            // get path from shapes
+            path = this.shapes['planTask'];
+
+            // set path's fill and stroke settings
+            path.fill('#FF4B12 .4');
+            path.stroke('#6F5264 .6');
+
+            // get shift value
+            shift = this.halfShift(path.strokeThickness());
+
+            // calculate start and end ratio for the pessimistic bar using it's data
+            startRatio = this.scale.transform(this.item.get('pessimisticStart'));
+            endRatio = this.scale.transform(this.item.get('pessimisticEnd'));
+
+            // calculate X coordinate for the pessimistic bar
+            left = Math.round(tlWidth * startRatio + tlLeft) + shift;
+
+            // calculate Y coordinate for the pessimistic bar
+            top = Math.round(bounds.top + bounds.height - barHeight + 2) + shift;
+
+            // calculate pessimistic bar's width
+            width = Math.round(tlWidth * (endRatio - startRatio)) + shift;
+
+            // set pessimistic bar's height
+            height = barHeight;
+
+            // set pessimistic bar's bounds
+            itemBounds = anychart.math.rect(left, top, width, height);
+
+            // draw rounded rectangle on the path
+            anychart.graphics.vector.primitives.roundedRect(path, itemBounds, 3);
+            */
+        });
+
+        // setup custom drawer for timeline grouping tasks
+        this.timeline.groupingTasks().rendering().drawer(function () {
+
+
+            // get path prom shapes
+            const path = this.shapes['actualTask'];
+
+            // set path stroke settings
+            path.fill('#FFA500 .6');
+            path.stroke('#80A291 .8');
+
+            // get shift value
+            const shift = that.halfShift(path.strokeThickness());
+
+            // get recommended bounds for drawing
+            const bounds = this.predictedBounds;
+
+            // get parameters for the element drawer
+            const left = Math.round(bounds.left) + shift;
+            const height = Math.round(bounds.height) + that.config.defaultRowHeight / 5;
+            const center = Math.round(height / 2);
+            const top = Math.round(bounds.top + center - 2) + shift;
+            const width = Math.round(bounds.width);
+            const right = left + width;
+            const bottom = top + height;
+
+            const itemBounds = anychart.math.rect(left, top, width, height);
+
+            // draw rounded rectangle on the path
+            anychart.graphics.vector.primitives.roundedRect(path, itemBounds, 3);
+
+            // // draw grouping task
+            // path.moveTo(left, top + center)
+            //     .lineTo(right, top + center)
+            //     .close();
+        });
+
+        // set task progress' settings
+        this.timeline.tasks().progress()
+            .height('15%')
+            .selected().stroke('#666 .6');
+
+        // set grouping task progress' settings
+        this.timeline.groupingTasks().progress()
+            .height('50%')
+            .fill('#0078CD .7')
+            .offset('50%')
+            .selected().fill('#47B7F1 .7');
+
+        // set container id for the chart
+        this.chart.container('container');
+
+        // initiate chart drawing
+        this.chart.draw();
+
+        // Set scale maximum and minimum.
+        this.scale.minimumGap(0.08);
+        this.scale.maximumGap(0.15);
+
+        // zoom chart all dates range
+        this.chart.fitAll();
     }
 
-    // simple data
-    public getData() {
-        return [
-            {
-                id: '1',
-                name: 'Phase 1 - Strategic Plan'
-            },
-            {
-                id: '2',
-                name: 'Self assessment',
-                parent: '1'
-            },
-            {
-                id: '3',
-                name: 'It defines the business vision',
-                parent: '2',
-                actualStart: '2015.03.13',
-                actualEnd: '2015.03.24'
-            },
-            {
-                id: '4',
-                name:
-                    'To identify the available skills, information and support',
-                parent: '2',
-                actualStart: '2015.03.25',
-                actualEnd: '2015.04.06'
-            },
-            {
-                id: '5',
-                name: 'Decide whether you want to continue',
-                parent: '2',
-                actualStart: '2015.04.07',
-                actualEnd: '2015.04.15',
-                baselineStart: '2015.04.06',
-                baselineEnd: '2015.04.18'
-            }
-        ];
+    private halfShift(strokeThickness) {
+        return (strokeThickness % 2) ? .5 : 0;
+    }
+
+    private zoomIn() {
+        this.chart.zoomIn();
+    }
+
+    private zoomOut() {
+        this.chart.zoomOut();
+    }
+
+    private fitAll() {
+        this.chart.fitAll();
     }
 }
 // anychart-credits-text

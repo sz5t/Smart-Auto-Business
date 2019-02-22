@@ -97,7 +97,6 @@ import { CnGridSearchComponent } from './components/cn-grid-search/cn-grid-searc
 import { CnGridBetweenInputComponent } from './components/cn-grid-between-input/cn-grid-between-input.component';
 import { CnFormInputSelectComponent } from './components/cn-form-input-select/cn-form-input-select.component'
 import { BsnReportComponent } from './business/bsn-report/bsn-report.component';
-import { SpreadSheetsModule } from 'app/lib/gc.spread.sheets.angular.12.0.0'
 import { BsnAsyncTreeTableComponent } from './business/bsn-treeTable/bsn-treeTable.component';
 import { CnFormSelectGridMultipleComponent } from './components/cn-form-select-grid-multiple/cn-form-select-grid-multiple.component';
 import { CnGridSelectGridMultipleComponent } from './components/cn-grid-select-grid-multiple/cn-grid-select-grid-multiple.component';
@@ -240,7 +239,6 @@ const DIRECTIVES = [
         DelonABCModule,
         DelonACLModule,
         InfiniteScrollModule,
-        SpreadSheetsModule,
         // third libs
         ...THIRDMODULES
     ],

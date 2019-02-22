@@ -7,7 +7,6 @@ export class GanttResolver {
     private _data: any;
     private _config: any;
     constructor(private data: any, private config: any) {
-        debugger;
         this._data = data;
         this._config = config
     }
@@ -29,6 +28,7 @@ export class GanttResolver {
         this._gantt.dataGrid = this.buildDataGrid();
         // build timeline
         this._timeline = this.buildTimeLine();
+        console.log({ gantt: this._gantt });
         return { gantt: this._gantt };
     }
 
@@ -47,7 +47,6 @@ export class GanttResolver {
     }
 
     private createTreeDataChildren(data) {
-        debugger;
         const children: TreeDataChildren[] = [];
         if (Array.isArray(data) && data.length > 0) {
             data.forEach(d => {
@@ -57,6 +56,7 @@ export class GanttResolver {
                 if (Array.isArray(d['children']) && d['children'].length > 0) {
                     child.children = this.createTreeDataChildren(d.children);
                 }
+                children.push(child);
             });
         }
         return children;
@@ -79,15 +79,19 @@ export class GanttResolver {
             name: d[this._config.columnField]
         };
         if (d[this._config.actualStart]) {
+            // tempData.actualStart = d[this._config.actualStart].replace(/-/ig, '.');
             tempData.actualStart = d[this._config.actualStart];
         }
         if (d[this._config.actualEnd]) {
+            // tempData.actualEnd = d[this._config.actualEnd].replace(/-/ig, '.');
             tempData.actualEnd = d[this._config.actualEnd];
         }
         if (d[this._config.planStart]) {
+            // tempData.baselineStart = d[this._config.planStart].replace(/-/ig, '.');
             tempData.baselineStart = d[this._config.planStart];
         }
         if (d[this._config.planEnd]) {
+            // tempData.baselineEnd = d[this._config.planEnd].replace(/-/ig, '.');
             tempData.baselineEnd = d[this._config.planEnd];
         }
         if (d[this._config.progressField]) {
@@ -108,6 +112,95 @@ export class GanttResolver {
 
     private buildDataGrid() {
         const columns = [];
+        const indexColumn = {
+            enabled: true,
+            width: 40,
+            collapseExpandButtons: false,
+            depthPaddingMultiplier: 0,
+            labels: {
+                zIndex: 0,
+                enabled: true,
+                background: {
+                    enabled: true,
+                    fill: '#ffffff',
+                    stroke: 'none',
+                    cornerType: 'round',
+                    corners: 0
+                },
+                padding: {
+                    left: 5,
+                    top: 0,
+                    bottom: 0,
+                    right: 5
+                },
+                minFontSize: 8,
+                maxFontSize: 72,
+                adjustFontSize: {
+                    width: false,
+                    height: false
+                },
+                fontSize: 12,
+                fontFamily: 'Verdana, Helvetica, Arial, sans-serif',
+                fontColor: '#7c868e',
+                fontOpacity: 1,
+                fontDecoration: 'none',
+                fontStyle: 'normal',
+                fontVariant: 'normal',
+                fontWeight: 'normal',
+                letterSpacing: 'normal',
+                textDirection: 'ltr',
+                lineHeight: 'normal',
+                textIndent: 0,
+                vAlign: 'middle',
+                hAlign: 'start',
+                wordWrap: 'normal',
+                wordBreak: 'break-all',
+                textOverflow: '',
+                selectable: false,
+                disablePointerEvents: true,
+                useHtml: false,
+                format: '{%linearIndex}',
+                anchor: 'left-top',
+                offsetX: 0,
+                offsetY: 0,
+                rotation: 0
+            },
+            title: {
+                enabled: true,
+                fontSize: 12,
+                fontFamily: 'Verdana, Helvetica, Arial, sans-serif',
+                fontColor: '#7c868e',
+                fontOpacity: 1,
+                fontDecoration: 'none',
+                fontStyle: 'normal',
+                fontVariant: 'normal',
+                fontWeight: 'normal',
+                letterSpacing: 'normal',
+                textDirection: 'ltr',
+                lineHeight: 'normal',
+                textIndent: 0,
+                vAlign: 'middle',
+                hAlign: 'center',
+                wordWrap: 'normal',
+                wordBreak: 'normal',
+                textOverflow: '',
+                selectable: false,
+                disablePointerEvents: false,
+                useHtml: false,
+                height: 70,
+                align: 'center',
+                text: '序号',
+                background: {
+                    enabled: false,
+                    fill: '#ffffff',
+                    stroke: 'none',
+                    cornerType: 'round',
+                    corners: 0
+                }
+            }
+        }
+
+        columns.push(indexColumn);
         this._config.columns.forEach(col => {
             const labels = {
                 zIndex: 0,
@@ -131,7 +224,7 @@ export class GanttResolver {
                     width: false,
                     height: false
                 },
-                fontSize: 16,
+                fontSize: 12,
                 fontFamily: 'Verdana, Helvetica, Arial, sans-serif',
                 fontColor: '#7c868e',
                 fontOpacity: 1,
@@ -159,7 +252,7 @@ export class GanttResolver {
             };
             const title = {
                 enabled: true,
-                fontSize: 14,
+                fontSize: 12,
                 fontFamily: 'Verdana, Helvetica, Arial, sans-serif',
                 fontColor: '#7c868e',
                 fontOpacity: 1,
@@ -195,11 +288,12 @@ export class GanttResolver {
                 title: title,
                 enabled: true,
                 width: col.width,
-                collapseExpandButtons: false,
-                depthPaddingMultiplier: 0
+                collapseExpandButtons: true,
+                depthPaddingMultiplier: 20
             }
             columns.push(column);
         });
+
         this._dataGrid = {
             columns : columns,
             enabled: true,

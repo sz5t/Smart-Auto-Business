@@ -1,3 +1,7 @@
-<nz-card nzTitle="甘特图">
-    <div id="container"></div>
-</nz-card>
+
+    <nz-button-group [nzSize]="default">
+            <button nz-button nzType="default" (click)="zoomOut()"><i nz-icon type="zoom-out" theme="outline"></i>缩小</button>
+            <button nz-button nzType="default" (click)="zoomIn()">放大<i nz-icon type="zoom-in" theme="outline"></i></button>
+            <button nz-button nzType="default" (click)="fitAll()"><i nz-icon type="pic-center" theme="outline"></i>适合</button>
+    </nz-button-group>
+    <div id="container"  style="margin-top: 5px"></div>
