@@ -32,15 +32,15 @@
         <div style="height: 42px;"></div>
         <div class="bottom-container">
             <!-- 工具栏 DOM 结构规约参考 Toolbar API -->
-            <div id="itempannel" #itempannel >
+            <div id="itempannel" #itempannel style="width: 100px;">
                 <img draggable="false" src="../../../../assets/img/workflow/ZnPxbVjKYADMYxkTQXRi.svg" data-type="node" data-shape="flow-circle"
                     data-size="72*72" data-color="#FA8C16" data-label="开始节点" class="getItem">
-                <img draggable="false" src="../../../../assets/img/workflow/ZnPxbVjKYADMYxkTQXED.svg" data-type="node" data-shape="flow-circle"
-                    data-size="72*72" data-color="#FA8C16" data-label="结束节点" class="getItem">
                 <img draggable="false" src="../../../../assets/img/workflow/wHcJakkCXDrUUlNkNzSy.svg" data-type="node" data-shape="flow-rect"
                     data-size="80*48" data-color="#1890FF" data-label="常规节点" class="getItem">
                 <img draggable="false" src="../../../../assets/img/workflow/SnWIktArriZRWdGCnGfK.svg" data-type="node" data-shape="flow-rhombus"
                     data-size="80*72" data-color="#13C2C2" data-label="分叉节点" class="getItem">
+                <img draggable="false" src="../../../../assets/img/workflow/ZnPxbVjKYADMYxkTQXED.svg" data-type="node" data-shape="flow-circle"
+                    data-size="72*72" data-color="#FA8C16" data-label="结束节点" class="getItem">
                 <!--                 <img draggable="false" src="../../../../assets/img/workflow/rQMUhHHSqwYsPwjXxcfP.svg" data-type="node" data-shape="flow-capsule"
                   data-size="80*48" data-color="#722ED1" data-label="模型节点" class="getItem"> -->
 
@@ -69,7 +69,7 @@
                                 </form>
                                 <!-- <cn-form-resolver [config]="from_config"></cn-form-resolver> -->
                             </nz-collapse-panel>
-                      <!--       <nz-collapse-panel [nzHeader]="node_panels[1].name" [nzActive]="node_panels[1].active" [nzDisabled]="node_panels[1].disabled">
+                            <!--       <nz-collapse-panel [nzHeader]="node_panels[1].name" [nzActive]="node_panels[1].active" [nzDisabled]="node_panels[1].disabled">
                                 <p>ceshi</p>
                             </nz-collapse-panel> -->
                         </nz-collapse>
@@ -81,7 +81,7 @@
                         <nz-collapse>
                             <nz-collapse-panel [nzHeader]="edge_panels[0].name" [nzActive]="edge_panels[0].active" [nzDisabled]="edge_panels[0].disabled">
                                 <form nz-form>
-                                    <nz-form-item  style="display: none">
+                                    <nz-form-item style="display: none">
                                         <nz-form-label [nzSpan]="7" nzFor="id">id</nz-form-label>
                                         <nz-form-control [nzSpan]="16">
                                             <input nz-input name="id" type="text" id="id" [(ngModel)]="edgeinfo.id" readonly="readonly">
@@ -95,7 +95,7 @@
                                     </nz-form-item>
                                 </form>
                             </nz-collapse-panel>
-<!--                             <nz-collapse-panel [nzHeader]="edge_panels[1].name" [nzActive]="edge_panels[1].active" [nzDisabled]="edge_panels[1].disabled">
+                            <!--                             <nz-collapse-panel [nzHeader]="edge_panels[1].name" [nzActive]="edge_panels[1].active" [nzDisabled]="edge_panels[1].disabled">
                                 <p>ceshi</p>
                             </nz-collapse-panel> -->
                         </nz-collapse>
@@ -185,7 +185,7 @@
                 </div>
             </div>
             <!-- 右键菜单栏 DOM 结构规约参考 Contextmenu API -->
-            <div id="page" #page></div>
+            <div id="page" #page style="margin-left:100px;"></div>
             <!-- 参考 Flow、Mind API -->
         </div>
     </div>

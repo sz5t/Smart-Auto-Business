@@ -257,7 +257,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     });
     const itempannel = new Editor.Itempannel({
       container: this.itempannel.nativeElement,
-      // width: 100
+       width: 100
     });
     const detailpannel = new Editor.Detailpannel({
       container: this.detailpannel.nativeElement,
@@ -267,7 +267,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
       graph: {
         container: this.rpage.nativeElement,
         height: window.innerHeight - 238,
-        width: window.innerWidth - 400
+        width: window.innerWidth
 
       },
       // shortcut: {
