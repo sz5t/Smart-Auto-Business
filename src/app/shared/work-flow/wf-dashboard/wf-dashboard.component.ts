@@ -267,7 +267,7 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
       graph: {
         container: this.rpage.nativeElement,
         height: window.innerHeight - 238,
-        width: window.innerWidth - 400
+        width: window.innerWidth 
 
       },
       // shortcut: {
