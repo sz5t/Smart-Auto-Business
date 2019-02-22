@@ -909,6 +909,7 @@ export class FormResolverComponent extends CnFormBase
     public valueChange(data?) {
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
+       // console.log('**valueChange**', data);
         const sendCasade = data.name;
         const receiveCasade = ' ';
         // 第二步，根据配置，和返回值，来构建应答数据集合
@@ -1184,7 +1185,6 @@ export class FormResolverComponent extends CnFormBase
                                             }
                                         }
                                         if (caseItem['type'] === 'show') {
-                                            console.log('1188', caseItem);
                                             if (caseItem['show']) {
                                                 //
                                                 control['hidden'] =
@@ -1336,7 +1336,7 @@ export class FormResolverComponent extends CnFormBase
                 }
             });
         }
-          console.log('send', sendData);
+        //  console.log('send ' + data.name, sendData);
         //  执行光标移动保存
            this.ExecEventByValueChange(data);
     }
@@ -1392,7 +1392,7 @@ export class FormResolverComponent extends CnFormBase
         // vc_rowdata['currentValue'] = vc_rowdata[data.name];
         // vc_rowdata['currentName'] = data.name;
 
-        console.log('当前表单数据：', vc_rowdata);
+        // console.log('当前表单数据：', vc_rowdata);
         // 判断是否存在配置
         if (this.config.events) {
             const index = this.config.events.findIndex(item => item['onTrigger'] === 'onColumnValueChange');

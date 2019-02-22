@@ -47,7 +47,7 @@ export class CnFormSelectTreeComponent implements OnInit {
     // value;
     public _selectedValue;
     public treecolumns = {};
-    constructor(private _http: ApiService) {}
+    constructor(private _http: ApiService) { }
 
     public ngOnInit() {
         if (this.config.columns) {
@@ -80,12 +80,19 @@ export class CnFormSelectTreeComponent implements OnInit {
             }
         }
         this.loadTreeData();
-        if ( this.cascadeSetValue.hasOwnProperty('setValue')) {
+        if (this.cascadeSetValue.hasOwnProperty('setValue')) {
             this._selectedValue = this.cascadeSetValue['setValue'];
             delete this.cascadeSetValue['setValue'];
-         } else {
-           // this._selectedValue = this.value['value'];
-         }
+        } else {
+            if (this.formGroup.value[this.config.name]) {
+                this._selectedValue = this.formGroup.value[this.config.name];
+            } else {
+                if (this.config.hasOwnProperty('defaultValue')) {
+                    this._selectedValue = this.config.defaultValue;
+                }
+            }
+        }
+
     }
 
     public async getAsyncTreeData(nodeValue = null) {
@@ -132,15 +139,15 @@ export class CnFormSelectTreeComponent implements OnInit {
                     //     isLeaf: false,
                     //     children: []
                     // })];
-                        
-                   // console.log('selecttree:', this.cascadeValue, TotreeBefore , parent);
+
+                    // console.log('selecttree:', this.cascadeValue, TotreeBefore , parent);
                     // result[0].children.push(...);
                     this.treeData = this.listToAsyncTreeData(
                         TotreeBefore,
                         parent
                     );
 
-                   // console.log(this.treeData);
+                    // console.log(this.treeData);
                 }
             }
         })();
@@ -263,7 +270,7 @@ export class CnFormSelectTreeComponent implements OnInit {
             const backValue = { name: this.config.name, value: null };
             this.updateValue.emit(backValue);
         }
-       // console.log('***下拉树返回值***' , this.value);
+        console.log('***下拉树返回值***', this.value, this.config);
 
     }
     public expandNode = e => {
