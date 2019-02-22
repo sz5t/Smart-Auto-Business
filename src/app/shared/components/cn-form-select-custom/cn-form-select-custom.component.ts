@@ -70,6 +70,17 @@ export class CnFormSelectCustomComponent extends CnComponentBase implements OnIn
       this.config.valueName = 'Id';
     }
 
+          // 未知是否有错误
+          if (!this._value) {
+            if (this.formGroup.value[this.config.name]) {
+                this._value = this.formGroup.value[this.config.name];
+            } else {
+                if (this.config.hasOwnProperty('defaultValue')) {
+                    this._value = this.config.defaultValue;
+                }
+            }
+        }
+
   }
   public async asyncLoadOptions(p?, componentValue?, type?) {
     // console.log('select load 异步加载', componentValue); // liu

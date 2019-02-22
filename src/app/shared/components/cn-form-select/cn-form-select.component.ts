@@ -85,6 +85,17 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
             this._options = this.config.options;
             this.selectedByLoaded();
         }
+
+        // 未知是否有错误
+        if (!this.value) {
+            if (this.formGroup.value[this.config.name]) {
+                this.value = this.formGroup.value[this.config.name];
+            } else {
+                if (this.config.hasOwnProperty('defaultValue')) {
+                    this.value = this.config.defaultValue;
+                }
+            }
+        }
     }
 
     public async load() {
@@ -246,7 +257,13 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
     public selectedByLoaded() {
         let selected;
         if (!this.value) {
-            this.value = this.config.defaultValue;
+            if (this.formGroup.value[this.config.name]) {
+                this.value = this.formGroup.value[this.config.name];
+            } else {
+                if (this.config.hasOwnProperty('defaultValue')) {
+                    this.value = this.config.defaultValue;
+                }
+            }
         }
         if (this.value) {
             this._options.forEach(element => {

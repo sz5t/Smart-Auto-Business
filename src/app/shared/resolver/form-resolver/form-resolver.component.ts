@@ -909,7 +909,7 @@ export class FormResolverComponent extends CnFormBase
     public valueChange(data?) {
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
-       // console.log('**valueChange**', data);
+        // console.log('**valueChange**', data);
         const sendCasade = data.name;
         const receiveCasade = ' ';
         // 第二步，根据配置，和返回值，来构建应答数据集合
@@ -1187,8 +1187,16 @@ export class FormResolverComponent extends CnFormBase
                                         if (caseItem['type'] === 'show') {
                                             if (caseItem['show']) {
                                                 //
-                                                control['hidden'] =
-                                                    caseItem['show']['hidden'];
+                                                control['hidden'] = caseItem['show']['hidden'];
+
+                                                //    if (!caseItem['show']['hidden']) {
+                                                //       if (this.value.hasOwnProperty(key)) {
+                                                //           if (this.value[key]) {
+                                                //            this.setValues(key, this.value[key]);
+                                                //           }
+                                                //      }
+                                                //    }
+                                            
                                             }
                                         }
                                         if (caseItem['type'] === 'setValue') {
@@ -1338,7 +1346,7 @@ export class FormResolverComponent extends CnFormBase
         }
         //  console.log('send ' + data.name, sendData);
         //  执行光标移动保存
-           this.ExecEventByValueChange(data);
+        this.ExecEventByValueChange(data);
     }
     /**
       * 执行值变化触发的事件 liu 20190115
@@ -1504,39 +1512,39 @@ export class FormResolverComponent extends CnFormBase
 
     }
 
-        // tslint:disable-next-line:member-ordering
+    // tslint:disable-next-line:member-ordering
 
-        //  获取event 事件的配置 
-        public GetToolbarEvents() {
-            if (this.config.toolbarEvent && Array.isArray(this.config.toolbarEvent)) {
-                this.config.toolbarEvent.forEach(item => {
-                    if (item.group) {
-                        item.group.forEach(g => {
-                            this.toolbarConfig.push(g);
+    //  获取event 事件的配置 
+    public GetToolbarEvents() {
+        if (this.config.toolbarEvent && Array.isArray(this.config.toolbarEvent)) {
+            this.config.toolbarEvent.forEach(item => {
+                if (item.group) {
+                    item.group.forEach(g => {
+                        this.toolbarConfig.push(g);
+                    });
+
+
+                } else if (item.dropdown) {
+                    const dropdown = [];
+                    item.dropdown.forEach(b => {
+                        const down = {};
+                        const { name, text, icon } = b;
+                        down['name'] = name;
+                        down['text'] = text;
+                        down['icon'] = icon;
+                        down['buttons'] = [];
+                        b.buttons.forEach(btn => {
+                            this.toolbarConfig.push(btn);
                         });
-    
-    
-                    } else if (item.dropdown) {
-                        const dropdown = [];
-                        item.dropdown.forEach(b => {
-                            const down = {};
-                            const { name, text, icon } = b;
-                            down['name'] = name;
-                            down['text'] = text;
-                            down['icon'] = icon;
-                            down['buttons'] = [];
-                            b.buttons.forEach(btn => {
-                                this.toolbarConfig.push(btn);
-                            });
-                        });
-    
-                    }
-                });
-            }
-    
-    
+                    });
+
+                }
+            });
         }
-    
+
+
+    }
+
     // 【20181126】 针对级联编辑状态目前问题处理
     // 原来的结构不合理，在于变化的检测均是完全修改配置
     // 现在调整为，将级联包装成对象，给小组件，小组件自行完成
