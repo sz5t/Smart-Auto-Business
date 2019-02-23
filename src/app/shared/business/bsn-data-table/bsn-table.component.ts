@@ -475,12 +475,13 @@ export class BsnTableComponent extends CnComponentBase
                     // 设置聚焦ID
                     // 默认第一行选中，如果操作后有focusId则聚焦ID为FocusId
                     let focusId;
-                    if (loadData.FocusId) {
-                        focusId = loadData.FocusId;
+                    if (loadData.data.focusedId) {
+                        focusId = loadData.data.focusedId[0];
                     } else {
                         loadData.data.rows.length > 0 &&
                             (focusId = loadData.data.rows[0].Id);
                     }
+                    // console.log('focusId', focusId);
                     if (loadData.data.rows.length > 0) {
                         loadData.data.rows.forEach((row, index) => {
                             row['key'] = row[this.config.keyId]
