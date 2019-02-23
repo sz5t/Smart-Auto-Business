@@ -1,3 +1,4 @@
+import { BsnGanttComponent } from './../../business/bsn-gantt/bsn-gantt.component';
 import { BsnReportComponent } from './../../business/bsn-report/bsn-report.component';
 import { BsnToolbarComponent } from './../../business/bsn-toolbar/bsn-toolbar.component';
 import { BsnCardListComponent } from './../../business/bsn-card-list/bsn-card-list.component';
@@ -63,7 +64,8 @@ const components: { [type: string]: Type<any> } = {
     bsnReport: BsnReportComponent,
     tsTable: TsDataTableComponent,
     bsnTag: BsnTagComponent,
-    bsnChart: BsnChartComponent
+    bsnChart: BsnChartComponent,
+    bsnGantt: BsnGanttComponent
 };
 @Component({
     // tslint:disable-next-line:component-selector
