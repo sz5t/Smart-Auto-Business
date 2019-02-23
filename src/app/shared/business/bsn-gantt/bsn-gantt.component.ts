@@ -58,66 +58,49 @@ export class BsnGanttComponent extends CnComponentBase implements OnInit, AfterV
 
     public ngOnInit() {
         this.initValue = this.initData ? this.initData : {};
-        this.config = {
-            viewId: 'ganttDemo',
-            splitterPosition: 250,
-            defaultRowHeight: 32,
-            ajaxConfig: {
-                url: 'common/GETWORKORDER/_root/GETWORKORDER',
-                ajaxType: 'get',
-                params: [
-                    // {
-                    //     "name": "_sort",
-                    //     "type": "value",
-                    //     "value": "createDate desc"
-                    // },
-                    {
-                        "name": "_root.parentId",
-                        "type": "value",
-                        "value": null
-                    },
-                    {
-                        "name": "_deep",
-                        "type": "value",
-                        "value": -1
-                    }
-                    // {
-                    //     "name": "plantypeid",
-                    //     "type": "value",
-                    //     "value": "bf4cd77fa563486d828d6562f836845b"
-                    // },
-                    // {
-                    //     "name": "tasktime",
-                    //     "type": "value",
-                    //     "value": "2019-3"
-                    // } 
-                ]
-            },
-            componentType: {
-                parent: false,
-                child: false,
-                own: true
-            },
-            columnField: 'taskname',
-            // planStart: 'planbegindate',
-            // planEnd: 'planenddate',
-            actualStart: 'planbegindate',
-            actualEnd: 'planenddate',
-            columns: [
-                {
-                    title: '任务名称',
-                    field: 'taskname',
-                    isCollapseExpand: true,
-                    width: 100
-                },
-                {
-                    title: '产品名称',
-                    field: 'productname',
-                    isCollapseExpand: false,
-                    width: 100
-                }
-            ]
-        };
+        // this.config = {
+        //     viewId: 'ganttDemo',
+        //     splitterPosition: 250,
+        //     defaultRowHeight: 32,
+        //     ajaxConfig: {
+        //         url: 'common/GETWORKORDER/_root/GETWORKORDER',
+        //         ajaxType: 'get',
+        //         params: [
+        //             {
+        //                 "name": "_root.parentId",
+        //                 "type": "value",
+        //                 "value": null
+        //             },
+        //             {
+        //                 "name": "_deep",
+        //                 "type": "value",
+        //                 "value": -1
+        //             }
+        //         ]
+        //     },
+        //     componentType: {
+        //         parent: false,
+        //         child: false,
+        //         own: true
+        //     },
+        //     columnField: 'taskname',
+        //     actualStart: 'planbegindate',
+        //     actualEnd: 'planenddate',
+        //     columns: [
+        //         {
+        //             title: '任务名称',
+        //             field: 'taskname',
+        //             isCollapseExpand: true,
+        //             width: 100
+        //         },
+        //         {
+        //             title: '产品名称',
+        //             field: 'productname',
+        //             isCollapseExpand: false,
+        //             width: 100
+        //         }
+        //     ]
+        // };
         this.resolverRelation();
     }
 
