@@ -6,7 +6,7 @@
     <hr>
     <cn-bsn-table #table [config]="config.select.selectGridMultiple" [bsnData]="bsnData" [casadeData]="casadeData"  [permissions]="permissions"  (updateValue)="valueChangeByModal($event)"> </cn-bsn-table>
 </nz-modal>
-<nz-form-label [nzSpan]="config.labelSize">
+<nz-form-label *ngIf="config.label"  [nzSpan]="config.labelSize">
     {{config.label}}
 </nz-form-label>
 

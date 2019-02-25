@@ -1,4 +1,4 @@
-<nz-form-label [nzSpan]="config.labelSize">
+<nz-form-label  *ngIf="config.label" [nzSpan]="config.labelSize">
     {{config.label}}
 </nz-form-label>
 <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
