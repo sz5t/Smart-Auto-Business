@@ -27,6 +27,9 @@ export class CnFormSelectMultipleComponent
     @Input()
     public rowData;
     @Input()
+    public initValue;
+    
+    @Input()
     public dataSet;
     @Input() public changeConfig;
     public formGroup: FormGroup;
@@ -141,6 +144,8 @@ export class CnFormSelectMultipleComponent
                     params[param.name] = componentValue[param.valueName];
                 } else if (param.type === 'cascadeValue') {
                     params[param.name] = this.cascadeValue[param.valueName];
+                } else if (param.type === 'initValue') {
+                    params[param.name] = this.initValue[param.valueName];
                 }
             });
             if (this.isString(p.url)) {
