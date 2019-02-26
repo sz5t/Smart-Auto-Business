@@ -48,7 +48,6 @@ export class CnFormSelectGridComponent implements OnInit {
     // 模板配置
 
     ngOnInit(): void {
-        // console.log('ngOnInitvalue: ', this.value);
         // this._value = this.formGroup.value[this.config.name];
         if (this.changeConfig) {
             if (this.changeConfig['cascadeValue']) {
@@ -108,7 +107,6 @@ export class CnFormSelectGridComponent implements OnInit {
         if (!this.config.valueName) {
             this.config.valueName = "Id";
         }
-        //  console.log('ngOnInit this.value:', this.value);
         this.resultData = this.table.dataList;
 
         if (this.cascadeSetValue.hasOwnProperty("setValue")) {
@@ -126,7 +124,6 @@ export class CnFormSelectGridComponent implements OnInit {
 
     handleOk(): void {
         this.isVisible = false;
-        // console.log('选中行' , this.table._selectRow);
         // 此处简析 多选，单选【个人建议两种组件，返回值不相同，单值（ID值），多值（ID数组）】
         if (this.table._selectRow) {
             this._valuetext = this.table._selectRow[this.config.labelName];
@@ -135,24 +132,19 @@ export class CnFormSelectGridComponent implements OnInit {
             this._valuetext = null;
             this._value = null;
         }
-
-        // console.log('数据', this._value);
     }
 
     handleCancel(): void {
-        // console.log('点击取消');
         this.isVisible = false;
     }
 
     async valueChange(name?) {
-        // console.log('valueChange' , name);
         this.resultData = this.table.dataList ? this.table.dataList : [];
         const labelName = this.config.labelName ? this.config.labelName : 'name';
         const valueName = this.config["valueName"] ? this.config["valueName"] : "Id";
         if (name) {
             const backValue = { name: this.config.name, value: name };
             // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
-            // console.log('this.resultData:', this.resultData);
             if (this.resultData) {
                 // valueName
                 const index = this.resultData.findIndex(
@@ -184,18 +176,15 @@ export class CnFormSelectGridComponent implements OnInit {
                         } else {
                             this._valuetext = this._value;
                         }
-                        // console.log('loadByselect: ',  backselectdata) ;
                     }
                 }
 
-                // console.log('iftrue弹出表格返回数据', backValue);
             }
             // this.value['dataText'] = this._valuetext;
             this.updateValue.emit(backValue);
         } else {
             const backValue = { name: this.config.name, value: name };
             this.updateValue.emit(backValue);
-            // console.log('iffalse弹出表格返回数据', backValue);
         }
     }
 }

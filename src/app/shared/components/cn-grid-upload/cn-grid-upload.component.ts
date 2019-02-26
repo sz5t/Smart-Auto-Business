@@ -64,7 +64,6 @@ export class CnGridUploadComponent extends CnComponentBase implements OnInit {
  * @returns {boolean}
  */
   public openUploadDialog() {
-   // console.log('this.rowData:', this.rowData);
     const dialog = this.config.select.upload;
     if (!dialog) {
       return false;

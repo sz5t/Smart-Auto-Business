@@ -15,7 +15,6 @@ export class CnGridInputComponent implements OnInit {
         private http: _HttpClient
     ) { }
     ngOnInit() {
-        // console.log('input' , this.casadeData);
         if (!this.config['disabled']) {
             this.config['disabled'] = false;
         }
@@ -29,14 +28,12 @@ export class CnGridInputComponent implements OnInit {
             if (key === 'setValue') {
                 this.cascadeSetValue['setValue'] = JSON.parse(JSON.stringify(this.casadeData['setValue']));
                 delete this.casadeData['setValue'];
-                // console.log('setValue' , this.casadeData['setValue']);
             }
         }
         if (this.cascadeSetValue.hasOwnProperty('setValue')) {
             this._value = this.cascadeSetValue['setValue'];
             this.valueChange(this._value);
             delete this.cascadeSetValue['setValue'];
-            // console.log('setValueTO valueChange', this._value );
         }
     }
 
@@ -54,13 +51,11 @@ export class CnGridInputComponent implements OnInit {
     }
 
     onblur(e?, type?) {
-        // console.log('onblur：', type, 'beginValue', this.beginValue, 'endValue', this.endValue);
         this.assemblyValue();
 
     }
     onKeyPress(e?, type?) {
         if (e.code === 'Enter') {
-            //  console.log('Enter', type, 'beginValue', this.beginValue, 'endValue', this.endValue);
             this.assemblyValue();
         }
     }

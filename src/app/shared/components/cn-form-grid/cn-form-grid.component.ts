@@ -42,14 +42,14 @@ export class CnFormGridComponent implements OnInit {
   ngOnInit() {
     // 1.看配置，以及参数的接受
     // 组件值，临时变量，级联值
-    console.log("peizhi:", this.config);
+
     // this._value = this.table.loadData.rows ? this.table.loadData.rows : [];
 
   }
 
   valueChange(name?) {
 
-    console.log('valueChange', name);
+
     // if (name) {
     //     const backValue = { name: this.config.name, value: name };
     //     if (this.resultData) {
@@ -76,7 +76,6 @@ export class CnFormGridComponent implements OnInit {
       const backValue = { name: this.config.name, value: name };
       this.updateValue.emit(backValue);
     }
-     console.log('valueChangetable', name);
   }
 
 }

@@ -139,15 +139,11 @@ export class CnFormSelectTreeComponent implements OnInit {
                     //     isLeaf: false,
                     //     children: []
                     // })];
-
-                    // console.log('selecttree:', this.cascadeValue, TotreeBefore , parent);
                     // result[0].children.push(...);
                     this.treeData = this.listToAsyncTreeData(
                         TotreeBefore,
                         parent
                     );
-
-                    // console.log(this.treeData);
                 }
             }
         })();
@@ -190,7 +186,6 @@ export class CnFormSelectTreeComponent implements OnInit {
                                     param.valueName
                                 ];
                             } else {
-                                // console.log('参数不全不能加载');
                                 tag = false;
                                 return;
                             }
@@ -270,7 +265,6 @@ export class CnFormSelectTreeComponent implements OnInit {
             const backValue = { name: this.config.name, value: null };
             this.updateValue.emit(backValue);
         }
-        console.log('***下拉树返回值***', this.value, this.config);
 
     }
     public expandNode = e => {

@@ -88,7 +88,6 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
     }
     if (this._value) {
       this.valueChange(this._value);
-      // console.log('调用selectload');
       //  this.table.selectload();
     }
   }
@@ -107,7 +106,6 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
   }
 
   public async asyncLoadOptions(p?, componentValue?, type?) {
-    // console.log('select load 异步加载', componentValue); // liu
     const params = {};
     let tag = true;
     let url;
@@ -119,7 +117,6 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
               if (this.bsnData[param.valueName]) {
                 params[param.name] = this.bsnData[param.valueName];
               } else {
-                // console.log('参数不全不能加载');
                 tag = false;
                 return;
               }
@@ -160,19 +157,11 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
       }
     }
     if (p.ajaxType === 'get' && tag) {
-      /*  const dd=await this._http.getProj(APIResource[p.url], params).toPromise();
- if (dd && dd.Status === 200) {
- console.log("服务器返回执行成功返回",dd.Data);
- }
- console.log("服务器返回",dd); */
 
       return this._http.get(url, params).toPromise();
     } else if (p.ajaxType === 'put') {
-      console.log('put参数', params);
       return this._http.put(url, params).toPromise();
     } else if (p.ajaxType === 'post') {
-      console.log('post参数', params);
-      console.log(url);
       return this._http.post(url, params).toPromise();
     } else {
       return null;
@@ -252,8 +241,6 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
             } else if (btn['name'] === 'reset') {
               //  this._resetForm(componentInstance);
             } else if (btn['name'] === 'ok') {
-              console.log('ok');
-              console.log(componentInstance.value);
               const labelName = this.config.labelName ? this.config.labelName : 'name';
               const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
               if (componentInstance.value) {
@@ -276,7 +263,6 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
   }
 
   public async valueChange(name?, dataItemValue?) {
-    // console.log('valueChange' , name);
 
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
@@ -289,7 +275,6 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
         const componentvalue = {};
         componentvalue[valueName] = name;
         const loadData = await this.asyncLoadOptions(this.config.ajaxConfig, componentvalue);
-        console.log('自定义数据：', loadData);
         if (loadData && loadData.status === 200 && loadData.isSuccess) {
           if (loadData.data) {
             if (loadData.data.length > 0) {
@@ -309,8 +294,6 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
         this.value.data = null;
         this.value.dataText = null;
         this.updateValue.emit(this.value);
-
-      // console.log('iffalse弹出表格返回数据', backValue);
     }
   }
 

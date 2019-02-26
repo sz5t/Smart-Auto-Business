@@ -689,23 +689,23 @@ export class CnFormInputSelectComponent implements OnInit {
     this.isVisible = true;
     // _selectedNode
 
-    console.log('showModal _value :', this.ck_value);
+
   }
 
   public handleOk(): void {
     this.isVisible = false;
     this._value = this.ck_value;
-    console.log('选中行', this.ck_value, this.tree.selectedItem);
+
     // 此处简析 多选，单选【个人建议两种组件，返回值不相同，单值（ID值），多值（ID数组）】
   }
 
   public handleCancel(): void {
-    // console.log('点击取消');
+
     this.isVisible = false;
   }
 
   public valueChangeByModal(data?) {
-    console.log('树选中', data);
+
     this.ck_value = data['name'] ? data['name'] : data['title'];
 
     if ( this.ck_value && this.tags.indexOf( this.ck_value) === -1) {

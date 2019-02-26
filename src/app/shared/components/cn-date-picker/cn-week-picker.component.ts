@@ -22,14 +22,12 @@ export class CnWeekPickerComponent implements OnInit, AfterViewInit {
     public ngAfterViewInit() {
         // setTimeout(() => {
         //     this.week = `${getISOYear(Date.now())}-${getISOWeek(new Date())}`;
-        //     console.log(this.week);
         // })
 
     }
 
     public getWeek(date: Date): void {
         // this.week = getISOWeek(result);
-        console.log(date, getISOWeek(date));
         const backValue = { name: this.config.name, value: `${getISOYear(date)}-${getISOWeek(date)}` };
         this.updateValue.emit(backValue);
     }

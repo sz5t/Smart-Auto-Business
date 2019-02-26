@@ -40,9 +40,6 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
     constructor(private apiService: ApiService) {}
 
     public async ngOnInit() {
-        // console.log('变化时临时参数', this.casadeData);
-        // console.log('变化配置', this.config);
-        // console.log('下拉选中的本来值: ** ', this.value);
         if (this.casadeData) {
             for (const key in this.casadeData) {
                 // 临时变量的整理
@@ -117,8 +114,6 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
     public ngAfterViewInit() {}
     // casadeData
     public ngOnChanges() {
-        // console.log('select加载固定数据ngOnChanges', this.config);
-        // console.log('select变化时临时参数ngOnChanges', this.casadeData);
     }
     public async asyncLoadOptions(p?, componentValue?, type?) {
         const params = {};
@@ -134,7 +129,6 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
                                     param.valueName
                                 ];
                             } else {
-                                // console.log('参数不全不能加载');
                                 tag = false;
                                 return;
                             }
@@ -155,7 +149,6 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
                     if (this.cascadeValue[param.valueName]) {
                         params[param.name] = this.cascadeValue[param.valueName];
                     } else {
-                        // console.log('参数不全不能加载');
                         tag = false;
                         return null;
                     }
@@ -184,18 +177,11 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
         }
 
         if (p.ajaxType === 'get' && tag) {
-            /*  const dd=await this._http.getProj(APIResource[p.url], params).toPromise();
-             if (dd && dd.Status === 200) {
-             console.log("服务器返回执行成功返回",dd.Data);
-             }
-             console.log("服务器返回",dd); */
 
             return this.apiService.get(url, params).toPromise();
         } else if (p.ajaxType === 'put') {
-            // console.log('put参数', params);
             return this.apiService.put(url, params).toPromise();
         } else if (p.ajaxType === 'post') {
-            // console.log('post参数', params);
             return this.apiService.post(url, params).toPromise();
         } else {
             return null;
@@ -230,7 +216,6 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
             });
         }
         this._selectedOption = selected;
-        // console.log('值不为空触发', this._selectedOption);
         if (this._selectedOption) {
             this.valueChange(this._selectedOption);
         }

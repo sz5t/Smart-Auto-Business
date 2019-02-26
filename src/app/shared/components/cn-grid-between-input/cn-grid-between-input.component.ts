@@ -19,13 +19,11 @@ export class CnGridBetweenInputComponent implements OnInit {
 
 
   onblur(e?, type?) {
-   // console.log('onblur：', type, 'beginValue', this.beginValue, 'endValue', this.endValue);
      this.assemblyValue();
 
   }
   onKeyPress(e?, type?) {
     if (e.code === 'Enter') {
-    //  console.log('Enter', type, 'beginValue', this.beginValue, 'endValue', this.endValue);
        this.assemblyValue();
     }
   }

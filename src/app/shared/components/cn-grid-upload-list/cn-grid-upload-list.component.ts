@@ -67,7 +67,6 @@ export class CnGridUploadListComponent extends CnComponentBase implements OnInit
             }
           }
         }
-        // console.log('regularData', regularData);
         const regularflag = reg1.test(regularData);
         if (regularflag) {
           this.isUpload = formatConfig.responseConfig.hidden;                                                              
@@ -87,7 +86,6 @@ export class CnGridUploadListComponent extends CnComponentBase implements OnInit
  * @returns {boolean}
  */
   public openUploadDialog() {
-    // console.log('this.rowData:', this.rowData);
     const dialog = this.config.select.uploadList;
     if (!dialog) {
       return false;

@@ -601,7 +601,6 @@ export class ComponentSettingResolverComponent
 
     ngOnChanges() {
         if (this.config) {
-            // console.log('render', this.config);
             // this._renderComponent(this.config);
         }
     }

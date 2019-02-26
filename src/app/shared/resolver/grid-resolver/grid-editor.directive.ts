@@ -104,9 +104,6 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
         }
         if (this.changeConfig) {
             // && !this.isEmptyObject(this.changeConfig)
-            // console.log('ngOnChanges', this.changeConfig);
-            // console.log('ngOnChangesvalue', this.value);
-            // console.log('ngOnChangesvalueconfig', this.config);
             this.changecount = 'repeat';
             this.container.clear();
             if (!components[this.config.type]) {
@@ -128,7 +125,6 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
             this.component.instance.rowData = this.rowData;
             this.component.instance.initData = this.initData;
             // if (this.component.instance.casadeData) {
-            //  console.log('ngOnInit', this.changeConfig);
 
             const c_changeConfig = JSON.parse(
                 JSON.stringify(this.changeConfig)
@@ -147,7 +143,6 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
     }
 
     public ngOnInit() {
-        console.log('ngOnChangesvalue', this.changecount);
         if (this.changecount === 'first') {
             if (!components[this.config.type]) {
                 const supportedTypes = Object.keys(components).join(', ');
@@ -201,7 +196,6 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
             this.component.instance.rowData = this.rowData;
             this.component.instance.initData = this.initData;
             // if (this.component.instance.casadeData) {
-            //  console.log('ngOnInit', this.changeConfig);
 
             const c_changeConfig = JSON.parse(
                 JSON.stringify(this.changeConfig)

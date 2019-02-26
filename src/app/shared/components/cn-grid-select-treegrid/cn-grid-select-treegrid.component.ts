@@ -331,9 +331,9 @@ export class CnGridSelectTreegridComponent implements OnInit {
  };
 
   ngOnInit() {
-    console.log('treegrid', this.config);
+
     this._value = null;
-    // console.log('被级联数据', this.casadeData);
+
     if (this.casadeData) {
 
       for (const key in this.casadeData) {
@@ -373,7 +373,6 @@ export class CnGridSelectTreegridComponent implements OnInit {
     if (!this.config.valueName) {
       this.config.valueName = 'Id';
     }
-   //  console.log('ngOnInit this.value:', this.value);
     this.config.width = this.config.width - 30;
     if (this.cascadeSetValue.hasOwnProperty('setValue')) {
       this.selectedBycascade();
@@ -384,7 +383,6 @@ export class CnGridSelectTreegridComponent implements OnInit {
   }
 
   showModal(): void {
-    console.log('showModal', this._value);
     this.table.value = this._value ;
     this.isVisible = true;
   }
@@ -394,9 +392,6 @@ export class CnGridSelectTreegridComponent implements OnInit {
     this.isVisible = false;
 
     // 此处简析 多选，单选【个人建议两种组件，返回值不相同，单值（ID值），多值（ID数组）】
-    // console.log('选中行', this.table.dataList);
- 
-     console.log('选中行', this.table.selectedItem);
     if (this.table.selectedItem) {
       this._valuetext = this.table.selectedItem[this.config.labelName];
       this._value = this.table.selectedItem[this.config.valueName];
@@ -404,8 +399,6 @@ export class CnGridSelectTreegridComponent implements OnInit {
       this._valuetext = null;
       this._value = null;
     }
-
-    console.log('最新选中值：', this._value);
  
     this.valueChange(this._value);
    
@@ -461,8 +454,6 @@ export class CnGridSelectTreegridComponent implements OnInit {
   }
 
   valueChangebf(name?) {
-
-     console.log('值变化', name);
     this.resultData = this.table.dataList;
    
     if (name) {
@@ -480,7 +471,6 @@ export class CnGridSelectTreegridComponent implements OnInit {
       this.value['dataText'] = null;
       this.updateValue.emit(this.value);
     }
-   console.log('弹出表格返回数据', this.value);
   }
 
 
@@ -493,7 +483,6 @@ export class CnGridSelectTreegridComponent implements OnInit {
     if (name) {
       this.value['data'] = name;
       // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
-      // console.log('this.resultData:', this.resultData);
       if (this.resultData) {
         // valueName
         const index = this.resultData.findIndex(
@@ -525,11 +514,8 @@ export class CnGridSelectTreegridComponent implements OnInit {
             } else {
               this._valuetext = this._value;
             }
-           // console.log('_valuetext: ', this._valuetext);
           }
         }
-
-       // console.log('iftrue弹出表格返回数据', backValue);
       } 
       // this.value['dataText'] = this._valuetext;
       this.updateValue.emit(this.value);
@@ -537,7 +523,6 @@ export class CnGridSelectTreegridComponent implements OnInit {
       this.value['data'] = null;
       this.value['dataText'] = null;
       this.updateValue.emit(this.value);
-     // console.log('iffalse弹出表格返回数据', backValue);
     }
   }
 

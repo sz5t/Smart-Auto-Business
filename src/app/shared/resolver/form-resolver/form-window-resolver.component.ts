@@ -258,7 +258,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
         for (const d in data) {
             this.tempValue[d] = data[d];
         }
-        // console.log('初始化参数', this.tempValue);
     }
 
     public initParametersLoad(data?) {
@@ -269,7 +268,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
             this.tempValue[d] = data[d];
         }
         this.load();
-        console.log('初始化参数并load 主子刷新', this.tempValue);
     }
 
     /**
@@ -434,7 +432,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
             const changeConfig_new = [];
 
             for (const key in this.cascadeList[sendCasade]) {
-                // console.log('for in 配置' , key);
                 this.config.forms.forEach(formsItems => {
                     formsItems.controls.forEach(control => {
                         if (control.name === key) {
@@ -522,7 +519,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
                                         }
                                     }
                                     if (caseItem['type'] === 'setValue') {
-                                        // console.log('setValueinput' , caseItem['setValue'] );
 
                                         const setValuedata = {};
                                         if (
@@ -602,7 +598,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
                                         regularData = data.data;
                                     }
                                     const regularflag = reg1.test(regularData);
-                                    // console.log("正则结果：", regularflag);
                                     // endregion  解析结束 正则表达
                                     if (regularflag) {
                                         // region: 解析开始 根据组件类型组装新的配置【静态option组装】
@@ -702,7 +697,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
                                             }
                                         }
                                         if (caseItem['type'] === 'setValue') {
-                                            // console.log('setValueinput' , caseItem['setValue'] );
 
                                             const setValuedata = {};
                                             if (
@@ -825,7 +819,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
                 }
             });
         }
-        // console.log('变更后的', this.config.forms);
     }
 
     // 级联变化，情况大致分为三种

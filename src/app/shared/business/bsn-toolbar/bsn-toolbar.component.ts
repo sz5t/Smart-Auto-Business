@@ -125,7 +125,6 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
     }
 
     public toolbarAction(btn) {
-        // console.log('send btn message', this.viewId);
         // const message = new BsnToolbarRelativeMessage();
         // message.action = this.TABLE_MODELS[btn.action];
         // message.messageData = this.config;

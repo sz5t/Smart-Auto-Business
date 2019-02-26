@@ -20,10 +20,7 @@ export class CnGridEditComponent implements OnInit {
   constructor() { }
 
   public ngOnInit() {
-    // console.log('列多组件：', this.config);
-   // console.log('变化列初始化：', this.value);
-    // 此处做处理，动态简析条件
-   // console.log('变化列配置', this.value.data, this.config.editor, this.rowData);
+
     this.edit_config = this.setCellFont(this.value.data, this.config.editor, this.rowData);
 
   }
@@ -50,7 +47,6 @@ export class CnGridEditComponent implements OnInit {
             regularData = value;
           }
           const regularflag = reg1.test(regularData);
-          // console.log(color.caseValue.regular,regularData,regularflag,color);
           if (regularflag) {
             fontColor = color.options;
           }
@@ -67,7 +63,6 @@ export class CnGridEditComponent implements OnInit {
 
   // 值返回
   public valueChange(name?) {
-    // console.log('变化列返回：', this.value);
 
     // this.value.data = name;
     this.updateValue.emit(name);

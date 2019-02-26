@@ -54,11 +54,9 @@ export class CnFormScancodeComponent implements OnInit {
     isScan = true;
     oldvalue = null;
     async onKeyPress(e) {
-        // console.log('onKeyPress', e);
         if (e.code === 'Enter') {
             this.isScan = false;
             this.oldvalue = this._value;
-            console.log("huiche", this._value);
             const result = await this.asyncLoad(
                 this.config.ajaxConfig ? this.config.ajaxConfig : null
             );
@@ -100,7 +98,6 @@ export class CnFormScancodeComponent implements OnInit {
         if (!p) {
             return [];
         }
-        // console.log('select load 异步加载', componentValue); // liu
         const params = {};
         let tag = true;
         let url;
@@ -114,7 +111,6 @@ export class CnFormScancodeComponent implements OnInit {
                                     param.valueName
                                 ];
                             } else {
-                                // console.log('参数不全不能加载');
                                 tag = false;
                                 return;
                             }
@@ -167,7 +163,6 @@ export class CnFormScancodeComponent implements OnInit {
     }
 
     valueChange(name?, dataItem?) {
-        console.log("valueChange", name);
         const backValue = { name: this.config.name, value: name };
         if (dataItem) {
             backValue["dataItem"] = dataItem;

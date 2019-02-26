@@ -22,7 +22,6 @@ export class LayoutSettingResolverComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    console.log('layout-setting-resolver', this.config.rows);
     this._isRows = Array.isArray(this.config.rows);
   }
 

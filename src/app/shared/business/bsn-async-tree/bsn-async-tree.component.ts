@@ -325,7 +325,6 @@ export class BsnAsyncTreeComponent extends CnComponentBase
                                     param.valueName
                                 ];
                             } else {
-                                // console.log('参数不全不能加载');
                                 tag = false;
                                 return;
                             }

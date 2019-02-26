@@ -39,13 +39,12 @@ export class LayoutResolverComponent extends CnComponentBase implements OnInit {
 
     public valueChange(data?) {
         this.value = data;
-        console.log('布局信息返回', data, this.config);
         this.updateValue.emit(data);
     }
 
     private resolverRelation() {
         // 通过配置中的组件关系类型设置对应的事件接受者
-        // 表格内部状态触发接收器console.log(this.config);
+        // 表格内部状态触发接收器
        // if (this.config.componentType && this.config.componentType.child === true) {
             this.cascadeSubscriptions = this.cascadeEvents.subscribe(
                 cascadeEvent => {

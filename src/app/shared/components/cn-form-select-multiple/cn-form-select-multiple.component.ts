@@ -43,8 +43,6 @@ export class CnFormSelectMultipleComponent
         if (!this.config['multiple']) {
             this.config['multiple'] = 'default';
         }
-
-        // console.log('select加载固定数据', this.config);
         if (this.config['cascadeValue']) {
             // cascadeValue
             for (const key in this.config['cascadeValue']) {
@@ -106,13 +104,11 @@ export class CnFormSelectMultipleComponent
     }
 
     public ngOnChanges() {
-        // console.log('select加载固定数据ngOnChanges', this.config);
-        // console.log('变化时临时参数' , this.bsnData);
+
     }
     public ngAfterViewInit() {}
 
     public async asyncLoadOptions(p?, componentValue?, type?) {
-        // console.log('select load 异步加载'); // liu
         const params = {};
         let tag = true;
         let url;
@@ -126,7 +122,7 @@ export class CnFormSelectMultipleComponent
                                     param.valueName
                                 ];
                             } else {
-                                // console.log('参数不全不能加载');
+
                                 tag = false;
                                 return;
                             }
@@ -165,25 +161,16 @@ export class CnFormSelectMultipleComponent
             }
         }
         if (p.ajaxType === 'get' && tag) {
-            // console.log('get参数', params);
+
             /*  const dd=await this._http.getProj(APIResource[p.url], params).toPromise();
        if (dd && dd.Status === 200) {
-       console.log("服务器返回执行成功返回",dd.Data);
+     
        }
-       console.log("服务器返回",dd); */
+      */
 
             return this.apiService.get(url, params).toPromise();
         }
-        // else if (p.ajaxType === 'put') {
-        //   console.log('put参数', params);
-        //   return this.apiService.putProj(url, params).toPromise();
-        // } else if (p.ajaxType === 'post') {
-        //   console.log('post参数', params);
-        //   console.log(url);
-        //   return this.apiService.postProj(url, params).toPromise();
-        // } else {
-        //   return null;
-        // }
+
     }
 
     public selectedByLoaded() {

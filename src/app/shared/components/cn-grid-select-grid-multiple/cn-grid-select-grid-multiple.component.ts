@@ -40,9 +40,8 @@ export class CnGridSelectGridMultipleComponent implements OnInit {
   // 模板配置
 
   public ngOnInit(): void {
-    console.log('ngOnInitvalue: ', this.config, this.value);
     // this._value = this.formGroup.value[this.config.name];
-    // console.log('被级联数据', this.casadeData);
+
     if (this.casadeData) {
       for (const key in this.casadeData) {
         // 临时变量的整理
@@ -87,7 +86,6 @@ export class CnGridSelectGridMultipleComponent implements OnInit {
     if (!this.config.valueName) {
       this.config.valueName = 'Id';
     }
-    //  console.log('ngOnInit this.value:', this.value);
 
 
     if (this.cascadeSetValue.hasOwnProperty('setValue')) {
@@ -116,7 +114,6 @@ export class CnGridSelectGridMultipleComponent implements OnInit {
   public handleOk(): void {
     this.tags = this.tags_mode;
     this.isVisible = false;
-    // console.log('选中行' , this.table._selectRow);
     // 此处简析 多选，单选【个人建议两种组件，返回值不相同，单值（ID值），多值（ID数组）】
     let labels = '';
     let values = '';
@@ -178,13 +175,10 @@ export class CnGridSelectGridMultipleComponent implements OnInit {
   }
 
   public handleCancel(): void {
-    // console.log('点击取消');
     this.isVisible = false;
   }
 
   public async valueChange(name?) {
-    // console.log('valueChangeSelectGridMultiple', name);
-
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
     if (name) {
@@ -215,25 +209,20 @@ export class CnGridSelectGridMultipleComponent implements OnInit {
             } else {
               this._valuetext = this._value;
             }
-            // console.log('loadByselect: ',  backselectdata) ;
           }
         }
-
-        // console.log('iftrue弹出表格返回数据', backValue);
       }
       // this.value['dataText'] = this._valuetext;
       this.updateValue.emit(this.value);
     } else {
       this.value.data = null;
       this.updateValue.emit( this.value);
-      // console.log('iffalse弹出表格返回数据', backValue);
     }
   }
 
   // tslint:disable-next-line:member-ordering
   public ck_value;
   public valueChangeByModal(data?) {
-    // console.log('树选中', data);
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
     const b_label = data[labelName];

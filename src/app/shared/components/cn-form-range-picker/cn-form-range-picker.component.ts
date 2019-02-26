@@ -27,7 +27,6 @@ export class CnFormRangePickerComponent implements OnInit {
                 const date3 = s4 - s3;
     
                 const days = Math.floor(date3 / (24 * 3600 * 1000)) + 1;
-                // console.log('时间范围', name, days);
                 backValue['dataItem'] = {days: days}; 
             }
             this.updateValue.emit(backValue);

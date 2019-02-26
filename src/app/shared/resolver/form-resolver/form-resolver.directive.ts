@@ -191,7 +191,6 @@ export class FormResolverDirective extends CnComponentBase
         //                     this.setValue(event);
         //                 });
         //             }
-        //             // console.log('变化' , this.changeConfig );
         //         }
         //     });
         // }
@@ -213,7 +212,6 @@ export class FormResolverDirective extends CnComponentBase
         this.component = this.container.createComponent(comp);
         this.component.instance.config = this.config;
         this.component.instance.changeConfig = this.changeConfig;
-        // console.log('164' , this.changeConfig);
         // if (this.component.instance.bsnData) {
         this.component.instance.bsnData = this.tempValue;
         this.component.instance.initValue = this.initValue;
@@ -250,7 +248,6 @@ export class FormResolverDirective extends CnComponentBase
     // 组件将值写回、级联数据-》回写 liu
     public setValue(data?) {
         this.updateValue.emit(data);
-        // console.log('级联数据回写触发后', data);
     }
 
     public ngOnDestroy() {

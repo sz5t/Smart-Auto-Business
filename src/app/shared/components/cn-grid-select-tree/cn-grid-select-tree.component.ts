@@ -148,7 +148,7 @@ export class CnGridSelectTreeComponent implements OnInit {
                             if (this._tempValue[param.valueName]) {
                                 params[param.name] = this._tempValue[param.valueName];
                             } else {
-                                // console.log('参数不全不能加载');
+                   
                                 tag = false;
                                 return;
                             }
@@ -235,7 +235,6 @@ export class CnGridSelectTreeComponent implements OnInit {
             this.value.data = null;
             this.updateValue.emit(this.value);
         }
-       // console.log('***下拉树返回值***' , this.value);
 
     }
 

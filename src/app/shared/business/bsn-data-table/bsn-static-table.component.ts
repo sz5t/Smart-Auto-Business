@@ -177,7 +177,6 @@ export class BsnStaticTableComponent extends CnComponentBase
         }
         this.loadData.total = this.loadData.rows.length;
         this.total = this.loadData.total;
-       // console.log('this.loadData:', this.loadData);
         if (this.config.select) {
             this.config.select.forEach(selectItem => {
                 this.config.columns.forEach(columnItem => {
@@ -350,7 +349,7 @@ export class BsnStaticTableComponent extends CnComponentBase
             }
         });
         // 通过配置中的组件关系类型设置对应的事件接受者
-        // 表格内部状态触发接收器console.log(this.config);
+        // 表格内部状态触发接收器
         if (
             this.config.componentType &&
             this.config.componentType.parent === true
@@ -408,7 +407,6 @@ export class BsnStaticTableComponent extends CnComponentBase
                                         });
                                     }
                                 }
-                               // console.log('匹配及联模式:', mode, cascadeEvent);
                                 // 匹配及联模式
                                 switch (mode) {
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH:
@@ -556,7 +554,6 @@ export class BsnStaticTableComponent extends CnComponentBase
         };
 
         const loadData = await this._load(url, params);
-       //  console.log('Initload:', loadData);
         if (loadData && loadData.status === 200 && loadData.isSuccess) {
             if (loadData.data) {
                 // 设置聚焦ID
@@ -581,7 +578,6 @@ export class BsnStaticTableComponent extends CnComponentBase
             this.total = this.loadData.total;
         }
         this.loading = false;
-      //  console.log(' this.loadData.rows:', this.loadData.rows);
     }
 
     public pageIndexPlan() {
@@ -619,9 +615,6 @@ export class BsnStaticTableComponent extends CnComponentBase
         }
         this._updateEditCacheByLoad(pagedata);
         this.dataList = pagedata;
-
-
-      //  console.log('load', this.pageIndex, this.pageSize);
     }
 
     // load 分组
@@ -632,8 +625,6 @@ export class BsnStaticTableComponent extends CnComponentBase
     }
 
     public scanCodeROW() {
-
-      //  console.log('_ScanCode', this.tempValue['_ScanCode']);
         this.scanCodeaddRow();
     }
 
@@ -651,7 +642,6 @@ export class BsnStaticTableComponent extends CnComponentBase
             this.load();
             this.scanCodeSetSelectRow(rowValue);
             // 如果有操作，再选中行后执行
-           //  console.log('执行方法！，调用后执行load方法，并且定位到当前数据');
         } else {
             this._message.info('当前扫码未能匹配到数据！');
         }
@@ -746,12 +736,11 @@ export class BsnStaticTableComponent extends CnComponentBase
                                 if (this.editCache.hasOwnProperty(CacheItem)) {
                                     const element1 = this.editCache[CacheItem];
                                     if (element1.data[this.config.ScanCode.addRow.distinct['field']] === distinctValue) {
-                                        //  console.log('定位自增行标识：', CacheItem, this.loadData.rows[index][element.field]);
+
                                         this.editCache[CacheItem].data[element.field] = this.loadData.rows[index][element.field];
                                         //   this.editCache[CacheItem] = JSON.parse(JSON.stringify(this.editCache[CacheItem]));
                                         // this._cancelEdit(CacheItem);
                                         //  this._startEdit(CacheItem);
-                                      //  console.log('变更配置数据：', this.changeConfig_new, element.field);
                                         if (!this.changeConfig_new[CacheItem].hasOwnProperty(element.field)) {
                                             this.changeConfig_new[CacheItem][element.field] = {};
                                         }
@@ -808,7 +797,6 @@ export class BsnStaticTableComponent extends CnComponentBase
             } else {
                 this._message.info('重复扫码！');
             }
-            // console.log('802', this.loadData.rows, this.editCache);
             return true;
         }
 
@@ -860,7 +848,6 @@ export class BsnStaticTableComponent extends CnComponentBase
     // 静态数据发生变化的时候，反馈给form 表单
     // 行内所有的操作，均将数据反馈回form 表单
     public scanCodeValueChange() {
-      //  console.log('scanCodeValueChange', this.loadData.rows);
         // liu 【重点返回信息】
         this.updateValue.emit(this.loadData.rows);
     }
@@ -890,7 +877,6 @@ export class BsnStaticTableComponent extends CnComponentBase
                 }
             }
         }
-        console.log('异步获取当前值:', selectrowdata);
         return selectrowdata;
     }
     // 构建获取文本值参数
@@ -935,7 +921,6 @@ export class BsnStaticTableComponent extends CnComponentBase
             const loadData = await this._load(url, params);
             if (loadData && loadData.status === 200 && loadData.isSuccess) {
                 if (loadData.data && loadData.data.rows) {
-                    console.log('loadData.data', loadData.data);
 
                     if (loadData.data.rows.length > 0) {
                         // loadData.data.rows.forEach((row, index) => {
@@ -951,7 +936,6 @@ export class BsnStaticTableComponent extends CnComponentBase
     }
 
     public async saveRow(option) {
-        console.log('保存');
         const addRows = [];
         const updateRows = [];
         let isSuccess = false;
@@ -1317,8 +1301,6 @@ export class BsnStaticTableComponent extends CnComponentBase
 
     public valueChange(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
-       //  console.log('值变化', data);
-
         if (this.editCache[data.key].data[data.name] !== data.data) {
             if ( this.changeConfig_new[data.key].hasOwnProperty(data.name) ){
                 if ( this.changeConfig_new[data.key][ data.name ].hasOwnProperty('setValue') ) {
@@ -1342,10 +1324,8 @@ export class BsnStaticTableComponent extends CnComponentBase
             if (!this.changeConfig_new[rowCasade]) {
                 this.changeConfig_new[rowCasade] = {};
             }
-            // console.log('当前组件有被级联的子对象');
             for (const key in this.cascadeList[sendCasade]) {
                 // 处理当前级联
-                //  console.log('处理当前级联', key);
                 if (!this.changeConfig_new[rowCasade][key]) {
                     this.changeConfig_new[rowCasade][key] = {};
                 }
@@ -1353,7 +1333,6 @@ export class BsnStaticTableComponent extends CnComponentBase
                 if (this.cascadeList[sendCasade][key]['dataType']) {
                     this.cascadeList[sendCasade][key]['dataType'].forEach(
                         caseItem => {
-                            // console.log('dataType-caseItem', caseItem);
                             // region: 解析开始 根据组件类型组装新的配置【静态option组装】
                             if (caseItem['type'] === 'option') {
                                 // 在做判断前，看看值是否存在，如果在，更新，值不存在，则创建新值
@@ -1424,8 +1403,6 @@ export class BsnStaticTableComponent extends CnComponentBase
                             }
                         } */
                             if (caseItem['type'] === 'setValue') {
-                                // console.log('setValueinput' , caseItem['setValue'] );
-
                                 if (caseItem['setValue']['type'] === 'value') {
                                     // 静态数据
                                     this.changeConfig_new[rowCasade][key][
@@ -1510,7 +1487,6 @@ export class BsnStaticTableComponent extends CnComponentBase
                 if (this.cascadeList[sendCasade][key]['valueType']) {
                     this.cascadeList[sendCasade][key]['valueType'].forEach(
                         caseItem => {
-                            // console.log('分析' + key, caseItem);
                             // region: 解析开始  正则表达
                             const reg1 = new RegExp(caseItem.regular);
                             let regularData;
@@ -1530,7 +1506,6 @@ export class BsnStaticTableComponent extends CnComponentBase
                                 regularData = data.data;
                             }
                             const regularflag = reg1.test(regularData);
-                            // console.log('正则结果：', regularflag);
                             // endregion  解析结束 正则表达
                             if (regularflag) {
                                 // region: 解析开始 根据组件类型组装新的配置【静态option组装】
@@ -1613,10 +1588,6 @@ export class BsnStaticTableComponent extends CnComponentBase
                                     // changeConfig_new[rowCasade]['show'] = caseItem['option'];
                                 }
                                 if (caseItem['type'] === 'setValue') {
-                                    console.log(
-                                        'setValue2',
-                                        caseItem['setValue']
-                                    );
                                     if (
                                         caseItem['setValue']['type'] === 'value'
                                     ) {
@@ -1710,11 +1681,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                     JSON.stringify(this.changeConfig_new[rowCasade][key])
                 );
             }
-            // console.log('级联结果数据集', this.changeConfig_new);
         }
-        // console.log('级联结果数据集', this.changeConfig_new[rowCasade]);
-        // this.changeConfig_new = JSON.parse(JSON.stringify(this.changeConfig_new));
-        // console.log('当前编辑缓存行内容', this.editCache[data.key].data);
         const index = this.loadData.rows.findIndex(
             item => item['key'] === data.key
         );
@@ -1726,13 +1693,7 @@ export class BsnStaticTableComponent extends CnComponentBase
 
     public valueChangeSearch(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
-        console.log('值变化valueChangeSearch', data);
         this.search_Row[data.name] = data.data;
-
-        console.log('值变化后的数据结构', this.search_Row, this._buildSearch());
-        // console.log('级联结果数据集', this.changeConfig_new[rowCasade]);
-        // this.changeConfig_new = JSON.parse(JSON.stringify(this.changeConfig_new));
-        // console.log('当前编辑缓存行内容', this.editCache[data.key].data);
     }
 
     public isEdit(fieldname) {
@@ -1904,7 +1865,6 @@ export class BsnStaticTableComponent extends CnComponentBase
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
             const selectedRow = this._selectRow ? this._selectRow : {};
             const tmpValue = this.tempValue ? this.tempValue : {};
-            console.log({ ...selectedRow, ...tmpValue });
             const modal = this.modalService.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
@@ -2450,7 +2410,6 @@ export class BsnStaticTableComponent extends CnComponentBase
 
     // liu 赋值选中
     private setSelectRow(rowValue?) {
-        // console.log('setSelectRow', this.value);
         let r_value = this.value;
         if (rowValue) {
             r_value = rowValue;
@@ -2572,7 +2531,6 @@ export class BsnStaticTableComponent extends CnComponentBase
         this.editCache[key].data = JSON.parse(
             JSON.stringify(this.dataList[index])
         );
-        console.log('取消行数据', this.editCache[key].data);
     }
     /**
      * 保存编辑状态的数据
@@ -3278,8 +3236,6 @@ export class BsnStaticTableComponent extends CnComponentBase
                 // endregion: 解析对象结束
             });
         // endregion： 解析结束
-
-        console.log('级联配置简析', this.cascadeList);
     }
 
     public isEmptyObject(e) {
@@ -3301,8 +3257,6 @@ export class BsnStaticTableComponent extends CnComponentBase
 
     // 行内删除
     public deleteRowOnSelected(key) {
-
-        //  console.log('行内删除', key);
         // 注意，末页删除需要将数据页数上移
         const index = this.loadData.rows.findIndex(item => item['key'] === key);
         if (index !== -1) {

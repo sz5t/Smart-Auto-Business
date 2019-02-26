@@ -16,7 +16,6 @@ export class CnGridNumberComponent implements OnInit {
         private http: _HttpClient
     ) { }
     public ngOnInit() {
-        // console.log('input' , this.casadeData);
         if (this.value) {
             this._value = this.value.data;
         }
@@ -24,14 +23,12 @@ export class CnGridNumberComponent implements OnInit {
             if (key === 'setValue') {
                 this.cascadeSetValue['setValue'] = JSON.parse(JSON.stringify(this.casadeData['setValue']));
                 delete this.casadeData['setValue'];
-               // console.log('setValue' , this.casadeData['setValue']);
             }
         }
         if ( this.cascadeSetValue.hasOwnProperty('setValue')) {
             this._value = this.cascadeSetValue['setValue'];
             this.valueChange(this._value );
             delete this.cascadeSetValue['setValue'];
-            // console.log('setValueTO valueChange', this._value );
          }
     }
 

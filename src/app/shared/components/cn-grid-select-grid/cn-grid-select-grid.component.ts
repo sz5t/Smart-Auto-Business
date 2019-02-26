@@ -65,7 +65,6 @@ export class CnGridSelectGridComponent implements OnInit {
 
     public ngOnInit(): void {
         this._value = null;
-     //   console.log('被级联数据' + this.config.labelName, this.casadeData);
         if (this.casadeData) {
             for (const key in this.casadeData) {
                 // 临时变量的整理
@@ -107,7 +106,6 @@ export class CnGridSelectGridComponent implements OnInit {
         if (!this.config.valueName) {
             this.config.labelName = 'Id';
         }
-        //  console.log('ngOnInit this.value:', this.value);
         this.config.width = this.config.width - 30;
         this.resultData = this.table.dataList;
 
@@ -126,8 +124,6 @@ export class CnGridSelectGridComponent implements OnInit {
     public handleOk(): void {
       
         // 此处简析 多选，单选【个人建议两种组件，返回值不相同，单值（ID值），多值（ID数组）】
-        // console.log('选中行', this.table.dataList);
-        // console.log('选中行', this.table._selectRow);
         if (this.table._selectRow) {
             this._valuetext = this.table._selectRow[this.config.labelName];
             this._value = this.table._selectRow[this.config.valueName];
@@ -137,8 +133,6 @@ export class CnGridSelectGridComponent implements OnInit {
             this._value = null;
         
         }
-
-        console.log('_valuetext', this._valuetext , this._value);
          this.valueChange(this._value);
         // this.valueChangeModel(value_new);
 
@@ -186,7 +180,6 @@ export class CnGridSelectGridComponent implements OnInit {
         }
         if (this._value) {
             this.valueChange(this._value);
-            // console.log('调用selectload');
             //  this.table.selectload();
         }
     }
@@ -205,7 +198,6 @@ export class CnGridSelectGridComponent implements OnInit {
     }
 
     public valueChangebf(name?) {
-        console.log('值变化', name);
         this.resultData = this.table.dataList;
 
         if (name) {
@@ -226,19 +218,15 @@ export class CnGridSelectGridComponent implements OnInit {
             this.value.dataText = null;
             this.updateValue.emit(this.value);
         }
-        console.log('弹出表格返回数据', this.value);
     }
     public async valueChange(name?) {
-        // console.log('valueChange232', name);
         this.resultData = this.table.dataList ? this.table.dataList : [];
         const labelName = this.config.labelName ? this.config.labelName : 'name';
         const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
         if (name) {
             this.value.data = name;
             // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
-            // console.log('this.resultData valueChange:', this.resultData);
             if (this.resultData && this.resultData.length > 0) {
-               // console.log('241');
                 // valueName
                 const index = this.resultData.findIndex(
                     item => item[valueName] === name
@@ -249,7 +237,6 @@ export class CnGridSelectGridComponent implements OnInit {
                             this._valuetext = this.resultData[index][labelName];
                         }
                         this.value['dataItem'] = this.resultData[index];
-                       // console.log('249', this.resultData[index])
                     } else {
                         // 取值
                         const componentvalue = {};
@@ -261,7 +248,6 @@ export class CnGridSelectGridComponent implements OnInit {
                                 this.bsnData,
                                 this.casadeData
                             );
-                            // console.log('261', backselectdata, labelName);
                             if (backselectdata.hasOwnProperty(labelName)) {
                                 this._valuetext = backselectdata[labelName];
                             } else {
@@ -271,13 +257,9 @@ export class CnGridSelectGridComponent implements OnInit {
                         } else {
                             this._valuetext = this._value;
                         }
-                        // console.log('loadByselect: ',  backselectdata) ;
                     }
                 }
-
-                // console.log('iftrue弹出表格返回数据', backValue);
             } else {
-                // console.log('279');
                 const componentvalue = {};
                 componentvalue[valueName] = name;
                 if (this.config.ajaxConfig) {
@@ -287,8 +269,6 @@ export class CnGridSelectGridComponent implements OnInit {
                         this.bsnData,
                         this.casadeData
                     );
-
-                    // console.log('291', backselectdata, labelName, name);
                     if (backselectdata.hasOwnProperty(labelName)) {
                         this._valuetext = backselectdata[labelName];
                     } else {
@@ -300,13 +280,11 @@ export class CnGridSelectGridComponent implements OnInit {
                 }
             }
             // this.value['dataText'] = this._valuetext;
-            // console.log('iftrue弹出表格返回数据', this.value);
             this.updateValue.emit(this.value);
         } else {
             this.value.data = null;
             this.value.dataText = null;
             this.updateValue.emit(this.value);
-            // console.log('iffalse弹出表格返回数据', backValue);
         }
     }
 

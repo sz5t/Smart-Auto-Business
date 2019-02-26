@@ -222,7 +222,6 @@ export class SearchResolverComponent extends CnComponentBase
                                         param.valueName
                                     ];
                                 } else {
-                                    // console.log('参数不全不能加载');
                                     tag = false;
                                     return;
                                 }
@@ -268,13 +267,10 @@ export class SearchResolverComponent extends CnComponentBase
             }
         }
         if (p.ajaxType === 'get' && tag) {
-            // console.log('get参数', params);
             return this.apiService.get(url, params).toPromise();
         } else if (p.ajaxType === 'put') {
-            // console.log('put参数', params);
             return this.apiService.put(url, params).toPromise();
         } else if (p.ajaxType === 'post') {
-            // console.log('post参数', params);
             return this.apiService.post(url, params).toPromise();
         } else {
             return null;
@@ -329,7 +325,6 @@ export class SearchResolverComponent extends CnComponentBase
                         this.value
                     );
                     if (ajaxData) {
-                        // console.log('修改保存成功', ajaxData);
                         // this._tempParameters['_id'] = ajaxData.Data[0].Id;
                     }
                 } else {
@@ -341,7 +336,6 @@ export class SearchResolverComponent extends CnComponentBase
                                 this.value
                             );
                             if (ajaxData) {
-                                // console.log(ajaxData, pconfig['add'][i]);
                                 if (pconfig['add'][i]['output']) {
                                     pconfig['add'][i]['output'].forEach(out => {
                                         this._tempParameters[out.name] =
@@ -356,7 +350,7 @@ export class SearchResolverComponent extends CnComponentBase
                             this.value
                         );
                         if (ajaxData) {
-                            console.log('新增保存成功', ajaxData);
+                            // console.log('新增保存成功', ajaxData);
                         }
                     }
                 }
@@ -396,7 +390,6 @@ export class SearchResolverComponent extends CnComponentBase
     }
 
     public async buttonAction(btn) {
-        // console.log(btn);
         let result = false;
         if (this[btn.name] && btn.ajaxConfig) {
             result = await this[btn.name](btn.ajaxConfig);
@@ -512,7 +505,6 @@ export class SearchResolverComponent extends CnComponentBase
         for (const d in data) {
             this._tempParameters[d] = data[d];
         }
-        // console.log('初始化参数', this._tempParameters);
     }
 
     public initParametersLoad(data?) {
@@ -520,7 +512,6 @@ export class SearchResolverComponent extends CnComponentBase
             this._tempParameters[d] = data[d];
         }
         this.load();
-        // console.log('初始化参数并load', this._tempParameters);
     }
 
     // endregion
@@ -676,7 +667,6 @@ export class SearchResolverComponent extends CnComponentBase
             const changeConfig_new = [];
 
             for (const key in this.cascadeList[sendCasade]) {
-                // console.log('for in 配置' , key);
                 this.config.forms.forEach(formsItems => {
                     formsItems.controls.forEach(control => {
                         if (control.name === key) {
@@ -684,7 +674,6 @@ export class SearchResolverComponent extends CnComponentBase
                                 this.cascadeList[sendCasade][key][
                                     'dataType'
                                 ].forEach(caseItem => {
-                                    console.log('dataType', caseItem);
                                     // region: 解析开始 根据组件类型组装新的配置【静态option组装】
                                     if (caseItem['type'] === 'option') {
                                         // 在做判断前，看看值是否存在，如果在，更新，值不存在，则创建新值
@@ -765,8 +754,6 @@ export class SearchResolverComponent extends CnComponentBase
                                         }
                                     }
                                     if (caseItem['type'] === 'setValue') {
-                                        // console.log('setValueinput' , caseItem['setValue'] );
-
                                         const setValuedata = {};
                                         if (
                                             caseItem['setValue']['type'] ===
@@ -845,7 +832,6 @@ export class SearchResolverComponent extends CnComponentBase
                                         regularData = data.data;
                                     }
                                     const regularflag = reg1.test(regularData);
-                                    // console.log("正则结果：", caseItem, regularflag , regularData);
                                     // endregion  解析结束 正则表达
                                     if (regularflag) {
                                         // region: 解析开始 根据组件类型组装新的配置【静态option组装】
@@ -945,7 +931,6 @@ export class SearchResolverComponent extends CnComponentBase
                                             }
                                         }
                                         if (caseItem['type'] === 'setValue') {
-                                            // console.log('setValueinput' , caseItem['setValue'] );
 
                                             const setValuedata = {};
                                             if (
@@ -1013,8 +998,6 @@ export class SearchResolverComponent extends CnComponentBase
             )
         }
 
-        // console.log('变更后的', this.config.forms);
-        // console.log('form: ', this.config.viewId, data, this.form.value, this.cascadeList);
         // 此处有消息级联的则发值
         // 级联值= 表单数据+当前触发级联的值组合；
         // "cascadeRelation":[
@@ -1081,6 +1064,6 @@ export class SearchResolverComponent extends CnComponentBase
             });
         }
 
-        // console.log('send', sendData);
+
     }
 }

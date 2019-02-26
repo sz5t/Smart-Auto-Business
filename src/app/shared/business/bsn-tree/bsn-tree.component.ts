@@ -533,7 +533,6 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                         && this.treeData
                         && this.treeData.length > 0
                     ) {
-                        // console.log('send tree sub', this.initValue);
                         this.tempValue['_selectedNode'] &&
                             this.cascade.next(
                                 new BsnComponentMessage(

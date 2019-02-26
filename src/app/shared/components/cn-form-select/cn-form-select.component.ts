@@ -59,7 +59,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                 }
             }
         }
-        // console.log('select加载固定数据', this.config);
+
         if (this.changeConfig) {
             if (this.changeConfig['cascadeValue']) {
                 // cascadeValue
@@ -71,7 +71,6 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
             }
         }
 
-        // console.log('select_cascadeValue', this.cascadeValue);
         this._options.length = 0;
         if (this.dataSet) {
             // 加载数据集
@@ -103,7 +102,6 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
             this.config.ajaxConfig,
             this.formGroup.value
         );
-        // console.log('select_result', result);
         this.resultData = result;
         if (this.config.valueType && this.config.valueType === 'list') {
             const labels = this.config.labelName.split('.');
@@ -125,18 +123,15 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
             });
         }
 
-        // console.log('select89:', this.config.name, this._options);
         this.selectedByLoaded();
     }
 
     public ngOnChanges() {
-         console.log('select加载固定数据ngOnChanges', this.changeConfig);
-        // console.log('变化时临时参数' , this.bsnData);
+
     }
     public ngAfterViewInit() { }
 
     public async asyncLoadOptions(p?, componentValue?, type?) {
-        // console.log('select load 异步加载', componentValue); // liu
         const params = {};
         let tag = true;
         let url;
@@ -153,7 +148,6 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                                     params[param.name] = this.bsnData[param.valueName ];
                                 }
                             } else {
-                                // console.log('参数不全不能加载');
                                 tag = false;
                                 return;
                             }
@@ -234,22 +228,13 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
         if (p.ajaxType === 'get' && tag) {
             /*  const dd=await this._http.getProj(APIResource[p.url], params).toPromise();
        if (dd && dd.Status === 200) {
-       console.log("服务器返回执行成功返回",dd.Data);
+
        }
-       console.log("服务器返回",dd); */
+ */
 
             return this.apiService.get(url, params).toPromise();
         }
-        // else if (p.ajaxType === 'put') {
-        //   console.log('put参数', params);
-        //   return this.apiService.putProj(url, params).toPromise();
-        // } else if (p.ajaxType === 'post') {
-        //   console.log('post参数', params);
-        //   console.log(url);
-        //   return this.apiService.postProj(url, params).toPromise();
-        // } else {
-        //   return null;
-        // }
+     
     }
 
     
@@ -293,7 +278,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
         if (name || name === 0) {
             const backValue = { name: this.config.name, value: name };
             if (this.resultData) {
-                // console.log('221', this.resultData, name);
+ 
                 const index = this.resultData.data.findIndex(
                     item => item[this.config['valueName']] === name
                 );
@@ -305,7 +290,6 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                         this.config.ajaxConfig,
                         this.formGroup.value
                     );
-                   // console.log('229', result, name);
                     const index = result.data.findIndex(
                         item => item[this.config['valueName']] === name
                     );
@@ -376,7 +360,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
             if (!inputValue) {
                 strQ = null;
             }
-            // console.log('liu查询参数：', strQ);
+
             return strQ;
         }
 }

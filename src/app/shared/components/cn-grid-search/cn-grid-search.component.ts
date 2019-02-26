@@ -140,8 +140,6 @@ export class CnGridSearchComponent implements OnInit {
       }
     }
     this.setOP();  // 简析条件参数
-
-    console.log('当前类型：', this.searchConfigType, this.config, this.value);
     this.AfterValue = 'eq';
   }
 
@@ -185,8 +183,6 @@ export class CnGridSearchComponent implements OnInit {
 
 
   public AftervalueChange(v?) {
-
-    // console.log('查询条件发生变化：', v, this.AfterValue);
     if (v === 'btn') {
       this.searchType = v;
     } else {
@@ -197,13 +193,11 @@ export class CnGridSearchComponent implements OnInit {
   }
 
   public onblur() {
-    // console.log('onblur：', this.inputValue);
     this.CreateSearch();
 
   }
   public async onKeyPress(e) {
     if (e.code === 'Enter') {
-      // console.log('Enter', this.inputValue);
       this.CreateSearch();
     }
   }
@@ -236,7 +230,6 @@ export class CnGridSearchComponent implements OnInit {
         strQ = strQ + 'default(' + this.inputValue + ')';
         break;
     }
-    console.log('查询参数：', strQ);
     return strQ;
 
   }
@@ -284,7 +277,6 @@ export class CnGridSearchComponent implements OnInit {
         strQ = strQ + 'default(' + inputValue + ')';
         break;
     }
-    console.log('查询参数：', strQ);
     if (!inputValue) {
       strQ = null;
     }
@@ -295,9 +287,6 @@ export class CnGridSearchComponent implements OnInit {
   // 触发条件，光标离开、回车、下拉选择触发
 
   public valueChange(backdata?) {
-
-    // 
-    console.log('查询行返回', backdata);
     let backvalue;
     if (this.isString(backdata)) {
       backvalue = backdata;
@@ -322,8 +311,6 @@ export class CnGridSearchComponent implements OnInit {
 
 
   public onClick(name?) {
-    // console.log('onClick', name);
-
     const id = name.hostElement.nativeElement.id;
     // const index =   name.nzMenuDirective.menuItems.findIndex(
     //   item => item._selected === true
@@ -342,7 +329,6 @@ export class CnGridSearchComponent implements OnInit {
     }
     this.CreateSearch();
     this.op = JSON.parse(JSON.stringify(this.op));
-    console.log('最终选择：', ck, this.op);
   }
   
 }

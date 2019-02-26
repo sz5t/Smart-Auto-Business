@@ -40,9 +40,6 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
     constructor(private apiService: ApiService) { }
 
     public async ngOnInit() {
-        // console.log('变化时临时参数', this.casadeData);
-        // console.log('变化配置', this.config);
-        // console.log('下拉选中的本来值: ** ', this.value);
         if (this.casadeData) {
             for (const key in this.casadeData) {
                 // 临时变量的整理
@@ -125,8 +122,7 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
     public ngAfterViewInit() { }
     // casadeData
     public ngOnChanges() {
-        // console.log('select加载固定数据ngOnChanges', this.config);
-        // console.log('select变化时临时参数ngOnChanges', this.casadeData);
+
     }
     public async asyncLoadOptions(p?, componentValue?, type?) {
         const params = {};
@@ -142,7 +138,6 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
                                     param.valueName
                                 ];
                             } else {
-                                // console.log('参数不全不能加载');
                                 tag = false;
                                 return;
                             }
@@ -163,7 +158,6 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
                     if (this.cascadeValue[param.valueName]) {
                         params[param.name] = this.cascadeValue[param.valueName];
                     } else {
-                        // console.log('参数不全不能加载');
                         tag = false;
                         return null;
                     }
@@ -192,18 +186,13 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
         }
 
         if (p.ajaxType === 'get' && tag) {
-            /*  const dd=await this._http.getProj(APIResource[p.url], params).toPromise();
-             if (dd && dd.Status === 200) {
-             console.log("服务器返回执行成功返回",dd.Data);
-             }
-             console.log("服务器返回",dd); */
 
             return this.apiService.get(url, params).toPromise();
         } else if (p.ajaxType === 'put') {
-            // console.log('put参数', params);
+
             return this.apiService.put(url, params).toPromise();
         } else if (p.ajaxType === 'post') {
-            // console.log('post参数', params);
+
             return this.apiService.post(url, params).toPromise();
         } else {
             return null;
@@ -238,7 +227,7 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
             });
         }
         this._selectedOption = selected;
-        // console.log('值不为空触发', this._selectedOption);
+
         if (this._selectedOption) {
             this.valueChange(this._selectedOption);
         }
@@ -248,12 +237,12 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
         // 使用当前rowData['Id'] 作为当前编辑行的唯一标识
         // 所有接收数据的组件都已自己当前行为标识进行数据及联
         // dataItem
-        // console.log('CnGridSelectMultiple:', name,  this._selectedOption);
+
         if (name) {
             const c_value = this.getComponentValue(name);
             this.value.data = c_value;
             // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
-            //  console.log('thisvalue:',this.value);
+
             this.updateValue.emit(this.value);
         } else {
             this.value.data = null;

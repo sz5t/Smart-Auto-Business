@@ -336,7 +336,7 @@ export class BsnTreeTableComponent extends GridBase
             }
         });
         // 通过配置中的组件关系类型设置对应的事件接受者
-        // 表格内部状态触发接收器console.log(this.config);
+        // 表格内部状态触发接收器
         if (
             this.config.componentType &&
             this.config.componentType.parent === true
@@ -493,7 +493,6 @@ export class BsnTreeTableComponent extends GridBase
                 }
             }
         }
-        console.log('异步获取当前值:', selectrowdata);
         return selectrowdata;
     }
     // 构建获取文本值参数
@@ -610,7 +609,7 @@ export class BsnTreeTableComponent extends GridBase
                 });
             }
         } else {
-            console.log('未选择任何行,无法添加下级');
+            // console.log('未选择任何行,无法添加下级');
             return false;
         }
     }
@@ -618,8 +617,6 @@ export class BsnTreeTableComponent extends GridBase
     // 定位行选中 liu 20181024
 
     public setSelectRow() {
-        // console.log('setSelectRow', this.value);
-
         // 遍历
         for (const key in this.expandDataCache) {
             if (this.expandDataCache.hasOwnProperty(key)) {
@@ -1531,7 +1528,6 @@ export class BsnTreeTableComponent extends GridBase
                 this._startRowEdit(item.key);
             }
         });
-        // console.log(this.editCache);
         return true;
     }
 
@@ -1703,7 +1699,7 @@ export class BsnTreeTableComponent extends GridBase
         if (this.selectedItem['Id']) {
             parentId = this.selectedItem['Id'];
         } else {
-            console.log('未获取父节点数据');
+            // console.log('未获取父节点数据');
             return;
         }
         rowContentNew['key'] = fieldIdentity;
@@ -1879,10 +1875,8 @@ export class BsnTreeTableComponent extends GridBase
             if (!this.changeConfig_new[rowCasade]) {
                 this.changeConfig_new[rowCasade] = {};
             }
-            // console.log('当前组件有被级联的子对象');
             for (const key in this.cascadeList[sendCasade]) {
                 // 处理当前级联
-                //  console.log('处理当前级联', key);
                 if (!this.changeConfig_new[rowCasade][key]) {
                     this.changeConfig_new[rowCasade][key] = {};
                 }
@@ -1890,7 +1884,6 @@ export class BsnTreeTableComponent extends GridBase
                 if (this.cascadeList[sendCasade][key]['dataType']) {
                     this.cascadeList[sendCasade][key]['dataType'].forEach(
                         caseItem => {
-                            // console.log('dataType-caseItem', caseItem);
                             // region: 解析开始 根据组件类型组装新的配置【静态option组装】
                             if (caseItem['type'] === 'option') {
                                 // 在做判断前，看看值是否存在，如果在，更新，值不存在，则创建新值
@@ -1955,7 +1948,6 @@ export class BsnTreeTableComponent extends GridBase
                             }
                         } */
                             if (caseItem['type'] === 'setValue') {
-                                // console.log('setValueinput' , caseItem['setValue'] );
 
                                 if (caseItem['setValue']['type'] === 'value') {
                                     // 静态数据
@@ -2041,7 +2033,6 @@ export class BsnTreeTableComponent extends GridBase
                 if (this.cascadeList[sendCasade][key]['valueType']) {
                     this.cascadeList[sendCasade][key]['valueType'].forEach(
                         caseItem => {
-                            // console.log('分析' + key, caseItem);
                             // region: 解析开始  正则表达
                             const reg1 = new RegExp(caseItem.regular);
                             let regularData;
@@ -2064,7 +2055,6 @@ export class BsnTreeTableComponent extends GridBase
                                 regularData = data.data;
                             }
                             const regularflag = reg1.test(regularData);
-                            // console.log('正则结果：', regularflag);
                             // endregion  解析结束 正则表达
                             if (regularflag) {
                                 // region: 解析开始 根据组件类型组装新的配置【静态option组装】
@@ -2147,10 +2137,6 @@ export class BsnTreeTableComponent extends GridBase
                                     // changeConfig_new[rowCasade]['show'] = caseItem['option'];
                                 }
                                 if (caseItem['type'] === 'setValue') {
-                                    console.log(
-                                        'setValue2',
-                                        caseItem['setValue']
-                                    );
                                     if (
                                         caseItem['setValue']['type'] === 'value'
                                     ) {
@@ -2244,10 +2230,8 @@ export class BsnTreeTableComponent extends GridBase
                     JSON.stringify(this.changeConfig_new[rowCasade][key])
                 );
             }
-            // console.log('级联结果数据集', this.changeConfig_new);
-        }
 
-        // console.log('*********', this.changeConfig_new[rowCasade]);
+        }
     }
     public caseLoad() {
         this.cascadeList = {};
@@ -2379,8 +2363,6 @@ export class BsnTreeTableComponent extends GridBase
                 // endregion: 解析对象结束
             });
         // endregion： 解析结束
-
-        // console.log("级联配置简析", this.cascadeList);
     }
     public isEdit(fieldname) {
         let isEditState = false;
@@ -2432,10 +2414,8 @@ export class BsnTreeTableComponent extends GridBase
         //         return;
         //     }
         // } else {
-        //     console.log('点击树节点展开->异步请求');
         //     // data.children =  await this.expandLoad(data);
         //     this.dataList[0]['children'] = await this.expandLoad(data);
-        //     console.log('组装结果', data.children);
         //     if (data.Children) {
         //         data.Children.forEach(d => {
         //             // const target = array.find(a => a.key === d.key);

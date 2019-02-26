@@ -193,7 +193,6 @@ export class CnFormBase extends CnComponentBase {
     // 处理参数 liu
     public GetComponentValue() {
         // liu 表单配置
-        // console.log('------', this.formConfigControl);
         const ComponentValue = {};
         // 循环 this.value
         for (const key in this.value) {
@@ -203,7 +202,6 @@ export class CnFormBase extends CnComponentBase {
                     this.formConfigControl[key]['type'] === 'selectTreeMultiple'
                 ) {
                     let ArrayValue = '';
-                    // console.log('数组', this.value, key);
                     this.value[key] && this.value[key].forEach(element => {
                         ArrayValue = ArrayValue + element.toString() + ',';
                     });
@@ -211,7 +209,6 @@ export class CnFormBase extends CnComponentBase {
                         ArrayValue = ArrayValue.slice(0, ArrayValue.length - 1);
                     }
                     ComponentValue[key] = ArrayValue;
-                    // console.log('拼接', ArrayValue);
                 } else {
                     ComponentValue[key] = this.value[key];
                 }
@@ -232,7 +229,6 @@ export class CnFormBase extends CnComponentBase {
             cacheValue: this.cacheValue,
             returnValue: this.returnValue
         });
-        // console.log('****GetComponentValue****', this.GetComponentValue());
         return params;
     }
 

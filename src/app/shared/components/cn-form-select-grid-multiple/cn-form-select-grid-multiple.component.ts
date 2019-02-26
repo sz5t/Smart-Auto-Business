@@ -41,9 +41,7 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
   // 模板配置
 
   public ngOnInit(): void {
-    // console.log('ngOnInitvalue: ', this.value);
-    // this._value = this.formGroup.value[this.config.name];
-    // console.log('被级联数据', this.casadeData);
+
     if (this.changeConfig) {
       if (this.changeConfig['cascadeValue']) {
         // cascadeValue
@@ -105,7 +103,7 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
     if (!this.config.valueName) {
       this.config.valueName = 'Id';
     }
-    //  console.log('ngOnInit this.value:', this.value);
+
 
 
     if (this.cascadeSetValue.hasOwnProperty('setValue')) {
@@ -125,7 +123,6 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
   public handleOk(): void {
     this.tags = this.tags_mode;
     this.isVisible = false;
-    // console.log('选中行' , this.table._selectRow);
     // 此处简析 多选，单选【个人建议两种组件，返回值不相同，单值（ID值），多值（ID数组）】
     let labels = '';
     let values = '';
@@ -141,7 +138,6 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
     if (this._value.length > 0) {
       this._value = this._value.substring(0, this._value.length - 1);
     }
-    // console.log('数据', this._value);
   }
 
   // 获取多选文本值
@@ -186,21 +182,16 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
   }
 
   public handleCancel(): void {
-    // console.log('点击取消');
     this.isVisible = false;
   }
 
   public async valueChange(name?) {
-    // console.log('valueChangeSelectGridMultiple', name);
-
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
     if (name) {
       const backValue = { name: this.config.name, value: name };
       // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
-      // console.log('this.resultData:', this.resultData);
       if (this.tags) {
-        // valueName
         const index = this.tags.length;
         if (this.tags) {
           if (index >= 0) {
@@ -222,25 +213,20 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
             } else {
               this._valuetext = this._value;
             }
-            // console.log('loadByselect: ',  backselectdata) ;
           }
         }
-
-        // console.log('iftrue弹出表格返回数据', backValue);
       }
       // this.value['dataText'] = this._valuetext;
       this.updateValue.emit(backValue);
     } else {
       const backValue = { name: this.config.name, value: name };
       this.updateValue.emit(backValue);
-      // console.log('iffalse弹出表格返回数据', backValue);
     }
   }
 
   // tslint:disable-next-line:member-ordering
   public ck_value;
   public valueChangeByModal(data?) {
-    // console.log('树选中', data);
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
     const b_label = data[labelName];

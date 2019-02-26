@@ -34,7 +34,6 @@ export class CnFormSelectTreegridComponent implements OnInit, OnChanges {
   // 模板配置
 
   ngOnInit() {
-    // console.log('config:  ', this.config);
     if (this.changeConfig) {
       if (this.changeConfig['cascadeValue']) {
         // cascadeValue
@@ -96,38 +95,34 @@ export class CnFormSelectTreegridComponent implements OnInit, OnChanges {
     if (!this.config.valueName) {
       this.config.valueName = "Id";
     }
-    console.log('labelName valueName 222', this._value);
-    //  console.log('ngOnInit this.value:', this.value);
     this.resultData = this.table.dataList;
   }
 
   ngOnChanges() {
 
-    console.log('ngOnChanges :', this._value);
 
   }
 
   // ngAfterContentChecked() {
   //   if (this.isAfterContentChecked) {
   //     if (this._value) {
-  //       console.log('ngAfterContentChecked :', this._value);
+
   //       // this.valueChange(this._value);
   //       this.isAfterContentChecked = false;
   //     }
   //   }
   // }
   ngOnDestory() {
-    console.log('ngOnDestory :', this._value);
+
   }
   showModal(): void {
     this.isVisible = true;
     this.table.value = this._value;
-    console.log('showModal _value :', this._value);
+
   }
 
   handleOk(): void {
     this.isVisible = false;
-    console.log('选中行', this.table.selectedItem);
     // 此处简析 多选，单选【个人建议两种组件，返回值不相同，单值（ID值），多值（ID数组）】
     if (this.table.selectedItem) {
       this._valuetext = this.table.selectedItem[this.config.labelName];
@@ -136,12 +131,10 @@ export class CnFormSelectTreegridComponent implements OnInit, OnChanges {
       this._valuetext = null;
       this._value = null;
     }
-    console.log('数据labelName valueName ', this.config.labelName, this.config.valueName);
-    console.log('数据', this._valuetext, this._value);
+
   }
 
   handleCancel(): void {
-    // console.log('点击取消');
     this.isVisible = false;
   }
 
@@ -154,7 +147,6 @@ export class CnFormSelectTreegridComponent implements OnInit, OnChanges {
     if (name) {
       const backValue = { name: this.config.name, value: name };
       // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
-      // console.log('this.resultData:', this.resultData);
       if (this.resultData) {
         // valueName
         const index = this.resultData.findIndex(
@@ -186,18 +178,15 @@ export class CnFormSelectTreegridComponent implements OnInit, OnChanges {
             } else {
               this._valuetext = this._value;
             }
-            // console.log('_valuetext: ', this._valuetext);
+ 
           }
         }
-
-        console.log('iftrue弹出表格返回数据', backValue);
       }
       // this.value['dataText'] = this._valuetext;
       this.updateValue.emit(backValue);
     } else {
       const backValue = { name: this.config.name, value: name };
       this.updateValue.emit(backValue);
-      console.log('iffalse弹出表格返回数据', backValue);
     }
   }
 

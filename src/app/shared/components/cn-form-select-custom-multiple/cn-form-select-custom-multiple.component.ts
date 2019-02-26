@@ -135,7 +135,6 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
 
   }
   public async asyncLoadOptions(p?, componentValue?, type?) {
-    // console.log('select load 异步加载', componentValue); // liu
     const params = {};
     let tag = true;
     let url;
@@ -147,7 +146,6 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
               if (this.bsnData[param.valueName]) {
                 params[param.name] = this.bsnData[param.valueName];
               } else {
-                // console.log('参数不全不能加载');
                 tag = false;
                 return;
               }
@@ -190,24 +188,20 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
     if (p.ajaxType === 'get' && tag) {
       /*  const dd=await this._http.getProj(APIResource[p.url], params).toPromise();
  if (dd && dd.Status === 200) {
- console.log("服务器返回执行成功返回",dd.Data);
+
  }
- console.log("服务器返回",dd); */
+ */
 
       return this._http.get(url, params).toPromise();
     } else if (p.ajaxType === 'put') {
-      console.log('put参数', params);
       return this._http.put(url, params).toPromise();
     } else if (p.ajaxType === 'post') {
-      console.log('post参数', params);
-      console.log(url);
       return this._http.post(url, params).toPromise();
     } else {
       return null;
     }
   }
   public showLayout() {
-  //  console.log('**2019*****' , this.initValue, this.bsnData);
     const dialog = this.config.dialog;
     //  {
     //   layoutName: 'liu',
@@ -282,8 +276,6 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
             } else if (btn['name'] === 'reset') {
               //  this._resetForm(componentInstance);
             } else if (btn['name'] === 'ok') {
-              console.log('ok');
-              console.log(componentInstance.value);
               const labelName = this.config.labelName ? this.config.labelName : 'name';
               const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
               //  this.tags = [{ label: componentInstance.value[labelName], value: componentInstance.value[valueName] }];
@@ -321,14 +313,12 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
   }
 
   public async valueChange(name?, dataItemValue?) {
-   // console.log('valueChangeSelectGridMultiple', name);
 
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
     if (name) {
       const backValue = { name: this.config.name, value: name };
       // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
-      // console.log('this.resultData:', this.resultData);
       if (this.tags) {
         // valueName
         const index = this.tags.length;
@@ -341,7 +331,6 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
             componentvalue[valueName] = name;
             if (this.config.ajaxConfig) {
               const loadData = await this.asyncLoadOptions(this.config.ajaxConfig, componentvalue);
-             // console.log('自定义数据：', loadData);
               let selectrowdata = [];
               if (loadData && loadData.status === 200 && loadData.isSuccess) {
                 if (loadData.data) {
@@ -356,19 +345,14 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
             } else {
               this._valuetext = this._value;
             }
-            // console.log('loadByselect: ',  backselectdata) ;
           }
         }
-
-        // console.log('iftrue弹出表格返回数据', backValue);
       }
       // this.value['dataText'] = this._valuetext;
-      console.log('iftrue弹出表格返回数据', backValue);
       this.updateValue.emit(backValue);
     } else {
       const backValue = { name: this.config.name, value: name };
       this.updateValue.emit(backValue);
-      // console.log('iffalse弹出表格返回数据', backValue);
     }
   }
 

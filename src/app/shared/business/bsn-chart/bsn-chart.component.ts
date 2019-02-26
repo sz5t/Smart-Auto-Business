@@ -91,7 +91,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
    * CreateChart_Bar  生成柱状图
    */
   public CreateChart_Bar() {
-    console.log('****生成柱状图***');
     this.chart = new G2.Chart({
       container: this.chartElement.nativeElement, // 指定图表容器 ID
       animate: true, // 动画 默认true
@@ -130,7 +129,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   }
 
   public CreateChart_MiniBar() {
-    console.log('****生成柱状图***');
     this.chart = new G2.Chart({
       container: this.chartElement.nativeElement, // 指定图表容器 ID
       animate: true, // 动画 默认true
@@ -178,7 +176,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
    * CreateChart_Pie  生成饼图
    */
   public CreateChart_Pie() {
-    console.log('****生成饼图***');
     this.chart = new G2.Chart({
       container: this.chartElement.nativeElement, // 指定图表容器 ID
       forceFit: true,
@@ -232,7 +229,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
    * CreateChart_Line  生成折线图
    */
   public CreateChart_Line() {
-    console.log('****生成折线图***');
 
     this.chart = new G2.Chart({
       container: this.chartElement.nativeElement, // 指定图表容器 ID
@@ -283,7 +279,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   }
 
   public CreateChart_MiniLine() {
-    console.log('****生成mini折线图***');
 
     this.chart = new G2.Chart({
       container: this.chartElement.nativeElement, // 指定图表容器 ID
@@ -357,7 +352,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
 
     const method = this.config.ajaxConfig.ajaxType;
     const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
-    console.log('执行：', loadData);
     if (loadData.isSuccess) {
       let data;
       if (method === 'proc') {
@@ -374,8 +368,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     } else {
       this.dataList = [];
     }
-
-    console.log('数据', this.dataList);
   }
 
 
@@ -458,7 +450,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       }
     });
     // 通过配置中的组件关系类型设置对应的事件接受者
-    // 表格内部状态触发接收器console.log(this.config);
+    // 表格内部状态触发接收器
 
     if (
       this.config.componentType &&

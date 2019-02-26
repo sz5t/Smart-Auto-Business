@@ -98,7 +98,6 @@ export class BsnTagComponent extends CnComponentBase implements OnInit, OnDestro
 
   public valueChange() {
     if (!this.is_Selectgrid) {
-      // console.log(' tags 值变化返回给layout', this.tags);
       // liu 20181210
       this.updateValue.emit(this.tags);
     }
@@ -131,7 +130,6 @@ export class BsnTagComponent extends CnComponentBase implements OnInit, OnDestro
                     });
                   }
                 }
-                  console.log('********接收*********', option);
                 // 匹配及联模式
                 switch (mode) {
                   case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
@@ -160,7 +158,6 @@ export class BsnTagComponent extends CnComponentBase implements OnInit, OnDestro
   }
   public scanCodeROW() {
 
-    //  console.log('_ScanCode', this.tempValue['_ScanCode']);
     this.scanCodeaddRow();
   }
 
@@ -230,7 +227,6 @@ export class BsnTagComponent extends CnComponentBase implements OnInit, OnDestro
     const params = {
       ...this._buildParameters(this.config.addConfig.params)
     };
-    console.log('add:', params, this.tempValue);
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
     const aloadData = await this[this.config.addConfig.ajaxType ? this.config.addConfig.ajaxType : 'post'](url, params);

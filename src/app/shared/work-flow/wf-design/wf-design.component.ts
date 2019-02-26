@@ -172,9 +172,6 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
 
 
   public async load() {
-
-    // console.log('tempValue:', this.tempValue);
-
     const url = this._buildURL(this.config.ajaxConfig.url);
     const params = {
       ...this._buildParameters(this.config.ajaxConfig.params),
@@ -182,13 +179,10 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     };
     const configjson = this.config.configjson ? this.config.configjson : 'configjson';
     const loadData = await this._load(url, params);
-    console.log(url, params);
     if (loadData && loadData.status === 200 && loadData.isSuccess) {
       if (loadData.data) {
-        // console.log('加载数据', loadData);
         if (loadData.data.length > 0) {
           if (loadData.data[0][configjson]) {
-            //   console.log('configjson:', loadData.data[0].configjson);
             this.data = JSON.parse(loadData.data[0][configjson]);
           }
         } else {
@@ -200,11 +194,8 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     } else {
       this.data = { nodes: [], edges: [] };
     }
-
-
-    // console.log('this.data:', this.data);
     this.page.read(this.data);
-    // console.log('调用load结束');
+
 
   }
   private async _load(url, params) {
@@ -216,27 +207,25 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
       this.initValue = this.initData;
     }
     this.load();
-    console.log('begin');
 
   }
 
   // tslint:disable-next-line:use-life-cycle-interface
   public ngAfterViewInit() {
-    console.log('ngAfterViewInit');
     const Command = Editor.Command;
     Command.registerCommand('liu', {
       queue: true,  // 命令是否进入队列，默认是 true  
       // 命令是否可用
       enable(/* editor */) {
-        console.log('enable');
+ 
       },
       // 正向命令
       execute(/* editor */) {
-        console.log('execute');
+      
       },
       // 反向命令
       back(/* editor */) {
-        console.log('back');
+     
       }
     });
     // 小地图
@@ -262,7 +251,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     const detailpannel = new Editor.Detailpannel({
       container: this.detailpannel.nativeElement,
     });
-    // console.log('innerHeight', window.innerHeight - 238);
+
     this.page = new Editor.Flow({
       graph: {
         container: this.rpage.nativeElement,
@@ -291,10 +280,10 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
       shape: 'flow-polyline-round'
     });
     graph.on('click', ev => {
-      console.log('click');
+
     });          // 任意点击事件
     graph.on('node:click', ev => {
-      // console.log('node:click', ev);
+ 
       if (ev.item) {
         const s_data = this.page.save();
         this.data.edges = s_data.edges;
@@ -311,7 +300,6 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
         //   }
         // });
 
-        // console.log('节点model', ev.item.model);
         let nodestate = true;
         this.data.nodes.forEach(n => {
           if (n.id === ev.item.model.id) {
@@ -341,8 +329,6 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
             nodeData = n;
           }
         });
-        console.log('*******************');
-        console.log('发出消息：', sendData);
         // ******注释调这块
         // this.cascade.next(
         //   new BsnComponentMessage(
@@ -426,13 +412,12 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
       }
       // this.nodeform 
       //  const data = page.save();
-      // console.log('当前节点数据', this.data);
 
     });     // 节点点击事件
     graph.on('edge:click', ev => {
-      // console.log('edge:click', ev);
+
       if (ev.item) {
-        // console.log('edge:ev.item:', ev.item);
+
         // ev.item.model['label'] = 'bian';
         // ev.item.model['label'] = {   // 文本标签 || 文本图形配置
         //   text: '文本标签',
@@ -456,7 +441,6 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
           }
         });
         let nodestate = true;
-        // console.log('edgemodel', ev.item.model);
         this.data.edges.forEach(n => {
           if (n.id === ev.item.model.id) {
             this.edgeinfo.id = n.id;
@@ -485,8 +469,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
           nodeData = n;
         }
       });
-      console.log('*******************');
-      console.log('选中边发出消息：', sendData);
+
       if (this.config.cascadeRelation) {
         this.config.cascadeRelation.forEach(element => {
           if (element.name === 'node') {
@@ -538,13 +521,13 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
         });
       }
       // *******************************
-      // console.log('当前边节点数据', this.data);
+
     });     // 边点击事件
     graph.on('group:click', ev => {
-      console.log('group:click');
+
     });    // 组点击事件
     graph.on('anchor:click', ev => {
-      console.log('anchor:click');
+   
     });   // 锚点点击事件
 
 
@@ -552,15 +535,14 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
   }
 
   public async save() {
-    console.log('执行save');
+
     // const s_data = this.page.save();
     // s_data.nodes.forEach(n => {
     //   if (!n.hasOwnProperty('nodetype')) {
     //     n['nodetype'] = this.getNodeType(n.label);
     //   }
     // });
-    // console.log('当前节点数据', s_data);
-    // console.log('当前节点数据string: ', JSON.stringify(s_data));
+
 
     // const submitData = {};
     // submitData['Id'] = this.tempValue['_parentId'];
@@ -902,7 +884,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
       }
     });
     // 通过配置中的组件关系类型设置对应的事件接受者
-    // 表格内部状态触发接收器console.log(this.config);
+    // 表格内部状态触发接收器
     // if (this.config.componentType && this.config.componentType.parent === true) {
     //     // 注册消息发送方法
     //     // 注册行选中事件发送消息

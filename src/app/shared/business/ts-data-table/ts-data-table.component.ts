@@ -390,7 +390,7 @@ export class TsDataTableComponent extends CnComponentBase
             }
         });
         // 通过配置中的组件关系类型设置对应的事件接受者 
-        // 表格内部状态触发接收器console.log(this.config);
+        // 表格内部状态触发接收器
         if (
             this.config.componentType &&
             this.config.componentType.parent === true
@@ -527,7 +527,6 @@ export class TsDataTableComponent extends CnComponentBase
         };
         (async () => {
             const method = this.config.ajaxConfig.ajaxType;
-            console.log(this.initValue);
             const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
 
             if (loadData.isSuccess) {
@@ -653,7 +652,6 @@ export class TsDataTableComponent extends CnComponentBase
                 }
             }
         }
-        console.log('异步获取当前值:', selectrowdata);
         return selectrowdata;
     }
 
@@ -682,7 +680,6 @@ export class TsDataTableComponent extends CnComponentBase
                 }
             }
         }
-        console.log('异步获取当前值集合[]:', selectrowdata);
         return selectrowdata;
     }
     // 构建获取文本值参数
@@ -718,7 +715,6 @@ export class TsDataTableComponent extends CnComponentBase
             const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
             if (loadData && loadData.status === 200 && loadData.isSuccess) {
                 if (loadData.data && loadData.data.rows) {
-                    console.log('loadData.data', loadData.data);
 
                     if (loadData.data.rows.length > 0) {
                         // loadData.data.rows.forEach((row, index) => {
@@ -734,7 +730,6 @@ export class TsDataTableComponent extends CnComponentBase
     }
 
     public async saveRow(option) {
-        console.log('保存');
         const addRows = [];
         const updateRows = [];
         let isSuccess = false;
@@ -1102,7 +1097,6 @@ export class TsDataTableComponent extends CnComponentBase
 
     public valueChange(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
-        console.log('值变化', data, 'this.editCache[data.key].data[data.name] :', this.editCache[data.key]);
         let isValueChange = true;
         if (data.data === undefined) {
             data.data = null;
@@ -1110,7 +1104,6 @@ export class TsDataTableComponent extends CnComponentBase
         if (this.editCache[data.key].data[data.name] === data.data) {
             isValueChange = false;
         }
-        console.log('值变化比较', isValueChange, this.editCache[data.key].data[data.name], data.data);
         this.editCache[data.key].data[data.name] = data.data;
         this.editCache[data.key].data[data.name] = JSON.parse(
             JSON.stringify(this.editCache[data.key].data[data.name])
@@ -1127,10 +1120,8 @@ export class TsDataTableComponent extends CnComponentBase
             if (!this.changeConfig_new[rowCasade]) {
                 this.changeConfig_new[rowCasade] = {};
             }
-            // console.log('当前组件有被级联的子对象');
             for (const key in this.cascadeList[sendCasade]) {
                 // 处理当前级联
-                //  console.log('处理当前级联', key);
                 if (!this.changeConfig_new[rowCasade][key]) {
                     this.changeConfig_new[rowCasade][key] = {};
                 }
@@ -1138,7 +1129,6 @@ export class TsDataTableComponent extends CnComponentBase
                 if (this.cascadeList[sendCasade][key]['dataType']) {
                     this.cascadeList[sendCasade][key]['dataType'].forEach(
                         caseItem => {
-                            // console.log('dataType-caseItem', caseItem);
                             // region: 解析开始 根据组件类型组装新的配置【静态option组装】
                             if (caseItem['type'] === 'option') {
                                 // 在做判断前，看看值是否存在，如果在，更新，值不存在，则创建新值
@@ -1209,7 +1199,6 @@ export class TsDataTableComponent extends CnComponentBase
                             }
                         } */
                             if (caseItem['type'] === 'setValue') {
-                                // console.log('setValueinput' , caseItem['setValue'] );
 
                                 if (caseItem['setValue']['type'] === 'value') {
                                     // 静态数据
@@ -1295,7 +1284,6 @@ export class TsDataTableComponent extends CnComponentBase
                 if (this.cascadeList[sendCasade][key]['valueType']) {
                     this.cascadeList[sendCasade][key]['valueType'].forEach(
                         caseItem => {
-                            // console.log('分析' + key, caseItem);
                             // region: 解析开始  正则表达
                             const reg1 = new RegExp(caseItem.regular);
                             let regularData;
@@ -1318,7 +1306,6 @@ export class TsDataTableComponent extends CnComponentBase
                                 regularData = data.data;
                             }
                             const regularflag = reg1.test(regularData);
-                            // console.log('正则结果：', regularflag);
                             // endregion  解析结束 正则表达
                             if (regularflag) {
                                 // region: 解析开始 根据组件类型组装新的配置【静态option组装】
@@ -1401,10 +1388,6 @@ export class TsDataTableComponent extends CnComponentBase
                                     // changeConfig_new[rowCasade]['show'] = caseItem['option'];
                                 }
                                 if (caseItem['type'] === 'setValue') {
-                                    console.log(
-                                        'setValue2',
-                                        caseItem['setValue']
-                                    );
                                     if (
                                         caseItem['setValue']['type'] === 'value'
                                     ) {
@@ -1498,13 +1481,7 @@ export class TsDataTableComponent extends CnComponentBase
                     JSON.stringify(this.changeConfig_new[rowCasade][key])
                 );
             }
-            // console.log('级联结果数据集', this.changeConfig_new);
         }
-        // console.log('级联结果数据集', this.changeConfig_new[rowCasade]);
-        // this.changeConfig_new = JSON.parse(JSON.stringify(this.changeConfig_new));
-        // console.log('当前编辑缓存行内容', this.editCache[data.key].data);
-
-
         //  开始解析 当前feild 的适配条件【重点】 参数 conditions  返回 true/false 
         // this.beforeOperation.handleOperationConditions([]);
 
@@ -1565,8 +1542,6 @@ export class TsDataTableComponent extends CnComponentBase
         const vc_rowdata = this.ts_getEditRow(data.key, data.name);
         this.EditSelectedRow = [];
         this.EditSelectedRow.push(vc_rowdata);
-
-        console.log('当前行数据：', vc_rowdata);
         // 判断是否存在配置
         if (this.config.events) {
             const index = this.config.events.findIndex(item => item['onTrigger'] === 'onColumnValueChange');
@@ -1972,7 +1947,6 @@ export class TsDataTableComponent extends CnComponentBase
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_ROW:
                     // 获取保存状态的数据
                     handleData = this._getEditedRows();
-                   // console.log('简析参数1838 ', handleData);
                     msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
@@ -1981,7 +1955,6 @@ export class TsDataTableComponent extends CnComponentBase
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_SELECTED_ROW:
                     // 获取保存状态的数据
                     handleData = this.EditSelectedRow;
-                   // console.log('简析参数1838 ', handleData);
                     msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
@@ -2009,8 +1982,6 @@ export class TsDataTableComponent extends CnComponentBase
                     break;
 
             }
-
-            // console.log('简析参数1860 ', handleData);
 
             if (c.message) {
                 this.baseModal.confirm({
@@ -2460,7 +2431,6 @@ export class TsDataTableComponent extends CnComponentBase
 
     // liu 赋值选中
     private setSelectRow(rowValue?) {
-        // console.log('setSelectRow', this.value);
         let r_value = this.value;
         if (rowValue) {
             r_value = rowValue;
@@ -2583,7 +2553,6 @@ export class TsDataTableComponent extends CnComponentBase
         this.editCache[key].data = JSON.parse(
             JSON.stringify(this.dataList[index])
         );
-       // console.log('取消行数据', this.editCache[key].data);
     }
     /**
      * 保存编辑状态的数据
@@ -3086,7 +3055,6 @@ export class TsDataTableComponent extends CnComponentBase
                         regularData = value;
                     }
                     const regularflag = reg1.test(regularData);
-                    // console.log(color.caseValue.regular,regularData,regularflag,color);
                     if (regularflag) {
                         fontColor = color.fontcolor;
                     }
@@ -3339,7 +3307,6 @@ export class TsDataTableComponent extends CnComponentBase
             });
         // endregion： 解析结束
 
-        // console.log("级联配置简析", this.cascadeList);
     }
 
     public isEmptyObject(e) {
@@ -3354,7 +3321,6 @@ export class TsDataTableComponent extends CnComponentBase
     // liu 2018 12 04 
     public valueChangeSearch(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
-        console.log('值变化valueChangeSearch', data);
         if (data.data === null) {
             if (this.search_Row.hasOwnProperty(data.name)) {
                 delete this.search_Row[data.name];
@@ -3372,10 +3338,8 @@ export class TsDataTableComponent extends CnComponentBase
             if (!this.changeConfig_newSearch[rowCasade]) {
                 this.changeConfig_newSearch[rowCasade] = {};
             }
-            // console.log('当前组件有被级联的子对象');
             for (const key in this.cascadeList[sendCasade]) {
                 // 处理当前级联
-                //  console.log('处理当前级联', key);
                 if (!this.changeConfig_newSearch[rowCasade][key]) {
                     this.changeConfig_newSearch[rowCasade][key] = {};
                 }
@@ -3383,7 +3347,6 @@ export class TsDataTableComponent extends CnComponentBase
                 if (this.cascadeList[sendCasade][key]['dataType']) {
                     this.cascadeList[sendCasade][key]['dataType'].forEach(
                         caseItem => {
-                            // console.log('dataType-caseItem', caseItem);
                             // region: 解析开始 根据组件类型组装新的配置【静态option组装】
                             if (caseItem['type'] === 'option') {
                                 // 在做判断前，看看值是否存在，如果在，更新，值不存在，则创建新值
@@ -3454,7 +3417,6 @@ export class TsDataTableComponent extends CnComponentBase
                             }
                         } */
                             if (caseItem['type'] === 'setValue') {
-                                // console.log('setValueinput' , caseItem['setValue'] );
 
                                 if (caseItem['setValue']['type'] === 'value') {
                                     // 静态数据
@@ -3540,7 +3502,6 @@ export class TsDataTableComponent extends CnComponentBase
                 if (this.cascadeList[sendCasade][key]['valueType']) {
                     this.cascadeList[sendCasade][key]['valueType'].forEach(
                         caseItem => {
-                            // console.log('分析' + key, caseItem);
                             // region: 解析开始  正则表达
                             const reg1 = new RegExp(caseItem.regular);
                             let regularData;
@@ -3563,7 +3524,6 @@ export class TsDataTableComponent extends CnComponentBase
                                 regularData = data.data;
                             }
                             const regularflag = reg1.test(regularData);
-                            // console.log('正则结果：', regularflag);
                             // endregion  解析结束 正则表达
                             if (regularflag) {
                                 // region: 解析开始 根据组件类型组装新的配置【静态option组装】
@@ -3635,10 +3595,6 @@ export class TsDataTableComponent extends CnComponentBase
                                     // changeConfig_newSearch[rowCasade]['show'] = caseItem['option'];
                                 }
                                 if (caseItem['type'] === 'setValue') {
-                                    console.log(
-                                        'setValue2',
-                                        caseItem['setValue']
-                                    );
                                     if (
                                         caseItem['setValue']['type'] === 'value'
                                     ) {
@@ -3694,11 +3650,7 @@ export class TsDataTableComponent extends CnComponentBase
                     JSON.stringify(this.changeConfig_newSearch[rowCasade][key])
                 );
             }
-            // console.log('级联结果数据集', this.changeConfig_new);
         }
-
-        // console.log('值变化后的数据结构', this.search_Row, this._buildSearch(), this.changeConfig_newSearch);
-        // console.log('查询缓存数据', this.editCache[data.key]);
         this.load();
 
     }
@@ -3867,7 +3819,6 @@ export class TsDataTableComponent extends CnComponentBase
         } else {
             model = BSN_COMPONENT_MODES['EXECUTE'];
         }
-        console.log('列值变化触发事件：', model, enentname, this.toolbarConfig, option);
         // option 操作的详细配置
         // 根据当前行绑定操作名称-》找到对应的操作配置
         // const model_c = '';
@@ -3921,7 +3872,6 @@ export class TsDataTableComponent extends CnComponentBase
                 break;
             case BSN_COMPONENT_MODES.EXECUTE:
                 // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
-                // console.log('执行列3665：', option);
                 this._resolveAjaxConfig(option);
                 break;
             case BSN_COMPONENT_MODES.WINDOW:
@@ -4035,7 +3985,6 @@ export class TsDataTableComponent extends CnComponentBase
         ]
     ];
     public contextMenu($event: MouseEvent, template: TemplateRef<void>): void {
-        //  console.log('右键事件');
         this.dropdown = this._dropdownService.create($event, template);
     }
 
@@ -4060,7 +4009,6 @@ export class TsDataTableComponent extends CnComponentBase
     }
 
     public handleOk(): void {
-        //  console.log('Button ok clicked!');
         this.config.columns = this.c_data;
         this.isVisible = false;
         // { x:'1300px',y: '240px' }
@@ -4074,7 +4022,6 @@ export class TsDataTableComponent extends CnComponentBase
     }
 
     public handleCancel(): void {
-        //  console.log('Button cancel clicked!');
         this.isVisible = false;
     }
 
@@ -4083,7 +4030,6 @@ export class TsDataTableComponent extends CnComponentBase
     public f_ondragstart(e?, d?) {
         this.d_row = d;
         // opacity:0.5;
-        // console.log('3852', e);
         //  e.target.style.transition = 'all 0.1s';
         // e.target.style.opacity = '1';
         //  style="transition: all 0.1s"
@@ -4100,9 +4046,7 @@ export class TsDataTableComponent extends CnComponentBase
         const tindex = c_config.findIndex(
             item => item.field === d['field']
         );
-        // console.log('拖放后的位置：', index, tindex);
         this.c_data = JSON.parse(JSON.stringify(this.droparr(c_config, index, tindex)));
-        // console.log('最终数据：', this.c_data );
     }
 
     // index是当前元素下标，tindex是拖动到的位置下标。
@@ -4134,7 +4078,6 @@ export class TsDataTableComponent extends CnComponentBase
 
     // ondrag 事件在元素或者选取的文本被拖动时触发。
     public f_drag(e?) {
-        console.log('f_drag', e);
         //     e.target.style.opacity = '1';
         //     // background-color':data.selected?'rgb(236, 246, 253)':
         //    e.target.style['background-color'] = 'rgb(236, 246, 253)';
@@ -4142,11 +4085,9 @@ export class TsDataTableComponent extends CnComponentBase
     }
 
     public onblur(e?, d?) {
-        //  console.log('onblur', e, d);
         this.is_drag = true;
     }
     public onfocus(e?, d?) {
-        // console.log('onfocus', e, d);
         this.is_drag = false;
     }
 
@@ -4161,21 +4102,18 @@ export class TsDataTableComponent extends CnComponentBase
      * th_onmousedown
      */
     public th_onmousedown(event?) {
-        console.log('th_onmousedown');
         this.tTD = event.target;
         if (event.offsetX > this.tTD.offsetWidth - 10) {
             this.tTD.mouseDown = true;
             this.tTD.oldX = event.x;
             this.tTD.oldWidth = this.tTD.offsetWidth;
         }
-        console.log('3959', this.tTD.mouseDown);
     }
 
     /**
      * th_onmouseup
      */
     public th_onmouseup(event?) {
-        console.log('th_onmouseup');
         if (this.tTD === undefined) {
             this.tTD = event.target;
         }
@@ -4187,7 +4125,6 @@ export class TsDataTableComponent extends CnComponentBase
      * th_onmousemove
      */
     public th_onmousemove(event?, col?) {
-        // console.log('th_onmousemove');
         // 更改鼠标样式 
         if (event.offsetX > event.target.offsetWidth - 10) {
             event.target.style.cursor = 'col-resize';
@@ -4199,18 +4136,15 @@ export class TsDataTableComponent extends CnComponentBase
         if (this.tTD === undefined) {
             this.tTD = event.target;
         }
-        console.log('3988', this.tTD.mouseDown);
         // 调整宽度 
         if (this.tTD.mouseDown != null && this.tTD.mouseDown === true) {
             this.tTD.style.cursor = 'default';
-            console.log('原来宽度', this.tTD.oldWidth, col.width);
             if (this.tTD.oldWidth + (event.x - this.tTD.oldX) > 0)
                 this.tTD.width = this.tTD.oldWidth + (event.x - this.tTD.oldX);
             // 调整列宽 
             this.tTD.style.width = this.tTD.width;
             this.tTD.style.cursor = 'col-resize';
             col.width = this.tTD.width + 'px';
-            console.log('移动的宽度', this.tTD.width, col.width);
 
         }
     }
@@ -4281,7 +4215,6 @@ export class TsDataTableComponent extends CnComponentBase
             }
             cf_config.push(cf);
         });
-        console.log('动态表格的列', cf_config)
         return cf_config;
     }
 
@@ -4331,7 +4264,6 @@ export class TsDataTableComponent extends CnComponentBase
         });
 
         const columns = [...dynamicdefaultcolumns, ...dynamicColumns];
-        console.log('最终生成列', columns);
         return columns;
     }
 
@@ -4345,7 +4277,6 @@ export class TsDataTableComponent extends CnComponentBase
         const loadData = await this.get(url, params);
         if (loadData && loadData.status === 200 && loadData.isSuccess) {
             if (loadData.data) {
-                console.log('异步请求列信息', loadData.data);
                 if (loadData.data.length > 0) {
                     if (loadData.data.length < 50) { // 异常处理，超过50个
                         this.ajaxColumns = loadData.data;
@@ -4378,12 +4309,8 @@ export class TsDataTableComponent extends CnComponentBase
          */
     public titleToolbarAction(col?) {
         //  this. ajaxColumns;  // 动态列信息，也就是检测项目信息
-        console.log('点击', this.ajaxColumns, this._getCheckedItems(), this._getCheckItemsId());
         if (this.ajaxColumns && this.ajaxColumns.length > 0) {
             const d = this.ajaxColumns.findIndex(c => c['Id'] === col['titleField']);
-            console.log('ajaxColumns', this.ajaxColumns);
-            console.log('d', d);
-            console.log('col', col);
             if (d > -1) {
                 // 找到当前点击标题按钮后的数据
                 // 解析配置执行具体跳转或者切换、抽屉等页面操作
@@ -4413,7 +4340,6 @@ export class TsDataTableComponent extends CnComponentBase
         //         }
         //     )
         // );
-        // console.log('sendData', sendData);
     }
 
     /**
@@ -4421,14 +4347,11 @@ export class TsDataTableComponent extends CnComponentBase
  * @param data 
  */
     public ExecEventByTitleClick(data?) {
-        console.log(data);
         const vc_field = data.name;
         //  ts_saveEdit data.key
         // const vc_rowdata = this.ts_getEditRow(data.key, data.name);
         // this.EditSelectedRow = [];
         // this.EditSelectedRow.push(vc_rowdata);
-
-        // console.log('当前行数据：', vc_rowdata);
         // 判断是否存在配置
         if (this.config.events) {
             const index = this.config.events.findIndex(item => item['onTrigger'] === 'onTitleClick');
@@ -4551,7 +4474,6 @@ export class TsDataTableComponent extends CnComponentBase
     // 行内删除
     public deleteRowOnSelected(key) {
         const row = this.dataList.filter(item => item.key === key)[0];
-        // console.log('删除行', row);
         if (this.config.events) {
             const index = this.config.events.findIndex(item => item['onTrigger'] === 'deleteRow');
             let c_eventConfig = {};
@@ -4572,7 +4494,6 @@ export class TsDataTableComponent extends CnComponentBase
                 });
             }
         }
-        console.log('行内删除', key);
         // 注意，末页删除需要将数据页数上移
 
 

@@ -99,7 +99,6 @@ export class FormResolverComponent extends CnFormBase
         } else if (this.formValue) {
             // 表单加载初始化数据
             this.setFormValue(this.formValue);
-            // console.log('表单加载初始化数据', this.formValue);
         }
         // 初始化前置条件验证对象
         this.beforeOperation = new BeforeOperation({
@@ -238,7 +237,6 @@ export class FormResolverComponent extends CnFormBase
             }
         });
         // 通过配置中的组件关系类型设置对应的事件接受者
-        // 表格内部状态触发接收器console.log(this.config);
         if (
             this.config.componentType &&
             this.config.componentType.child === true
@@ -478,7 +476,6 @@ export class FormResolverComponent extends CnFormBase
         for (const d in data) {
             this.tempValue[d] = data[d];
         }
-        // console.log('初始化参数', this.tempValue);
     }
 
     public initParametersLoad(data?) {
@@ -489,7 +486,6 @@ export class FormResolverComponent extends CnFormBase
             this.tempValue[d] = data[d];
         }
         this.load();
-        console.log('初始化参数并load 主子刷新', this.tempValue);
     }
 
     /**
@@ -909,7 +905,6 @@ export class FormResolverComponent extends CnFormBase
     public valueChange(data?) {
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
-        // console.log('**valueChange**', data);
         const sendCasade = data.name;
         const receiveCasade = ' ';
         // 第二步，根据配置，和返回值，来构建应答数据集合
@@ -924,7 +919,6 @@ export class FormResolverComponent extends CnFormBase
             const changeConfig_new = [];
 
             for (const key in this.cascadeList[sendCasade]) {
-                // console.log('for in 配置' , key);
                 this.config.forms.forEach(formsItems => {
                     formsItems.controls.forEach(control => {
                         if (control.name === key) {
@@ -1012,7 +1006,6 @@ export class FormResolverComponent extends CnFormBase
                                         }
                                     }
                                     if (caseItem['type'] === 'setValue') {
-                                        // console.log('setValueinput' , caseItem['setValue'] );
 
                                         const setValuedata = {};
                                         if (
@@ -1092,7 +1085,6 @@ export class FormResolverComponent extends CnFormBase
                                         regularData = data.value;
                                     }
                                     const regularflag = reg1.test(regularData);
-                                    // console.log('正则结果：', regularflag , '判断值',  regularData , data, caseItem);
                                     // endregion  解析结束 正则表达
                                     if (regularflag) {
                                         // region: 解析开始 根据组件类型组装新的配置【静态option组装】
@@ -1200,7 +1192,6 @@ export class FormResolverComponent extends CnFormBase
                                             }
                                         }
                                         if (caseItem['type'] === 'setValue') {
-                                            // console.log('setValueinput' , caseItem['setValue'] );
 
                                             const setValuedata = {};
                                             if (
@@ -1267,11 +1258,8 @@ export class FormResolverComponent extends CnFormBase
                 });
 
             })
-            //  console.log('*****变更后配置******',  this.change_config);
         }
 
-        // console.log('变更后的', this.config.forms);
-        // console.log('form: ', this.config.viewId, data, this.form.value);
         // // 此处有消息级联的则发值
         // // 级联值= 表单数据+当前触发级联的值组合；
         // const sendData = this.value;
@@ -1285,7 +1273,7 @@ export class FormResolverComponent extends CnFormBase
         //         }
         //     )
         // );
-        // console.log('send', sendData);
+     
         const sendData = this.value;
         sendData[data.name] = data.value;
 
@@ -1331,7 +1319,6 @@ export class FormResolverComponent extends CnFormBase
                             }
                         });
                     }
-
                     this.cascade.next(
                         new BsnComponentMessage(
                             BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],
@@ -1344,7 +1331,7 @@ export class FormResolverComponent extends CnFormBase
                 }
             });
         }
-        //  console.log('send ' + data.name, sendData);
+
         //  执行光标移动保存
         this.ExecEventByValueChange(data);
     }
@@ -1399,8 +1386,6 @@ export class FormResolverComponent extends CnFormBase
         this.form.value['currentValue'] = data.name;
         // vc_rowdata['currentValue'] = vc_rowdata[data.name];
         // vc_rowdata['currentName'] = data.name;
-
-        // console.log('当前表单数据：', vc_rowdata);
         // 判断是否存在配置
         if (this.config.events) {
             const index = this.config.events.findIndex(item => item['onTrigger'] === 'onColumnValueChange');
