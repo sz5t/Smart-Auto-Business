@@ -44,6 +44,14 @@ export class CnComponentBase {
         this._cascadeSubscriptions = value;
     }
 
+    private _cascadeBase;
+    public set cascadeBase(value) {
+        this._cascadeBase = value;
+    }
+    public get cascadeBase() {
+        return this._cascadeBase;
+    }
+
     private _baseMessage;
     public get baseMessage() {
         return this._baseMessage;

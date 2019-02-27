@@ -4,7 +4,9 @@ import { CnComponentBase } from '@shared/components/cn-component-base';
 import {
     BSN_COMPONENT_CASCADE,
     BSN_EXECUTE_ACTION,
-    BSN_OUTPOUT_PARAMETER_TYPE
+    BSN_OUTPOUT_PARAMETER_TYPE,
+    BsnComponentMessage,
+    BSN_COMPONENT_CASCADE_MODES
 } from '@core/relative-Service/BsnTableStatus';
 import { NzModalService, NzMessageService } from 'ng-zorro-antd';
 import { CommonTools } from '@core/utility/common-tools';
@@ -367,8 +369,17 @@ export class TreeGridBase extends CnComponentBase {
                     // 没有输出参数，进行默认处理
                     this.showAjaxMessage(response, msg, () => {
                         const focusIds = this.getFocusIds(response.data);
-                        // this._callback(focusIds);
-                        // this.windowCallback();
+                        if (this.cfg.componentType.parent === true) {
+                            this.cascadeBase.next(
+                                new BsnComponentMessage(
+                                    BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                                    this._cfg.viewId,
+                                    {
+                                        data: this.selectedItem
+                                    }
+                                )
+                            );
+                        }
                         this._operationCallback(focusIds);
                     });
                 }

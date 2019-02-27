@@ -373,6 +373,10 @@ export class BsnTableComponent extends CnComponentBase
             // 注册消息发送方法
             // 注册行选中事件发送消息
             this.after(this, 'selectRow', () => {
+                 // 编辑行数据时,不进行消息发送
+                 if (this.editCache && this.editCache.hasOwnProperty(this._selectRow['Id'])) {
+                    return false;
+                }
                 this.cascade.next(
                     new BsnComponentMessage(
                         BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
@@ -1767,6 +1771,15 @@ export class BsnTableComponent extends CnComponentBase
                                 this.showAjaxMessage(response, msg, () => {
                                     this.focusIds = this._getFocusIds(
                                         response.data
+                                    );
+                                    this.cascadeBase.next(
+                                        new BsnComponentMessage(
+                                            BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                                            this.config.viewId,
+                                            {
+                                                data: this._selectRow
+                                            }
+                                        )
                                     );
                                     this.load();
                                 });

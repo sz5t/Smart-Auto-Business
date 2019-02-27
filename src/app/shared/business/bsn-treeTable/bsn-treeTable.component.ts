@@ -119,6 +119,8 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         super();
         this.baseMessage = this._msg;
         this.baseModal = this._modal;
+        this.cascadeBase = this.cascade;
+        this.cfg = this.config;
         if (this.initData) {
             this.initValue = this.initData;
         }
@@ -247,12 +249,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         });
     }
     public ngOnDestroy() {
-        if (this._statusSubscription) {
-            this._statusSubscription.unsubscribe();
-        }
-        if (this._cascadeSubscription) {
-            this._cascadeSubscription.unsubscribe();
-        }
+        this.unsubscribe();
     }
 
     // 解析消息
@@ -352,6 +349,14 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
             // 注册消息发送方法
             // 注册行选中事件发送消息
             this.after(this, 'selectRow', () => {
+                // 编辑行数据时,不进行消息发送
+                if (this.editCache && this.editCache.hasOwnProperty(this.selectedItem['Id'])) {
+                    return false;
+                }
+                // if (this.editCache && (this.editCache[this.selectedItem['Id']] === this.selectedItem['Id']) {
+                    
+                //     return false;
+                // }
                 this.cascade.next(
                     new BsnComponentMessage(
                         BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
@@ -524,7 +529,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
     }
 
     private insertChildrenListToTree(parent, childrenList) {
-        // *重写当前节点的子节点数据,保证折叠之后数据完整性*
+        // *重写当前节点的子节点数据,保证折叠之后数据完整性
         parent['children'] = childrenList;
         const index = this.dataList.findIndex(d => d.Id === parent.Id);
         // 删除重复添加的子节点数据
