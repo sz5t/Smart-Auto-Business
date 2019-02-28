@@ -318,15 +318,18 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                                     this.tempValue[param['cid']] = option.data[param['pid']]
                                 })
                             }
-                            // 匹配及联模式
-                            switch (mode) {
-                                case BSN_COMPONENT_CASCADE_MODES.REFRESH:
-                                    this.load()
-                                    break
-                                case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
-                                    this.load()
-                                    break
+                            if (cascadeEvent._mode === mode) {
+                                // 匹配及联模式
+                                switch (mode) {
+                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH:
+                                        this.load()
+                                        break
+                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                                        this.load()
+                                        break
+                                }
                             }
+                            
                         }
                     })
                 }

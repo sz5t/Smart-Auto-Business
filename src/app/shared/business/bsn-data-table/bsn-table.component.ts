@@ -285,85 +285,88 @@ export class BsnTableComponent extends CnComponentBase
     }
     private resolverRelation() {
         // 注册按钮状态触发接收器
-        this._statusSubscription = this.stateEvents.subscribe(updateState => {
-            if (updateState._viewId === this.config.viewId) {
-                const option = updateState.option;
-                switch (updateState._mode) {
-                    case BSN_COMPONENT_MODES.REFRESH:
-                        this.load();
-                        break;
-                    case BSN_COMPONENT_MODES.CREATE:
-                        !this.beforeOperation.beforeItemDataOperation(option) &&
-                            this.addRow();
-                        break;
-                    // case BSN_COMPONENT_MODES.ADD_ROW_DATA:
-                    //     !this.beforeOperation.beforeItemDataOperation(option) &&
-                    //     this._resolveAjaxConfig(option);
-                    //     break;
-                    case BSN_COMPONENT_MODES.CANCEL_SELECTED:
-                        this.cancelSelectRow();
-                        break;
-                    case BSN_COMPONENT_MODES.EDIT:
-                        this.beforeOperation.operationItemsData = this._getCheckedItems();
-                        !this.beforeOperation.beforeItemsDataOperation(
-                            option
-                        ) && this.updateRow();
-                        break;
-                    case BSN_COMPONENT_MODES.CANCEL:
-                        this.cancelRow();
-                        break;
-                    case BSN_COMPONENT_MODES.SAVE:
-                        this.beforeOperation.operationItemsData = [
-                            ...this._getCheckedItems(),
-                            ...this._getAddedRows()
-                        ];
-                        !this.beforeOperation.beforeItemsDataOperation(
-                            option
-                        ) && this.saveRow(option);
-                        break;
-                    case BSN_COMPONENT_MODES.DELETE:
-                        this.beforeOperation.operationItemsData = this._getCheckedItems();
-                        !this.beforeOperation.beforeItemsDataOperation(
-                            option
-                        ) && this.deleteRow(option);
-                        break;
-                    case BSN_COMPONENT_MODES.DIALOG:
-                        this.beforeOperation.operationItemData = this._selectRow;
-                        !this.beforeOperation.beforeItemDataOperation(option) &&
-                            this.dialog(option);
-                        break;
-                    case BSN_COMPONENT_MODES.EXECUTE:
-                        // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
-                        this._resolveAjaxConfig(option);
-                        break;
-                    case BSN_COMPONENT_MODES.WINDOW:
-                        this.beforeOperation.operationItemData = this._selectRow;
-                        !this.beforeOperation.beforeItemDataOperation(option) &&
-                            this.windowDialog(option);
-                        break;
-                    case BSN_COMPONENT_MODES.FORM:
-                        this.beforeOperation.operationItemData = this._selectRow;
-                        !this.beforeOperation.beforeItemDataOperation(option) &&
-                            this.formDialog(option);
-                        break;
-                    case BSN_COMPONENT_MODES.SEARCH:
-                        !this.beforeOperation.beforeItemDataOperation(option) &&
-                            this.SearchRow(option);
-                        break;
-                    case BSN_COMPONENT_MODES.UPLOAD:
-                        this.beforeOperation.operationItemData = this._selectRow;
-                        !this.beforeOperation.beforeItemDataOperation(option) &&
-                            this.uploadDialog(option);
-                        break;
-                    case BSN_COMPONENT_MODES.FORM_BATCH:
-                        this.beforeOperation.operationItemsData = this._getCheckedItems();
-                        !this.beforeOperation.beforeItemsDataOperation(
-                            option
-                        ) && this.formBatchDialog(option);
-                        break;
+        if (!this._statusSubscription) {
+            this._statusSubscription = this.stateEvents.subscribe(updateState => {
+                if (updateState._viewId === this.config.viewId) {
+                    const option = updateState.option;
+                    switch (updateState._mode) {
+                        case BSN_COMPONENT_MODES.REFRESH:
+                            this.load();
+                            break;
+                        case BSN_COMPONENT_MODES.CREATE:
+                            !this.beforeOperation.beforeItemDataOperation(option) &&
+                                this.addRow();
+                            break;
+                        // case BSN_COMPONENT_MODES.ADD_ROW_DATA:
+                        //     !this.beforeOperation.beforeItemDataOperation(option) &&
+                        //     this._resolveAjaxConfig(option);
+                        //     break;
+                        case BSN_COMPONENT_MODES.CANCEL_SELECTED:
+                            this.cancelSelectRow();
+                            break;
+                        case BSN_COMPONENT_MODES.EDIT:
+                            this.beforeOperation.operationItemsData = this._getCheckedItems();
+                            !this.beforeOperation.beforeItemsDataOperation(
+                                option
+                            ) && this.updateRow();
+                            break;
+                        case BSN_COMPONENT_MODES.CANCEL:
+                            this.cancelRow();
+                            break;
+                        case BSN_COMPONENT_MODES.SAVE:
+                            this.beforeOperation.operationItemsData = [
+                                ...this._getCheckedItems(),
+                                ...this._getAddedRows()
+                            ];
+                            !this.beforeOperation.beforeItemsDataOperation(
+                                option
+                            ) && this.saveRow(option);
+                            break;
+                        case BSN_COMPONENT_MODES.DELETE:
+                            this.beforeOperation.operationItemsData = this._getCheckedItems();
+                            !this.beforeOperation.beforeItemsDataOperation(
+                                option
+                            ) && this.deleteRow(option);
+                            break;
+                        case BSN_COMPONENT_MODES.DIALOG:
+                            this.beforeOperation.operationItemData = this._selectRow;
+                            !this.beforeOperation.beforeItemDataOperation(option) &&
+                                this.dialog(option);
+                            break;
+                        case BSN_COMPONENT_MODES.EXECUTE:
+                            // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
+                            this._resolveAjaxConfig(option);
+                            break;
+                        case BSN_COMPONENT_MODES.WINDOW:
+                            this.beforeOperation.operationItemData = this._selectRow;
+                            !this.beforeOperation.beforeItemDataOperation(option) &&
+                                this.windowDialog(option);
+                            break;
+                        case BSN_COMPONENT_MODES.FORM:
+                            this.beforeOperation.operationItemData = this._selectRow;
+                            !this.beforeOperation.beforeItemDataOperation(option) &&
+                                this.formDialog(option);
+                            break;
+                        case BSN_COMPONENT_MODES.SEARCH:
+                            !this.beforeOperation.beforeItemDataOperation(option) &&
+                                this.SearchRow(option);
+                            break;
+                        case BSN_COMPONENT_MODES.UPLOAD:
+                            this.beforeOperation.operationItemData = this._selectRow;
+                            !this.beforeOperation.beforeItemDataOperation(option) &&
+                                this.uploadDialog(option);
+                            break;
+                        case BSN_COMPONENT_MODES.FORM_BATCH:
+                            this.beforeOperation.operationItemsData = this._getCheckedItems();
+                            !this.beforeOperation.beforeItemsDataOperation(
+                                option
+                            ) && this.formBatchDialog(option);
+                            break;
+                    }
                 }
-            }
-        });
+            });     
+        }
+       
         // 通过配置中的组件关系类型设置对应的事件接受者
         // 表格内部状态触发接收器
         if (
@@ -392,63 +395,66 @@ export class BsnTableComponent extends CnComponentBase
             this.config.componentType &&
             this.config.componentType.child === true
         ) {
-            this._cascadeSubscription = this.cascadeEvents.subscribe(
-                cascadeEvent => {
-                    // 解析子表消息配置
-                    if (
-                        this.config.relations &&
-                        this.config.relations.length > 0
-                    ) {
-                        this.config.relations.forEach(relation => {
-                            if (
-                                relation.relationViewId === cascadeEvent._viewId
-                            ) {
-                                // 获取当前设置的级联的模式
-                                const mode =
-                                    BSN_COMPONENT_CASCADE_MODES[
-                                    relation.cascadeMode
-                                    ];
-                                // 获取传递的消息数据
-                                const option = cascadeEvent.option;
-                                if (option) {
-                                    // 解析参数
-                                    if (
-                                        relation.params &&
-                                        relation.params.length > 0
-                                    ) {
-                                        relation.params.forEach(param => {
-                                            if (!this.tempValue) {
-                                                this.tempValue = {};
-                                            }
-                                            this.tempValue[param['cid']] =
-                                                option.data[param['pid']];
-                                        });
+            if (!this._cascadeSubscription) {
+                this._cascadeSubscription = this.cascadeEvents.subscribe(
+                    cascadeEvent => {
+                        // 解析子表消息配置
+                        if (
+                            this.config.relations &&
+                            this.config.relations.length > 0
+                        ) {
+                            this.config.relations.forEach(relation => {
+                                if (
+                                    relation.relationViewId === cascadeEvent._viewId
+                                ) {
+                                    // 获取当前设置的级联的模式
+                                    const mode =
+                                        BSN_COMPONENT_CASCADE_MODES[
+                                        relation.cascadeMode
+                                        ];
+                                    // 获取传递的消息数据
+                                    const option = cascadeEvent.option;
+                                    if (option) {
+                                        // 解析参数
+                                        if (
+                                            relation.params &&
+                                            relation.params.length > 0
+                                        ) {
+                                            relation.params.forEach(param => {
+                                                if (!this.tempValue) {
+                                                    this.tempValue = {};
+                                                }
+                                                this.tempValue[param['cid']] =
+                                                    option.data[param['pid']];
+                                            });
+                                        }
+                                    }
+    
+                                    // 匹配及联模式
+                                    switch (mode) {
+                                        case BSN_COMPONENT_CASCADE_MODES.REFRESH:
+                                            this.load();
+                                            break;
+                                        case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                                        this.focusIds = null;    
+                                        this.load();
+                                            break;
+                                        case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN:
+                                        this.focusIds = null;
+                                            this.load();
+                                            break;
+                                        case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
+                                            break;
+                                        case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
+                                            break;
                                     }
                                 }
-
-                                // 匹配及联模式
-                                switch (mode) {
-                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH:
-                                        this.load();
-                                        break;
-                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
-                                    this.focusIds = null;    
-                                    this.load();
-                                        break;
-                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN:
-                                    this.focusIds = null;
-                                        this.load();
-                                        break;
-                                    case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
-                                        break;
-                                    case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
-                                        break;
-                                }
-                            }
-                        });
+                            });
+                        }
                     }
-                }
-            );
+                );
+            }
+            
         }
     }
 

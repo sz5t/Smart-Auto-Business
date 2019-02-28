@@ -369,17 +369,6 @@ export class TreeGridBase extends CnComponentBase {
                     // 没有输出参数，进行默认处理
                     this.showAjaxMessage(response, msg, () => {
                         const focusIds = this.getFocusIds(response.data);
-                        if (this.cfg.componentType.parent === true) {
-                            this.cascadeBase.next(
-                                new BsnComponentMessage(
-                                    BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
-                                    this._cfg.viewId,
-                                    {
-                                        data: this.selectedItem
-                                    }
-                                )
-                            );
-                        }
                         this._operationCallback(focusIds);
                     });
                 }
@@ -680,6 +669,17 @@ export class TreeGridBase extends CnComponentBase {
         } else {
             if (result.isSuccess) {
                 this.baseMessage.success(message);
+                if (this.cfg.componentType.parent === true) {
+                    this.cascadeBase.next(
+                        new BsnComponentMessage(
+                            BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                            this._cfg.viewId,
+                            {
+                                data: this.selectedItem
+                            }
+                        )
+                    );
+                }
                 if (callback) {
                     callback();
                 }
