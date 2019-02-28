@@ -377,7 +377,7 @@ export class BsnTableComponent extends CnComponentBase
             // 注册行选中事件发送消息
             this.after(this, 'selectRow', () => {
                  // 编辑行数据时,不进行消息发送
-                 if (this.editCache && this.editCache.hasOwnProperty(this._selectRow['Id'])) {
+                 if (this.editCache && this._selectRow && this.editCache.hasOwnProperty(this._selectRow['Id']) && this.editCache[this._selectRow['Id']]['edit']) {
                     return false;
                 }
                 this.cascade.next(

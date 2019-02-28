@@ -10,11 +10,17 @@ import { Router } from "@angular/router";
     templateUrl: "./sidebar.component.html",
     styles: [
         `
-            :host ::ng-deep .nav {
-                font-size: 12px;
-            }
-            :host ::ng-deep ul .nav > li > a {
-                font-size: 12px;
+            // :host ::ng-deep .nav {
+            //     font-size: 12px;
+            // }
+            // :host ::ng-deep ul .nav > li > a {
+            //     font-size: 12px;
+            //#d2e9fe60
+            // #f5f7fa
+            // }
+
+            :host ::ng-deep .ad-nav__selected {
+                background-color: #00BFFF30;
             }
         `
     ]
