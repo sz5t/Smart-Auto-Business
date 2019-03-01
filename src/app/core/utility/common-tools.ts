@@ -1,14 +1,15 @@
 import { BSN_PARAMETER_TYPE } from '@core/relative-Service/BsnTableStatus';
 import { getISOYear, getMonth, getISOWeek } from 'date-fns';
 export interface ParametersResolverModel {
-    params;
-    tempValue?;
-    item?;
-    componentValue?;
-    initValue?;
-    cacheValue?;
-    cascadeValue?;
-    returnValue?;
+    params: any[];
+    tempValue?: any;
+    item?: any;
+    componentValue?: any;
+    initValue?: any;
+    cacheValue?: any;
+    cascadeValue?: any;
+    returnValue?: any;
+    router?: any;
 }
 export class CommonTools {
     public static uuID(w) {
@@ -275,6 +276,19 @@ export class CommonTools {
                                     model.returnValue[param['valueName']];
                             }
                             break;
+                        case BSN_PARAMETER_TYPE.ROUTER:
+                            if (model.router) {
+                                if (param['datatype']) {
+                                    model.router.subscribe(r => {
+                                        result[param['name']] = this.getParameters(param['datatype'], r.params['name']);
+                                    })
+                                    
+                                }  else {
+                                    model.router.subscribe(r => {
+                                        result[param['name']] = r.params['name'];
+                                    })
+                                }  
+                            }
                     }
                 }
             });

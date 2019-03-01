@@ -55,7 +55,8 @@ export const BSN_PARAMETER_TYPE = {
     RETURN_VALUE: 'returnValue',
     DEFAULT_WEEK: 'defaultWeek',
     DEFAULT_DAY: 'defaultDay',
-    DEFAULT_MONTH: 'defaultMonth'
+    DEFAULT_MONTH: 'defaultMonth',
+    ROUTER: 'router'
 };
 
 export const BSN_EXECUTE_ACTION = {

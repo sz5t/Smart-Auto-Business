@@ -1,3 +1,5 @@
+import { ApiService } from '@core/utility/api-service';
+import { APIResource } from './../../core/utility/api-resource';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
@@ -23,16 +25,26 @@ export class LayoutPassportComponent implements OnInit {
     ];
     private title: string;
     private subTitle: string;
-    constructor(private _route: ActivatedRoute) {
+    private company: string;
+    private year: string
+    constructor(
+        private _route: ActivatedRoute,
+        private _apiService: ApiService
+        ) {
         
     }
 
     public ngOnInit() {
-        this._route.data.subscribe(data => {
-            this.title = data['title'] ? data['title'] : 'Smart One 自动化业务平台';
-            this.subTitle = data['sub'] ? data['sub'] : '管理系统'
-
-        })
+        this._apiService.getSystemConfig().subscribe(s => {
+             this.title = s.title;
+             this.subTitle = s.subTitle;
+             this.year = s.year;
+             this.company = s.company;
+        });
+        // this._route.data.subscribe(data => {
+        //     this.title = data['title'] ? data['title'] : 'Smart One 自动化业务平台';
+        //     this.subTitle = data['sub'] ? data['sub'] : '管理系统'
+        // });
     }
 
 }

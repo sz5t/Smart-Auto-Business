@@ -34,6 +34,7 @@ import { BsnUploadComponent } from '@shared/business/bsn-upload/bsn-upload.compo
 import { CnFormWindowResolverComponent } from '@shared/resolver/form-resolver/form-window-resolver.component';
 import { BeforeOperation } from '../before-operation.base';
 import { createEmitAndSemanticDiagnosticsBuilderProgram } from 'typescript';
+import { ActivatedRoute } from '@angular/router';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: CnFormWindowResolverComponent,
@@ -139,7 +140,8 @@ export class BsnTableComponent extends CnComponentBase
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
-        private cascadeEvents: Observable<BsnComponentMessage>
+        private cascadeEvents: Observable<BsnComponentMessage>,
+        private _route: ActivatedRoute
     ) {
         super();
         this.apiResource = this._http;
@@ -149,7 +151,6 @@ export class BsnTableComponent extends CnComponentBase
     }
 
     public ngOnInit() {
-
       if ( this.config.checkedConfig) {
           if (this.config.checkedConfig.width) {
             this.checkedWidth = this.config.checkedConfig.width;

@@ -96,8 +96,8 @@ export class ApiService {
         return this.httpClient.request('GET', urls);
     }
 
-    public getLocalReportTemplate(name) {
-        const urls = `${SystemResource.localResource.url}/assets/report_template/${name}.ssjson?rtc=${CommonTools.uuID(10)}`;
+    public getSystemConfig() {
+        const urls = `${SystemResource.localResource.url}/assets/config.json?rtc=${CommonTools.uuID(10)}`;
         return this.http.get<any>(urls);
     }
     // endregion
