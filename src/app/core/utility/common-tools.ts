@@ -1,5 +1,6 @@
 import { BSN_PARAMETER_TYPE } from '@core/relative-Service/BsnTableStatus';
 import { getISOYear, getMonth, getISOWeek } from 'date-fns';
+import { ActivatedRoute } from '@angular/router';
 export interface ParametersResolverModel {
     params: any[];
     tempValue?: any;
@@ -9,7 +10,7 @@ export interface ParametersResolverModel {
     cacheValue?: any;
     cascadeValue?: any;
     returnValue?: any;
-    router?: any;
+    router?: ActivatedRoute;
 }
 export class CommonTools {
     public static uuID(w) {
@@ -279,13 +280,13 @@ export class CommonTools {
                         case BSN_PARAMETER_TYPE.ROUTER:
                             if (model.router) {
                                 if (param['datatype']) {
-                                    model.router.subscribe(r => {
-                                        result[param['name']] = this.getParameters(param['datatype'], r.params['name']);
+                                    model.router.params.subscribe(r => {
+                                        result[param['name']] = this.getParameters(param['datatype'], r['name']);
                                     })
                                     
                                 }  else {
-                                    model.router.subscribe(r => {
-                                        result[param['name']] = r.params['name'];
+                                    model.router.params.subscribe(r => {
+                                        result[param['name']] = r.name;
                                     })
                                 }  
                             }

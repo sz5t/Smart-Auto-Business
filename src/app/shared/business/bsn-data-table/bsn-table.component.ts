@@ -129,6 +129,7 @@ export class BsnTableComponent extends CnComponentBase
     public checkedWidth = '10px';
     // 前置条件集合
     public beforeOperation;
+    private _currentModuleName;
     constructor(
         private _http: ApiService,
         private _message: NzMessageService,
@@ -141,7 +142,7 @@ export class BsnTableComponent extends CnComponentBase
         private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascadeEvents: Observable<BsnComponentMessage>,
-        private _route: ActivatedRoute
+        private _router: ActivatedRoute
     ) {
         super();
         this.apiResource = this._http;
@@ -152,11 +153,11 @@ export class BsnTableComponent extends CnComponentBase
     }
 
     public ngOnInit() {
-      if ( this.config.checkedConfig) {
-          if (this.config.checkedConfig.width) {
-            this.checkedWidth = this.config.checkedConfig.width;
-          }
-      } 
+        if (this.config.checkedConfig) {
+            if (this.config.checkedConfig.width) {
+                this.checkedWidth = this.config.checkedConfig.width;
+            }
+        }
         if (this.config.select) {
             this.config.select.forEach(selectItem => {
                 this.config.columns.forEach(columnItem => {
@@ -366,9 +367,9 @@ export class BsnTableComponent extends CnComponentBase
                             break;
                     }
                 }
-            });     
+            });
         }
-       
+
         // 通过配置中的组件关系类型设置对应的事件接受者
         // 表格内部状态触发接收器
         if (
@@ -378,8 +379,8 @@ export class BsnTableComponent extends CnComponentBase
             // 注册消息发送方法
             // 注册行选中事件发送消息
             this.after(this, 'selectRow', () => {
-                 // 编辑行数据时,不进行消息发送
-                 if (this.editCache && this._selectRow && this.editCache.hasOwnProperty(this._selectRow['Id']) && this.editCache[this._selectRow['Id']]['edit']) {
+                // 编辑行数据时,不进行消息发送
+                if (this.editCache && this._selectRow && this.editCache.hasOwnProperty(this._selectRow['Id']) && this.editCache[this._selectRow['Id']]['edit']) {
                     return false;
                 }
                 this.cascade.next(
@@ -431,18 +432,18 @@ export class BsnTableComponent extends CnComponentBase
                                             });
                                         }
                                     }
-    
+
                                     // 匹配及联模式
                                     switch (mode) {
                                         case BSN_COMPONENT_CASCADE_MODES.REFRESH:
                                             this.load();
                                             break;
                                         case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
-                                        this.focusIds = null;    
-                                        this.load();
+                                            this.focusIds = null;
+                                            this.load();
                                             break;
                                         case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN:
-                                        this.focusIds = null;
+                                            this.focusIds = null;
                                             this.load();
                                             break;
                                         case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
@@ -456,7 +457,7 @@ export class BsnTableComponent extends CnComponentBase
                     }
                 );
             }
-            
+
         }
     }
 
@@ -632,7 +633,8 @@ export class BsnTableComponent extends CnComponentBase
                 componentValue: componentValue,
                 initValue: this.initValue,
                 cacheValue: this.cacheService,
-                cascadeValue: cascadeValue
+                cascadeValue: cascadeValue,
+                router: this._router
             });
         }
         return params;
@@ -702,7 +704,8 @@ export class BsnTableComponent extends CnComponentBase
                         componentValue: rowData,
                         item: rowData,
                         initValue: this.initValue,
-                        cacheValue: this.cacheService
+                        cacheValue: this.cacheService,
+                        router: this._router
                     });
                     submitData.push(submitItem);
                 });
@@ -824,7 +827,8 @@ export class BsnTableComponent extends CnComponentBase
                     tempValue: this.tempValue,
                     item: selectedRow,
                     initValue: this.initValue,
-                    cacheValue: this.cacheService
+                    cacheValue: this.cacheService,
+                    router: this._router
                 });
                 const response = await this[option.type](cfg[i].url, newParam);
                 if (response.isSuccess) {
@@ -1581,6 +1585,7 @@ export class BsnTableComponent extends CnComponentBase
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
             const selectedRow = this._selectRow ? this._selectRow : {};
             const tmpValue = this.tempValue ? this.tempValue : {};
+            tmpValue['moduleName'] = this._router.snapshot.params['name'] ? this._router.snapshot.params['name'] : '';
             const modal = this.baseModal.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
@@ -1985,7 +1990,8 @@ export class BsnTableComponent extends CnComponentBase
             item: handleData,
             initValue: this.initValue,
             cacheValue: this.cacheService,
-            returnValue: this.returnValue
+            returnValue: this.returnValue,
+            router: this._router
         });
         // 执行数据操作
         return this._executeRequest(
@@ -2007,7 +2013,8 @@ export class BsnTableComponent extends CnComponentBase
                         componentValue: dataItem,
                         initValue: this.initValue,
                         cacheValue: this.cacheService,
-                        returnValue: this.returnValue
+                        returnValue: this.returnValue,
+                        router: this._router
                     });
                     executeParams.push(newParam);
                 });
@@ -2021,7 +2028,8 @@ export class BsnTableComponent extends CnComponentBase
                     componentValue: handleData,
                     initValue: this.initValue,
                     cacheValue: this.cacheService,
-                    returnValue: this.returnValue
+                    returnValue: this.returnValue,
+                    router: this._router
                 })
             );
         }
@@ -2046,7 +2054,8 @@ export class BsnTableComponent extends CnComponentBase
                             tempValue: this.tempValue,
                             item: item,
                             initValue: this.initValue,
-                            cacheValue: this.cacheService
+                            cacheValue: this.cacheService,
+                            router: this._router
                         });
                         params.push(newParam);
                     });
@@ -2434,7 +2443,8 @@ export class BsnTableComponent extends CnComponentBase
                 tempValue: this.tempValue,
                 initValue: this.initValue,
                 cacheValue: this.cacheService,
-                cascadeValue: this.cascadeValue
+                cascadeValue: this.cascadeValue,
+                router: this._router
             });
         }
         return params;
@@ -3528,7 +3538,7 @@ export class BsnTableComponent extends CnComponentBase
 
     // ondrag 事件在元素或者选取的文本被拖动时触发。
     public f_drag(e?) {
- 
+
     }
 
     public onblur(e?, d?) {

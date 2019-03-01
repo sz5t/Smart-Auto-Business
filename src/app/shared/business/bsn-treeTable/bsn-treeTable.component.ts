@@ -127,6 +127,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         this.apiResource = this._api;
 
         this.operationCallback = focusId => {
+            debugger;
             this.load();
         }
 
@@ -135,7 +136,12 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         };
 
         this.windowCallback = () => {
-            this.expandCurrentRow();
+            if (this.selectedItem) {
+                this.expandCurrentRow();
+            } else {
+                this.load();
+            }
+            
         }
     }
 
@@ -499,8 +505,11 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
     }
 
     public expandCurrentRow() {
-        const children = this.selectedItem['children'] ? this.selectedItem['children'] : null;
-        this.expandChange(children, this.selectedItem, true);
+         if (this.selectedItem) {
+            const children = this.selectedItem['children'] ? this.selectedItem['children'] : null;
+            this.expandChange(children, this.selectedItem, true);
+         }
+        
     }
 
     public async expandChange(childrenData, data: any, $event: boolean) {
