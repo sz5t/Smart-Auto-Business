@@ -249,7 +249,12 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         });
     }
     public ngOnDestroy() {
-        this.unsubscribe();
+        if (this._statusSubscription) {
+            this._statusSubscription.unsubscribe();
+        }
+        if (this._cascadeSubscription) {
+            this._cascadeSubscription.unsubscribe();
+        }
     }
 
     // 解析消息
@@ -297,7 +302,6 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                                 this.dialog(option);
                             break;
                         case BSN_COMPONENT_MODES.EXECUTE:
-                            console.log('execute');
                             this._getAddedAndUpdatingRows();
                             this.resolver(option);
                             break;

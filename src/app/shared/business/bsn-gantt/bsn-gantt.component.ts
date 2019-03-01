@@ -105,6 +105,7 @@ export class BsnGanttComponent extends CnComponentBase implements OnInit, AfterV
     }
 
     public ngAfterViewInit(): void {
+
         this.load();
     }
 
@@ -188,48 +189,51 @@ export class BsnGanttComponent extends CnComponentBase implements OnInit, AfterV
             this.config.componentType &&
             this.config.componentType.child === true
         ) {
-            this._cascadeSubscription = this.cascadeEvents.subscribe(
-                cascadeEvent => {
-                    // 解析子表消息配置
-                    if (
-                        this.config.relations &&
-                        this.config.relations.length > 0
-                    ) {
-                        this.config.relations.forEach(relation => {
-                            if (
-                                relation.relationViewId === cascadeEvent._viewId
-                            ) {
-                                // 获取当前设置的级联的模式
-                                const mode =
-                                    BSN_COMPONENT_CASCADE_MODES[
-                                    relation.cascadeMode
-                                    ];
-                                // 获取传递的消息数据
-                                const option = cascadeEvent.option;
-                                // 解析参数
+            if (!this._cascadeSubscription) {
+                this._cascadeSubscription = this.cascadeEvents.subscribe(
+                    cascadeEvent => {
+                        // 解析子表消息配置
+                        if (
+                            this.config.relations &&
+                            this.config.relations.length > 0
+                        ) {
+                            this.config.relations.forEach(relation => {
                                 if (
-                                    relation.params &&
-                                    relation.params.length > 0
+                                    relation.relationViewId === cascadeEvent._viewId
                                 ) {
-                                    relation.params.forEach(param => {
-                                        this.tempValue[param['cid']] =
-                                            option.data[param['pid']];
-                                    });
+                                    // 获取当前设置的级联的模式
+                                    const mode =
+                                        BSN_COMPONENT_CASCADE_MODES[
+                                        relation.cascadeMode
+                                        ];
+                                    // 获取传递的消息数据
+                                    const option = cascadeEvent.option;
+                                    // 解析参数
+                                    if (
+                                        relation.params &&
+                                        relation.params.length > 0
+                                    ) {
+                                        relation.params.forEach(param => {
+                                            this.tempValue[param['cid']] =
+                                                option.data[param['pid']];
+                                        });
+                                    }
+                                    // 匹配及联模式
+                                    switch (mode) {
+                                        case BSN_COMPONENT_CASCADE_MODES.REFRESH:
+                                            this.load();
+                                            break;
+                                        case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                                            this.load();
+                                            break;
+                                    }
                                 }
-                                // 匹配及联模式
-                                switch (mode) {
-                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH:
-                                        this.load();
-                                        break;
-                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
-                                        this.load();
-                                        break;
-                                }
-                            }
-                        });
+                            });
+                        }
                     }
-                }
-            );
+                );
+            }
+            
         }
     }
 
@@ -571,9 +575,9 @@ export class BsnGanttComponent extends CnComponentBase implements OnInit, AfterV
 
         // set container id for the chart
         this.chart.container('container');
-
+        
         // initiate chart drawing
-        this.chart.draw();
+        this.chart.draw(true);
 
         // Set scale maximum and minimum.
         this.scale.minimumGap(0.08);
