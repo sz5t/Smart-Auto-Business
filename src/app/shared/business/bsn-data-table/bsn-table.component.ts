@@ -148,6 +148,7 @@ export class BsnTableComponent extends CnComponentBase
         this.baseMessage = this._message;
         this.baseModal = this.modalService;
         this.cacheValue = this.cacheService;
+        this.cascadeBase = this.cascade;
     }
 
     public ngOnInit() {
