@@ -81,7 +81,9 @@ export class SqlEditorComponent extends CnComponentBase
     implements OnInit, OnDestroy {
     public total = 1;
     public pageIndex = 1;
-    public pageSize = 100;
+    public pageSize = 10;
+    public PageSizeOptions = [5, 10, 20, 30, 40, 50 ];
+    public FrontPagination = false;
     public tableData = [];
     public _selectedRow;
     public _scriptName;
@@ -196,7 +198,12 @@ export class SqlEditorComponent extends CnComponentBase
         }
         this.loading = false;
     }
-
+    public searchData(reset: boolean = false) {
+        if (reset) {
+            this.pageIndex = 1;
+        }
+        this.load();
+    }
     public selectRow(row) {
         this.tableData.map(d => {
             d.selected = false;

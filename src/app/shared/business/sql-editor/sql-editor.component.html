@@ -45,7 +45,7 @@
         </nz-card>
         <nz-row [nzGutter]="8">
                 <nz-col nzSpan="24">
-                        <nz-table #sqlTable [nzTitle]="tableSearch" [nzData]="tableData" [nzSize]="'small'" [nzLoading]="loading" [nzTotal]="total" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize">
+                        <nz-table #sqlTable [nzTitle]="tableSearch" [nzData]="tableData" [nzSize]="'small'" [nzLoading]="loading" [nzTotal]="total" [nzFrontPagination]="FrontPagination"  [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzPageSizeOptions]="PageSizeOptions" (nzPageIndexChange)="searchData()" [nzShowSizeChanger]="true" (nzPageSizeChange)="searchData(true)" >
                                 <thead>
                                         <tr>
                                                 <th nzShowExpand></th>
