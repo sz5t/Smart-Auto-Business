@@ -114,7 +114,7 @@ export class DefaultInterceptor implements HttpInterceptor {
         let url;
         const currentConfig: any = this.cacheService.getNone("currentConfig");
         if (!currentConfig) {
-            url = SystemResource.localResource;
+            url = SystemResource.localResource.url;
             // url = environment.SERVER_URL;
         } else {
             url = currentConfig.Server;
