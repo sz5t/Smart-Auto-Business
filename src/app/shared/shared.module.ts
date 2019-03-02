@@ -1,3 +1,5 @@
+import { CnFormUploadComponent } from './components/cn-form-upload/cn-form-upload.component';
+import { PrintsComponent } from './../routes/delon/print/print.component';
 import { CnWeekPickerComponent } from './components/cn-date-picker/cn-week-picker.component';
 import { CnMonthPickerComponent } from './components/cn-date-picker/cn-month-picker.component';
 import { CnYearPickerComponent } from './components/cn-date-picker/cn-year-picker.component';
@@ -113,6 +115,7 @@ import { CnGridUploadListComponent } from '@shared/components/cn-grid-upload-lis
 import { SafeUrlPipe } from '@core/pipe/safe-url.pipe';
 import { BsnChartComponent } from './business/bsn-chart/bsn-chart.component';
 import { BsnGanttComponent } from './business/bsn-gantt/bsn-gantt.component';
+import { BtnTableStatusInfoPipe } from '@core/pipe/btn-table-status-info.pipe';
 
 
 const THIRDMODULES = [
@@ -219,7 +222,9 @@ const COMPONENTS = [
     CnGridUploadComponent,
     CnGridUploadListComponent,
     BsnChartComponent,
-    BsnGanttComponent
+    BsnGanttComponent,
+    PrintsComponent,
+    CnFormUploadComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
@@ -247,7 +252,8 @@ const DIRECTIVES = [
         ...COMPONENTS,
         ...DIRECTIVES,
         BtnTableFieldLimit,
-        SafeUrlPipe
+        SafeUrlPipe,
+        BtnTableStatusInfoPipe
     ],
     exports: [
         CommonModule,

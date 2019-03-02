@@ -31,8 +31,8 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
     public casadeData;
     @Output()
     private updateValue = new EventEmitter();
-    private _options = [];
-    private _selectedOption;
+    public _options = [];
+    public _selectedOption;
     private resultData;
     private cascadeValue = {};
     private cascadeSetValue = {};

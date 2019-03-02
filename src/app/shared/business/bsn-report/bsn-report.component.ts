@@ -31,7 +31,7 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
     @Input() 
     public initData;
 
-    private reportURL;
+    public reportURL;
 
     // @ViewChild('report')
     // private reportView: ElementRef;

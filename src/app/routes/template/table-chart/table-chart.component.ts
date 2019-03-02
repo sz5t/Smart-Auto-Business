@@ -18,7 +18,7 @@ import { Form, FormGroup } from '@angular/forms';
     styleUrls: ['./table-chart.css']
 })
 export class TableChartComponent implements OnInit, AfterViewInit {
-    private config = {
+    public config = {
         rows: [
             {
                 row: {
@@ -1044,11 +1044,11 @@ export class TableChartComponent implements OnInit, AfterViewInit {
     };
     constructor(private http: _HttpClient) {}
 
-    ngOnInit() {
+    public ngOnInit() {
         // console.log(JSON.stringify(this.config));
     }
     // region: init
-    ngAfterViewInit() {}
+    public ngAfterViewInit() {}
 
     // endregion
 }

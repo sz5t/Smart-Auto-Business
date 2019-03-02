@@ -130,7 +130,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     @Input()
     public permissions = [];
     @ViewChild('treeObj')
-    private treeObj: NzTreeComponent;
+    public treeObj: NzTreeComponent;
     public treeData: NzTreeNodeOptions[];
     public _relativeResolver;
     public checkedKeys = [];
@@ -143,7 +143,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     public dropdown: NzDropdownContextComponent;
     public _selectedNode = {};
     public is_Selectgrid = true;
-    private isLoading = false;
+    public isLoading = false;
     public searchValue;
     @Output() public updateValue = new EventEmitter();
     constructor(

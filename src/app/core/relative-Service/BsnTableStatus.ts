@@ -1,6 +1,39 @@
 import { InjectionToken } from '@angular/core';
 
-export const BSN_COMPONENT_MODES = {
+export interface ComponentModes {
+    CREATE: string,
+    CREATE_CHILD: string,
+    EDIT: string,
+    DELETE: string,
+    DELETE_SELECTED: string,
+    DIALOG: string,
+    WINDOW: string,
+    SAVE: string,
+    CANCEL: string,
+    CANCEL_SELECTED: string,
+    FORM: string,
+    EXECUTE_SELECTED: string,
+    EXECUTE_CHECKED: string,
+    SEARCH: string,
+    UPLOAD: string,
+    REFRESH: string,
+    ADD_ROW_DATA: string,
+    FORM_BATCH: string,
+    // tree
+    ADD_NODE: string,
+    EDIT_NODE: string,
+    DELETE_NODE: string,
+    SAVE_NODE: string,
+    EXECUTE: string,
+
+    // form
+    FORM_ADD: string,
+    FORM_EDIT: string,
+    FORM_LOAD: string
+
+}
+
+export const BSN_COMPONENT_MODES: ComponentModes = {
     // grid
     CREATE: 'create',
     CREATE_CHILD: 'create_child',

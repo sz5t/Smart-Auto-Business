@@ -42,15 +42,19 @@ import { CacheService } from '@delon/cache';
     ]
 })
 export class HeaderComponent {
-    searchToggleStatus: boolean;
-    projectName: string;
+    public searchToggleStatus: boolean;
+    public projectName: string;
 
     constructor(private cacheService: CacheService, public settings: SettingsService) {
         this.projectName = this.cacheService.getNone('AppName');
     }
 
-    toggleCollapsedSidebar() {
+    public toggleCollapsedSidebar() {
         this.settings.setLayout('collapsed', !this.settings.layout.collapsed);
+    }
+
+    public searchToggleChange() {
+        
     }
 
 }

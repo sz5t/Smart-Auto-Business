@@ -1,6 +1,3 @@
-<p>
-  cn-form-input-select works!参考文本值组件
-</p>
 <input nz-input
 (ngModelChange)="valueChange($event)"
 [ngStyle]="{'width':config.width}"
@@ -10,16 +7,15 @@ placeholder="{{config.placeholder}}"
 readonly="{{config.readonly}}"
 disabled="{{config.disabled}}"
 [(ngModel)]="_value"
-(blur)="onblur($event,'end')" (keyup)="onKeyPress($event,'end')"
+(keyup)="onKeyPress($event,'end')"
 >
 <button nz-button  (click)="showModal()">
-  <i class="anticon anticon-edit"></i>
+
 </button>
 
 
 <nz-modal [(nzVisible)]="isVisible" [nzWidth]="config.select.nzWidth" [nzTitle]="config.select.title" (nzOnCancel)="handleCancel()"
     (nzOnOk)="handleOk()">
-    <p>测试多选</p>
 <nz-tag *ngFor="let tag of tags; let i = index;" [nzMode]="i === 0 ? 'default' : 'closeable'" (nzAfterClose)="handleClose(tag)">
     {{ sliceTagName(tag) }}
 </nz-tag>

@@ -591,15 +591,15 @@ export class BsnGanttComponent extends CnComponentBase implements OnInit, AfterV
         return (strokeThickness % 2) ? .5 : 0;
     }
 
-    private zoomIn() {
+    public zoomIn() {
         this.chart.zoomIn();
     }
 
-    private zoomOut() {
+    public zoomOut() {
         this.chart.zoomOut();
     }
 
-    private fitAll() {
+    public fitAll() {
         this.chart.fitAll();
     }
 }

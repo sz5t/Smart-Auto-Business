@@ -33,11 +33,11 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
     public initValue;
     @Input()
     private changeConfig;
-    private formGroup: FormGroup;
+    public formGroup: FormGroup;
     // @Output() updateValue = new EventEmitter();
     @Output()
     public updateValue = new EventEmitter();
-    private _options = [];
+    public _options = [];
     private cascadeValue = {};
     private resultData;
     public cacheValue;

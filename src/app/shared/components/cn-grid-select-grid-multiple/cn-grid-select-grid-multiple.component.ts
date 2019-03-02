@@ -1,12 +1,14 @@
+import { CnComponentBase } from './../cn-component-base';
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { BsnTableComponent } from '@shared/business/bsn-data-table/bsn-table.component';
+import { initDomAdapter } from '@angular/platform-browser/src/browser';
 
 @Component({
   selector: 'cn-grid-select-grid-multiple',
   templateUrl: './cn-grid-select-grid-multiple.component.html',
   styleUrls: ['./cn-grid-select-grid-multiple.component.css']
 })
-export class CnGridSelectGridMultipleComponent implements OnInit {
+export class CnGridSelectGridMultipleComponent extends CnComponentBase implements OnInit {
 
   @Input() public config;
   @Input() public value;
@@ -18,6 +20,7 @@ export class CnGridSelectGridMultipleComponent implements OnInit {
   @Output() public updateValue = new EventEmitter();
 
   @ViewChild('table') public table: BsnTableComponent;
+  @Input() public initData;
   public resultData;
   public cascadeValue = {};
   public cascadeSetValue = {};
@@ -34,7 +37,9 @@ export class CnGridSelectGridMultipleComponent implements OnInit {
   public inputVisible = false;
   private inputValue1 = '';
 
-  constructor() { }
+  constructor() { 
+    super();
+  }
   public nzWidth = 1024;
 
   // 模板配置

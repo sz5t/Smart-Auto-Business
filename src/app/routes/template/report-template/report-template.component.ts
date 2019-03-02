@@ -13,7 +13,7 @@ import { _HttpClient } from '@delon/theme';
 export class ReportTemplateComponent implements OnInit {
     constructor() {}
 
-    private config = {
+    public config = {
         rows: [
             {
                 row: {

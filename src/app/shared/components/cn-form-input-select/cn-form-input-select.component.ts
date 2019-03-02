@@ -42,7 +42,13 @@ export class CnFormInputSelectComponent implements OnInit {
   }
 
 
+  public valueChange($event) {
 
+  }
+
+  public onKeyPress($event, t) {
+    
+  }
   // 文本值，可填、可选
   // 选则内容，树、树表、列表 基本需要这3种组件中取值
 

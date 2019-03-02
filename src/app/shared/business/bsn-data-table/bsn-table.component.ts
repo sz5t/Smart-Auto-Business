@@ -434,7 +434,8 @@ export class BsnTableComponent extends CnComponentBase
                                     }
 
                                     // 匹配及联模式
-                                    switch (mode) {
+                                    if (cascadeEvent._mode === mode) {
+                                        switch (mode) {
                                         case BSN_COMPONENT_CASCADE_MODES.REFRESH:
                                             this.load();
                                             break;
@@ -451,6 +452,8 @@ export class BsnTableComponent extends CnComponentBase
                                         case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
                                             break;
                                     }
+                                    }
+                                    
                                 }
                             });
                         }
@@ -491,9 +494,23 @@ export class BsnTableComponent extends CnComponentBase
                     if (loadData.data.focusedId) {
                         focusId = loadData.data.focusedId[0];
                     } else {
-                        loadData.data.rows.length > 0 &&
+                        const slcId = this._selectRow['key'];
+                        if(slcId) {
+                            if(loadData.data.rows.length > 0 &&
+                                loadData.data.rows.filter(s => s[this.config.keyId] === slcId).length > 0
+                            ) {
+                                focusId = slcId;
+                            } else {
+                                loadData.data.rows.length > 0 &&
+                                (focusId = loadData.data.rows[0].Id);
+                            }
+                        } else {
+                            loadData.data.rows.length > 0 &&
                             (focusId = loadData.data.rows[0].Id);
+                        }
+                        
                     }
+                    console.log(focusId);
                     if (loadData.data.rows.length > 0) {
                         loadData.data.rows.forEach((row, index) => {
                             row['key'] = row[this.config.keyId]

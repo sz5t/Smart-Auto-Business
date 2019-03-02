@@ -23,10 +23,10 @@ export class LayoutPassportComponent implements OnInit {
             href: ''
         }
     ];
-    private title: string;
-    private subTitle: string;
-    private company: string;
-    private year: string
+    public title: string;
+    public subTitle: string;
+    public company: string;
+    public year: string
     constructor(
         private _route: ActivatedRoute,
         private _apiService: ApiService

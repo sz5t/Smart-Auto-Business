@@ -51,6 +51,7 @@ export class ComponentSettingResolverComponent
     layoutId;
     @Input()
     bufferId;
+    nodes;
     _serverLayoutId;
     _dataStruct = {
         bsnDataTable: {

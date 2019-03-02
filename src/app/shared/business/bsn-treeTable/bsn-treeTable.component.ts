@@ -127,7 +127,6 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         this.apiResource = this._api;
 
         this.operationCallback = focusId => {
-            debugger;
             this.load();
         }
 

@@ -2,7 +2,7 @@
 <nz-table #nzTable [nzData]="dataList" [nzSize]="config.size" [nzFrontPagination]="false" [nzShowSizeChanger]="true" [nzTotal]="total"
     [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzShowTotal]="totals" [nzPageSizeOptions]="config.pageSizeOptions"
     [nzLoading]="loading" (nzPageIndexChange)="searchData()" (nzPageSizeChange)="searchData(true)" [nzTitle]="this.config.title ? title : false"
-    [nzFooter]="footer" [nzNoResult]="noResult" [nzLoadingDelay]="50" [nzScroll]="config.scroll ? config.scroll : {}" nzBordered>
+    [nzNoResult]="noResult" [nzLoadingDelay]="50" [nzScroll]="config.scroll ? config.scroll : {}" nzBordered>
 
     <thead (nzSortChange)="sort($event)" nzSingleSort>
         <tr (contextmenu)="contextMenu($event,contextTemplate)">

@@ -31,8 +31,8 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
     public casadeData;
     @Output()
     private updateValue = new EventEmitter();
-    private _options = [];
-    private _selectedOption;
+    public _options = [];
+    public _selectedOption;
     private resultData;
     private cascadeValue = {};
     private cascadeSetValue = {};
