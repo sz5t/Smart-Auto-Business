@@ -510,7 +510,6 @@ export class BsnTableComponent extends CnComponentBase
                         }
                         
                     }
-                    console.log(focusId);
                     if (loadData.data.rows.length > 0) {
                         loadData.data.rows.forEach((row, index) => {
                             row['key'] = row[this.config.keyId]
@@ -1897,7 +1896,7 @@ export class BsnTableComponent extends CnComponentBase
             const msgObj = msg
                 ? response.data[msg.name].split(':')
                 : null;
-            const valueObj = response.data ? response.data : {};
+            const valueObj = response.data ? response.data : null;
             // const tableObj = response.data[table.name] ? response.data[table.name] : [];
             if (msgObj && msgObj.length > 1) {
                 const messageType = msgObj[0];
@@ -1984,7 +1983,10 @@ export class BsnTableComponent extends CnComponentBase
                     f => f.parentName && f.parentName === c.name
                 );
                 //  目前紧支持一次执行一个分之步骤
-                this._getAjaxConfig(childrenConfig[0], ajaxConfig);
+                if (childrenConfig && childrenConfig.length > 0) {
+                    this._getAjaxConfig(childrenConfig[0], ajaxConfig);
+                }
+                
             }
 
         } else {

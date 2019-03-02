@@ -30,28 +30,28 @@ const routes: Routes = [
             { path: '', redirectTo: 'dashboard/v1', pathMatch: 'full', canActivate: [AuthGuard] },
             { path: 'dashboard', redirectTo: 'dashboard/v1', pathMatch: 'full', canActivate: [AuthGuard] },
             { path: 'dashboard/v1', component: DashboardV1Component, canActivate: [AuthGuard] },
-            { path: 'dashboard/analysis', component: DashboardAnalysisComponent, data: { title: '工作台'}, canActivate: [AuthGuard]  },
-            { path: 'dashboard/monitor', component: DashboardMonitorComponent, canActivate: [AuthGuard] },
-            { path: 'dashboard/workplace', component: DashboardWorkplaceComponent, data: { title: '工作台'}, canActivate: [AuthGuard] },
-            { path: 'widgets', loadChildren: './widgets/widgets.module#WidgetsModule' },
-            { path: 'style', loadChildren: './style/style.module#StyleModule' },
-            { path: 'delon', loadChildren: './delon/delon.module#DelonModule' },
-            { path: 'extras', loadChildren: './extras/extras.module#ExtrasModule' },
-            { path: 'pro', loadChildren: './pro/pro.module#ProModule' },
-            { path: 'system', loadChildren: './system/system.module#SystemModule'},
-            { path: 'settings', loadChildren: './settings/settings.module#SettingsModule'},
-            { path: 'test', loadChildren: './cn-test/cn-test.module#CnTestModule'},
-            { path: 'template', loadChildren: './template/template.module#TemplateModule'}
+            // { path: 'dashboard/analysis', component: DashboardAnalysisComponent, data: { title: '工作台'}, canActivate: [AuthGuard]  },
+            // { path: 'dashboard/monitor', component: DashboardMonitorComponent, canActivate: [AuthGuard] },
+            // { path: 'dashboard/workplace', component: DashboardWorkplaceComponent, data: { title: '工作台'}, canActivate: [AuthGuard] },
+            // { path: 'widgets', loadChildren: './widgets/widgets.module#WidgetsModule' },
+            // { path: 'style', loadChildren: './style/style.module#StyleModule' },
+            // { path: 'delon', loadChildren: './delon/delon.module#DelonModule' },
+            // { path: 'extras', loadChildren: './extras/extras.module#ExtrasModule' },
+            // { path: 'pro', loadChildren: './pro/pro.module#ProModule' },
+            // { path: 'system', loadChildren: './system/system.module#SystemModule'},
+            // { path: 'settings', loadChildren: './settings/settings.module#SettingsModule'},
+            // { path: 'test', loadChildren: './cn-test/cn-test.module#CnTestModule'},
+            { path: 'template', loadChildren: './template/template.module#TemplateModule', canActivate: [AuthGuard]}
         ]
     },
     // 全屏布局
-    {
-        path: 'data-v',
-        component: LayoutFullScreenComponent,
-        children: [
-            { path: '', loadChildren: './data-v/data-v.module#DataVModule' }
-        ]
-    },
+    // {
+    //     path: 'data-v',
+    //     component: LayoutFullScreenComponent,
+    //     children: [
+    //         { path: '', loadChildren: './data-v/data-v.module#DataVModule' }
+    //     ]
+    // },
     // passport
     {
         path: 'passport',

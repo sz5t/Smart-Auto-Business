@@ -1640,7 +1640,6 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
     // }
 
     // public cancelRow() {
-    //     // debugger;
     //     // for (let i = 0, len = this.dataList.length; i < len; i++) {
     //     //     if (this.dataList[i].checked) {
     //     //         if (this.dataList[i]['row_status'] === 'adding') {

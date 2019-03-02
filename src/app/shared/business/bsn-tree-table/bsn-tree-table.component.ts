@@ -816,7 +816,6 @@ export class BsnTreeTableComponent extends GridBase
     }
 
     private _editRowData() {
-        // debugger;
         const checkedRowStatusMap = this._getCheckedRowStatusMap();
         checkedRowStatusMap.forEach(item => {
             if (item.status === 'updating') {
@@ -1554,7 +1553,6 @@ export class BsnTreeTableComponent extends GridBase
     }
 
     public cancelRow() {
-        // debugger;
         // for (let i = 0, len = this.dataList.length; i < len; i++) {
         //     if (this.dataList[i].checked) {
         //         if (this.dataList[i]['row_status'] === 'adding') {

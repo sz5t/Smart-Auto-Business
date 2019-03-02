@@ -1,37 +1,37 @@
-import { APIResource } from "@core/utility/api-resource";
+import { APIResource } from '@core/utility/api-resource';
 import {
     Component,
     OnDestroy,
     OnInit,
     TemplateRef,
     ViewChild
-} from "@angular/core";
-import { ApiService } from "@core/utility/api-service";
+} from '@angular/core';
+import { ApiService } from '@core/utility/api-service';
 import {
     NzMessageService,
     NzDropdownContextComponent,
     NzDropdownService,
     NzMenuItemDirective
-} from "ng-zorro-antd";
+} from 'ng-zorro-antd';
 import {
     RelativeService,
     RelativeResolver
-} from "@core/relative-Service/relative-service";
-import { CnComponentBase } from "@shared/components/cn-component-base";
+} from '@core/relative-Service/relative-service';
+import { CnComponentBase } from '@shared/components/cn-component-base';
 
 @Component({
-    selector: "app-operation-setting",
-    templateUrl: "./operation-setting.component.html"
+    selector: 'app-operation-setting',
+    templateUrl: './operation-setting.component.html'
 })
 export class OperationSettingComponent extends CnComponentBase
     implements OnInit, OnDestroy {
-    _funcOptions = [];
-    _funcValue;
-    _layoutValue;
-    _selectedModuleText;
+    public _funcOptions = [];
+    public _funcValue;
+    public _layoutValue;
+    public _selectedModuleText;
     // 布局列表数据
-    _layoutList = [];
-    _editorConfig = {
+    public _layoutList = [];
+    public _editorConfig = {
         rows: [
             {
                 row: {
@@ -47,18 +47,18 @@ export class OperationSettingComponent extends CnComponentBase
                             },
                             tabs: [
                                 {
-                                    title: "基本属性",
-                                    icon: "anticon anticon-edit",
+                                    title: '基本属性',
+                                    icon: 'anticon anticon-edit',
                                     active: true,
                                     viewCfg: [
                                         {
-                                            viewId: "opt_base",
-                                            component: "form_view",
+                                            viewId: 'opt_base',
+                                            component: 'form_view',
                                             config: {
-                                                viewId: "opt_base",
+                                                viewId: 'opt_base',
                                                 ajaxConfig: {
-                                                    url: "AppModuleConfig",
-                                                    ajaxType: "get",
+                                                    url: 'AppModuleConfig',
+                                                    ajaxType: 'get',
                                                     params: []
                                                 },
                                                 componentType: {
@@ -68,236 +68,236 @@ export class OperationSettingComponent extends CnComponentBase
                                                 },
                                                 forms: [
                                                     {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "10",
-                                                        inputType: "text",
-                                                        name: "Name",
-                                                        label: "名称",
-                                                        placeholder: "",
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '10',
+                                                        inputType: 'text',
+                                                        name: 'Name',
+                                                        label: '名称',
+                                                        placeholder: '',
                                                         disabled: false,
                                                         readonly: false,
-                                                        size: "default"
+                                                        size: 'default'
                                                     },
                                                     {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "10",
-                                                        inputType: "text",
-                                                        name: "operationName",
-                                                        label: "操作名称",
-                                                        placeholder: "",
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '10',
+                                                        inputType: 'text',
+                                                        name: 'operationName',
+                                                        label: '操作名称',
+                                                        placeholder: '',
                                                         disabled: false,
                                                         readonly: false,
-                                                        size: "default"
+                                                        size: 'default'
                                                     },
                                                     {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "10",
-                                                        inputType: "text",
-                                                        name: "operationIcon",
-                                                        label: "操作图标",
-                                                        placeholder: "",
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '10',
+                                                        inputType: 'text',
+                                                        name: 'operationIcon',
+                                                        label: '操作图标',
+                                                        placeholder: '',
                                                         disabled: false,
                                                         readonly: false,
-                                                        size: "default"
+                                                        size: 'default'
                                                     },
                                                     {
-                                                        type: "select",
-                                                        labelSize: "6",
-                                                        controlSize: "10",
-                                                        inputType: "submit",
-                                                        name: "operationType",
-                                                        label: "操作类型",
-                                                        notFoundContent: "",
+                                                        type: 'select',
+                                                        labelSize: '6',
+                                                        controlSize: '10',
+                                                        inputType: 'submit',
+                                                        name: 'operationType',
+                                                        label: '操作类型',
+                                                        notFoundContent: '',
                                                         selectModel: false,
                                                         showSearch: true,
                                                         placeholder:
-                                                            "--请选择--",
+                                                            '--请选择--',
                                                         disabled: false,
-                                                        size: "default",
+                                                        size: 'default',
                                                         options: [
                                                             {
-                                                                label: "无",
-                                                                value: "none"
+                                                                label: '无',
+                                                                value: 'none'
                                                             },
                                                             {
                                                                 label:
-                                                                    "刷新数据",
-                                                                value: "refresh"
+                                                                    '刷新数据',
+                                                                value: 'refresh'
                                                             },
                                                             {
                                                                 label:
-                                                                    "执行SQL",
+                                                                    '执行SQL',
                                                                 value:
-                                                                    "exec_sql"
+                                                                    'exec_sql'
                                                             },
                                                             {
                                                                 label:
-                                                                    "执行SQL后刷新",
+                                                                    '执行SQL后刷新',
                                                                 value:
-                                                                    "after_sql"
+                                                                    'after_sql'
                                                             },
                                                             {
                                                                 label:
-                                                                    "弹出确认框",
-                                                                value: "confirm"
+                                                                    '弹出确认框',
+                                                                value: 'confirm'
                                                             },
                                                             {
                                                                 label:
-                                                                    "弹出窗体",
-                                                                value: "dialog"
+                                                                    '弹出窗体',
+                                                                value: 'dialog'
                                                             },
                                                             {
                                                                 label:
-                                                                    "弹出表单",
-                                                                value: "form"
+                                                                    '弹出表单',
+                                                                value: 'form'
                                                             },
                                                             {
                                                                 label:
-                                                                    "执行SQL后刷新主界面",
+                                                                    '执行SQL后刷新主界面',
                                                                 value:
-                                                                    "refresh_parent"
+                                                                    'refresh_parent'
                                                             }
                                                         ]
                                                     },
                                                     {
-                                                        type: "select",
-                                                        labelSize: "6",
-                                                        controlSize: "10",
-                                                        inputType: "submit",
+                                                        type: 'select',
+                                                        labelSize: '6',
+                                                        controlSize: '10',
+                                                        inputType: 'submit',
                                                         name:
-                                                            "operationActionType",
-                                                        label: "动作类型",
-                                                        notFoundContent: "",
+                                                            'operationActionType',
+                                                        label: '动作类型',
+                                                        notFoundContent: '',
                                                         selectModel: false,
                                                         showSearch: true,
                                                         placeholder:
-                                                            "--请选择--",
+                                                            '--请选择--',
                                                         disabled: false,
-                                                        size: "default",
+                                                        size: 'default',
                                                         options: [
                                                             {
-                                                                label: "操作",
+                                                                label: '操作',
                                                                 value:
-                                                                    "operation"
+                                                                    'operation'
                                                             },
                                                             {
-                                                                label: "动作",
-                                                                value: "action"
+                                                                label: '动作',
+                                                                value: 'action'
                                                             }
                                                         ]
                                                     },
                                                     {
-                                                        type: "select",
-                                                        labelSize: "6",
-                                                        controlSize: "10",
-                                                        inputType: "submit",
-                                                        name: "operationStatus",
-                                                        label: "操作后状态",
-                                                        notFoundContent: "",
+                                                        type: 'select',
+                                                        labelSize: '6',
+                                                        controlSize: '10',
+                                                        inputType: 'submit',
+                                                        name: 'operationStatus',
+                                                        label: '操作后状态',
+                                                        notFoundContent: '',
                                                         selectModel: false,
                                                         showSearch: true,
                                                         placeholder:
-                                                            "--请选择--",
+                                                            '--请选择--',
                                                         disabled: false,
-                                                        size: "default",
+                                                        size: 'default',
                                                         options: [
                                                             {
                                                                 label:
-                                                                    "浏览状态",
-                                                                value: "normal"
+                                                                    '浏览状态',
+                                                                value: 'normal'
                                                             },
                                                             {
                                                                 label:
-                                                                    "新增状态",
-                                                                value: "new"
+                                                                    '新增状态',
+                                                                value: 'new'
                                                             },
                                                             {
                                                                 label:
-                                                                    "编辑状态",
-                                                                value: "edit"
+                                                                    '编辑状态',
+                                                                value: 'edit'
                                                             }
                                                         ]
                                                     },
                                                     {
-                                                        type: "select",
-                                                        labelSize: "6",
-                                                        controlSize: "10",
-                                                        inputType: "submit",
+                                                        type: 'select',
+                                                        labelSize: '6',
+                                                        controlSize: '10',
+                                                        inputType: 'submit',
                                                         name:
-                                                            "operationNullData",
-                                                        label: "空数据状态",
-                                                        notFoundContent: "",
+                                                            'operationNullData',
+                                                        label: '空数据状态',
+                                                        notFoundContent: '',
                                                         selectModel: false,
                                                         showSearch: true,
                                                         placeholder:
-                                                            "--请选择--",
+                                                            '--请选择--',
                                                         disabled: false,
-                                                        size: "default",
+                                                        size: 'default',
                                                         options: [
                                                             {
-                                                                label: "启用",
+                                                                label: '启用',
                                                                 value: true
                                                             },
                                                             {
-                                                                label: "禁用",
+                                                                label: '禁用',
                                                                 value: false
                                                             }
                                                         ]
                                                     },
                                                     {
-                                                        type: "select",
-                                                        labelSize: "6",
-                                                        controlSize: "10",
-                                                        inputType: "submit",
+                                                        type: 'select',
+                                                        labelSize: '6',
+                                                        controlSize: '10',
+                                                        inputType: 'submit',
                                                         name:
-                                                            "operationDefaultStatus",
-                                                        label: "默认状态",
-                                                        notFoundContent: "",
+                                                            'operationDefaultStatus',
+                                                        label: '默认状态',
+                                                        notFoundContent: '',
                                                         selectModel: false,
                                                         showSearch: true,
                                                         placeholder:
-                                                            "--请选择--",
+                                                            '--请选择--',
                                                         disabled: false,
-                                                        size: "default",
+                                                        size: 'default',
                                                         options: [
                                                             {
-                                                                label: "启用",
+                                                                label: '启用',
                                                                 value: true
                                                             },
                                                             {
-                                                                label: "禁用",
+                                                                label: '禁用',
                                                                 value: false
                                                             }
                                                         ]
                                                     },
                                                     {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "10",
-                                                        inputType: "text",
-                                                        name: "operationOrder",
-                                                        label: "顺序",
-                                                        placeholder: "",
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '10',
+                                                        inputType: 'text',
+                                                        name: 'operationOrder',
+                                                        label: '顺序',
+                                                        placeholder: '',
                                                         disabled: false,
                                                         readonly: false,
-                                                        size: "default"
+                                                        size: 'default'
                                                     }
                                                 ],
                                                 toolbar: [
                                                     {
-                                                        name: "saveForm",
+                                                        name: 'saveForm',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "保存"
+                                                            'editable-add-btn',
+                                                        text: '保存'
                                                     },
                                                     {
-                                                        name: "cancelRow",
+                                                        name: 'cancelRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "取消"
+                                                            'editable-add-btn',
+                                                        text: '取消'
                                                     }
                                                 ],
 
@@ -305,7 +305,7 @@ export class OperationSettingComponent extends CnComponentBase
                                                 relations: [
                                                     {
                                                         relationViewId:
-                                                            "viewId_testList",
+                                                            'viewId_testList',
                                                         relationSendContent: [],
                                                         relationReceiveContent: []
                                                     }
@@ -316,16 +316,16 @@ export class OperationSettingComponent extends CnComponentBase
                                     ]
                                 },
                                 {
-                                    title: "SQL 语句",
-                                    icon: "anticon anticon-info-circle-o",
+                                    title: 'SQL 语句',
+                                    icon: 'anticon anticon-info-circle-o',
                                     active: false,
                                     viewCfg: [
                                         {
-                                            viewId: "operation_sqlColumns",
-                                            component: "bsnDataTable",
+                                            viewId: 'operation_sqlColumns',
+                                            component: 'bsnDataTable',
                                             config: {
-                                                viewId: "operation_sqlColumns",
-                                                keyId: "key",
+                                                viewId: 'operation_sqlColumns',
+                                                keyId: 'key',
                                                 nzIsPagination: false, // 是否分页
                                                 nzShowTotal: true, // 是否显示总数据量
                                                 pageSize: 5, // 默认每页数据条数
@@ -340,21 +340,21 @@ export class OperationSettingComponent extends CnComponentBase
                                                 nzLoading: false, // 是否显示加载中
                                                 nzBordered: false, // 是否显示边框
                                                 ajaxConfig: {
-                                                    url: "AppConfigPack",
-                                                    ajaxType: "get",
+                                                    url: 'AppConfigPack',
+                                                    ajaxType: 'get',
                                                     params: [
                                                         {
-                                                            name: "ParentId",
-                                                            type: "tempValue",
-                                                            valueName: "_Id",
-                                                            value: ""
+                                                            name: 'ParentId',
+                                                            type: 'tempValue',
+                                                            valueName: '_Id',
+                                                            value: ''
                                                         },
                                                         {
-                                                            name: "TagB",
-                                                            type: "tempValue",
+                                                            name: 'TagB',
+                                                            type: 'tempValue',
                                                             valueName:
-                                                                "_optType",
-                                                            value: ""
+                                                                '_optType',
+                                                            value: ''
                                                         }
                                                     ]
                                                 },
@@ -366,31 +366,31 @@ export class OperationSettingComponent extends CnComponentBase
                                                 relation: [
                                                     {
                                                         relationViewId:
-                                                            "operation_sqlColumns",
+                                                            'operation_sqlColumns',
                                                         relationSendContent: [
                                                             {
                                                                 name:
-                                                                    "selectRow",
+                                                                    'selectRow',
                                                                 sender:
-                                                                    "operation_sqlColumns",
-                                                                aop: "after",
+                                                                    'operation_sqlColumns',
+                                                                aop: 'after',
                                                                 receiver:
-                                                                    "operation_sqlParams",
+                                                                    'operation_sqlParams',
                                                                 relationData: {
                                                                     name:
-                                                                        "refreshAsChild",
+                                                                        'refreshAsChild',
                                                                     params: [
                                                                         {
                                                                             pid:
-                                                                                "key",
+                                                                                'key',
                                                                             cid:
-                                                                                "_parentId"
+                                                                                '_parentId'
                                                                         },
                                                                         {
                                                                             pid:
-                                                                                "ScriptText",
+                                                                                'ScriptText',
                                                                             cid:
-                                                                                "_scriptText"
+                                                                                '_scriptText'
                                                                         }
                                                                     ]
                                                                 }
@@ -401,93 +401,93 @@ export class OperationSettingComponent extends CnComponentBase
                                                 ],
                                                 columns: [
                                                     {
-                                                        title: "主键",
-                                                        field: "key",
-                                                        width: "auto",
+                                                        title: '主键',
+                                                        field: 'key',
+                                                        width: 'auto',
                                                         hidden: true
                                                     },
                                                     {
-                                                        title: "SQL 语句",
-                                                        field: "ScriptText",
+                                                        title: 'SQL 语句',
+                                                        field: 'ScriptText',
                                                         width: 80,
                                                         editor: {
-                                                            type: "input",
-                                                            field: "ScriptText",
+                                                            type: 'input',
+                                                            field: 'ScriptText',
                                                             options: {
-                                                                type: "select",
-                                                                labelSize: "6",
+                                                                type: 'select',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "10",
-                                                                width: "120px",
+                                                                    '10',
+                                                                width: '120px',
                                                                 inputType:
-                                                                    "text",
+                                                                    'text',
                                                                 labelName:
-                                                                    "Name",
-                                                                valueName: "Id",
+                                                                    'Name',
+                                                                valueName: 'Id',
                                                                 ajaxConfig: {
                                                                     url: {
                                                                         parent:
-                                                                            "AppModuleConfig",
+                                                                            'AppModuleConfig',
                                                                         child:
-                                                                            "DbCommandConfig",
+                                                                            'DbCommandConfig',
                                                                         params: [
                                                                             {
                                                                                 type:
-                                                                                    "tempValue",
+                                                                                    'tempValue',
                                                                                 valueName:
-                                                                                    "_moduleId"
+                                                                                    '_moduleId'
                                                                             }
                                                                         ]
                                                                     },
                                                                     ajaxType:
-                                                                        "get",
+                                                                        'get',
                                                                     params: []
                                                                 }
                                                             }
                                                         }
                                                     },
                                                     {
-                                                        title: "执行方式",
-                                                        field: "sqlExecType",
+                                                        title: '执行方式',
+                                                        field: 'sqlExecType',
                                                         width: 80,
                                                         hidden: false,
                                                         editor: {
-                                                            type: "select",
+                                                            type: 'select',
                                                             field:
-                                                                "sqlExecType",
+                                                                'sqlExecType',
                                                             options: {
-                                                                type: "select",
-                                                                labelSize: "6",
+                                                                type: 'select',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "10",
+                                                                    '10',
                                                                 inputType:
-                                                                    "submit",
+                                                                    'submit',
                                                                 name:
-                                                                    "sqlExecType",
-                                                                label: "",
+                                                                    'sqlExecType',
+                                                                label: '',
                                                                 notFoundContent:
-                                                                    "",
+                                                                    '',
                                                                 selectModel: false,
                                                                 showSearch: true,
                                                                 placeholder:
-                                                                    "-请选择-",
+                                                                    '-请选择-',
                                                                 disabled: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 clear: true,
-                                                                width: "80px",
+                                                                width: '80px',
                                                                 options: [
                                                                     {
                                                                         label:
-                                                                            "执行一次",
+                                                                            '执行一次',
                                                                         value:
-                                                                            "1",
+                                                                            '1',
                                                                         disabled: false
                                                                     },
                                                                     {
                                                                         label:
-                                                                            "执行两次",
+                                                                            '执行两次',
                                                                         value:
-                                                                            "2",
+                                                                            '2',
                                                                         disabled: false
                                                                     }
                                                                 ]
@@ -495,46 +495,46 @@ export class OperationSettingComponent extends CnComponentBase
                                                         }
                                                     },
                                                     {
-                                                        title: "执行状态",
-                                                        field: "sqlExecStatus",
+                                                        title: '执行状态',
+                                                        field: 'sqlExecStatus',
                                                         width: 80,
                                                         hidden: false,
                                                         editor: {
-                                                            type: "select",
+                                                            type: 'select',
                                                             field:
-                                                                "sqlExecStatus",
+                                                                'sqlExecStatus',
                                                             options: {
-                                                                type: "select",
-                                                                labelSize: "6",
+                                                                type: 'select',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "10",
+                                                                    '10',
                                                                 inputType:
-                                                                    "submit",
-                                                                name: "sex",
-                                                                label: "",
+                                                                    'submit',
+                                                                name: 'sex',
+                                                                label: '',
                                                                 notFoundContent:
-                                                                    "",
+                                                                    '',
                                                                 selectModel: false,
                                                                 showSearch: true,
                                                                 placeholder:
-                                                                    "-请选择-",
+                                                                    '-请选择-',
                                                                 disabled: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 clear: true,
-                                                                width: "80px",
+                                                                width: '80px',
                                                                 options: [
                                                                     {
                                                                         label:
-                                                                            "新增",
+                                                                            '新增',
                                                                         value:
-                                                                            "1",
+                                                                            '1',
                                                                         disabled: false
                                                                     },
                                                                     {
                                                                         label:
-                                                                            "编辑",
+                                                                            '编辑',
                                                                         value:
-                                                                            "2",
+                                                                            '2',
                                                                         disabled: false
                                                                     }
                                                                 ]
@@ -542,137 +542,137 @@ export class OperationSettingComponent extends CnComponentBase
                                                         }
                                                     },
                                                     {
-                                                        title: "",
-                                                        field: "Id",
+                                                        title: '',
+                                                        field: 'Id',
                                                         width: 80,
                                                         hidden: true
                                                     }
                                                 ],
                                                 toolbar: [
                                                     {
-                                                        name: "refresh",
+                                                        name: 'refresh',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "刷新"
+                                                            'editable-add-btn',
+                                                        text: '刷新'
                                                     },
                                                     {
-                                                        name: "addRow",
+                                                        name: 'addRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "新增"
+                                                            'editable-add-btn',
+                                                        text: '新增'
                                                     },
                                                     {
-                                                        name: "updateRow",
+                                                        name: 'updateRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "修改"
+                                                            'editable-add-btn',
+                                                        text: '修改'
                                                     },
                                                     {
-                                                        name: "deleteRow",
+                                                        name: 'deleteRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "删除"
+                                                            'editable-add-btn',
+                                                        text: '删除'
                                                     },
                                                     {
-                                                        name: "saveRow",
+                                                        name: 'saveRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "保存",
+                                                            'editable-add-btn',
+                                                        text: '保存',
                                                         ajaxConfig: {
                                                             add: {
                                                                 url:
-                                                                    "AppConfigPack",
+                                                                    'AppConfigPack',
                                                                 ajaxType:
-                                                                    "post",
+                                                                    'post',
                                                                 params: [
                                                                     {
                                                                         name:
-                                                                            "ParentId",
+                                                                            'ParentId',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "_Id",
+                                                                            '_Id',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     /*                   { name: 'Name', type: 'tempValue', valueName: '取值参数名称', value: 'liutest11' },*/
                                                                     {
                                                                         name:
-                                                                            "TagA",
+                                                                            'TagA',
                                                                         type:
-                                                                            "GUID",
+                                                                            'GUID',
                                                                         valueName:
-                                                                            "取值参数名称",
+                                                                            '取值参数名称',
                                                                         value:
-                                                                            "GUID"
+                                                                            'GUID'
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "TagB",
+                                                                            'TagB',
                                                                         type:
-                                                                            "value",
+                                                                            'value',
                                                                         valueName:
-                                                                            "取值参数名称",
+                                                                            '取值参数名称',
                                                                         value:
-                                                                            "opt_sqlList"
+                                                                            'opt_sqlList'
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "Metadata",
+                                                                            'Metadata',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "dataList",
+                                                                            'dataList',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     }
                                                                 ]
                                                             },
                                                             update: {
                                                                 url:
-                                                                    "AppConfigPack",
-                                                                ajaxType: "put",
+                                                                    'AppConfigPack',
+                                                                ajaxType: 'put',
                                                                 params: [
                                                                     {
                                                                         name:
-                                                                            "Id",
+                                                                            'Id',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "_id",
+                                                                            '_id',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "Metadata",
+                                                                            'Metadata',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "dataList",
+                                                                            'dataList',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     }
                                                                 ]
                                                             }
                                                         }
                                                     },
                                                     {
-                                                        name: "cancelRow",
+                                                        name: 'cancelRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "取消"
+                                                            'editable-add-btn',
+                                                        text: '取消'
                                                     }
                                                 ]
                                             },
                                             dataList: []
                                         },
                                         {
-                                            viewId: "operation_sqlParams",
-                                            component: "bsnDataTable",
+                                            viewId: 'operation_sqlParams',
+                                            component: 'bsnDataTable',
                                             config: {
-                                                viewId: "operation_sqlParams",
-                                                keyId: "key",
+                                                viewId: 'operation_sqlParams',
+                                                keyId: 'key',
                                                 nzIsPagination: false, // 是否分页
                                                 nzShowTotal: true, // 是否显示总数据量
                                                 pageSize: 5, // 默认每页数据条数
@@ -687,23 +687,23 @@ export class OperationSettingComponent extends CnComponentBase
                                                 nzLoading: false, // 是否显示加载中
                                                 nzBordered: false, // 是否显示边框
                                                 ajaxConfig: {
-                                                    url: "AppConfigPack",
-                                                    ajaxType: "get",
+                                                    url: 'AppConfigPack',
+                                                    ajaxType: 'get',
                                                     params: [
                                                         {
-                                                            name: "ParentId",
-                                                            type: "tempValue",
+                                                            name: 'ParentId',
+                                                            type: 'tempValue',
                                                             valueName:
-                                                                "_parentId",
-                                                            value: ""
+                                                                '_parentId',
+                                                            value: ''
                                                         },
                                                         {
-                                                            name: "TagB",
-                                                            type: "value",
+                                                            name: 'TagB',
+                                                            type: 'value',
                                                             valueName:
-                                                                "_optType",
+                                                                '_optType',
                                                             value:
-                                                                "opt_sqlParams"
+                                                                'opt_sqlParams'
                                                         }
                                                     ]
                                                 },
@@ -715,58 +715,58 @@ export class OperationSettingComponent extends CnComponentBase
                                                 relation: [
                                                     {
                                                         relationViewId:
-                                                            "operation_sqlParams",
+                                                            'operation_sqlParams',
                                                         relationSendContent: [],
                                                         relationReceiveContent: []
                                                     }
                                                 ],
                                                 columns: [
                                                     {
-                                                        title: "主键",
-                                                        field: "key",
+                                                        title: '主键',
+                                                        field: 'key',
                                                         width: 80,
                                                         hidden: true
                                                     },
                                                     {
-                                                        title: "参数编号",
-                                                        field: "paramId",
+                                                        title: '参数编号',
+                                                        field: 'paramId',
                                                         width: 80
                                                     },
                                                     {
-                                                        title: "参数名称",
-                                                        field: "ParameterName",
+                                                        title: '参数名称',
+                                                        field: 'ParameterName',
                                                         width: 80,
                                                         hidden: false,
                                                         editor: {
-                                                            type: "input",
+                                                            type: 'input',
                                                             field:
-                                                                "ParameterName",
+                                                                'ParameterName',
                                                             options: {
-                                                                type: "select",
-                                                                labelSize: "6",
+                                                                type: 'select',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "10",
-                                                                width: "120px",
+                                                                    '10',
+                                                                width: '120px',
                                                                 inputType:
-                                                                    "text",
-                                                                labelName: "Id",
+                                                                    'text',
+                                                                labelName: 'Id',
                                                                 valueName:
-                                                                    "ParameterList",
+                                                                    'ParameterList',
                                                                 valueType:
-                                                                    "list",
+                                                                    'list',
                                                                 ajaxConfig: {
                                                                     url:
-                                                                        "DbCommandConfig",
+                                                                        'DbCommandConfig',
                                                                     ajaxType:
-                                                                        "get",
+                                                                        'get',
                                                                     params: [
                                                                         {
                                                                             name:
-                                                                                "Id",
+                                                                                'Id',
                                                                             type:
-                                                                                "tempValue",
+                                                                                'tempValue',
                                                                             valueName:
-                                                                                "_scriptText"
+                                                                                '_scriptText'
                                                                         }
                                                                     ]
                                                                 }
@@ -774,119 +774,119 @@ export class OperationSettingComponent extends CnComponentBase
                                                         }
                                                     },
                                                     {
-                                                        title: "参数替换字符",
+                                                        title: '参数替换字符',
                                                         field:
-                                                            "paramReplaceStr",
+                                                            'paramReplaceStr',
                                                         width: 80,
                                                         hidden: false,
                                                         editor: {
-                                                            type: "input",
+                                                            type: 'input',
                                                             field:
-                                                                "paramReplaceStr",
+                                                                'paramReplaceStr',
                                                             options: {
-                                                                type: "input",
+                                                                type: 'input',
                                                                 controlSize:
-                                                                    "10",
+                                                                    '10',
                                                                 inputType:
-                                                                    "text"
+                                                                    'text'
                                                             }
                                                         }
                                                     },
                                                     {
-                                                        title: "取值方式",
+                                                        title: '取值方式',
                                                         field:
-                                                            "paramGetValueType",
+                                                            'paramGetValueType',
                                                         width: 80,
                                                         hidden: false,
                                                         editor: {
-                                                            type: "input",
+                                                            type: 'input',
                                                             field:
-                                                                "paramGetValueType",
+                                                                'paramGetValueType',
                                                             options: {
-                                                                type: "input",
-                                                                labelSize: "6",
+                                                                type: 'input',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "10",
+                                                                    '10',
                                                                 inputType:
-                                                                    "text"
+                                                                    'text'
                                                             }
                                                         }
                                                     },
                                                     {
-                                                        title: "为空取值",
-                                                        field: "paramNullValue",
+                                                        title: '为空取值',
+                                                        field: 'paramNullValue',
                                                         width: 80,
                                                         hidden: false,
                                                         editor: {
-                                                            type: "input",
+                                                            type: 'input',
                                                             field:
-                                                                "paramNullValue",
+                                                                'paramNullValue',
                                                             options: {
-                                                                type: "input",
-                                                                labelSize: "6",
+                                                                type: 'input',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "10",
+                                                                    '10',
                                                                 inputType:
-                                                                    "text"
+                                                                    'text'
                                                             }
                                                         }
                                                     },
                                                     {
-                                                        title: "参数类型",
-                                                        field: "paramDataType",
+                                                        title: '参数类型',
+                                                        field: 'paramDataType',
                                                         width: 80,
                                                         hidden: false,
                                                         editor: {
-                                                            type: "select",
+                                                            type: 'select',
                                                             field:
-                                                                "paramDataType",
+                                                                'paramDataType',
                                                             options: {
-                                                                type: "select",
-                                                                labelSize: "6",
+                                                                type: 'select',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "10",
+                                                                    '10',
                                                                 inputType:
-                                                                    "submit",
+                                                                    'submit',
                                                                 name:
-                                                                    "paramDataType",
-                                                                label: "",
+                                                                    'paramDataType',
+                                                                label: '',
                                                                 notFoundContent:
-                                                                    "",
+                                                                    '',
                                                                 selectModel: false,
                                                                 showSearch: true,
                                                                 placeholder:
-                                                                    "-请选择-",
+                                                                    '-请选择-',
                                                                 disabled: false,
-                                                                size: "default",
+                                                                size: 'default',
                                                                 clear: true,
-                                                                width: "60px",
+                                                                width: '60px',
                                                                 options: [
                                                                     {
                                                                         label:
-                                                                            "整型",
+                                                                            '整型',
                                                                         value:
-                                                                            "1",
+                                                                            '1',
                                                                         disabled: false
                                                                     },
                                                                     {
                                                                         label:
-                                                                            "字符",
+                                                                            '字符',
                                                                         value:
-                                                                            "2",
+                                                                            '2',
                                                                         disabled: false
                                                                     },
                                                                     {
                                                                         label:
-                                                                            "日期",
+                                                                            '日期',
                                                                         value:
-                                                                            "2",
+                                                                            '2',
                                                                         disabled: false
                                                                     },
                                                                     {
                                                                         label:
-                                                                            "浮点",
+                                                                            '浮点',
                                                                         value:
-                                                                            "2",
+                                                                            '2',
                                                                         disabled: false
                                                                     }
                                                                 ]
@@ -894,160 +894,160 @@ export class OperationSettingComponent extends CnComponentBase
                                                         }
                                                     },
                                                     {
-                                                        title: "系统参数",
+                                                        title: '系统参数',
                                                         field:
-                                                            "paramSystemParam",
+                                                            'paramSystemParam',
                                                         width: 80,
                                                         hidden: false,
                                                         editor: {
-                                                            type: "input",
+                                                            type: 'input',
                                                             field:
-                                                                "paramSystemParam",
+                                                                'paramSystemParam',
                                                             options: {
-                                                                type: "input",
-                                                                labelSize: "6",
+                                                                type: 'input',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "10",
+                                                                    '10',
                                                                 inputType:
-                                                                    "text"
+                                                                    'text'
                                                             }
                                                         }
                                                     },
                                                     {
-                                                        title: "取值或赋值字段",
+                                                        title: '取值或赋值字段',
                                                         field:
-                                                            "paramValueField",
+                                                            'paramValueField',
                                                         width: 80,
                                                         hidden: false,
                                                         editor: {
-                                                            type: "input",
+                                                            type: 'input',
                                                             field:
-                                                                "paramValueField",
+                                                                'paramValueField',
                                                             options: {
-                                                                type: "input",
-                                                                labelSize: "6",
+                                                                type: 'input',
+                                                                labelSize: '6',
                                                                 controlSize:
-                                                                    "10",
+                                                                    '10',
                                                                 inputType:
-                                                                    "text"
+                                                                    'text'
                                                             }
                                                         }
                                                     }
                                                 ],
                                                 toolbar: [
                                                     {
-                                                        name: "refresh",
+                                                        name: 'refresh',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "刷新"
+                                                            'editable-add-btn',
+                                                        text: '刷新'
                                                     },
                                                     {
-                                                        name: "addRow",
+                                                        name: 'addRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "新增"
+                                                            'editable-add-btn',
+                                                        text: '新增'
                                                     },
                                                     {
-                                                        name: "updateRow",
+                                                        name: 'updateRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "修改"
+                                                            'editable-add-btn',
+                                                        text: '修改'
                                                     },
                                                     {
-                                                        name: "deleteRow",
+                                                        name: 'deleteRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "删除"
+                                                            'editable-add-btn',
+                                                        text: '删除'
                                                     },
                                                     {
-                                                        name: "saveRow",
+                                                        name: 'saveRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "保存",
+                                                            'editable-add-btn',
+                                                        text: '保存',
                                                         ajaxConfig: {
                                                             add: {
                                                                 url:
-                                                                    "AppConfigPack",
+                                                                    'AppConfigPack',
                                                                 ajaxType:
-                                                                    "post",
+                                                                    'post',
                                                                 params: [
                                                                     {
                                                                         name:
-                                                                            "ParentId",
+                                                                            'ParentId',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "_parentId",
+                                                                            '_parentId',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     /*                   { name: 'Name', type: 'tempValue', valueName: '取值参数名称', value: 'liutest11' },*/
                                                                     {
                                                                         name:
-                                                                            "TagA",
+                                                                            'TagA',
                                                                         type:
-                                                                            "GUID",
+                                                                            'GUID',
                                                                         valueName:
-                                                                            "取值参数名称",
+                                                                            '取值参数名称',
                                                                         value:
-                                                                            "GUID"
+                                                                            'GUID'
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "TagB",
+                                                                            'TagB',
                                                                         type:
-                                                                            "value",
+                                                                            'value',
                                                                         valueName:
-                                                                            "取值参数名称",
+                                                                            '取值参数名称',
                                                                         value:
-                                                                            "opt_sqlParams"
+                                                                            'opt_sqlParams'
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "Metadata",
+                                                                            'Metadata',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "dataList",
+                                                                            'dataList',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     }
                                                                 ]
                                                             },
                                                             update: {
                                                                 url:
-                                                                    "AppConfigPack",
-                                                                ajaxType: "put",
+                                                                    'AppConfigPack',
+                                                                ajaxType: 'put',
                                                                 params: [
                                                                     {
                                                                         name:
-                                                                            "Id",
+                                                                            'Id',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "_id",
+                                                                            '_id',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     },
                                                                     {
                                                                         name:
-                                                                            "Metadata",
+                                                                            'Metadata',
                                                                         type:
-                                                                            "tempValue",
+                                                                            'tempValue',
                                                                         valueName:
-                                                                            "dataList",
+                                                                            'dataList',
                                                                         value:
-                                                                            ""
+                                                                            ''
                                                                     }
                                                                 ]
                                                             }
                                                         }
                                                     },
                                                     {
-                                                        name: "cancelRow",
+                                                        name: 'cancelRow',
                                                         class:
-                                                            "editable-add-btn",
-                                                        text: "取消"
+                                                            'editable-add-btn',
+                                                        text: '取消'
                                                     }
                                                 ]
                                             },
@@ -1865,50 +1865,50 @@ export class OperationSettingComponent extends CnComponentBase
         ]
     };
 
-    tree_Config = {
-        viewId: "view_operationTree",
+    public tree_Config = {
+        viewId: 'view_operationTree',
         asyncData: true, //
         expandAll: true, //
         checkable: false, //    在节点之前添加一个复选框 false
         showLine: false, //   显示连接线 fal
         columns: [
             // 字段映射，映射成树结构所需
-            { title: "主键", field: "key", valueName: "Id" },
-            { title: "父节点", field: "parentId", valueName: "ParentId" },
-            { title: "标题", field: "title", valueName: "Title" }
+            { title: '主键', field: 'key', valueName: 'Id' },
+            { title: '父节点', field: 'parentId', valueName: 'ParentId' },
+            { title: '标题', field: 'title', valueName: 'Title' }
         ],
         parent: [
             {
-                name: "ParentId",
-                type: "tempValue",
-                valueName: "_moduleId",
-                value: ""
+                name: 'ParentId',
+                type: 'tempValue',
+                valueName: '_moduleId',
+                value: ''
             }
         ],
         ajaxConfig: {
-            url: "GetOperationTree",
-            ajaxType: "get",
+            url: 'GetOperationTree',
+            ajaxType: 'get',
             params: [
                 {
-                    name: "layoutId",
-                    type: "tempValue",
-                    valueName: "_layoutId",
-                    value: ""
+                    name: 'layoutId',
+                    type: 'tempValue',
+                    valueName: '_layoutId',
+                    value: ''
                 }
             ]
         },
         relations: [
             {
-                relationViewId: "view_operationTree",
+                relationViewId: 'view_operationTree',
                 relationSendContent: [
                     {
-                        name: "clickNode",
-                        sender: "view_operationTree",
-                        aop: "after",
-                        receiver: "operation_sqlColumns",
+                        name: 'clickNode',
+                        sender: 'view_operationTree',
+                        aop: 'after',
+                        receiver: 'operation_sqlColumns',
                         relationData: {
-                            name: "initParameter",
-                            params: [{ pid: "key", cid: "_parentId" }]
+                            name: 'initParameter',
+                            params: [{ pid: 'key', cid: '_parentId' }]
                         }
                     }
                 ],
@@ -1916,56 +1916,56 @@ export class OperationSettingComponent extends CnComponentBase
             }
         ]
     };
-    nodes = [
+    public nodes = [
         {
-            key: "1",
-            title: "组件设置根节点",
-            type: "root",
-            data: "ahhahah",
+            key: '1',
+            title: '组件设置根节点',
+            type: 'root',
+            data: 'ahhahah',
             hasChildren: true,
             children: [
                 {
-                    key: "1.2",
-                    title: "布局区域1",
-                    type: "layout",
+                    key: '1.2',
+                    title: '布局区域1',
+                    type: 'layout',
                     hasChildren: true,
                     children: [
                         {
-                            key: "1.21",
-                            title: "数据表格",
-                            value: "bsn-datatable",
-                            type: "component"
+                            key: '1.21',
+                            title: '数据表格',
+                            value: 'bsn-datatable',
+                            type: 'component'
                         }
                     ]
                 },
                 {
-                    key: "1.3",
-                    title: "布局区域2",
-                    type: "layout",
+                    key: '1.3',
+                    title: '布局区域2',
+                    type: 'layout',
                     hasChildren: true,
                     children: [
                         {
-                            key: "1.31",
-                            title: "树",
-                            value: "bsn-tree",
-                            type: "component"
+                            key: '1.31',
+                            title: '树',
+                            value: 'bsn-tree',
+                            type: 'component'
                         }
                     ]
                 }
             ]
         }
     ];
-    isVisible = false;
-    _currentNode;
-    _operationName;
-    _isConfirmLoading = false;
-    _layoutNameValue;
+    public isVisible = false;
+    public _currentNode;
+    public _operationName;
+    public _isConfirmLoading = false;
+    public _layoutNameValue;
 
     private dropdown: NzDropdownContextComponent;
-    @ViewChild("addTemplate")
-    addTemplate: TemplateRef<void>;
-    @ViewChild("editTemplate")
-    editTemplate: TemplateRef<void>;
+    @ViewChild('addTemplate')
+    public addTemplate: TemplateRef<void>;
+    @ViewChild('editTemplate')
+    public editTemplate: TemplateRef<void>;
 
     private _relativeResolver;
     constructor(
@@ -1977,22 +1977,7 @@ export class OperationSettingComponent extends CnComponentBase
         super();
     }
 
-    async ngOnInit() {
-        // const params = { _select: "Id,Name,ParentId" };
-        // const moduleData = await this.getModuleData(params);
-        // // 初始化模块列表，将数据加载到及联下拉列表当中
-        // this._funcOptions = this.arrayToTree(moduleData.Data, "");
-
-        // // this.SetTreeData();
-        // // this.setAsyncData();
-
-        // this._relativeResolver = new RelativeResolver();
-        // if (this.config.relations && this.config.relations.length > 0) {
-        //     this._relativeResolver.reference = this;
-        //     this._relativeResolver.relativeService = this.relativeMessage;
-        //     this._relativeResolver.relations = this.config.relations;
-        //     this._relativeResolver.resolverRelation();
-        // }
+    public async ngOnInit() {
     }
     // region: func
     // 获取布局设置列表
@@ -2006,21 +1991,21 @@ export class OperationSettingComponent extends CnComponentBase
     // }
 
     // 选择布局名称
-    _changeLayoutName($event) {
+    public _changeLayoutName($event) {
         // 创建布局
         // this._layoutConfig = $event.metadata;
         const str = [];
         if ($event.metadata) {
             const receiver = {
-                name: "initParameters",
-                receiver: "view_operationTree",
+                name: 'initParameters',
+                receiver: 'view_operationTree',
                 parent: {
                     _layoutId: $event.id,
                     _moduleId: this._funcValue[this._funcValue.length - 1]
                 }
             };
             this.relativeMessage.sendMessage(
-                { type: "initParameters" },
+                { type: 'initParameters' },
                 receiver
             );
         }
@@ -2059,13 +2044,13 @@ export class OperationSettingComponent extends CnComponentBase
         // return this._http.get(APIResource.ViewSetting, params).toPromise();
     }
 
-    mouseAction(name: string, e: any): void {
-        if (name === "contextmenu") {
+    public mouseAction(name: string, e: any): void {
+        if (name === 'contextmenu') {
             this.createContextMenu(e);
         }
     }
 
-    createContextMenu(e) {
+    public createContextMenu(e) {
         // console.log(this.addTemplate);
         this.dropdown = this.nzDropdownService.create(
             e.event,
@@ -2080,7 +2065,7 @@ export class OperationSettingComponent extends CnComponentBase
      * @param pid
      * @returns {Array}
      */
-    dataToArray(data?, component?, pid?) {
+    public dataToArray(data?, component?, pid?) {
         let result = [];
         let temp;
         if (data.rows) {
@@ -2102,12 +2087,12 @@ export class OperationSettingComponent extends CnComponentBase
                             }
                         }
                         if (!cdata.rows) {
-                            obj["type"] = "component";
+                            obj['type'] = 'component';
                             result.push(obj);
                             const cobj = this.componentToArray(
                                 component,
                                 cdata.id,
-                                ""
+                                ''
                             );
                             if (cobj) {
                                 result = [...result, ...cobj];
@@ -2124,7 +2109,7 @@ export class OperationSettingComponent extends CnComponentBase
                     Name: tab.name,
                     Id: tab.id,
                     ParentId: pid,
-                    type: "tab"
+                    type: 'tab'
                 };
                 result.push(obj);
                 const cobj = this.componentToArray([], tab.id, component);
@@ -2143,28 +2128,28 @@ export class OperationSettingComponent extends CnComponentBase
      * @param component
      * @returns {Array}
      */
-    componentToArray(data?, pid?, component?) {
+    public componentToArray(data?, pid?, component?) {
         let objs = [];
         let temp;
         if (data && Array.isArray(data)) {
             const obj = {};
 
-            if (component === "tabs") {
+            if (component === 'tabs') {
                 const index = data.findIndex(item => item.Name === pid);
                 // 组件名称
                 const comp = data[index].TagB.substring(
-                    data[index].TagB.lastIndexOf(".") + 1,
+                    data[index].TagB.lastIndexOf('.') + 1,
                     data[index].TagB.length
                 );
-                obj["Id"] = data[index].Id;
-                obj["Name"] = "标签页"; // data[index].Name;
-                obj["ParentId"] = data[index].Name; // blockID
-                obj["type"] = comp; // componet type
+                obj['Id'] = data[index].Id;
+                obj['Name'] = '标签页'; // data[index].Name;
+                obj['ParentId'] = data[index].Name; // blockID
+                obj['type'] = comp; // componet type
                 objs.push(obj);
-                if (component === "tabs") {
+                if (component === 'tabs') {
                     temp = this.dataToArray(
                         { tabs: JSON.parse(data[index].Metadata) },
-                        "tab",
+                        'tab',
                         data[index].Id
                     ); // 递归调用行
                     if (temp) {
@@ -2174,9 +2159,9 @@ export class OperationSettingComponent extends CnComponentBase
             } else {
                 const optObj = {
                     Id: this.uuID(6),
-                    Name: "12",
+                    Name: '12',
                     ParentId: pid,
-                    type: "component"
+                    type: 'component'
                 };
                 objs.push(optObj);
             }
@@ -2184,7 +2169,7 @@ export class OperationSettingComponent extends CnComponentBase
         return objs;
     }
 
-    async getOperationByBlock(blockId) {
+    public async getOperationByBlock(blockId) {
         // const params = {
         //     ParentId: blockId
         // };
@@ -2192,14 +2177,14 @@ export class OperationSettingComponent extends CnComponentBase
     }
 
     // 改变模块选项
-    _changeModuleValue($event?) {
+    public _changeModuleValue($event?) {
         this._layoutList = [];
         // 选择功能模块，首先加载服务端配置列表
         // const params = new HttpParams().set('TagA', this._funcValue.join(','));
         if (this._funcValue.length > 0) {
             const params = {
                 ParentId: this._funcValue[this._funcValue.length - 1],
-                _select: "Id,Name,Metadata"
+                _select: 'Id,Name,Metadata'
             };
             // this.getLayoutConfigData(params).then(serverLayoutData => {
             //     if (
@@ -2220,13 +2205,13 @@ export class OperationSettingComponent extends CnComponentBase
         }
     }
 
-    _onSelectionChange(selectedOptions: any[]) {
+    public _onSelectionChange(selectedOptions: any[]) {
         this._selectedModuleText = `【${selectedOptions
             .map(o => o.label)
-            .join(" / ")}】`;
+            .join(' / ')}】`;
     }
 
-    arrayToTreeBylayout(data, parentid) {
+    public arrayToTreeBylayout(data, parentid) {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
@@ -2234,14 +2219,14 @@ export class OperationSettingComponent extends CnComponentBase
                 const obj = {
                     Name: data[i].Name,
                     Id: data[i].Id,
-                    type: data[i].type ? data[i].type : ""
+                    type: data[i].type ? data[i].type : ''
                 };
                 temp = this.arrayToTreeBylayout(data, data[i].Id);
                 if (temp.length > 0) {
-                    obj["children"] = temp;
+                    obj['children'] = temp;
                 } else {
                     // obj['isLeaf'] = true;
-                    obj["children"] = [];
+                    obj['children'] = [];
                 }
                 result.push(obj);
             }
@@ -2249,7 +2234,7 @@ export class OperationSettingComponent extends CnComponentBase
         return result;
     }
 
-    arrayToTree(data, parentid) {
+    public arrayToTree(data, parentid) {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
@@ -2257,9 +2242,9 @@ export class OperationSettingComponent extends CnComponentBase
                 const obj = { label: data[i].Name, value: data[i].Id };
                 temp = this.arrayToTree(data, data[i].Id);
                 if (temp.length > 0) {
-                    obj["children"] = temp;
+                    obj['children'] = temp;
                 } else {
-                    obj["isLeaf"] = true;
+                    obj['isLeaf'] = true;
                 }
                 result.push(obj);
             }
@@ -2268,22 +2253,22 @@ export class OperationSettingComponent extends CnComponentBase
     }
 
     // 点击树节
-    onActivate(event: any) {
+    public onActivate(event: any) {
         // console.log('激活树节点', event);
         const receiver = {
-            name: "initParameters",
-            receiver: "operation_sqlColumns",
+            name: 'initParameters',
+            receiver: 'operation_sqlColumns',
             parent: {
                 _Id: event.node.key,
-                _optType: "opt_sqlList",
+                _optType: 'opt_sqlList',
                 _moduleId: this._funcValue[this._funcValue.length - 1]
             }
         };
         // console.log('选中行发消息事件', receiver);
-        this.relativeMessage.sendMessage({ type: "initParameters" }, receiver);
+        this.relativeMessage.sendMessage({ type: 'initParameters' }, receiver);
     }
 
-    async handleOk(e) {
+    public async handleOk(e) {
         // this._isConfirmLoading = true;
         // const body = {
         //     Name: this._operationName,
@@ -2310,14 +2295,14 @@ export class OperationSettingComponent extends CnComponentBase
         // }
     }
 
-    async saveNewNode(body) {
+    public async saveNewNode(body) {
         // return this._http.post(APIResource.AppConfigPack, body).toPromise();
     }
 
     // 删除操作
-    delOptConfirm = node => {
+    public delOptConfirm = node => {
         // 删除节点
-        this._http.delete("", { id: node.id }).subscribe(
+        this._http.delete('', { id: node.id }).subscribe(
             result => {
                 if (result.Status === 200) {
                     this.message.success(`删除：【${node.data.name}】成功`);
@@ -2349,97 +2334,97 @@ export class OperationSettingComponent extends CnComponentBase
         );
     };
 
-    delOptCancel = () => {
+    public delOptCancel = () => {
         // 取消
-        this.message.info("你取消了要删除的操作");
+        this.message.info('你取消了要删除的操作');
     };
 
-    uuID(w) {
-        let s = "";
+    public uuID(w) {
+        let s = '';
         const str =
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         for (let i = 0; i < w; i++) {
             s += str.charAt(Math.round(Math.random() * (str.length - 1)));
         }
         return s;
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         if (this._relativeResolver) {
             this._relativeResolver.unsubscribe();
         }
     }
 
-    closeOperationMenu(e: NzMenuItemDirective): void {
+    public closeOperationMenu(e: NzMenuItemDirective): void {
         this.dropdown.close();
     }
 
-    addOperation(e) {}
-    editOperation(e) {}
+    public addOperation(e) {}
+    public editOperation(e) {}
     // endregion
 
     // region: Demo
-    selfEvent = {
+    public selfEvent = {
         clickNode: [],
         expandNode: [],
         load: []
     };
-    _tempParameter = {};
+    public _tempParameter = {};
     // 销毁
-    _subscribArr: any[] = [];
-    _demoTreeData = [];
-    config: any = {
-        viewId: "viewId_operationTree",
+    public _subscribArr: any[] = [];
+    public _demoTreeData = [];
+    public config: any = {
+        viewId: 'viewId_operationTree',
         checkable: false,
         showLine: false,
         asyncData: true,
         expandAll: true,
         relations: [
             {
-                relationViewId: "viewId_operationTree",
+                relationViewId: 'viewId_operationTree',
                 relationSendContent: [
                     {
-                        name: "expandNode",
-                        aop: "after",
-                        sender: "viewId_operationTree",
-                        receiver: "operation_sqlColumns",
+                        name: 'expandNode',
+                        aop: 'after',
+                        sender: 'viewId_operationTree',
+                        receiver: 'operation_sqlColumns',
                         relationData: {
-                            name: "initParameters",
+                            name: 'initParameters',
                             params: [
                                 {
-                                    pid: "key",
-                                    cid: "_Id"
+                                    pid: 'key',
+                                    cid: '_Id'
                                 },
                                 {
-                                    pid: "key",
-                                    cid: "parentId"
+                                    pid: 'key',
+                                    cid: 'parentId'
                                 },
                                 {
-                                    pid: "key",
-                                    cid: "_moduleId"
+                                    pid: 'key',
+                                    cid: '_moduleId'
                                 }
                             ]
                         }
                     },
                     {
-                        name: "expandNode",
-                        aop: "after",
-                        sender: "viewId_operationTree",
-                        receiver: "opt_base",
+                        name: 'expandNode',
+                        aop: 'after',
+                        sender: 'viewId_operationTree',
+                        receiver: 'opt_base',
                         relationData: {
-                            name: "initParameters",
+                            name: 'initParameters',
                             params: [
                                 {
-                                    pid: "key",
-                                    cid: "_Id"
+                                    pid: 'key',
+                                    cid: '_Id'
                                 },
                                 {
-                                    pid: "key",
-                                    cid: "parentId"
+                                    pid: 'key',
+                                    cid: 'parentId'
                                 },
                                 {
-                                    pid: "key",
-                                    cid: "_moduleId"
+                                    pid: 'key',
+                                    cid: '_moduleId'
                                 }
                             ]
                         }
@@ -2449,60 +2434,7 @@ export class OperationSettingComponent extends CnComponentBase
         ]
     };
 
-    // resolveRelation(data?) {
-    //   if (this._demoTreeConfig.relations) {
-    //     this._demoTreeConfig.relations.forEach(relation => {
-    //       if (relation.relationSendContent) {
-    //         relation.relationSendContent.forEach(sendContent => {
-    //           this.setMessage(sendContent);
-    //           if(sendContent.aop && sendContent.aop === 'after'){
-    //             this.after(this, sendContent.name,(e)=> {
-    //               debugger;
-    //               this.selfEvent[sendContent.name].forEach(sendEvent => {
-    //                 if (sendEvent.isRegister === true) {
-    //                   let parent = {};
-    //                   sendEvent.data.params.forEach(element => {
-    //                     // _tempValue
-    //                     // _value
-    //                     // component 当前模式获取未组件值
-    //                     parent[element['cid']] = e[0].node[element['pid']];
-    //                   });
-    //                   const receiver = {
-    //                     name: 'initParameters',
-    //                     receiver: sendEvent.receiver,
-    //                     parent: parent
-    //                   };
-    //                   this.relativeMessage.sendMessage({ type: 'relation' }, receiver);
-    //                 }
-    //               });
-    //             })
-    //           }
-    //         });
-    //       }
-    //       if (relation.relationReceiveContent) {
-    //         const subMessage = this.relativeMessage.getMessage().subscribe(value => {
-    //           switch (value.type.type) {
-    //             case 'relation':
-    //               if (value.data.receiver === this._demoTreeConfig.viewId) {
-    //                 this.receiveMessage(value.data);
-    //               }
-    //               break;
-    //             case 'initParameters':
-    //               if (value.data.receiver, this._demoTreeConfig.viewId) {
-    //                 this.receiveMessage(value.data);
-    //               }
-    //               break;
-    //           }
-    //         });
-    //         if (subMessage) {
-    //           this._subscribArr.push(subMessage);
-    //         }
-    //       }
-    //     });
-    //   }
-    // }
-
-    setMessage(data?) {
+    public setMessage(data?) {
         if (data) {
             if (this.selfEvent[data.name]) {
                 this.selfEvent[data.name].push({
@@ -2514,16 +2446,16 @@ export class OperationSettingComponent extends CnComponentBase
         }
     }
 
-    receiveMessage(data) {
+    public receiveMessage(data) {
         if (data) {
             switch (data.name) {
-                case "refreshAsChild":
+                case 'refreshAsChild':
                     this.refreshAsChild(data.parent);
                     break;
-                case "initParameters":
+                case 'initParameters':
                     this.initParameters(data.parent);
                     break;
-                case "initComponentValue":
+                case 'initComponentValue':
                     this.initComponentValue(data.parent);
                     break;
             }
@@ -2550,16 +2482,16 @@ export class OperationSettingComponent extends CnComponentBase
         }
     }
 
-    listToTreeData(data, parentid) {
+    public listToTreeData(data, parentid) {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
             if (data[i].ParentId === parentid) {
                 temp = this.listToTreeData(data, data[i].key);
                 if (temp.length > 0) {
-                    data[i]["children"] = temp;
+                    data[i]['children'] = temp;
                 } else {
-                    data[i]["isLeaf"] = true;
+                    data[i]['isLeaf'] = true;
                 }
                 result.push(data[i]);
             }
@@ -2567,7 +2499,7 @@ export class OperationSettingComponent extends CnComponentBase
         return result;
     }
 
-    async getTreeData() {
+    public async getTreeData() {
         // return this._http
         //     .get(APIResource.AppModuleConfig, {
         //         _select: "Id as key,Name as title,ParentId"
@@ -2575,7 +2507,7 @@ export class OperationSettingComponent extends CnComponentBase
         //     .toPromise();
     }
 
-    SetTreeData() {
+    public SetTreeData() {
         // (async () => {
         //     const data = await this.getTreeData();
         //     if (data.Data && data.Status === 200) {
@@ -2584,26 +2516,26 @@ export class OperationSettingComponent extends CnComponentBase
         // })();
     }
 
-    onMouseAction(actionName, $event) {
+    public onMouseAction(actionName, $event) {
         // console.log(this, actionName);
         this[actionName]($event);
     }
 
-    clickNode = e => {
+    public clickNode = e => {
         // console.log('click node');
     };
     // endregion
 
     // region: async Tree Demo
-    _demoAsyncTreeData = [];
-    _demoAsyncTreeConfig = {
+    public _demoAsyncTreeData = [];
+    public _demoAsyncTreeConfig = {
         checkable: false,
         showLine: false,
         asyncData: true,
         expandAll: false
     };
 
-    setAsyncData() {
+    public setAsyncData() {
         (async () => {
             // const data = await this.getAsyncTreeData({ ParentId: " " });
             // if (data.Data && data.Status === 200) {
@@ -2612,12 +2544,12 @@ export class OperationSettingComponent extends CnComponentBase
         })();
     }
 
-    async getAsyncTreeData(params) {
-        params["_select"] = "Id as key,Name as title,ParentId";
+    public async getAsyncTreeData(params) {
+        params['_select'] = 'Id as key,Name as title,ParentId';
         // return this._http.get(APIResource.AppModuleConfig, params).toPromise();
     }
 
-    expandNode = e => {
+    public expandNode = e => {
         // console.log('expandNode');
         (async () => {
             // if (e.node.getChildren().length === 0 && e.node.isExpanded) {
@@ -2634,16 +2566,16 @@ export class OperationSettingComponent extends CnComponentBase
         })();
     };
 
-    listToAsyncTreeData(data, parentid) {
+    public listToAsyncTreeData(data, parentid) {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
             if (data[i].ParentId === parentid) {
                 temp = this.listToTreeData(data, data[i].key);
                 if (temp.length > 0) {
-                    data[i]["children"] = temp;
+                    data[i]['children'] = temp;
                 } else {
-                    data[i]["isLeaf"] = true;
+                    data[i]['isLeaf'] = true;
                 }
                 result.push(data[i]);
             }
@@ -2651,6 +2583,6 @@ export class OperationSettingComponent extends CnComponentBase
         return result;
     }
 
-    _loadLayoutData($event) {}
+    public _loadLayoutData($event) {}
     // endregion
 }

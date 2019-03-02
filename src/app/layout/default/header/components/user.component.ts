@@ -45,7 +45,7 @@
 //         this.router.navigateByUrl(this.tokenService.login_url);
 //     }
 // }
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SettingsService, MenuService } from '@delon/theme';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -53,12 +53,13 @@ import { CacheService } from '@delon/cache';
 import { NzModalService } from 'ng-zorro-antd';
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'header-user',
     template: `
     <nz-dropdown nzPlacement="bottomRight">
         <div class="item d-flex align-items-center px-sm" nz-dropdown>
-            <nz-avatar [nzSrc]="settings.user['Remark']" nzSize="small" class="mr-sm"></nz-avatar>
-            {{settings.user['RealName']}}
+            <nz-avatar [nzSrc]="'../assets/img/user.svg'" nzSize="small" class="mr-sm"></nz-avatar>
+            {{userInfo?.value?.accountName ? userInfo?.value?.accountName: '用户'}}
         </div>
         <div nz-menu class="width-sm">
             <div nz-menu-item [nzDisabled]="true"><i class="anticon anticon-user mr-sm"></i>个人中心</div>
@@ -69,8 +70,9 @@ import { NzModalService } from 'ng-zorro-antd';
     </nz-dropdown>
     `
 })
-export class HeaderUserComponent implements OnInit {
+export class HeaderUserComponent implements OnInit, AfterViewInit {
     // confirmModal: NzModalRef;
+    public userInfo: any;
     constructor(
         public settings: SettingsService,
         private cacheService: CacheService,
@@ -79,10 +81,8 @@ export class HeaderUserComponent implements OnInit {
         private modal: NzModalService,
         @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) { }
 
-    ngOnInit(): void {
-        this.tokenService.change().subscribe((res: any) => {
-            this.settings.setUser(res);
-        });
+    public ngOnInit(): void {
+        
         // mock
         // const token = this.tokenService.get() || {
         //     token: 'nothing',
@@ -93,7 +93,15 @@ export class HeaderUserComponent implements OnInit {
         // this.tokenService.set(token);
     }
 
-    logout() {
+    public ngAfterViewInit() {
+        this.userInfo = this.cacheService.get('userInfo');
+        console.log(this.userInfo.value)
+        // this.tokenService.change().subscribe((res: any) => {
+        //     this.settings.setUser(res);
+        // });
+    }
+
+    public logout() {
         this.modal.confirm({
             nzTitle: '确认要关闭本系统吗？',
             nzContent: '关闭后将清空相关操作数据！',

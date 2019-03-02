@@ -8,7 +8,7 @@ import { CacheService } from '@delon/cache';
     styles: [
         `
         .logo{
-            width:260px;
+            
         }
             .title {
             color: whitesmoke;
