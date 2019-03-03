@@ -49,3 +49,4 @@ package.json
 /src/assets/vendor
 /src/assets/data
 src/assets/data.zip
+*.zip
