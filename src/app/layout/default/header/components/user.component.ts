@@ -94,8 +94,10 @@ export class HeaderUserComponent implements OnInit, AfterViewInit {
     }
 
     public ngAfterViewInit() {
-        this.userInfo = this.cacheService.get('userInfo');
-        console.log(this.userInfo.value)
+        setTimeout(() => {
+            this.userInfo = this.cacheService.get('userInfo');
+        });
+        
         // this.tokenService.change().subscribe((res: any) => {
         //     this.settings.setUser(res);
         // });
