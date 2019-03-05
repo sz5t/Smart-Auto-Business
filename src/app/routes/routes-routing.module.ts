@@ -38,8 +38,8 @@ const routes: Routes = [
             // { path: 'delon', loadChildren: './delon/delon.module#DelonModule' },
             // { path: 'extras', loadChildren: './extras/extras.module#ExtrasModule' },
             // { path: 'pro', loadChildren: './pro/pro.module#ProModule' },
-            // { path: 'system', loadChildren: './system/system.module#SystemModule'},
-            // { path: 'settings', loadChildren: './settings/settings.module#SettingsModule'},
+            { path: 'system', loadChildren: './system/system.module#SystemModule'},
+            { path: 'settings', loadChildren: './settings/settings.module#SettingsModule'},
             // { path: 'test', loadChildren: './cn-test/cn-test.module#CnTestModule'},
             { path: 'template', loadChildren: './template/template.module#TemplateModule', canActivate: [AuthGuard]}
         ]
