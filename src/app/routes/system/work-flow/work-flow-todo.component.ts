@@ -6554,6 +6554,31 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
             {
                 controls: [
                     {
+                        type: 'img',
+                        labelSize: '6',
+                        controlSize: '16',
+                        inputType: 'submit',
+                        name: 'enabledimg',
+                        label: '图片',
+                        style: {
+                            height: '80px',
+                            width: '200px',
+                        },
+                        defaultValue: 'http://192.168.1.111:8081/api.cfg/files/upload/2019-03-12/44bb4a6551dd4f3984d49c470ed5c07a.jpg',
+                        notFoundContent: '',
+                        selectModel: false,
+                        showSearch: true,
+                        placeholder: '--请选择--',
+                        disabled: false,
+                        size: 'default',
+                        layout: 'column',
+                        span: '24'
+                    }
+                ]
+            },
+            {
+                controls: [
+                    {
                         type: 'select',
                         labelSize: '6',
                         controlSize: '16',
@@ -8257,9 +8282,9 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
         this.chart.source(data);
         this.chart.scale('sales', {
             alias: '销售额(万)',
-          //  tickInterval: 20
+            //  tickInterval: 20
         });
-      
+
         this.chart.interval().position('year*sales');  // 创建柱图特殊写法  X*Y 
         this.chart.render();
     }

@@ -1,0 +1,12 @@
+<nz-form-label *ngIf="config.label" [nzSpan]="config.labelSize">
+  {{config.label}}
+</nz-form-label>
+<!-- <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize" style="display:none">
+  <input nz-input formControlName="{{config.name}}" type="{{config.inputType}}" placeholder="{{config.placeholder}}" [(ngModel)]="value">
+</nz-form-control>
+ -->
+<nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+
+    <img  [src]="value"  [ngStyle]="config.style?config.style:bodyStyle"  />
+
+</nz-form-control>
