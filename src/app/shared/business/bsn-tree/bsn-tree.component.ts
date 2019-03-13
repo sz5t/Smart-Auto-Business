@@ -36,6 +36,7 @@ import { CommonTools } from '@core/utility/common-tools';
 import { Observer, Observable, Subscription } from 'rxjs';
 import { CacheService } from '@delon/cache';
 import { SystemResource } from '@core/utility/system-resource';
+import { ActivatedRoute } from '@angular/router';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'cn-bsn-tree',
@@ -152,6 +153,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
         private _msg: NzMessageService,
         private _modal: NzModalService,
         private _dropdownService: NzDropdownService,
+        private _router: ActivatedRoute,
         @Inject(BSN_COMPONENT_MODES)
         private eventStatus: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
@@ -166,6 +168,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     }
 
     public ngOnInit() {
+        this.tempValue['moduleName'] = this._router.snapshot.params['name'] ? this._router.snapshot.params['name'] : '';
         this.initValue = this.initData ? this.initData : {};
         this.cacheValue = this._cacheService ? this._cacheService : {};
         this.permission = this.permissions ? this.permissions : [];
@@ -876,7 +879,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                                 // 没有输出参数，进行默认处理
                                 this.showAjaxMessage(response, msg, () => {
                                     this.load();
-                                });
+                                }, c);
                             }
                         })();
                     },
@@ -914,7 +917,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                                 )
                             );
                             this.load();
-                        });
+                        }, c);
                     }
                 })();
             }
@@ -1229,7 +1232,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     }
 
     public nzEvent(event: NzFormatEmitEvent): void {
-      //  console.log(event, this.treeObj.getMatchedNodeList().map(v => v.title));
+        //  console.log(event, this.treeObj.getMatchedNodeList().map(v => v.title));
     }
 
     public searchTargetString(objtext) { // 查找处理

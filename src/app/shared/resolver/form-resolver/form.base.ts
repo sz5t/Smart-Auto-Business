@@ -387,7 +387,7 @@ export class CnFormBase extends CnComponentBase {
      * @param message
      * @param callback
      */
-    public showAjaxMessage(result, message?, callback?) {
+    public showAjaxMessage(result, message?, callback?, cfg?) {
         const rs: { success: boolean; msg: string[] } = {
             success: true,
             msg: []
@@ -403,15 +403,47 @@ export class CnFormBase extends CnComponentBase {
             if (rs.success) {
                 this.baseMessage.success(message);
                 suc = true;
+                this.apiResource.addOperationLog({
+                    eventId: BSN_OPERATION_LOG_TYPE.SQL,
+                    eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                    funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                    description: cfg.description ? cfg.description : '执行操作，' + ` 数据为: ${JSON.stringify(result['data'])}`
+                }).subscribe(result => {
+
+                })
             } else {
                 this.baseMessage.error(rs.msg.join('<br/>'));
+                this.apiResource.addOperationLog({
+                    eventId: BSN_OPERATION_LOG_TYPE.SQL,
+                    eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
+                    funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                    description: cfg.description ? cfg.description : '执行操作，' + ` 数据为: ${JSON.stringify(result['data'])}` + '错误消息：' + rs.msg.join(',')
+                }).subscribe(result => {
+
+                })
             }
         } else {
             if (result.isSuccess) {
                 this.baseMessage.success(message);
                 suc = true;
+                this.apiResource.addOperationLog({
+                    eventId: BSN_OPERATION_LOG_TYPE.SQL,
+                    eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                    funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                    description: cfg.description ? cfg.description : '执行操作，' + ` 数据为: ${JSON.stringify(result['data'])}`
+                }).subscribe(result => {
+
+                })
             } else {
                 this.baseMessage.error(result.message);
+                this.apiResource.addOperationLog({
+                    eventId: BSN_OPERATION_LOG_TYPE.SQL,
+                    eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
+                    funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                    description: cfg.description ? cfg.description : '执行操作，' + ` 数据为: ${JSON.stringify(result['data'])}` + '错误消息：' + result.message
+                }).subscribe(result => {
+
+                })
             }
         }
         if (suc && callback) {
@@ -455,17 +487,11 @@ export class CnFormBase extends CnComponentBase {
                                         if (callback) {
                                             callback();
                                         }
-                                    }
+                                    },
+                                    c
                                 );
                             }
-                            this.apiResource.addOperationLog({
-                                eventId: BSN_OPERATION_LOG_TYPE.SQL,
-                                eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
-                                funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                                description: c.description ? c.description : '执行操作，' + ` 数据为: ${JSON.stringify(params) }`
-                            }).subscribe(result => {
-                
-                            })
+
                         })();
                     },
                     nzOnCancel() { }
@@ -483,7 +509,7 @@ export class CnFormBase extends CnComponentBase {
                                 if (callback) {
                                     callback();
                                 }
-                            }
+                            },
                         );
                     } else {
                         // 没有输出参数，进行默认处理
@@ -491,16 +517,8 @@ export class CnFormBase extends CnComponentBase {
                             if (callback) {
                                 callback();
                             }
-                        });
+                        }, c);
                     }
-                    this.apiResource.addOperationLog({
-                        eventId: BSN_OPERATION_LOG_TYPE.SQL,
-                        eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
-                        funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                        description: c.description ? c.description : '执行操作，' + ` 数据为: ${JSON.stringify(params)}`
-                    }).subscribe(result => {
-        
-                    })
                 })();
             }
         }
