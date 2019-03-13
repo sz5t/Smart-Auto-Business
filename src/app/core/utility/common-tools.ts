@@ -12,6 +12,20 @@ export interface ParametersResolverModel {
     returnValue?: any;
     router?: ActivatedRoute;
 }
+
+export interface OperationLogModel {
+    Id: string,
+    categoryId: string,
+    eventId: string,
+    eventResult: string,
+    funcId: string,
+    description: string,
+    instanceId: string,
+    loginDate: string,
+    userId: string,
+    userIp: string
+}
+
 export class CommonTools {
     public static uuID(w) {
         let s = '';
@@ -354,4 +368,53 @@ export class CommonTools {
         console.log('liu查询参数：', strQ);
         return strQ;
     }
+
+    public static getNowFormatDate(type,seperator1, seperator2) {
+        const date = new Date();
+        seperator1 = seperator1 ? seperator1 : '';
+        seperator2 = seperator2 ? seperator2 : '';
+        const month = getNewDate(date.getMonth() + 1);
+        const day = getNewDate(date.getDate());
+        const hours = getNewDate(date.getHours());
+        const minutes = getNewDate(date.getMinutes());
+        const seconds = getNewDate(date.getSeconds());
+        // 统一格式为两位数
+        function getNewDate(d: any) {
+            if (d <= 9) {
+                d = '0' + d;
+            }
+            return d;
+        }
+
+        let currentDate;
+        switch(type) {
+            case 'year':
+                currentDate = date.getFullYear();
+            break;
+            case 'month':
+            currentDate = date.getFullYear() + seperator1 + month;
+            break;
+            case 'day':
+            currentDate = date.getFullYear() + seperator1 + month + seperator1 + day;
+            break;
+            case 'hh':
+            currentDate = date.getFullYear() + seperator1 + month + seperator1 + day
+                + ' ' + hours;
+            break;
+            case 'mm':
+            currentDate = date.getFullYear() + seperator1 + month + seperator1 + day
+                + ' ' + hours + seperator2 + minutes;
+            break;
+            case 'ss':
+            currentDate = date.getFullYear() + seperator1 + month + seperator1 + day
+                + ' ' + hours + seperator2 + minutes + seperator2 + seconds;
+            break;
+        }
+
+        
+        return currentDate;
+    }
+
+    
+
 }

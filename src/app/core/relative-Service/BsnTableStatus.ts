@@ -1,3 +1,4 @@
+
 import { InjectionToken } from '@angular/core';
 
 export interface ComponentModes {
@@ -153,6 +154,26 @@ export class BsnComponentMessage {
         public option?: any
     ) { }
 }
+
+export const BSN_OPERATION_LOG_TYPE = {
+    ADD: '1',
+    DELETE: '2',
+    UPDATE: '3',
+    SEARCH: '4',
+    PROC: '6',
+    SQL: '5'
+}
+
+export const BSN_OPERATION_LOG_RESULT = {
+    SUCCESS : '1',
+    ERROR: '0'
+}
+
+export const BSN_DB_INSTANCE = {
+    SMART_ONE_CFG: 'SmartOneCfg'
+}
+
+
 
 /*
 // region: table models

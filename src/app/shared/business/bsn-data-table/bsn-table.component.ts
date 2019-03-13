@@ -1,3 +1,4 @@
+import { BSN_OPERATION_LOG_TYPE, BSN_DB_INSTANCE, BSN_OPERATION_LOG_RESULT } from './../../../core/relative-Service/BsnTableStatus';
 import { CacheService } from '@delon/cache';
 import { Observable } from 'rxjs';
 import {
@@ -153,6 +154,7 @@ export class BsnTableComponent extends CnComponentBase
     }
 
     public ngOnInit() {
+        this.tempValue['moduleName'] = this._router.snapshot.params['name'] ? this._router.snapshot.params['name'] : '';
         if (this.config.checkedConfig) {
             if (this.config.checkedConfig.width) {
                 this.checkedWidth = this.config.checkedConfig.width;
@@ -436,24 +438,24 @@ export class BsnTableComponent extends CnComponentBase
                                     // 匹配及联模式
                                     if (cascadeEvent._mode === mode) {
                                         switch (mode) {
-                                        case BSN_COMPONENT_CASCADE_MODES.REFRESH:
-                                            this.load();
-                                            break;
-                                        case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
-                                            this.focusIds = null;
-                                            this.load();
-                                            break;
-                                        case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN:
-                                            this.focusIds = null;
-                                            this.load();
-                                            break;
-                                        case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
-                                            break;
-                                        case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
-                                            break;
+                                            case BSN_COMPONENT_CASCADE_MODES.REFRESH:
+                                                this.load();
+                                                break;
+                                            case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                                                this.focusIds = null;
+                                                this.load();
+                                                break;
+                                            case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN:
+                                                this.focusIds = null;
+                                                this.load();
+                                                break;
+                                            case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
+                                                break;
+                                            case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
+                                                break;
+                                        }
                                     }
-                                    }
-                                    
+
                                 }
                             });
                         }
@@ -495,20 +497,20 @@ export class BsnTableComponent extends CnComponentBase
                         focusId = loadData.data.focusedId[0];
                     } else {
                         const slcId = this._selectRow['key'];
-                        if(slcId) {
-                            if(loadData.data.rows.length > 0 &&
+                        if (slcId) {
+                            if (loadData.data.rows.length > 0 &&
                                 loadData.data.rows.filter(s => s[this.config.keyId] === slcId).length > 0
                             ) {
                                 focusId = slcId;
                             } else {
                                 loadData.data.rows.length > 0 &&
-                                (focusId = loadData.data.rows[0].Id);
+                                    (focusId = loadData.data.rows[0].Id);
                             }
                         } else {
                             loadData.data.rows.length > 0 &&
-                            (focusId = loadData.data.rows[0].Id);
+                                (focusId = loadData.data.rows[0].Id);
                         }
-                        
+
                     }
                     if (loadData.data.rows.length > 0) {
                         loadData.data.rows.forEach((row, index) => {
@@ -1568,6 +1570,7 @@ export class BsnTableComponent extends CnComponentBase
         const params = {
             _ids: ids.join(',')
         };
+        const table = deleteConfig.table ? deleteConfig.table : '';
         const response = await this['delete'](deleteConfig.url, params);
         if (response && response.status === 200 && response.isSuccess) {
             this.baseMessage.create('success', '删除成功');
@@ -1585,8 +1588,27 @@ export class BsnTableComponent extends CnComponentBase
                     )
                 );
             }
+
+            // 操作日志
+            this.apiResource.addOperationLog({
+                eventId: BSN_OPERATION_LOG_TYPE.DELETE,
+                eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                description: `删除表[${table}]的数据, ID为: ${ids.join(',')}` 
+            }).subscribe(result => {
+
+            })
         } else {
             this.baseMessage.create('error', response.message);
+            // 操作日志
+            this.apiResource.addOperationLog({
+                eventId: BSN_OPERATION_LOG_TYPE.DELETE,
+                eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
+                funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                description: `删除表[${table}]的数据, ID为: ${ids.join(',')}`
+            }).subscribe(result => {
+                
+            });
         }
 
         return isSuccess;
@@ -1702,6 +1724,9 @@ export class BsnTableComponent extends CnComponentBase
             // 使用时乐意通过内置的参数类型进行访问
             switch (c.action) {
                 case BSN_EXECUTE_ACTION.EXECUTE_ADD_ROW_DATA:
+                    if (c.ajaxType !== 'post') {
+                        return;
+                    }
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
                         return false;
                     }
@@ -1756,20 +1781,55 @@ export class BsnTableComponent extends CnComponentBase
                     msg = '操作完成';
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_ROW:
-                    // 获取保存状态的数据
+
+                    if (c.ajaxType !== 'put') {
+                        return;
+                    }
+
                     handleData = this._getEditedRows();
                     msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
                     }
+
+                    // 获取保存状态的数据
+                    if (
+                        this.dataList.filter(item => item.checked === true)
+                            .length <= 0
+                    ) {
+                        this.baseMessage.create('info', '请选择要执行的数据');
+                        return false;
+                    }
+                    this.beforeOperation.operationItemsData = this._getCheckedItems();
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return false;
+                    }
+                    
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_SAVE_ROW:
-                    // 获取更新状态的数据
+                    if (c.ajaxType !== 'post') {
+                        return;
+                    }
+
                     handleData = this._getAddedRows();
                     msg = '新增数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
                     }
+
+                    if (
+                        this.dataList.filter(item => item.checked === true)
+                            .length <= 0
+                    ) {
+                        this.baseMessage.create('info', '请选择要执行的数据');
+                        return false;
+                    }
+                    this.beforeOperation.operationItemsData = this._getCheckedItems();
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return false;
+                    }
+                    // 获取更新状态的数据
+                    
                     break;
             }
             if (c.message) {
@@ -1986,7 +2046,7 @@ export class BsnTableComponent extends CnComponentBase
                 if (childrenConfig && childrenConfig.length > 0) {
                     this._getAjaxConfig(childrenConfig[0], ajaxConfig);
                 }
-                
+
             }
 
         } else {
