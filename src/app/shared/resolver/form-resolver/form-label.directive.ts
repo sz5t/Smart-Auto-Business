@@ -1,3 +1,4 @@
+import { CnFormRadioGroupComponent } from './../../components/cn-form-radio-group/cn-form-radio-group.component';
 import { CnFormInputComponent } from './../../components/cn-form-input/cn-form-input.component';
 import {
     ComponentFactoryResolver,
@@ -20,7 +21,8 @@ const components: { [type: string]: Type<any> } = {
     label: CnFormLabelComponent,
     checkbox: CnFormCheckboxComponent,
     hidden: CnFormHiddenComponent,
-    img: CnFormImgComponent
+    img: CnFormImgComponent,
+    radio: CnFormRadioGroupComponent
 };
 @Directive({
     // tslint:disable-next-line:directive-selector
@@ -64,6 +66,10 @@ export class CnFormLabelDirective implements OnInit, OnChanges, OnDestroy {
                 components['img']
             );
         }  else if (this.config.type === 'hidden') {
+            comp = this.resolver.resolveComponentFactory<any>(
+                components['hidden']
+            );
+        }  else if (this.config.type === 'radio') {
             comp = this.resolver.resolveComponentFactory<any>(
                 components['hidden']
             );
