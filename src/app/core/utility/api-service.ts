@@ -1,3 +1,6 @@
+import { CacheService } from '@delon/cache';
+import { getMonth, getISOYear } from 'date-fns';
+import { OperationLogModel } from './common-tools';
 import { CommonTools } from '@core/utility/common-tools';
 import { HttpHeaders, HttpParams, HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
@@ -8,13 +11,15 @@ import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
 import { SystemResource } from '@core/utility/system-resource';
 import { AlainThemeConfig } from '@delon/theme';
+import { BSN_DB_INSTANCE } from '@core/relative-Service/BsnTableStatus';
 
 @Injectable()
 export class ApiService {
     public httpClient;
     constructor(
         @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-        private http: HttpClient
+        private http: HttpClient,
+        private cacheService: CacheService
     ) {
         this.httpClient = new _HttpClient(http, new AlainThemeConfig());
     }
@@ -99,6 +104,22 @@ export class ApiService {
     public getSystemConfig() {
         const urls = `${SystemResource.localResource.url}/assets/config.json?rtc=${CommonTools.uuID(10)}`;
         return this.httpClient.request('GET', urls);
+    }
+
+    public addOperationLog(params: OperationLogModel) {
+        // inner log info from system login
+        params['userId'] = this.cacheService.get('userInfo')['value']['userId'] ? this.cacheService.get('userInfo')['value']['userId'] : 'unknown';
+        params['userIp'] = this.cacheService.get('userInfo')['value']['loginIp'] ? this.cacheService.get('userInfo')['value']['loginIp'] : 'unknown';
+        params['instanceId'] = BSN_DB_INSTANCE.SMART_ONE_CFG;
+
+        // 计算当前月份调用当月日志API
+        const month = CommonTools.getNowFormatDate('month', '', '');
+        const url = `common/SysOperationLog${month}`;
+        
+        return this.httpClient.request('POST', url, {
+            body: params,
+            headers: this.setHeaders()
+        });
     }
     // endregion
 }

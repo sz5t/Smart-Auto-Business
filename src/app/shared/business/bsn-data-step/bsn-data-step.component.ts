@@ -92,7 +92,8 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                         } else {
                             this.graph.read({ nodes: crNodes })
                         }
-                        if (!this._lastNode) {
+                        if (!this._lastNode && crNodes.length > 0) {
+                            
                             this._lastNode = this.graph._cfg._itemMap[crNodes[0].Id];
                         }
                         
@@ -308,7 +309,7 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                             // 获取当前设置的级联的模式
                             const mode = BSN_COMPONENT_CASCADE_MODES[relation.cascadeMode]
                             // 获取传递的消息数据
-                            const option = cascadeEvent.option
+                            const option = cascadeEvent.option;
                             // 解析参数
                             if (relation.params && relation.params.length > 0) {
                                 relation.params.forEach(param => {
