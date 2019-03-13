@@ -3,7 +3,7 @@ import { BeforeOperation } from './../../business/before-operation.base';
 import { LayoutResolverComponent } from './../layout-resolver/layout-resolver.component';
 import { CnFormWindowResolverComponent } from '@shared/resolver/form-resolver/form-window-resolver.component';
 import { BsnUploadComponent } from '@shared/business/bsn-upload/bsn-upload.component';
-import { BSN_COMPONENT_MODES } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT } from '@core/relative-Service/BsnTableStatus';
 import { CacheService } from '@delon/cache';
 import { CommonTools } from './../../../core/utility/common-tools';
 import {
@@ -34,6 +34,7 @@ import {
 } from '@core/relative-Service/BsnTableStatus';
 import { Observable } from 'rxjs';
 import { Observer } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -73,6 +74,7 @@ export class FormResolverComponent extends CnFormBase
         private message: NzMessageService,
         private modalService: NzModalService,
         private _messageService: RelativeService,
+        private _router: ActivatedRoute,
         @Inject(BSN_COMPONENT_MODES)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
@@ -117,6 +119,7 @@ export class FormResolverComponent extends CnFormBase
     // region: 组件生命周期事件
 
     public ngOnInit() {
+        this.tempValue['moduleName'] = this._router.snapshot.params['name'] ? this._router.snapshot.params['name'] : '';
         this.formState = this.initFormState();
         this.controls = this.initControls(this.config.forms);
         // 做参数简析
@@ -364,6 +367,7 @@ export class FormResolverComponent extends CnFormBase
                 item => item.ajaxType === method
             );
             result = await this[method](ajaxConfigs[index]);
+            // 操作日志
         }
     }
 
@@ -383,9 +387,25 @@ export class FormResolverComponent extends CnFormBase
             // this.load();
             // 发送消息 刷新其他界面
             this.sendCascadeMessage();
+            this.apiResource.addOperationLog({
+                eventId: BSN_OPERATION_LOG_TYPE.POST,
+                eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                description: postConfig.description ? postConfig.description : '执行操作，' + ` 数据为: ${JSON.stringify(params)}`
+            }).subscribe(result => {
+
+            })
         } else {
             this.baseMessage.create('error', res.message);
             result = false;
+            this.apiResource.addOperationLog({
+                eventId: BSN_OPERATION_LOG_TYPE.POST,
+                eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
+                funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                description: postConfig.description ? postConfig.description : '执行操作，' + ` 数据为: ${JSON.stringify(params)}` + ' 错误消息：' + res.message
+            }).subscribe(result => {
+
+            })
         }
         return result;
     }
@@ -410,9 +430,25 @@ export class FormResolverComponent extends CnFormBase
                 this.load();
                 // 发送消息 刷新其他界面
                 this.sendCascadeMessage();
+                this.apiResource.addOperationLog({
+                    eventId: BSN_OPERATION_LOG_TYPE.UPDATE,
+                    eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                    funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                    description: putConfig.description ? putConfig.description : '执行操作，' + ` 数据为: ${JSON.stringify(params)}`
+                }).subscribe(result => {
+    
+                })
             } else {
                 this.message.create('error', res.message);
                 result = false;
+                this.apiResource.addOperationLog({
+                    eventId: BSN_OPERATION_LOG_TYPE.UPDATE,
+                    eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
+                    funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                    description: putConfig.description ? putConfig.description : '执行操作，' + ` 数据为: ${JSON.stringify(params)}` + ' 错误消息：' + res.message
+                }).subscribe(result => {
+    
+                })
             }
         }
         return result;
@@ -439,6 +475,14 @@ export class FormResolverComponent extends CnFormBase
                     params
                 );
                 asyncResponse.push(res);
+                this.apiResource.addOperationLog({
+                    eventId: BSN_OPERATION_LOG_TYPE.DELETE,
+                    eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                    funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                    description: deleteConfig.description ? deleteConfig.description : '执行操作，' + ` 数据为: ${JSON.stringify(JSON.stringify(params))}`
+                }).subscribe(result => {
+    
+                })
             }
         }
         Promise.all(asyncResponse).then(res => {
@@ -448,6 +492,14 @@ export class FormResolverComponent extends CnFormBase
             this.sendCascadeMessage();
         }, error => {
             this.baseMessage.create('error', '操作异常,未能正确删除数据');
+            this.apiResource.addOperationLog({
+                eventId: BSN_OPERATION_LOG_TYPE.DELETE,
+                eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
+                funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                description: `删除数据操作异常,未能正确删除数据`
+            }).subscribe(result => {
+                
+            });
         })
     }
 
@@ -1188,7 +1240,7 @@ export class FormResolverComponent extends CnFormBase
                                                 //           }
                                                 //      }
                                                 //    }
-                                            
+
                                             }
                                         }
                                         if (caseItem['type'] === 'setValue') {
@@ -1273,7 +1325,7 @@ export class FormResolverComponent extends CnFormBase
         //         }
         //     )
         // );
-     
+
         const sendData = this.value;
         sendData[data.name] = data.value;
 

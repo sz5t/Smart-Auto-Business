@@ -161,11 +161,13 @@ export const BSN_OPERATION_LOG_TYPE = {
     UPDATE: '3',
     SEARCH: '4',
     PROC: '6',
-    SQL: '5'
+    SQL: '5',
+    SAVE: '7',
+    POST: '8'
 }
 
 export const BSN_OPERATION_LOG_RESULT = {
-    SUCCESS : '1',
+    SUCCESS: '1',
     ERROR: '0'
 }
 

@@ -1,4 +1,4 @@
-import { BSN_FORM_STATUS } from './../../../core/relative-Service/BsnTableStatus';
+import { BSN_FORM_STATUS, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT } from './../../../core/relative-Service/BsnTableStatus';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { FormBuilder, Validators } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
@@ -458,6 +458,14 @@ export class CnFormBase extends CnComponentBase {
                                     }
                                 );
                             }
+                            this.apiResource.addOperationLog({
+                                eventId: BSN_OPERATION_LOG_TYPE.SQL,
+                                eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                                funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                                description: c.description ? c.description : '执行操作，' + ` 数据为: ${JSON.stringify(params) }`
+                            }).subscribe(result => {
+                
+                            })
                         })();
                     },
                     nzOnCancel() { }
@@ -485,6 +493,14 @@ export class CnFormBase extends CnComponentBase {
                             }
                         });
                     }
+                    this.apiResource.addOperationLog({
+                        eventId: BSN_OPERATION_LOG_TYPE.SQL,
+                        eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                        funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                        description: c.description ? c.description : '执行操作，' + ` 数据为: ${JSON.stringify(params)}`
+                    }).subscribe(result => {
+        
+                    })
                 })();
             }
         }
