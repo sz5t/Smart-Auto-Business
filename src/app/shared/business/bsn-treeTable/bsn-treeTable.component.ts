@@ -12,7 +12,9 @@ import {
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
     BSN_COMPONENT_CASCADE_MODES,
-    BSN_COMPONENT_MODES
+    BSN_COMPONENT_MODES,
+    BSN_OPERATION_LOG_TYPE,
+    BSN_OPERATION_LOG_RESULT
 } from '@core/relative-Service/BsnTableStatus';
 import { CommonTools } from '@core/utility/common-tools';
 import { CacheService } from '@delon/cache';
@@ -22,6 +24,7 @@ import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { Observable, Observer, Subscription } from 'rxjs';
 import { BeforeOperation } from '../before-operation.base';
 import { TreeGridBase } from '../treegrid.base';
+import { ActivatedRoute } from '@angular/router';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: FormResolverComponent
@@ -114,7 +117,8 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
-        private cascadeEvents: Observable<BsnComponentMessage>
+        private cascadeEvents: Observable<BsnComponentMessage>,
+        private _router: ActivatedRoute
     ) {
         super();
         this.baseMessage = this._msg;
@@ -146,6 +150,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
 
     // 生命周期事件
     public ngOnInit() {
+        this.tempValue['moduleName'] = this._router.snapshot.params['name'] ? this._router.snapshot.params['name'] : '';
         this.cfg = this.config;
         this.permission = this.permissions;
         if (this.config.select) {
@@ -935,6 +940,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
 
     public async _executeDelete(deleteConfig, ids) {
         let isSuccess;
+        const desc = deleteConfig.description ? deleteConfig.description : '删除数据,';
         if (deleteConfig) {
             for (let i = 0, len = deleteConfig.length; i < len; i++) {
                 const params = {
@@ -947,8 +953,26 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                 if (response && response.status === 200 && response.isSuccess) {
                     this.baseMessage.create('success', '删除成功');
                     isSuccess = true;
+                    // 操作日志
+                    this.apiResource.addOperationLog({
+                        eventId: BSN_OPERATION_LOG_TYPE.DELETE,
+                        eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                        funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                        description: `${desc} ID为: ${ids.join(',')}` 
+                    }).subscribe(result => {
+        
+                    })
                 } else {
                     this.baseMessage.create('error', response.message);
+                    // 操作日志
+                    this.apiResource.addOperationLog({
+                        eventId: BSN_OPERATION_LOG_TYPE.DELETE,
+                        eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                        funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                        description: response.message 
+                    }).subscribe(result => {
+        
+                    })
                 }
             }
             if (isSuccess) {
@@ -994,6 +1018,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
 
     public async _execute(rowsData, method, postConfig) {
         let isSuccess = false;
+        const desc = postConfig.description ? postConfig.description : '执行操作,';
         if (postConfig) {
             for (let i = 0, len = postConfig.length; i < len; i++) {
                 const submitData = [];
@@ -1021,8 +1046,22 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                 if (response && response.status === 200 && response.isSuccess) {
                     this.baseMessage.create('success', '保存成功');
                     isSuccess = true;
+                    // 操作日志
+                    this.apiResource.addOperationLog({
+                        eventId: BSN_OPERATION_LOG_TYPE.SAVE,
+                        eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                        funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                        description: `${desc}数据: ${JSON.stringify(response['data'])}`
+                    }).subscribe(result => {});
                 } else {
+                    // 操作日志
                     this.baseMessage.create('error', response.message);
+                    this.apiResource.addOperationLog({
+                        eventId: BSN_OPERATION_LOG_TYPE.SAVE,
+                        eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                        funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                        description: `${response.message}`
+                    }).subscribe(result => {});
                 }
             }
             if (isSuccess) {

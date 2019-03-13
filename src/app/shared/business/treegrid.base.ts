@@ -6,7 +6,9 @@ import {
     BSN_EXECUTE_ACTION,
     BSN_OUTPOUT_PARAMETER_TYPE,
     BsnComponentMessage,
-    BSN_COMPONENT_CASCADE_MODES
+    BSN_COMPONENT_CASCADE_MODES,
+    BSN_OPERATION_LOG_TYPE,
+    BSN_OPERATION_LOG_RESULT
 } from '@core/relative-Service/BsnTableStatus';
 import { NzModalService, NzMessageService } from 'ng-zorro-antd';
 import { CommonTools } from '@core/utility/common-tools';
@@ -646,11 +648,12 @@ export class TreeGridBase extends CnComponentBase {
      * @param message
      * @param callback
      */
-    protected showAjaxMessage(result, message?, callback?) {
+    protected showAjaxMessage(result, message?, callback?, cfg?) {
         const rs: { success: boolean; msg: string[] } = {
             success: true,
             msg: []
         };
+        const desc = cfg.description ? cfg.description : '执行操作,';
         if (result && Array.isArray(result)) {
             result.forEach(res => {
                 rs['success'] = rs['success'] && res.isSuccess;
@@ -663,8 +666,21 @@ export class TreeGridBase extends CnComponentBase {
                 if (callback) {
                     callback();
                 }
+
+                this.apiResource.addOperationLog({
+                    eventId: BSN_OPERATION_LOG_TYPE.SQL,
+                    eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                    funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                    description: `${desc}数据: ${JSON.stringify(result['data'])}`
+                }).subscribe(result => {});
             } else {
                 this.baseMessage.error(rs.msg.join('<br/>'));
+                this.apiResource.addOperationLog({
+                    eventId: BSN_OPERATION_LOG_TYPE.SQL,
+                    eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
+                    funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                    description: rs.msg.join('<br/>') 
+                }).subscribe(result => {});
             }
         } else {
             if (result.isSuccess) {
@@ -683,8 +699,20 @@ export class TreeGridBase extends CnComponentBase {
                 if (callback) {
                     callback();
                 }
+                this.apiResource.addOperationLog({
+                    eventId: BSN_OPERATION_LOG_TYPE.SQL,
+                    eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                    funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                    description: `${desc}数据: ${JSON.stringify(result['data'])}` 
+                }).subscribe(result => {});
             } else {
                 this.baseMessage.error(result.message);
+                this.apiResource.addOperationLog({
+                    eventId: BSN_OPERATION_LOG_TYPE.SQL,
+                    eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
+                    funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                    description: result.message
+                }).subscribe(result => {});
             }
         }
     }

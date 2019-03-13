@@ -712,6 +712,7 @@ export class BsnTableComponent extends CnComponentBase
 
     public async _execute(rowsData, method, postConfig) {
         let isSuccess = false;
+        const desc = postConfig.description ? postConfig.description : '保存数据,';
         if (postConfig) {
             for (let i = 0, len = postConfig.length; i < len; i++) {
                 const submitData = [];
@@ -735,8 +736,26 @@ export class BsnTableComponent extends CnComponentBase
                     this.baseMessage.create('success', '保存成功');
                     this.focusIds = this._getFocusIds(response.data);
                     isSuccess = true;
+                    // 日志记录
+                    this.apiResource.addOperationLog({
+                        eventId: BSN_OPERATION_LOG_TYPE.DELETE,
+                        eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                        funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                        description: `${desc} 数据为: ${JSON.stringify(rowsData)}` 
+                    }).subscribe(result => {
+        
+                    })
                 } else {
                     this.baseMessage.create('error', response.message);
+                    // 日志记录
+                    this.apiResource.addOperationLog({
+                        eventId: BSN_OPERATION_LOG_TYPE.DELETE,
+                        eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                        funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                        description: `执行失败, ${response.message}` 
+                    }).subscribe(result => {
+        
+                    })
                 }
             }
             if (isSuccess) {
@@ -1570,7 +1589,7 @@ export class BsnTableComponent extends CnComponentBase
         const params = {
             _ids: ids.join(',')
         };
-        const table = deleteConfig.table ? deleteConfig.table : '';
+        const desc = deleteConfig.description ? deleteConfig.description : '删除数据,';
         const response = await this['delete'](deleteConfig.url, params);
         if (response && response.status === 200 && response.isSuccess) {
             this.baseMessage.create('success', '删除成功');
@@ -1594,7 +1613,7 @@ export class BsnTableComponent extends CnComponentBase
                 eventId: BSN_OPERATION_LOG_TYPE.DELETE,
                 eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                 funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                description: `删除表[${table}]的数据, ID为: ${ids.join(',')}` 
+                description: `${desc} ID为: ${ids.join(',')}` 
             }).subscribe(result => {
 
             })
@@ -1605,7 +1624,7 @@ export class BsnTableComponent extends CnComponentBase
                 eventId: BSN_OPERATION_LOG_TYPE.DELETE,
                 eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                 funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                description: `删除表[${table}]的数据, ID为: ${ids.join(',')}`
+                description: `${desc} ID为: ${ids.join(',')}`
             }).subscribe(result => {
                 
             });
@@ -1871,7 +1890,7 @@ export class BsnTableComponent extends CnComponentBase
                                         )
                                     );
                                     this.load();
-                                });
+                                }, c);
                             }
                         })();
                     },
@@ -1913,7 +1932,9 @@ export class BsnTableComponent extends CnComponentBase
                             );
                             this.focusIds = this._getFocusIds(response.data);
                             this.load();
-                        });
+                        }, c);
+
+                        
                     }
                 })();
             }
@@ -2692,11 +2713,12 @@ export class BsnTableComponent extends CnComponentBase
      * @param message
      * @param callback
      */
-    public showAjaxMessage(result, message?, callback?) {
+    public showAjaxMessage(result, message?, callback?, cfg?) {
         const rs: { success: boolean; msg: string[] } = {
             success: true,
             msg: []
         };
+        const desc = cfg.description ? cfg.description : '执行操作,';
         if (result && Array.isArray(result)) {
             result.forEach(res => {
                 rs['success'] = rs['success'] && res.isSuccess;
@@ -2709,8 +2731,21 @@ export class BsnTableComponent extends CnComponentBase
                 if (callback) {
                     callback();
                 }
+
+                this.apiResource.addOperationLog({
+                    eventId: BSN_OPERATION_LOG_TYPE.SQL,
+                    eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                    funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                    description: `${desc}数据: ${JSON.stringify(result['data'])}`
+                }).subscribe(result => {});
             } else {
                 this.baseMessage.error(rs.msg.join('<br/>'));
+                this.apiResource.addOperationLog({
+                    eventId: BSN_OPERATION_LOG_TYPE.SQL,
+                    eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
+                    funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                    description: rs.msg.join('<br/>') 
+                }).subscribe(result => {});
             }
         } else {
             if (result.isSuccess) {
@@ -2718,8 +2753,20 @@ export class BsnTableComponent extends CnComponentBase
                 if (callback) {
                     callback();
                 }
+                this.apiResource.addOperationLog({
+                    eventId: BSN_OPERATION_LOG_TYPE.SQL,
+                    eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+                    funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                    description: `${desc}数据: ${JSON.stringify(result['data'])}` 
+                }).subscribe(result => {});
             } else {
                 this.baseMessage.error(result.message);
+                this.apiResource.addOperationLog({
+                    eventId: BSN_OPERATION_LOG_TYPE.SQL,
+                    eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
+                    funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+                    description: result.message
+                }).subscribe(result => {});
             }
         }
     }
