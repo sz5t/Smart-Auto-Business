@@ -4,33 +4,33 @@
         <div id="toolbar" #toolbar>
             <!-- <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_598462_3xve1872wizzolxr.css"> -->
             <!-- <i data-command="undo" class="command iconfont icon-undo" title="撤销"></i>
-            <i data-command="redo" class="command iconfont icon-redo disable" title="重做"></i>
-            <span class="separator"></span>
-            <i data-command="copy" class="command iconfont icon-copy-o disable" title="复制"></i>
-            <i data-command="paste" class="command iconfont icon-paster-o disable" title="粘贴"></i>
-            <i data-command="delete" class="command iconfont icon-delete-o disable" title="删除"></i> -->
+                <i data-command="redo" class="command iconfont icon-redo disable" title="重做"></i>
+                <span class="separator"></span>
+                <i data-command="copy" class="command iconfont icon-copy-o disable" title="复制"></i>
+                <i data-command="paste" class="command iconfont icon-paster-o disable" title="粘贴"></i>
+                <i data-command="delete" class="command iconfont icon-delete-o disable" title="删除"></i> -->
             <span class="separator"></span>
             <i data-command="zoomIn" class="command iconfont icon-zoom-in-o" title="放大"></i>
             <i data-command="zoomOut" class="command iconfont icon-zoom-out-o" title="缩小"></i>
             <i data-command="autoZoom" class="command iconfont icon-fit" title="适应画布"></i>
             <i data-command="resetZoom" class="command iconfont icon-actual-size-o" title="实际尺寸"></i>
             <!-- <span class="separator"></span>
-            <i data-command="toBack" class="command iconfont icon-to-back disable" title="层级后置"></i>
-            <i data-command="toFront" class="command iconfont icon-to-front disable" title="层级前置"></i>
-            <span class="separator"></span>
-            <i data-command="multiSelect" class="command iconfont icon-select" title="多选"></i>
-            <i data-command="addGroup" class="command iconfont icon-group disable" title="成组"></i>
-            <i data-command="unGroup" class="command iconfont icon-ungroup disable" title="解组"></i>
-            <span class="separator"></span>
-            <button (click)="save()" class="ant-btn ng-star-inserted ant-btn-default" title="保存">
-                <span>
-                    <strong>保存</strong>
-                </span>
-            </button> -->
+                <i data-command="toBack" class="command iconfont icon-to-back disable" title="层级后置"></i>
+                <i data-command="toFront" class="command iconfont icon-to-front disable" title="层级前置"></i>
+                <span class="separator"></span>
+                <i data-command="multiSelect" class="command iconfont icon-select" title="多选"></i>
+                <i data-command="addGroup" class="command iconfont icon-group disable" title="成组"></i>
+                <i data-command="unGroup" class="command iconfont icon-ungroup disable" title="解组"></i>
+                <span class="separator"></span>
+                <button (click)="save()" class="ant-btn ng-star-inserted ant-btn-default" title="保存">
+                    <span>
+                        <strong>保存</strong>
+                    </span>
+                </button> -->
         </div>
         <!-- 42px -->
         <div style="height: 42px;"></div>
-        <div class="bottom-container">
+        <div class="bottom-container"  style="width: 100%; height: 100%;">
             <!-- 工具栏 DOM 结构规约参考 Toolbar API -->
             <div id="itempannel" #itempannel style="display: none">
                 <img draggable="false" src="../../../../assets/img/workflow/ZnPxbVjKYADMYxkTQXRi.svg" data-type="node" data-shape="flow-circle"
@@ -42,7 +42,7 @@
                 <img draggable="false" src="../../../../assets/img/workflow/SnWIktArriZRWdGCnGfK.svg" data-type="node" data-shape="flow-rhombus"
                     data-size="80*72" data-color="#13C2C2" data-label="分叉节点" class="getItem">
                 <!--                 <img draggable="false" src="../../../../assets/img/workflow/rQMUhHHSqwYsPwjXxcfP.svg" data-type="node" data-shape="flow-capsule"
-                  data-size="80*48" data-color="#722ED1" data-label="模型节点" class="getItem"> -->
+                      data-size="80*48" data-color="#722ED1" data-label="模型节点" class="getItem"> -->
 
             </div>
 
@@ -54,7 +54,7 @@
                         <nz-collapse>
                             <nz-collapse-panel [nzHeader]="node_panels[0].name" [nzActive]="node_panels[0].active" [nzDisabled]="node_panels[0].disabled">
                                 <form nz-form>
-                                    <nz-form-item  style="display: none">
+                                    <nz-form-item style="display: none">
                                         <nz-form-label [nzSpan]="7" nzFor="id">id</nz-form-label>
                                         <nz-form-control [nzSpan]="16">
                                             <input nz-input name="id" type="text" id="id" [(ngModel)]="nodeinfo.id" readonly="readonly">
@@ -81,7 +81,7 @@
                         <nz-collapse>
                             <nz-collapse-panel [nzHeader]="edge_panels[0].name" [nzActive]="edge_panels[0].active" [nzDisabled]="edge_panels[0].disabled">
                                 <form nz-form>
-                                    <nz-form-item  style="display: none">
+                                    <nz-form-item style="display: none">
                                         <nz-form-label [nzSpan]="7" nzFor="id">id</nz-form-label>
                                         <nz-form-control [nzSpan]="16">
                                             <input nz-input name="id" type="text" id="id" [(ngModel)]="edgeinfo.id" readonly="readonly">
@@ -120,7 +120,7 @@
                 </div>
             </div>
             <!-- 详情面板栏 DOM 结构规约参考 Detailpannel API -->
-            <div id="contextmenu" #contextmenu  style="display: none">
+            <div id="contextmenu" #contextmenu style="display: none">
                 <div data-status="node-selected" class="menu" style="display:block;">
                     <div data-command="copy" class="command">
                         <span>复制</span>
@@ -185,7 +185,10 @@
                 </div>
             </div>
             <!-- 右键菜单栏 DOM 结构规约参考 Contextmenu API -->
-            <div id="page" #page  style="margin-left:2px;"></div>
+            <nz-card style="width:100%;height: 100%;" [nzBordered]="false" [nzBodyStyle]="this.config.bodyStyle?this.config.bodyStyle:bodyStyle">
+                <div id="page" #page style="margin-left:2px; "></div>
+            </nz-card>
+
             <!-- 参考 Flow、Mind API -->
         </div>
     </div>

@@ -170,7 +170,7 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
 
   public editor = new Editor();
   public page;
-
+  public bodyStyle;
 
   public async load() {
 
@@ -213,7 +213,12 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
       this.initValue = this.initData;
     }
     this.load();
-
+    this.bodyStyle = {
+       height: '100%',
+       width: '100%',
+      // position: 'absolute',
+     // overflow: 'auto'
+    };
 
   }
 
@@ -224,7 +229,7 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
       queue: true,  // 命令是否进入队列，默认是 true  
       // 命令是否可用
       enable(/* editor */) {
-   
+
       },
       // 正向命令
       execute(/* editor */) {
@@ -262,7 +267,7 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
       graph: {
         container: this.rpage.nativeElement,
         height: window.innerHeight - 238,
-        width: window.innerWidth 
+        width: window.innerWidth
 
       },
       // shortcut: {
@@ -289,7 +294,7 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
 
     });          // 任意点击事件
     graph.on('node:click', ev => {
-  
+
       if (ev.item) {
         const s_data = this.page.save();
         this.data.edges = s_data.edges;
@@ -335,7 +340,7 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
           if (n.id === ev.item.model.id) {
             sendData = n;
             d = n;
-            nodeData = JSON.parse(JSON.stringify( n));
+            nodeData = JSON.parse(JSON.stringify(n));
           }
         });
         sendData['dataType'] = 'node';
@@ -370,9 +375,9 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
               if (element.cascadeField) {
                 element.cascadeField.forEach(feild => {
                   if (!feild['type']) {
-                   // if (nodeData[feild.valueName]) {
-                      sendData[feild.name] = nodeData; // [feild.valueName];
-                   // }
+                    // if (nodeData[feild.valueName]) {
+                    sendData[feild.name] = nodeData; // [feild.valueName];
+                    // }
                   } else {
                     if (feild['type'] === 'selectObject') {
                       if (nodeData[feild.valueName]) {
@@ -455,7 +460,7 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
           }
         });
         let nodestate = true;
- 
+
         this.data.edges.forEach(n => {
           if (n.id === ev.item.model.id) {
             this.edgeinfo.id = n.id;
@@ -483,7 +488,7 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
         if (n.id === ev.item.model.id) {
           sendData = n;
           d = n;
-          nodeData = JSON.parse(JSON.stringify( n));
+          nodeData = JSON.parse(JSON.stringify(n));
         }
       });
       sendData['dataType'] = 'edge';
@@ -496,9 +501,9 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
             if (element.cascadeField) {
               element.cascadeField.forEach(feild => {
                 if (!feild['type']) {
-                //  if (nodeData[feild.valueName]) {
-                    sendData[feild.name] = nodeData; // [feild.valueName];
-               //   }
+                  //  if (nodeData[feild.valueName]) {
+                  sendData[feild.name] = nodeData; // [feild.valueName];
+                  //   }
                 } else {
                   if (feild['type'] === 'selectObject') {
                     if (nodeData[feild.valueName]) {
@@ -542,7 +547,7 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
         });
       }
       // *******************************
-     
+
     });     // 边点击事件
     graph.on('group:click', ev => {
 

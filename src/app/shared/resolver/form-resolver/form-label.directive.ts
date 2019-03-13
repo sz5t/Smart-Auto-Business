@@ -15,10 +15,12 @@ import {
 import { CnFormLabelComponent } from '@shared/components/cn-form-label/cn-form-label.component';
 import { CnFormCheckboxComponent } from '@shared/components/cn-form-checkbox/cn-form-checkbox.component';
 import { CnFormHiddenComponent } from '@shared/components/cn-form-hidden/cn-form-hidden.component';
+import { CnFormImgComponent } from '@shared/components/cn-form-img/cn-form-img.component';
 const components: { [type: string]: Type<any> } = {
     label: CnFormLabelComponent,
     checkbox: CnFormCheckboxComponent,
-    hidden: CnFormHiddenComponent
+    hidden: CnFormHiddenComponent,
+    img: CnFormImgComponent
 };
 @Directive({
     // tslint:disable-next-line:directive-selector
@@ -57,7 +59,11 @@ export class CnFormLabelDirective implements OnInit, OnChanges, OnDestroy {
             comp = this.resolver.resolveComponentFactory<any>(
                 components['checkbox']
             );
-        } else if (this.config.type === 'hidden') {
+        } else if (this.config.type === 'img') {
+            comp = this.resolver.resolveComponentFactory<any>(
+                components['img']
+            );
+        }  else if (this.config.type === 'hidden') {
             comp = this.resolver.resolveComponentFactory<any>(
                 components['hidden']
             );
