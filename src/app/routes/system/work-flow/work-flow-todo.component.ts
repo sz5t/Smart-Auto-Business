@@ -1704,6 +1704,44 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
                                                 }
                                             },
                                             {
+                                                title: '图片',
+                                                field: 'codeimg',
+                                                width: 80,
+                                                showFilter: false,
+                                                showSort: false,
+                                                editor: {
+                                                    type: 'img',
+                                                    field: 'codeimg',
+                                                    options: {
+                                                        type: 'img',
+                                                        labelSize: '6',
+                                                        controlSize: '18',
+                                                        inputType: 'text',
+                                                        style: {
+                                                            height: '80px',
+                                                            width: '200px',
+                                                        },
+                                                        defaultValue: 'http://192.168.1.111:8081/api.cfg/files/upload/2019-03-12/44bb4a6551dd4f3984d49c470ed5c07a.jpg',
+                                                    }
+                                                },
+                                                showFormat: {
+                                                    type: 'img',
+                                                    field: 'codeimg',
+                                                    options: {
+                                                        type: 'img',
+                                                        labelSize: '6',
+                                                        name: 'codeimg',
+                                                        controlSize: '18',
+                                                        inputType: 'text',
+                                                        style: {
+                                                            height: '80px',
+                                                            width: '200px',
+                                                        },
+                                                        defaultValue: 'http://192.168.1.111:8081/api.cfg/files/upload/2019-03-12/44bb4a6551dd4f3984d49c470ed5c07a.jpg',
+                                                    }
+                                                } 
+                                            },
+                                            {
                                                 title: '名称',
                                                 field: 'name',
                                                 width: 80,
@@ -7503,6 +7541,7 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
                         viewId: 'businesskey_Table_ck',
                         component: 'bsnTable',
                         keyId: 'Id',
+                        showCheckBox: true,
                         pagination: true, // 是否分页
                         showTotal: true, // 是否显示总数据量
                         pageSize: 5, // 默pageSizeOptions认每页数据条数
@@ -7651,7 +7690,44 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
                                 //     }
                                 // }
                             },
-
+                            {
+                                title: '图片',
+                                field: 'codeimg',
+                                width: 80,
+                                showFilter: false,
+                                showSort: false,
+                                editor: {
+                                    type: 'img',
+                                    field: 'codeimg',
+                                    options: {
+                                        type: 'input',
+                                        labelSize: '6',
+                                        controlSize: '18',
+                                        inputType: 'text',
+                                        style: {
+                                            height: '80px',
+                                            width: '200px',
+                                        },
+                                        defaultValue: 'http://192.168.1.111:8081/api.cfg/files/upload/2019-03-12/44bb4a6551dd4f3984d49c470ed5c07a.jpg',
+                                    }
+                                },
+                                showFormat: {
+                                    type: 'img',
+                                    field: 'codeimg',
+                                    options: {
+                                        type: 'img',
+                                        labelSize: '6',
+                                        name: 'codeimg',
+                                        controlSize: '18',
+                                        inputType: 'text',
+                                        style: {
+                                            height: '80px',
+                                            width: '200px',
+                                        },
+                                        defaultValue: 'http://192.168.1.111:8081/api.cfg/files/upload/2019-03-12/44bb4a6551dd4f3984d49c470ed5c07a.jpg',
+                                    }
+                                } 
+                            },
                             {
                                 title: '备注',
                                 field: 'remark1',
@@ -7785,6 +7861,14 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
                                             'editable-add-btn',
                                         text:
                                             '刷新',
+                                        cancelPermission: true
+                                    },
+                                    {
+                                        name: 'updateRow',
+                                        class:
+                                            'editable-add-btn',
+                                        text: '修改',
+                                        action: 'EDIT',
                                         cancelPermission: true
                                     },
                                     {

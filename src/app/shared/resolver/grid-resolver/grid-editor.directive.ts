@@ -37,6 +37,7 @@ import { CnGridSelectCustomComponent } from '@shared/components/cn-grid-select-c
 import { CnGridSelectCustomMultipleComponent } from '@shared/components/cn-grid-select-custom-multiple/cn-grid-select-custom-multiple.component';
 import { CnGridUploadComponent } from '@shared/components/cn-grid-upload/cn-grid-upload.component';
 import { CnGridUploadListComponent } from '@shared/components/cn-grid-upload-list/cn-grid-upload-list.component';
+import { CnGridImgComponent } from '@shared/components/cn-grid-img/cn-grid-img.component';
 const components: { [type: string]: Type<any> } = {
     input: CnGridInputComponent,
     select: CnGridSelectComponent,
@@ -57,7 +58,8 @@ const components: { [type: string]: Type<any> } = {
     selectCustom: CnGridSelectCustomComponent,
     selectCustomMultiple: CnGridSelectCustomMultipleComponent,
     upload: CnGridUploadComponent,
-    uploadList: CnGridUploadListComponent
+    uploadList: CnGridUploadListComponent,
+    img: CnGridImgComponent
 };
 
 // export const EXE_COUNTER_VALUE_ACCESSOR: any = {

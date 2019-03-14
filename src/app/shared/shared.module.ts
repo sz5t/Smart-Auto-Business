@@ -117,6 +117,7 @@ import { BsnChartComponent } from './business/bsn-chart/bsn-chart.component';
 import { BsnGanttComponent } from './business/bsn-gantt/bsn-gantt.component';
 import { BtnTableStatusInfoPipe } from '@core/pipe/btn-table-status-info.pipe';
 import { CnFormImgComponent } from './components/cn-form-img/cn-form-img.component';
+import { CnGridImgComponent } from '@shared/components/cn-grid-img/cn-grid-img.component';
 
 
 const THIRDMODULES = [
@@ -226,7 +227,8 @@ const COMPONENTS = [
     BsnGanttComponent,
     PrintsComponent,
     CnFormUploadComponent,
-    CnFormImgComponent
+    CnFormImgComponent,
+    CnGridImgComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
