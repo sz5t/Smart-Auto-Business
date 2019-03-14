@@ -1,4 +1,4 @@
 <input nz-input (ngModelChange)="valueChange($event)" type="hidden" placeholder="{{config.placeholder}}" [(ngModel)]="_value">
-<img [src]="value" [ngStyle]="config.style?config.style:bodyStyle" />
+<img [src]="_value" [ngStyle]="config.style?config.style:bodyStyle" />
 
 <!-- (ngModelChange)="valueChange($event)" -->
