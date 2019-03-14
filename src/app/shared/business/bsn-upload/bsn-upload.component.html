@@ -50,8 +50,8 @@
             <ng-template #item let-item>
                 <nz-list-item [nzContent]="'上传时间：'+item.createDate" [nzActions]="[editAction,deleteAction]">
                     <ng-template #editAction><a target="_blank" href="{{url}}file/download?_ids={{item.Id}}">下载</a></ng-template>
-                    <ng-template #deleteAction *ngIf="isUpload" >
-                        <a nz-popconfirm nzTitle="确定删除该附件" nzOkText="确定" nzCancelText="取消"
+                    <ng-template #deleteAction  >
+                        <a *ngIf="isUpload" nz-popconfirm nzTitle="确定删除该附件" nzOkText="确定" nzCancelText="取消"
                             (nzOnConfirm)="delete(item.Id)" (nzOnCancel)="cancel()">删除</a>
                     </ng-template>
                     <nz-list-item-meta [nzTitle]="item.actName">
