@@ -445,7 +445,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                             {
                                                 title: "父类别",
                                                 field: "parentName",
-                                                width: "10%",
+                                                width: "110px",
                                                 hidden: false,
                                                 editor: {
                                                     type: "select",
@@ -480,7 +480,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                             {
                                                 title: "父类别",
                                                 field: "parentName",
-                                                width: "10%",
+                                                width: "120px",
                                                 hidden: false,
                                                 editor: {
                                                     type: "select",
@@ -500,7 +500,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         disabled: false,
                                                         size: "default",
                                                         clear: true,
-                                                        width: "100%",
+                                                        width: "110px",
                                                         cascades: [
                                                             {
                                                                 cascadeName:
