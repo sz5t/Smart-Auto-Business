@@ -23,7 +23,7 @@
     </thead>
     <tbody>
         <ng-template ngFor let-data [ngForOf]="nzTable.data">
-            <tr *ngIf="(data.parent&&data.parent.expand) || !(data.parent)" (click)="selectRow(data, $event)" [ngStyle]="{'background-color':data?.selected?'rgb(236, 246, 253)':''}">
+            <tr *ngIf="(data.parent&&data.parent.expand) || !(data.parent)" (click)="selectRow(data, $event)" [ngClass]="{'selectedRow': data.selected}">
                 <td nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked()"></td>
                 <ng-template ngFor let-col [ngForOf]="config.columns">
                     <td *ngIf="col.expand && !col.hidden" [nzIndentSize]="data?.level ? data?.level*20 : false"

@@ -57,7 +57,9 @@ const component: { [type: string]: Type<any> } = {
             }
 
             .selectedRow {
-                color: blue;
+                color: black;
+                font-weight:600;
+                background-color: rgb(100, 149, 222);
             }
             .text-center {
                 text-align: center;
@@ -66,6 +68,7 @@ const component: { [type: string]: Type<any> } = {
             .text-right {
                 text-align: right;
             }
+
         `
     ]
 })

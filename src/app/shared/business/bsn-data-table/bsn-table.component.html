@@ -4,21 +4,22 @@
     [nzLoading]="loading" (nzPageIndexChange)="searchData()" (nzPageSizeChange)="searchData(true)" [nzTitle]="this.config.title ? title : false"
     [nzNoResult]="noResult" [nzLoadingDelay]="50" [nzScroll]="config.scroll ? config.scroll : {}" nzBordered>
 
-    <thead (nzSortChange)="sort($event)" nzSingleSort>
-        <tr (contextmenu)="contextMenu($event,contextTemplate)">
-            <th *ngIf="config.showCheckBox"  [nzWidth]="checkedWidth?checkedWidth:'10px'"  [nzShowCheckbox]="config.showCheckBox ? config.showCheckBox : false" [(nzChecked)]="allChecked"
-                [nzIndeterminate]="indeterminate" (nzCheckedChange)="checkAll($event)">
-            </th>
-            <ng-template ngFor let-col [ngForOf]="config.columns">
-                <th [nzWidth]="col.width" [nzShowSort]="col.showSort" [nzShowFilter]="col.showFilter" *ngIf="!col.hidden" [nzSortKey]="col.field"
-                    [ngClass]="[col.titleAlign ? col.titleAlign : '']">
-                    <!--  [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" (nzFilterChange)="columnFilter(col.editor.field, $event)" -->
-                    <span>{{col.title}}</span>
-                </th>
-            </ng-template>
-        </tr>
-    </thead>
-    <tbody>
+    <!-- <thead (nzSortChange)="sort($event)" nzSingleSort>
+
+    </thead> -->
+
+            <tr (contextmenu)="contextMenu($event,contextTemplate)">
+                    <th *ngIf="config.showCheckBox"  [nzWidth]="checkedWidth?checkedWidth:'10px'"  [nzShowCheckbox]="config.showCheckBox ? config.showCheckBox : false" [(nzChecked)]="allChecked"
+                        [nzIndeterminate]="indeterminate" (nzCheckedChange)="checkAll($event)">
+                    </th>
+                    <ng-template ngFor let-col [ngForOf]="config.columns">
+                        <th [nzWidth]="col.width" [nzShowSort]="col.showSort" [nzShowFilter]="col.showFilter" *ngIf="!col.hidden" [nzSortKey]="col.field"
+                            [ngClass]="[col.titleAlign ? col.titleAlign : '']">
+                            <!--  [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" (nzFilterChange)="columnFilter(col.editor.field, $event)" -->
+                            <span>{{col.title}}</span>
+                        </th>
+                    </ng-template>
+                </tr>
         <ng-template ngFor let-data [ngForOf]="nzTable.data">
             <ng-container *ngIf="data.row_status === 'search'">
                 <tr>
@@ -69,7 +70,7 @@
                 </tr>
             </ng-container>
             <ng-container *ngIf="data.row_status != 'search'">
-                <tr (click)="selectRow(data, $event)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
+                <tr (click)="selectRow(data, $event)" [ngClass]="{'selectedRow': data.selected}">
                     <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
                     </td>
                     <ng-template ngFor let-col [ngForOf]="config.columns">
@@ -162,6 +163,6 @@
                         style="width:80px; border:none; border-bottom:1px solid #1890ff;">
                 </td>
             </tr>
-        </tbody>
+
     </nz-table>
 </nz-modal>

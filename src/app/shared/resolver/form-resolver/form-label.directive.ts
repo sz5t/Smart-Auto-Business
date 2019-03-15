@@ -22,7 +22,7 @@ const components: { [type: string]: Type<any> } = {
     checkbox: CnFormCheckboxComponent,
     hidden: CnFormHiddenComponent,
     img: CnFormImgComponent,
-    radio: CnFormRadioGroupComponent
+    radioGroup: CnFormRadioGroupComponent
 };
 @Directive({
     // tslint:disable-next-line:directive-selector
@@ -69,9 +69,9 @@ export class CnFormLabelDirective implements OnInit, OnChanges, OnDestroy {
             comp = this.resolver.resolveComponentFactory<any>(
                 components['hidden']
             );
-        }  else if (this.config.type === 'radio') {
+        }  else if (this.config.type === 'radioGroup') {
             comp = this.resolver.resolveComponentFactory<any>(
-                components['hidden']
+                components['radioGroup']
             );
         } else {
             comp = this.resolver.resolveComponentFactory<any>(
