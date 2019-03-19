@@ -1203,6 +1203,18 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                         cancelPermission: true
                                                     },
                                                     {
+                                                        name: "import",
+                                                        icon: "cloud-upload",
+                                                        text: "附件上传",
+                                                        action: "IMPORT_EXCEL",
+                                                        actionType:
+                                                            "importExcel",
+                                                        actionName:
+                                                            "importExcel",
+                                                        type: "importExcel",
+                                                        cancelPermission: true
+                                                    },
+                                                    {
                                                         name: "addFormcascade",
                                                         text: "级联例子",
                                                         icon: "form",
@@ -2990,6 +3002,31 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                             name: "refDataId",
                                                             type: "tempValue",
                                                             valueName: "_id"
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ],
+                                        importExcel: [
+                                            {
+                                                keyId: "Id",
+                                                title: "",
+                                                name: "importExcel",
+                                                width: "600",
+                                                ajaxConfig: {
+                                                    deleteUrl: "file/delete",
+                                                    listUrl: "common/SysFile",
+                                                    url: "file/upload",
+                                                    downloadUrl:
+                                                        "file/download",
+                                                    importUrl: 'common/excel/import',
+                                                    ajaxType: "post",
+                                                    resourceName: 'ShowCase',
+                                                    batchImportCount: 100,
+                                                    params: [
+                                                        {
+                                                            name: "refDataId",
+                                                            type: "GUID"
                                                         }
                                                     ]
                                                 }

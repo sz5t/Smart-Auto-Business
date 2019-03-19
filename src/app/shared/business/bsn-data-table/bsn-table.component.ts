@@ -1,3 +1,4 @@
+import { BsnImportExcelComponent } from './../bsn-import-excel/bsn-import-excel.component';
 import { BSN_OPERATION_LOG_TYPE, BSN_DB_INSTANCE, BSN_OPERATION_LOG_RESULT } from './../../../core/relative-Service/BsnTableStatus';
 import { CacheService } from '@delon/cache';
 import { Observable } from 'rxjs';
@@ -39,7 +40,8 @@ import { ActivatedRoute } from '@angular/router';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: CnFormWindowResolverComponent,
-    upload: BsnUploadComponent
+    upload: BsnUploadComponent,
+    importExcel: BsnImportExcelComponent
 };
 
 @Component({
@@ -369,6 +371,9 @@ export class BsnTableComponent extends CnComponentBase
                             !this.beforeOperation.beforeItemsDataOperation(
                                 option
                             ) && this.formBatchDialog(option);
+                            break;
+                        case BSN_COMPONENT_MODES.IMPORT_EXCEL:
+                            this.importExcelDialog(option);
                             break;
                     }
                 }
@@ -2906,6 +2911,43 @@ export class BsnTableComponent extends CnComponentBase
             this.showLayout(this.config.windowDialog[index]);
         }
     }
+
+    /**
+     * 导入excel
+     * @param option 
+     */
+    public importExcelDialog(option) {
+        if (this.config.importExcel && this.config.importExcel.length > 0) {
+            const index = this.config.importExcel.findIndex(
+                item => item.name === option.actionName
+            );
+            this.openImportExcelDialog(this.config.importExcel[index]);
+        }
+    }
+
+    private openImportExcelDialog(dialog) {
+        const modal = this.baseModal.create({
+            nzTitle: dialog.title,
+            nzWidth: dialog.width,
+            nzContent: component['importExcel'],
+            nzComponentParams: {
+                config: dialog.ajaxConfig,
+                // refObj: obj
+            },
+            nzFooter: [
+                {
+                    label: '关闭',
+                    type: 'default',
+                    show: true,
+                    onClick: () => {
+                        this.load();
+                        modal.close();
+                    }
+                }
+            ]
+        });
+    }
+
     /**
      * 弹出上传对话
      * @param option

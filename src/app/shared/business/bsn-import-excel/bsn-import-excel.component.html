@@ -1,0 +1,29 @@
+<nz-card *ngIf="isUpload" [nzTitle]="header">
+    <ng-template #header>
+        <i nz-icon [type]="upload"></i> 上传附件
+    </ng-template>
+    <div nz-row [nzGutter]="8">
+        <div nz-col nzSpan="24">
+            <nz-upload nzType="drag" [nzMultiple]="true" [nzBeforeUpload]="beforeUpload" [(nzFileList)]="fileList"
+                (nzChange)="handleChange($event)">
+                <p class="ant-upload-drag-icon">
+                    <i class="anticon anticon-inbox"></i>
+                </p>
+                <p class="ant-upload-text">请将文件【拖拽】至此或【单击】此区域添加文件</p>
+                <p class="ant-upload-hint">此处支持批量文件上传</p>
+            </nz-upload>
+        </div>
+    </div>
+    <nz-divider nzDashed [nzText]="text">
+        <ng-template #text><i class="anticon anticon-plus"></i> 待导入文件</ng-template>
+    </nz-divider>
+    <div nz-row>
+        <div nz-col nzSpan="20"></div>
+        <div nz-col nzSpan="4">
+            <button style="float:right" [nzLoading]="uploading" (click)="handleUpload()" [disabled]="fileList.length == 0"
+                nz-button [nzType]="'primary'" value="上传">
+                {{ uploading ? '上传中...' : '开始导入' }}
+            </button>
+        </div>
+    </div>
+</nz-card>

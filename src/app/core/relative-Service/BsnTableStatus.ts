@@ -30,7 +30,8 @@ export interface ComponentModes {
     // form
     FORM_ADD: string,
     FORM_EDIT: string,
-    FORM_LOAD: string
+    FORM_LOAD: string,
+    IMPORT_EXCEL: string
 
 }
 
@@ -64,7 +65,8 @@ export const BSN_COMPONENT_MODES: ComponentModes = {
     // form
     FORM_ADD: 'formAdd',
     FORM_EDIT: 'formEdit',
-    FORM_LOAD: 'formLoad'
+    FORM_LOAD: 'formLoad',
+    IMPORT_EXCEL: 'importExcel'
 };
 
 export const BSN_FORM_STATUS = {

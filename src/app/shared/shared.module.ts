@@ -1,3 +1,4 @@
+import { BsnImportExcelComponent } from './business/bsn-import-excel/bsn-import-excel.component';
 import { CnFormUploadComponent } from './components/cn-form-upload/cn-form-upload.component';
 import { PrintsComponent } from './../routes/delon/print/print.component';
 import { CnWeekPickerComponent } from './components/cn-date-picker/cn-week-picker.component';
@@ -228,7 +229,8 @@ const COMPONENTS = [
     PrintsComponent,
     CnFormUploadComponent,
     CnFormImgComponent,
-    CnGridImgComponent
+    CnGridImgComponent,
+    BsnImportExcelComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
