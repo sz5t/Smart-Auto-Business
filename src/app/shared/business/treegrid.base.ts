@@ -653,7 +653,8 @@ export class TreeGridBase extends CnComponentBase {
             success: true,
             msg: []
         };
-        const desc = cfg.description ? cfg.description : '执行操作,';
+        
+        const desc = cfg && cfg.description ? cfg.description : '执行操作,';
         if (result && Array.isArray(result)) {
             result.forEach(res => {
                 rs['success'] = rs['success'] && res.isSuccess;

@@ -252,7 +252,12 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                         size: "small",
                                         pagination: true, // 是否分页
                                         showTotal: true, // 是否显示总数据量
-                                        pageSize: 20, // 默认每页数据条数
+                                        pageSize: 20, // 默认每页数据条数,
+                                        selectedStyle: {
+                                            'background-color': '#eee',
+                                            'font': '#000',
+                                            'font-weight': 500
+                                        },
                                         pageSizeOptions: [
                                             5,
                                             10,

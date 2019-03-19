@@ -57,7 +57,7 @@ const component: { [type: string]: Type<any> } = {
             }
 
             .selectedRow {
-                color: black;
+                color: #fff;
                 font-weight:600;
                 background-color: rgb(100, 149, 222);
             }
@@ -1871,6 +1871,12 @@ export class BsnTableComponent extends CnComponentBase
                                     response,
                                     option.ajaxConfig,
                                     () => {
+                                        this.cascade.next(
+                                            new BsnComponentMessage(
+                                                BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                                                this.config.viewId
+                                            )
+                                        );
                                         this.focusIds = this._getFocusIds(
                                             response.data
                                         );
@@ -1955,7 +1961,7 @@ export class BsnTableComponent extends CnComponentBase
     * 2、值类型的结果可以设置多个
     * 3、表类型的返回结果可以设置多个
     */
-    public outputParametersResolver(c, response, ajaxConfig, callback) {
+    public outputParametersResolver(c, response, ajaxConfig, callback = function () {}) {
         const result = false;
         if (response.isSuccess) {
 
@@ -2041,7 +2047,7 @@ export class BsnTableComponent extends CnComponentBase
                             nzContent: msgObj[1]
                         };
                         this.baseMessage.success(msgObj[1]);
-                        callback && callback();
+                        callback();
                         break;
                 }
                 // if(options) {

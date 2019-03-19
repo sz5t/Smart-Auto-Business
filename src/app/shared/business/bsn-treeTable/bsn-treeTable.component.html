@@ -23,7 +23,7 @@
     </thead>
     <tbody>
         <ng-template ngFor let-data [ngForOf]="nzTable.data">
-            <tr *ngIf="(data.parent&&data.parent.expand) || !(data.parent)" (click)="selectRow(data, $event)" [ngClass]="{'selectedRow': data.selected}">
+            <tr *ngIf="(data.parent&&data.parent.expand) || !(data.parent)" (click)="selectRow(data, $event)" [ngStyle]="data.selected && config.selectedStyle ? config.selectedStyle : {}">
                 <td nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked()"></td>
                 <ng-template ngFor let-col [ngForOf]="config.columns">
                     <td *ngIf="col.expand && !col.hidden" [nzIndentSize]="data?.level ? data?.level*20 : false"
@@ -68,7 +68,7 @@
         <ng-template ngFor let-data [ngForOf]="nzTable.data">
             <ng-template ngFor let-item [ngForOf]="expandDataCache[data.key]">
                 <tr *ngIf="(item.parent && item.parent.expand)||!(item.parent) && !item.isChild" (click)="selectRow(item, $event)"
-                    [ngStyle]="{'background-color':item.selected?'rgb(236, 246, 253)':''}">
+                [ngStyle]="data.selected && config.selectedStyle ? config.selectedStyle : {}">
                     <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refChecked()">
                     </td>
                     <ng-template ngFor let-col [ngForOf]="config.columns">

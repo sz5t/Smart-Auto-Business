@@ -18,7 +18,7 @@
             </ng-template>
         </tr>
     </thead>
-<tbody>       
+<tbody>
         <ng-template ngFor let-data [ngForOf]="nzTable.data">
             <ng-container *ngIf="data.row_status === 'search'">
                 <tr>
@@ -69,7 +69,7 @@
                 </tr>
             </ng-container>
             <ng-container *ngIf="data.row_status != 'search'">
-                <tr (click)="selectRow(data, $event)" [ngClass]="{'selectedRow': data.selected}">
+                <tr (click)="selectRow(data, $event)" [ngStyle]="data.selected && config.selectedStyle ? config.selectedStyle : {}">
                     <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
                     </td>
                     <ng-template ngFor let-col [ngForOf]="config.columns">
