@@ -8,7 +8,7 @@
   [nzShowSearch]='config.showSearch'
   [nzPlaceHolder]="config.placeholder"
   [nzDisabled]="config.disabled"
-  [nzAllowClear]="config.clear"
+  [nzAllowClear]="_clear"
 >
   <nz-option *ngFor="let option of _options"
              [nzLabel]="option.label"

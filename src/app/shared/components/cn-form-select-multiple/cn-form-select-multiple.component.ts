@@ -41,7 +41,7 @@ export class CnFormSelectMultipleComponent
     // _selectedMultipleOption:any[];
     constructor(private apiService: ApiService) {}
     public _selectedOption;
-
+    public _clear = true;
     public ngOnInit() {
         if (!this.config['multiple']) {
             this.config['multiple'] = 'default';
@@ -103,6 +103,9 @@ export class CnFormSelectMultipleComponent
             // 加载固定数据
             this._options = this.config.options;
             this.selectedByLoaded();
+        }
+        if (this.config.removalable) {
+            this._clear = false;
         }
     }
 

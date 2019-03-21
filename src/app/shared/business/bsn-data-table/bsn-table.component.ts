@@ -1654,6 +1654,7 @@ export class BsnTableComponent extends CnComponentBase
             const modal = this.baseModal.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
+                nzClosable: dialog.closable ? dialog.closable : false,
                 nzContent: component['layout'],
                 nzComponentParams: {
                     permissions: this.permissions,
@@ -2811,6 +2812,7 @@ export class BsnTableComponent extends CnComponentBase
         const modal = this.baseModal.create({
             nzTitle: dialog.title,
             nzWidth: dialog.width,
+            nzClosable: dialog.closable ? dialog.closable : false,
             nzContent: component['form'],
             nzComponentParams: {
                 config: dialog,

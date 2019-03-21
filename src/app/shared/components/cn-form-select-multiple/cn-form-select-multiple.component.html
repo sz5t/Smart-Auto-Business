@@ -8,7 +8,8 @@
        [nzSize]="config.size"
        [(ngModel)]="value"
        [nzMode]="config.multiple"
-       [nzPlaceHolder]="config.placeholder">
+       [nzPlaceHolder]="config.placeholder"
+       [nzAllowClear]="_clear">
        <nz-option *ngFor="let option of _options"
                   [nzLabel]="option.label"
                   [nzValue]="option.value"

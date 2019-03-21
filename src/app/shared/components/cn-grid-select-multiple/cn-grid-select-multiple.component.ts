@@ -36,6 +36,7 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
     private resultData;
     private cascadeValue = {};
     private cascadeSetValue = {};
+    public _clear = true;
     // _selectedMultipleOption:any[];
     constructor(private apiService: ApiService) { }
 
@@ -113,9 +114,12 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
         // }
 
         if (this.value) {
-            if (this.value.data != undefined) {
+            if (this.value.data !== undefined) {
                 this._selectedOption = this.getSetComponentValue(this.value.data);
             }
+        }
+        if (this.config.removalable) {
+            this._clear = false;
         }
     }
 

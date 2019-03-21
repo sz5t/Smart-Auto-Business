@@ -36,6 +36,7 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
     private resultData;
     private cascadeValue = {};
     private cascadeSetValue = {};
+    public _clear = true;
     // _selectedMultipleOption:any[];
     constructor(private apiService: ApiService) {}
 
@@ -108,6 +109,9 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
             this.selectedBycascade();
         } else {
             this.selectedByLoaded();
+        }
+        if (this.config.removalable) {
+            this._clear = false;
         }
     }
 

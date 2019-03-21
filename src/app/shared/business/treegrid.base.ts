@@ -726,6 +726,7 @@ export class TreeGridBase extends CnComponentBase {
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
                 nzContent: LayoutResolverComponent,
+                nzClosable: dialog.closable ? dialog.closable : false,
                 nzComponentParams: {
                     config: data,
                     permissions: this.permission,
@@ -863,6 +864,7 @@ export class TreeGridBase extends CnComponentBase {
         const modal = this.baseModal.create({
             nzTitle: dialog.title,
             nzWidth: dialog.width,
+            nzClosable: dialog.closable ? dialog.closable : false,
             nzContent: CnFormWindowResolverComponent,
             nzComponentParams: {
                 config: dialog,

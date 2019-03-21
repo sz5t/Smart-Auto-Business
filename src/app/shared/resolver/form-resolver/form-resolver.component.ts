@@ -632,6 +632,7 @@ export class FormResolverComponent extends CnFormBase
         const modal = this.modalService.create({
             nzTitle: dialog.title,
             nzWidth: dialog.width,
+            nzClosable: dialog.closable ? dialog.closable : false,
             nzContent: CnFormWindowResolverComponent,
             nzComponentParams: {
                 config: dialog,
@@ -707,6 +708,7 @@ export class FormResolverComponent extends CnFormBase
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
                 nzContent: LayoutResolverComponent,
+                nzClosable: dialog.closable ? dialog.closable : false,
                 nzComponentParams: {
                     config: data,
                     initData: { ...this.value, ...this.tempValue },
