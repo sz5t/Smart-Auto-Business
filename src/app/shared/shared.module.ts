@@ -119,6 +119,7 @@ import { BsnGanttComponent } from './business/bsn-gantt/bsn-gantt.component';
 import { BtnTableStatusInfoPipe } from '@core/pipe/btn-table-status-info.pipe';
 import { CnFormImgComponent } from './components/cn-form-img/cn-form-img.component';
 import { CnGridImgComponent } from '@shared/components/cn-grid-img/cn-grid-img.component';
+import { LayoutInnerResolverDirective } from './resolver/layout-resolver/layout-inner-resolver.directive';
 
 
 const THIRDMODULES = [
@@ -236,7 +237,8 @@ const DIRECTIVES = [
     FormResolverDirective,
     GridEditorDirective,
     CnFormLabelDirective,
-    LayoutResolverDirective
+    LayoutResolverDirective,
+    LayoutInnerResolverDirective
 ];
 // endregion
 

@@ -8,7 +8,7 @@ import { CacheService } from '@delon/cache';
     styles: [
         `
         .logo{
-            
+
         }
             .title {
             color: whitesmoke;
@@ -17,7 +17,7 @@ import { CacheService } from '@delon/cache';
             font-weight: 600;
             letter-spacing: 0.1em;
             position: relative;
-            top: 5px;  
+            top: 5px;
             }
             .menu-bg{
                 background-color: #00c4ff;
@@ -26,6 +26,10 @@ import { CacheService } from '@delon/cache';
                 margin-right:15px;
                 line-height:65px;
             }
+            .menu-item : hover {
+                background-color: #ECF0F9;
+            }
+
             .menu-item  a {
                 color:#fff !important;
                 display:block;
@@ -34,8 +38,9 @@ import { CacheService } from '@delon/cache';
                 font-size:14px;
             }
             .menu-item  a:hover {
-               background-color:#77aaff !important;  
+               background-color:#1890FF !important;
                 transition: background-color 300ms;
+                color: #fff
             }
         `
 
@@ -54,7 +59,7 @@ export class HeaderComponent {
     }
 
     public searchToggleChange() {
-        
+
     }
 
 }
