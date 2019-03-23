@@ -51,3 +51,4 @@ package.json
 src/assets/data.zip
 *.zip
 src/assets/webConfig.js
+.vscode/settings.json
