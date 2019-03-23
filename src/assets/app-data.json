@@ -1,178 +1,175 @@
 {
-                                                                "app": {
-                                                                                                                                "name": "SmartOne",
-                                                                                                                                "description": "SmartOne"
-                                                                },
-                                                                "user": {
-                                                                                                                                "name": "管理员",
-                                                                                                                                "avatar": "./assets/img/avatar.jpg",
-                                                                                                                                "email": "admin@admin.com"
-                                                                },
-                                                                "menu": [
-                                                                                                                                {
-                                                                                                                                                                                                "text": "主导航",
-                                                                                                                                                                                                "i18n": "",
-                                                                                                                                                                                                "group": true,
-                                                                                                                                                                                                "hideInBreadcrumb": true,
-                                                                                                                                                                                                "children": [
-                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                "text": "系统管理",
-                                                                                                                                                                                                                                                                                                                                "i18n": "",
-                                                                                                                                                                                                                                                                                                                                "link": "/system",
-                                                                                                                                                                                                                                                                                                                                "icon": "icon-speedometer",
-                                                                                                                                                                                                                                                                                                                                "children": [
-                                                                                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "text": "工作台",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "link": "/dashboard/v1",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "i18n": ""
-                                                                                                                                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "text": "模块管理",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "link": "/system/module-managers",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "i18n": ""
-                                                                                                                                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "text": "数据建模",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "link": "/system/dataModeling-manager",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "i18n": "",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "icon": "icon-list"
-                                                                                                                                                                                                                                                                                                                                                                                                }
-
-                                                                                                                                                                                                                                                                                                                                ]
-                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                "text": "系统配置",
-                                                                                                                                                                                                                                                                                                "i18n": "",
-                                                                                                                                                                                                                                                                                                "link": "/settings",
-                                                                                                                                                                                                                                                                                                "icon": "anticon anticon-aliwangwang",
-                                                                                                                                                                                                                                                                                                "children": [
-                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                "text": "布局设置",
-                                                                                                                                                                                                                                                                                                                                                                "link": "/settings/layout-setting",
-                                                                                                                                                                                                                                                                                                                                                                "i18n": ""
-                                                                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                "text": "布局向导",
-                                                                                                                                                                                                                                                                                                                                                                "link": "/settings/layout-step-setting",
-                                                                                                                                                                                                                                                                                                                                                                "i18n": ""
-                                                                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                "text": "区域设置",
-                                                                                                                                                                                                                                                                                                                                                                "link": "/settings/block-setting",
-                                                                                                                                                                                                                                                                                                                                                                "i18n": ""
-                                                                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                "text": "SQL语句设置",
-                                                                                                                                                                                                                                                                                                                                                                "link": "/settings/sql-setting",
-                                                                                                                                                                                                                                                                                                                                                                "i18n": ""
-                                                                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                "text": "组件编辑",
-                                                                                                                                                                                                                                                                                                                                                                "link": "/settings/component-setting",
-                                                                                                                                                                                                                                                                                                                                                                "i18n": ""
-                                                                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                "text": "操作设置",
-                                                                                                                                                                                                                                                                                                                                                                "link": "/settings/operation-setting",
-                                                                                                                                                                                                                                                                                                                                                                "i18n": ""
-                                                                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                "text": "业务设置",
-                                                                                                                                                                                                                                                                                                                                                                "link": "/settings/business-setting",
-                                                                                                                                                                                                                                                                                                                                                                "i18n": ""
-                                                                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                                                "text": "测试页面",
-                                                                                                                                                                                                                                                                                                                                                                                                "link": "/test/list",
-                                                                                                                                                                                                                                                                                                                                                                                                "i18n": ""
-                                                                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                                                "text": "甘特图",
-                                                                                                                                                                                                                                                                                                                                                                                                "link": "/test/gantt",
-                                                                                                                                                                                                                                                                                                                                                                                                "i18n": ""
-                                                                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                                                "text": "计划审计图",
-                                                                                                                                                                                                                                                                                                                                                                                                "link": "/test/pert",
-                                                                                                                                                                                                                                                                                                                                                                                                "i18n": ""
-                                                                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                "text": "APP 配置说明",
-                                                                                                                                                                                                                                                                                                                                                                "link": "/template/APPConfigIntro",
-                                                                                                                                                                                                                                                                                                                                                                "i18n": ""
-                                                                                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                                                                                "text": "API 使用说明",
-                                                                                                                                                                                                                                                                                                                                                                                                                                "link": "/template/APIIntro",
-                                                                                                                                                                                                                                                                                                                                                                                                                                "i18n": ""
-                                                                                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                                ]
-                                                                                                                                                                                                                                                                },
-                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                "text": "我的流程",
-                                                                                                                                                                                                                                                                                                "i18n": "",
-                                                                                                                                                                                                                                                                                                "link": "/system",
-                                                                                                                                                                                                                                                                                                "icon": "anticon anticon-aliwangwang",
-                                                                                                                                                                                                                                                                                                "children": [
-                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "text": "工作流基础数据",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "link": "/system/WorkFlow-dictionary-manager",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "i18n": "",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "icon": "icon-user"
-                                                                                                                                                                                                                                                                                                                                 },
-                                                                                                                                                                                                                                                                                                                                 {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "text": "工作流设计",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "link": "/system/WorkFlow-design-manager",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "i18n": "",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "icon": "icon-user"
-                                                                                                                                                                                                                                                                                                                                 },
-                                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "text": "工作流构建",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "link": "/system/WorkFlow-manager",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "i18n": "",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "icon": "icon-user"
-                                                                                                                                                                                                                                                                                                                                 },
-                                                                                                                                                                                                                                                                                                                                 {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "text": "发起",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "link": "/system/WorkFlow-initiate-manager",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "i18n": "",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "icon": "icon-user"
-                                                                                                                                                                                                                                                                                                                                 },
-                                                                                                                                                                                                                                                                                                                                 {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "text": "待办事宜",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "link": "/system/WorkFlow-todo-manager",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "i18n": "",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "icon": "icon-user"
-                                                                                                                                                                                                                                                                                                                                 },
-                                                                                                                                                                                                                                                                                                                                 {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "text": "在途任务",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "link": "/system/WorkFlow-launch-manager",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "i18n": "",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "icon": "icon-user"
-                                                                                                                                                                                                                                                                                                                                 },
-                                                                                                                                                                                                                                                                                                                                 {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "text": "已办任务",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "link": "/system/WorkFlow-done-manager",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "i18n": "",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "icon": "icon-user"
-                                                                                                                                                                                                                                                                                                                                 },
-                                                                                                                                                                                                                                                                                                                                 {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "text": "历史任务",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "link": "/system/WorkFlow-history-manager",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "i18n": "",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "icon": "icon-user"
-                                                                                                                                                                                                                                                                                                                                 },
-                                                                                                                                                                                                                                                                                                                                 {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "text": "流程委托",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "link": "/system/WorkFlow-delegation-manager",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "i18n": "",
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                "icon": "icon-user"
-                                                                                                                                                                                                                                                                                                                                 }
-
-
-                                                                                                                                                                                                                                                                                                ]
-                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                ]
-                                                                                                                                }
-                                                                ]
+  "app": {
+    "name": "SmartOne",
+    "description": "SmartOne"
+  },
+  "user": {
+    "name": "管理员",
+    "avatar": "./assets/img/avatar.jpg",
+    "email": "admin@admin.com"
+  },
+  "menu": [
+    {
+      "text": "主导航",
+      "i18n": "",
+      "group": true,
+      "hideInBreadcrumb": true,
+      "children": [
+        {
+          "text": "系统管理",
+          "i18n": "",
+          "link": "/system",
+          "icon": "icon-speedometer",
+          "children": [
+            {
+              "text": "工作台",
+              "link": "/dashboard/v1",
+              "i18n": ""
+            },
+            {
+              "text": "模块管理",
+              "link": "/system/module-managers",
+              "i18n": ""
+            },
+            {
+              "text": "数据建模",
+              "link": "/system/dataModeling-manager",
+              "i18n": "",
+              "icon": "icon-list"
+            }
+          ]
+        },
+        {
+          "text": "系统配置",
+          "i18n": "",
+          "link": "/settings",
+          "icon": "anticon anticon-aliwangwang",
+          "children": [
+            {
+              "text": "布局设置",
+              "link": "/settings/layout-setting",
+              "i18n": ""
+            },
+            {
+              "text": "布局向导",
+              "link": "/settings/layout-step-setting",
+              "i18n": ""
+            },
+            {
+              "text": "区域设置",
+              "link": "/settings/block-setting",
+              "i18n": ""
+            },
+            {
+              "text": "SQL语句设置",
+              "link": "/settings/sql-setting",
+              "i18n": ""
+            },
+            {
+              "text": "组件编辑",
+              "link": "/settings/component-setting",
+              "i18n": ""
+            },
+            {
+              "text": "操作设置",
+              "link": "/settings/operation-setting",
+              "i18n": ""
+            },
+            {
+              "text": "业务设置",
+              "link": "/settings/business-setting",
+              "i18n": ""
+            },
+            {
+              "text": "测试页面",
+              "link": "/test/list",
+              "i18n": ""
+            },
+            {
+              "text": "甘特图",
+              "link": "/test/gantt",
+              "i18n": ""
+            },
+            {
+              "text": "计划审计图",
+              "link": "/test/pert",
+              "i18n": ""
+            },
+            {
+              "text": "APP 配置说明",
+              "link": "/template/APPConfigIntro",
+              "i18n": ""
+            },
+            {
+              "text": "API 使用说明",
+              "link": "/template/APIIntro",
+              "i18n": ""
+            }
+          ]
+        },
+        {
+          "text": "我的流程",
+          "i18n": "",
+          "link": "/system",
+          "icon": "anticon anticon-aliwangwang",
+          "children": [
+            {
+              "text": "工作流基础数据",
+              "link": "/system/WorkFlow-dictionary-manager",
+              "i18n": "",
+              "icon": "icon-user"
+            },
+            {
+              "text": "工作流设计",
+              "link": "/system/WorkFlow-design-manager",
+              "i18n": "",
+              "icon": "icon-user"
+            },
+            {
+              "text": "工作流构建",
+              "link": "/system/WorkFlow-manager",
+              "i18n": "",
+              "icon": "icon-user"
+            },
+            {
+              "text": "发起",
+              "link": "/system/WorkFlow-initiate-manager",
+              "i18n": "",
+              "icon": "icon-user"
+            },
+            {
+              "text": "待办事宜",
+              "link": "/system/WorkFlow-todo-manager",
+              "i18n": "",
+              "icon": "icon-user"
+            },
+            {
+              "text": "在途任务",
+              "link": "/system/WorkFlow-launch-manager",
+              "i18n": "",
+              "icon": "icon-user"
+            },
+            {
+              "text": "已办任务",
+              "link": "/system/WorkFlow-done-manager",
+              "i18n": "",
+              "icon": "icon-user"
+            },
+            {
+              "text": "历史任务",
+              "link": "/system/WorkFlow-history-manager",
+              "i18n": "",
+              "icon": "icon-user"
+            },
+            {
+              "text": "流程委托",
+              "link": "/system/WorkFlow-delegation-manager",
+              "i18n": "",
+              "icon": "icon-user"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
