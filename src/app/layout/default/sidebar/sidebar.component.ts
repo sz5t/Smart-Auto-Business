@@ -1,29 +1,14 @@
-import { Component, Inject } from "@angular/core";
-import { NzMessageService, NzModalService } from "ng-zorro-antd";
-import { SettingsService } from "@delon/theme";
-import { CacheService } from "@delon/cache";
-import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
-import { Router } from "@angular/router";
+import { Component, Inject } from '@angular/core';
+import { NzMessageService, NzModalService } from 'ng-zorro-antd';
+import { SettingsService } from '@delon/theme';
+import { CacheService } from '@delon/cache';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { Router } from '@angular/router';
 
 @Component({
-    selector: "app-sidebar",
-    templateUrl: "./sidebar.component.html",
-    styles: [
-        `
-            // :host ::ng-deep .nav {
-            //     font-size: 12px;
-            // }
-            // :host ::ng-deep ul .nav > li > a {
-            //     font-size: 12px;
-            //#d2e9fe60
-            // #f5f7fa
-            // }
-
-            :host ::ng-deep .ad-nav__selected {
-                background-color: #00BFFF30;
-            }
-        `
-    ]
+    selector: 'app-sidebar',
+    templateUrl: './sidebar.component.html',
+    styleUrls: [`./sidebar.component.less`]
 })
 export class SidebarComponent {
     constructor(
@@ -35,17 +20,17 @@ export class SidebarComponent {
         @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
     ) {}
 
-    logout() {
+    public logout() {
         this.modal.confirm({
-            nzTitle: "确认要关闭本系统吗？",
-            nzContent: "关闭后将清空相关操作数据！",
+            nzTitle: '确认要关闭本系统吗？',
+            nzContent: '关闭后将清空相关操作数据！',
             nzOnOk: () => {
                 new Promise((resolve, reject) => {
                     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
                     this.tokenService.clear();
                     this.cacheService.clear();
                     this.router.navigateByUrl(this.tokenService.login_url);
-                }).catch(() => console.log("Oops errors!"));
+                }).catch(() => console.log('Oops errors!'));
             }
         });
     }

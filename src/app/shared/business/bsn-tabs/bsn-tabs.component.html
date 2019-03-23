@@ -8,7 +8,12 @@
         <ng-template #tabView>
             <div *ngIf="tab.active">
                 <div *ngIf="tab.viewCfg; else tabLayout">
-                        <cn-component-resolver [config]="tabConfig" *ngFor="let tabConfig of tab.viewCfg" [initData]="initValue" [tempValue] = "tempValue"  [permissions] = "permissions ? permissions : []" ></cn-component-resolver>
+                    <div *ngIf="!tab.handleMapping;else tmpHandleSingle">
+                            <cn-component-resolver [config]="tabConfig" *ngFor="let tabConfig of tab.viewCfg" [initData]="initValue" [tempValue] = "tempValue"  [permissions] = "permissions ? permissions : []" ></cn-component-resolver>
+                    </div>
+                    <ng-template #tmpHandleSingle>
+                        <ng-container cnLayoutInnerResolverDirective  [config]="tab"  [initData]="initValue" [tempValue] = "tempValue"  [permissions] = "permissions ? permissions : []" ></ng-container>
+                    </ng-template>
                 </div>
             </div>
         </ng-template>

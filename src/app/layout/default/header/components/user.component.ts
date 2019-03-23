@@ -82,7 +82,6 @@ export class HeaderUserComponent implements OnInit, AfterViewInit {
         @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) { }
 
     public ngOnInit(): void {
-        
         // mock
         // const token = this.tokenService.get() || {
         //     token: 'nothing',
@@ -97,7 +96,7 @@ export class HeaderUserComponent implements OnInit, AfterViewInit {
         setTimeout(() => {
             this.userInfo = this.cacheService.get('userInfo');
         });
-        
+
         // this.tokenService.change().subscribe((res: any) => {
         //     this.settings.setUser(res);
         // });
@@ -115,7 +114,7 @@ export class HeaderUserComponent implements OnInit, AfterViewInit {
                 this.router.navigateByUrl(this.tokenService.login_url);
                 // new Promise((resolve, reject) => {
                 //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
-                    
+
                 // }).catch(() => console.log('Oops errors!'));
             }
         });

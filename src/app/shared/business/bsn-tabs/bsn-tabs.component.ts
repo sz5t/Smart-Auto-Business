@@ -12,6 +12,7 @@ import { Subscription, Observable, Observer } from 'rxjs';
 import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_CASCADE } from '@core/relative-Service/BsnTableStatus';
 import { NzTabComponent, NzTabChangeEvent } from 'ng-zorro-antd';
 import {current} from 'codelyzer/util/syntaxKind';
+import { CommonTools } from '@core/utility/common-tools';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'bsn-tabs',
@@ -44,6 +45,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
     public ngOnInit() {
         this.initValue = this.initData ? this.initData : {};
         this.resolverRelation();
+
         // const activeIndex = this.config.tabs.findIndex(tab => tab.active);
         // this.cascade.next(
         //     new BsnComponentMessage(
@@ -64,41 +66,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
         setTimeout(() => {
             const currentTab = this.config.tabs[tab.index];
             currentTab['active'] = true;
-            // if (this.handleIndexs.includes(tab.index) && currentTab['handle']) {
-            //     if (
-            //         currentTab.componentType &&
-            //         currentTab.componentType.sub === true
-            //     ) {
-            //         this.cascade.next(
-            //             new BsnComponentMessage(
-            //                 BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
-            //                 currentTab.id,
-            //                 {
-            //                     data: {
-            //                         ...this.initValue,
-            //                         ...this.tempValue
-            //                     },
-            //                     initValue: this.initValue ? this.initValue : {},
-            //                     tempValue: this.tempValue ? this.tempValue : {},
-            //                     subViewId: () => {
-            //                         let id = '';
-            //                         currentTab.subMapping.forEach(sub => {
-            //                             const mappingVal = this.tempValue[sub['field']];
-            //                             if (sub.mapping) {
-            //                                 sub.mapping.forEach(m => {
-            //                                     if (m.value === mappingVal) {
-            //                                         id = m.subViewId;
-            //                                     }
-            //                                 });
-            //                             }
-            //                         });
-            //                         return id;
-            //                     }
-            //                 }
-            //             )
-            //         );
-            //      }
-            // }
+            this._currentIndex = tab.index;
         });
 
     }
@@ -136,7 +104,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
                                 relation.relationViewId === cascadeEvent._viewId
                             ) {
                                 // 获取当前设置的级联的模式
-                                
+
                                 const mode =
                                     BSN_COMPONENT_CASCADE_MODES[
                                         relation.cascadeMode
@@ -159,6 +127,8 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
                                                 this.tempValue = t;
                                             }
 
+                                            // 刷新当前页签，重新设置激活状态
+                                            this.config = CommonTools.deepCopy(this.config);
                                         }
                                     break;
                                     case BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD:
@@ -202,4 +172,30 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
             );
         }
     }
+
+    // public handleSingle(tab){
+    //     let cfg = {};
+    //     if ( tab.handleMapping) {
+    //         const data = {...this.tempValue, ... this.initValue}
+    //         for (const m of tab.handleMapping) {
+    //         // field, value, viewId? mulitple field
+    //             let match;
+    //             for (const mp of m.mappings) {
+    //                 if (data[mp.name] === mp.value) {
+    //                     match = true;
+    //                 } else {
+    //                     match = false;
+    //                 }
+    //                 if (!match) {
+    //                     return true;
+    //                 }
+    //             }
+    //             if (match) {
+    //                 cfg = tab.viewCfg.find(c => m.viewId = c.config.viewId);
+    //                 console.log(cfg);
+    //             }
+    //         }
+    //     }
+    //     return cfg;
+    // }
 }

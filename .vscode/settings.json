@@ -1,12 +1,41 @@
 {
-    "typescript.tsdk": "./node_modules/typescript/lib",
-    // 确保代码片断优先级高于内置
-    // https://github.com/cipchk/ng-zorro-vscode
-    "editor.snippetSuggestions": "top",
-    "editor.fontSize": 14,
-    "prettier.printWidth": 300,
-    "prettier.proseWrap": "never",
-    "prettier.semi": false,
-    "prettier.tslintIntegration": true,
-    "editor.fontFamily": "Monaco"
+    "editor.fontSize": 16,
+    "terminal.integrated.shell.windows": "C:\\windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "files.autoSave": "onFocusChange",
+    "workbench.iconTheme": "eq-material-theme-icons-darker",
+    "editor.tabSize": 2,
+    "workbench.startupEditor": "newUntitledFile",
+    "workbench.statusBar.feedback.visible": false,
+    "vsicons.dontShowNewVersionMessage": true,
+    "vetur.validation.template": false,
+    "window.menuBarVisibility": "default",
+    "workbench.sideBar.location": "left",
+    "files.trimTrailingWhitespace": true,
+    "telemetry.enableTelemetry": false,
+    "files.insertFinalNewline": true,
+    "files.associations": {
+        "*.vue": "vue"
+    },
+    "editor.minimap.showSlider": "always",
+    "window.zoomLevel": 1,
+    "extensions.ignoreRecommendations": true,
+    "editor.fontFamily": "Calibri, Dank Mono, Fira Code Light",
+    "editor.cursorBlinking": "smooth",
+    "editor.cursorStyle": "line",
+    "editor.fontLigatures": true,
+    "explorer.confirmDragAndDrop": false,
+    "explorer.openEditors.visible": 0,
+    "editor.minimap.enabled": false,
+    "workbench.colorTheme": "Winter is Coming (Dark)",
+    "emmet.includeLanguages": {
+        "vue-html": "html",
+        "javascript": "javascriptreact"
+    },
+    "emmet.triggerExpansionOnTab": true,
+    "files.exclude": {
+        "node_modules": true,
+        "**/.map": true,
+    },
+    "editor.renderControlCharacters": false,
+    "winopacity.opacity": 230,
 }
