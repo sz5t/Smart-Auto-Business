@@ -1,0 +1,104 @@
+
+  <nz-card style="width:400px;" nzTitle="自己实现公式">
+
+    <div style="height: 50px;">
+      <div class="divcss1"> {{config.col_9.value}} </div>
+      <div class="divcss5">{{config.col_2.value}} </div>
+      <div class="divcss1">{{config.col_6.value}} </div>
+    </div>
+
+    <div style="height: 50px;">
+      <div class="divcss5"> {{config.col_5.value}} </div>
+      <div class="divcss5">{{config.col_1.value}} </div>
+      <div class="divcss5">{{config.col_3.value}} </div>
+    </div>
+
+    <div style="height: 50px;">
+      <div class="divcss1"> {{config.col_8.value}} </div>
+      <div class="divcss5">{{config.col_4.value}} </div>
+      <div class="divcss1">{{config.col_7.value}} </div>
+    </div>
+  </nz-card>
+
+</div>
+
+
+<nz-card style="width:400px;" nzTitle="自己实现公式【行列布局】">
+  <button nz-button nzType="primary" (click)="execFun()">输出公式json</button>
+  <div contenteditable="true" style="border:1px solid #1890ff;">
+
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <span contenteditable="true">{{config.col_9.value}}</span>
+        <!-- <textarea nz-input placeholder="" [(ngModel)]="config.col_9.value" nzAutosize></textarea> -->
+      </div>
+      <div nz-col nzSpan="8">
+        <span contenteditable="true">{{config.col_2.value}}</span>
+      </div>
+      <div nz-col nzSpan="8">
+        <span contenteditable="true">{{config.col_6.value}}</span>
+      </div>
+    </div>
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <span contenteditable="true">{{config.col_5.value}}</span>
+      </div>
+      <div nz-col nzSpan="8">
+        <span contenteditable="true">{{config.col_1.value}}</span>
+      </div>
+      <div nz-col nzSpan="8">
+        <span contenteditable="true">{{config.col_3.value}}</span>
+      </div>
+    </div>
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <span contenteditable="true">{{config.col_8.value}}</span>
+      </div>
+      <div nz-col nzSpan="8">
+        <span contenteditable="true">{{config.col_4.value}}</span>
+      </div>
+      <div nz-col nzSpan="8">
+        <span contenteditable="true">{{config.col_7.value}}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!--   <div contenteditable="true" style="border:1px solid #1890ff;">
+    <p>
+      <span contenteditable="true">cessddd</span>
+    </p>
+  </div> -->
+  <div contenteditable="true" style="border:1px solid #1890ff;">
+    <!-- Φ300 -->
+    <table>
+      <tr>
+        <td rowspan="2" style="font: 1.5em sans-serif;">Φ300 </td>
+        <td style="font: 1em sans-serif;">+0.5</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td style="font: 1em sans-serif;">-0.5</td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
+  <div contenteditable="true" style="border:1px solid #1890ff;">
+    <table>
+      <tr>
+        <td rowspan="3" style="font: 1.5em sans-serif;">Φ300 </td>
+        <td style="font: 1em sans-serif;">+0.5</td>
+        <td></td>
+      </tr>
+      <tr>
+
+        <td> -- </td>
+        <td></td>
+      </tr>
+      <tr>
+        <td style="font: 1em sans-serif;">-0.5</td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
+</nz-card>

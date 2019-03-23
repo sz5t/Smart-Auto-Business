@@ -119,6 +119,7 @@ import { BsnGanttComponent } from './business/bsn-gantt/bsn-gantt.component';
 import { BtnTableStatusInfoPipe } from '@core/pipe/btn-table-status-info.pipe';
 import { CnFormImgComponent } from './components/cn-form-img/cn-form-img.component';
 import { CnGridImgComponent } from '@shared/components/cn-grid-img/cn-grid-img.component';
+import { JmEditorComponent } from './jm-editor/jm-editor.component';
 import { LayoutInnerResolverDirective } from './resolver/layout-resolver/layout-inner-resolver.directive';
 
 
@@ -231,7 +232,8 @@ const COMPONENTS = [
     CnFormUploadComponent,
     CnFormImgComponent,
     CnGridImgComponent,
-    BsnImportExcelComponent
+    BsnImportExcelComponent,
+    JmEditorComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

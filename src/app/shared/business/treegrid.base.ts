@@ -212,13 +212,13 @@ export class TreeGridBase extends CnComponentBase {
                             .length <= 0
                     ) {
                         this.baseMessage.create('info', '请选择要执行的数据');
-                        return false;
+                        return;
                     }
                     // 目前还未解决confirm确认操作后的后续执行问题
                     handleData = this.getCheckedItems();
                     this.beforeOperation.operationItemsData = handleData;
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
-                        return false;
+                        return ;
                     }
 
                     msg = '操作完成';
@@ -230,12 +230,12 @@ export class TreeGridBase extends CnComponentBase {
                             'info',
                             '当前数据未保存无法进行处理'
                         );
-                        return false;
+                        return;
                     }
                     handleData = this.getSelectedItem();
                     this.beforeOperation.operationItemData = handleData;
                     if (this.beforeOperation.beforeItemDataOperation(option)) {
-                        return false;
+                        return;
                     }
 
                     msg = '操作完成';
@@ -252,12 +252,12 @@ export class TreeGridBase extends CnComponentBase {
                             .length <= 0
                     ) {
                         this.baseMessage.create('info', '请勾选要执行操作的数据');
-                        return false;
+                        return;
                     }
                     handleData = this.getCheckItemsId();
                     this.beforeOperation.operationItemsData = this.getCheckedItems();
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
-                        return false;
+                        return;
                     }
                     msg = '操作完成';
                     this.buildConfirm(c, option.ajaxConfig, handleData, msg);
@@ -267,7 +267,7 @@ export class TreeGridBase extends CnComponentBase {
                     msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         // this.baseMessage.info('请勾选要执行编辑的数据')
-                        return false;
+                        return;
                     } else {
                         this.buildConfirm(c, option.ajaxConfig, handleData, msg);
                     }

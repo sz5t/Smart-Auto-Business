@@ -614,6 +614,14 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
 
         this.treeData.forEach(t => t['selected'] = false);
         data['selected'] = true;
+        if (data['checked']) {
+            data['checked'] = false;
+        } else {
+            data['checked'] = true;
+        }
+        if (this.dataList.length > 0)
+            this.refChecked();
+
         this.selectedItem = data;
         // liu  子组件
         if (!this.is_Selectgrid) {

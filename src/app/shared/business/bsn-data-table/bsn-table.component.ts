@@ -37,6 +37,7 @@ import { CnFormWindowResolverComponent } from '@shared/resolver/form-resolver/fo
 import { BeforeOperation } from '../before-operation.base';
 import { createEmitAndSemanticDiagnosticsBuilderProgram } from 'typescript';
 import { ActivatedRoute } from '@angular/router';
+import { XlsxService } from '@delon/abc';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: CnFormWindowResolverComponent,
@@ -148,7 +149,8 @@ export class BsnTableComponent extends CnComponentBase
         private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascadeEvents: Observable<BsnComponentMessage>,
-        private _router: ActivatedRoute
+        private _router: ActivatedRoute,
+        private xlsx: XlsxService
     ) {
         super();
         this.apiResource = this._http;
@@ -375,6 +377,9 @@ export class BsnTableComponent extends CnComponentBase
                         case BSN_COMPONENT_MODES.IMPORT_EXCEL:
                             this.importExcelDialog(option);
                             break;
+                        case BSN_COMPONENT_MODES.EXPORT:
+                            this.download();
+                            break;
                     }
                 }
             });
@@ -451,6 +456,7 @@ export class BsnTableComponent extends CnComponentBase
                                                 break;
                                             case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
                                                 this.focusIds = null;
+                                                this.pageIndex = 1;
                                                 this.load();
                                                 break;
                                             case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN:
@@ -521,6 +527,7 @@ export class BsnTableComponent extends CnComponentBase
 
                     }
                     if (loadData.data.rows.length > 0) {
+                        this.dataList = loadData.data.rows;
                         loadData.data.rows.forEach((row, index) => {
                             row['key'] = row[this.config.keyId]
                                 ? row[this.config.keyId]
@@ -556,7 +563,7 @@ export class BsnTableComponent extends CnComponentBase
                     }
 
                     this._updateEditCacheByLoad(loadData.data.rows);
-                    this.dataList = loadData.data.rows;
+                    // this.dataList = loadData.data.rows;
                     this.total = loadData.data.total;
                     if (this.is_Search) {
                         this.createSearchRow();
@@ -749,9 +756,9 @@ export class BsnTableComponent extends CnComponentBase
                         eventId: BSN_OPERATION_LOG_TYPE.DELETE,
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                        description: `${desc} 数据为: ${JSON.stringify(rowsData)}` 
+                        description: `${desc} 数据为: ${JSON.stringify(rowsData)}`
                     }).subscribe(result => {
-        
+
                     })
                 } else {
                     this.baseMessage.create('error', response.message);
@@ -760,9 +767,9 @@ export class BsnTableComponent extends CnComponentBase
                         eventId: BSN_OPERATION_LOG_TYPE.DELETE,
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                        description: `执行失败, ${response.message}` 
+                        description: `执行失败, ${response.message}`
                     }).subscribe(result => {
-        
+
                     })
                 }
             }
@@ -1621,7 +1628,7 @@ export class BsnTableComponent extends CnComponentBase
                 eventId: BSN_OPERATION_LOG_TYPE.DELETE,
                 eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                 funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                description: `${desc} ID为: ${ids.join(',')}` 
+                description: `${desc} ID为: ${ids.join(',')}`
             }).subscribe(result => {
 
             })
@@ -1634,7 +1641,7 @@ export class BsnTableComponent extends CnComponentBase
                 funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                 description: `${desc} ID为: ${ids.join(',')}`
             }).subscribe(result => {
-                
+
             });
         }
 
@@ -1756,7 +1763,7 @@ export class BsnTableComponent extends CnComponentBase
                         return;
                     }
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
-                        return false;
+                       return ;
                     }
                     handleData = {};
                     break;
@@ -1766,12 +1773,12 @@ export class BsnTableComponent extends CnComponentBase
                             .length <= 0
                     ) {
                         this.baseMessage.create('info', '请选择要执行的数据');
-                        return false;
+                       return ;
                     }
                     handleData = this._getCheckedItems();
                     this.beforeOperation.operationItemsData = handleData;
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
-                        return false;
+                       return ;
                     }
 
                     msg = '操作完成';
@@ -1782,12 +1789,12 @@ export class BsnTableComponent extends CnComponentBase
                             'info',
                             '当前数据未保存无法进行处理'
                         );
-                        return false;
+                       return ;
                     }
                     handleData = this._getSelectedItem();
                     this.beforeOperation.operationItemData = handleData;
                     if (this.beforeOperation.beforeItemDataOperation(option)) {
-                        return false;
+                       return ;
                     }
 
                     msg = '操作完成';
@@ -1797,13 +1804,14 @@ export class BsnTableComponent extends CnComponentBase
                         this.dataList.filter(item => item.checked === true)
                             .length <= 0
                     ) {
+
                         this.baseMessage.create('info', '请选择要执行的数据');
-                        return false;
+                        return;
                     }
                     handleData = this._getCheckItemsId();
                     this.beforeOperation.operationItemsData = this._getCheckedItems();
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
-                        return false;
+                       return ;
                     }
 
                     msg = '操作完成';
@@ -1826,13 +1834,13 @@ export class BsnTableComponent extends CnComponentBase
                             .length <= 0
                     ) {
                         this.baseMessage.create('info', '请选择要执行的数据');
-                        return false;
+                       return ;
                     }
                     this.beforeOperation.operationItemsData = this._getCheckedItems();
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
-                        return false;
+                       return ;
                     }
-                    
+
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_SAVE_ROW:
                     if (c.ajaxType !== 'post') {
@@ -1850,14 +1858,14 @@ export class BsnTableComponent extends CnComponentBase
                             .length <= 0
                     ) {
                         this.baseMessage.create('info', '请选择要执行的数据');
-                        return false;
+                       return ;
                     }
                     this.beforeOperation.operationItemsData = this._getCheckedItems();
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
-                        return false;
+                        return ;
                     }
                     // 获取更新状态的数据
-                    
+
                     break;
             }
             if (c.message) {
@@ -1949,7 +1957,7 @@ export class BsnTableComponent extends CnComponentBase
                             this.load();
                         }, c);
 
-                        
+
                     }
                 })();
             }
@@ -1967,7 +1975,7 @@ export class BsnTableComponent extends CnComponentBase
     * 2、值类型的结果可以设置多个
     * 3、表类型的返回结果可以设置多个
     */
-    public outputParametersResolver(c, response, ajaxConfig, callback = function () {}) {
+    public outputParametersResolver(c, response, ajaxConfig, callback = function () { }) {
         const result = false;
         if (response.isSuccess) {
 
@@ -2303,8 +2311,18 @@ export class BsnTableComponent extends CnComponentBase
         this.dataList &&
             this.dataList.map(row => {
                 row.selected = false;
+
             });
-        data['selected'] = true;
+
+        if (data['checked']) {
+            data['checked'] = false;
+        } else {
+            data['checked'] = true;
+        }
+        if (this.dataList.length > 0)
+            this.refChecked();
+
+
         this._selectRow = data;
         if (!this.is_Selectgrid) {
             this.value = this._selectRow[
@@ -2408,6 +2426,7 @@ export class BsnTableComponent extends CnComponentBase
     }
 
     public refChecked($event?) {
+
         this.checkedCount = this.dataList.filter(w => w.checked).length;
         this.allChecked = this.checkedCount === this.dataList.length;
         this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
@@ -2752,15 +2771,15 @@ export class BsnTableComponent extends CnComponentBase
                     eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                     description: `${desc}数据: ${JSON.stringify(result['data'])}`
-                }).subscribe(result => {});
+                }).subscribe(result => { });
             } else {
                 this.baseMessage.error(rs.msg.join('<br/>'));
                 this.apiResource.addOperationLog({
                     eventId: BSN_OPERATION_LOG_TYPE.SQL,
                     eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                    description: rs.msg.join('<br/>') 
-                }).subscribe(result => {});
+                    description: rs.msg.join('<br/>')
+                }).subscribe(result => { });
             }
         } else {
             if (result.isSuccess) {
@@ -2772,8 +2791,8 @@ export class BsnTableComponent extends CnComponentBase
                     eventId: BSN_OPERATION_LOG_TYPE.SQL,
                     eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                    description: `${desc}数据: ${JSON.stringify(result['data'])}` 
-                }).subscribe(result => {});
+                    description: `${desc}数据: ${JSON.stringify(result['data'])}`
+                }).subscribe(result => { });
             } else {
                 this.baseMessage.error(result.message);
                 this.apiResource.addOperationLog({
@@ -2781,7 +2800,7 @@ export class BsnTableComponent extends CnComponentBase
                     eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                     description: result.message
-                }).subscribe(result => {});
+                }).subscribe(result => { });
             }
         }
     }
@@ -3727,5 +3746,28 @@ export class BsnTableComponent extends CnComponentBase
         this.is_drag = false;
     }
 
+
+    public download() {
+
+        const col = this.config.columns.filter(function (item) {　　// 使用filter方法
+            if (item.hidden) {
+            } else {
+                return item;
+            }
+        });
+        const data = [col.map(i => { if (i.hidden) { } else return i.title; })];
+        console.log('data', data);
+        this.dataList.forEach(i =>
+            data.push(col.map(c => { if (c.hidden) { } else return i[c.field as string]; }))
+        );
+        this.xlsx.export({
+            sheets: [
+                {
+                    data: data,
+                    name: 'sheet name'
+                }
+            ]
+        });
+    }
 
 }

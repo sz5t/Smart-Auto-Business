@@ -20,6 +20,7 @@ export interface ComponentModes {
     REFRESH: string,
     ADD_ROW_DATA: string,
     FORM_BATCH: string,
+    EXPORT: string,
     // tree
     ADD_NODE: string,
     EDIT_NODE: string,
@@ -55,6 +56,7 @@ export const BSN_COMPONENT_MODES: ComponentModes = {
     REFRESH: 'refresh',
     ADD_ROW_DATA: 'add_row_data',
     FORM_BATCH: 'formBatch',
+    EXPORT: 'export',
     // tree
     ADD_NODE: 'addNode',
     EDIT_NODE: 'editNode',
