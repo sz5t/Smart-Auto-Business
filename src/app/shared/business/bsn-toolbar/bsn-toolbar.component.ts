@@ -132,7 +132,6 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
         // 判断操作action的状态，根据状态发送具体消息
         // 消息的内容是什么？如何将消息与组件和数据进行关联
         // 根据按钮是否包含action属性，区别组件的内部状态操作还是进行数据操作
-
         setTimeout(_ => {
             this.toolbarsisLoading[btn.name] = false;
         }, 150);
