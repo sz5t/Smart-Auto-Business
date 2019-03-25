@@ -17,7 +17,7 @@
         "*.vue": "vue"
     },
     "editor.minimap.showSlider": "always",
-    "window.zoomLevel": 1,
+    "window.zoomLevel": 0,
     "extensions.ignoreRecommendations": true,
     "editor.fontFamily": "Calibri, Dank Mono, Fira Code Light",
     "editor.cursorBlinking": "smooth",
