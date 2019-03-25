@@ -26,7 +26,7 @@ export class CnFormSelectGridComponent implements OnInit {
     @Input()
     dataSet;
     @Input()
-    casadeData={};
+    casadeData = {};
     @Input()
     changeConfig;
     @Output()
@@ -114,6 +114,16 @@ export class CnFormSelectGridComponent implements OnInit {
             // 表单的级联赋值在上层，控制方式待定
         } else {
             // this.selectedByLoaded();
+        }
+        // 未知是否有错误
+        if (!this._value) {
+            if (this.formGroup.value[this.config.name]) {
+                this._value = this.formGroup.value[this.config.name];
+            } else {
+                if (this.config.hasOwnProperty('defaultValue')) {
+                    this._value = this.config.defaultValue;
+                }
+            }
         }
     }
 

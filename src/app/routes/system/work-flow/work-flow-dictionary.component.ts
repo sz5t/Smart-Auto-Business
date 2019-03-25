@@ -13,8 +13,8 @@ import { _HttpClient } from '@delon/theme';
   styles: []
 })
 export class WorkFlowDictionaryComponent implements OnInit {
-
-  config = {
+  public ws: WebSocket; // 定义websocket
+  public config = {
     rows: [
       {
         row: {
@@ -409,7 +409,7 @@ export class WorkFlowDictionaryComponent implements OnInit {
                                 'params': [
                                   { name: 'typeCode', type: 'tempValue', valueName: '_parentId', value: '' },
                                   { name: 'name', type: 'componentValue', valueName: 'name', value: '' },
-                                  
+
                                   { name: 'value', type: 'componentValue', valueName: 'value', value: '' },
                                   { name: 'code', type: 'componentValue', valueName: 'code', value: '' },
                                   { name: 'sort', type: 'componentValue', valueName: 'sort', value: '' },
@@ -466,7 +466,31 @@ export class WorkFlowDictionaryComponent implements OnInit {
   };
   constructor(private http: _HttpClient) { }
 
-  ngOnInit() {
+  public ngOnInit() {
   }
+  // socket连接
+  public connectWs() {
+    if (this.ws != null) { this.ws.close() };
+    this.ws = new WebSocket('wss://172.20.201.148:1804/ws');
+    const that = this;
+    this.ws.onopen = function (event) {
+      // socket 开启后执行，可以向后端传递信息
+      that.ws.send('sonmething');
 
+    }
+    this.ws.onmessage = function (event) {
+      // socket 获取后端传递到前端的信息
+      that.ws.send('sonmething');
+
+    }
+    this.ws.onerror = function (event) {
+      // socket error信息
+
+
+    }
+    this.ws.onclose = function (event) {
+      // socket 关闭后执行
+
+    }
+  }
 }
