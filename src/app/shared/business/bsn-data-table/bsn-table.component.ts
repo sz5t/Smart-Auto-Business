@@ -559,6 +559,7 @@ export class BsnTableComponent extends CnComponentBase
                             }
                         });
                     } else {
+                        this.dataList = [];
                         this._selectRow = {};
                     }
 
@@ -1362,7 +1363,7 @@ export class BsnTableComponent extends CnComponentBase
                                  if (this.changeConfig_new[rowCasade][key]['cascadeValue'] ) {
                                      delete this.changeConfig_new[rowCasade][key]['cascadeValue'];
                                  }
-                               
+
                              } */
                                 if (caseItem['type'] === 'show') {
                                     if (caseItem['show']) {
@@ -2935,7 +2936,7 @@ export class BsnTableComponent extends CnComponentBase
 
     /**
      * 导入excel
-     * @param option 
+     * @param option
      */
     public importExcelDialog(option) {
         if (this.config.importExcel && this.config.importExcel.length > 0) {
@@ -3282,7 +3283,7 @@ export class BsnTableComponent extends CnComponentBase
         return !0;
     }
 
-    // liu 2018 12 04 
+    // liu 2018 12 04
     public valueChangeSearch(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
         if (data.data === null) {
@@ -3549,7 +3550,7 @@ export class BsnTableComponent extends CnComponentBase
                                  if (this.changeConfig_newSearch[rowCasade][key]['cascadeValue'] ) {
                                      delete this.changeConfig_newSearch[rowCasade][key]['cascadeValue'];
                                  }
-                               
+
                              } */
                                 if (caseItem['type'] === 'show') {
                                     if (caseItem['show']) {
