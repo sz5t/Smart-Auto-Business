@@ -208,6 +208,7 @@ export class BsnTableComponent extends CnComponentBase
                 }
             }
         }
+        
         this.resolverRelation();
         if (this.initData) {
             this.initValue = this.initData;
@@ -1657,6 +1658,7 @@ export class BsnTableComponent extends CnComponentBase
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
             const selectedRow = this._selectRow ? this._selectRow : {};
             const tmpValue = this.tempValue ? this.tempValue : {};
+            const iniVal = this.initValue ? this.initValue : {};
             tmpValue['moduleName'] = this._router.snapshot.params['name'] ? this._router.snapshot.params['name'] : '';
             const modal = this.baseModal.create({
                 nzTitle: dialog.title,
@@ -1666,7 +1668,7 @@ export class BsnTableComponent extends CnComponentBase
                 nzComponentParams: {
                     permissions: this.permissions,
                     config: data,
-                    initData: { ...tmpValue, ...selectedRow }
+                    initData: { ...iniVal, ...tmpValue, ...selectedRow }
                 },
                 nzFooter: footer
             });
