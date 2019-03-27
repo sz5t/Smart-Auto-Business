@@ -208,7 +208,7 @@ export class BsnTableComponent extends CnComponentBase
                 }
             }
         }
-        
+
         this.resolverRelation();
         if (this.initData) {
             this.initValue = this.initData;
@@ -1766,7 +1766,7 @@ export class BsnTableComponent extends CnComponentBase
                         return;
                     }
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
-                       return ;
+                        return;
                     }
                     handleData = {};
                     break;
@@ -1776,12 +1776,12 @@ export class BsnTableComponent extends CnComponentBase
                             .length <= 0
                     ) {
                         this.baseMessage.create('info', '请选择要执行的数据');
-                       return ;
+                        return;
                     }
                     handleData = this._getCheckedItems();
                     this.beforeOperation.operationItemsData = handleData;
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
-                       return ;
+                        return;
                     }
 
                     msg = '操作完成';
@@ -1792,12 +1792,12 @@ export class BsnTableComponent extends CnComponentBase
                             'info',
                             '当前数据未保存无法进行处理'
                         );
-                       return ;
+                        return;
                     }
                     handleData = this._getSelectedItem();
                     this.beforeOperation.operationItemData = handleData;
                     if (this.beforeOperation.beforeItemDataOperation(option)) {
-                       return ;
+                        return;
                     }
 
                     msg = '操作完成';
@@ -1814,7 +1814,7 @@ export class BsnTableComponent extends CnComponentBase
                     handleData = this._getCheckItemsId();
                     this.beforeOperation.operationItemsData = this._getCheckedItems();
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
-                       return ;
+                        return;
                     }
 
                     msg = '操作完成';
@@ -1837,11 +1837,11 @@ export class BsnTableComponent extends CnComponentBase
                             .length <= 0
                     ) {
                         this.baseMessage.create('info', '请选择要执行的数据');
-                       return ;
+                        return;
                     }
                     this.beforeOperation.operationItemsData = this._getCheckedItems();
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
-                       return ;
+                        return;
                     }
 
                     break;
@@ -1861,11 +1861,11 @@ export class BsnTableComponent extends CnComponentBase
                             .length <= 0
                     ) {
                         this.baseMessage.create('info', '请选择要执行的数据');
-                       return ;
+                        return;
                     }
                     this.beforeOperation.operationItemsData = this._getCheckedItems();
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
-                        return ;
+                        return;
                     }
                     // 获取更新状态的数据
 
@@ -2316,12 +2316,16 @@ export class BsnTableComponent extends CnComponentBase
                 row.selected = false;
 
             });
+        if (data['row_status'] === 'updating' || data['row_status'] === 'adding') {
 
-        if (data['checked']) {
-            data['checked'] = false;
         } else {
-            data['checked'] = true;
+            if (data['checked']) {
+                data['checked'] = false;
+            } else {
+                data['checked'] = true;
+            }
         }
+
         if (this.dataList.length > 0)
             this.refChecked();
 

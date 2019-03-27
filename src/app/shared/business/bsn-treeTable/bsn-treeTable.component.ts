@@ -144,7 +144,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
             } else {
                 this.load();
             }
-            
+
         }
     }
 
@@ -280,7 +280,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                                 this.addNewRow();
                             break;
                         case BSN_COMPONENT_MODES.CREATE_CHILD:
-    
+
                             this.beforeOperation.operationItemData = this.selectedItem;
                             !this.beforeOperation.beforeItemDataOperation(option) &&
                                 this.addNewChildRow();
@@ -357,7 +357,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                 }
             });
         }
-        
+
         // 通过配置中的组件关系类型设置对应的事件接受者
         // 表格内部状态触发接收器
         if (
@@ -372,7 +372,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                     return false;
                 }
                 // if (this.editCache && (this.editCache[this.selectedItem['Id']] === this.selectedItem['Id']) {
-                    
+
                 //     return false;
                 // }
                 this.cascade.next(
@@ -434,14 +434,14 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                                                 break;
                                         }
                                     }
-                                    
+
                                 }
                             });
                         }
                     }
                 );
             }
-            
+
         }
     }
 
@@ -509,25 +509,25 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
     }
 
     public expandCurrentRow() {
-         if (this.selectedItem) {
+        if (this.selectedItem) {
             const children = this.selectedItem['children'] ? this.selectedItem['children'] : null;
             this.expandChange(children, this.selectedItem, true);
-         }
-        
+        }
+
     }
 
     public async expandChange(childrenData, data: any, $event: boolean) {
         // this.loading = true;
         if ($event === true) {
             const response = await this.expandLoad(data);
-                if (response.isSuccess && response.data.length > 0) {
-                    response.data.forEach(d => {
-                        this.setChildExpand(d, data['level'] + 1);
-                    });
-                    // childrenData = data;
-                    this.insertChildrenListToTree(data, response.data);
-                }
-                // this.loading = false;
+            if (response.isSuccess && response.data.length > 0) {
+                response.data.forEach(d => {
+                    this.setChildExpand(d, data['level'] + 1);
+                });
+                // childrenData = data;
+                this.insertChildrenListToTree(data, response.data);
+            }
+            // this.loading = false;
         } else {
             if (childrenData) {
                 childrenData.forEach(d => {
@@ -538,7 +538,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                     if (target && target.children) {
                         this.expandChange(target.children, target, false)
                     }
-                    
+
                 })
             }
             // this.loading = false;
@@ -570,7 +570,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
             });
         }
 
-        
+
         this.dataList.splice(index + 1, 0, ...childrenList);
     }
 
@@ -597,10 +597,10 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
     /**
      * 选中行
      * @param data
-     * @param $event 
+     * @param $event
      */
     private selectRow(data, $event) {
-        
+
         if ($event.srcElement.className === 'ant-table-row-expand-icon ng-star-inserted ant-table-row-collapsed') {
             return;
         }
@@ -614,10 +614,14 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
 
         this.treeData.forEach(t => t['selected'] = false);
         data['selected'] = true;
-        if (data['checked']) {
-            data['checked'] = false;
+        if (data['row_status'] === 'updating' || data['row_status'] === 'adding') {
+
         } else {
-            data['checked'] = true;
+            if (data['checked']) {
+                data['checked'] = false;
+            } else {
+                data['checked'] = true;
+            }
         }
         if (this.dataList.length > 0)
             this.refChecked();
@@ -712,14 +716,14 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
 
     private _cancelSavedRow() {
         const cancelRowMap = this._getCheckedRowStatusMap();
-        for (let i = 0, len = this.dataList.length ; i < len; i++) {
-             const key = this.dataList[i].key;
-             const checkedRow = cancelRowMap.get(key);
-             if (checkedRow) {
+        for (let i = 0, len = this.dataList.length; i < len; i++) {
+            const key = this.dataList[i].key;
+            const checkedRow = cancelRowMap.get(key);
+            if (checkedRow) {
                 delete this.dataList[i]['row_status'];
                 this._cancelEdit(key);
-             }
-             
+            }
+
         }
     }
 
@@ -804,14 +808,14 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
             // 如果不存在,检查当前列表中是否存在编辑对象(包含所有子节点集合)
             itemList = this.treeData;
             childIndex = this.treeData.findIndex(item => item.Id === key);
-             // 包含子节点对象,则将编辑状态进行取消, 并重新绑定之前数据
+            // 包含子节点对象,则将编辑状态进行取消, 并重新绑定之前数据
             if (childIndex && childIndex !== -1) {
                 this.editCache[key].data = JSON.parse(JSON.stringify(itemList[childIndex]));
             }
         }
-        this.editCache[key].edit = false; 
-       
-        
+        this.editCache[key].edit = false;
+
+
     }
 
     public checkAll(value) {
@@ -966,9 +970,9 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                         eventId: BSN_OPERATION_LOG_TYPE.DELETE,
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                        description: `${desc} ID为: ${ids.join(',')}` 
+                        description: `${desc} ID为: ${ids.join(',')}`
                     }).subscribe(result => {
-        
+
                     })
                 } else {
                     this.baseMessage.create('error', response.message);
@@ -977,14 +981,14 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                         eventId: BSN_OPERATION_LOG_TYPE.DELETE,
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                        description: response.message 
+                        description: response.message
                     }).subscribe(result => {
-        
+
                     })
                 }
             }
             if (isSuccess) {
-                // 
+                //
                 this.load();
             }
         }
@@ -1060,7 +1064,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                         description: `${desc}数据: ${JSON.stringify(response['data'])}`
-                    }).subscribe(result => {});
+                    }).subscribe(result => { });
                 } else {
                     // 操作日志
                     this.baseMessage.create('error', response.message);
@@ -1069,7 +1073,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                         description: `${response.message}`
-                    }).subscribe(result => {});
+                    }).subscribe(result => { });
                 }
             }
             if (isSuccess) {
@@ -2208,7 +2212,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                                  if (this.changeConfig_new[rowCasade][key]['cascadeValue'] ) {
                                      delete this.changeConfig_new[rowCasade][key]['cascadeValue'];
                                  }
-                               
+
                              } */
                                 if (caseItem['type'] === 'show') {
                                     if (caseItem['show']) {
