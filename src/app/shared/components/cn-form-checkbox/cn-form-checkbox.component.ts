@@ -5,6 +5,15 @@ import { FormGroup } from '@angular/forms';
 @Component({
   selector: 'cn-form-checkbox',
   templateUrl: './cn-form-checkbox.component.html',
+  styles: [`
+    :host{
+      ::ng-deep {
+        .ant-form-item {
+          margin-bottom: 0px;
+        }
+      }
+    }
+  `]
 })
 export class CnFormCheckboxComponent implements OnInit {
     @Input() config;
