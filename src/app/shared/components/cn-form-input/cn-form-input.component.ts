@@ -19,7 +19,7 @@ import { Component, Input, OnInit } from '@angular/core';
 
     .anticon-close-circle:active {
       color: #666;
-    }
+    }  
     `
   ]
 })

@@ -2833,7 +2833,6 @@ export class BsnTableComponent extends CnComponentBase
                 ? this._selectRow[dialog.keyId]
                 : ''
         };
-        debugger;
         const footer = [];
         const modal = this.baseModal.create({
             nzTitle: dialog.title,
