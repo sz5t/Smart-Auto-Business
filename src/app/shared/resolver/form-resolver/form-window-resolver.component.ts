@@ -824,6 +824,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
     public valueChange(data?) {
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
+
         const sendCasade = data.name;
         const receiveCasade = ' ';
         // 第二步，根据配置，和返回值，来构建应答数据集合

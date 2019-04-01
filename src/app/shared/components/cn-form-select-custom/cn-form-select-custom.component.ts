@@ -255,6 +255,7 @@ export class CnFormSelectCustomComponent extends CnComponentBase implements OnIn
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
     if (name) {
+      this._value = name;
       const backValue = { name: this.config.name, value: name };
       if (dataItemValue) {
         backValue['dataItem'] = dataItemValue;
@@ -274,12 +275,13 @@ export class CnFormSelectCustomComponent extends CnComponentBase implements OnIn
         if (selectrowdata.hasOwnProperty(labelName)) {
           this._valuetext = selectrowdata[labelName];
         } else {
-          this._valuetext = this._value;
+         // this._valuetext = this._value;
         }
         backValue['dataItem'] = selectrowdata;
       }
       this.updateValue.emit(backValue);
     } else {
+      this._value = name;
       const backValue = { name: this.config.name, value: name };
       this.updateValue.emit(backValue);
 
