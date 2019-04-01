@@ -831,7 +831,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     }
 
     private _getAjaxConfig(c, option) {
-        let msg;
+        let msg = '操作成功!';
         if (c.action) {
             let handleData;
             // 所有获取数据的方法都会将数据保存至tempValue
