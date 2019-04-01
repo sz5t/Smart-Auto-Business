@@ -2,7 +2,7 @@
     {{config.label}}
 </nz-form-label>
 <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize" style="display:none" > <!-- style="display:none"  type="hidden" -->
-    <input nz-input (ngModelChange)="valueChange($event)" formControlName="{{config.name}}"  type="'hidden'"  placeholder="{{config.placeholder}}"
+    <input nz-input   formControlName="{{config.name}}"  type="'hidden'"  placeholder="{{config.placeholder}}"
     [(ngModel)]="_value">
 </nz-form-control>
 <nz-form-control [nzSpan]="config.controlSize">
