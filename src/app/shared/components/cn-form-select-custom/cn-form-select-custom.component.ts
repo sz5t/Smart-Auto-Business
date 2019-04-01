@@ -80,8 +80,8 @@ export class CnFormSelectCustomComponent extends CnComponentBase implements OnIn
                     this._value = this.config.defaultValue;
                 }
             }
-        }
 
+        }
   }
   public async asyncLoadOptions(p?, componentValue?, type?) {
 
@@ -250,8 +250,6 @@ export class CnFormSelectCustomComponent extends CnComponentBase implements OnIn
   }
 
   public async valueChange(name?, dataItemValue?) {
-
-
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
     if (name) {
@@ -264,7 +262,6 @@ export class CnFormSelectCustomComponent extends CnComponentBase implements OnIn
         const componentvalue = this.formGroup.value;
         componentvalue[valueName] = name;
         const loadData = await this.asyncLoadOptions(this.config.ajaxConfig, componentvalue);
-
         if (loadData && loadData.status === 200 && loadData.isSuccess) {
           if (loadData.data) {
             if (loadData.data.length > 0) {

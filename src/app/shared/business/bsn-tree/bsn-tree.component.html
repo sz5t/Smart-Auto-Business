@@ -34,7 +34,7 @@
                                                                 (nzClick)="onMouseAction('clickNode', $event)">
                                                                 <ng-template #nzTreeTemplate let-node>
                                                                                 <span class="custom-node"
-                                                                                                draggable="true"
+                                                                                                draggable="false"
                                                                                                 aria-grabbed="true"
                                                                                                 [class.active]="node.isSelected"
                                                                                                 (contextmenu)="contextMenu($event,contextTemplate)"
@@ -43,13 +43,13 @@
                                                                                                                 [class.shine-animate]="node.origin.isLoading"
                                                                                                  >
                                                                                                                 <i nz-icon [type]="node.isExpanded ? 'folder-open' : 'folder'" (click)="openFolder(node)"></i>
-                                                                                                                <span class="folder-name"> 
+                                                                                                                <span class="folder-name">
                                                                                                                         <ng-container *ngIf="node.isMatched">
                                                                                                                                 {{searchTargetString(node.title)[0]}}
                                                                                                                                 <span class="highlight">   {{searchTargetString(node.title)[1]}} </span>
                                                                                                                                 {{searchTargetString(node.title)[2]}}
                                                                                                                         </ng-container>
-                                                                                                                              
+
                                                                                                                         <ng-container *ngIf="!node.isMatched">
                                                                                                                                 {{node.title}}
                                                                                                                         </ng-container>
