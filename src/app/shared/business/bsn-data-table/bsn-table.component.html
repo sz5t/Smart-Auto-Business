@@ -69,7 +69,7 @@
                 </tr>
             </ng-container>
             <ng-container *ngIf="data.row_status != 'search'">
-                <tr (click)="selectRow(data, $event)" [ngStyle]="data.selected && config.selectedStyle ? config.selectedStyle : {}">
+                <tr (click)="selectRow(data, $event)" [ngStyle]="data.selected ?  {'background-color': '#fff7ca'}: { } ">
                     <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
                     </td>
                     <ng-template ngFor let-col [ngForOf]="config.columns">

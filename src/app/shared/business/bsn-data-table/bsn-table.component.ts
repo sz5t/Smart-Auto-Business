@@ -2316,9 +2316,12 @@ export class BsnTableComponent extends CnComponentBase
                 row.selected = false;
 
             });
+
+
         if (data['row_status'] === 'updating' || data['row_status'] === 'adding') {
 
         } else {
+            data['selected'] = true;
             if (data['checked']) {
                 data['checked'] = false;
             } else {
