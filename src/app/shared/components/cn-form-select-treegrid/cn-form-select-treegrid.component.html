@@ -1,7 +1,7 @@
 <nz-modal [(nzVisible)]="isVisible" [nzWidth]="config.select.nzWidth" [nzTitle]="config.select.title" (nzOnCancel)="handleCancel()"
     (nzOnOk)="handleOk()">
     <!-- bsn-tree-table bsn-async-tree-table  -->
-    <bsn-async-tree-table  #table [config]="config.select.selectTreeGrid" [bsnData]="bsnData" [casadeData]="casadeData" [value]="_value" [permissions]="permissions"> </bsn-async-tree-table >
+    <bsn-async-tree-table  #table [config]="config.select.selectTreeGrid" [bsnData]="bsnData"  [initData]="initValue"  [casadeData]="casadeData" [value]="_value" [permissions]="permissions"> </bsn-async-tree-table >
 </nz-modal>
 <nz-form-label *ngIf="config.label"  [nzSpan]="config.labelSize">
     {{config.label}}

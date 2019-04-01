@@ -4,7 +4,7 @@
         {{ sliceTagName(tag) }}
     </nz-tag>
     <hr>
-    <cn-bsn-table #table [config]="config.select.selectGridMultiple" [bsnData]="bsnData" [casadeData]="casadeData"  [permissions]="permissions"  (updateValue)="valueChangeByModal($event)"> </cn-bsn-table>
+    <cn-bsn-table #table [config]="config.select.selectGridMultiple" [bsnData]="bsnData"  [initData]="initValue"   [casadeData]="casadeData"  [permissions]="permissions"  (updateValue)="valueChangeByModal($event)"> </cn-bsn-table>
 </nz-modal>
 <nz-form-label *ngIf="config.label"  [nzSpan]="config.labelSize">
     {{config.label}}

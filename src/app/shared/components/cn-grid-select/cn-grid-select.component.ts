@@ -100,7 +100,7 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
                     }
                 }
            //  })();
-            
+
         } else {
             // 加载固定数据
             this._options = this.config.options;

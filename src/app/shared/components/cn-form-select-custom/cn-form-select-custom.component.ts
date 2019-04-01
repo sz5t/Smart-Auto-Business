@@ -21,6 +21,7 @@ export class CnFormSelectCustomComponent extends CnComponentBase implements OnIn
   @Input() public dataSet;
   @Input() public casadeData;
   @Input() public changeConfig;
+  @Input() public initValue;
   @Output() public updateValue = new EventEmitter();
   public formGroup: FormGroup;
   public resultData;

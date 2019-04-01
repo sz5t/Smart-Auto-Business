@@ -16,6 +16,7 @@ export class CnFormSelectTreegridComponent implements OnInit, OnChanges {
   @Input() dataSet;
   @Input() casadeData = {};
   @Input() changeConfig;
+  @Input() public initValue;
   @Output() updateValue = new EventEmitter();
   formGroup: FormGroup;
   @ViewChild("table") table:BsnAsyncTreeTableComponent ;  //;BsnTreeTableComponent
@@ -178,7 +179,7 @@ export class CnFormSelectTreegridComponent implements OnInit, OnChanges {
             } else {
               this._valuetext = this._value;
             }
- 
+
           }
         }
       }

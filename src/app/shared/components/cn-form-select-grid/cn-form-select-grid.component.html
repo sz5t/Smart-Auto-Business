@@ -1,6 +1,6 @@
 <nz-modal [(nzVisible)]="isVisible" [nzWidth]="config.select.nzWidth" [nzTitle]="config.select.title" (nzOnCancel)="handleCancel()"
     (nzOnOk)="handleOk()">
-    <cn-bsn-table #table [config]="config.select.selectGrid" [bsnData]="bsnData" [casadeData]="casadeData" [value]="_value" [permissions]="permissions"> </cn-bsn-table>
+    <cn-bsn-table #table [config]="config.select.selectGrid" [bsnData]="bsnData" [initData]="initValue" [casadeData]="casadeData" [value]="_value" [permissions]="permissions"> </cn-bsn-table>
 </nz-modal>
 <nz-form-label *ngIf="config.label"  [nzSpan]="config.labelSize">
     {{config.label}}

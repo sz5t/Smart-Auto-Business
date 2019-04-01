@@ -16,6 +16,7 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
   @Input() public dataSet;
   @Input() public casadeData = {};
   @Input() public changeConfig;
+  @Input() public initValue;
   @Output() public updateValue = new EventEmitter();
   public formGroup: FormGroup;
   @ViewChild('table') public table: BsnTableComponent;

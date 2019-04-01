@@ -8,7 +8,7 @@
                     <ng-container *ngIf="!control.hidden">
                         <!-- 垂直表单布局-->
                         <nz-form-item *ngIf="control.layout==='row'" style="margin-bottom: 1em">
-                            <ng-container  cnFormResolverDirective [formGroup]="form" [config]="control" [changeConfig]="change_config[control.name]" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
+                            <ng-container  cnFormResolverDirective [formGroup]="form" [config]="control" [changeConfig]="change_config[control.name]" [tempValue]="tempValue" [initValue]="initValue" (updateValue)="valueChange($event)" >
 
                             </ng-container>
                         </nz-form-item>
@@ -16,7 +16,7 @@
                         <!-- 水平表单布局-->
                         <div nz-col [nzSpan]="control.span">
                             <nz-form-item style="margin-bottom: 1em">
-                                <ng-container cnFormResolverDirective [formGroup]="form" [config]="control" [changeConfig]="change_config[control.name]" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
+                                <ng-container cnFormResolverDirective [formGroup]="form" [config]="control" [changeConfig]="change_config[control.name]" [tempValue]="tempValue" [initValue]="initValue" (updateValue)="valueChange($event)" >
 
                                 </ng-container>
                             </nz-form-item>

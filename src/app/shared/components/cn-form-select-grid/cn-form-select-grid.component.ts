@@ -16,38 +16,39 @@ import { FormGroup } from "@angular/forms";
 })
 export class CnFormSelectGridComponent implements OnInit {
     @Input()
-    config;
+    public config;
     @Input()
-    value;
+    public value;
     @Input()
-    bsnData;
+    public bsnData;
     @Input()
-    rowData;
+    public rowData;
     @Input()
-    dataSet;
+    public dataSet;
     @Input()
-    casadeData = {};
+    public casadeData = {};
     @Input()
-    changeConfig;
+    public changeConfig;
     @Output()
-    updateValue = new EventEmitter();
-    formGroup: FormGroup;
-    @ViewChild("table")
-    table: BsnTableComponent;
-    resultData;
-    cascadeValue = {};
-    cascadeSetValue = {};
+    public updateValue = new EventEmitter();
+    @Input() public initValue;
+    public formGroup: FormGroup;
+    @ViewChild('table')
+    public table: BsnTableComponent;
+    public resultData;
+    public cascadeValue = {};
+    public cascadeSetValue = {};
 
-    isVisible = false;
-    isConfirmLoading = false;
-    _value;
-    _valuetext;
-    permissions = [];
+    public isVisible = false;
+    public isConfirmLoading = false;
+    public _value;
+    public _valuetext;
+    public permissions = [];
     constructor() { }
-    nzWidth = 1024;
+    public nzWidth = 1024;
     // 模板配置
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         // this._value = this.formGroup.value[this.config.name];
         if (this.changeConfig) {
             if (this.changeConfig['cascadeValue']) {
@@ -127,12 +128,12 @@ export class CnFormSelectGridComponent implements OnInit {
         }
     }
 
-    showModal(): void {
+    public showModal(): void {
         this.isVisible = true;
         this.table.value = this._value;
     }
 
-    handleOk(): void {
+    public handleOk(): void {
         this.isVisible = false;
         // 此处简析 多选，单选【个人建议两种组件，返回值不相同，单值（ID值），多值（ID数组）】
         if (this.table._selectRow) {
@@ -144,11 +145,11 @@ export class CnFormSelectGridComponent implements OnInit {
         }
     }
 
-    handleCancel(): void {
+    public handleCancel(): void {
         this.isVisible = false;
     }
 
-    async valueChange(name?) {
+    public async valueChange(name?) {
         this.resultData = this.table.dataList ? this.table.dataList : [];
         const labelName = this.config.labelName ? this.config.labelName : 'name';
         const valueName = this.config["valueName"] ? this.config["valueName"] : "Id";
