@@ -2836,7 +2836,6 @@ export class BsnTableComponent extends CnComponentBase
                 ? this._selectRow[dialog.keyId]
                 : ''
         };
-
         const footer = [];
         const modal = this.baseModal.create({
             nzTitle: dialog.title,
@@ -2846,6 +2845,7 @@ export class BsnTableComponent extends CnComponentBase
             nzComponentParams: {
                 config: dialog,
                 tempValue: obj,
+                initData: this.initValue ? this.initValue : {},
                 editable: dialog.type === 'add' ? 'post' : 'put'
             },
             nzFooter: footer
