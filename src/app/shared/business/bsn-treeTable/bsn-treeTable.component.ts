@@ -614,8 +614,10 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
 
         this.treeData.forEach(t => t['selected'] = false);
         data['selected'] = true;
-        if (data['row_status'] === 'updating' || data['row_status'] === 'adding') {
+        if (this.editCache[data.key].edit) {
+            // if (data['row_status'] === 'updating' || data['row_status'] === 'adding') {
 
+            // }
         } else {
             if (data['checked']) {
                 data['checked'] = false;
