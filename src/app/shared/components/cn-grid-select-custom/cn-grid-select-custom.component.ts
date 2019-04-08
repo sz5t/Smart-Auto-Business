@@ -197,7 +197,7 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
         nzComponentParams: {
           permissions: this.permissions,
           config: data,
-          initData: {} // ...tmpValue, ...selectedRow
+          initData: { ...this.bsnData, ...this.rowData, ...this.initValue} // ...tmpValue, ...selectedRow
         },
         nzFooter: footer
       });

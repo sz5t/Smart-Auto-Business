@@ -214,7 +214,7 @@ export class CnGridSelectCustomMultipleComponent  extends CnComponentBase  imple
         nzComponentParams: {
           permissions: this.permissions,
           config: data,
-          initData: {...layoutTag, ...this.rowData, ...this.initValue} // ...tmpValue, ...selectedRow
+          initData: {...this.bsnData, ...layoutTag, ...this.rowData, ...this.initValue} // ...tmpValue, ...selectedRow
         },
         nzFooter: footer
       });
