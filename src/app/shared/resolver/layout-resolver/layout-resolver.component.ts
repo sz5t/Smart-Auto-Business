@@ -1,33 +1,55 @@
-import { Component, Input, OnInit, Output, EventEmitter, Inject } from "@angular/core";
-import { BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage } from "@core/relative-Service/BsnTableStatus";
-import { CnComponentBase } from "@shared/components/cn-component-base";
-import { Observable } from "rxjs";
+import { Component, Input, OnInit, Output, EventEmitter, Inject, TemplateRef, ViewChild } from '@angular/core';
+import { BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage } from '@core/relative-Service/BsnTableStatus';
+import { CnComponentBase } from '@shared/components/cn-component-base';
+import { Observable } from 'rxjs';
 
 @Component({
-    selector: "cn-layout-resolver",
-    templateUrl: "./layout-resolver.component.html",
+    selector: 'cn-layout-resolver',
+    templateUrl: './layout-resolver.component.html',
     styles: [
         `
             :host ::ng-deep .ant-card-head {
                 min-height: 36px;
+            }
+
+            .trigger {
+                font-size: 24px;
+                padding: 0 5px;
+                cursor: pointer;
+                transition: color 0.3;
+                right:28px;
+                position:relative;
+            }
+            .trigger:hover {
+                color: #1890ff;
+            }
+
+            .collapsedArea {
+                position:relative;
+
             }
         `
     ]
 })
 export class LayoutResolverComponent extends CnComponentBase implements OnInit {
     @Input()
-    config;
+    public config;
     @Input()
-    permissions;
+    public permissions;
     @Input()
-    layoutId;
+    public layoutId;
     @Input()
-    initData;
+    public initData;
     @Input()
-    tempValue;
+    public tempValue;
     @Output()
     public updateValue = new EventEmitter();
     public value;
+    @Input()
+    public isCollapsed = true;
+    public triggerTemplate: TemplateRef<void> | null = null;
+    @ViewChild('trigger') private customTrigger: TemplateRef<void>;
+
     constructor(@Inject(BSN_COMPONENT_CASCADE)
     private cascadeEvents: Observable<BsnComponentMessage>) {
         super();
