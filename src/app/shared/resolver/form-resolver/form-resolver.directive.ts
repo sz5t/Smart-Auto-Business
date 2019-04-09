@@ -39,6 +39,7 @@ import { CnFormSelectGridMultipleComponent } from '@shared/components/cn-form-se
 import { CnFormSelectCustomComponent } from '@shared/components/cn-form-select-custom/cn-form-select-custom.component';
 import { CnFormSelectCustomMultipleComponent } from '@shared/components/cn-form-select-custom-multiple/cn-form-select-custom-multiple.component';
 import { CnFormImgComponent } from '@shared/components/cn-form-img/cn-form-img.component';
+import { CnFormSearchInputComponent } from '@shared/components/cn-form-search-input/cn-form-search-input.component';
 
 const components: { [type: string]: Type<any> } = {
     input: CnFormInputComponent,
@@ -67,7 +68,9 @@ const components: { [type: string]: Type<any> } = {
     selectGridMultiple: CnFormSelectGridMultipleComponent,
     selectCustom: CnFormSelectCustomComponent,
     selectCustomMultiple: CnFormSelectCustomMultipleComponent,
-   img: CnFormImgComponent
+    img: CnFormImgComponent,
+    searchInput: CnFormSearchInputComponent,
+    numberInput: CnFormSearchInputComponent
 };
 @Directive({
     selector: '[cnFormResolverDirective]'

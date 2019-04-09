@@ -1,0 +1,32 @@
+<nz-form-label *ngIf="config.label" [nzSpan]="config.labelSize" [nzRequired]="config.isRequired">
+        {{config.label}}
+</nz-form-label>
+<nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+                <input type="{{config.inputType}}"
+                                 nz-input
+                                [nzSize]="config.size"
+                                placeholder="{{config.placeholder}}"
+                                [(ngModel)]="valModel"
+                                [ngModelOptions]="{standalone: true}"
+                                (ngModelChange)="valueChange($event)"
+                                (onkeypress)="onKeyPress($event)"
+                                (onblur)="onblur($event)"
+                />
+            </nz-input-group>
+            <input
+                type="hidden"
+                formControlName="{{config.name}}"
+                [(ngModel)]="hidValModel"
+                >
+            <ng-template #addOnBeforeTemplate>
+                <nz-select [(ngModel)]="optionModel" (ngModelChange)="ngModelChange($event)" nzDropdownMatchSelectWidth="true" style="width: 90px" [ngModelOptions]="{standalone: true}">
+                    <nz-option
+                        *ngFor="let item of optionList"
+                        [nzLabel]="item.label"
+                        [nzValue]="item.value"
+                        >
+                    </nz-option>
+                </nz-select>
+            </ng-template>
+</nz-form-control>

@@ -1,2 +1,2 @@
-<iframe width="100%" height="1000px" frameborder="0" scrolling="no" [src]="reportURL | safeUrl"> 
+<iframe width="100%" height="{{config.height ? config.height : '800px'}}" frameborder="0" scrolling="no" [src]="reportURL | safeUrl">
 </iframe>

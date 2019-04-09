@@ -23,7 +23,8 @@ declare var rubylong: any;
     // tslint:disable-next-line:component-selector
     selector: 'bsn-report',
     templateUrl: './bsn-report.component.html',
-    styles: [``]
+    styles: [`
+    `]
 })
 export class BsnReportComponent extends CnComponentBase implements OnInit, AfterViewInit, OnDestroy {
     @Input()

@@ -200,6 +200,10 @@ export class BeforeOperation {
                     case 'cacheValue':
                         andResult = this.matchCacheValueCondition(item);
                         break;
+                    case 'innerValue':
+                    debugger;
+                        andResult = this.innerValueCondition(item);
+                        break;
                     case 'executeAjax':
                         // 预留前置异步操作
                         // andResult = this.executeAjaxCondition(item);
@@ -248,6 +252,36 @@ export class BeforeOperation {
             result = reg.test(this.operationItemData[statusItem['name']]);
         }
         return result;
+    }
+
+    private innerValueCondition (statusItem) {
+        // 判断与固定值做验证还是与当前行数据验证
+        let result = false;
+        let tmpValue;
+        let cchValue;
+        let iniValue;
+        if (statusItem['tempValue']) {
+            tmpValue = this.tempValue[statusItem['tempValue']];
+        }
+        if (statusItem['cacheValue']) {
+            cchValue = this.cacheValue[statusItem['cacheValue']];
+        }
+        if (statusItem['initValue']) {
+            iniValue = this.initValue[statusItem['initValue']];
+        }
+
+        if (tmpValue && cchValue) {
+            result = tmpValue !== cchValue;
+        } else if (tmpValue && iniValue) {
+            result = tmpValue !== iniValue; 
+        } else if (cchValue && iniValue) {
+            result = cchValue !== iniValue;
+        } else if (iniValue && tmpValue) {
+            result = iniValue !== tmpValue;
+        }
+
+        return result;
+
     }
 
     private matchTempValueCondition(statusItem) {

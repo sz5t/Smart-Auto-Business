@@ -372,6 +372,7 @@ export class SearchResolverComponent extends CnComponentBase
     }
 
     public searchForm() {
+        console.log(this.value);
         this.loading = true;
         this.searchFormByValue(this.value);
         setTimeout(_ => {
