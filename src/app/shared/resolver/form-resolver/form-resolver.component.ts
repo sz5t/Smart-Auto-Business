@@ -702,6 +702,7 @@ export class FormResolverComponent extends CnFormBase
      * @param dialog
      */
     private showLayout(dialog) {
+        console.log(this.value);
         const footer = [];
         this.apiService.getLocalData(dialog.layoutName).subscribe(data => {
             const modal = this.modalService.create({

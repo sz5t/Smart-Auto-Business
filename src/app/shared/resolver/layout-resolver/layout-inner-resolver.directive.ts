@@ -20,6 +20,7 @@ import {
 } from '@core/relative-Service/BsnTableStatus';
 import { IBlockExclusionDescriptor } from 'tslint/lib/rules/completed-docs/blockExclusion';
 import {CommonTools} from '@core/utility/common-tools';
+import { debug } from 'util';
 
 @Directive({
     // tslint:disable-next-line:directive-selector
@@ -127,12 +128,15 @@ export class LayoutInnerResolverDirective implements OnInit, OnChanges, OnDestro
         this.container.clear();
         this.component = this.container.createComponent(comp);
         if ( config.handleMapping) {
+            
             const d = {...this.tempValue, ... this.initData}
             for (const m of config.handleMapping) {
             // field, value, viewId? mulitple field
                 let match;
                 for (const mp of m.mappings) {
-                    if (d[mp.name] === mp.value) {
+                    if (d[mp.name] === undefined) {
+
+                    } else if (d[mp.name] === mp.value) {
                         match = true;
                     } else {
                         match = false;
@@ -143,6 +147,8 @@ export class LayoutInnerResolverDirective implements OnInit, OnChanges, OnDestro
                 }
                 if (match) {
                     cfg = config.viewCfg.find(c => m.viewId === c.config.viewId);
+                } else if (match === undefined) {
+                    cfg = config.viewCfg[0];
                 }
             }
         }
