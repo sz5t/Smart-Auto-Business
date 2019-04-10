@@ -201,7 +201,6 @@ export class BeforeOperation {
                         andResult = this.matchCacheValueCondition(item);
                         break;
                     case 'innerValue':
-                    debugger;
                         andResult = this.innerValueCondition(item);
                         break;
                     case 'executeAjax':
@@ -289,7 +288,7 @@ export class BeforeOperation {
         let result = false;
         if (statusItem['name']) {
             result =
-                this.operationItemData[statusItem['name']] ===
+                this.operationItemData[statusItem['name']] !==
                 this.tempValue[statusItem['valueName']];
         } else {
             const reg = new RegExp(statusItem['value']);
@@ -305,7 +304,7 @@ export class BeforeOperation {
         let result = false;
         if (statusItem['name']) {
             result =
-                this.operationItemData[statusItem['name']] ===
+                this.operationItemData[statusItem['name']] !==
                 this.initValue[statusItem['valueName']];
         } else {
             const reg = new RegExp(statusItem['value']);
@@ -318,7 +317,7 @@ export class BeforeOperation {
         let result = false;
         if (statusItem['name']) {
             result =
-                this.operationItemData[statusItem['name']] ===
+                this.operationItemData[statusItem['name']] !==
                 this.cacheValue[statusItem['valueName']];
         } else {
             const reg = new RegExp(statusItem['value']);
@@ -407,7 +406,7 @@ export class BeforeOperation {
             if (statusItem['name']) {
                 result = this.operationItemsData.some(
                     row =>
-                        row[statusItem['name']] ===
+                        row[statusItem['name']] !==
                         this.cacheValue[statusItem['valueName']]
                 );
             } else {
@@ -428,7 +427,7 @@ export class BeforeOperation {
             if (statusItem['name']) {
                 result = this.operationItemsData.some(
                     row =>
-                        row[statusItem['name']] ===
+                        row[statusItem['name']] !==
                         this.tempValue[statusItem['valueName']]
                 );
             } else {
@@ -449,7 +448,7 @@ export class BeforeOperation {
             if (statusItem['name']) {
                 result = this.operationItemsData.some(
                     row =>
-                        row[statusItem['name']] ===
+                        row[statusItem['name']] !==
                         this.initValue[statusItem['valueName']]
                 );
             } else {
@@ -511,7 +510,7 @@ export class BeforeOperation {
                     }
                     break;
                 case 'continue':
-                    if (!actionResult) {
+                    if (actionResult) {
                         result = false;
                     } else {
                         this.beforeOperationMessage(action, result);

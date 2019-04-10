@@ -45,6 +45,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
     public ngOnInit() {
         this.initValue = this.initData ? this.initData : {};
         this.resolverRelation();
+        this.config = CommonTools.deepCopy(this.config);
 
         // const activeIndex = this.config.tabs.findIndex(tab => tab.active);
         // this.cascade.next(
