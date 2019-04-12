@@ -492,6 +492,7 @@ export class BsnTableComponent extends CnComponentBase
         this.allChecked = false;
         this.checkedCount = 0;
         const url = this._buildURL(this.config.ajaxConfig.url);
+        const method = this.config.ajaxConfig.ajaxType;
         const params = {
             ...this._buildParameters(this.config.ajaxConfig.params),
             ...this._buildPaging(),
@@ -502,82 +503,171 @@ export class BsnTableComponent extends CnComponentBase
             ...this._buildSearch()
         };
         (async () => {
-            const loadData = await this._load(url, params);
-            if (loadData && loadData.status === 200 && loadData.isSuccess) {
-                if (loadData.data && loadData.data.rows) {
-                    // 设置聚焦ID
-                    // 默认第一行选中，如果操作后有focusId则聚焦ID为FocusId
+            const loadData = await this._load(url, params, method);
+            if (loadData.isSuccess) {
+                let resData;
+
+                if (method === 'proc') {
+                    resData = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
+                } else {
+                    resData = loadData.data.rows;
+                }
+
+                if (resData) {
                     let focusId;
-                    if (loadData.data.focusedId) {
-                        focusId = loadData.data.focusedId[0];
-                    } else {
-                        const slcId = this._selectRow['key'];
-                        if (slcId) {
-                            if (loadData.data.rows.length > 0 &&
-                                loadData.data.rows.filter(s => s[this.config.keyId] === slcId).length > 0
-                            ) {
-                                focusId = slcId;
-                            } else {
-                                loadData.data.rows.length > 0 &&
-                                    (focusId = loadData.data.rows[0].Id);
-                            }
+                        if (loadData.data.focusedId) {
+                            focusId = loadData.data.focusedId[0];
                         } else {
-                            loadData.data.rows.length > 0 &&
-                                (focusId = loadData.data.rows[0].Id);
-                        }
-
-                    }
-                    if (loadData.data.rows.length > 0) {
-                        this.dataList = loadData.data.rows;
-                        loadData.data.rows.forEach((row, index) => {
-                            row['key'] = row[this.config.keyId]
-                                ? row[this.config.keyId]
-                                : 'Id';
-                            if (this.is_Selectgrid) {
-                                if (row.Id === focusId) {
-                                    this.selectRow(row);
+                            const slcId = this._selectRow['key'];
+                            if (slcId) {
+                                if (resData.length > 0 &&
+                                    resData.filter(s => s[this.config.keyId] === slcId).length > 0
+                                ) {
+                                    focusId = slcId;
+                                } else {
+                                    resData.length > 0 &&
+                                        (focusId = resData[0].Id);
                                 }
-                            }
-                            if (loadData.data.page === 1) {
-                                row['_serilize'] = index + 1;
                             } else {
-                                row['_serilize'] =
-                                    (loadData.data.page - 1) *
-                                    loadData.data.pageSize +
-                                    index +
-                                    1;
+                                resData.length > 0 &&
+                                    (focusId = resData[0].Id);
                             }
-
-                            if (this.config.checkedMapping) {
-                                this.config.checkedMapping.forEach(m => {
-                                    if (
-                                        row[m.name] &&
-                                        row[m.name] === m.value
-                                    ) {
-                                        row['checked'] = true;
+    
+                        }
+                        if (resData.length > 0) {
+                            this.dataList = resData;
+                            resData.forEach((row, index) => {
+                                row['key'] = row[this.config.keyId]
+                                    ? row[this.config.keyId]
+                                    : 'Id';
+                                if (this.is_Selectgrid) {
+                                    if (row.Id === focusId) {
+                                        this.selectRow(row);
                                     }
-                                });
-                            }
-                        });
-                    } else {
-                        this.dataList = [];
-                        this._selectRow = {};
-                    }
-
-                    this._updateEditCacheByLoad(loadData.data.rows);
-                    // this.dataList = loadData.data.rows;
-                    this.total = loadData.data.total;
-                    if (this.is_Search) {
-                        this.createSearchRow();
-                    }
+                                }
+                                if (loadData.data.page === 1) {
+                                    row['_serilize'] = index + 1;
+                                } else {
+                                    row['_serilize'] =
+                                        (loadData.data.page - 1) *
+                                        loadData.data.pageSize +
+                                        index +
+                                        1;
+                                }
+    
+                                if (this.config.checkedMapping) {
+                                    this.config.checkedMapping.forEach(m => {
+                                        if (
+                                            row[m.name] &&
+                                            row[m.name] === m.value
+                                        ) {
+                                            row['checked'] = true;
+                                        }
+                                    });
+                                }
+                            });
+                        } else {
+                            this.dataList = [];
+                            this._selectRow = {};
+                        }
+    
+                        this._updateEditCacheByLoad(resData);
+                        // this.dataList = loadData.data.rows;
+                        this.total = loadData.data.total;
+                        if (this.is_Search) {
+                            this.createSearchRow();
+                        }
                 } else {
                     this._updateEditCacheByLoad([]);
-                    this.dataList = loadData.data;
-                    this.total = 0;
-                    if (this.is_Search) {
-                        this.createSearchRow();
-                    }
+                        this.dataList = loadData.data;
+                        this.total = 0;
+                        if (this.is_Search) {
+                            this.createSearchRow();
+                        }
                 }
+
+
+
+                // if (method === 'proc') {
+                    
+                    
+                // } else {
+                //     if (loadData.data && loadData.data.rows) {
+                //         // 设置聚焦ID
+                //         // 默认第一行选中，如果操作后有focusId则聚焦ID为FocusId
+                //         let focusId;
+                //         if (loadData.data.focusedId) {
+                //             focusId = loadData.data.focusedId[0];
+                //         } else {
+                //             const slcId = this._selectRow['key'];
+                //             if (slcId) {
+                //                 if (loadData.data.rows.length > 0 &&
+                //                     loadData.data.rows.filter(s => s[this.config.keyId] === slcId).length > 0
+                //                 ) {
+                //                     focusId = slcId;
+                //                 } else {
+                //                     loadData.data.rows.length > 0 &&
+                //                         (focusId = loadData.data.rows[0].Id);
+                //                 }
+                //             } else {
+                //                 loadData.data.rows.length > 0 &&
+                //                     (focusId = loadData.data.rows[0].Id);
+                //             }
+    
+                //         }
+                //         if (loadData.data.rows.length > 0) {
+                //             this.dataList = loadData.data.rows;
+                //             loadData.data.rows.forEach((row, index) => {
+                //                 row['key'] = row[this.config.keyId]
+                //                     ? row[this.config.keyId]
+                //                     : 'Id';
+                //                 if (this.is_Selectgrid) {
+                //                     if (row.Id === focusId) {
+                //                         this.selectRow(row);
+                //                     }
+                //                 }
+                //                 if (loadData.data.page === 1) {
+                //                     row['_serilize'] = index + 1;
+                //                 } else {
+                //                     row['_serilize'] =
+                //                         (loadData.data.page - 1) *
+                //                         loadData.data.pageSize +
+                //                         index +
+                //                         1;
+                //                 }
+    
+                //                 if (this.config.checkedMapping) {
+                //                     this.config.checkedMapping.forEach(m => {
+                //                         if (
+                //                             row[m.name] &&
+                //                             row[m.name] === m.value
+                //                         ) {
+                //                             row['checked'] = true;
+                //                         }
+                //                     });
+                //                 }
+                //             });
+                //         } else {
+                //             this.dataList = [];
+                //             this._selectRow = {};
+                //         }
+    
+                //         this._updateEditCacheByLoad(loadData.data.rows);
+                //         // this.dataList = loadData.data.rows;
+                //         this.total = loadData.data.total;
+                //         if (this.is_Search) {
+                //             this.createSearchRow();
+                //         }
+                //     } else {
+                //         this._updateEditCacheByLoad([]);
+                //         this.dataList = loadData.data;
+                //         this.total = 0;
+                //         if (this.is_Search) {
+                //             this.createSearchRow();
+                //         }
+                //     }
+                // }
+                
             } else {
                 this._updateEditCacheByLoad([]);
                 this.dataList = [];
@@ -606,6 +696,7 @@ export class BsnTableComponent extends CnComponentBase
         cascadeValue?
     ) {
         const url = this._buildURL(ajaxConfig.url);
+        const method = ajaxConfig.ajaxType;
         const params = {
             ...this._buildParametersByselect(
                 ajaxConfig.params,
@@ -615,7 +706,7 @@ export class BsnTableComponent extends CnComponentBase
             )
         };
         let selectrowdata = {};
-        const loadData = await this._load(url, params);
+        const loadData = await this._load(url, params, method);
         if (loadData && loadData.status === 200 && loadData.isSuccess) {
             if (loadData.data) {
                 if (loadData.data.length > 0) {
@@ -643,7 +734,7 @@ export class BsnTableComponent extends CnComponentBase
             )
         };
         let selectrowdata = [];
-        const loadData = await this._load(url, params);
+        const loadData = await this._load(url, params, ajaxConfig.ajaxType);
         if (loadData && loadData.status === 200 && loadData.isSuccess) {
             if (loadData.data) {
                 if (loadData.data.length > 0) {
@@ -684,7 +775,7 @@ export class BsnTableComponent extends CnComponentBase
         };
 
         (async () => {
-            const loadData = await this._load(url, params);
+            const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
             if (loadData && loadData.status === 200 && loadData.isSuccess) {
                 if (loadData.data && loadData.data.rows) {
 
@@ -758,7 +849,7 @@ export class BsnTableComponent extends CnComponentBase
                         eventId: BSN_OPERATION_LOG_TYPE.DELETE,
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                        description: `${desc} 数据为: ${JSON.stringify(rowsData)}`
+                        description: `${desc} [执行成功] 数据为: ${JSON.stringify(rowsData)}`
                     }).subscribe(result => {
 
                     })
@@ -769,7 +860,7 @@ export class BsnTableComponent extends CnComponentBase
                         eventId: BSN_OPERATION_LOG_TYPE.DELETE,
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                        description: `执行失败, ${response.message}`
+                        description: `${desc} [执行失败] 数据为, ${response.message}`
                     }).subscribe(result => {
 
                     })
@@ -1630,7 +1721,7 @@ export class BsnTableComponent extends CnComponentBase
                 eventId: BSN_OPERATION_LOG_TYPE.DELETE,
                 eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                 funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                description: `${desc} ID为: ${ids.join(',')}`
+                description: `${desc} [执行成功] ID为: ${ids.join(',')}`
             }).subscribe(result => {
 
             })
@@ -1641,7 +1732,7 @@ export class BsnTableComponent extends CnComponentBase
                 eventId: BSN_OPERATION_LOG_TYPE.DELETE,
                 eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                 funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                description: `${desc} ID为: ${ids.join(',')}`
+                description: `${desc} [执行失败] ID为: ${ids.join(',')}`
             }).subscribe(result => {
 
             });
@@ -2780,7 +2871,7 @@ export class BsnTableComponent extends CnComponentBase
                     eventId: BSN_OPERATION_LOG_TYPE.SQL,
                     eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                    description: `${desc}数据: ${JSON.stringify(result['data'])}`
+                    description: `${desc} [执行成功] 数据为: ${JSON.stringify(result['data'])}`
                 }).subscribe(result => { });
             } else {
                 this.baseMessage.error(rs.msg.join('<br/>'));
@@ -2788,7 +2879,7 @@ export class BsnTableComponent extends CnComponentBase
                     eventId: BSN_OPERATION_LOG_TYPE.SQL,
                     eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                    description: rs.msg.join('<br/>')
+                    description: `${desc} [操作失败] 数据为: ${rs.msg.join('<br/>')}`
                 }).subscribe(result => { });
             }
         } else {
@@ -2801,7 +2892,7 @@ export class BsnTableComponent extends CnComponentBase
                     eventId: BSN_OPERATION_LOG_TYPE.SQL,
                     eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                    description: `${desc}数据: ${JSON.stringify(result['data'])}`
+                    description: `${desc} [操作成功] 数据: ${JSON.stringify(result['data'])}`
                 }).subscribe(result => { });
             } else {
                 this.baseMessage.error(result.message);
@@ -2809,7 +2900,7 @@ export class BsnTableComponent extends CnComponentBase
                     eventId: BSN_OPERATION_LOG_TYPE.SQL,
                     eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                    description: result.message
+                    description: `${desc} [操作失败] 数据为: ${result.message}` 
                 }).subscribe(result => { });
             }
         }
@@ -3054,8 +3145,9 @@ export class BsnTableComponent extends CnComponentBase
         return fontColor;
     }
 
-    private async _load(url, params) {
-        return this._http.get(url, params).toPromise();
+    private async _load(url, params, method) {
+        const mtd = method === 'proc' ? 'post' : method;
+        return this._http[mtd](url, params).toPromise();
     }
 
     private async post(url, body) {

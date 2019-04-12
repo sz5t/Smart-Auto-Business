@@ -386,6 +386,9 @@ export class BeforeOperation {
                     case 'cacheValue':
                         andResult = this.matchCheckedCacheValueCondition(item);
                         break;
+                    case 'innerValue':
+                        andResult = this.innerValueCondition(item);
+                        break;
                 }
                 andResults.push(andResult);
             });

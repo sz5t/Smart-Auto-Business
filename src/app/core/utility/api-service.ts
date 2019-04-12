@@ -114,7 +114,7 @@ export class ApiService {
 
         // 计算当前月份调用当月日志API
         const month = CommonTools.getNowFormatDate('month', '', '');
-        const url = `common/SysOperationLog${month}`;
+        const url = `common/SysOperationLog`;
         
         return this.httpClient.request('POST', url, {
             body: params,

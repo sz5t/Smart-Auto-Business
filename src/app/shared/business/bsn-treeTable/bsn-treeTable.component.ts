@@ -972,7 +972,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                         eventId: BSN_OPERATION_LOG_TYPE.DELETE,
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                        description: `${desc} ID为: ${ids.join(',')}`
+                        description: `${desc} [执行成功] ID为: ${ids.join(',')}`
                     }).subscribe(result => {
 
                     })
@@ -983,7 +983,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                         eventId: BSN_OPERATION_LOG_TYPE.DELETE,
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                        description: response.message
+                        description: `${desc} [操作失败] ID为: ${response.message}`
                     }).subscribe(result => {
 
                     })
@@ -1065,7 +1065,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                         eventId: BSN_OPERATION_LOG_TYPE.SAVE,
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                        description: `${desc}数据: ${JSON.stringify(response['data'])}`
+                        description: `${desc} [执行成功] 数据为: ${JSON.stringify(response['data'])}`
                     }).subscribe(result => { });
                 } else {
                     // 操作日志
@@ -1074,7 +1074,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                         eventId: BSN_OPERATION_LOG_TYPE.SAVE,
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                        description: `${response.message}`
+                        description: `${desc} [执行失败] 数据为:${response.message}`
                     }).subscribe(result => { });
                 }
             }

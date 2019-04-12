@@ -391,7 +391,7 @@ export class FormResolverComponent extends CnFormBase
                 eventId: BSN_OPERATION_LOG_TYPE.POST,
                 eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                 funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                description: postConfig.description ? postConfig.description : '执行操作，' + ` 数据为: ${JSON.stringify(params)}`
+                description: postConfig.description ? postConfig.description : ' [执行成功] ' + ` 数据为: ${JSON.stringify(params)}`
             }).subscribe(result => {
 
             })
@@ -402,7 +402,7 @@ export class FormResolverComponent extends CnFormBase
                 eventId: BSN_OPERATION_LOG_TYPE.POST,
                 eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                 funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                description: postConfig.description ? postConfig.description : '执行操作，' + ` 数据为: ${JSON.stringify(params)}` + ' 错误消息：' + res.message
+                description: postConfig.description ? postConfig.description : ' [执行失败] ' + ` 数据为: ${JSON.stringify(params)}` + ' 错误消息：' + res.message
             }).subscribe(result => {
 
             })
@@ -434,7 +434,7 @@ export class FormResolverComponent extends CnFormBase
                     eventId: BSN_OPERATION_LOG_TYPE.UPDATE,
                     eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                    description: putConfig.description ? putConfig.description : '执行操作，' + ` 数据为: ${JSON.stringify(params)}`
+                    description: putConfig.description ? putConfig.description : ' [执行成功] ' + ` 数据为: ${JSON.stringify(params)}`
                 }).subscribe(result => {
     
                 })
@@ -445,7 +445,7 @@ export class FormResolverComponent extends CnFormBase
                     eventId: BSN_OPERATION_LOG_TYPE.UPDATE,
                     eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                    description: putConfig.description ? putConfig.description : '执行操作，' + ` 数据为: ${JSON.stringify(params)}` + ' 错误消息：' + res.message
+                    description: putConfig.description ? putConfig.description : ' [执行失败] ' + ` 数据为: ${JSON.stringify(params)}` + ' 错误消息：' + res.message
                 }).subscribe(result => {
     
                 })
@@ -479,7 +479,7 @@ export class FormResolverComponent extends CnFormBase
                     eventId: BSN_OPERATION_LOG_TYPE.DELETE,
                     eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                    description: deleteConfig.description ? deleteConfig.description : '执行操作，' + ` 数据为: ${JSON.stringify(JSON.stringify(params))}`
+                    description: deleteConfig.description ? deleteConfig.description : ' [执行成功] ' + ` 数据为: ${JSON.stringify(JSON.stringify(params))}`
                 }).subscribe(result => {
     
                 })
@@ -702,7 +702,6 @@ export class FormResolverComponent extends CnFormBase
      * @param dialog
      */
     private showLayout(dialog) {
-        console.log(this.value);
         const footer = [];
         this.apiService.getLocalData(dialog.layoutName).subscribe(data => {
             const modal = this.modalService.create({

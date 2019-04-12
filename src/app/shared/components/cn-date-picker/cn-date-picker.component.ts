@@ -1,28 +1,43 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-
 @Component({
-  selector: 'cn-date-picker',
-  templateUrl: './cn-date-picker.component.html'
+    // tslint:disable-next-line: component-selector
+    selector: 'cn-date-picker',
+    templateUrl: './cn-date-picker.component.html'
 })
 export class CnDatePickerComponent implements OnInit {
-  @Input() config;
-  @Input() value;
-  @Output()
-  updateValue = new EventEmitter();
-  formGroup: FormGroup;
-  date;
-  constructor(
-  ) { }
+    @Input()
+    public config;
+    @Input()
+    public value;
+    @Output()
+    public updateValue = new EventEmitter();
+    public formGroup: FormGroup;
+    public date = new Date();
+    constructor() {}
 
-  ngOnInit() {
-  }
+    public ngOnInit() {}
 
-  valueChange(name?) {
-    const backValue = { name: this.config.name, value: name };
-    this.updateValue.emit(backValue);
+    public valueChange(val?: Date) {
+        if (val) {
+            const year = val.getFullYear();
+            const month = this.getNewDate(val.getMonth() + 1);
+            const date = this.getNewDate(val.getDate());
+            const backValue = {
+                name: this.config.name,
+                value: `${year}${
+                    this.config.sep1 ? this.config.sep1 : '-'
+                }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date}`
+            };
+            this.updateValue.emit(backValue);
+        }
+    }
 
-  }
-
+    public getNewDate(d: any) {
+        if (d <= 9) {
+            d = '0' + d;
+        }
+        return d;
+    }
 }

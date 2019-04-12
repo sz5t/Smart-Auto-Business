@@ -1,6 +1,7 @@
 import { BSN_PARAMETER_TYPE } from '@core/relative-Service/BsnTableStatus';
 import { getISOYear, getMonth, getISOWeek } from 'date-fns';
 import { ActivatedRoute } from '@angular/router';
+import { BlockScopeAwareRuleWalker } from 'tslint';
 export interface ParametersResolverModel {
     params: any[];
     tempValue?: any;
@@ -415,6 +416,23 @@ export class CommonTools {
         return currentDate;
     }
 
+    public static getOperationType(method) {
+        let operation;
+        switch (method) {
+            case 'post':
+                operation = '保存数据';
+            break;
+            case 'put':
+                operation = '修改数据';
+            break;
+            case 'delete':
+                operation = '删除数据';
+            break;
+            case 'get':
+                operation = '获取数据';
+            break;
+        }
+    }
     
 
 }

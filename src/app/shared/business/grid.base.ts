@@ -657,7 +657,7 @@ export class GridBase extends CnComponentBase {
                     eventId: BSN_OPERATION_LOG_TYPE.SQL,
                     eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                    description: `${desc}数据: ${JSON.stringify(result['data'])}`
+                    description: `${desc} [执行成功] 数据为: ${JSON.stringify(result['data'])}`
                 }).subscribe(result => {});
             } else {
                 this.baseMessage.error(rs.msg.join('<br/>'));
@@ -665,7 +665,7 @@ export class GridBase extends CnComponentBase {
                     eventId: BSN_OPERATION_LOG_TYPE.SQL,
                     eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                    description: rs.msg.join('<br/>') 
+                    description: `${desc} [执行失败] 数据为: ${rs.msg.join('<br/>')}`
                 }).subscribe(result => {});
             }
         } else {
@@ -679,7 +679,7 @@ export class GridBase extends CnComponentBase {
                     eventId: BSN_OPERATION_LOG_TYPE.SQL,
                     eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                    description: `${desc}数据: ${JSON.stringify(result['data'])}` 
+                    description: `${desc} [执行成功] 数据为: ${JSON.stringify(result['data'])}` 
                 }).subscribe(result => {});
             } else {
                 this.baseMessage.error(result.message);
@@ -687,7 +687,7 @@ export class GridBase extends CnComponentBase {
                     eventId: BSN_OPERATION_LOG_TYPE.SQL,
                     eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                    description: result.message
+                    description: `${desc} [执行失败] 数据为: ${result.message}`
                 }).subscribe(result => {});
             }
         }
