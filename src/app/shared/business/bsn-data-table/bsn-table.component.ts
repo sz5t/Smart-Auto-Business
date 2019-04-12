@@ -481,6 +481,17 @@ export class BsnTableComponent extends CnComponentBase
         }
     }
 
+    private emptyLoad() {
+        this.cascade.next(
+            new BsnComponentMessage(
+                BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                this.config.viewId,
+                {
+                    data: {}
+                }
+            )
+        );
+    }
     public load() {
         this.changeConfig_new = {};
         // this._selectRow = {};
@@ -532,7 +543,7 @@ export class BsnTableComponent extends CnComponentBase
                                 resData.length > 0 &&
                                     (focusId = resData[0].Id);
                             }
-    
+
                         }
                         if (resData.length > 0) {
                             this.dataList = resData;
@@ -554,7 +565,7 @@ export class BsnTableComponent extends CnComponentBase
                                         index +
                                         1;
                                 }
-    
+
                                 if (this.config.checkedMapping) {
                                     this.config.checkedMapping.forEach(m => {
                                         if (
@@ -569,8 +580,9 @@ export class BsnTableComponent extends CnComponentBase
                         } else {
                             this.dataList = [];
                             this._selectRow = {};
+                            this. emptyLoad();
                         }
-    
+
                         this._updateEditCacheByLoad(resData);
                         // this.dataList = loadData.data.rows;
                         this.total = loadData.data.total;
@@ -584,13 +596,14 @@ export class BsnTableComponent extends CnComponentBase
                         if (this.is_Search) {
                             this.createSearchRow();
                         }
+                       this. emptyLoad();
                 }
 
 
 
                 // if (method === 'proc') {
-                    
-                    
+
+
                 // } else {
                 //     if (loadData.data && loadData.data.rows) {
                 //         // 设置聚焦ID
@@ -613,7 +626,7 @@ export class BsnTableComponent extends CnComponentBase
                 //                 loadData.data.rows.length > 0 &&
                 //                     (focusId = loadData.data.rows[0].Id);
                 //             }
-    
+
                 //         }
                 //         if (loadData.data.rows.length > 0) {
                 //             this.dataList = loadData.data.rows;
@@ -635,7 +648,7 @@ export class BsnTableComponent extends CnComponentBase
                 //                         index +
                 //                         1;
                 //                 }
-    
+
                 //                 if (this.config.checkedMapping) {
                 //                     this.config.checkedMapping.forEach(m => {
                 //                         if (
@@ -651,7 +664,7 @@ export class BsnTableComponent extends CnComponentBase
                 //             this.dataList = [];
                 //             this._selectRow = {};
                 //         }
-    
+
                 //         this._updateEditCacheByLoad(loadData.data.rows);
                 //         // this.dataList = loadData.data.rows;
                 //         this.total = loadData.data.total;
@@ -667,7 +680,7 @@ export class BsnTableComponent extends CnComponentBase
                 //         }
                 //     }
                 // }
-                
+
             } else {
                 this._updateEditCacheByLoad([]);
                 this.dataList = [];
@@ -2900,7 +2913,7 @@ export class BsnTableComponent extends CnComponentBase
                     eventId: BSN_OPERATION_LOG_TYPE.SQL,
                     eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                    description: `${desc} [操作失败] 数据为: ${result.message}` 
+                    description: `${desc} [操作失败] 数据为: ${result.message}`
                 }).subscribe(result => { });
             }
         }
