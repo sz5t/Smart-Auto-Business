@@ -1,5 +1,5 @@
 import { BSN_PARAMETER_TYPE } from '@core/relative-Service/BsnTableStatus';
-import { getISOYear, getMonth, getISOWeek } from 'date-fns';
+import { getISOYear, getMonth, getISOWeek, getDate } from 'date-fns';
 import { ActivatedRoute } from '@angular/router';
 import { BlockScopeAwareRuleWalker } from 'tslint';
 export interface ParametersResolverModel {
@@ -129,6 +129,7 @@ export class CommonTools {
                                                 dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
                                                 break;
                                                 case 'defaultDay':
+                                                dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}-${getDate(Date.now())}`;
                                                 break;
                                                 case 'defaultMonth':
                                                 dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1 }`;

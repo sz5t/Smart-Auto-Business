@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class BtnTableFieldLimit implements PipeTransform {
 
-  transform(value: string, args?: number): any {
+  public transform(value: string, args?: number): any {
     if (value && value.length > args) {
       return `${value.substring(0, args - 1)} ...`;
     }  else if (value && value.length < args) {
@@ -15,5 +15,4 @@ export class BtnTableFieldLimit implements PipeTransform {
       return null;
     }
   }
-
 }

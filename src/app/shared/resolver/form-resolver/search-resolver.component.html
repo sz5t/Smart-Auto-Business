@@ -16,12 +16,12 @@
                         </div>
                     </ng-container>
                 </ng-container>
-                <div nz-col [nzSpan]="8" *ngIf="!expandForm && config.showButton">
+                <div nz-col [nzSpan]="24" *ngIf="!expandForm && config.showButton">
                     <nz-form-item style="margin-bottom:0px">
-                        <button nz-button [nzType]="'primary'" [nzLoading]="loading">
+                        <button style="float:right" nz-button [nzType]="'primary'" [nzLoading]="loading">
                             <i class="anticon anticon-search"></i>查询</button>
-                        <button nz-button [nzType]="'default'" type="reset">重置</button>
-                        <a (click)="clickExpand()">
+                        <button style="float:right" nz-button [nzType]="'default'" type="reset">重置</button>
+                        <a style="float:right" (click)="clickExpand()">
                             {{expandForm ? '收起' : '展开'}}
                             <i class="anticon" [class.anticon-down]="!expandForm" [class.anticon-up]="expandForm"></i>
                         </a>
@@ -35,9 +35,7 @@
                             <nz-form-item style="margin-bottom:0px">
                                 <ng-container cnFormResolverDirective [formGroup]="form" [changeConfig]="change_config[control.name]" [config]="control" [tempValue]="tempValue"
                                     (updateValue)="valueChange($event)">
-
                                 </ng-container>
-
                             </nz-form-item>
                         </ng-container>
                     </div>
@@ -45,12 +43,12 @@
             </ng-template>
         </div>
         <standard-form-row *ngIf="expandForm && config.showButton">
-            <div nz-col [nzSpan]="6" [nzOffset]="18">
+            <div nz-col [nzSpan]="24">
                 <nz-form-item style="margin-bottom:0px">
-                    <button nz-button [nzType]="'primary'" [nzLoading]="loading">
+                    <button style="float:right" nz-button [nzType]="'primary'" [nzLoading]="loading">
                         <i class="anticon anticon-search"></i>查询</button>
-                    <button nz-button [nzType]="'default'" type="reset">重置</button>
-                    <a (click)="clickExpand()">
+                    <button style="float:right" nz-button [nzType]="'default'" type="reset">重置</button>
+                    <a style="float:right" (click)="clickExpand()">
                         {{expandForm ? '收起' : '展开'}}
                         <i class="anticon" [class.anticon-down]="!expandForm" [class.anticon-up]="expandForm"></i>
                     </a>

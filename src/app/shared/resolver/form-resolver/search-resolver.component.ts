@@ -125,7 +125,7 @@ export class SearchResolverComponent extends CnComponentBase
                 const that = this;
                 this.cascade.next(
                     new BsnComponentMessage(
-                        BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
+                        BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
                         this.config.viewId,
                         {
                             data: that.value
@@ -372,7 +372,6 @@ export class SearchResolverComponent extends CnComponentBase
     }
 
     public searchForm() {
-        console.log(this.value);
         this.loading = true;
         this.searchFormByValue(this.value);
         setTimeout(_ => {

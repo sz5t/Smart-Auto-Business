@@ -31,6 +31,7 @@ export class CnDatePickerComponent implements OnInit {
                 }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date}`
             };
             this.updateValue.emit(backValue);
+            this.value = backValue.value;
         }
     }
 
