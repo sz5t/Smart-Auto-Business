@@ -84,10 +84,10 @@ export class CnGridSapnComponent extends CnComponentBase implements OnInit {
   // tslint:disable-next-line:member-ordering
   public p_config = {
     "showFormat": {
-      "type": "sapn",
+      "type": "span",
       "field": "physicalname",
       "options": {
-        "type": "sapn",
+        "type": "span",
         "labelSize": "6",
         "name": "code1",
         "controlSize": "18",
