@@ -17,7 +17,22 @@ export class CnDatePickerComponent implements OnInit {
     public date = new Date();
     constructor() {}
 
-    public ngOnInit() {}
+    public ngOnInit() {
+        if (!this.value) {
+            if (this.formGroup.value[this.config.name]) {
+                this.value = this.formGroup.value[this.config.name];
+            } else {
+                const year = this.date.getFullYear();
+                const month = this.getNewDate(this.date.getMonth() + 1);
+                const date = this.getNewDate(this.date.getDate());
+                this.value =  `${year}${
+                        this.config.sep1 ? this.config.sep1 : '-'
+                    }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date}`
+
+            }
+        }
+
+    }
 
     public valueChange(val?: Date) {
         if (val) {

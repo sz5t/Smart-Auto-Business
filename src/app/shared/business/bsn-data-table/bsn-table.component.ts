@@ -448,7 +448,6 @@ export class BsnTableComponent extends CnComponentBase
                                             });
                                         }
                                     }
-
                                     // 匹配及联模式
                                     if (cascadeEvent._mode === mode) {
                                         switch (mode) {
@@ -526,77 +525,77 @@ export class BsnTableComponent extends CnComponentBase
 
                 if (resData) {
                     let focusId;
-                        if (loadData.data.focusedId) {
-                            focusId = loadData.data.focusedId[0];
-                        } else {
-                            const slcId = this._selectRow['key'];
-                            if (slcId) {
-                                if (resData.length > 0 &&
-                                    resData.filter(s => s[this.config.keyId] === slcId).length > 0
-                                ) {
-                                    focusId = slcId;
-                                } else {
-                                    resData.length > 0 &&
-                                        (focusId = resData[0].Id);
-                                }
+                    if (loadData.data.focusedId) {
+                        focusId = loadData.data.focusedId[0];
+                    } else {
+                        const slcId = this._selectRow['key'];
+                        if (slcId) {
+                            if (resData.length > 0 &&
+                                resData.filter(s => s[this.config.keyId] === slcId).length > 0
+                            ) {
+                                focusId = slcId;
                             } else {
                                 resData.length > 0 &&
                                     (focusId = resData[0].Id);
                             }
-
-                        }
-                        if (resData.length > 0) {
-                            this.dataList = resData;
-                            resData.forEach((row, index) => {
-                                row['key'] = row[this.config.keyId]
-                                    ? row[this.config.keyId]
-                                    : 'Id';
-                                if (this.is_Selectgrid) {
-                                    if (row.Id === focusId) {
-                                        this.selectRow(row);
-                                    }
-                                }
-                                if (loadData.data.page === 1) {
-                                    row['_serilize'] = index + 1;
-                                } else {
-                                    row['_serilize'] =
-                                        (loadData.data.page - 1) *
-                                        loadData.data.pageSize +
-                                        index +
-                                        1;
-                                }
-
-                                if (this.config.checkedMapping) {
-                                    this.config.checkedMapping.forEach(m => {
-                                        if (
-                                            row[m.name] &&
-                                            row[m.name] === m.value
-                                        ) {
-                                            row['checked'] = true;
-                                        }
-                                    });
-                                }
-                            });
                         } else {
-                            this.dataList = [];
-                            this._selectRow = {};
-                            this. emptyLoad();
+                            resData.length > 0 &&
+                                (focusId = resData[0].Id);
                         }
 
-                        this._updateEditCacheByLoad(resData);
-                        // this.dataList = loadData.data.rows;
-                        this.total = loadData.data.total;
-                        if (this.is_Search) {
-                            this.createSearchRow();
-                        }
+                    }
+                    if (resData.length > 0) {
+                        this.dataList = resData;
+                        resData.forEach((row, index) => {
+                            row['key'] = row[this.config.keyId]
+                                ? row[this.config.keyId]
+                                : 'Id';
+                            if (this.is_Selectgrid) {
+                                if (row.Id === focusId) {
+                                    this.selectRow(row);
+                                }
+                            }
+                            if (loadData.data.page === 1) {
+                                row['_serilize'] = index + 1;
+                            } else {
+                                row['_serilize'] =
+                                    (loadData.data.page - 1) *
+                                    loadData.data.pageSize +
+                                    index +
+                                    1;
+                            }
+
+                            if (this.config.checkedMapping) {
+                                this.config.checkedMapping.forEach(m => {
+                                    if (
+                                        row[m.name] &&
+                                        row[m.name] === m.value
+                                    ) {
+                                        row['checked'] = true;
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        this.dataList = [];
+                        this._selectRow = {};
+                        this.emptyLoad();
+                    }
+
+                    this._updateEditCacheByLoad(resData);
+                    // this.dataList = loadData.data.rows;
+                    this.total = loadData.data.total;
+                    if (this.is_Search) {
+                        this.createSearchRow();
+                    }
                 } else {
                     this._updateEditCacheByLoad([]);
-                        this.dataList = loadData.data;
-                        this.total = 0;
-                        if (this.is_Search) {
-                            this.createSearchRow();
-                        }
-                       this. emptyLoad();
+                    this.dataList = loadData.data;
+                    this.total = 0;
+                    if (this.is_Search) {
+                        this.createSearchRow();
+                    }
+                    this.emptyLoad();
                 }
 
 
@@ -1394,6 +1393,9 @@ export class BsnTableComponent extends CnComponentBase
                                 }
                             } else {
                                 regularData = data.data;
+                            }
+                            if (regularData === null) {
+                                regularData = '';
                             }
                             const regularflag = reg1.test(regularData);
                             // endregion  解析结束 正则表达

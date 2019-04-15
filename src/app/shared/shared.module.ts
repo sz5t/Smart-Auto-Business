@@ -122,6 +122,7 @@ import { CnGridImgComponent } from '@shared/components/cn-grid-img/cn-grid-img.c
 import { JmEditorComponent } from './jm-editor/jm-editor.component';
 import { LayoutInnerResolverDirective } from './resolver/layout-resolver/layout-inner-resolver.directive';
 import { CnFormSearchInputComponent } from './components/cn-form-search-input/cn-form-search-input.component';
+import { CnGridSapnComponent } from './components/cn-grid-sapn/cn-grid-sapn.component';
 
 
 const THIRDMODULES = [
@@ -235,7 +236,8 @@ const COMPONENTS = [
     CnGridImgComponent,
     BsnImportExcelComponent,
     JmEditorComponent,
-    CnFormSearchInputComponent
+    CnFormSearchInputComponent,
+    CnGridSapnComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
