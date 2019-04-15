@@ -63,13 +63,13 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
     public ngOnInit() {
         this.initValue = this.initData ? this.initData : {};
         this.resolverRelation();
-
-    }
-
-    public async ngAfterViewInit() {
         if (this.config.componentType.own) {
             this.loadReport();
         }
+    }
+
+    public async ngAfterViewInit() {
+        
     }
 
     public async loadReport() {
@@ -87,9 +87,7 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
         }
 
         const resource = `${this.config.ajaxConfig.url}&${url.join('&')}`;
-        setTimeout(s => {
-            this.reportURL = `${SystemResource.reportServer.url}?inline=${inline}&report=${report}&type=pdf&resource=${resource}`;
-        });
+        this.reportURL = `${SystemResource.reportServer.url}?inline=${inline}&report=${report}&type=pdf&resource=${resource}`;
 
     }
 

@@ -42,7 +42,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     constructor(
         fb: FormBuilder,
         private router: Router,
-        private httpClient: HttpClient,
+        private httpClient: HttpClient, 
         private cacheService: CacheService,
         private apiService: ApiService,
         public msg: NzMessageService,
@@ -174,7 +174,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         return this.httpClient
             .get<any>(
                 // environment.SERVER_URL
-                SystemResource.localResource.url 
+                SystemResource.localResource.url
                 + '/assets/app-data.json'
             )
             .toPromise();
@@ -293,7 +293,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     }
 
     public ngOnDestroy(): void {
-        
+
     }
 
     public arrayToTree(data, parentid): any[] {

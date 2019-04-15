@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { getISOYear, getMonth, getISODay, getDate } from 'date-fns';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -15,20 +16,26 @@ export class CnDatePickerComponent implements OnInit {
     public updateValue = new EventEmitter();
     public formGroup: FormGroup;
     public date = new Date();
+    public controlValue;
     constructor() {}
 
     public ngOnInit() {
-        if (!this.value) {
+        if (!this.controlValue) {
             if (this.formGroup.value[this.config.name]) {
                 this.value = this.formGroup.value[this.config.name];
             } else {
-                const year = this.date.getFullYear();
-                const month = this.getNewDate(this.date.getMonth() + 1);
-                const date = this.getNewDate(this.date.getDate());
-                this.value =  `${year}${
+                const year = getISOYear(this.date);
+                const month = this.getNewDate(getMonth(this.date) + 1);
+                const date = this.getNewDate(getDate(this.date));
+                setTimeout(s => {
+                    
+                    this.controlValue = `${year}${
                         this.config.sep1 ? this.config.sep1 : '-'
                     }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date}`
-
+                    this.value =  `${year}${
+                        this.config.sep1 ? this.config.sep1 : '-'
+                    }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date}`
+                }, 0);
             }
         }
 
@@ -36,17 +43,21 @@ export class CnDatePickerComponent implements OnInit {
 
     public valueChange(val?: Date) {
         if (val) {
-            const year = val.getFullYear();
-            const month = this.getNewDate(val.getMonth() + 1);
-            const date = this.getNewDate(val.getDate());
+            const year = getISOYear(this.date);
+                const month = this.getNewDate(getMonth(val) + 1);
+                const date = this.getNewDate(getDate(val));
             const backValue = {
                 name: this.config.name,
                 value: `${year}${
                     this.config.sep1 ? this.config.sep1 : '-'
                 }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date}`
             };
-            this.updateValue.emit(backValue);
-            this.value = backValue.value;
+            setTimeout(s => {
+                this.value = backValue.value;
+                this.updateValue.emit(backValue);
+            }, 0)
+            
+            
         }
     }
 

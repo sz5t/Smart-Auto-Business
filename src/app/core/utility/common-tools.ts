@@ -80,7 +80,7 @@ export class CommonTools {
                                         dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
                                         break;
                                         case 'defaultDay':
-
+                                        dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
                                         break;
                                         case 'defaultMonth':
                                         dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1 }`;
@@ -129,7 +129,7 @@ export class CommonTools {
                                                 dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
                                                 break;
                                                 case 'defaultDay':
-                                                dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}-${getDate(Date.now())}`;
+                                                dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
                                                 break;
                                                 case 'defaultMonth':
                                                 dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1 }`;
@@ -243,6 +243,7 @@ export class CommonTools {
                                                 dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
                                                 break;
                                                 case 'defaultDay':
+                                                dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
                                                 break;
                                                 case 'defaultMonth':
                                                 dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1 }`;
