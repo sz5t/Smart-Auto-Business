@@ -6,7 +6,7 @@ import { CnComponentBase } from '@shared/components/cn-component-base';
   templateUrl: './cn-grid-sapn.component.html',
   styleUrls: ['./cn-grid-sapn.component.css']
 })
-export class CnGridSapnComponent extends CnComponentBase implements OnInit  {
+export class CnGridSapnComponent extends CnComponentBase implements OnInit {
 
   @Input() public config;
   @Input() public value;
@@ -16,15 +16,17 @@ export class CnGridSapnComponent extends CnComponentBase implements OnInit  {
   @Input() public casadeData;
   @Input() public initData;
 
-  @Output()  public updateValue = new EventEmitter();
-  public isUpload = false;
+  @Output() public updateValue = new EventEmitter();
 
+  public isShow = false;
+  public showAll = false;
   public showLable;
+  public showShortLable;
   public showTitle;
 
 
   constructor() {
-   super();
+    super();
   }
 
   public ngOnInit() {
@@ -39,7 +41,7 @@ export class CnGridSapnComponent extends CnComponentBase implements OnInit  {
 
     if (this.config.formatConfig) {
       this.config.formatConfig.forEach(formatConfig => {
-        const reg1 = new RegExp(formatConfig.regular);
+
         let regularData;
         if (formatConfig.type) {
           if (formatConfig.type === 'row') {
@@ -48,9 +50,15 @@ export class CnGridSapnComponent extends CnComponentBase implements OnInit  {
             }
           }
         }
-        const regularflag = reg1.test(regularData);
-        if (regularflag) {
-          this.isUpload = formatConfig.responseConfig.hidden;
+        this.showTitle = regularData;
+        this.showLable = regularData;
+        const regularflag = formatConfig.responseConfig.substrlength ? formatConfig.responseConfig.substrlength : 50;
+        if (regularData.length <= regularflag) {
+          this.isShow = true;
+          return true;
+        } else {
+          this.isShow = false;
+          this.showShortLable = regularData.substring(1, regularflag);
           return true;
         }
 
@@ -61,41 +69,41 @@ export class CnGridSapnComponent extends CnComponentBase implements OnInit  {
 
   }
 
-// 展开文本
-public openSapn() {
+  // 展开文本
+  public openSapn() {
+    this.showAll = !this.showAll;
 
-}
+  }
 
-// 收缩文本
-public closeSapn() {
+  // 收缩文本
+  public closeSapn() {
+    this.showAll = !this.showAll;
 
-}
+  }
 
-// tslint:disable-next-line:member-ordering
-public p_config = {
-  "showFormat": {
-    "type": "sapn",
-    "field": "physicalname",
-    "options": {
+  // tslint:disable-next-line:member-ordering
+  public p_config = {
+    "showFormat": {
       "type": "sapn",
-      "labelSize": "6",
-      "name": "code1",
-      "controlSize": "18",
-      "inputType": "text",
-      "formatConfig": [
-        {
-          "type": "row",
-          "valueName": "filedata",
-          "regular": "^-$",
-          "responseConfig": {
-            "hidden": true,
-            "substrlength":200  // 截取长度（当超过这个长度进行字符截取）
+      "field": "physicalname",
+      "options": {
+        "type": "sapn",
+        "labelSize": "6",
+        "name": "code1",
+        "controlSize": "18",
+        "inputType": "text",
+        "formatConfig": [
+          {
+            "type": "row",
+            "valueName": "filedata",
+            "responseConfig": {
+              "substrlength": 200  // 截取长度（当超过这个长度进行字符截取）
+            }
           }
-        }
-      ],
+        ],
+      }
     }
   }
-}
 
 
 }

@@ -1,7 +1,11 @@
-<span nz-tooltip nzTitle="prompt text">Tooltip will show when mouse enter.</span>
-<span *ngif="">
-{{showLable}}<a (click)='openSapn()'>...</a>
-</span>
-<span>
-  {{showLable}}<a (click)='closeSapn()'>...</a>
-  </span>
+<ng-container *ngIf="isShow">
+       <span> {{showLable}} </span>
+</ng-container>
+  <ng-container *ngIf="!isShow">
+     <ng-container *ngIf="!showAll">
+        <span nzTitle="showTitle"> {{showShortLable}}  </span><a (click)='openSapn()'>...</a>
+     </ng-container>
+      <ng-container *ngIf="showAll">
+        <span nzTitle="showTitle"> {{showLable}}  </span> <a (click)='closeSapn()'>收起</a>
+     </ng-container>
+</ng-container>
