@@ -220,7 +220,7 @@ export class FormResolverComponent extends CnFormBase
                                     option.ajaxConfig,
                                     this.formState,
                                     () => {
-                                        // this.load();
+                                        this.load();
                                         this.sendCascadeMessage();
                                     }
                                 );

@@ -88,7 +88,7 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
 
         const resource = `${this.config.ajaxConfig.url}&${url.join('&')}`;
         this.reportURL = `${SystemResource.reportServer.url}?inline=${inline}&report=${report}&type=pdf&resource=${resource}`;
-
+        console.log(this.reportURL);
     }
 
     public async load() {
