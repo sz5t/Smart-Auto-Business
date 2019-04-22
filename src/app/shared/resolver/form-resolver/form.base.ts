@@ -305,7 +305,7 @@ export class CnFormBase extends CnComponentBase {
                             nzContent: msgObj[1]
                         };
                         this.baseModal[messageType](options);
-                        break;
+                        return;
                     case 'confirm':
                         options = {
                             nzTitle: '提示',
@@ -337,7 +337,7 @@ export class CnFormBase extends CnComponentBase {
                             nzContent: msgObj[1]
                         };
                         this.baseModal[messageType](options);
-                        break;
+                        return;
                     case 'success':
                         options = {
                             nzTitle: '',
@@ -347,6 +347,13 @@ export class CnFormBase extends CnComponentBase {
                         this.baseMessage.success(msgObj[1]);
                         callback && callback();
                         break;
+                    case 'continue':
+                        // const childrenConfig = ajaxConfig.filter(
+                        //     f => f.parentName && f.parentName === c.name
+                        // );
+                        // //  目前紧支持一次执行一个分之步骤
+                        // this.getAjaxConfig(childrenConfig[0], ajaxConfig, callback);
+                    break;
                 }
                 // if(options) {
                 //     this.modalService[messageType](options);

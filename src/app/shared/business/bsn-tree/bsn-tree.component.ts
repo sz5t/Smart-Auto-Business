@@ -165,6 +165,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
         this.apiResource = this._http;
         this.baseMessage = this._msg;
         this.baseModal = this._modal;
+        this.windowCallback = this.load;
     }
 
     public ngOnInit() {
