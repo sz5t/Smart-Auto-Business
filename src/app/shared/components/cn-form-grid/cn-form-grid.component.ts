@@ -46,7 +46,12 @@ export class CnFormGridComponent implements OnInit {
     // 组件值，临时变量，级联值
 
     // this._value = this.table.loadData.rows ? this.table.loadData.rows : [];
-
+        // 未知是否有错误
+        if (!this._value) {
+          if (this.formGroup.value[this.config.name]) {
+              this._value = this.formGroup.value[this.config.name];
+          }
+      }
   }
 
   public valueChange(name?) {
