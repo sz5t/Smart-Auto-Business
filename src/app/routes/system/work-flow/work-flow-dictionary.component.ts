@@ -493,4 +493,102 @@ export class WorkFlowDictionaryComponent implements OnInit {
 
     }
   }
+
+  public allowDrop(ev) {
+    ev.preventDefault();
+  }
+
+  public drag(ev) {
+    console.log('拖节点ev.target.id：', ev);
+    ev.dataTransfer.setData('Text', ev.target.id); // ev.target.innerHTML
+  }
+
+  public drop(ev) {
+    ev.preventDefault();
+    const data = ev.dataTransfer.getData('Text');
+    console.log('拖到位置', data, ' 当前节点 ', ev);
+    // const item = document.getElementById(data).cloneNode(); //
+
+    if (data === 'radio') {
+      const item = document.getElementById(data);
+      console.log('节点', item);
+      ev.target.appendChild(item);
+    } else if (data === 'button') {
+      console.log('当前应该生成节点', data);
+    } else {
+      const item = document.getElementById(data);
+      console.log('节点', item);
+      ev.target.appendChild(item);
+    }
+
+  }
+
+  public dragenter(ev) {
+    console.log('当前应该高亮显示');
+  }
+
+
+
+
+  // 结构定义
+
+  // tslint:disable-next-line:member-ordering
+  public content = [];
+  // tslint:disable-next-line:member-ordering
+  public components = [];
+
+  public initComponent() {
+
+    const item = {
+      type: '', // 标识
+
+
+    }
+
+  }
+
+
+
+
+
+
+
+
+
+ // liu
+  // 【 渲染器整体思路】
+  // 1. 结构规划
+  // 布局， 容器树
+  //  渲染组件，整合自身布局树，上传父对象
+  // 每层父对象，整合子对象的布局树
+  // 根容器，合并布局树
+  // 【!用途】 可以【自由组合业务对象取值】，一个页面【多组件整存整取】
+ //  【交互】 可规避过多配置消息，可直接根据树控制子组件行为。
+
+ // ？ 取值，目前最复杂
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

@@ -1,5 +1,67 @@
 <page-header [title]=""></page-header>
-<p>公式编辑器</p>
-<jm-editor></jm-editor>
+<!--
+<jm-editor></jm-editor> -->
+
+<div nz-row>
+  <div nz-col nzSpan="12">col-12</div>
+  <div nz-col nzSpan="12">col-12</div>
+</div>
+<div nz-row>
+  <div nz-col nzSpan="8">col-8</div>
+  <div nz-col nzSpan="8">col-8</div>
+  <div nz-col nzSpan="8">col-8</div>
+</div>
+
+<ng-container></ng-container>
+
+<div nz-row>
+  <div nz-col nzSpan="6">col-6</div>
+  <div nz-col nzSpan="6">col-6</div>
+  <div nz-col nzSpan="6">col-6</div>
+  <div nz-col nzSpan="6">col-6</div>
+</div>
+
+
+
+
+
+<div nz-row [nzGutter]="6">
+  <div nz-col [nzSpan]="8">
+    <nz-card style="width:100%; height: 700px;" nzTitle="组件">
+
+      <div nz-row [nzGutter]="6" id="input" [draggable]="true" (dragstart)="drag($event)">
+        <div nz-col [nzSpan]="8">
+          输入框:
+        </div>
+        <div nz-col [nzSpan]="16">
+          <input nz-input placeholder="输入框" />
+        </div>
+      </div>
+
+      <div nz-row [nzGutter]="6" id="button" [draggable]="true" (dragstart)="drag($event)">
+        <div nz-col [nzSpan]="24">
+          <button nz-button nzType="primary">按钮</button>
+        </div>
+      </div>
+
+      <div nz-row [nzGutter]="6" id="radio" [draggable]="true" (dragstart)="drag($event)">
+        <div nz-col [nzSpan]="24">
+          <nz-radio-group>
+            <label nz-radio nzValue="A">A</label>
+            <label nz-radio nzValue="B">B</label>
+            <label nz-radio nzValue="C">C</label>
+            <label nz-radio nzValue="D">D</label>
+          </nz-radio-group>
+        </div>
+      </div>
+
+    </nz-card>
+  </div>
+  <div nz-col [nzSpan]="16">
+    <nz-card style="width:100%; height: 700px;" nzTitle="容器" [draggable]="true" (drop)="drop($event)" (dragover)="allowDrop($event)" (dragenter)="dragenter($event)">
+
+    </nz-card>
+  </div>
+</div>
 
 <cn-layout-resolver [config]="config"></cn-layout-resolver>
