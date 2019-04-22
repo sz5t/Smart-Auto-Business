@@ -12,25 +12,27 @@ import { BsnStaticTableComponent } from '@shared/business/bsn-data-table/bsn-sta
 })
 export class CnFormGridComponent implements OnInit {
   @Input()
-  config;
+  public config;
   @Input()
-  value;
+  public value;
   @Input()
-  bsnData;
+  public bsnData;
   @Input()
-  rowData;
+  public rowData;
   @Input()
-  dataSet;
-  formGroup: FormGroup;
+  public dataSet;
+  public formGroup: FormGroup;
   // @Output() updateValue = new EventEmitter();
   @Output()
-  updateValue = new EventEmitter();
-  _options = [];
-  cascadeValue = {};
-  resultData;
-  _value = [];
+  public updateValue = new EventEmitter();
+  @Input() public initValue;
+  @Input() public casadeData = {};
+  public _options = [];
+  public cascadeValue = {};
+  public resultData;
+  public _value = [];
   @ViewChild("table")
-  table: BsnStaticTableComponent;
+  public table: BsnStaticTableComponent;
   constructor(@Inject(BSN_COMPONENT_MODES)
   private stateEvents: Observable<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE)
@@ -39,7 +41,7 @@ export class CnFormGridComponent implements OnInit {
     private cascadeEvents: Observable<BsnComponentMessage>,
     private apiService: ApiService) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     // 1.看配置，以及参数的接受
     // 组件值，临时变量，级联值
 
@@ -47,7 +49,7 @@ export class CnFormGridComponent implements OnInit {
 
   }
 
-  valueChange(name?) {
+  public valueChange(name?) {
 
 
     // if (name) {
@@ -66,9 +68,9 @@ export class CnFormGridComponent implements OnInit {
     // }
   }
 
-  valueChangeTable(name?) {
-   
+  public valueChangeTable(name?) {
 
+    this._value = name;
     if (name) {
       const backValue = { name: this.config.name, value: name };
       this.updateValue.emit(backValue);

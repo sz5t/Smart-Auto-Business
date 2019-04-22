@@ -618,7 +618,7 @@ export class BsnStaticTableComponent extends CnComponentBase
     }
 
     // load 分组
-    // 原始数据【olddata】 数据缓存【update】 
+    // 原始数据【olddata】 数据缓存【update】
     // 注意 撤销、删除 对数据的影响
     public loadStatic() {
 
@@ -731,7 +731,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                             }
 
                             this.loadData.rows[index][element.field] = this.loadData.rows[index][element.field] + superpositionValue;
-                            // liu 20181214 注释 字段叠加 有问题，编辑状态无响应 
+                            // liu 20181214 注释 字段叠加 有问题，编辑状态无响应
                             for (const CacheItem in this.editCache) {
                                 if (this.editCache.hasOwnProperty(CacheItem)) {
                                     const element1 = this.editCache[CacheItem];
@@ -900,7 +900,7 @@ export class BsnStaticTableComponent extends CnComponentBase
         return params;
     }
 
-    // 行内删除 
+    // 行内删除
     public deleteRowStatic() {
         this.dataList.forEach(d => {
             this.dataList.splice(
@@ -1578,7 +1578,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                                  if (this.changeConfig_new[rowCasade][key]['cascadeValue'] ) {
                                      delete this.changeConfig_new[rowCasade][key]['cascadeValue'];
                                  }
-                               
+
                              } */
                                 if (caseItem['type'] === 'show') {
                                     if (caseItem['show']) {
@@ -2367,21 +2367,55 @@ export class BsnStaticTableComponent extends CnComponentBase
         // 按照行主键划分每行的组件
         // 根据配置构建编辑组的配置表单组件
         // 处理每组表单内部的交互
-        dataList.forEach(item => {
-            if (!this.editCache[item.key]) {
-                if (item.edit) {
-                    this.editCache[item.key] = {
-                        edit: true, // liu 20181117 false
-                        data: JSON.parse(JSON.stringify(item))
-                    };
-                } else {
-                    this.editCache[item.key] = {
-                        edit: false, // liu 20181117 false
-                        data: JSON.parse(JSON.stringify(item))
-                    };
+        if (this.config.Edit) {
+            dataList.forEach(item => {
+                if (!this.editCache[item.key]) {
+                    if (item.edit) {
+                        this.editCache[item.key] = {
+                            edit: true, // liu 20181117 false
+                            data: JSON.parse(JSON.stringify(item))
+                        };
+                    } else {
+                        this.editCache[item.key] = {
+                            edit: true, // liu 20181117 false
+                            data: JSON.parse(JSON.stringify(item))
+                        };
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            dataList.forEach(item => {
+                if (!this.editCache[item.key]) {
+                    if (item.edit) {
+                        this.editCache[item.key] = {
+                            edit: true, // liu 20181117 false
+                            data: JSON.parse(JSON.stringify(item))
+                        };
+                    } else {
+                        this.editCache[item.key] = {
+                            edit: false, // liu 20181117 false
+                            data: JSON.parse(JSON.stringify(item))
+                        };
+                    }
+                }
+            });
+        }
+        // dataList.forEach(item => {
+
+        //     if (!this.editCache[item.key]) {
+        //         if (item.edit) {
+        //             this.editCache[item.key] = {
+        //                 edit: true, // liu 20181117 false
+        //                 data: JSON.parse(JSON.stringify(item))
+        //             };
+        //         } else {
+        //             this.editCache[item.key] = {
+        //                 edit: false, // liu 20181117 false
+        //                 data: JSON.parse(JSON.stringify(item))
+        //             };
+        //         }
+        //     }
+        // });
     }
 
     private selectRow(data?, $event?) {
