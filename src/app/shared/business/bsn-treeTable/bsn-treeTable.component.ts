@@ -125,9 +125,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         this.baseModal = this._modal;
         this.cascadeBase = this.cascade;
         this.cfg = this.config;
-        if (this.initData) {
-            this.initValue = this.initData;
-        }
+        
         this.apiResource = this._api;
 
         this.operationCallback = focusId => {
@@ -150,6 +148,9 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
 
     // 生命周期事件
     public ngOnInit() {
+        if (this.initData) {
+            this.initValue = this.initData;
+        }
         this.tempValue['moduleName'] = this._router.snapshot.params['name'] ? this._router.snapshot.params['name'] : '';
         this.cfg = this.config;
         this.permission = this.permissions;
@@ -237,7 +238,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
             ? this.config.pageSize
             : this.pageSize;
         if (this.config.componentType) {
-            if (!this.config.componentType.child) {
+            if (this.config.componentType.own === true) {
                 this.load();
             }
         } else {
@@ -784,7 +785,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                         key: dataItem.Id,
                         status: dataItem['row_status']
                             ? dataItem['row_status']
-                            : 'updating'
+                            : ''
                     });
                 }
             })
@@ -1110,7 +1111,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                     item => item.name === 'saveRow'
                 );
                 if (index !== -1) {
-                    const postConfig = bar.group[index].ajaxConfig[method];
+                    const postConfig = bar.group[index].ajaxConfig;
                     result = this._execute(rowsData, method, postConfig);
                 }
             }
@@ -1124,7 +1125,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                 );
                 if (index !== -1) {
                     const postConfig =
-                        bar.dropdown.buttons[index].ajaxConfig[method];
+                        bar.dropdown.buttons[index].ajaxConfig;
                     result = this._execute(rowsData, method, postConfig);
                 }
             }
@@ -1284,17 +1285,17 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         return this.apiResource.get(url, params).toPromise();
     }
 
-    // private async post(url, body) {
-    //     return this.apiResource.post(url, body).toPromise();
-    // }
+    private async post(url, body) {
+        return this.apiResource.post(url, body).toPromise();
+    }
 
-    // private async put(url, body) {
-    //     return this.apiResource.put(url, body).toPromise();
-    // }
+    private async put(url, body) {
+        return this.apiResource.put(url, body).toPromise();
+    }
 
-    // private async delete(url, params) {
-    //     return this.apiResource.delete(url, params).toPromise();
-    // }
+    private async delete(url, params) {
+        return this.apiResource.delete(url, params).toPromise();
+    }
 
     // private async get(url, params) {
     //     return this.apiResource.get(url, params).toPromise();

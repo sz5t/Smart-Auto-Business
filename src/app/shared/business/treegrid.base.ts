@@ -722,6 +722,7 @@ export class TreeGridBase extends CnComponentBase {
         const footer = [];
         this.apiResource.getLocalData(dialog.layoutName).subscribe(data => {
             const temp = this.tempValue ? this.tempValue : {};
+            const iniValue = this.initValue ? this.initValue : {};
             const modal = this.baseModal.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
@@ -730,7 +731,7 @@ export class TreeGridBase extends CnComponentBase {
                 nzComponentParams: {
                     config: data,
                     permissions: this.permission,
-                    initData: { ...this.tempValue, ...this.selectedItem }
+                    initData: { ...temp, ...this.selectedItem, ...iniValue }
                 },
                 nzFooter: footer
             });
@@ -886,7 +887,7 @@ export class TreeGridBase extends CnComponentBase {
                                 btn,
                                 () => {
                                     modal.close();
-                                    this._callback();
+                                    this.windowCallback();
                                 }
                             );
                         })();
@@ -897,7 +898,7 @@ export class TreeGridBase extends CnComponentBase {
                                 btn,
                                 () => {
                                     modal.close();
-                                    this._callback();
+                                    this.windowCallback();
                                 }
                             );
                         })();
@@ -907,7 +908,7 @@ export class TreeGridBase extends CnComponentBase {
                                 btn,
                                 () => {
                                     modal.close();
-                                    this._callback();
+                                    this.windowCallback();
                                 }
                             );
                         })();

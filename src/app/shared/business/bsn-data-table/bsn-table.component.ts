@@ -853,8 +853,39 @@ export class BsnTableComponent extends CnComponentBase
                     submitData
                 );
                 if (response && response.status === 200 && response.isSuccess) {
-                    this.baseMessage.create('success', '保存成功');
-                    this.focusIds = this._getFocusIds(response.data);
+                    // 返回批量的处理结果
+                    if (Array.isArray(response.data)) {
+                        const messages = [];
+                        for (let j = 0, jlen = response.data.length; j < jlen ; j++) {
+                            if (response.data[j].Message && response.data[j].Message.split(':').length > 0) {
+                                const msg = response.data[j].Message.split(':');
+                                switch (msg[0]) {
+                                    case 'success':
+                                    rowsData[j]['isSuccess'] = true;
+                                    break;
+                                    case 'error':
+                                    messages.push(msg[1]);
+                                    rowsData[j]['isSuccess'] = false;
+                                    break;
+                                    case 'info':
+                                    messages.push(msg[1]);
+                                    rowsData[j]['isSuccess'] = false;
+                                    break;
+                                    case 'warning':
+                                    messages.push(msg[1]);
+                                    rowsData[j]['isSuccess'] = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (messages.length > 0) {
+                            this.baseMessage.create('error', messages.join('<br/>'));
+                        }
+                        
+                    } else { // 单条处理结果
+                        this.baseMessage.create('success', '保存成功');
+                        this.focusIds = this._getFocusIds(response.data);
+                    }
                     isSuccess = true;
                     // 日志记录
                     this.apiResource.addOperationLog({
@@ -862,9 +893,7 @@ export class BsnTableComponent extends CnComponentBase
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                         description: `${desc} [执行成功] 数据为: ${JSON.stringify(rowsData)}`
-                    }).subscribe(result => {
-
-                    })
+                    }).subscribe(result => {})
                 } else {
                     this.baseMessage.create('error', response.message);
                     // 日志记录
@@ -873,14 +902,15 @@ export class BsnTableComponent extends CnComponentBase
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                         description: `${desc} [执行失败] 数据为, ${response.message}`
-                    }).subscribe(result => {
-
-                    })
+                    }).subscribe(result => {})
                 }
             }
             if (isSuccess) {
                 rowsData.map(row => {
-                    this._saveEdit(row.key);
+                    if (row.isSuccess) {
+                        this._saveEdit(row.key);
+                    }
+                    
                 });
                 // 获取返回的focusId
 
@@ -1764,6 +1794,7 @@ export class BsnTableComponent extends CnComponentBase
         const footer = [];
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
             const selectedRow = this._selectRow ? this._selectRow : {};
+            this._getCheckItemsId();
             const tmpValue = this.tempValue ? this.tempValue : {};
             const iniVal = this.initValue ? this.initValue : {};
             tmpValue['moduleName'] = this._router.snapshot.params['name'] ? this._router.snapshot.params['name'] : '';
@@ -2086,8 +2117,7 @@ export class BsnTableComponent extends CnComponentBase
     */
     public outputParametersResolver(c, response, ajaxConfig, callback = function () { }) {
         const result = false;
-        if (response.isSuccess) {
-
+        if (response.isSuccess && !Array.isArray(response.data)) {
             const msg =
                 c.outputParams[
                 c.outputParams.findIndex(
@@ -2202,8 +2232,36 @@ export class BsnTableComponent extends CnComponentBase
 
             }
 
+        } else if ( response.isSuccess && Array.isArray(response.data)) {
+            const messages = [];
+            for (let j = 0, jlen = response.data.length; j < jlen ; j++) {
+                if (response.data[j].Message && response.data[j].Message.split(':').length > 0) {
+                    const msg = response.data[j].Message.split(':');
+                    switch (msg[0]) {
+                        case 'success':
+                        // rowsData[j]['isSuccess'] = true;
+                        break;
+                        case 'error':
+                        messages.push(msg[1]);
+                        // rowsData[j]['isSuccess'] = false;
+                        break;
+                        case 'info':
+                        messages.push(msg[1]);
+                        // rowsData[j]['isSuccess'] = false;
+                        break;
+                        case 'warning':
+                        messages.push(msg[1]);
+                        // rowsData[j]['isSuccess'] = false;
+                        break;
+                    }
+                }
+            }
+            if (messages.length > 0) {
+                this.baseMessage.create('error', messages.join('<br/>'));
+            }
+            callback();
         } else {
-            this.baseMessage.error('操作异常：', response.message);
+            this.baseMessage.error('操作异常:', response.message);
         }
     }
 
@@ -2622,6 +2680,7 @@ export class BsnTableComponent extends CnComponentBase
         this.dataList[index].checked = checked;
         this.dataList[index].selected = selected;
 
+        
         this.editCache[key].edit = false;
     }
     /**

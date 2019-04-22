@@ -225,6 +225,7 @@ export class CommonTools {
                             }
                             break;
                         case BSN_PARAMETER_TYPE.INIT_VALUE:
+                            debugger;
                             if (model.initValue) {
                                 if (
                                     model.initValue[param['valueName']] ===
