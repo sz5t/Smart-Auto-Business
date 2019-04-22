@@ -130,6 +130,7 @@ export const BSN_COMPONENT_CASCADE_MODES = {
     REPLACE_AS_CHILD: 'replaceAsChild',
     REFRESH_AS_CHILDREN: 'refreshAsChildren',
     REPLACE_AS_SUBMAPPING: 'replaceAsSubMapping',
+    REFRESH_BY_IDS : 'refreshByIds',
 
     // grid
     SELECTED_ROW: 'selectRow',

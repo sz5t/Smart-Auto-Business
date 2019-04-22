@@ -399,15 +399,20 @@ export class BsnTableComponent extends CnComponentBase
                 if (this.editCache && this._selectRow && this.editCache.hasOwnProperty(this._selectRow['Id']) && this.editCache[this._selectRow['Id']]['edit']) {
                     return false;
                 }
-                this.cascade.next(
-                    new BsnComponentMessage(
-                        BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
-                        this.config.viewId,
-                        {
-                            data: this._selectRow
-                        }
-                    )
-                );
+                if (this.config.componentType.sendIds) {
+                    // this.sendCheckedRowData();
+                } else {
+                    this.cascade.next(
+                        new BsnComponentMessage(
+                            BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                            this.config.viewId,
+                            {
+                                data: this._selectRow
+                            }
+                        )
+                    );
+                }
+                
             });
         }
         if (
@@ -422,6 +427,7 @@ export class BsnTableComponent extends CnComponentBase
                             this.config.relations &&
                             this.config.relations.length > 0
                         ) {
+                       
                             this.config.relations.forEach(relation => {
                                 if (
                                     relation.relationViewId === cascadeEvent._viewId
@@ -446,8 +452,10 @@ export class BsnTableComponent extends CnComponentBase
                                                 this.tempValue[param['cid']] =
                                                     option.data[param['pid']];
                                             });
+                                
                                         }
                                     }
+                        
                                     // 匹配及联模式
                                     if (cascadeEvent._mode === mode) {
                                         switch (mode) {
@@ -467,6 +475,12 @@ export class BsnTableComponent extends CnComponentBase
                                                 break;
                                             case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
                                                 break;
+                                            case BSN_COMPONENT_CASCADE_MODES.REFRESH_BY_IDS:
+                                    
+                                                this.focusIds = null;
+                                                this.load();
+                                                break;
+                                            
                                         }
                                     }
 
@@ -2521,11 +2535,21 @@ export class BsnTableComponent extends CnComponentBase
             } else {
                 this.updateValue.emit(this._selectRow);
             }
-
-
-
         }
 
+    }
+
+    private sendCheckedRowData() {
+        const checkedIds = this._getCheckItemsId();
+        this.cascade.next(
+            new BsnComponentMessage(
+                BSN_COMPONENT_CASCADE_MODES['REFRESH_BY_IDS'],
+                this.config.viewId,
+                {
+                    data: checkedIds
+                }
+            )
+        );
     }
 
     // liu 赋值选中
@@ -2604,6 +2628,9 @@ export class BsnTableComponent extends CnComponentBase
         this.checkedCount = this.dataList.filter(w => w.checked).length;
         this.allChecked = this.checkedCount === this.dataList.length;
         this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
+        if (this.config.componentType.sendIds) {
+            this.sendCheckedRowData();
+        }
     }
 
     public cancelRow() {

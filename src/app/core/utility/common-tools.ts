@@ -225,7 +225,6 @@ export class CommonTools {
                             }
                             break;
                         case BSN_PARAMETER_TYPE.INIT_VALUE:
-                            debugger;
                             if (model.initValue) {
                                 if (
                                     model.initValue[param['valueName']] ===
@@ -323,7 +322,7 @@ export class CommonTools {
 
     // liu 20181213  参数简析[可适配后台多条件查询]
     public static getParameters(datatype?, inputValue?) {
-        let strQ;
+        let strQ = '';
         if (!inputValue) {
             // return strQ;
         }

@@ -1,0 +1,40 @@
+<nz-form-label [nzSpan]="config.labelSize" [nzRequired]="config.isRequired">
+    {{config.label}}
+</nz-form-label>
+    <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+            <nz-select style="float: left;" [(ngModel)]="optionModel" (ngModelChange)="ngModelChange($event)" nzDropdownMatchSelectWidth="true" style="width: 90px" [ngModelOptions]="{standalone: true}">
+                    <nz-option
+                        *ngFor="let item of optionList"
+                        [nzLabel]="item.label"
+                        [nzValue]="item.value"
+                        >
+                    </nz-option>
+                </nz-select>
+
+                <nz-date-picker
+                [(ngModel)]="valModel"
+                nzShowTime="config.showTime"
+                [nzFormat]="config.format"
+                [nzShowToday]="config.showToday"
+                [nzAllowClear]="true"
+                [nzSize]="'default'"
+                [ngModelOptions]="{standalone: true}"
+                (ngModelChange)="valueChange($event)"
+                ></nz-date-picker>
+                <input nz-input [(ngModel)]="hidValModel" formControlName="{{config.name}}" type="hidden">
+        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+
+        </nz-input-group>
+
+
+        <!-- <ng-template #addOnBeforeTemplate>
+                <nz-select [(ngModel)]="optionModel" (ngModelChange)="ngModelChange($event)" nzDropdownMatchSelectWidth="true" style="width: 90px" [ngModelOptions]="{standalone: true}">
+                    <nz-option
+                        *ngFor="let item of optionList"
+                        [nzLabel]="item.label"
+                        [nzValue]="item.value"
+                        >
+                    </nz-option>
+                </nz-select>
+            </ng-template> -->
+    </nz-form-control>

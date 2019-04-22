@@ -1,3 +1,4 @@
+import { CnFormSearchDatePickerComponent } from './../../components/cn-form-search-date-picker/cn-form-search-data-picker.component';
 import { CnMonthPickerComponent } from './../../components/cn-date-picker/cn-month-picker.component';
 import { CnYearPickerComponent } from './../../components/cn-date-picker/cn-year-picker.component';
 import { CnWeekPickerComponent } from './../../components/cn-date-picker/cn-week-picker.component';
@@ -70,7 +71,8 @@ const components: { [type: string]: Type<any> } = {
     selectCustomMultiple: CnFormSelectCustomMultipleComponent,
     img: CnFormImgComponent,
     searchInput: CnFormSearchInputComponent,
-    numberInput: CnFormSearchInputComponent
+    searchNumber: CnFormSearchInputComponent,
+    searchDatePicker: CnFormSearchDatePickerComponent
 };
 @Directive({
     selector: '[cnFormResolverDirective]'

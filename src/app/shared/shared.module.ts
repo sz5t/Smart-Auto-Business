@@ -123,6 +123,7 @@ import { JmEditorComponent } from './jm-editor/jm-editor.component';
 import { LayoutInnerResolverDirective } from './resolver/layout-resolver/layout-inner-resolver.directive';
 import { CnFormSearchInputComponent } from './components/cn-form-search-input/cn-form-search-input.component';
 import { CnGridSapnComponent } from './components/cn-grid-sapn/cn-grid-sapn.component';
+import { CnFormSearchDatePickerComponent } from './components/cn-form-search-date-picker/cn-form-search-data-picker.component';
 
 
 const THIRDMODULES = [
@@ -237,7 +238,8 @@ const COMPONENTS = [
     BsnImportExcelComponent,
     JmEditorComponent,
     CnFormSearchInputComponent,
-    CnGridSapnComponent
+    CnGridSapnComponent,
+    CnFormSearchDatePickerComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
