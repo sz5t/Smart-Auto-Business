@@ -156,41 +156,7 @@ export class BsnStaticTableComponent extends CnComponentBase
         //     });
         // }
         // this.Initload();
-        const url = this._buildURL(this.config.ajaxConfig.url);
-        const params = {
-            ...this._buildParameters(this.config.ajaxConfig.params),
-            // ...this._buildPaging(),
-            ...this._buildFilter(this.config.ajaxConfig.filter),
-            ...this._buildSort(),
-            ...this._buildColumnFilter(),
-            ...this._buildFocusId(),
-            ...this._buildSearch()
-        };
 
-        const aloadData = await this._load(url, params);
-        if (aloadData && aloadData.status === 200 && aloadData.isSuccess) {
-            this.loadData.rows = aloadData.data;
-            const keyIdCode = this.config.keyId ? this.config.keyId : 'Id';
-            aloadData.data.forEach(element => {
-                element['key'] = element[keyIdCode];
-            });
-        }
-        this.loadData.total = this.loadData.rows.length;
-        this.total = this.loadData.total;
-        if (this.config.select) {
-            this.config.select.forEach(selectItem => {
-                this.config.columns.forEach(columnItem => {
-                    if (columnItem.editor) {
-                        if (columnItem.editor.field === selectItem.name) {
-                            // if (selectItem.type === 'selectGrid') {
-                            columnItem.editor.options['select'] =
-                                selectItem.config;
-                            // }
-                        }
-                    }
-                });
-            });
-        }
 
         if (this.casadeData) {
             for (const key in this.casadeData) {
@@ -277,7 +243,41 @@ export class BsnStaticTableComponent extends CnComponentBase
         if (this.config.selectGridValueName) {
             this.selectGridValueName = this.config.selectGridValueName;
         }
+        const url = this._buildURL(this.config.ajaxConfig.url);
+        const params = {
+            ...this._buildParameters(this.config.ajaxConfig.params),
+            // ...this._buildPaging(),
+            ...this._buildFilter(this.config.ajaxConfig.filter),
+            ...this._buildSort(),
+            ...this._buildColumnFilter(),
+            ...this._buildFocusId(),
+            ...this._buildSearch()
+        };
 
+        const aloadData = await this._load(url, params);
+        if (aloadData && aloadData.status === 200 && aloadData.isSuccess) {
+            this.loadData.rows = aloadData.data;
+            const keyIdCode = this.config.keyId ? this.config.keyId : 'Id';
+            aloadData.data.forEach(element => {
+                element['key'] = element[keyIdCode];
+            });
+        }
+        this.loadData.total = this.loadData.rows.length;
+        this.total = this.loadData.total;
+        if (this.config.select) {
+            this.config.select.forEach(selectItem => {
+                this.config.columns.forEach(columnItem => {
+                    if (columnItem.editor) {
+                        if (columnItem.editor.field === selectItem.name) {
+                            // if (selectItem.type === 'selectGrid') {
+                            columnItem.editor.options['select'] =
+                                selectItem.config;
+                            // }
+                        }
+                    }
+                });
+            });
+        }
         this.pageSize = this.config.pageSize
             ? this.config.pageSize
             : this.pageSize;
