@@ -63,8 +63,10 @@ export class CnFormSearchInputComponent implements OnInit {
     } else if (this.config.type === 'searchNumber') {
       const newOp = [
         { label: '等于', value: 'eq', select: true },
-        { label: '不等于', value: 'neq', select: false },
-        { label: '范围', value: 'btn', select: false },
+        { label: '大于', value: 'gt', select: false },
+        { label: '小于', value: 'lt', select: false },
+        { label: '大于等于', value: 'ge', select: false },
+        { label: '小于等于', value: 'le', select: false },
       ];
       this.optionList = newOp;
     }

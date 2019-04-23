@@ -28,9 +28,10 @@ export class CnFormSearchDatePickerComponent implements OnInit {
     public setOP() {
         const newOp = [
             { label: '等于', value: 'eq', select: true },
-            { label: '不等于', value: 'neq', select: false },
-            { label: '包含', value: 'in', select: false },
-            { label: '不包含', value: 'nin', select: false },
+            { label: '大于', value: 'gt', select: false },
+            { label: '小于', value: 'lt', select: false },
+            { label: '大于等于', value: 'ge', select: false },
+            { label: '小于等于', value: 'le', select: false },
           ];
           this.optionList = newOp;
       }
