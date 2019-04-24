@@ -2628,7 +2628,7 @@ export class BsnTableComponent extends CnComponentBase
         this.checkedCount = this.dataList.filter(w => w.checked).length;
         this.allChecked = this.checkedCount === this.dataList.length;
         this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
-        if (this.config.componentType.sendIds) {
+        if (this.config.showCheckBox && this.config.componentType.sendIds) {
             this.sendCheckedRowData();
         }
     }
