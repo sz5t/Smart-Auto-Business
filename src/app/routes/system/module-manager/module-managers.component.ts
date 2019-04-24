@@ -508,8 +508,6 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                     {
                                                         name: 'saveRow',
                                                         text: '保存',
-                                                        icon:
-                                                            'anticon anticon-save',
                                                         cancelPermission: true,
                                                         ajaxConfig: [
                                                             {
@@ -760,8 +758,6 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                     {
                                                         name: 'addForm',
                                                         text: '新增模块',
-                                                        icon:
-                                                            'anticon anticon-plus',
                                                         action: 'FORM',
                                                         actionType:
                                                             'formDialog',

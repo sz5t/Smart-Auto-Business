@@ -795,7 +795,8 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
     private _editRowData() {
         const checkedRowStatusMap = this._getCheckedRowStatusMap();
         checkedRowStatusMap.forEach(item => {
-            if (item.status === 'updating') {
+            if (item.status === 'updating' || item.status === '') {
+                item.status = 'updating';
                 this._startRowEdit(item.key);
             }
         });
@@ -847,7 +848,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         checkedRows.forEach(item => {
             if (item.status === 'adding') {
                 this.addedTreeRows.push(this.editCache[item.key].data);
-            } else if (item.status === 'updating') {
+            } else if (item.status === 'updating' || item.status === '') {
                 this.editTreeRows.push(this.editCache[item.key].data);
             }
         });
@@ -1015,7 +1016,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
             delete item['$type'];
             if (item.checked && item['row_status'] === 'adding') {
                 addRows.push(item);
-            } else if (item.checked && item['row_status'] === 'updating') {
+            } else if (item.checked && item['row_status'] === 'updating' && item['row_status'] === '') {
                 updateRows.push(item);
             }
         });

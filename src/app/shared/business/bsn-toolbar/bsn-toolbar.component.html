@@ -12,7 +12,7 @@
                         [attr.disabled]="btn.disabled"
                         >
                             <!--  [attr.disabled]="btn.disabled" [nzLoading]="toolbarsisLoading[btn.name]" <strong><i class="{{btn.icon}} {{btn.color}}"></i> {{btn.text}}</strong> -->
-                            <i nz-icon  [type]="btn.icon" [theme]="btn.theme ? btn.theme : 'outline'"></i>
+                            <i nz-icon *ngIf="btn.icon"  [type]="btn.icon" [theme]="btn.theme ? btn.theme : 'outline'"></i>
                             {{btn.text}}
                     </button>
                 </nz-button-group>
