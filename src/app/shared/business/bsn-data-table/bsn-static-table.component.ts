@@ -260,6 +260,10 @@ export class BsnStaticTableComponent extends CnComponentBase
             const keyIdCode = this.config.keyId ? this.config.keyId : 'Id';
             aloadData.data.forEach(element => {
                 element['key'] = element[keyIdCode];
+                if (this.config['Edit']) {
+                    element['$operDataType$'] = 'edit';
+                }
+
             });
         }
         this.loadData.total = this.loadData.rows.length;
@@ -1302,9 +1306,9 @@ export class BsnStaticTableComponent extends CnComponentBase
     public valueChange(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
         if (this.editCache[data.key].data[data.name] !== data.data) {
-            if ( this.changeConfig_new[data.key].hasOwnProperty(data.name) ){
-                if ( this.changeConfig_new[data.key][ data.name ].hasOwnProperty('setValue') ) {
-                    delete this.changeConfig_new[data.key][ data.name ]['setValue'];
+            if (this.changeConfig_new[data.key].hasOwnProperty(data.name)) {
+                if (this.changeConfig_new[data.key][data.name].hasOwnProperty('setValue')) {
+                    delete this.changeConfig_new[data.key][data.name]['setValue'];
                 }
             }
         }
@@ -2382,6 +2386,10 @@ export class BsnStaticTableComponent extends CnComponentBase
                         };
                     }
                 }
+
+                if (!this.changeConfig_new[item.key]) {
+                    this.changeConfig_new[item.key] = {};
+                }
             });
         } else {
             dataList.forEach(item => {
@@ -2391,6 +2399,9 @@ export class BsnStaticTableComponent extends CnComponentBase
                             edit: true, // liu 20181117 false
                             data: JSON.parse(JSON.stringify(item))
                         };
+                        if (!this.changeConfig_new[item.key]) {
+                            this.changeConfig_new[item.key] = {};
+                        }
                     } else {
                         this.editCache[item.key] = {
                             edit: false, // liu 20181117 false
