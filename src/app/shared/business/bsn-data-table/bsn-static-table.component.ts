@@ -262,6 +262,9 @@ export class BsnStaticTableComponent extends CnComponentBase
                 element['key'] = element[keyIdCode];
                 if (this.config['Edit']) {
                     element['$operDataType$'] = 'edit';
+                    if (this.config['Add']) {
+                        element['$operDataType$'] = 'add';
+                    }
                 }
 
             });
