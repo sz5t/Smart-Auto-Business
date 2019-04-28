@@ -2409,7 +2409,7 @@ export class BsnTableComponent extends CnComponentBase
     }
 
     private _getSelectedItem() {
-        this.tempValue['selectedRow'] = this.selectRow;
+        this.tempValue['selectedRow'] = this._selectRow;
         return this._selectRow;
     }
 
