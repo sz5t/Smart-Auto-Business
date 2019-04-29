@@ -19,7 +19,7 @@ import { Component, Input, OnInit } from '@angular/core';
 
     .anticon-close-circle:active {
       color: #666;
-    }  
+    }
     `
   ]
 })
@@ -27,6 +27,7 @@ export class CnFormInputComponent implements OnInit {
   @Input() config;
   @Input() formGroup: FormGroup;
   model;
+  public inputReadonly = false;
   constructor(
   ) { }
 
@@ -37,6 +38,10 @@ export class CnFormInputComponent implements OnInit {
     if (!this.config['readonly']) {
       this.config['readonly'] = false;
     }
+    if (this.config.readonly) {
+      this.inputReadonly = true;
+    }
+    console.log(this.config);
   }
 
 }

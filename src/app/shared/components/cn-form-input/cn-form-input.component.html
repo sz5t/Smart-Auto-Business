@@ -9,13 +9,26 @@
         [nzSize]="'default'"
         [nzSuffix]="suffixTemplate"
         [nzPrefixIcon]="config.perfix">
-        <input nz-input
-               type="{{config.inputType}}"
-               formControlName="{{config.name}}"
-               [nzSize]="config.size"
-               placeholder="{{config.placeholder}}"
-               disabled="{{config.disabled}}"
-               [(ngModel)]="model"/>
+        <ng-container *ngIf="inputReadonly">
+                <input nz-input
+                type="{{config.inputType}}"
+                formControlName="{{config.name}}"
+                [nzSize]="config.size"
+                placeholder="{{config.placeholder}}"
+                disabled="{{config.disabled}}"
+                readonly="inputReadonly"
+                [(ngModel)]="model"/>
+        </ng-container>
+        <ng-container *ngIf="!inputReadonly">
+                <input nz-input
+                type="{{config.inputType}}"
+                formControlName="{{config.name}}"
+                [nzSize]="config.size"
+                placeholder="{{config.placeholder}}"
+                disabled="{{config.disabled}}"
+                [(ngModel)]="model"/>
+        </ng-container>
+
 
     </nz-input-group>
     <nz-form-extra *ngIf="config.explain">{{config.explain}}</nz-form-extra>
