@@ -2496,7 +2496,7 @@ export class BsnTableComponent extends CnComponentBase
         this.dataList &&
             this.dataList.map(row => {
                 row.selected = false;
-
+                row['checked'] = false;
             });
 
 

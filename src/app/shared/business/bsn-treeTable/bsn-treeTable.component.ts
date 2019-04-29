@@ -125,7 +125,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         this.baseModal = this._modal;
         this.cascadeBase = this.cascade;
         this.cfg = this.config;
-        
+
         this.apiResource = this._api;
 
         this.operationCallback = focusId => {
@@ -612,8 +612,11 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
             return;
         }
         $event.stopPropagation();
-
-        this.treeData.forEach(t => t['selected'] = false);
+        this.treeData.map(t => {
+            t['selected'] = false;
+             t['checked'] = false;
+        });
+        // this.treeData.forEach(t => t['selected'] = false);
         data['selected'] = true;
         if (this.editCache[data.key].edit) {
             // if (data['row_status'] === 'updating' || data['row_status'] === 'adding') {
