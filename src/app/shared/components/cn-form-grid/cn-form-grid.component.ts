@@ -46,17 +46,22 @@ export class CnFormGridComponent implements OnInit {
     // 组件值，临时变量，级联值
 
     // this._value = this.table.loadData.rows ? this.table.loadData.rows : [];
-        // 未知是否有错误
-        if (!this._value) {
-          if (this.formGroup.value[this.config.name]) {
-              this._value = this.formGroup.value[this.config.name];
-          }
+    // 未知是否有错误
+    if (!this._value) {
+      if (this.formGroup.value[this.config.name]) {
+        this._value = this.formGroup.value[this.config.name];
       }
+    }
   }
 
   public valueChange(name?) {
-
-
+    if (name) {
+      const backValue = { name: this.config.name, value: name };
+      this.updateValue.emit(backValue);
+    } else {
+      const backValue = { name: this.config.name, value: name };
+      this.updateValue.emit(backValue);
+    }
     // if (name) {
     //     const backValue = { name: this.config.name, value: name };
     //     if (this.resultData) {
@@ -74,15 +79,9 @@ export class CnFormGridComponent implements OnInit {
   }
 
   public valueChangeTable(name?) {
-
     this._value = name;
-    if (name) {
-      const backValue = { name: this.config.name, value: name };
-      this.updateValue.emit(backValue);
-    } else {
-      const backValue = { name: this.config.name, value: name };
-      this.updateValue.emit(backValue);
-    }
+     this.valueChange(this._value);
+
   }
 
 }

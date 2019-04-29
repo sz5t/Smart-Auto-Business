@@ -106,7 +106,7 @@ export class BeforeOperation {
             url = `${urlConfig.url['parent']}/${pc}/${urlConfig.url['child']}`;
         }
         return url;
-    } 
+    }
 
     constructor({ config, modal, message, tempValue, initValue, cacheValue, apiResource }) {
         this.config = config;
@@ -230,9 +230,14 @@ export class BeforeOperation {
     private matchValueCondition(statusItem) {
         let result = false;
         if (this.operationItemData) {
-            result =
-                this.operationItemData[statusItem['name']] ===
-                statusItem['value'];
+            if (this.operationItemData.hasOwnProperty(statusItem['name'])) {
+                result =
+                    this.operationItemData[statusItem['name']] ===
+                    statusItem['value'];
+            } else {
+                result = true;
+            }
+
         }
         return result;
     }
@@ -253,7 +258,7 @@ export class BeforeOperation {
         return result;
     }
 
-    private innerValueCondition (statusItem) {
+    private innerValueCondition(statusItem) {
         // 判断与固定值做验证还是与当前行数据验证
         let result = false;
         let tmpValue;
@@ -272,7 +277,7 @@ export class BeforeOperation {
         if (tmpValue && cchValue) {
             result = tmpValue !== cchValue;
         } else if (tmpValue && iniValue) {
-            result = tmpValue !== iniValue; 
+            result = tmpValue !== iniValue;
         } else if (cchValue && iniValue) {
             result = cchValue !== iniValue;
         } else if (iniValue && tmpValue) {
@@ -337,7 +342,7 @@ export class BeforeOperation {
                     result = response.data.every(s => this.operationItemData[statusItem['name']] === s[statusItem['valueName']]);
                 } else {
                     result = this.operationItemData[statusItem['name']] ===
-                    response.data[statusItem['valueName']];
+                        response.data[statusItem['valueName']];
                 }
             } else {
                 const reg = new RegExp(statusItem['value']);

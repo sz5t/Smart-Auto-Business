@@ -300,6 +300,7 @@ export class BsnStaticTableComponent extends CnComponentBase
 
         // 初始化级联
         this.caseLoad();
+        this.scanCodeValueChange();
     }
 
     private resolverRelation() {

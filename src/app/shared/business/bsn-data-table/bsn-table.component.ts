@@ -412,7 +412,7 @@ export class BsnTableComponent extends CnComponentBase
                         )
                     );
                 }
-                
+
             });
         }
         if (
@@ -427,7 +427,7 @@ export class BsnTableComponent extends CnComponentBase
                             this.config.relations &&
                             this.config.relations.length > 0
                         ) {
-                       
+
                             this.config.relations.forEach(relation => {
                                 if (
                                     relation.relationViewId === cascadeEvent._viewId
@@ -452,10 +452,10 @@ export class BsnTableComponent extends CnComponentBase
                                                 this.tempValue[param['cid']] =
                                                     option.data[param['pid']];
                                             });
-                                
+
                                         }
                                     }
-                        
+
                                     // 匹配及联模式
                                     if (cascadeEvent._mode === mode) {
                                         switch (mode) {
@@ -476,11 +476,11 @@ export class BsnTableComponent extends CnComponentBase
                                             case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
                                                 break;
                                             case BSN_COMPONENT_CASCADE_MODES.REFRESH_BY_IDS:
-                                    
+
                                                 this.focusIds = null;
                                                 this.load();
                                                 break;
-                                            
+
                                         }
                                     }
 
@@ -495,6 +495,7 @@ export class BsnTableComponent extends CnComponentBase
     }
 
     private emptyLoad() {
+        this._selectRow = {};
         this.cascade.next(
             new BsnComponentMessage(
                 BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
@@ -566,6 +567,9 @@ export class BsnTableComponent extends CnComponentBase
                                 : 'Id';
                             if (this.is_Selectgrid) {
                                 if (row.Id === focusId) {
+                                    if (this.editCache[row['key']]) {
+                                        this.editCache[row['key']]['edit'] = false;
+                                    }
                                     this.selectRow(row);
                                 }
                             }
@@ -870,32 +874,32 @@ export class BsnTableComponent extends CnComponentBase
                     // 返回批量的处理结果
                     if (Array.isArray(response.data)) {
                         const messages = [];
-                        for (let j = 0, jlen = response.data.length; j < jlen ; j++) {
+                        for (let j = 0, jlen = response.data.length; j < jlen; j++) {
                             if (response.data[j].Message && response.data[j].Message.split(':').length > 0) {
                                 const msg = response.data[j].Message.split(':');
                                 switch (msg[0]) {
                                     case 'success':
-                                    rowsData[j]['isSuccess'] = true;
-                                    break;
+                                        rowsData[j]['isSuccess'] = true;
+                                        break;
                                     case 'error':
-                                    messages.push(msg[1]);
-                                    rowsData[j]['isSuccess'] = false;
-                                    break;
+                                        messages.push(msg[1]);
+                                        rowsData[j]['isSuccess'] = false;
+                                        break;
                                     case 'info':
-                                    messages.push(msg[1]);
-                                    rowsData[j]['isSuccess'] = false;
-                                    break;
+                                        messages.push(msg[1]);
+                                        rowsData[j]['isSuccess'] = false;
+                                        break;
                                     case 'warning':
-                                    messages.push(msg[1]);
-                                    rowsData[j]['isSuccess'] = false;
-                                    break;
+                                        messages.push(msg[1]);
+                                        rowsData[j]['isSuccess'] = false;
+                                        break;
                                 }
                             }
                         }
                         if (messages.length > 0) {
                             this.baseMessage.create('error', messages.join('<br/>'));
                         }
-                        
+
                     } else { // 单条处理结果
                         this.baseMessage.create('success', '保存成功');
                         this.focusIds = this._getFocusIds(response.data);
@@ -907,7 +911,7 @@ export class BsnTableComponent extends CnComponentBase
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                         description: `${desc} [执行成功] 数据为: ${JSON.stringify(rowsData)}`
-                    }).subscribe(result => {})
+                    }).subscribe(result => { })
                 } else {
                     this.baseMessage.create('error', response.message);
                     // 日志记录
@@ -916,7 +920,7 @@ export class BsnTableComponent extends CnComponentBase
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                         description: `${desc} [执行失败] 数据为, ${response.message}`
-                    }).subscribe(result => {})
+                    }).subscribe(result => { })
                 }
             }
             if (isSuccess) {
@@ -924,7 +928,7 @@ export class BsnTableComponent extends CnComponentBase
                     if (row.isSuccess) {
                         this._saveEdit(row.key);
                     }
-                    
+
                 });
                 // 获取返回的focusId
 
@@ -2246,27 +2250,27 @@ export class BsnTableComponent extends CnComponentBase
 
             }
 
-        } else if ( response.isSuccess && Array.isArray(response.data)) {
+        } else if (response.isSuccess && Array.isArray(response.data)) {
             const messages = [];
-            for (let j = 0, jlen = response.data.length; j < jlen ; j++) {
+            for (let j = 0, jlen = response.data.length; j < jlen; j++) {
                 if (response.data[j].Message && response.data[j].Message.split(':').length > 0) {
                     const msg = response.data[j].Message.split(':');
                     switch (msg[0]) {
                         case 'success':
-                        // rowsData[j]['isSuccess'] = true;
-                        break;
+                            // rowsData[j]['isSuccess'] = true;
+                            break;
                         case 'error':
-                        messages.push(msg[1]);
-                        // rowsData[j]['isSuccess'] = false;
-                        break;
+                            messages.push(msg[1]);
+                            // rowsData[j]['isSuccess'] = false;
+                            break;
                         case 'info':
-                        messages.push(msg[1]);
-                        // rowsData[j]['isSuccess'] = false;
-                        break;
+                            messages.push(msg[1]);
+                            // rowsData[j]['isSuccess'] = false;
+                            break;
                         case 'warning':
-                        messages.push(msg[1]);
-                        // rowsData[j]['isSuccess'] = false;
-                        break;
+                            messages.push(msg[1]);
+                            // rowsData[j]['isSuccess'] = false;
+                            break;
                     }
                 }
             }
@@ -2707,7 +2711,7 @@ export class BsnTableComponent extends CnComponentBase
         this.dataList[index].checked = checked;
         this.dataList[index].selected = selected;
 
-        
+
         this.editCache[key].edit = false;
     }
     /**
