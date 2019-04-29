@@ -41,7 +41,6 @@ export class CnFormInputComponent implements OnInit {
     if (this.config.readonly) {
       this.inputReadonly = true;
     }
-    console.log(this.config);
   }
 
 }
