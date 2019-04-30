@@ -2496,12 +2496,17 @@ export class BsnTableComponent extends CnComponentBase
         this.dataList &&
             this.dataList.map(row => {
                 row.selected = false;
-                row['checked'] = false;
+                if (row['row_status'] === 'updating' || row['row_status'] === 'adding') {
+                } else {
+                    row['checked'] = false;
+                }
+
             });
 
 
         if (data['row_status'] === 'updating' || data['row_status'] === 'adding') {
-
+            data['selected'] = true;
+            data['checked'] = true;
         } else {
             data['selected'] = true;
             if (data['checked']) {

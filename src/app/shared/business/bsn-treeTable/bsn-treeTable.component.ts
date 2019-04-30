@@ -614,13 +614,18 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         $event.stopPropagation();
         this.treeData.map(t => {
             t['selected'] = false;
-             t['checked'] = false;
+            if (this.editCache[t.key].edit) {
+
+            } else {
+                t['checked'] = false;
+            }
         });
         // this.treeData.forEach(t => t['selected'] = false);
         data['selected'] = true;
         if (this.editCache[data.key].edit) {
             // if (data['row_status'] === 'updating' || data['row_status'] === 'adding') {
-
+                data['selected'] = true;
+                data['checked'] = true;
             // }
         } else {
             if (data['checked']) {
