@@ -44,7 +44,13 @@
                         [nzBodyStyle]="c.bodyStyle ? c.bodyStyle : { padding: '8px'}">
                         <ng-template #cardTitle>
                             <!-- <i nz-icon [type]="c.icon ? c.icon : ordered-list" [theme]="c.theme ? c.theme : 'outline'"></i> -->
-                            {{ c.title }}
+                            <ng-container *ngIf="c.titlePaddingleft">
+                                    <span style="padding-left: 16px;">{{ c.title }} </span>
+                            </ng-container>
+                            <ng-container *ngIf="!c.titlePaddingleft">
+                                   {{ c.title }}
+                            </ng-container>
+
                         </ng-template>
                         <div *ngIf="c.handle && c.handle === 'single'; else: elseTemplate">
                             <ng-container cnLayoutResolverDirective [layoutId]="layoutId" [config]="c"

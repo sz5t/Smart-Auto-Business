@@ -13,12 +13,14 @@ import { Observable } from 'rxjs';
             }
 
             .trigger {
-                font-size: 24px;
+                font-size: 20px;
                 padding: 0 5px;
                 cursor: pointer;
                 transition: color 0.3;
-                right:28px;
+                right:0px;
                 position:relative;
+                z-index:8;
+                padding-top:8px;
             }
             .trigger:hover {
                 color: #1890ff;
@@ -82,8 +84,8 @@ export class LayoutResolverComponent extends CnComponentBase implements OnInit {
                                     case BSN_COMPONENT_CASCADE_MODES.AUTO_RESIZE:
                                         if (option) {
                                             // 解析参数
-                                                this.autoResize(option.data['autoResize'])  
-                                            
+                                                this.autoResize(option.data['autoResize'])
+
 
                                         }
                                         break;

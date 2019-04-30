@@ -17,7 +17,7 @@ export class CnDatePickerComponent implements OnInit {
     public formGroup: FormGroup;
     public date = new Date();
     public controlValue;
-    constructor() {}
+    constructor() { }
 
     public ngOnInit() {
         if (!this.controlValue) {
@@ -28,36 +28,35 @@ export class CnDatePickerComponent implements OnInit {
                 const month = this.getNewDate(getMonth(this.date) + 1);
                 const date = this.getNewDate(getDate(this.date));
                 setTimeout(s => {
-                    
+
                     this.controlValue = `${year}${
                         this.config.sep1 ? this.config.sep1 : '-'
-                    }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date}`
-                    this.value =  `${year}${
+                        }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date}`
+                    this.value = `${year}${
                         this.config.sep1 ? this.config.sep1 : '-'
-                    }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date}`
+                        }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date}`
                 }, 0);
             }
         }
-
     }
 
     public valueChange(val?: Date) {
         if (val) {
             const year = getISOYear(this.date);
-                const month = this.getNewDate(getMonth(val) + 1);
-                const date = this.getNewDate(getDate(val));
+            const month = this.getNewDate(getMonth(val) + 1);
+            const date = this.getNewDate(getDate(val));
             const backValue = {
                 name: this.config.name,
                 value: `${year}${
                     this.config.sep1 ? this.config.sep1 : '-'
-                }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date}`
+                    }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date}`
             };
             setTimeout(s => {
                 this.value = backValue.value;
                 this.updateValue.emit(backValue);
             }, 0)
-            
-            
+
+
         }
     }
 

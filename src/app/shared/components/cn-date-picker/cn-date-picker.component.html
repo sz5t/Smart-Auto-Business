@@ -10,6 +10,7 @@
          [nzAllowClear]="true"
          [ngModelOptions]="{standalone: true}"
          (ngModelChange)="valueChange($event)"
+         [nzStyle]="config.style?config.style:{}"
          ></nz-date-picker>
          <input nz-input [(ngModel)]="value" formControlName="{{config.name}}" type="hidden">
         <nz-form-explain *ngIf="formGroup.get(config.name).dirty && formGroup.get(config.name).errors || formGroup.get(config.name).pending ">
