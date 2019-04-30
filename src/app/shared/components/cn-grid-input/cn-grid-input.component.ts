@@ -5,16 +5,22 @@ import { _HttpClient } from '@delon/theme';
     templateUrl: './cn-grid-input.component.html',
 })
 export class CnGridInputComponent implements OnInit {
-    @Input() config;
-    @Output() updateValue = new EventEmitter();
-    @Input() value;
-    @Input() casadeData;
-    _value;
-    cascadeSetValue = {};
+    @Input() public config;
+    @Output() public updateValue = new EventEmitter();
+    @Input() public value;
+    @Input() public casadeData;
+    @Input()
+    public bsnData;
+    @Input()
+    public rowData;
+    public _value;
+    public cascadeSetValue = {};
+    public Visible = false;
+    public message = '当前值不合理';
     constructor(
         private http: _HttpClient
     ) { }
-    ngOnInit() {
+    public ngOnInit() {
         if (!this.config['disabled']) {
             this.config['disabled'] = false;
         }
@@ -37,31 +43,92 @@ export class CnGridInputComponent implements OnInit {
         }
     }
 
-    setValue(value) {
+    public setValue(value) {
         this.value = value;
     }
 
-    getValue() {
+    public getValue() {
         return this.value;
     }
 
-    valueChange(name?) {
+    public valueChange(name?) {
+        this. VisibleChange(name);
         this.value.data = name;
         this.updateValue.emit(this.value);
     }
 
-    onblur(e?, type?) {
+    public onblur(e?, type?) {
         this.assemblyValue();
 
     }
-    onKeyPress(e?, type?) {
+    public onKeyPress(e?, type?) {
         if (e.code === 'Enter') {
             this.assemblyValue();
         }
     }
 
     // 组装值
-    assemblyValue() {
-        this.valueChange(this._value); 
+    public assemblyValue() {
+        this.valueChange(this._value);
     }
+
+    // 校验结果
+    public VisibleChange(val) {
+        //   validations
+        // "validations": [
+        //     {
+        //       "validator": "compare",
+        //       “compareValueName”:"",
+        //        “compareType”:"<=",
+        //       "errorMessage": "当前值不合理"
+        //     }
+        //   ]
+        if (this.config.validations) {
+            this.config.validations.forEach(v => {
+                if (v.validator === 'compare') {
+                    const v2 = this.rowData[v['compareValueName']];
+                    const type = v['compareType'];
+                    this.message = v['errorMessage'];
+                    if (this.valueToValidations(val, v2, type)) {
+                        this.Visible = false;
+                    } else {
+                        this.Visible = true;
+                    }
+                }
+            });
+        }
+    }
+
+
+    public valueToValidations(val1, val2, type) {
+        let isValidation = false;
+        if (type === '>') {
+            if (val1 > val2) {
+                isValidation = true;
+            }
+        }
+        if (type === '>=') {
+            if (val1 >= val2) {
+                isValidation = true;
+            }
+        }
+        if (type === '<') {
+            if (val1 < val2) {
+                isValidation = true;
+            }
+        }
+        if (type === '<=') {
+            if (val1 <= val2) {
+                isValidation = true;
+            }
+        }
+        if (type === '==') {
+            if (val1 === val2) {
+                isValidation = true;
+            }
+        }
+        return isValidation;
+    }
+
+
 }
