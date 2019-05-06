@@ -18,7 +18,7 @@ export class CnGridSapnComponent extends CnComponentBase implements OnInit {
 
   @Output() public updateValue = new EventEmitter();
 
-  public isShow = false;
+  public isShow = true;
   public showAll = false;
   public showLable;
   public showShortLable;
