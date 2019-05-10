@@ -1,112 +1,102 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { _HttpClient } from "@delon/theme";
-import { SimpleTableColumn, SimpleTableComponent } from "@delon/abc";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { _HttpClient } from '@delon/theme';
+import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
 
 @Component({
-    selector: "app-tree-and-form",
-    templateUrl: "./tree-and-form.component.html"
+    selector: 'app-tree-and-form',
+    templateUrl: './tree-and-form.component.html'
 })
 export class TreeAndFormComponent implements OnInit {
-    constructor(private http: _HttpClient) {}
-
-    ngOnInit() {
-        // console.log(JSON.stringify(this.config));
-    }
-
-    config = {
+    public config = {
         rows: [
             {
                 row: {
                     cols: [
                         {
-                            id: "area1",
-                            title: "左树",
-                            span: 6,
-                            size: {
-                                nzXs: 6,
-                                nzSm: 6,
-                                nzMd: 6,
-                                nzLg: 6,
-                                ngXl: 6
+                            'id': 'area1',
+                            'title': '左树',
+                            'span': 6,
+                            'size': {
+                                'nzXs': 6,
+                                'nzMd': 6,
+                                'nzSm': 6,
+                                'nzLg': 6,
+                                'ngXl': 6
                             },
-                            viewCfg: [
+                            'viewCfg': [
                                 {
-                                    config: {
-                                        viewId: "tree_and_form_tree",
-                                        component: "bsnAsyncTree",
-                                        asyncData: true, //
-                                        expandAll: false, //
-                                        checkable: false, //    在节点之前添加一个复选框 false
-                                        showLine: false, //   显示连接线 fal
-                                        columns: [
-                                            // 字段映射，映射成树结构所需
+                                    'config': {
+                                        'viewId': 'tree_and_form_tree',
+                                        'component': 'bsnAsyncTree',
+                                        'asyncData': true,
+                                        'checkable': false,
+                                        'expandAll': false,
+                                        'showLine': false,
+                                        'columns': [
                                             {
-                                                title: "主键",
-                                                field: "key",
-                                                valueName: "Id"
+                                                'title': '主键',
+                                                'field': 'key',
+                                                'valueName': 'Id'
                                             },
                                             {
-                                                title: "父节点",
-                                                field: "parentId",
-                                                valueName: "parentId"
+                                                'title': '父节点',
+                                                'field': 'parentId',
+                                                'valueName': 'parentId'
                                             },
                                             {
-                                                title: "标题",
-                                                field: "title",
-                                                valueName: "caseName"
+                                                'title': '标题',
+                                                'field': 'title',
+                                                'valueName': 'caseName'
                                             }
                                         ],
-                                        componentType: {
-                                            parent: true,
-                                            child: false,
-                                            own: false
+                                        'componentType': {
+                                            'parent': true,
+                                            'child': false,
+                                            'own': false
                                         },
-                                        parent: [
+                                        'parent': [
                                             {
-                                                name: "parentId",
-                                                type: "value",
-                                                valueName: "",
-                                                value: "null"
+                                                'name': 'parentId',
+                                                'type': 'value',
+                                                'valueName': '',
+                                                'value': 'null'
                                             }
                                         ],
-                                        ajaxConfig: {
-                                            url: "common/ShowCase",
-                                            ajaxType: "get",
-                                            params: [
+                                        'ajaxConfig': {
+                                            'url': 'common/ShowCase',
+                                            'ajaxType': 'get',
+                                            'params': [
                                                 {
-                                                    name: "parentId",
-                                                    type: "componentValue",
-                                                    valueName: "",
-                                                    value: "null"
+                                                    'name': 'parentId',
+                                                    'type': 'value',
+                                                    'value': 'null'
                                                 }
                                             ]
                                         },
-                                        expand: [
+                                        'expand': [
                                             {
-                                                type: false,
-                                                ajaxConfig: {
-                                                    url: "common/ShowCase",
-                                                    ajaxType: "get",
-                                                    params: [
+                                                'type': false,
+                                                'ajaxConfig': {
+                                                    'url': 'common/ShowCase',
+                                                    'ajaxType': 'get',
+                                                    'params': [
                                                         {
-                                                            name: "parentId",
-                                                            type:
-                                                                "componentValue",
-                                                            valueName: "",
-                                                            value: ""
+                                                            'name': 'parentId',
+                                                            'type':'item',
+                                                            'valueName': 'key',
+                                                            'value': ''
                                                         }
                                                     ]
                                                 }
                                             }
                                         ]
-                                    },
-                                    dataList: []
+                                    }
                                 }
                             ]
                         },
                         {
-                            id: "area2",
-                            title: "右表单",
+                            id: 'area2',
+                            title: '右表单',
                             span: 18,
                             size: {
                                 nzXs: 18,
@@ -118,19 +108,19 @@ export class TreeAndFormComponent implements OnInit {
                             viewCfg: [
                                 {
                                     config: {
-                                        viewId: "tree_and_form_form",
-                                        component: "form_view",
-                                        keyId: "Id",
-                                        editable: "post",
+                                        viewId: 'tree_and_form_form',
+                                        component: 'form_view',
+                                        keyId: 'Id',
+                                        editable: 'post',
                                         ajaxConfig: {
-                                            url: "common/ShowCase",
-                                            ajaxType: "getById",
+                                            url: 'common/ShowCase',
+                                            ajaxType: 'getById',
                                             params: [
                                                 {
-                                                    name: "Id",
-                                                    type: "tempValue",
-                                                    valueName: "_id",
-                                                    value: ""
+                                                    name: 'Id',
+                                                    type: 'tempValue',
+                                                    valueName: '_id',
+                                                    value: ''
                                                 }
                                             ]
                                         },
@@ -143,153 +133,153 @@ export class TreeAndFormComponent implements OnInit {
                                             {
                                                 controls: [
                                                     {
-                                                        type: "select",
-                                                        labelSize: "6",
-                                                        controlSize: "16",
-                                                        inputType: "submit",
-                                                        name: "enabled",
-                                                        label: "状态",
-                                                        notFoundContent: "",
+                                                        type: 'select',
+                                                        labelSize: '6',
+                                                        controlSize: '16',
+                                                        inputType: 'submit',
+                                                        name: 'enabled',
+                                                        label: '状态',
+                                                        notFoundContent: '',
                                                         selectModel: false,
                                                         showSearch: true,
                                                         placeholder:
-                                                            "--请选择--",
+                                                            '--请选择--',
                                                         disabled: false,
-                                                        size: "default",
+                                                        size: 'default',
                                                         options: [
                                                             {
-                                                                label: "启用",
+                                                                label: '启用',
                                                                 value: true,
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "禁用",
+                                                                label: '禁用',
                                                                 value: false,
                                                                 disabled: false
                                                             }
                                                         ],
-                                                        layout: "column",
-                                                        span: "24"
+                                                        layout: 'column',
+                                                        span: '24'
                                                     }
                                                 ]
                                             },
                                             {
                                                 controls: [
                                                     {
-                                                        type: "select",
-                                                        labelSize: "6",
-                                                        controlSize: "16",
-                                                        inputType: "submit",
-                                                        name: "caseType",
-                                                        label: "类别",
-                                                        notFoundContent: "",
+                                                        type: 'select',
+                                                        labelSize: '6',
+                                                        controlSize: '16',
+                                                        inputType: 'submit',
+                                                        name: 'caseType',
+                                                        label: '类别',
+                                                        notFoundContent: '',
                                                         selectModel: false,
                                                         showSearch: true,
                                                         placeholder:
-                                                            "--请选择--",
+                                                            '--请选择--',
                                                         disabled: false,
-                                                        size: "default",
+                                                        size: 'default',
                                                         options: [
                                                             {
-                                                                label: "表",
-                                                                value: "1",
+                                                                label: '表',
+                                                                value: '1',
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "树",
-                                                                value: "2",
+                                                                label: '树',
+                                                                value: '2',
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "树表",
-                                                                value: "3",
+                                                                label: '树表',
+                                                                value: '3',
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "表单",
-                                                                value: "4",
+                                                                label: '表单',
+                                                                value: '4',
                                                                 disabled: false
                                                             },
                                                             {
-                                                                label: "标签页",
-                                                                value: "5",
+                                                                label: '标签页',
+                                                                value: '5',
                                                                 disabled: false
                                                             }
                                                         ],
-                                                        layout: "column",
-                                                        span: "24"
+                                                        layout: 'column',
+                                                        span: '24'
                                                     }
                                                 ]
                                             },
                                             {
                                                 controls: [
                                                     {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "16",
-                                                        inputType: "text",
-                                                        name: "caseName",
-                                                        label: "名称",
-                                                        placeholder: "",
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '16',
+                                                        inputType: 'text',
+                                                        name: 'caseName',
+                                                        label: '名称',
+                                                        placeholder: '',
                                                         disabled: false,
                                                         readonly: false,
-                                                        size: "default",
-                                                        layout: "column",
-                                                        span: "24"
+                                                        size: 'default',
+                                                        layout: 'column',
+                                                        span: '24'
                                                     }
                                                 ]
                                             },
                                             {
                                                 controls: [
                                                     {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "16",
-                                                        inputType: "text",
-                                                        name: "caseLevel",
-                                                        label: "级别",
-                                                        placeholder: "",
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '16',
+                                                        inputType: 'text',
+                                                        name: 'caseLevel',
+                                                        label: '级别',
+                                                        placeholder: '',
                                                         disabled: false,
                                                         readonly: false,
-                                                        size: "default",
-                                                        layout: "column",
-                                                        span: "24"
+                                                        size: 'default',
+                                                        layout: 'column',
+                                                        span: '24'
                                                     }
                                                 ]
                                             },
                                             {
                                                 controls: [
                                                     {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "16",
-                                                        inputType: "text",
-                                                        name: "caseCount",
-                                                        label: "数量",
-                                                        placeholder: "",
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '16',
+                                                        inputType: 'text',
+                                                        name: 'caseCount',
+                                                        label: '数量',
+                                                        placeholder: '',
                                                         disabled: false,
                                                         readonly: false,
-                                                        size: "default",
-                                                        layout: "column",
-                                                        span: "24"
+                                                        size: 'default',
+                                                        layout: 'column',
+                                                        span: '24'
                                                     }
                                                 ]
                                             },
                                             {
                                                 controls: [
                                                     {
-                                                        type: "input",
-                                                        labelSize: "6",
-                                                        controlSize: "16",
-                                                        inputType: "text",
-                                                        name: "remark",
-                                                        label: "备注",
-                                                        placeholder: "",
+                                                        type: 'input',
+                                                        labelSize: '6',
+                                                        controlSize: '16',
+                                                        inputType: 'text',
+                                                        name: 'remark',
+                                                        label: '备注',
+                                                        placeholder: '',
                                                         disabled: false,
                                                         readonly: false,
-                                                        size: "default",
-                                                        layout: "column",
-                                                        span: "24"
+                                                        size: 'default',
+                                                        layout: 'column',
+                                                        span: '24'
                                                     }
                                                 ]
                                             }
@@ -300,164 +290,164 @@ export class TreeAndFormComponent implements OnInit {
                                             span: 16,
                                             buttons: [
                                                 {
-                                                    name: "saveForm",
-                                                    type: "primary",
-                                                    text: "保存",
+                                                    name: 'saveForm',
+                                                    type: 'primary',
+                                                    text: '保存',
                                                     ajaxConfig: {
                                                         post: {
                                                             url:
-                                                                "common/ShowCase",
-                                                            ajaxType: "post",
+                                                                'common/ShowCase',
+                                                            ajaxType: 'post',
                                                             params: [
                                                                 {
                                                                     name:
-                                                                        "caseName",
+                                                                        'caseName',
                                                                     type:
-                                                                        "componentValue",
+                                                                        'componentValue',
                                                                     valueName:
-                                                                        "caseName",
-                                                                    value: ""
+                                                                        'caseName',
+                                                                    value: ''
                                                                 },
                                                                 {
                                                                     name:
-                                                                        "caseCount",
+                                                                        'caseCount',
                                                                     type:
-                                                                        "componentValue",
+                                                                        'componentValue',
                                                                     valueName:
-                                                                        "caseCount",
-                                                                    value: ""
+                                                                        'caseCount',
+                                                                    value: ''
                                                                 },
                                                                 {
                                                                     name:
-                                                                        "enabled",
+                                                                        'enabled',
                                                                     type:
-                                                                        "componentValue",
+                                                                        'componentValue',
                                                                     valueName:
-                                                                        "enabled",
-                                                                    value: ""
+                                                                        'enabled',
+                                                                    value: ''
                                                                 },
                                                                 {
                                                                     name:
-                                                                        "caseLevel",
+                                                                        'caseLevel',
                                                                     type:
-                                                                        "componentValue",
+                                                                        'componentValue',
                                                                     valueName:
-                                                                        "caseLevel",
-                                                                    value: ""
+                                                                        'caseLevel',
+                                                                    value: ''
                                                                 },
                                                                 {
                                                                     name:
-                                                                        "parentId",
+                                                                        'parentId',
                                                                     type:
-                                                                        "tempValue",
+                                                                        'tempValue',
                                                                     valueName:
-                                                                        "_parentId",
-                                                                    value: ""
+                                                                        '_parentId',
+                                                                    value: ''
                                                                 },
                                                                 {
                                                                     name:
-                                                                        "remark",
+                                                                        'remark',
                                                                     type:
-                                                                        "componentValue",
+                                                                        'componentValue',
                                                                     valueName:
-                                                                        "remark",
-                                                                    value: ""
+                                                                        'remark',
+                                                                    value: ''
                                                                 },
                                                                 {
                                                                     name:
-                                                                        "caseType",
+                                                                        'caseType',
                                                                     type:
-                                                                        "componentValue",
+                                                                        'componentValue',
                                                                     valueName:
-                                                                        "caseType",
-                                                                    value: ""
+                                                                        'caseType',
+                                                                    value: ''
                                                                 }
                                                             ]
                                                         },
                                                         put: {
                                                             url:
-                                                                "common/ShowCase",
-                                                            ajaxType: "put",
+                                                                'common/ShowCase',
+                                                            ajaxType: 'put',
                                                             params: [
                                                                 {
-                                                                    name: "Id",
+                                                                    name: 'Id',
                                                                     type:
-                                                                        "tempValue",
+                                                                        'tempValue',
                                                                     valueName:
-                                                                        "_id",
-                                                                    value: ""
+                                                                        '_id',
+                                                                    value: ''
                                                                 },
                                                                 {
                                                                     name:
-                                                                        "caseName",
+                                                                        'caseName',
                                                                     type:
-                                                                        "componentValue",
+                                                                        'componentValue',
                                                                     valueName:
-                                                                        "caseName",
-                                                                    value: ""
+                                                                        'caseName',
+                                                                    value: ''
                                                                 },
                                                                 {
                                                                     name:
-                                                                        "caseCount",
+                                                                        'caseCount',
                                                                     type:
-                                                                        "componentValue",
+                                                                        'componentValue',
                                                                     valueName:
-                                                                        "caseCount",
-                                                                    value: ""
+                                                                        'caseCount',
+                                                                    value: ''
                                                                 },
                                                                 {
                                                                     name:
-                                                                        "enabled",
+                                                                        'enabled',
                                                                     type:
-                                                                        "componentValue",
+                                                                        'componentValue',
                                                                     valueName:
-                                                                        "enabled",
-                                                                    value: ""
+                                                                        'enabled',
+                                                                    value: ''
                                                                 },
                                                                 {
                                                                     name:
-                                                                        "caseLevel",
+                                                                        'caseLevel',
                                                                     type:
-                                                                        "componentValue",
+                                                                        'componentValue',
                                                                     valueName:
-                                                                        "caseLevel",
-                                                                    value: ""
+                                                                        'caseLevel',
+                                                                    value: ''
                                                                 },
                                                                 {
                                                                     name:
-                                                                        "parentId",
+                                                                        'parentId',
                                                                     type:
-                                                                        "tempValue",
+                                                                        'tempValue',
                                                                     valueName:
-                                                                        "_parentId",
-                                                                    value: ""
+                                                                        '_parentId',
+                                                                    value: ''
                                                                 },
                                                                 {
                                                                     name:
-                                                                        "remark",
+                                                                        'remark',
                                                                     type:
-                                                                        "componentValue",
+                                                                        'componentValue',
                                                                     valueName:
-                                                                        "remark",
-                                                                    value: ""
+                                                                        'remark',
+                                                                    value: ''
                                                                 },
                                                                 {
                                                                     name:
-                                                                        "caseType",
+                                                                        'caseType',
                                                                     type:
-                                                                        "componentValue",
+                                                                        'componentValue',
                                                                     valueName:
-                                                                        "caseType",
-                                                                    value: ""
+                                                                        'caseType',
+                                                                    value: ''
                                                                 }
                                                             ]
                                                         }
                                                     }
                                                 },
                                                 {
-                                                    name: "cancelForm",
-                                                    type: "default",
-                                                    text: "取消"
+                                                    name: 'cancelForm',
+                                                    type: 'default',
+                                                    text: '取消'
                                                 }
                                             ]
                                         },
@@ -465,12 +455,12 @@ export class TreeAndFormComponent implements OnInit {
                                         relations: [
                                             {
                                                 relationViewId:
-                                                    "tree_and_form_tree",
-                                                cascadeMode: "REFRESH_AS_CHILD",
+                                                    'tree_and_form_tree',
+                                                cascadeMode: 'REFRESH_AS_CHILD',
                                                 params: [
                                                     {
-                                                        pid: "Id",
-                                                        cid: "_id"
+                                                        pid: 'Id',
+                                                        cid: '_id'
                                                     }
                                                 ]
                                             }
@@ -484,5 +474,12 @@ export class TreeAndFormComponent implements OnInit {
                 }
             }
         ]
-    };
+    }
+    constructor(private http: _HttpClient) {}
+
+    public ngOnInit() {
+        // console.log(JSON.stringify(this.config));
+    }
+
+
 }

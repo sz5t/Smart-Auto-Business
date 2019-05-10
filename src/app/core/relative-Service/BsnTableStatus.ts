@@ -81,6 +81,7 @@ export const BSN_PARAMETER_TYPE = {
     TEMP_VALUE: 'tempValue',
     VALUE: 'value',
     GUID: 'GUID',
+    ITEM: 'item',
     COMPONENT_VALUE: 'componentValue',
     CHECKED_ROW: 'checkedRow',
     SELECTED_ROW: 'selectedRow',

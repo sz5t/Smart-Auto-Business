@@ -349,7 +349,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                                 }
                                 switch (mode) {
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
-                                        // 主子刷新的时候需要清理掉当前选中节点的值,让树重新选中配置的默认节点 
+                                        // 主子刷新的时候需要清理掉当前选中节点的值,让树重新选中配置的默认节点
                                         this.tempValue['_selectedNode'] = null;
                                         this.load();
                                         break;
@@ -437,7 +437,6 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                             }
                         });
                     }
-
                     const d = this._setDataToNzTreeNodes(
                         this._toTreeBefore,
                         parent,
@@ -512,6 +511,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                         }
                     }
                     this.treeData = d;
+
                     // 发送消息
                     if (
                         this.config.componentType
