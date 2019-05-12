@@ -109,6 +109,51 @@ export class CommonTools {
                                 result[param['name']] =  param.value;
                             }
                             break;
+                        case BSN_PARAMETER_TYPE.ITEM:
+                        if (model.item) {
+                            if (model.item) {
+                                // 判断组件取值是否为null
+                                if (
+                                    model.item[param['valueName']] ===
+                                    null ||
+                                    model.item[param['valueName']] ===
+                                    undefined
+                                ) {
+                                    if (param['value'] !== undefined) {
+                                        if (param['datatype']) {
+                                            result[param['name']] = this.getParameters(param['datatype'], param['value']);
+                                        } else if (param['defaultDate']) {
+                                            const dateType = param['defaultDate'];
+                                            let dValue;
+                                            switch (dateType) {
+                                                case 'defaultWeek':
+                                                dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
+                                                break;
+                                                case 'defaultDay':
+                                                dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
+                                                break;
+                                                case 'defaultMonth':
+                                                dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1 }`;
+                                                break;
+                                                case 'defaultYear':
+                                                dValue = `${getISOYear(Date.now())}`;
+                                                break;
+                                            }
+                                            result[param['name']] = dValue;
+                                        } else {
+                                            result[param['name']] = param['value'];
+                                        }
+                                    }
+                                } else {
+                                    if (param['datatype']) {
+                                        result[param['name']] = this.getParameters(param['datatype'], model.item[param['valueName']]);
+                                    } else {
+                                        result[param['name']] = model.item[param['valueName']];
+                                    }
+                                }
+                            }
+                        }
+                        break;
                         case BSN_PARAMETER_TYPE.COMPONENT_VALUE:
                             if (model.componentValue) {
                                 // 判断组件取值是否为null
@@ -150,24 +195,6 @@ export class CommonTools {
                                         result[param['name']] = model.componentValue[param['valueName']];
                                     }
                                 }
-
-                                // if (
-                                //     model.componentValue[param["valueName"]] !==
-                                //     undefined
-                                // ) {
-                                //     result[param["name"]] =
-                                //         model.componentValue[
-                                //             param["valueName"]
-                                //         ];
-                                // } else {
-                                //     if (
-                                //         param["value"] === null ||
-                                //         param["value"] === "" ||
-                                //         param["value"] === 0
-                                //     ) {
-                                //         result[param["name"]] = param["value"];
-                                //     }
-                                // }
                             }
                             break;
                         case BSN_PARAMETER_TYPE.GUID:
@@ -264,7 +291,7 @@ export class CommonTools {
                                         result[param['name']] = model.initValue[param['valueName']];
                                     }
                                 }
-                                    
+
                             }
                             break;
                         case BSN_PARAMETER_TYPE.CACHE_VALUE:
@@ -300,12 +327,12 @@ export class CommonTools {
                                     model.router.params.subscribe(r => {
                                         result[param['name']] = this.getParameters(param['datatype'], r['name']);
                                     })
-                                    
+
                                 }  else {
                                     model.router.params.subscribe(r => {
                                         result[param['name']] = r.name;
                                     })
-                                }  
+                                }
                             }
                     }
                 }
@@ -345,19 +372,19 @@ export class CommonTools {
             case 'nin': // not in  如果是input 是这样取值，其他则是多选取值
                 strQ = strQ + '!in(' + inputValue + ')';
                 break;
-            case 'btn': // between  
+            case 'btn': // between
                 strQ = strQ + 'btn(' + inputValue + ')';
                 break;
-            case 'ge': // >=  
+            case 'ge': // >=
                 strQ = strQ + 'ge(' + inputValue + ')';
                 break;
-            case 'gt': // >  
+            case 'gt': // >
                 strQ = strQ + 'gt(' + inputValue + ')';
                 break;
-            case 'le': // <=  
+            case 'le': // <=
                 strQ = strQ + 'le(' + inputValue + ')';
                 break;
-            case 'lt': // <  
+            case 'lt': // <
                 strQ = strQ + 'lt(' + inputValue + ')';
                 break;
             default:
@@ -414,7 +441,7 @@ export class CommonTools {
             break;
         }
 
-        
+
         return currentDate;
     }
 
@@ -435,6 +462,6 @@ export class CommonTools {
             break;
         }
     }
-    
+
 
 }

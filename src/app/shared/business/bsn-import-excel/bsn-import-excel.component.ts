@@ -101,9 +101,9 @@ export class BsnImportExcelComponent implements OnInit, AfterViewInit {
     public handleUpload(): void {
         let continues = false;
         const formData = new FormData();
-        
+
         // tslint:disable-next-line:no-any
-        
+
         this.fileList.forEach((file: any, index) => {
             const startIndex = file.name.lastIndexOf('.');
             const endIndex = file.name.length - 1;

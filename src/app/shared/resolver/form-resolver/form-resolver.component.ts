@@ -244,6 +244,7 @@ export class FormResolverComponent extends CnFormBase
             this.config.componentType &&
             this.config.componentType.child === true
         ) {
+
             this.cascadeSubscriptions = this.cascadeEvents.subscribe(
                 cascadeEvent => {
                     // 解析子表消息配置
@@ -436,7 +437,7 @@ export class FormResolverComponent extends CnFormBase
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                     description: putConfig.description ? putConfig.description : ' [执行成功] ' + ` 数据为: ${JSON.stringify(params)}`
                 }).subscribe(result => {
-    
+
                 })
             } else {
                 this.message.create('error', res.message);
@@ -447,7 +448,7 @@ export class FormResolverComponent extends CnFormBase
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                     description: putConfig.description ? putConfig.description : ' [执行失败] ' + ` 数据为: ${JSON.stringify(params)}` + ' 错误消息：' + res.message
                 }).subscribe(result => {
-    
+
                 })
             }
         }
@@ -481,7 +482,7 @@ export class FormResolverComponent extends CnFormBase
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                     description: deleteConfig.description ? deleteConfig.description : ' [执行成功] ' + ` 数据为: ${JSON.stringify(JSON.stringify(params))}`
                 }).subscribe(result => {
-    
+
                 })
             }
         }
@@ -498,7 +499,7 @@ export class FormResolverComponent extends CnFormBase
                 funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                 description: `删除数据操作异常,未能正确删除数据`
             }).subscribe(result => {
-                
+
             });
         })
     }
@@ -1391,15 +1392,15 @@ export class FormResolverComponent extends CnFormBase
     }
     /**
       * 执行值变化触发的事件 liu 20190115
-      * @param data 
+      * @param data
       */
     public ExecEventByValueChange(data?) {
         const ss = {
             events: [  // 行事件、列事件
                 {
-                    // 首先 判断 onTrigger 什么类别触发，其次 ，看当前是新增、修改， 最后 执行onEvent 
+                    // 首先 判断 onTrigger 什么类别触发，其次 ，看当前是新增、修改， 最后 执行onEvent
                     name: '', // 名称唯一，为日后扩充权限做准备
-                    onTrigger: 'onColumnValueChange',  // 什么条件触发  例如：oncolumnValueChange   onSelectedRow  on CheckedRow    
+                    onTrigger: 'onColumnValueChange',  // 什么条件触发  例如：oncolumnValueChange   onSelectedRow  on CheckedRow
                     type: 'EditableSave',  // 需要区分 新增 修改
                     actiontype: 'add、update', // 不满足条件的 均可
                     onEvent: [
@@ -1415,7 +1416,7 @@ export class FormResolverComponent extends CnFormBase
                                             {
                                                 name: 'enabled',
                                                 value: '[0-1]',
-                                                checkType: 'regexp'  //  'value'  'regexp' 'tempValue' 'initValue'  'cacheValue' 
+                                                checkType: 'regexp'  //  'value'  'regexp' 'tempValue' 'initValue'  'cacheValue'
                                             }
                                         ]
                                     ],
@@ -1553,7 +1554,7 @@ export class FormResolverComponent extends CnFormBase
 
     // tslint:disable-next-line:member-ordering
 
-    //  获取event 事件的配置 
+    //  获取event 事件的配置
     public GetToolbarEvents() {
         if (this.config.toolbarEvent && Array.isArray(this.config.toolbarEvent)) {
             this.config.toolbarEvent.forEach(item => {
@@ -1590,7 +1591,7 @@ export class FormResolverComponent extends CnFormBase
     // setValue 由form 层控制（继续使用表单内部的机制）
     // 隐藏，显示 也是由 form 控制（和渲染模板有关）
     // 顺序：ajax、option 》 setvalue
-    // 异步参数？表单值 
+    // 异步参数？表单值
 
 
 

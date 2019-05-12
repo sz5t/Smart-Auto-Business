@@ -1,24 +1,40 @@
-<nz-tree
-    [nzData]="treeData"
-    nzAsyncData
-    [nzDefaultExpandAll]="config.expandAll"
-    [nzCheckable]="config.checkable"
-    [nzShowLine]="config.showLine"
-    (nzExpandChange)="onMouseAction('expandNode', $event)"
-    (nzClick)="onMouseAction('clickNode', $event)">
-    <ng-template #nzTreeTemplate let-node>
-        <span class="custom-node" draggable="true" aria-grabbed="true" [class.active]="activedNode?.key===node.key">
-          <span *ngIf="!node.isLeaf" [class.shine-animate]="node.origin.isLoading" (contextmenu)="contextMenu($event,contextTemplate, node)">
-            <i class="anticon anticon-folder" *ngIf="!node.isExpanded" (click)="openFolder(node)"></i>
-            <i class="anticon anticon-folder-open" *ngIf="node.isExpanded" (click)="openFolder(node)"></i>
-            <span class="folder-name"> {{node.title}}</span>
-            <span class="folder-desc"> {{node?.origin?.author | lowercase}}</span>
-          </span>
-          <span *ngIf="node.isLeaf" (contextmenu)="contextMenu($event,contextTemplate, node)">
-            <i class="anticon anticon-file"></i>
-            <span class="file-name"> {{node.title}}</span>
-            <span class="file-desc"> {{node?.origin?.author | lowercase}}</span>
-          </span>
-        </span>
-    </ng-template>
+<bsn-toolbar *ngIf="config.toolbar" [config]="config.toolbar" [viewId]="config.viewId"
+  [permissions]="permissions ? permissions : []"></bsn-toolbar>
+  <nz-spin nzTip='数据加载中...' [nzSpinning]="isLoading">
+
+      <!-- <nz-card [nzBodyStyle]="{padding: '0px'}"> -->
+                                      <div
+                                      [ngStyle]="{overflow: 'auto',height: config.height}"
+                                      infiniteScroll
+                                      [infiniteScrollDistance]="2"
+                                      [infiniteScrollThrottle]="50"
+                                      [scrollWindow]="false">
+                                      <nz-input-group *ngIf="config.search"  [nzSuffix]="suffixIcon">
+                                              <input type="text" nz-input placeholder="Search" [(ngModel)]="searchValue">
+                                            </nz-input-group>
+                                            <ng-template #suffixIcon>
+                                              <i nz-icon type="search"></i>
+                                            </ng-template>
+<nz-tree #treeObj [nzData]="treeData" [nzAsyncData]="config.asyncData" [nzDefaultExpandAll]="config.expandAll"
+  [nzCheckable]="config.checkable" [nzShowLine]="config.showLine" (nzExpandChange)="onMouseAction('expandNode', $event)"
+  (nzClick)="onMouseAction('clickNode', $event)">
+  <ng-template #nzTreeTemplate let-node>
+    <span class="custom-node" draggable="true" aria-grabbed="true" [class.active]="activedNode?.key===node.key">
+      <span *ngIf="!node.isLeaf" [class.shine-animate]="node.origin.isLoading"
+        (contextmenu)="contextMenu($event,contextTemplate, node)">
+        <i class="anticon anticon-folder" *ngIf="!node.isExpanded" (click)="openFolder(node)"></i>
+        <i class="anticon anticon-folder-open" *ngIf="node.isExpanded" (click)="openFolder(node)"></i>
+        <span class="folder-name"> {{node.title}}</span>
+        <span class="folder-desc"> {{node?.origin?.author | lowercase}}</span>
+      </span>
+      <span *ngIf="node.isLeaf" (contextmenu)="contextMenu($event,contextTemplate, node)">
+        <i class="anticon anticon-file"></i>
+        <span class="file-name"> {{node.title}}</span>
+        <span class="file-desc"> {{node?.origin?.author | lowercase}}</span>
+      </span>
+    </span>
+  </ng-template>
 </nz-tree>
+</div>
+</nz-spin>
+<button nzButton (click)="addChildren()">添加</button>
