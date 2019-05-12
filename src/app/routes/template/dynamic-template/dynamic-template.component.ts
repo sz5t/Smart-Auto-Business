@@ -25,16 +25,19 @@ export class DynamicTemplateComponent implements OnInit, OnDestroy {
         this._route.params.subscribe(params => {
             this._http.getLocalData(params.name).subscribe(data => {
                 (async() => {
-                    const userInfo = this._cacheService.get('userInfo');
-                    const userId = userInfo['value']['userId'];
-                    const permission = await this._getOperationPermission(params.name, userId, 'button');
-                    if (permission.isSuccess) {
-                        this.config = data;
-                        this.permissions = permission.data;
-                        this.isLoadLayout = true;
-                    } else {
-                        console.log('出现异常:未能获取权限信息');
+                    const userInfo = this._cacheService.getNone('userInfo');
+                    if(userInfo) {
+                        const userId = userInfo['userId'];
+                        const permission = await this._getOperationPermission(params.name, userId, 'button');
+                        if (permission.isSuccess) {
+                            this.config = data;
+                            this.permissions = permission.data;
+                            this.isLoadLayout = true;
+                        } else {
+                            console.log('出现异常:未能获取权限信息');
+                        }
                     }
+                    
                 })();
                 
             });

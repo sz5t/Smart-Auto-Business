@@ -76,7 +76,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
     /**
      * 数据源
      */
-    // dataList = [];
+    public dataList = [];
     /**
      * 展开数据行
      */

@@ -38,7 +38,7 @@ import 'core-js/es6/set';
 // import 'classlist.js';  // Run `npm install --save classlist.js`.
 
 /** Evergreen browsers require these. **/
-import 'core-js/es6/reflect';
+import 'core-js/es7/reflect';
 import 'core-js/es7/reflect';
 // IE Need
 import 'core-js/es7/array';

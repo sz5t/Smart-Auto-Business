@@ -5,7 +5,7 @@
                                 <nz-form-item>
                                         <nz-form-label> 功能模块 </nz-form-label>
                                         <nz-form-control>
-                                                <nz-cascader [ngModelOptions]="{ standalone: true }" [class.class123]="true" [nzOptions]="_funcOptions" [(ngModel)]="_funcValue" (nzChange)="_changeModuleValue($event)" [nzPlaceHolder]="'请选择功能模块'" [nzExpandTrigger]="'hover'"> </nz-cascader>
+                                                <nz-cascader [ngModelOptions]="{ standalone: true }" [class.class123]="true" [nzOptions]="_funcOptions" [(ngModel)]="_funcValue" (nzSelectionChange)="_changeModuleValue($event)" [nzPlaceHolder]="'请选择功能模块'" [nzExpandTrigger]="'hover'"> </nz-cascader>
                                         </nz-form-control>
                                 </nz-form-item>
                         </form>
@@ -60,7 +60,7 @@
                                         </tr>
                                 </thead>
                                 <tbody>
-                                        <ng-template ngFor let-data [ngForOf]="tableData">
+                                        <ng-template ngFor let-data [ngForOf]="sqlTable.data">
                                                 <tr (click)="selectRow(data)" [ngStyle]="{ 'background-color': data.selected ? 'rgb(236, 246, 253)' : '' }">
                                                         <td nzShowExpand [(nzExpand)]="data.expand"></td>
                                                         <td>{{ data.name }}</td>

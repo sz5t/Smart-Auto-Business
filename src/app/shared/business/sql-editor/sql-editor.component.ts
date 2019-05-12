@@ -87,7 +87,7 @@ export class SqlEditorComponent extends CnComponentBase
     public tableData = [];
     public _selectedRow;
     public _scriptName;
-    public loading = true;
+    public loading = false;
     public scriptModelList = [
         { value: 'get', name: 'get' },
         { value: 'post', name: 'post' },
@@ -166,6 +166,7 @@ export class SqlEditorComponent extends CnComponentBase
     }
 
     public async load(condition?) {
+        this.loading = true;
         let param = {
             _page: this.pageIndex,
             _rows: this.pageSize,

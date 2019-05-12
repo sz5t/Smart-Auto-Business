@@ -20,7 +20,6 @@ import {
 } from '@core/relative-Service/BsnTableStatus';
 import { IBlockExclusionDescriptor } from 'tslint/lib/rules/completed-docs/blockExclusion';
 import {CommonTools} from '@core/utility/common-tools';
-import { debug } from 'util';
 
 @Directive({
     // tslint:disable-next-line:directive-selector

@@ -269,12 +269,12 @@ export class CommonTools {
                             break;
                         case BSN_PARAMETER_TYPE.CACHE_VALUE:
                             if (model.cacheValue) {
-                                const cache = model.cacheValue.get('userInfo');
+                                const cache = model.cacheValue.getNone('userInfo');
                                 // result[param['name']] = cache.value[param['valueName']];
                                     if (param['datatype']) {
-                                        result[param['name']] = this.getParameters(param['datatype'], cache.value[param['valueName']]);
+                                        result[param['name']] = this.getParameters(param['datatype'], cache[param['valueName']]);
                                     } else {
-                                        result[param['name']] = cache.value[param['valueName']];
+                                        result[param['name']] = cache[param['valueName']];
                                     }
                             }
                             break;

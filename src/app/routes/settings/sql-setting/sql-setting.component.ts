@@ -10,10 +10,10 @@ import { RelativeService } from '@core/relative-Service/relative-service';
 })
 export class SqlSettingComponent implements OnInit , OnDestroy {
 
-  _moduleId;
-  _funcValue;
-  _funcOptions = [];
-  _sqlDataConfig = {
+  public _moduleId;
+  public _funcValue;
+  public _funcOptions = [];
+  public _sqlDataConfig = {
     'viewId': 'viewId_sqlSetting',
     'keyId': 'key',
     'nzIsPagination': true, // 是否分页
@@ -40,9 +40,9 @@ export class SqlSettingComponent implements OnInit , OnDestroy {
       ]
     },
     'componentType': {
-      'parent': true,
-      'child': false,
-      'own': true
+      'parent': false,
+      'child': true,
+      'own': false
     },
     'relation': [
       {
@@ -455,7 +455,7 @@ export class SqlSettingComponent implements OnInit , OnDestroy {
       { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' }
     ]
   };
-  _paramDataConfig = {
+  public _paramDataConfig = {
     'viewId': 'viewId_sqlParams',
     'keyId': 'key',
     'nzIsPagination': true, // 是否分页
@@ -807,7 +807,7 @@ export class SqlSettingComponent implements OnInit , OnDestroy {
       { 'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消' }
     ]
   };
-  _sqlEditorConfig = {
+  public _sqlEditorConfig = {
     'viewId': 'viewId_sqlEditor',
     'componentType': {
       'parent': false,
@@ -827,19 +827,19 @@ export class SqlSettingComponent implements OnInit , OnDestroy {
     private relativeMessage: RelativeService
   ) { }
 
-  async ngOnInit() {
+  public async ngOnInit() {
     // const params = { _select: 'Id,name,parentId' };
     // const moduleData = await this.getModuleData(params);
     // // 初始化模块列表，将数据加载到及联下拉列表当中
     // this._funcOptions = this.arrayToTree(moduleData.Data, '');
   }
   // 获取模块信息
-  async getModuleData(params) {
+  public async getModuleData(params) {
     return this.apiService.get('common/ComProjectModule', params).toPromise();
   }
 
   // 改变模块选项
-  async _changeModuleValue($event?) {
+  public async _changeModuleValue($event?) {
     // 选择功能模块，首先加载服务端配置列表
     // const params = new HttpParams().set('TagA', this._funcValue.join(','));
     if (this._funcValue.length > 0) {
@@ -864,7 +864,7 @@ export class SqlSettingComponent implements OnInit , OnDestroy {
     }
   }
 
-  arrayToTree(data, parentid) {
+  public arrayToTree(data, parentid) {
     const result = [];
     let temp;
     for (let i = 0; i < data.length; i++) {
@@ -882,7 +882,7 @@ export class SqlSettingComponent implements OnInit , OnDestroy {
     return result;
   }
 
-  sqlRefreshData() {
+  public sqlRefreshData() {
     /*const params = {
       _page: this._sql_current,
       _rows: this._sql_pageSize,
@@ -890,7 +890,7 @@ export class SqlSettingComponent implements OnInit , OnDestroy {
     // return  this.apiService.get(`${APIResource.SysDataCategoryLink}/${this._moduleId}/${APIResource.DbCommonConfig}`, params).toPromise();
   }
   
-  ngOnDestroy () {
+  public ngOnDestroy () {
     if (this) {
       // this.relativeMessage.clearMessage(); 
     }
