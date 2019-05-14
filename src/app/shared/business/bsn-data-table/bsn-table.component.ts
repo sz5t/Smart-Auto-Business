@@ -1130,7 +1130,6 @@ export class BsnTableComponent extends CnComponentBase
         // this.dataList.push(this.rowContent);
         this._updateEditCache();
         this._startEdit(fieldIdentity.toString());
-
         return true;
     }
 
@@ -2643,31 +2642,48 @@ export class BsnTableComponent extends CnComponentBase
     }
 
     public cancelRow() {
-        let len = this.dataList.length;
-        for (let i = 0; i < len; i++) {
-            if (this.dataList[i]['checked']) {
-                if (this.dataList[i]['row_status'] === 'adding') {
-                    this.dataList.splice(
-                        this.dataList.indexOf(this.dataList[i]),
-                        1
-                    );
-                    i--;
-                    len--;
-                } else if (this.dataList[i]['row_status'] === 'search') {
-                    this.dataList.splice(
-                        this.dataList.indexOf(this.dataList[i]),
-                        1
-                    );
+        // let len = this.dataList.length;
+        // for (let i = 0; i < len; i++) {
+        //     if (this.dataList[i]['checked']) {
+        //         if (this.dataList[i]['row_status'] === 'adding') {
+        //             this.dataList.splice(
+        //                 this.dataList.indexOf(this.dataList[i]),
+        //                 1
+        //             );
+        //             i--;
+        //             len--;
+        //         } else if (this.dataList[i]['row_status'] === 'search') {
+        //             this.dataList.splice(
+        //                 this.dataList.indexOf(this.dataList[i]),
+        //                 1
+        //             );
+        //             this.is_Search = false;
+        //             this.search_Row = {};
+        //             i--;
+        //             len--;
+        //         } else {
+        //             this._cancelEdit(this.dataList[i].key);
+        //         }
+        //     }
+        // }
+        this.dataList = this.dataList.filter(d => {
+            if (d['checked']) {
+                if (d['row_status'] === 'adding') {
+                     return false;
+                } else if (d['row_status'] === 'search') {
                     this.is_Search = false;
                     this.search_Row = {};
-                    i--;
-                    len--;
-                } else {
-                    this._cancelEdit(this.dataList[i].key);
+                    return false;
+                }  else {
+                    this._cancelEdit(d.key);
+                    return true;
                 }
+            } else {
+                return true;
             }
-        }
+        });
         this.refChecked();
+     //   this.dataList = JSON.parse(JSON.stringify(this.dataList));
         return true;
     }
 

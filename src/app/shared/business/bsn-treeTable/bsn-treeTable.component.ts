@@ -573,6 +573,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
 
 
         this.dataList.splice(index + 1, 0, ...childrenList);
+        this.dataList = JSON.parse(JSON.stringify(this.dataList));
     }
 
     private expandLoad(parentData) {
