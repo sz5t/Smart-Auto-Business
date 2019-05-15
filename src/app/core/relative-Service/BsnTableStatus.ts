@@ -144,6 +144,9 @@ export const BSN_COMPONENT_CASCADE_MODES = {
     SELECTED_NODE: 'selectNode',
     CHEKCED_NODES: 'checkNode',
     CHECKED_NODES_ID: 'checkNodesId',
+    ADD_ASYNC_TREE_NODE: 'addAsyncTreeNode',
+    EDIT_ASNYC_TREE_NODE: 'editAsyncTreeNode',
+    DELETE_ASYNC_TREE_NODE: 'deleteAsyncTreeNode',
 
     // form
     LOAD_FORM: 'loadForm'

@@ -18,7 +18,7 @@
 <nz-tree #treeObj [nzData]="treeData" [nzAsyncData]="config.asyncData" [nzDefaultExpandAll]="config.expandAll"
   [nzCheckable]="config.checkable" [nzShowLine]="config.showLine" (nzExpandChange)="onMouseAction('expandNode', $event)"
   (nzClick)="onMouseAction('clickNode', $event)">
-  <ng-template #nzTreeTemplate let-node>
+  <!-- <ng-template #nzTreeTemplate let-node>
     <span class="custom-node" draggable="true" aria-grabbed="true" [class.active]="activedNode?.key===node.key">
       <span *ngIf="!node.isLeaf" [class.shine-animate]="node.origin.isLoading"
         (contextmenu)="contextMenu($event,contextTemplate, node)">
@@ -33,8 +33,11 @@
         <span class="file-desc"> {{node?.origin?.author | lowercase}}</span>
       </span>
     </span>
-  </ng-template>
+  </ng-template> -->
 </nz-tree>
 </div>
 </nz-spin>
-<button nzButton (click)="addChildren()">添加</button>
+
+<button nz-button (click)="deleteNodes()">delete</button>
+<button nz-button (click)="updateNode()">update</button>
+<button nz-button (click)="addChildrenNode()">update</button>

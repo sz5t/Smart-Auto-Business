@@ -463,5 +463,55 @@ export class CommonTools {
         }
     }
 
+    public static getReturnIdsAndType(val) {
+        const ps: {ids: string[], type: string}[] = []; 
+        const add_val: {ids: string[], type: string} = {ids: [], type: 'add'};
+        const edit_val: {ids: string[], type: string} = {ids: [], type: 'edit'};
+        const del_val: {ids: string[], type: string} = {ids: [], type: 'delete'}
+        if (val && Array.isArray(val)) {
+            
+            for (const v of val) {
+                const mes = v['$focusedOper$'].split('_');
+                switch (mes[1]) {
+                    case 'add':
+                        add_val['ids'].push(mes[0]);
+                    break;
+                    case 'edit':
+                        edit_val['ids'].push(mes[0]);
+                    break;
+                    case 'delete':
+                        del_val['ids'].push(mes[0])
+                    break;
+                }
+            }
+            if (add_val.ids.length > 0) {
+                ps.push(add_val);
+            }
+            if (edit_val.ids.length > 0) {
+                ps.push(edit_val);
+            }
+            if (edit_val.ids.length > 0) {
+                ps.push(del_val);
+            }
+        } else {
+            const mes2  = val['$focusedOper$'].split('_');
+            switch (mes2[1]) {
+                case 'add':
+                    add_val['ids'].push(mes2[0]);
+                    ps.push(add_val);
+                    break;
+                case 'edit':
+                    edit_val['ids'].push(mes2[0]);
+                    ps.push(edit_val);
+                    break;
+                case 'delete':
+                    del_val['ids'].push(mes2[0]);
+                    ps.push(del_val);
+                    break;
+            } 
+        }
+        return ps;
+    }
+
 
 }

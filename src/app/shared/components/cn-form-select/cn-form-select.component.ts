@@ -205,11 +205,11 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                     }
                 } else if (param.type === 'cacheValue') {
 
-                    const cache = this.cacheValue.get('userInfo');
+                    const cache = this.cacheValue.getNone('userInfo');
                     if (param['datatype']) {
-                        params[param.name] = this.getParameters(param['datatype'], cache.value[param['valueName']]);
+                        params[param.name] = this.getParameters(param['datatype'], cache[param['valueName']]);
                     } else {
-                        params[param.name] = cache.value[param['valueName']];
+                        params[param.name] = cache[param['valueName']];
                     }
                 }
             });

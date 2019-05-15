@@ -399,6 +399,7 @@ export class CnFormBase extends CnComponentBase {
             success: true,
             msg: []
         };
+        let returnValue;
         let suc = false;
         if (result && Array.isArray(result)) {
             result.forEach(res => {
@@ -433,6 +434,7 @@ export class CnFormBase extends CnComponentBase {
             if (result.isSuccess) {
                 this.baseMessage.success(message);
                 suc = true;
+                returnValue = result.data;
                 this.apiResource.addOperationLog({
                     eventId: BSN_OPERATION_LOG_TYPE.SQL,
                     eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
@@ -454,9 +456,12 @@ export class CnFormBase extends CnComponentBase {
             }
         }
         if (suc && callback) {
-            callback();
+            const p = CommonTools.getReturnIdsAndType(returnValue);
+            callback(p);
         }
     }
+
+    
 
     public execute(url, method, body?) {
         return this.apiResource[method](url, body).toPromise();
@@ -472,7 +477,7 @@ export class CnFormBase extends CnComponentBase {
                     nzContent: c.message ? c.message : '',
                     nzOnOk: () => {
                         (async () => {
-                            const response = await this.execute(url, c.ajaxType, params);
+                            const response: any = await this.execute(url, c.ajaxType, params);
                             // 处理输出参数
                             if (c.outputParams) {
                                 this.outputParametersResolver(

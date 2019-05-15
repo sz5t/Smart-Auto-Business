@@ -134,8 +134,8 @@ export class CnFormWindowResolverComponent extends CnFormBase
             modal: this.modalService,
             tempValue: this.tempValue,
             initValue: this.initValue,
-            cacheValue: this.cacheValue.get('userInfo').value
-                ? this.cacheValue.get('userInfo').value
+            cacheValue: this.cacheValue.getNone('userInfo')
+                ? this.cacheValue.getNone('userInfo')
                 : {},
             apiResource: this.apiResource
         });

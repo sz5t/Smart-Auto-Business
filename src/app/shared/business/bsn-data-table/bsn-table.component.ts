@@ -290,8 +290,8 @@ export class BsnTableComponent extends CnComponentBase
             modal: this.baseModal,
             tempValue: this.tempValue,
             initValue: this.initValue,
-            cacheValue: this.cacheValue.get('userInfo').value
-                ? this.cacheValue.get('userInfo').value
+            cacheValue: this.cacheValue.getNone('userInfo')
+                ? this.cacheValue.getNone('userInfo')
                 : {},
             apiResource: this.apiResource
         });
@@ -904,6 +904,7 @@ export class BsnTableComponent extends CnComponentBase
                         this.baseMessage.create('success', '保存成功');
                         this.focusIds = this._getFocusIds(response.data);
                     }
+                    this.sendCascadeMessage(response.data);
                     isSuccess = true;
                     // 日志记录
                     this.apiResource.addOperationLog({
@@ -935,14 +936,14 @@ export class BsnTableComponent extends CnComponentBase
                 this.load();
             }
         }
-        if (isSuccess === true) {
-            this.cascade.next(
-                new BsnComponentMessage(
-                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
-                    this.config.viewId
-                )
-            );
-        }
+        // if (isSuccess === true) {
+        //     this.cascade.next(
+        //         new BsnComponentMessage(
+        //             BSN_COMPONENT_CASCADE_MODES.REFRESH,
+        //             this.config.viewId
+        //         )
+        //     );
+        // }
         return isSuccess;
     }
 
@@ -1766,17 +1767,7 @@ export class BsnTableComponent extends CnComponentBase
             isSuccess = true;
             this.focusIds = null;
             this.load();
-            if (
-                this.config.componentType &&
-                this.config.componentType.parent === true
-            ) {
-                this.cascade.next(
-                    new BsnComponentMessage(
-                        BSN_COMPONENT_CASCADE_MODES.REFRESH,
-                        this.config.viewId
-                    )
-                );
-            }
+            this.sendCascadeMessage(response.data);
 
             // 操作日志
             this.apiResource.addOperationLog({
@@ -1879,7 +1870,7 @@ export class BsnTableComponent extends CnComponentBase
         });
     }
 
-    private sendCascadeMessage() {
+    private sendCascadeMessage(returnValue?: any) {
         if (
             this.config.componentType &&
             this.config.componentType.parent === true
@@ -1893,6 +1884,41 @@ export class BsnTableComponent extends CnComponentBase
                     }
                 )
             );
+        }
+        if (this.config.componentType && this.config.componentType.toAsyncTree === true) {
+            // 发送操作完成的ids
+            const objs = CommonTools.getReturnIdsAndType(returnValue);
+            if (objs && Array.isArray(objs) && objs.length > 0) {
+
+                for (const r_val of objs) {
+                    let mode: string;
+                    let paramData: any;
+                    switch (r_val.type) {
+                        case 'add':
+                        mode = BSN_COMPONENT_CASCADE_MODES.ADD_ASYNC_TREE_NODE;
+                        paramData = {_add_ids: r_val.ids.join(',')};
+                        break;
+                        case 'edit':
+                        mode = BSN_COMPONENT_CASCADE_MODES.EDIT_ASNYC_TREE_NODE;
+                        paramData = {_edit_ids: r_val.ids.join(',')};
+                        break;
+                        case 'delete':
+                        mode = BSN_COMPONENT_CASCADE_MODES.DELETE_ASYNC_TREE_NODE;
+                        paramData = {_del_ids: r_val.ids.join(',')};
+                        break;
+                    }
+                    this.cascade.next(
+                        new BsnComponentMessage(
+                            mode,
+                            this.config.viewId,
+                            {
+                                data: paramData
+                            }
+                        )
+                    );
+                }
+                
+            }
         }
     }
 
@@ -2042,12 +2068,13 @@ export class BsnTableComponent extends CnComponentBase
                                     response,
                                     option.ajaxConfig,
                                     () => {
-                                        this.cascade.next(
-                                            new BsnComponentMessage(
-                                                BSN_COMPONENT_CASCADE_MODES.REFRESH,
-                                                this.config.viewId
-                                            )
-                                        );
+                                        this.sendCascadeMessage(response.data);
+                                        // this.cascade.next(
+                                        //     new BsnComponentMessage(
+                                        //         BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                                        //         this.config.viewId
+                                        //     )
+                                        // );
                                         this.focusIds = this._getFocusIds(
                                             response.data
                                         );
@@ -2060,15 +2087,16 @@ export class BsnTableComponent extends CnComponentBase
                                     this.focusIds = this._getFocusIds(
                                         response.data
                                     );
-                                    this.cascadeBase.next(
-                                        new BsnComponentMessage(
-                                            BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
-                                            this.config.viewId,
-                                            {
-                                                data: this._selectRow
-                                            }
-                                        )
-                                    );
+                                    this.sendCascadeMessage(response.data);
+                                    // this.cascadeBase.next(
+                                    //     new BsnComponentMessage(
+                                    //         BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                                    //         this.config.viewId,
+                                    //         {
+                                    //             data: this._selectRow
+                                    //         }
+                                    //     )
+                                    // );
                                     this.load();
                                 }, c);
                             }
@@ -2089,12 +2117,13 @@ export class BsnTableComponent extends CnComponentBase
                             response,
                             option.ajaxConfig,
                             () => {
-                                this.cascade.next(
-                                    new BsnComponentMessage(
-                                        BSN_COMPONENT_CASCADE_MODES.REFRESH,
-                                        this.config.viewId
-                                    )
-                                );
+                                this.sendCascadeMessage(response.data);
+                                // this.cascade.next(
+                                //     new BsnComponentMessage(
+                                //         BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                                //         this.config.viewId
+                                //     )
+                                // );
                                 this.focusIds = this._getFocusIds(
                                     response.data
                                 );
@@ -2104,12 +2133,13 @@ export class BsnTableComponent extends CnComponentBase
                     } else {
                         // 没有输出参数，进行默认处理
                         this.showAjaxMessage(response, msg, () => {
-                            this.cascade.next(
-                                new BsnComponentMessage(
-                                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
-                                    this.config.viewId
-                                )
-                            );
+                            this.sendCascadeMessage(response.data);
+                            // this.cascade.next(
+                            //     new BsnComponentMessage(
+                            //         BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                            //         this.config.viewId
+                            //     )
+                            // );
                             this.focusIds = this._getFocusIds(response.data);
                             this.load();
                         }, c);
@@ -2922,6 +2952,7 @@ export class BsnTableComponent extends CnComponentBase
         // });
 
         const checkedIds = this._getCheckItemsId();
+
         if (checkedIds.length > 0) {
             const obj = {
                 ...this.tempValue,

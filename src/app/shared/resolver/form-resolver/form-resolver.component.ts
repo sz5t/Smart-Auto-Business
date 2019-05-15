@@ -109,8 +109,8 @@ export class FormResolverComponent extends CnFormBase
             modal: this.modalService,
             tempValue: this.tempValue,
             initValue: this.initValue,
-            cacheValue: this.cacheValue.get('userInfo').value
-                ? this.cacheValue.get('userInfo').value
+            cacheValue: this.cacheValue.getNone('userInfo')
+                ? this.cacheValue.getNone('userInfo')
                 : {},
             apiResource: this.apiResource
         });
@@ -219,7 +219,7 @@ export class FormResolverComponent extends CnFormBase
                                 this.resolveAjaxConfig(
                                     option.ajaxConfig,
                                     this.formState,
-                                    () => {
+                                    (returnValue) => {
                                         this.load();
                                         this.sendCascadeMessage();
                                     }
@@ -368,7 +368,13 @@ export class FormResolverComponent extends CnFormBase
                 item => item.ajaxType === method
             );
             result = await this[method](ajaxConfigs[index]);
-            // 操作日志
+            
+            // if (result.isSuccess) {
+            //     debugger;
+            //     const returnValue = this.getReturnIdsAndType(result.data);
+            //     this.sendCascadeMessage(returnValue);
+            // }
+            
         }
     }
 
@@ -387,7 +393,7 @@ export class FormResolverComponent extends CnFormBase
             this.formState = BSN_FORM_STATUS.EDIT;
             // this.load();
             // 发送消息 刷新其他界面
-            this.sendCascadeMessage();
+            this.sendCascadeMessage(res.data);
             this.apiResource.addOperationLog({
                 eventId: BSN_OPERATION_LOG_TYPE.POST,
                 eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
@@ -430,7 +436,7 @@ export class FormResolverComponent extends CnFormBase
                 this.formState = BSN_FORM_STATUS.EDIT;
                 this.load();
                 // 发送消息 刷新其他界面
-                this.sendCascadeMessage();
+                this.sendCascadeMessage(res.data);
                 this.apiResource.addOperationLog({
                     eventId: BSN_OPERATION_LOG_TYPE.UPDATE,
                     eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
@@ -470,6 +476,7 @@ export class FormResolverComponent extends CnFormBase
                 this.baseMessage.warning('删除数据的_ids不存在，无法进行删除！');
                 return;
             } else {
+
                 const res = await this.execute(
                     url,
                     deleteConfig[i].ajaxType,
@@ -483,14 +490,17 @@ export class FormResolverComponent extends CnFormBase
                     description: deleteConfig.description ? deleteConfig.description : ' [执行成功] ' + ` 数据为: ${JSON.stringify(JSON.stringify(params))}`
                 }).subscribe(result => {
 
-                })
+                });
             }
         }
         Promise.all(asyncResponse).then(res => {
             this.baseMessage.create('success', '操作完成');
             this.formState = this.initFormState();
             this.form.reset();
-            this.sendCascadeMessage();
+            for (const r of res) {
+                this.sendCascadeMessage(r.data);
+            }
+            
         }, error => {
             this.baseMessage.create('error', '操作异常,未能正确删除数据');
             this.apiResource.addOperationLog({
@@ -504,11 +514,26 @@ export class FormResolverComponent extends CnFormBase
         })
     }
 
-    public sendCascadeMessage() {
+    public sendCascadeMessage(returnValue?: any) {
         // 发送消息 刷新其他界面
         if (
             this.config.componentType &&
             this.config.componentType.parent === true
+        ) {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                    this.config.viewId,
+                    {
+                        data: { ...this.returnValue, ...this.value }
+                    }
+                )
+            );
+        }
+
+        if (
+            this.config.componentType &&
+            this.config.componentType.child === true
         ) {
             this.cascade.next(
                 new BsnComponentMessage(
@@ -519,6 +544,42 @@ export class FormResolverComponent extends CnFormBase
                     }
                 )
             );
+        }
+
+        if (this.config.componentType && this.config.componentType.toAsyncTree === true) {
+            // 发送操作完成的ids
+            const objs = CommonTools.getReturnIdsAndType(returnValue);
+            if (objs && Array.isArray(objs) && objs.length > 0) {
+
+                for (const r_val of objs) {
+                    let mode: string;
+                    let paramData: any;
+                    switch (r_val.type) {
+                        case 'add':
+                        mode = BSN_COMPONENT_CASCADE_MODES.ADD_ASYNC_TREE_NODE;
+                        paramData = {_add_ids: r_val.ids.join(',')};
+                        break;
+                        case 'edit':
+                        mode = BSN_COMPONENT_CASCADE_MODES.EDIT_ASNYC_TREE_NODE;
+                        paramData = {_edit_ids: r_val.ids.join(',')};
+                        break;
+                        case 'delete':
+                        mode = BSN_COMPONENT_CASCADE_MODES.DELETE_ASYNC_TREE_NODE;
+                        paramData = {_del_ids: r_val.ids.join(',')};
+                        break;
+                    }
+                    this.cascade.next(
+                        new BsnComponentMessage(
+                            mode,
+                            this.config.viewId,
+                            {
+                                data: paramData
+                            }
+                        )
+                    );
+                }
+                
+            }
         }
     }
 

@@ -108,8 +108,8 @@ export class ApiService {
 
     public addOperationLog(params: OperationLogModel) {
         // inner log info from system login
-        params['userId'] = this.cacheService.get('userInfo')['value']['userId'] ? this.cacheService.get('userInfo')['value']['userId'] : 'unknown';
-        params['userIp'] = this.cacheService.get('userInfo')['value']['loginIp'] ? this.cacheService.get('userInfo')['value']['loginIp'] : 'unknown';
+        params['userId'] = this.cacheService.getNone('userInfo')['userId'] ? this.cacheService.getNone('userInfo')['userId'] : 'unknown';
+        params['userIp'] = this.cacheService.getNone('userInfo')['loginIp'] ? this.cacheService.getNone('userInfo')['loginIp'] : 'unknown';
         params['instanceId'] = BSN_DB_INSTANCE.SMART_ONE_CFG;
 
         // 计算当前月份调用当月日志API

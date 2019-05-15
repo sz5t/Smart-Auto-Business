@@ -32,7 +32,7 @@
                                                                 [nzMultiple]="false"
                                                                 (nzCheckBoxChange)="checkboxChange($event)"
                                                                 (nzClick)="onMouseAction('clickNode', $event)">
-                                                                <ng-template #nzTreeTemplate let-node>
+                                                                <!-- <ng-template #nzTreeTemplate let-node>
                                                                                 <span class="custom-node"
                                                                                                 draggable="false"
                                                                                                 aria-grabbed="true"
@@ -59,7 +59,7 @@
                                                                                                 <span *ngIf="node.isLeaf">
                                                                                                                 <i nz-icon type="file"></i>
                                                                                                                 <span class="file-name">
-                                                                                                                        <!-- <span *ngIf="node.isMatched" [innerHTML]="searchTargetString(node.title)"></span> -->
+                                                                                                                        <!-- <span *ngIf="node.isMatched" [innerHTML]="searchTargetString(node.title)"></span>
                                                                                                                         <ng-container *ngIf="node.isMatched">
                                                                                                                                 {{searchTargetString(node.title)[0]}}
                                                                                                                                 <span class="highlight">   {{searchTargetString(node.title)[1]}} </span>
@@ -72,7 +72,7 @@
                                                                                                                 <span class="file-desc"> {{node?.origin?.author}}</span>
                                                                                                 </span>
                                                                                 </span>
-                                                                </ng-template>
+                                                                </ng-template> -->
                                                                 <ng-template  #contextTemplate>
                                                                                 <cn-bsn-tree-menu [config]="config.menus" [dropdown]="dropdown"></cn-bsn-tree-menu>
                                                                 </ng-template>
