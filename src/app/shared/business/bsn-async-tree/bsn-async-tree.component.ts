@@ -158,7 +158,7 @@ export class BsnAsyncTreeComponent extends GridBase
     }
 
     public ngAfterViewInit() {
-        
+
     }
 
     public resolverRelation() {
@@ -298,7 +298,7 @@ export class BsnAsyncTreeComponent extends GridBase
                                             option.data[param['pid']] && (this.tempValue[param['cid']] = option.data[param['pid']]);
                                         });
                                     }
-                                    
+
                                     if (cascadeEvent._mode === mode) {
                                         switch (mode) {
                                             // case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
@@ -321,7 +321,7 @@ export class BsnAsyncTreeComponent extends GridBase
                                                 break;
                                         }
                                     }
-                                    
+
                                 }
                             });
                         }
@@ -345,7 +345,7 @@ export class BsnAsyncTreeComponent extends GridBase
         if (this.activedNode && this.activedNode.getChildren().length === 0) {
             this.activedNode.setExpanded(false);
         }
-        
+
     }
 
     // 根据更新数据ID, 动态加载对应节点数据
@@ -366,7 +366,7 @@ export class BsnAsyncTreeComponent extends GridBase
                     }
                 )
             })();
-        } 
+        }
     }
 
     // 根据添加的数据ID, 动态加载添加数据到对应节点上
@@ -401,20 +401,20 @@ export class BsnAsyncTreeComponent extends GridBase
                                 this.setChildrenSelectedNode(this);
                             }
                             // if (addNodes.length > 0) {
-                                
-                                
+
+
                             // }
                         }
                     }
                 )
             })();
-        }  
+        }
     }
 
     private setChildrenSelectedNode(that) {
         const currentSelectedNode = that.treeObj.getTreeNodeByKey(that.selectedItem.key);
         currentSelectedNode.isSelected = false;
-        
+
         const sNode = currentSelectedNode.getChildren();
         sNode[0].isSelected = true;
 
@@ -483,8 +483,8 @@ export class BsnAsyncTreeComponent extends GridBase
                 }
                 const result = [
                     {
-                        title: '根节点',
-                        key: 'null',
+                        title: this.config.rootTitle ? this.config.rootTitle : '根节点  ',
+                        key: null,
                         isLeaf: false,
                         children: [],
                         expanded: true
@@ -506,7 +506,7 @@ export class BsnAsyncTreeComponent extends GridBase
                 }
 
         //         const getNodes = this.treeObj.getTreeNodes();
-                
+
         // if (getNodes.length > 0) {
         //     getNodes[0].setExpanded(true);
         //     getNodes[0].isSelected = true;
@@ -626,7 +626,7 @@ export class BsnAsyncTreeComponent extends GridBase
     public expandNode = (e, callback?, that?) => {
         if (e.node.isExpanded) {
             (async () => {
-               
+
                     const s = await Promise.all(
                         this.config.expand
                             .filter(p => p.type === e.node.isLeaf)
@@ -654,11 +654,11 @@ export class BsnAsyncTreeComponent extends GridBase
                                     e.node.addChildren([]);
                                     e.node.setExpanded(false);
                                 }
-                                
+
                             })
                     );
-                
-            })();        
+
+            })();
         } else if (e.node.isExpanded === false) {
             e.node.clearChildren();
         }
@@ -667,7 +667,7 @@ export class BsnAsyncTreeComponent extends GridBase
     public clickNode = e => {
         if (this.activedNode) {
             this.activedNode.isSelected = false;
-            this.activedNode['selected'] && (this.activedNode['selected'] = false); 
+            this.activedNode['selected'] && (this.activedNode['selected'] = false);
             this.activedNode = null;
         }
         e.node.isSelected = true;
@@ -683,7 +683,7 @@ export class BsnAsyncTreeComponent extends GridBase
         if (!e.node.isExpanded) {
             e.node.isExpanded = true;
             this.expandNode(e);
-        } 
+        }
 
     };
 
