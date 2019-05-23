@@ -613,7 +613,8 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
             return;
         }
         $event.stopPropagation();
-        this.treeData.map(t => {
+
+        this.dataList.map(t => {
             t['selected'] = false;
             if (this.editCache[t.key].edit) {
 

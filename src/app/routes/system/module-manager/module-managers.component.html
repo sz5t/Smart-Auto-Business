@@ -6,8 +6,8 @@
                     <nz-form-item>
                         <nz-form-label [nzSpan]="2" nzFor="module">选择项目</nz-form-label>
                         <nz-form-control [nzSpan]="6" [nzSm]="6" [nzXs]="6">
-                            <nz-cascader [ngModelOptions]="{standalone: true}" [class.class123]="true" [nzOptions]="_projOptions" [(ngModel)]="_projValue"
-                                (nzChange)="_changeModuleValue($event)" (nzSelectionChange)="_onSelectionChange($event)" [nzPlaceHolder]="'--请选择--'"
+                            <nz-cascader nzChangeOnSelect [ngModelOptions]="{standalone: true}" [class.class123]="true" [nzOptions]="_projOptions" [(ngModel)]="_projValue"
+                                (nzSelectionChange)="_onSelectionChange($event)" [nzPlaceHolder]="'--请选择--'"
                                 [nzExpandTrigger]="'hover'">
                             </nz-cascader>
                         </nz-form-control>

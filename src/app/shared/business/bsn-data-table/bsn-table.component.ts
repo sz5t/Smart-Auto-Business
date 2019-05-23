@@ -386,6 +386,44 @@ export class BsnTableComponent extends CnComponentBase
             });
         }
 
+        if (
+            this.config.componentType &&
+            this.config.componentType.sub === true
+        ) {
+            this.after(this, 'selectRow', () => {
+                this._selectRow &&
+                    this.cascade.next(
+                        new BsnComponentMessage(
+                            BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
+                            this.config.viewId,
+                            {
+                                data: {
+                                    ...this.initValue,
+                                    ...this._selectRow
+                                },
+                                initValue: this.initValue ? this.initValue : {},
+                                tempValue: this.tempValue ? this.tempValue : {},
+                                subViewId: () => {
+                                    let id = '';
+                                    this.config.subMapping.forEach(sub => {
+                                        const mappingVal = this._selectRow[sub['field']];
+                                        if (sub.mapping) {
+                                            sub.mapping.forEach(m => {
+                                                if (m.value === mappingVal) {
+                                                    id = m.subViewId;
+                                                }
+                                            });
+                                        }
+                                    });
+                                    return id;
+                                }
+                            }
+                        )
+                    );
+            });
+        }
+
+
         // 通过配置中的组件关系类型设置对应的事件接受者
         // 表格内部状态触发接收器
         if (
