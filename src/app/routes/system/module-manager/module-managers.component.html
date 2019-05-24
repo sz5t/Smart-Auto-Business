@@ -3,13 +3,27 @@
   <nz-col nzSpan="24">
       <nz-card nzTitle="">
             <form nz-form>
-                    <nz-form-item>
+                    <!-- <nz-form-item>
                         <nz-form-label [nzSpan]="2" nzFor="module">选择项目</nz-form-label>
                         <nz-form-control [nzSpan]="6" [nzSm]="6" [nzXs]="6">
                             <nz-cascader nzChangeOnSelect [ngModelOptions]="{standalone: true}" [class.class123]="true" [nzOptions]="_projOptions" [(ngModel)]="_projValue"
                                 (nzSelectionChange)="_onSelectionChange($event)" [nzPlaceHolder]="'--请选择--'"
                                 [nzExpandTrigger]="'hover'">
                             </nz-cascader>
+                        </nz-form-control>
+                    </nz-form-item> -->
+                    <nz-form-item>
+                        <nz-form-label [nzSpan]="2" nzFor="module">选择项目</nz-form-label>
+                        <nz-form-control [nzSpan]="6" [nzSm]="6" [nzXs]="6">
+                            <nz-select style="width:100%" [ngModelOptions]="{standalone: true}" [(ngModel)]="_projValue" nzPlaceHolder="--请选项目--" nzAllowClear="true" (ngModelChange)="_changeModuleValue($event)">
+                                
+                                <nz-option 
+                                    *ngFor="let p of _projOptions" 
+                                    [nzValue]="p.value" 
+                                    [nzLabel]="p.label"
+                                >
+                                </nz-option>
+                            </nz-select>
                         </nz-form-control>
                     </nz-form-item>
                 </form>
