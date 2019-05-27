@@ -649,7 +649,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
             ];
         }
         this.selectedItem.expand = true;
-        this.expandChange(data.children, data, true);
+        // this.expandChange(data.children, data, true);
     }
 
     /**
