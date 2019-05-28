@@ -10,13 +10,13 @@
     </ng-template>
     <thead (nzSortChange)="sort($event)" nzSingleSort>
         <tr>
-            <th nzShowCheckbox [nzWidth]="50" [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate"
+            <th nzShowCheckbox nzWidth="50px" [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate"
                 (nzCheckedChange)="checkAll($event)">
             </th>
             <ng-template ngFor let-col [ngForOf]="config.columns">
                 <th [nzWidth]="col.width ? col.width : 'auto'" [nzShowSort]="col.showSort" [nzShowFilter]="col.showFilter"
                     *ngIf="!col.hidden" [nzSortKey]="col.field">
-                    <span>{{col.title}}</span>
+                    {{col.title}}
                 </th>
             </ng-template>
         </tr>

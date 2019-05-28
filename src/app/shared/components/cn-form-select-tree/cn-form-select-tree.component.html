@@ -3,26 +3,16 @@
 </nz-form-label>
 
 <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
-    <ng-container *ngIf="config.Checkable">
-        <nz-tree-select
-            formControlName="{{config.name}}"
-            nzCheckable [nzNodes]="treeData"
-            nzPlaceHolder="{{config.placeholder}}"
-            [(ngModel)]="_selectedValue"
-            nzMultiple="{{config.multiple}}"
-            [nzDropdownStyle]="config.style"
-            (ngModelChange)="valueChange($event)">
-        </nz-tree-select>
-    </ng-container>
-        <ng-container *ngIf="!config.Checkable">
-                <nz-tree-select
+    <nz-tree-select
+                    [nzDropdownMatchSelectWidth]="true"
                     formControlName="{{config.name}}"
                     [nzNodes]="treeData"
                     nzPlaceHolder="{{config.placeholder}}"
                     [(ngModel)]="_selectedValue"
-                    nzMultiple="{{config.multiple}}"
-                    [nzDropdownStyle]="config.style"
+                    [nzCheckable]="config.multiple ? config.multiple : false"
+                    [nzDropdownStyle]="config.style ? config.style : {'max-height': '300px'}"
+                    [nzAsyncData]="config.asyncData"
+                    (nzExpandChange)="expandNode($event)"
                     (ngModelChange)="valueChange($event)">
                 </nz-tree-select>
-    </ng-container>
 </nz-form-control>

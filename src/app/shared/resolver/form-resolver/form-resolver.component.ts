@@ -332,16 +332,24 @@ export class FormResolverComponent extends CnFormBase
             })
             const url = this.buildUrl(this.config.ajaxConfig.url);
             const params = this.buildParameter(this.config.ajaxConfig.params);
-            this.execute(url, 'getById', params).then(result => {
-                if (result.data) {
-                    this.setFormValue(result.data);
+            this.execute(url, this.config.ajaxConfig.ajaxType , params).then(result => {
+
+                let res;
+                if (Array.isArray(result.data)) {
+                    res = result.data[0]
+                } else {
+                    res = result.data;
+                }
+
+                if (res) {
+                    this.setFormValue(res);
                     // 给主键赋值
                     if (this.config.keyId) {
                         this.tempValue['_id'] =
-                            result.data[this.config.keyId];
+                        res[this.config.keyId];
                     } else {
-                        if (result.data['Id']) {
-                            this.tempValue['_id'] = result.data['Id'];
+                        if (res['Id']) {
+                            this.tempValue['_id'] = res['Id'];
                         }
                     }
                 } else {
