@@ -1917,7 +1917,7 @@ export class BsnTableComponent extends CnComponentBase
                         )
                     );
                 }
-                
+
             }
         }
     }
@@ -4008,6 +4008,10 @@ export class BsnTableComponent extends CnComponentBase
 
     public download() {
 
+        setTimeout(() => {
+            this.loading = true;
+        });
+
         const col = this.config.columns.filter(function (item) {　　// 使用filter方法
             if (item.hidden) {
             } else {
@@ -4015,7 +4019,19 @@ export class BsnTableComponent extends CnComponentBase
             }
         });
         const data = [col.map(i => { if (i.hidden) { } else return i.title; })];
-        console.log('data', data);
+
+        const url = this._buildURL(this.config.ajaxConfig.url);
+        const method = this.config.ajaxConfig.ajaxType;
+        const params = {
+            ...this._buildParameters(this.config.ajaxConfig.params),
+            ...this._buildFilter(this.config.ajaxConfig.filter),
+            ...this._buildSort(),
+            ...this._buildColumnFilter(),
+            ...this._buildFocusId(),
+            ...this._buildSearch()
+        };
+
+
         this.dataList.forEach(i =>
             data.push(col.map(c => { if (c.hidden) { } else return i[c.field as string]; }))
         );
