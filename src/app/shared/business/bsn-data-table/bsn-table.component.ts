@@ -379,7 +379,7 @@ export class BsnTableComponent extends CnComponentBase
                             this.importExcelDialog(option);
                             break;
                         case BSN_COMPONENT_MODES.EXPORT:
-                            this.download();
+                            this.exportExcel();
                             break;
                     }
                 }
@@ -2119,6 +2119,17 @@ export class BsnTableComponent extends CnComponentBase
                                         this.load();
                                     }
                                 );
+                            } else if (c.executeNext) {
+                                const nextConfig = option.ajaxConfig.filter(
+                                    f => f.parentName && f.parentName === c.name
+                                );
+                                nextConfig &&
+                                nextConfig.map(currentAjax => {
+                                        this._getAjaxConfig(
+                                            currentAjax,
+                                            c
+                                        );
+                                    });
                             } else {
                                 // 没有输出参数，进行默认处理
                                 this.showAjaxMessage(response, msg, () => {
@@ -2168,6 +2179,17 @@ export class BsnTableComponent extends CnComponentBase
                                 this.load();
                             }
                         );
+                    } else if (c.executeNext) {
+                        const nextConfig = option.ajaxConfig.filter(
+                            f => f.parentName && f.parentName === c.name
+                        );
+                        nextConfig &&
+                        nextConfig.map(currentAjax => {
+                                this._getAjaxConfig(
+                                    currentAjax,
+                                    c
+                                );
+                            });
                     } else {
                         // 没有输出参数，进行默认处理
                         this.showAjaxMessage(response, msg, () => {
@@ -4043,12 +4065,54 @@ export class BsnTableComponent extends CnComponentBase
         this.is_drag = false;
     }
 
-
-    public download() {
-
+    private async exportExcel() {
         setTimeout(() => {
             this.loading = true;
         });
+        const col = this.config.columns.filter(function (item) {　　// 使用filter方法
+            if (item.hidden) {
+            } else {
+                return item;
+            }
+        });
+        const data = [col.map(i => { if (i.hidden) { } else return i.title; })];
+        const url = this._buildURL(this.config.ajaxConfig.url);
+        const method = this.config.ajaxConfig.ajaxType;
+        const params = {
+            ...this._buildParameters(this.config.ajaxConfig.params),
+            ...this._buildFilter(this.config.ajaxConfig.filter),
+            ...this._buildSort(),
+            ...this._buildColumnFilter(),
+            ...this._buildSearch()
+        };
+
+        const loadData = await this._load(url, params, method);
+        if (loadData.isSuccess && loadData.data.length > 0) {
+            for (const d of loadData.data) {
+                data.push(col.map(c => { if (c.hidden) { } else return d[c.field as string]; }))
+            }
+
+        } else {
+            this.modalService.warning({ nzTitle: '没有可以导出的数据'});
+        }
+
+        this.xlsx.export({
+            sheets: [
+                {
+                    data: data,
+                    name: 'sheet name'
+                }
+            ]
+        });
+
+        setTimeout(() => {
+            this.loading = false;
+        });
+
+
+    }
+
+    public download() {
 
         const col = this.config.columns.filter(function (item) {　　// 使用filter方法
             if (item.hidden) {
