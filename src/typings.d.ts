@@ -19,3 +19,10 @@ declare var require: NodeRequire;
 declare var G2: any;
 declare var Slider: any;
 declare var Cloud: any;
+
+declare var editormd: any;
+declare var domtoimage: any;
+declare var html2canvas: any;
+
+
+

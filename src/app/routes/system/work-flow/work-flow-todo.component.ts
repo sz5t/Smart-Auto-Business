@@ -1739,7 +1739,7 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
                                                         },
                                                         defaultValue: 'http://192.168.1.111:8081/api.cfg/files/upload/2019-03-12/44bb4a6551dd4f3984d49c470ed5c07a.jpg',
                                                     }
-                                                } 
+                                                }
                                             },
                                             {
                                                 title: '名称',
@@ -3770,7 +3770,7 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
                                        ]
                                      },
                                      ajax_data: { // 路由发生变化，复杂问题，涉及参数取值
-   
+
                                        // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
                                      },
                                      setValue_data: { // 赋值，修改级联对象的值，例如选择下拉后修改对于input的值
@@ -3782,12 +3782,12 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
                                        }
                                      },
                                      show_data: { // 当前表单的展示字段等信息
-   
+
                                      },
                                      relation_data: {
-   
+
                                      }
-   
+
                                    }
                                  }, */
                                                         ],
@@ -3822,12 +3822,12 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
                                                                         ]
                                                                     },
                                                                     /*   ajax_data: { // 路由发生变化，复杂问题，涉及参数取值  组件参数配置为caseCodeValue
-  
+
                                       // 直接描述需要替换的参数名称（实现简单），不合理，不能动态控制参数个数
                                       option: [
                                         { name: 'typevalue', type: 'value', value: '1', valueName: 'data' },
                                         { name: 'typevaluename', type: 'selectValue', value: '1', valueName: 'data' },
-  
+
                                       ]
                                     }, */
                                                                     setValue_data: {
@@ -7726,7 +7726,7 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
                                         },
                                         defaultValue: 'http://192.168.1.111:8081/api.cfg/files/upload/2019-03-12/44bb4a6551dd4f3984d49c470ed5c07a.jpg',
                                     }
-                                } 
+                                }
                             },
                             {
                                 title: '备注',
@@ -8369,7 +8369,7 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
             //  tickInterval: 20
         });
 
-        this.chart.interval().position('year*sales');  // 创建柱图特殊写法  X*Y 
+        this.chart.interval().position('year*sales');  // 创建柱图特殊写法  X*Y
         this.chart.render();
     }
 
@@ -8575,5 +8575,7 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
             }
         });
     }
+
+
 
 }
