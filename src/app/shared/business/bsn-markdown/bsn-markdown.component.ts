@@ -551,7 +551,7 @@ export class BsnMarkdownComponent implements OnInit {
       console.log('监听div内鼠标事件->删除事件', e);
       console.log('富文本内容', ht);
       console.log('鼠标选中内容:', selection);
-      return false;
+      // return false;
     }
 
   }

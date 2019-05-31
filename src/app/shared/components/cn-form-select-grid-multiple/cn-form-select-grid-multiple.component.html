@@ -16,19 +16,24 @@
 </nz-form-control>
 
 <nz-form-control [nzSpan]="config.controlSize">
-        <nz-input-group nzSearch [nzSuffix]="suffixIconButton">
+        <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
                 <!-- <input nz-input style=" padding-right: 30px;" [ngStyle]="{'width':config.width}" type="{{config.inputType}}" [nzSize]="config.size"
                     placeholder="{{config.placeholder}}" [(ngModel)]="_valuetext"> -->
-                    <nz-card style=" padding-right: 30px;"  nzType="inner"  [ngStyle]="{'width':config.width}">
-                        <nz-tag *ngFor="let tag of tags; let i = index;"  [nzMode]="'closeable'" (nzAfterClose)="handleClosetag(tag)">
-                            {{ sliceTagName(tag) }}
-                        </nz-tag>
-                    </nz-card>
+                    <!-- <nz-card   nzType="inner"  [ngStyle]="{'width':config.width}">
+
+                    </nz-card> -->
+                    <div   style="border:1px solid #d9d9d9; background-color: #fff; min-height: 35px;">
+                            <nz-tag *ngFor="let tag of tags; let i = index;"  [nzMode]="'closeable'" (nzAfterClose)="handleClosetag(tag)">
+                                    {{ sliceTagName(tag) }}
+                                </nz-tag>
+                    </div>
             </nz-input-group>
             <ng-template #suffixIconButton>
-                <button nz-button nzSearch [nzType]="'default'" (click)="showModal()">
+                <!-- <button nz-button nzSearch [nzType]="'default'" (click)="showModal()">
                     <i nz-icon type="edit" theme="outline"></i>
-                </button>
+                </button> -->
+                <a>  <i nz-icon type="edit" theme="outline"  (click)="showModal()"></i></a>
+
             </ng-template>
 </nz-form-control>
 

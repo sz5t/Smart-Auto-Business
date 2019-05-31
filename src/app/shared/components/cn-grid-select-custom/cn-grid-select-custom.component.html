@@ -1,6 +1,6 @@
 <div>
-  <nz-input-group nzSearch  [nzSuffix]="suffixIconButton">
-      <input nz-input style=" padding-right: 30px;"  [ngStyle]="{'width':config.width}" type="{{config.inputType}}" [nzSize]="config.size"
+  <nz-input-group nzSearch    [nzAddOnAfter]="suffixIconButton">
+      <input nz-input   [ngStyle]="{'width':config.width}" type="{{config.inputType}}" [nzSize]="config.size"
       placeholder="{{config.placeholder}}" [(ngModel)]="_valuetext">
 
       <input nz-input  (ngModelChange)="valueChange($event)" type="hidden"
