@@ -98,10 +98,16 @@
   </div>
 
   <div   contenteditable="true" style="border:1px solid #d9d9d9; background-color: #fff; min-height: 150px;;">
-     <ng-container *ngFor="let c of gsShowConfig" >
+     <ng-container *ngFor="let c of dataList" >
         <ng-container *ngIf="c.type === 'char'">
-
+            <!-- <img ng-src="{{item.imgPath}}" alt=""/> -->
+            {{c.value}}
         </ng-container>
+        <ng-container *ngIf="c.type === 'img'">
+             <!-- <img ng-src="{{c.value}}" alt=""/> -->
+             <!-- <img [src]="{{c.value}}" alt=""/> -->
+        </ng-container>
+
      </ng-container>
 
 

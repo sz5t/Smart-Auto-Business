@@ -19,6 +19,13 @@ export class BsnMarkdownComponent implements OnInit {
   public FocusIput;
   // 选中的col
   public selectedCol;
+
+  //
+  public dataList = [
+    { key: '001', type: 'char', value: '这是一个公式', },
+    { key: '002',  type: 'img', value: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAcCAYAAABRVo5BAAACBElEQVQ4T+2UP2hTURTGv3PvfSQ04cUgKCJIoc+mBvpuJFChU1cdBcHFQUFKRXDUURSp7ejmLigoRHRydhPaZxQuIgGtYnHSECW+xHfukVdSCR1EOggF73r5Hb4/nEPY5aNdcvgP/iG5PRwO1Wq1crlcrjPzjFKKReS1Usqtra39HLf822MURYUwDI+LyCkiesfMmwAqWuvYe/9+OBw+cM6l1tqDzFzcAnOoVCrNa60vAHiTZdmjXq+3MTExsa9YLJ4dDbvZ7XZfhWG4AGAzB7W1dkZrfQ1AmZmvttvtt/nAZrMZeO/niWjZe/+UmVtBEJzMsuwhRVEUhmF4DsAVEbmbJMkdANt+VBzHdWPMMoDvAFoiUkyS5D7V6/UjhULhBhHNAVhcX19/PhYCxXE8HQTBCoAp733Le38vV0TW2mmt9W0ApTRNLzrnPuwEjTGrAA4z8/V2u/0sV0SNRuOoUuoWAJ+m6SXn3JcxUFlrj2mtV0SEB4PBonPuc/6fSzlgjFkCcEJElpIk2RiBwezs7JQx5gwRLYhIysyXgyDIBwxolJwlovMAhiLygoiU9/4QEX0SkT6AXNVpEXlCRN+Y+fFWj5OTk8VqtVojoikAXe+9JyLDzB/zPiuVyn4AcyLyA8DXfr//cud26CiKTKfT8WOVbFvWABSADIDs4bX66zP77z3+Ai6v5Or/GFUnAAAAAElFTkSuQmCC' },
+    { key: '001', type: 'char', value: '  这是一个公式', }
+  ];
   // 常用公式
   public data = [
     { key: '', selected: false, type: '', value: '范围公式', showValue: 'A∼B' },
@@ -543,7 +550,7 @@ export class BsnMarkdownComponent implements OnInit {
         if (imgs) {
           console.log('判断当前节点是否存在img ', imgs, tempDiv);
         }
-        const 　selectedHtml = tempDiv.innerHTML;
+        const selectedHtml = tempDiv.innerHTML;
         console.log('　selectedText', selectedText);
         console.log('　rangeObj:', rangeObj);
         console.log('选中的html selectedHtml:', selectedHtml)
