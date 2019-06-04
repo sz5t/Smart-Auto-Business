@@ -898,7 +898,7 @@ export class TreeGridBase extends CnComponentBase {
                                 btn,
                                 () => {
                                     modal.close();
-                                    this.windowCallback();
+                                    this.windowCallback(true);
                                 }
                             );
                         })();
@@ -909,7 +909,7 @@ export class TreeGridBase extends CnComponentBase {
                                 btn,
                                 () => {
                                     modal.close();
-                                    this.windowCallback();
+                                    this.windowCallback(true);
                                 }
                             );
                         })();
@@ -919,7 +919,7 @@ export class TreeGridBase extends CnComponentBase {
                                 btn,
                                 () => {
                                     modal.close();
-                                    this.windowCallback();
+                                    this.windowCallback(true);
                                 }
                             );
                         })();

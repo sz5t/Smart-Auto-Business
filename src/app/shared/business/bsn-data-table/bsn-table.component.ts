@@ -379,7 +379,7 @@ export class BsnTableComponent extends CnComponentBase
                             this.importExcelDialog(option);
                             break;
                         case BSN_COMPONENT_MODES.EXPORT:
-                            this.exportExcel();
+                            this.exportExcel(option);
                             break;
                     }
                 }
@@ -4065,19 +4065,32 @@ export class BsnTableComponent extends CnComponentBase
         this.is_drag = false;
     }
 
-    private async exportExcel() {
+    private async exportExcel(option) {
         setTimeout(() => {
             this.loading = true;
         });
-        const col = this.config.columns.filter(function (item) {　　// 使用filter方法
-            if (item.hidden) {
-            } else {
-                return item;
-            }
-        });
-        const data = [col.map(i => { if (i.hidden) { } else return i.title; })];
-        const url = this._buildURL(this.config.ajaxConfig.url);
-        const method = this.config.ajaxConfig.ajaxType;
+
+        let url, col, data;
+        /**
+         * exportColumns: {title: '标题',field: '字段名称'}
+         */
+        if (option.ajaxConfig && this.config.exportColumns) {
+            // 自定义导出结果
+            url = this._buildURL(option.ajaxConfig.url);
+            col = this.config.exportColumns;
+            data = [col.map(c => {c.title})];
+        } else {
+            // 导出表格结果
+            url = this._buildURL(this.config.ajaxConfig.url);
+            col = this.config.columns.filter(function (item) {　　// 使用filter方法
+                if (item.hidden) {
+                } else {
+                    return item;
+                }
+            });
+            data = [col.map(i => { if (i.hidden) { } else return i.title; })];
+        }
+
         const params = {
             ...this._buildParameters(this.config.ajaxConfig.params),
             ...this._buildFilter(this.config.ajaxConfig.filter),
@@ -4086,7 +4099,7 @@ export class BsnTableComponent extends CnComponentBase
             ...this._buildSearch()
         };
 
-        const loadData = await this._load(url, params, method);
+        const loadData = await this._load(url, params, 'get');
         if (loadData.isSuccess && loadData.data.length > 0) {
             for (const d of loadData.data) {
                 data.push(col.map(c => { if (c.hidden) { } else return d[c.field as string]; }))

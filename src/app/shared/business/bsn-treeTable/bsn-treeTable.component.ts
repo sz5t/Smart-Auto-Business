@@ -136,8 +136,9 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
             this._cancelSavedRow();
         };
 
-        this.windowCallback = () => {
-            if (this.selectedItem) {
+        this.windowCallback = (reload?) => {
+            debugger;
+            if (this.selectedItem && !reload) {
                 this.expandCurrentRow();
             } else {
                 this.load();
@@ -287,10 +288,12 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                                 this.addNewChildRow();
                             break;
                         case BSN_COMPONENT_MODES.EDIT:
-                            this.beforeOperation.operationItemData = [
-                                ...this.getAddedRows(),
-                                ...this.getEditedRows()
-                            ];
+                            // this.beforeOperation.operationItemData = [
+                            //     // ...this.getAddedRows(),
+                            //     // ...this.getEditedRows()
+                                
+                            // ];
+                            this.beforeOperation.operationItemsData = this.getCheckedItems();
                             !this.beforeOperation.beforeItemDataOperation(option) &&
                                 this._editRowData();
                             break;
@@ -648,7 +651,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                     : 'Id'
             ];
         }
-        this.selectedItem.expand = true;
+        // this.selectedItem.expand = true;
         // this.expandChange(data.children, data, true);
     }
 
@@ -675,7 +678,8 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         // 初始化新行数据
         const newRow = this.createNewRowData();
         this.editCache[newRow['Id']] = { edit: true, data: newRow };
-        this.dataList.splice(0, 0, newRow);
+        // this.dataList.splice(0, 0, newRow);
+        this.dataList = [newRow, ...this.dataList];
         this.treeDataOrigin.push(newRow);
         return newRow;
     }
@@ -713,6 +717,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                 if (level > 0) {
                     newRowData['level'] = level + 1;
                 }
+                
                 this.dataList.splice(parentIndex + 1, 0, newRowData);
             }
         }
