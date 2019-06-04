@@ -681,6 +681,11 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         // this.dataList.splice(0, 0, newRow);
         this.dataList = [newRow, ...this.dataList];
         this.treeDataOrigin.push(newRow);
+        if (!this.changeConfig_new[newRow['key']]) {
+            this.changeConfig_new[newRow['key']] = {};
+        }
+        this.dataList = this.dataList.filter(d => d.key !== null);
+        // console.log('addNewRow:', this.dataList);
         return newRow;
     }
 
@@ -697,6 +702,10 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
             this.editCache[newRow['Id']] = { edit: true, data: newRow };
             // 数据添加到具体选中行的下方
             this.dataList = this._setChildRow(newRow, parentId);
+            if (!this.changeConfig_new[newRow['key']]) {
+                this.changeConfig_new[newRow['key']] = {};
+            }
+            this.dataList = this.dataList.filter(d => d.key !== null);
         } else {
             // console.log('未选择任何行,无法添加下级');
             return false;

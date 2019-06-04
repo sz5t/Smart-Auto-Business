@@ -6,9 +6,9 @@
 </nz-modal>
 
 <div>
-    <nz-input-group nzSearch  [nzSuffix]="suffixIconButton">
+    <nz-input-group nzSearch    [nzAddOnAfter]="suffixIconButton">
             <!-- [ngStyle]="{'width':config.width}" -->
-        <input nz-input style=" padding-right: 30px;"   type="{{config.inputType}}" [nzSize]="config.size"
+        <input nz-input    type="{{config.inputType}}" [nzSize]="config.size"
         placeholder="{{config.placeholder}}" [(ngModel)]="_valuetext">
 
         <input nz-input  (ngModelChange)="valueChange($event)" type="hidden"

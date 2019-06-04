@@ -34,12 +34,16 @@ export class WorkFlowDictionaryComponent implements OnInit {
                 {
                   config: {
                     'viewId': 'DictionaryTypeTable',
-                    'component': 'bsnTable',
+                    'component': 'tsTable',
                     'keyId': 'Id',
                     'pagination': true, // 是否分页
                     'showTotal': true, // 是否显示总数据量
                     'pageSize': 5, // 默pageSizeOptions认每页数据条数
-                    '': [5, 10, 20, 30, 40, 50],
+                    'pageSizeOptions': [5, 10, 20, 30, 40, 50],
+                    'showCheckBox': true,
+                    'checkedConfig': {
+                      'width': '10px'
+                    },
                     'ajaxConfig': {
                       'url': 'common/WfDictionaryType',
                       'ajaxType': 'get',
@@ -89,7 +93,7 @@ export class WorkFlowDictionaryComponent implements OnInit {
                       {
                         title: '名称', field: 'name', width: 80,
                         showFilter: false, showSort: false,
-                        editor: {
+                        editor1: {
                           type: 'input',
                           field: 'name',
                           options: {
@@ -98,7 +102,62 @@ export class WorkFlowDictionaryComponent implements OnInit {
                             'controlSize': '18',
                             'inputType': 'text',
                           }
-                        }
+                        },
+                        editor: [
+                          {
+                            caseValue: { type: 'row', valueName: 'sort', regular: '^5$' },
+                            options: {
+                              'type': 'input',
+                              'labelSize': '6',
+                              'controlSize': '18',
+                              'inputType': 'text',
+                            }
+                          },
+                          {
+                            caseValue: { type: 'row', valueName: 'sort', regular: '^6$' },
+                            options: {
+                              type: 'select',
+                              name:     'caseType',
+                              label:      'Type',
+                              notFoundContent:    '',
+                              selectModel: false,
+                              showSearch: true,
+                              placeholder:   '-请选择数据-',
+                              disabled: false,
+                              size:     'default',
+                              clear: true,
+                              width:     '150px',
+                              options: [
+                                {
+                                  label:    '表格',
+                                  value:         '1',
+                                  disabled: false
+                                },
+                                {
+                                  label:      '树组件',
+                                  value:         '2',
+                                  disabled: false
+                                },
+                                {
+                                  label:      '树表',
+                                  value:     '3',
+                                  disabled: false
+                                },
+                                {
+                                  label:    '表单',
+                                  value:    '4',
+                                  disabled: false
+                                },
+                                {
+                                  label:   '标签页',
+                                  value:  '5',
+                                  disabled: false
+                                }
+                              ]
+                            }
+                          }
+
+                        ]
                       },
                       {
                         title: '编号', field: 'code', width: 80,
@@ -163,10 +222,10 @@ export class WorkFlowDictionaryComponent implements OnInit {
                             'name': 'refresh', 'class': 'editable-add-btn', 'text': '刷新'
                           },
                           {
-                            'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增', 'action': 'CREATE'
+                            'name': 'addRow', 'class': 'editable-add-btn', 'text': '新增', 'action': 'CREATE', cancelPermission: true
                           },
                           {
-                            'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改', 'action': 'EDIT'
+                            'name': 'updateRow', 'class': 'editable-add-btn', 'text': '修改', 'action': 'EDIT', cancelPermission: true
                           },
                           {
                             'name': 'deleteRow', 'class': 'editable-add-btn', 'text': '删除', 'action': 'DELETE',
@@ -214,7 +273,7 @@ export class WorkFlowDictionaryComponent implements OnInit {
                             }
                           },
                           {
-                            'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'action': 'CANCEL',
+                            'name': 'cancelRow', 'class': 'editable-add-btn', 'text': '取消', 'action': 'CANCEL', cancelPermission: true
                           },
                           {
                             'name': 'addSearchRow', 'class': 'editable-add-btn', 'text': '查询', 'action': 'SEARCH',
@@ -549,13 +608,16 @@ export class WorkFlowDictionaryComponent implements OnInit {
 
 
 
+  public getData(value) {
+
+    console.log('文本值：', value);
+  }
 
 
 
 
 
-
- // liu
+  // liu
   // 【 渲染器整体思路】
   // 1. 结构规划
   // 布局， 容器树
@@ -563,11 +625,9 @@ export class WorkFlowDictionaryComponent implements OnInit {
   // 每层父对象，整合子对象的布局树
   // 根容器，合并布局树
   // 【!用途】 可以【自由组合业务对象取值】，一个页面【多组件整存整取】
- //  【交互】 可规避过多配置消息，可直接根据树控制子组件行为。
+  //  【交互】 可规避过多配置消息，可直接根据树控制子组件行为。
 
- // ？ 取值，目前最复杂
-
-
+  // ？ 取值，目前最复杂
 
 
 
@@ -577,6 +637,281 @@ export class WorkFlowDictionaryComponent implements OnInit {
 
 
 
+
+  public sss = {
+    "rows": [
+      {
+        "row": {
+          "cols": [
+            {
+              "id": "",
+              "title": "",
+              "span": 24,
+              "icon": "icon-list",
+              "size": {
+                "nzXs": 24,
+                "nzSm": 24,
+                "nzMd": 24,
+                "nzLg": 24,
+                "ngXl": 24
+              },
+              "rows": [
+                {
+                  "row": {
+                    "cols": [
+                      {
+                        "id": "",
+                        "title": "",
+                        "span": 12,
+                        "icon": "icon-list",
+                        "size": {
+                          "nzXs": 12,
+                          "nzSm": 12,
+                          "nzMd": 12,
+                          "nzLg": 12,
+                          "ngXl": 12
+                        },
+                        "viewCfg": [
+                          {
+                            "config": {
+                              "title": "柱状图",
+                              "viewId": "001",
+                              "component": "bsnChart",
+                              "type": "bar",
+                              "height": 300,
+                              "x": {
+                                "name": "caseName"
+                              },
+                              "y": {
+                                "name": "caseCount",
+                                "scale": {
+                                  "alias": "人数"
+                                },
+                                "axis": {
+                                  "label": {
+                                    "textStyle": {
+                                      "fill": "#aaaaaa"
+                                    }
+                                  },
+                                  "title": {
+                                    "offset": 50
+                                  }
+                                }
+                              },
+                              "groupName": "caseTypeText",
+                              "legend": {
+                                "position": "top-center"
+                              },
+                              "ajaxConfig": {
+                                "url": "common/GetCase",
+                                "ajaxType": "get",
+                                "params": [
+                                  {
+                                    "name": "parentId",
+                                    "type": "value",
+                                    "value": "55f40d817d3d4fcd93499933222cbaae"
+                                  }
+                                ],
+                                "filter": []
+                              },
+                              "componentType": {
+                                "parent": false,
+                                "child": false,
+                                "own": true
+                              },
+                              "relations": []
+                            },
+                            "dataList": []
+                          }
+                        ]
+                      },
+                      {
+                        "id": "",
+                        "title": "",
+                        "span": 12,
+                        "icon": "icon-list",
+                        "size": {
+                          "nzXs": 12,
+                          "nzSm": 12,
+                          "nzMd": 12,
+                          "nzLg": 12,
+                          "ngXl": 12
+                        },
+                        "viewCfg": [
+                          {
+                            "config": {
+                              "title": "饼状图",
+                              "viewId": "002",
+                              "component": "bsnChart",
+                              "type": "pie",
+                              "height": 300,
+                              "x": {
+                                "name": "caseName"
+                              },
+                              "y": {
+                                "name": "caseCount"
+                              },
+                              "legend": {
+                                "position": "top-center"
+                              },
+                              "ajaxConfig": {
+                                "url": "common/GetCase",
+                                "ajaxType": "get",
+                                "params": [
+                                  {
+                                    "name": "parentId",
+                                    "type": "value",
+                                    "value": "55f40d817d3d4fcd93499933222cbaae"
+                                  },
+                                  {
+                                    "name": "caseType",
+                                    "type": "value",
+                                    "value": "1"
+                                  }
+                                ],
+                                "filter": []
+                              },
+                              "componentType": {
+                                "parent": false,
+                                "child": false,
+                                "own": true
+                              },
+                              "relations": []
+                            },
+                            "dataList": []
+                          }
+                        ]
+                      },
+                      {
+                        "id": "",
+                        "title": "",
+                        "span": 12,
+                        "icon": "icon-list",
+                        "size": {
+                          "nzXs": 12,
+                          "nzSm": 12,
+                          "nzMd": 12,
+                          "nzLg": 12,
+                          "ngXl": 12
+                        },
+                        "viewCfg": [
+                          {
+                            "config": {
+                              "title": "折线图",
+                              "viewId": "003",
+                              "component": "bsnChart",
+                              "height": 300,
+                              "type": "line",
+                              "x": {
+                                "name": "caseName",
+                                "scale": {
+                                  "range": [0, 1]
+                                }
+                              },
+                              "y": {
+                                "name": "caseCount",
+                                "scale": {
+                                  "alias": "人数"
+                                }
+                              },
+                              "groupName": "caseTypeText",
+                              "legend": {
+                                "position": "top-center"
+                              },
+                              "shape": "circle",
+                              "ajaxConfig": {
+                                "url": "common/GetCase",
+                                "ajaxType": "get",
+                                "params": [
+                                  {
+                                    "name": "parentId",
+                                    "type": "value",
+                                    "value": "55f40d817d3d4fcd93499933222cbaae"
+                                  }
+                                ],
+                                "filter": []
+                              },
+                              "componentType": {
+                                "parent": false,
+                                "child": false,
+                                "own": true
+                              },
+                              "relations": []
+                            },
+                            "dataList": []
+                          }
+                        ]
+                      },
+                      {
+                        "id": "",
+                        "title": "",
+                        "span": 12,
+                        "icon": "icon-list",
+                        "size": {
+                          "nzXs": 12,
+                          "nzSm": 12,
+                          "nzMd": 12,
+                          "nzLg": 12,
+                          "ngXl": 12
+                        },
+                        "viewCfg": [
+                          {
+                            "config": {
+                              "title": "曲线图",
+                              "viewId": "004",
+                              "component": "bsnChart",
+                              "height": 300,
+                              "type": "line",
+                              "x": {
+                                "name": "caseName",
+                                "scale": {
+                                  "range": [0, 1]
+                                }
+                              },
+                              "y": {
+                                "name": "caseCount",
+                                "scale": {
+                                  "alias": "人数"
+                                }
+                              },
+                              "groupName": "caseTypeText",
+                              "shape": "smooth",
+                              "legend": {
+                                "position": "top-center"
+                              },
+                              "ajaxConfig": {
+                                "url": "common/GetCase",
+                                "ajaxType": "get",
+                                "params": [
+                                  {
+                                    "name": "parentId",
+                                    "type": "value",
+                                    "value": "55f40d817d3d4fcd93499933222cbaae"
+                                  }
+                                ],
+                                "filter": []
+                              },
+                              "componentType": {
+                                "parent": false,
+                                "child": false,
+                                "own": true
+                              },
+                              "relations": []
+                            },
+                            "dataList": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
 
 
 
