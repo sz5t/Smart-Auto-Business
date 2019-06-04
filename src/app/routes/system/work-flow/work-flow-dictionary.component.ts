@@ -34,7 +34,7 @@ export class WorkFlowDictionaryComponent implements OnInit {
                 {
                   config: {
                     'viewId': 'DictionaryTypeTable',
-                    'component': 'tsTable',
+                    'component': 'bsnTable',
                     'keyId': 'Id',
                     'pagination': true, // 是否分页
                     'showTotal': true, // 是否显示总数据量

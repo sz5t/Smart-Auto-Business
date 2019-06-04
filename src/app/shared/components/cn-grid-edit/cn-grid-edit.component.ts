@@ -24,7 +24,7 @@ export class CnGridEditComponent implements OnInit {
     this.value.data =  this.rowData[this.value.name];
     this.edit_config = this.setCellFont(this.value.data, this.config.editor, this.rowData);
 
-console.log('grid-edit:', this.value, this.rowData);
+    // console.log('grid-edit:', this.value, this.rowData);
   }
 
   // 简析出当前应该展示的组件

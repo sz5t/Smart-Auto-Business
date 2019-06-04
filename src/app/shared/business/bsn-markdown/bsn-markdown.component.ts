@@ -23,8 +23,9 @@ export class BsnMarkdownComponent implements OnInit {
   //
   public dataList = [
     { key: '001', type: 'char', value: '这是一个公式', },
-    { key: '002',  type: 'img', value: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAcCAYAAABRVo5BAAACBElEQVQ4T+2UP2hTURTGv3PvfSQ04cUgKCJIoc+mBvpuJFChU1cdBcHFQUFKRXDUURSp7ejmLigoRHRydhPaZxQuIgGtYnHSECW+xHfukVdSCR1EOggF73r5Hb4/nEPY5aNdcvgP/iG5PRwO1Wq1crlcrjPzjFKKReS1Usqtra39HLf822MURYUwDI+LyCkiesfMmwAqWuvYe/9+OBw+cM6l1tqDzFzcAnOoVCrNa60vAHiTZdmjXq+3MTExsa9YLJ4dDbvZ7XZfhWG4AGAzB7W1dkZrfQ1AmZmvttvtt/nAZrMZeO/niWjZe/+UmVtBEJzMsuwhRVEUhmF4DsAVEbmbJMkdANt+VBzHdWPMMoDvAFoiUkyS5D7V6/UjhULhBhHNAVhcX19/PhYCxXE8HQTBCoAp733Le38vV0TW2mmt9W0ApTRNLzrnPuwEjTGrAA4z8/V2u/0sV0SNRuOoUuoWAJ+m6SXn3JcxUFlrj2mtV0SEB4PBonPuc/6fSzlgjFkCcEJElpIk2RiBwezs7JQx5gwRLYhIysyXgyDIBwxolJwlovMAhiLygoiU9/4QEX0SkT6AXNVpEXlCRN+Y+fFWj5OTk8VqtVojoikAXe+9JyLDzB/zPiuVyn4AcyLyA8DXfr//cud26CiKTKfT8WOVbFvWABSADIDs4bX66zP77z3+Ai6v5Or/GFUnAAAAAElFTkSuQmCC' },
-    { key: '001', type: 'char', value: '  这是一个公式', }
+    { key: '002', type: 'img', value: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAcCAYAAABRVo5BAAACBElEQVQ4T+2UP2hTURTGv3PvfSQ04cUgKCJIoc+mBvpuJFChU1cdBcHFQUFKRXDUURSp7ejmLigoRHRydhPaZxQuIgGtYnHSECW+xHfukVdSCR1EOggF73r5Hb4/nEPY5aNdcvgP/iG5PRwO1Wq1crlcrjPzjFKKReS1Usqtra39HLf822MURYUwDI+LyCkiesfMmwAqWuvYe/9+OBw+cM6l1tqDzFzcAnOoVCrNa60vAHiTZdmjXq+3MTExsa9YLJ4dDbvZ7XZfhWG4AGAzB7W1dkZrfQ1AmZmvttvtt/nAZrMZeO/niWjZe/+UmVtBEJzMsuwhRVEUhmF4DsAVEbmbJMkdANt+VBzHdWPMMoDvAFoiUkyS5D7V6/UjhULhBhHNAVhcX19/PhYCxXE8HQTBCoAp733Le38vV0TW2mmt9W0ApTRNLzrnPuwEjTGrAA4z8/V2u/0sV0SNRuOoUuoWAJ+m6SXn3JcxUFlrj2mtV0SEB4PBonPuc/6fSzlgjFkCcEJElpIk2RiBwezs7JQx5gwRLYhIysyXgyDIBwxolJwlovMAhiLygoiU9/4QEX0SkT6AXNVpEXlCRN+Y+fFWj5OTk8VqtVojoikAXe+9JyLDzB/zPiuVyn4AcyLyA8DXfr//cud26CiKTKfT8WOVbFvWABSADIDs4bX66zP77z3+Ai6v5Or/GFUnAAAAAElFTkSuQmCC' },
+    { key: '003', type: 'char', value: '  这是一个公式', },
+    { key: '004', type: 'img', value: 'data:image/png;base64,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' }
   ];
   // 常用公式
   public data = [
@@ -126,7 +127,10 @@ export class BsnMarkdownComponent implements OnInit {
   public gsShowConfig = [
   ];
 
-
+  // 公式数据集
+ public GsDataList = [];
+ // 公式展示数据集
+ public GsFormDataList = [];
 
 
   @Input() public markdown: string;
@@ -236,6 +240,9 @@ export class BsnMarkdownComponent implements OnInit {
         // img.className = 'divimg';
         const nodetablecontent = document.getElementById('tablecontent');
         const that = this;
+        const gsId = CommonTools.uuID(20);
+        img.setAttribute('gsId', gsId);
+
 
         nodetablecontent.appendChild(img);
         //  img.onclick =  this.imgClick()
@@ -250,15 +257,41 @@ export class BsnMarkdownComponent implements OnInit {
 
       }
     });
-
-    img.addEventListener('click', this.imgClick, true);
+    const gsForm = JSON.stringify(this.gsShowConfig);
+    img.setAttribute('gsform',  gsForm);
+    const d = this;
+    img.addEventListener('click', () => this.imgClick(d, img), true);
     console.log('生成的图片如下：', img);
   }
 
-  public imgClick() {
-    console.log('点击图片');
+  public imgClick(d?, img?) {
+    console.log('点击图片',  img);
+    d.editImage(img);
 
   };
+
+  /**
+   * editImage 编辑图片
+   */
+  public editImage(img?) {
+    console.log('editImage', img);
+    const gsformJson = JSON.parse( img.getAttribute('gsform'));
+      const gsId =  img.getAttribute('gsId');
+      const src =  img.getAttribute('src');
+      this.gsShowConfig = gsformJson;
+      this.inputValueChange();
+  }
+   // 给图片重新绑定事件
+ public ImageChange() {
+  const nodetablecontent = document.getElementById('tablecontent');
+  const imgs_cc = nodetablecontent.getElementsByTagName('img');
+  const d = this;
+  for (let i = 0; i < imgs_cc.length; i++) {
+    imgs_cc[i].removeEventListener('click',  () => this.imgClick(d,  imgs_cc[i]), true);
+    imgs_cc[i].addEventListener('click', () => this.imgClick(d,  imgs_cc[i]), true);
+  }
+ }
+
 
 
   /**
@@ -556,11 +589,52 @@ export class BsnMarkdownComponent implements OnInit {
         console.log('选中的html selectedHtml:', selectedHtml)
       }
       console.log('监听div内鼠标事件->删除事件', e);
-      console.log('富文本内容', ht);
+
       console.log('鼠标选中内容:', selection);
       // return false;
+      console.log('富文本内容', ht);
+      const imgs_cc = nodetablecontent.getElementsByTagName('img');
+      console.log('当前富文本中的图像', imgs_cc);
+
+      // 0603
+     //   this.ImageChange(); // 重新绑定onclik 事件
+
+     // ht.replace(/<(?!img).*?>/g, '');
+      // 如果保留img,p标签，则为：
+      // description.replace(/<(?!img|p|/p).*?>/g, "");
+      // 将img 替换为其他字符
+      // const imgReg = /<img.*?(?:>|\/>)/gi;
+      // const srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
+      // const result = ht.match(imgReg);  // arr 为包含所有img标签的数组
+      // for (let i = 0; i < result.length; i++) {
+      //   const src = result[i].match(srcReg);
+      //   // 获取图片地址
+      //   console.log('图片地址' + (i + 1) + '：' + src[1]);
+      // }
+
+
     }
 
   }
+
+  /**
+   * getTextarea 获取富文本json
+   */
+  public getTextarea() {
+    this.GsDataList = [];
+    const nodetablecontent = document.getElementById('tablecontent');
+    const imgs_cc = nodetablecontent.getElementsByTagName('img');
+    for (let i = 0; i < imgs_cc.length; i++) {
+      const gsformJson = JSON.parse( imgs_cc[i].getAttribute('gsform'));
+      const gsId =  imgs_cc[i].getAttribute('gsId');
+      const src =  imgs_cc[i].getAttribute('src');
+      this.GsDataList.push({key: gsId, src: src, gsform: gsformJson  });
+    }
+    console.log(' 富文本图片信息' ,   this.GsDataList);
+
+  }
+
+
+
 
 }

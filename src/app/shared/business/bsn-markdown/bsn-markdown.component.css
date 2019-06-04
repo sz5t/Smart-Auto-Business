@@ -6,7 +6,6 @@
 div img{
   cursor: pointer;
   transition: all 0.6s;
-  height: 200px;
 }
 div img:hover{
   transform: scale(1.4);

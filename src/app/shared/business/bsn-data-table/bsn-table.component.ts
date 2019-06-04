@@ -4146,5 +4146,8 @@ export class BsnTableComponent extends CnComponentBase
             ]
         });
     }
+    public _isArray(a) {
+        return (Object.prototype.toString.call(a) === '[object Array]');
+    }
 
 }
