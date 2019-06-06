@@ -33,6 +33,7 @@ export class CnFormMarkdownComponent implements OnInit {
   // 模板配置
 
   public ngOnInit(): void {
+    console.log('ngOnInit', this.formGroup.value);
     // this._value = this.formGroup.value[this.config.name];
     if (this.changeConfig) {
       if (this.changeConfig['cascadeValue']) {
@@ -90,35 +91,52 @@ export class CnFormMarkdownComponent implements OnInit {
       // this.selectedByLoaded();
     }
     // 未知是否有错误
-    if (!this._value) {
-      if (this.formGroup.value[this.config.name]) {
-        this._value = this.formGroup.value[this.config.name];
-      } else {
-        if (this.config.hasOwnProperty('defaultValue')) {
-          this._value = this.config.defaultValue;
-        }
-      }
-    }
-    let dataItem;
-    if (this.config.markdownlist) {
-       dataItem = this.formGroup.value[this.config.markdownlist];
-    }
-    const mvalue = { name: this._value, dataItem: dataItem ? dataItem : null };
-    this.valueChange(mvalue);
+    // if (!this._value) {
+    //   if (this.formGroup.value[this.config.name]) {
+    //     this._value = this.formGroup.value[this.config.name];
+    //   } else {
+    //     if (this.config.hasOwnProperty('defaultValue')) {
+    //       this._value = this.config.defaultValue;
+    //     }
+    //   }
+    // }
+    // let dataItem;
+    // if (this.config.markdownlist) {
+    //    dataItem = this.formGroup.value[this.config.markdownlist];
+    // }
+    // const mvalue = { value: this._value, dataItem: dataItem ? dataItem : null };
+    // console.log('富文本编辑器的初始化参数', mvalue);
+    // this.valueChange(mvalue);
   }
 
 
 
 
-  public async valueChange(name?) {
+  public  valueChange(name?) {
     console.log('M-valueChange', name);
     if (name) {
-      this._value = name.name;
-      const backValue = { name: this.config.name, value: name.name, dataItem: name.dataItem };
+      this._value = name.value;
+      const backValue = { name: this.config.name, value: name.value, dataItem: name.dataItem };
       this.updateValue.emit(backValue);
     } else {
-      const backValue = { name: this.config.name, value: name.name ? name.name : '', dataItem: name.dataItem };
+      const backValue = { name: this.config.name, value: name.value ? name.value : '', dataItem: name.dataItem };
       this.updateValue.emit(backValue);
+    }
+  }
+
+  /**
+   * valueChangeTest
+   */
+  public valueChangeTest(name) {
+    if (name) {
+      this._value = name;
+      let dataItem;
+      if (this.config.markdownlist) {
+         dataItem = this.formGroup.value[this.config.markdownlist];
+      }
+      const mvalue = { value: this._value, dataItem: dataItem ? dataItem : null };
+      console.log('富文本编辑器的初始化参数', mvalue);
+      this.valueChange(mvalue);
     }
   }
 

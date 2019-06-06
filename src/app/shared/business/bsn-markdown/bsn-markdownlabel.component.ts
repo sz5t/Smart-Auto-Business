@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, OnChanges } from '@angular/core';
 import { CommonTools } from '@core/utility/common-tools';
 @Component({
   selector: 'bsn-markdownlabel',
   templateUrl: './bsn-markdownlabel.component.html',
   styleUrls: ['./bsn-markdown.component.css']
 })
-export class BsnMarkdownlabelComponent implements OnInit {
+export class BsnMarkdownlabelComponent implements OnInit , OnChanges {
 
   @Input() public value;
   /**
@@ -26,6 +26,14 @@ export class BsnMarkdownlabelComponent implements OnInit {
       nodetablecontent.innerHTML = this.value;
     }
     //  this.editormdPreview();
+  }
+
+  public ngOnChanges() {
+    const nodetablecontent = document.getElementById('tablecontent');
+    if (this.value) {
+      // console.log('ngOnChanges');
+      nodetablecontent.innerHTML = this.value;
+    }
   }
 
 

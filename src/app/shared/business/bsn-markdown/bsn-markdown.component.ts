@@ -1,11 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, OnChanges } from '@angular/core';
 import { CommonTools } from '@core/utility/common-tools';
 @Component({
   selector: 'bsn-markdown',
   templateUrl: './bsn-markdown.component.html',
   styleUrls: ['./bsn-markdown.component.css']
 })
-export class BsnMarkdownComponent implements OnInit {
+export class BsnMarkdownComponent implements OnInit, OnChanges {
 
   public myEditor: any;
   public editorText: any;
@@ -143,7 +143,6 @@ export class BsnMarkdownComponent implements OnInit {
     this.Geometric = this.ZFconfig.filter(d => d.type === 'Geometric');
     this.MathematicalSymbols = this.ZFconfig.filter(d => d.type === 'MathematicalSymbols');
     this.GreekAlphabet = this.ZFconfig.filter(d => d.type === 'GreekAlphabet');
-
   }
   public ngAfterViewInit(): void {
     this.markdown = ''
@@ -155,6 +154,14 @@ export class BsnMarkdownComponent implements OnInit {
     }
   }
 
+  public ngOnChanges() {
+    const nodetablecontent = document.getElementById('tablecontent');
+    if (this.value) {
+      // console.log('ngOnChanges');
+      nodetablecontent.innerHTML = this.value;
+      this.ImageChange();
+    }
+  }
 
   public getData() {
     this.onChange.emit(this.myEditor.getMarkdown());

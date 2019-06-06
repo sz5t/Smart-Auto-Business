@@ -3,7 +3,7 @@
 </nz-form-label>
 <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
   <!-- style="display:none"  type="hidden" (ngModelChange)="valueChange($event)"-->
-  <input nz-input  formControlName="{{config.name}}" type="hidden" placeholder="{{config.placeholder}}"
+  <input nz-input   (ngModelChange)="valueChangeTest($event)"   formControlName="{{config.name}}" type="hidden" placeholder="{{config.placeholder}}"
     [(ngModel)]="_value">
   <ng-container *ngIf="config !== undefined">
     <bsn-markdown (onChange)="valueChange($event)" [value]="_value">loading...</bsn-markdown>
