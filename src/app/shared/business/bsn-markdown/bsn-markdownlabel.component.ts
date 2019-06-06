@@ -15,13 +15,15 @@ export class BsnMarkdownlabelComponent implements OnInit , OnChanges {
   public Geometric;
   public MathematicalSymbols;
   public GreekAlphabet;
+  @ViewChild('tablecontentview') public tablecontentview: ElementRef<any>;
   // StackEditor
   public ngOnInit() {
 
 
   }
   public ngAfterViewInit(): void {
-    const nodetablecontent = document.getElementById('tablecontent');
+
+    const nodetablecontent = this.tablecontentview.nativeElement;
     if (this.value) {
       nodetablecontent.innerHTML = this.value;
     }
@@ -29,7 +31,7 @@ export class BsnMarkdownlabelComponent implements OnInit , OnChanges {
   }
 
   public ngOnChanges() {
-    const nodetablecontent = document.getElementById('tablecontent');
+    const nodetablecontent = this.tablecontentview.nativeElement;
     if (this.value) {
       // console.log('ngOnChanges');
       nodetablecontent.innerHTML = this.value;

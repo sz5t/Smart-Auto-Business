@@ -129,6 +129,7 @@ import { BsnMarkdownComponent } from './business/bsn-markdown/bsn-markdown.compo
 import { CnFormMarkdownComponent } from './components/cn-form-markdown/cn-form-markdown.component';
 import { CnFormMarkdownlabelComponent } from '@shared/components/cn-form-markdownlabel/cn-form-markdownlabel.component';
 import { BsnMarkdownlabelComponent } from '@shared/business/bsn-markdown/bsn-markdownlabel.component';
+import { CnGridMarkdownlabelComponent } from '@shared/components/cn-grid-markdownlabel/cn-grid-markdownlabel.component';
 
 
 const THIRDMODULES = [
@@ -249,7 +250,8 @@ const COMPONENTS = [
     BsnMarkdownComponent,
     CnFormMarkdownComponent,
     CnFormMarkdownlabelComponent,
-    BsnMarkdownlabelComponent
+    BsnMarkdownlabelComponent,
+    CnGridMarkdownlabelComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
