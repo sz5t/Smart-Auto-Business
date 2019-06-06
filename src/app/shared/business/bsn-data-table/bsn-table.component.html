@@ -10,7 +10,7 @@
                 [nzIndeterminate]="indeterminate" (nzCheckedChange)="checkAll($event)">
             </th>
             <ng-template ngFor let-col [ngForOf]="config.columns">
-                <th [nzShowSort]="col.showSort" [nzShowFilter]="col.showFilter" *ngIf="!col.hidden" [nzSortKey]="col.field" [nzWidth]="'120px'"
+                <th [nzShowSort]="col.showSort" [nzShowFilter]="col.showFilter" *ngIf="!col.hidden" [nzSortKey]="col.field" [nzWidth]="col.width"
                     [ngClass]="[col.titleAlign ? col.titleAlign : '']">
                     <!--  [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" (nzFilterChange)="columnFilter(col.editor.field, $event)" -->
                     {{col.title}}
