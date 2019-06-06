@@ -126,6 +126,9 @@ import { CnGridSapnComponent } from './components/cn-grid-sapn/cn-grid-sapn.comp
 import { CnFormSearchDatePickerComponent } from './components/cn-form-search-date-picker/cn-form-search-data-picker.component';
 import { MarkdownComponent } from './business/markdown/markdown.component';
 import { BsnMarkdownComponent } from './business/bsn-markdown/bsn-markdown.component';
+import { CnFormMarkdownComponent } from './components/cn-form-markdown/cn-form-markdown.component';
+import { CnFormMarkdownlabelComponent } from '@shared/components/cn-form-markdownlabel/cn-form-markdownlabel.component';
+import { BsnMarkdownlabelComponent } from '@shared/business/bsn-markdown/bsn-markdownlabel.component';
 
 
 const THIRDMODULES = [
@@ -243,7 +246,10 @@ const COMPONENTS = [
     CnGridSapnComponent,
     CnFormSearchDatePickerComponent,
     MarkdownComponent,
-    BsnMarkdownComponent
+    BsnMarkdownComponent,
+    CnFormMarkdownComponent,
+    CnFormMarkdownlabelComponent,
+    BsnMarkdownlabelComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

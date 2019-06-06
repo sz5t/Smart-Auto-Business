@@ -6617,6 +6617,27 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
             {
                 controls: [
                     {
+                        type: 'markdown',
+                        labelSize: '6',
+                        controlSize: '16',
+                        inputType: 'submit',
+                        name: 'enabledimg1',
+                        markdownlist: 'enabledimg2',
+                        label: '公式录入',
+                        style: {
+                            height: '80px',
+                            width: '200px',
+                        },
+                        disabled: false,
+                        size: 'default',
+                        layout: 'column',
+                        span: '24'
+                    }
+                ]
+            },
+            {
+                controls: [
+                    {
                         type: 'select',
                         labelSize: '6',
                         controlSize: '16',
