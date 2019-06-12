@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { BsnMarkdownComponent } from '@shared/business/bsn-markdown/bsn-markdown.component';
 
 @Component({
   selector: 'cn-form-markdown',
@@ -25,15 +26,19 @@ export class CnFormMarkdownComponent implements OnInit {
 
   public isVisible = false;
   public isConfirmLoading = false;
-  public _value;
+  public _value = '';
   public _valuetext;
   public permissions = [];
   constructor() { }
   public nzWidth = 1024;
-  // 模板配置
 
+  public m_value = '';
+
+  public isload = true;
+  // 模板配置
+  @ViewChild('BsnMarkdown') public BsnMarkdown: BsnMarkdownComponent;
   public ngOnInit(): void {
-    console.log('ngOnInit', this.formGroup.value);
+   // console.log('ngOnInit', this.formGroup.value, this.config);
     // this._value = this.formGroup.value[this.config.name];
     if (this.changeConfig) {
       if (this.changeConfig['cascadeValue']) {
@@ -112,9 +117,10 @@ export class CnFormMarkdownComponent implements OnInit {
 
 
 
-  public  valueChange(name?) {
-    console.log('M-valueChange', name);
+  public valueChange(name?) {
+    // console.log('M-valueChange', name);
     if (name) {
+      this.m_value = name.value;
       this._value = name.value;
       const backValue = { name: this.config.name, value: name.value, dataItem: name.dataItem };
       this.updateValue.emit(backValue);
@@ -130,13 +136,19 @@ export class CnFormMarkdownComponent implements OnInit {
   public valueChangeTest(name) {
     if (name) {
       this._value = name;
+      this.m_value = name;
       let dataItem;
       if (this.config.markdownlist) {
-         dataItem = this.formGroup.value[this.config.markdownlist];
+        dataItem = this.formGroup.value[this.config.markdownlist];
       }
       const mvalue = { value: this._value, dataItem: dataItem ? dataItem : null };
-      console.log('富文本编辑器的初始化参数', mvalue);
-      this.valueChange(mvalue);
+      // console.log('富文本编辑器的初始化参数', mvalue, this.isload);
+      this.BsnMarkdown.value = this._value ? this._value : '';
+      if (this.isload) {
+        this.isload = false;
+        this.BsnMarkdown.myChanges();
+        // this.valueChange(mvalue);
+      }
     }
   }
 

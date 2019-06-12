@@ -6,6 +6,6 @@
   <input nz-input   (ngModelChange)="valueChangeTest($event)"   formControlName="{{config.name}}" type="hidden" placeholder="{{config.placeholder}}"
     [(ngModel)]="_value">
   <ng-container *ngIf="config !== undefined">
-    <bsn-markdown (onChange)="valueChange($event)" [value]="_value">loading...</bsn-markdown>
+    <bsn-markdown #BsnMarkdown (onChange)="valueChange($event)" [formConfig]="config.select?config.select.form:null" >loading...</bsn-markdown>
   </ng-container>
 </nz-form-control>

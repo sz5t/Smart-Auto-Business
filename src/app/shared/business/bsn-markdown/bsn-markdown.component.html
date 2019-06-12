@@ -1,6 +1,8 @@
 
-<nz-modal [(nzVisible)]="isVisible" nzTitle="公式编辑器" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" (nzAfterOpen)="modelOpen()" (nzAfterClose) ="modelClose()" nzWidth="768">
+<nz-modal [(nzVisible)]="isVisible" nzTitle="项目编辑器" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" (nzAfterOpen)="modelOpen()" (nzAfterClose) ="modelClose()" nzWidth="768" nzMaskClosable="false">
+    <cn-form-resolver  *ngIf="formConfig"  #contentForm [config]="formConfig" [formValue]="form_value"></cn-form-resolver>
   <nz-card >
+
     <nz-tabset>
       <nz-tab nzTitle="特殊字符">
         <div id="box1" class="icon_box active" style="font-size: 16px;color: rgb(0, 0, 0);font-family: arial, 宋体, sans-serif;">
@@ -31,11 +33,12 @@
       </nz-tab>
       <nz-tab nzTitle="模板">
         <button nz-button nzType="default" (click)="CheckTemplate('char')">特殊字符</button>
-        <button nz-button nzType="default" (click)="CheckTemplate('text')">设计值</button>
+        <button nz-button nzType="default" (click)="CheckTemplate('design')">设计值</button>
         <button nz-button nzType="default" (click)="CheckTemplate('symbol')">运算符号</button>
         <button nz-button nzType="default" (click)="CheckTemplate('sup')">上标</button>
         <button nz-button nzType="default" (click)="CheckTemplate('sub')">下标</button>
         <button nz-button nzType="default" (click)="CheckTemplate('supb')">上下标</button>
+        <button nz-button nzType="default" (click)="CheckTemplate('text')">文本描述</button>
         <!-- <button nz-button nzType="default" (click)="CheckTemplate('unit ')">计量单位</button> -->
         <button nz-button nzType="primary" (click)="EmptyGS()">清空</button>
         <button nz-button nzType="primary" (click)="delcol()">删除</button>
@@ -61,35 +64,40 @@
       <div nz-col *ngFor="let c of gsShowConfig" nzSpan="c.sapn" [nzXs]="c.sapn" [nzSm]="c.sapn" [nzMd]="c.sapn" [nzLg]="c.sapn" [nzXl]="c.sapn" (click)="selectCol(c)"  [ngStyle]="c.selected ?  {'background-color': '#fff7ca','border':'1px dashed #F00','height':'90px'}: {'height':'90px' } ">
         <ng-container *ngIf="c.type === 'char'">
           <div style="margin-top: 20px;">
-            <input nz-input  readonly="readonly"  placeholder="特殊字符" nzSize="large" (focus)="inputFocus(c.key,c.type)" (ngModelChange)="inputValueChange($event,c.key,c.type)"  [(ngModel)]="c.value" />
+            <input nz-input  readonly="readonly"  placeholder="特殊字符" nzSize="large" (focus)="inputFocus(c.fkey,c.type)" (ngModelChange)="inputValueChange($event,c.fkey,c.type)"  [(ngModel)]="c.value" />
+          </div>
+        </ng-container>
+        <ng-container *ngIf="c.type === 'design'">
+          <div style="margin-top: 20px;">
+            <input nz-input placeholder="设计值" nzSize="large" (ngModelChange)="inputValueChange($event,c.fkey,c.type)"   [(ngModel)]="c.value" />
           </div>
         </ng-container>
         <ng-container *ngIf="c.type === 'text'">
           <div style="margin-top: 20px;">
-            <input nz-input placeholder="设计值" nzSize="large" (ngModelChange)="inputValueChange($event,c.key,c.type)"   [(ngModel)]="c.value" />
+            <input nz-input placeholder="文本描述" nzSize="large" (ngModelChange)="inputValueChange($event,c.fkey,c.type)"   [(ngModel)]="c.value" />
           </div>
         </ng-container>
         <ng-container *ngIf="c.type === 'symbol'">
           <div style="margin-top: 20px;">
-            <input nz-input readonly="readonly" placeholder="运算符号" nzSize="large" (focus)="inputFocus(c.key,c.type)" (ngModelChange)="inputValueChange($event,c.key,c.type)"   [(ngModel)]="c.value" />
+            <input nz-input readonly="readonly" placeholder="运算符号" nzSize="large" (focus)="inputFocus(c.fkey,c.type)" (ngModelChange)="inputValueChange($event,c.fkey,c.type)"   [(ngModel)]="c.value" />
           </div>
         </ng-container>
         <ng-container *ngIf="c.type === 'sup'">
-          <input nz-input placeholder="上标" nzSize="large" (ngModelChange)="inputValueChange($event,c.key,c.type)"   [(ngModel)]="c.value" />
+          <input nz-input placeholder="上标" nzSize="large" (ngModelChange)="inputValueChange($event,c.fkey,c.type)"   [(ngModel)]="c.value" />
         </ng-container>
         <ng-container *ngIf="c.type === 'sub'">
           <div style="margin-top: 40px;">
-            <input nz-input placeholder="下标" nzSize="large" (ngModelChange)="inputValueChange($event,c.key,c.type)"   [(ngModel)]="c.value" />
+            <input nz-input placeholder="下标" nzSize="large" (ngModelChange)="inputValueChange($event,c.fkey,c.type)"   [(ngModel)]="c.value" />
           </div>
         </ng-container>
         <ng-container *ngIf="c.type === 'supb'">
           <div nz-row style="margin-top: 5px;">
             <div nz-col *ngFor="let cc of c.content" [nzSpan]="cc.span">
               <ng-container *ngIf="cc.type === 'sup'">
-                <input nz-input placeholder="上标" nzSize="large" (ngModelChange)="inputValueChange($event,cc.key,'supbsup')"   [(ngModel)]="cc.value" />
+                <input nz-input placeholder="上标" nzSize="large" (ngModelChange)="inputValueChange($event,cc.fkey,'supbsup')"   [(ngModel)]="cc.value" />
               </ng-container>
               <ng-container *ngIf="cc.type === 'sub'">
-                <input nz-input placeholder="下标" nzSize="large" (ngModelChange)="inputValueChange($event,cc.key,'supbsub')"   [(ngModel)]="cc.value" />
+                <input nz-input placeholder="下标" nzSize="large" (ngModelChange)="inputValueChange($event,cc.fkey,'supbsub')"   [(ngModel)]="cc.value" />
               </ng-container>
             </div>
           </div>
@@ -110,7 +118,7 @@
 <button nz-button nzSize="small" nzType="primary" (click)="showModal()">插入项目</button>
 <!-- <button nz-button  nzSize="small" nzType="primary" (click)="getTextarea()">获取富文本值</button> -->
 
-<div id="tablecontent" (blur)="contenteditableblur()"  (keydown)="keyEventFun($event)" contenteditable="true" style="border:1px solid #d9d9d9; background-color: #fff; min-height: 150px;    font-size: 12px;
+<div id="tablecontent" #tablecontentview (Input) ="keyEventInput($event)"   (paste)="keyEventPaste($event)" (blur)="contenteditableblur()"  (keydown)="keyEventFun($event)" contenteditable="true" style="border:1px solid #d9d9d9; background-color: #fff; min-height: 150px;    font-size: 12px;
 font-variant: tabular-nums;">
 
   </div>
