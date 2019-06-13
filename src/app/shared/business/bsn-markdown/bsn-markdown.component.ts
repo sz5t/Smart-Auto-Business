@@ -312,7 +312,7 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
       nodetablecontent.innerHTML = this.value;
       this.ImageChange();
     }
-   // console.log('ngAfterViewInit');
+    // console.log('ngAfterViewInit');
   }
 
   public ngOnChanges() {
@@ -350,7 +350,7 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
    * editImage 编辑图片
    */
   public editImage(img?) {
-   // console.log('editImage', img);
+    // console.log('editImage', img);
     const gsformJson = JSON.parse(img.getAttribute('gsform'));
     const gsId = img.getAttribute('gsId');
     const src = img.getAttribute('src');
@@ -444,9 +444,9 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
     const ht = nodetablecontent.innerHTML;
     if (e.code === 'Backspace') {
 
-    //  console.log('监听div内鼠标事件->删除事件', e);
+      //  console.log('监听div内鼠标事件->删除事件', e);
 
-   //   console.log('富文本内容', ht);
+      //   console.log('富文本内容', ht);
       //  this.getTextarea();
       // 0603
       this.ImageChange(); // 重新绑定onclik 事件
@@ -474,7 +474,7 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
    */
   public keyEventPaste(e?) {
 
-   // console.log('===.>>>>>监听粘贴');
+    // console.log('===.>>>>>监听粘贴');
     this.ImageChange(); // 重新绑定onclik 事件
   }
 
@@ -482,7 +482,7 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
    * keyEventInput
    */
   public keyEventInput(e?) {
-   // console.log('===.>>>>>监听内容变化');
+    // console.log('===.>>>>>监听内容变化');
   }
 
   /**
@@ -508,11 +508,19 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
 
   public showModal(type?): void {
     this.isVisible = true;
+
     if (type === 'update') {
 
     } else {
       this.editImageObj = null;
       this.gsShowConfig = [];
+      const newTemplate = this.createForm('projectName', 0);
+      this.gsShowConfig.push(newTemplate);
+      const newTemplateunit = this.createForm('unit', 0);
+      newTemplateunit['selected'] = true;
+      this.selectedCol = newTemplateunit;
+      this.gsShowConfig.push(newTemplateunit);
+    //  console.log('gsShowConfig=>>', this.gsShowConfig);
       this.markdown = '';
       this.form_value = {};
     }
@@ -557,7 +565,7 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
 
   public modelClose(): void {
     if (this.handleState) {
-     // console.log('弹出关闭!');
+      // console.log('弹出关闭!');
 
 
       this.getTextarea();
@@ -611,13 +619,13 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
 
     const node22 = document.getElementsByClassName('markdown-body editormd-html-preview')[0];
     let node = node22.getElementsByClassName('katex-html')[0];
-    if (node22.getElementsByClassName('katex-html').length > 1) {
+    if (node22.getElementsByClassName('katex-html').length >= 1) {
       node = node22.children[0];
       node.setAttribute('style', 'display:inline-block; line-height:1.2; font: 1.21em');
     }
     // const node = document.getElementsByClassName("editormd-preview")[0];
     if (node) { } else { node = node22 }
-    // console.log('找到节点', node);
+   // console.log('找到节点', node, node22);
     // console.log('createImage-->=>当前光标位置', this.rangeFocus, oldimg);
     const createImg_rangeFocus = this.rangeFocus;
     // if (createImg_rangeFocus) {
@@ -753,6 +761,8 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
     const input1 = CommonTools.uuID(36);
     const input11 = CommonTools.uuID(36);
     const input12 = CommonTools.uuID(36);
+    // 项目名称
+    const f_projectName = { fkey: input1, type: 'projectName', sapn: 0, value: null, valueString: '', selected: false, $operDataType$: 'add', fparentId: '' };
     // 特殊字符
     const f_char = { fkey: input1, type: 'char', sapn: sapn, value: null, valueString: '', selected: false, $operDataType$: 'add', fparentId: '' };
     // 设计值
@@ -773,7 +783,12 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
         { fkey: input12, type: 'sub', sapn: '24', value: null, valueString: '', $operDataType$: 'add', fparentId: input1 }
       ]
     };
+     const f_unit = { fkey: input1, type: 'unit', sapn: 0, value: null, valueString: '', selected: false, $operDataType$: 'add', fparentId: '' };
     let back;
+
+    if (type === 'projectName') {
+      back = f_projectName;
+    }
     if (type === 'char') {
       back = f_char;
     }
@@ -795,6 +810,12 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
     if (type === 'supb') {
       back = f_supb;
     }
+    if (type === 'unit') {
+      back = f_unit;
+    }
+
+
+    console.log('1111--->>>', back, type, sapn);
     return back;
 
   }
@@ -860,6 +881,20 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
     //  $${b}^{3}_{3}$$  上下标的生成
     // console.log('inputValueChange', v)
     let backstr = '  $$';
+
+    let projectName;
+    let unit;
+    this.gsShowConfig.forEach(input => {
+      if (input['type'] === 'projectName') {
+        projectName = input['value'];
+      }
+      if (input['type'] === 'unit') {
+        unit = input['value'];
+      }
+    });
+    if (projectName) {
+      backstr = projectName + '  $$';
+    }
     this.gsShowConfig.forEach(input => {
       if (input['fkey'] === fkey) {
         input['value'] = v;
@@ -923,6 +958,10 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
     });
 
     backstr = backstr + '$$';
+    if (unit) {
+      backstr = backstr + unit;
+    }
+
     console.log('生成公式字符串：', backstr);
     if (!backstr) {
       backstr = '$$$$'
@@ -932,10 +971,26 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
   }
 
   /**
+   * returnItemValue
+   */
+  public returnItemValue(name?) {
+    // console.log('表单值返回', name);
+    this.gsShowConfig.forEach(input => {
+      if (input['type'] === name.name) {
+        input['value'] = name.data;
+      }
+      if (input['type'] === name.name) {
+        input['value'] = name.data;
+      }
+    });
+    this.inputValueChange();
+  }
+
+  /**
    * EmptyGS 清空公式
    */
   public EmptyGS() {
-    this.gsShowConfig = [];
+    this.gsShowConfig = this.gsShowConfig.filter(d => d.type !== 'projectName' && d.type !== 'unit'  );
     this.FocusIput = null;
     this.markdown = '';
     this.selectedCol = null;
@@ -963,7 +1018,7 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
    */
   public delcol() {
     if (this.selectedCol) {
-      const index = this.gsShowConfig.findIndex(item => item['fkey'] === this.selectedCol['fkey']);
+      const index = this.gsShowConfig.findIndex(item => item['fkey'] === this.selectedCol['fkey'] && item['type'] !== 'projectName' && item['type'] !== 'unit'  );
       if (index !== -1) {
         const rowValue = this.gsShowConfig[index];
         this.gsShowConfig.splice(this.gsShowConfig.indexOf(rowValue), 1);

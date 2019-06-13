@@ -1,6 +1,6 @@
 
 <nz-modal [(nzVisible)]="isVisible" nzTitle="项目编辑器" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" (nzAfterOpen)="modelOpen()" (nzAfterClose) ="modelClose()" nzWidth="768" nzMaskClosable="false">
-    <cn-form-resolver  *ngIf="formConfig"  #contentForm [config]="formConfig" [formValue]="form_value"></cn-form-resolver>
+    <cn-form-resolver  *ngIf="formConfig"  #contentForm [config]="formConfig" [formValue]="form_value" (returnItemValue)="returnItemValue($event)"></cn-form-resolver>
   <nz-card >
 
     <nz-tabset>
@@ -62,6 +62,11 @@
     <!-- 动态公式输入 -->
     <div nz-row>
       <div nz-col *ngFor="let c of gsShowConfig" nzSpan="c.sapn" [nzXs]="c.sapn" [nzSm]="c.sapn" [nzMd]="c.sapn" [nzLg]="c.sapn" [nzXl]="c.sapn" (click)="selectCol(c)"  [ngStyle]="c.selected ?  {'background-color': '#fff7ca','border':'1px dashed #F00','height':'90px'}: {'height':'90px' } ">
+        <ng-container *ngIf="c.type === 'projectName'">
+          <div style="margin-top: 20px;">
+            <input nz-input  readonly="readonly"  placeholder="项目名称" nzSize="large" (focus)="inputFocus(c.fkey,c.type)"   [(ngModel)]="c.value" />
+          </div>
+        </ng-container>
         <ng-container *ngIf="c.type === 'char'">
           <div style="margin-top: 20px;">
             <input nz-input  readonly="readonly"  placeholder="特殊字符" nzSize="large" (focus)="inputFocus(c.fkey,c.type)" (ngModelChange)="inputValueChange($event,c.fkey,c.type)"  [(ngModel)]="c.value" />
@@ -102,6 +107,11 @@
             </div>
           </div>
 
+        </ng-container>
+        <ng-container *ngIf="c.type === 'projectName'">
+          <div style="margin-top: 20px;">
+            <input nz-input  readonly="readonly"  placeholder="项目名称" nzSize="large" (focus)="inputFocus(c.fkey,c.type)"   [(ngModel)]="c.value" />
+          </div>
         </ng-container>
       </div>
     </div>
