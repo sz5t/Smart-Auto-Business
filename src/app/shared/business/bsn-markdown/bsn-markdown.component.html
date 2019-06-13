@@ -108,9 +108,9 @@
           </div>
 
         </ng-container>
-        <ng-container *ngIf="c.type === 'projectName'">
+        <ng-container *ngIf="c.type === 'unit'">
           <div style="margin-top: 20px;">
-            <input nz-input  readonly="readonly"  placeholder="项目名称" nzSize="large" (focus)="inputFocus(c.fkey,c.type)"   [(ngModel)]="c.value" />
+            <input nz-input  readonly="readonly"  placeholder="单位" nzSize="large" (focus)="inputFocus(c.fkey,c.type)"   [(ngModel)]="c.value" />
           </div>
         </ng-container>
       </div>
