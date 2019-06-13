@@ -520,7 +520,7 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
       newTemplateunit['selected'] = true;
       this.selectedCol = newTemplateunit;
       this.gsShowConfig.push(newTemplateunit);
-    //  console.log('gsShowConfig=>>', this.gsShowConfig);
+      //  console.log('gsShowConfig=>>', this.gsShowConfig);
       this.markdown = '';
       this.form_value = {};
     }
@@ -530,9 +530,14 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
 
   public modelOpen() {
     this.inputValueChange();
-   // console.log('nzAfterOpen->公式编辑表单的值', this.form_value);
-    if (this.formConfig)
+    // console.log('nzAfterOpen->公式编辑表单的值', this.form_value);
+    if (this.formConfig) {
+      //  resetForm
+      console.log('弹出表单的信息', this.form_value);
+      this.contentForm.resetForm();
       this.contentForm.setFormValue(this.form_value);
+    }
+
   }
 
   public handleOk(): void {
@@ -601,7 +606,9 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
       // markdown: this.markdown,
       width: '100%',
       height: 640,
-      htmlDecode: 'style,script,iframe',  // you can filter tags decode
+      htmlDecode: true,
+      delay: 400,
+      // htmlDecode: 'style,script,iframe',  // you can filter tags decode
       emoji: true,
       taskList: true,
       tex: true,  // 默认不解析
@@ -625,7 +632,7 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
     }
     // const node = document.getElementsByClassName("editormd-preview")[0];
     if (node) { } else { node = node22 }
-   // console.log('找到节点', node, node22);
+    // console.log('找到节点', node, node22);
     // console.log('createImage-->=>当前光标位置', this.rangeFocus, oldimg);
     const createImg_rangeFocus = this.rangeFocus;
     // if (createImg_rangeFocus) {
@@ -783,7 +790,7 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
         { fkey: input12, type: 'sub', sapn: '24', value: null, valueString: '', $operDataType$: 'add', fparentId: input1 }
       ]
     };
-     const f_unit = { fkey: input1, type: 'unit', sapn: 0, value: null, valueString: '', selected: false, $operDataType$: 'add', fparentId: '' };
+    const f_unit = { fkey: input1, type: 'unit', sapn: 0, value: null, valueString: '', selected: false, $operDataType$: 'add', fparentId: '' };
     let back;
 
     if (type === 'projectName') {
@@ -815,7 +822,7 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
     }
 
 
-    console.log('1111--->>>', back, type, sapn);
+    // console.log('1111--->>>', back, type, sapn);
     return back;
 
   }
@@ -893,7 +900,7 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
       }
     });
     if (projectName) {
-      backstr = projectName + '  $$';
+      backstr = '** **' + projectName + '  $$';
     }
     this.gsShowConfig.forEach(input => {
       if (input['fkey'] === fkey) {
@@ -959,10 +966,10 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
 
     backstr = backstr + '$$';
     if (unit) {
-      backstr = backstr + unit;
+      backstr = backstr + ' ' + unit;
     }
 
-    console.log('生成公式字符串：', backstr);
+   //  console.log('生成公式字符串：', backstr);
     if (!backstr) {
       backstr = '$$$$'
     }
@@ -974,15 +981,25 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
    * returnItemValue
    */
   public returnItemValue(name?) {
-    // console.log('表单值返回', name);
+   //  console.log('表单值返回', name);
     this.gsShowConfig.forEach(input => {
       if (input['type'] === name.name) {
-        input['value'] = name.data;
+        if (name.data === null) {
+          name.data = '';
+        }
+        // if (input['type'] === 'projectName') {
+        const value = '<font color="blue">' + name.data + '</font>';
+        input['value'] = value;
+       // console.log('表单值返回1', name, input['value']);
+        // } else {
+        //   input['value'] = name.data;
+        //   console.log('表单值返回2', name,  input['value']  );
+        // }
+
       }
-      if (input['type'] === name.name) {
-        input['value'] = name.data;
-      }
+
     });
+    // console.log('表单值返回', this.gsShowConfig);
     this.inputValueChange();
   }
 
@@ -990,7 +1007,7 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
    * EmptyGS 清空公式
    */
   public EmptyGS() {
-    this.gsShowConfig = this.gsShowConfig.filter(d => d.type !== 'projectName' && d.type !== 'unit'  );
+    this.gsShowConfig = this.gsShowConfig.filter(d => d.type !== 'projectName' && d.type !== 'unit');
     this.FocusIput = null;
     this.markdown = '';
     this.selectedCol = null;
@@ -1018,7 +1035,7 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
    */
   public delcol() {
     if (this.selectedCol) {
-      const index = this.gsShowConfig.findIndex(item => item['fkey'] === this.selectedCol['fkey'] && item['type'] !== 'projectName' && item['type'] !== 'unit'  );
+      const index = this.gsShowConfig.findIndex(item => item['fkey'] === this.selectedCol['fkey'] && item['type'] !== 'projectName' && item['type'] !== 'unit');
       if (index !== -1) {
         const rowValue = this.gsShowConfig[index];
         this.gsShowConfig.splice(this.gsShowConfig.indexOf(rowValue), 1);
@@ -1058,5 +1075,6 @@ export class BsnMarkdownComponent implements OnInit, OnChanges {
     this.getTextarea();
     // console.log('记录光标位置对象->>', this.rangeFocus);
   }
+
 
 }

@@ -1200,6 +1200,8 @@ export class FormResolverComponent extends CnFormBase
                                             // 选中行对象数据
                                             if (data.dataItem) {
                                                 setoutputValuedata['data'] = data.dataItem[caseItem['outputValue'][ 'valueName'  ] ];
+                                            } else {
+                                                setoutputValuedata['data'] = null;
                                             }
                                         }
                                         // 将值回写

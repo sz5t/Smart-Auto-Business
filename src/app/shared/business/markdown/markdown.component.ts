@@ -48,6 +48,7 @@ export class MarkdownComponent implements OnInit {
       tex: true,  // 默认不解析
       flowChart: true,  // 默认不解析
       sequenceDiagram: true,  // 默认不解析SS
+      htmlDecode: true,
       saveHTMLToTextarea: true // 保存
     });
 
