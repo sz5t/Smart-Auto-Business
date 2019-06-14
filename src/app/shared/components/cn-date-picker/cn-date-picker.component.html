@@ -12,7 +12,7 @@
          (ngModelChange)="valueChange($event)"
          [nzStyle]="config.style?config.style:{}"
          ></nz-date-picker>
-         <input nz-input [(ngModel)]="value" formControlName="{{config.name}}" type="hidden">
+         <input nz-input [(ngModel)]="value" (ngModelChange)="changeControlValue($event)" formControlName="{{config.name}}" type="hidden">
         <nz-form-explain *ngIf="formGroup.get(config.name).dirty && formGroup.get(config.name).errors || formGroup.get(config.name).pending ">
                 <ng-container *ngFor="let valid of config.validations">
                             <span style="margin-top:3px" *ngIf="formGroup.get(config.name).hasError(valid.validator.toLowerCase())">{{valid.errorMessage}}</span>

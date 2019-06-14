@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { getISOYear, getMonth, getISODay, getDate } from 'date-fns';
 
@@ -10,7 +10,6 @@ import { getISOYear, getMonth, getISODay, getDate } from 'date-fns';
 export class CnDatePickerComponent implements OnInit {
     @Input()
     public config;
-    @Input()
     public value;
     @Output()
     public updateValue = new EventEmitter();
@@ -55,9 +54,11 @@ export class CnDatePickerComponent implements OnInit {
                 this.value = backValue.value;
                 this.updateValue.emit(backValue);
             }, 0)
-
-
         }
+    }
+
+    public changeControlValue(val) {
+        this.controlValue = val;
     }
 
     public getNewDate(d: any) {
