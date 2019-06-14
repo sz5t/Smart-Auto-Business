@@ -279,6 +279,7 @@ export class CnFormSelectCustomComponent extends CnComponentBase implements OnIn
       this.updateValue.emit(backValue);
     } else {
       this._value = name;
+      this._valuetext = '';
       const backValue = { name: this.config.name, value: name };
       this.updateValue.emit(backValue);
 

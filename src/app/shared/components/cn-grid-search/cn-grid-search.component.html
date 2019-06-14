@@ -72,7 +72,8 @@
                 </a>
                 <ul nz-menu nzSelectable (nzClick)="onClick($event)">
                         <ng-template ngFor let-data [ngForOf]="op">
-                                <li id="{{data.value}}" nz-menu-item [nzSelected]="data.select">
+                                        <!-- attr.lid="{{data.value}}" -->
+                                <li  id="{{data.value}}" nz-menu-item [nzSelected]="data.select">
                                         <a>{{data.lable}}</a>
                                 </li>
                         </ng-template>

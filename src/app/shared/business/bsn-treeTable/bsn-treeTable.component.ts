@@ -136,8 +136,9 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
             this._cancelSavedRow();
         };
 
-        this.windowCallback = () => {
-            if (this.selectedItem) {
+        this.windowCallback = (reload?) => {
+            debugger;
+            if (this.selectedItem && !reload) {
                 this.expandCurrentRow();
             } else {
                 this.load();
@@ -287,10 +288,12 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                                 this.addNewChildRow();
                             break;
                         case BSN_COMPONENT_MODES.EDIT:
-                            this.beforeOperation.operationItemData = [
-                                ...this.getAddedRows(),
-                                ...this.getEditedRows()
-                            ];
+                            // this.beforeOperation.operationItemData = [
+                            //     // ...this.getAddedRows(),
+                            //     // ...this.getEditedRows()
+                                
+                            // ];
+                            this.beforeOperation.operationItemsData = this.getCheckedItems();
                             !this.beforeOperation.beforeItemDataOperation(option) &&
                                 this._editRowData();
                             break;
@@ -648,7 +651,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                     : 'Id'
             ];
         }
-        this.selectedItem.expand = true;
+        // this.selectedItem.expand = true;
         // this.expandChange(data.children, data, true);
     }
 
@@ -675,8 +678,14 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         // 初始化新行数据
         const newRow = this.createNewRowData();
         this.editCache[newRow['Id']] = { edit: true, data: newRow };
-        this.dataList.splice(0, 0, newRow);
+        // this.dataList.splice(0, 0, newRow);
+        this.dataList = [newRow, ...this.dataList];
         this.treeDataOrigin.push(newRow);
+        if (!this.changeConfig_new[newRow['key']]) {
+            this.changeConfig_new[newRow['key']] = {};
+        }
+        this.dataList = this.dataList.filter(d => d.key !== null);
+        // console.log('addNewRow:', this.dataList);
         return newRow;
     }
 
@@ -693,6 +702,10 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
             this.editCache[newRow['Id']] = { edit: true, data: newRow };
             // 数据添加到具体选中行的下方
             this.dataList = this._setChildRow(newRow, parentId);
+            if (!this.changeConfig_new[newRow['key']]) {
+                this.changeConfig_new[newRow['key']] = {};
+            }
+            this.dataList = this.dataList.filter(d => d.key !== null);
         } else {
             // console.log('未选择任何行,无法添加下级');
             return false;
@@ -713,6 +726,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                 if (level > 0) {
                     newRowData['level'] = level + 1;
                 }
+                
                 this.dataList.splice(parentIndex + 1, 0, newRowData);
             }
         }

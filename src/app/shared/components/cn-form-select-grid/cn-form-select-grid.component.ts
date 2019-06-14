@@ -194,6 +194,7 @@ export class CnFormSelectGridComponent implements OnInit {
             // this.value['dataText'] = this._valuetext;
             this.updateValue.emit(backValue);
         } else {
+            this._valuetext = '';
             const backValue = { name: this.config.name, value: name };
             this.updateValue.emit(backValue);
         }

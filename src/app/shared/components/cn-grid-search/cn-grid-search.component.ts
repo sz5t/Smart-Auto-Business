@@ -258,19 +258,19 @@ export class CnGridSearchComponent implements OnInit {
       case 'nin': // not in  如果是input 是这样取值，其他则是多选取值
         strQ = strQ + '!in(' + inputValue + ')';
         break;
-      case 'btn': // between  
+      case 'btn': // between
         strQ = strQ + 'btn(' + inputValue + ')';
         break;
-      case 'ge': // >=  
+      case 'ge': // >=
         strQ = strQ + 'ge(' + inputValue + ')';
         break;
-      case 'gt': // >  
+      case 'gt': // >
         strQ = strQ + 'gt(' + inputValue + ')';
         break;
-      case 'le': // <=  
+      case 'le': // <=
         strQ = strQ + 'le(' + inputValue + ')';
         break;
-      case 'lt': // <  
+      case 'lt': // <
         strQ = strQ + 'lt(' + inputValue + ')';
         break;
       default:
@@ -307,11 +307,11 @@ export class CnGridSearchComponent implements OnInit {
     // 判断对象是否是字符串
     return Object.prototype.toString.call(obj) === '[object String]';
   }
- 
+
 
 
   public onClick(name?) {
-    const id = name.hostElement.nativeElement.id;
+    const id = name.elementRef.nativeElement.id;
     // const index =   name.nzMenuDirective.menuItems.findIndex(
     //   item => item._selected === true
     // );
@@ -330,5 +330,5 @@ export class CnGridSearchComponent implements OnInit {
     this.CreateSearch();
     this.op = JSON.parse(JSON.stringify(this.op));
   }
-  
+
 }

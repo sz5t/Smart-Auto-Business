@@ -1,0 +1,11 @@
+<nz-form-label [nzSpan]="config.labelSize">
+  {{config.label}}
+</nz-form-label>
+<nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+  <!-- style="display:none"  type="hidden" (ngModelChange)="valueChange($event)"-->
+  <input nz-input  formControlName="{{config.name}}" type="hidden" placeholder="{{config.placeholder}}"
+    [(ngModel)]="_value">
+  <ng-container *ngIf="config !== undefined">
+    <bsn-markdownlabel [value]="_value">loading...</bsn-markdownlabel>
+  </ng-container>
+</nz-form-control>

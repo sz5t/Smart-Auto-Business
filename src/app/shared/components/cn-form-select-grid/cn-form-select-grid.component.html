@@ -12,8 +12,9 @@
 </nz-form-control>
 
 <nz-form-control [nzSpan]="config.controlSize">
-        <nz-input-group nzSearch [nzSuffix]="suffixIconButton">
-                <input nz-input style=" padding-right: 30px;" [ngStyle]="{'width':config.width}" type="{{config.inputType}}" [nzSize]="config.size"
+
+        <nz-input-group nzSearch  [nzAddOnAfter]="suffixIconButton">
+                <input nz-input  [ngStyle]="{'width':config.width}" type="{{config.inputType}}" [nzSize]="config.size"
                     placeholder="{{config.placeholder}}" [(ngModel)]="_valuetext">
             </nz-input-group>
             <ng-template #suffixIconButton>

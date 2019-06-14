@@ -367,6 +367,17 @@ export class TreeGridBase extends CnComponentBase {
                             // this.windowCallback();
                         }
                     );
+                } else if (c.executeNext) {
+                    const nextConfig = ajaxConfigs.filter(
+                        f => f.parentName && f.parentName === c.name
+                    );
+                    nextConfig &&
+                    nextConfig.map(currentAjax => {
+                            this.getAjaxConfig(
+                                currentAjax,
+                                c
+                            );
+                        });
                 } else {
                     // 没有输出参数，进行默认处理
                     this.showAjaxMessage(response, msg, () => {
@@ -887,7 +898,7 @@ export class TreeGridBase extends CnComponentBase {
                                 btn,
                                 () => {
                                     modal.close();
-                                    this.windowCallback();
+                                    this.windowCallback(true);
                                 }
                             );
                         })();
@@ -898,7 +909,7 @@ export class TreeGridBase extends CnComponentBase {
                                 btn,
                                 () => {
                                     modal.close();
-                                    this.windowCallback();
+                                    this.windowCallback(true);
                                 }
                             );
                         })();
@@ -908,7 +919,7 @@ export class TreeGridBase extends CnComponentBase {
                                 btn,
                                 () => {
                                     modal.close();
-                                    this.windowCallback();
+                                    this.windowCallback(true);
                                 }
                             );
                         })();

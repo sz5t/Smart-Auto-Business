@@ -60,6 +60,7 @@ export class FormResolverComponent extends CnFormBase
     public editable;
     @Output()
     public submit: EventEmitter<any> = new EventEmitter<any>();
+    @Output() public returnItemValue = new EventEmitter();
     public _relativeResolver;
     public isSpinning = false;
     public changeConfig = [];
@@ -376,13 +377,13 @@ export class FormResolverComponent extends CnFormBase
                 item => item.ajaxType === method
             );
             result = await this[method](ajaxConfigs[index]);
-            
+
             // if (result.isSuccess) {
             //     debugger;
             //     const returnValue = this.getReturnIdsAndType(result.data);
             //     this.sendCascadeMessage(returnValue);
             // }
-            
+
         }
     }
 
@@ -508,7 +509,7 @@ export class FormResolverComponent extends CnFormBase
             for (const r of res) {
                 this.sendCascadeMessage(r.data);
             }
-            
+
         }, error => {
             this.baseMessage.create('error', '操作异常,未能正确删除数据');
             this.apiResource.addOperationLog({
@@ -586,7 +587,7 @@ export class FormResolverComponent extends CnFormBase
                         )
                     );
                 }
-                
+
             }
         }
     }
@@ -944,6 +945,14 @@ export class FormResolverComponent extends CnFormBase
                             dataTypeItem['setValue'] =
                                 item.data.setValue_data.option;
                         }
+                        if (item.data.type === 'outputValue') {
+                            // 组件赋值
+                            this.cascadeList[c.name][cobj.cascadeName][
+                                'outputValue'
+                            ] = item.data.outputValue_data.option;
+                            dataTypeItem['outputValue'] =
+                                item.data.outputValue_data.option;
+                        }
                         if (item.data.type === 'show') {
                             // 页面显示控制
                             this.cascadeList[c.name][cobj.cascadeName]['show'] =
@@ -1174,6 +1183,31 @@ export class FormResolverComponent extends CnFormBase
                                                 key,
                                                 setValuedata['data']
                                             );
+                                        }
+                                    }
+                                    if (caseItem['type'] === 'outputValue') {
+
+                                        const setoutputValuedata = {};
+                                        if (caseItem['outputValue']['type'] === 'value') {
+                                            // 静态数据
+                                            setoutputValuedata['data'] = caseItem['outputValue']['value'];
+                                        }
+                                        if ( caseItem['outputValue']['type'] === 'selectValue') {
+                                            // 选中行数据[这个是单值]
+                                            setoutputValuedata['data'] =    data[ caseItem['outputValue']['valueName']];
+                                        }
+                                        if ( caseItem['outputValue']['type'] === 'selectObjectValue') {
+                                            // 选中行对象数据
+                                            if (data.dataItem) {
+                                                setoutputValuedata['data'] = data.dataItem[caseItem['outputValue'][ 'valueName'  ] ];
+                                            } else {
+                                                setoutputValuedata['data'] = null;
+                                            }
+                                        }
+                                        // 将值回写
+                                        if ( setoutputValuedata.hasOwnProperty('data') ) {
+                                            const setoutputValuedataObj = {name: caseItem['outputValue']['outputName'] , data: setoutputValuedata['data']};
+                                            this.returnItemValue.emit(setoutputValuedataObj);
                                         }
                                     }
 
@@ -1458,6 +1492,8 @@ export class FormResolverComponent extends CnFormBase
 
         //  执行光标移动保存
         this.ExecEventByValueChange(data);
+
+
     }
     /**
       * 执行值变化触发的事件 liu 20190115

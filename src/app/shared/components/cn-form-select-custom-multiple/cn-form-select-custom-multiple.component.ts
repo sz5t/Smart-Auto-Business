@@ -21,7 +21,7 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
   @Input() public casadeData;
   @Input() public changeConfig;
   @Input() public initValue;
-  
+
   @Output() public updateValue = new EventEmitter();
   public formGroup: FormGroup;
   public resultData;
@@ -81,7 +81,7 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
             }
         }
     }
-    
+
   }
 
   public handleClosetag(removedTag: {}): void {
@@ -103,11 +103,11 @@ export class CnFormSelectCustomMultipleComponent extends CnComponentBase impleme
       labels = labels + element.label + ',';
       values = values + element.value + ',';
     });
-    if (labels.length > 0) {
-      this._valuetext = this._valuetext.substring(0, labels.length - 1);
-    } else {
-      this._valuetext = null;
-    }
+    // if (labels.length > 0) {
+    //   this._valuetext = this._valuetext.substring(0, labels.length - 1);
+    // } else {
+    //   this._valuetext = null;
+    // }
     if (values.length > 0) {
       this._value = this._value.substring(0, values.length - 1);
     } else {

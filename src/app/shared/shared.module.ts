@@ -124,6 +124,12 @@ import { LayoutInnerResolverDirective } from './resolver/layout-resolver/layout-
 import { CnFormSearchInputComponent } from './components/cn-form-search-input/cn-form-search-input.component';
 import { CnGridSapnComponent } from './components/cn-grid-sapn/cn-grid-sapn.component';
 import { CnFormSearchDatePickerComponent } from './components/cn-form-search-date-picker/cn-form-search-data-picker.component';
+import { MarkdownComponent } from './business/markdown/markdown.component';
+import { BsnMarkdownComponent } from './business/bsn-markdown/bsn-markdown.component';
+import { CnFormMarkdownComponent } from './components/cn-form-markdown/cn-form-markdown.component';
+import { CnFormMarkdownlabelComponent } from '@shared/components/cn-form-markdownlabel/cn-form-markdownlabel.component';
+import { BsnMarkdownlabelComponent } from '@shared/business/bsn-markdown/bsn-markdownlabel.component';
+import { CnGridMarkdownlabelComponent } from '@shared/components/cn-grid-markdownlabel/cn-grid-markdownlabel.component';
 
 
 const THIRDMODULES = [
@@ -239,7 +245,13 @@ const COMPONENTS = [
     JmEditorComponent,
     CnFormSearchInputComponent,
     CnGridSapnComponent,
-    CnFormSearchDatePickerComponent
+    CnFormSearchDatePickerComponent,
+    MarkdownComponent,
+    BsnMarkdownComponent,
+    CnFormMarkdownComponent,
+    CnFormMarkdownlabelComponent,
+    BsnMarkdownlabelComponent,
+    CnGridMarkdownlabelComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

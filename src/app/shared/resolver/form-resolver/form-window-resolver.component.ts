@@ -1251,6 +1251,8 @@ export class CnFormWindowResolverComponent extends CnFormBase
                 }
             });
         }
+
+     //   console.log('当前表单值', this.value);
     }
 
     // 级联变化，情况大致分为三种

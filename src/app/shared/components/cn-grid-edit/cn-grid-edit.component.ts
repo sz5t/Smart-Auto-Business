@@ -21,8 +21,10 @@ export class CnGridEditComponent implements OnInit {
 
   public ngOnInit() {
 
+    this.value.data =  this.rowData[this.value.name];
     this.edit_config = this.setCellFont(this.value.data, this.config.editor, this.rowData);
 
+    // console.log('grid-edit:', this.value, this.rowData);
   }
 
   // 简析出当前应该展示的组件
@@ -67,5 +69,17 @@ export class CnGridEditComponent implements OnInit {
     // this.value.data = name;
     this.updateValue.emit(name);
   }
+
+  // editor: [
+  //   {
+  // caseValue: { type: 'row', valueName: 'value', regular: '^2$' }, // 哪个字段的值触发，正则表达
+  //     options: {
+  //         type: 'input',
+  //         labelSize: '6',
+  //         controlSize: '18',
+  //         inputType: 'text'
+  //     }
+  //   }
+  // ]
 
 }

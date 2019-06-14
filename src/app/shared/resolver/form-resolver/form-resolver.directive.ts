@@ -41,6 +41,7 @@ import { CnFormSelectCustomComponent } from '@shared/components/cn-form-select-c
 import { CnFormSelectCustomMultipleComponent } from '@shared/components/cn-form-select-custom-multiple/cn-form-select-custom-multiple.component';
 import { CnFormImgComponent } from '@shared/components/cn-form-img/cn-form-img.component';
 import { CnFormSearchInputComponent } from '@shared/components/cn-form-search-input/cn-form-search-input.component';
+import { CnFormMarkdownComponent } from '@shared/components/cn-form-markdown/cn-form-markdown.component';
 
 const components: { [type: string]: Type<any> } = {
     input: CnFormInputComponent,
@@ -72,7 +73,8 @@ const components: { [type: string]: Type<any> } = {
     img: CnFormImgComponent,
     searchInput: CnFormSearchInputComponent,
     searchNumber: CnFormSearchInputComponent,
-    searchDatePicker: CnFormSearchDatePickerComponent
+    searchDatePicker: CnFormSearchDatePickerComponent,
+    markdown: CnFormMarkdownComponent
 };
 @Directive({
     selector: '[cnFormResolverDirective]'
