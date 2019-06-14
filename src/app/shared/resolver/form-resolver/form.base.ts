@@ -461,7 +461,7 @@ export class CnFormBase extends CnComponentBase {
         }
     }
 
-    
+
 
     public execute(url, method, body?) {
         return this.apiResource[method](url, body).toPromise();
@@ -540,9 +540,9 @@ export class CnFormBase extends CnComponentBase {
         let enterAjaxConfig;
         if (formState === BSN_FORM_STATUS.TEXT) {
             enterAjaxConfig = ajaxConfig.filter(item => !item.parent && item.ajaxType === 'delete');
-
         } else {
-            enterAjaxConfig = ajaxConfig.filter(item => !item.parent && item.ajaxType === formState);
+            // enterAjaxConfig = ajaxConfig.filter(item => !item.parent && item.ajaxType === formState);
+            enterAjaxConfig = ajaxConfig;
         }
         if (Array.isArray(enterAjaxConfig) && enterAjaxConfig[0]) {
             this.getAjaxConfig(enterAjaxConfig[0], ajaxConfig, callback);
