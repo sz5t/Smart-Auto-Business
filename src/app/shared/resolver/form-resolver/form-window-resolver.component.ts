@@ -86,6 +86,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
         this.baseMessage = this.message;
         this.baseModal = this.modalService;
         this.apiResource = this.apiService;
+        this.cascadeBase = this.cascade;
     }
 
     public ngOnInit() {
@@ -142,7 +143,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
     }
 
     public ngOnDestroy() {
-        this.unsubscribe();
+        //this.unsubscribe();
     }
 
     public initFormState() {
@@ -238,12 +239,12 @@ export class CnFormWindowResolverComponent extends CnFormBase
         }
     }
 
-    public buttonAction(btn, callback?) {
+    public buttonAction(btn, dialog?, callback?) {
         if (this.checkFormValidation()) {
             // 1、支持原生API资源调用
             // 2、支持SQL存储过程和返回结果后续操作
-            if (btn.ajaxConfig) {
-                this.resolveAjaxConfig(btn.ajaxConfig, this.formState, callback);
+            if (btn.ajaxConfig ) {
+                this.resolveAjaxConfig(btn.ajaxConfig, this.formState, callback, dialog);
             } else {
                 this.baseMessage.warning('未配置任何数据操作');
             }

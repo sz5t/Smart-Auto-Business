@@ -138,6 +138,10 @@ export class BsnAsyncTreeComponent extends GridBase
         this.apiResource = this._http;
         this.baseMessage = this._msg;
         this.baseModal = this._modal;
+        this.cascadeBase = this.cascade;
+        this.statusSubscriptions = this.eventStatus;
+        this.callback = function() {};
+
         // this.windowCallback = this.load;
     }
 
@@ -298,7 +302,7 @@ export class BsnAsyncTreeComponent extends GridBase
                                             option.data[param['pid']] && (this.tempValue[param['cid']] = option.data[param['pid']]);
                                         });
                                     }
-
+                                   
                                     if (cascadeEvent._mode === mode) {
                                         switch (mode) {
                                             // case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
@@ -390,7 +394,6 @@ export class BsnAsyncTreeComponent extends GridBase
                                 node['selected'] = false;
                                 addNodes.push(node);
                             }
-
                             this.treeData = this.treeObj.getTreeNodes();
                             // 打开节点, 重新异步加载数据
                             if (!currentSelectedNode.isExpanded) {
@@ -626,16 +629,17 @@ export class BsnAsyncTreeComponent extends GridBase
     public expandNode = (e, callback?, that?) => {
         if (e.node.isExpanded) {
             (async () => {
-
                     const s = await Promise.all(
                         this.config.expand
                             .filter(p => p.type === e.node.isLeaf)
                             .map(async expand => {
                                 const data = await this.getAsyncTreeData(expand.ajaxConfig, e.node);
                                 if (data.isSuccess && data.data.length > 0) {
+                                   
                                     this._toTreeBefore.push(
                                         ...JSON.parse(JSON.stringify(data.data))
                                     );
+                                    // this._toTreeBefore = [...this._toTreeBefore, ...data.data];
                                     data.data.forEach(item => {
                                         item['isLeaf'] = false;
                                         item['children'] = [];
@@ -970,5 +974,76 @@ export class BsnAsyncTreeComponent extends GridBase
         const selectedNodes = this.treeObj.getSelectedNodeList();
         this.tempValue['_selectedNode'] = selectedNodes[0].origin;
         return selectedNodes[0].origin;
+    }
+
+    
+
+    public sendCascadeMessage(returnValue?: any) {
+        // 发送消息 刷新其他界面
+        if (
+            this.config.componentType &&
+            this.config.componentType.parent === true
+        ) {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                    this.config.viewId,
+                    {
+                        data: { ...this.returnValue, ...this.dataList }
+                    }
+                )
+            );
+        }
+
+        if (
+            this.config.componentType &&
+            this.config.componentType.child === true
+        ) {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                    this.config.viewId,
+                    {
+                        data: { ...this.returnValue, ...this.dataList }
+                    }
+                )
+            );
+        }
+
+        if (this.config.componentType && this.config.componentType.toAsyncTree === true) {
+            // 发送操作完成的ids
+            const objs = CommonTools.getReturnIdsAndType(returnValue);
+            if (objs && Array.isArray(objs) && objs.length > 0) {
+
+                for (const r_val of objs) {
+                    let mode: string;
+                    let paramData: any;
+                    switch (r_val.type) {
+                        case 'add':
+                        mode = BSN_COMPONENT_CASCADE_MODES.ADD_ASYNC_TREE_NODE;
+                        paramData = {_add_ids: r_val.ids.join(',')};
+                        break;
+                        case 'edit':
+                        mode = BSN_COMPONENT_CASCADE_MODES.EDIT_ASNYC_TREE_NODE;
+                        paramData = {_edit_ids: r_val.ids.join(',')};
+                        break;
+                        case 'delete':
+                        mode = BSN_COMPONENT_CASCADE_MODES.DELETE_ASYNC_TREE_NODE;
+                        paramData = {_del_ids: r_val.ids.join(',')};
+                        break;
+                    }
+                    this.cascade.next(
+                        new BsnComponentMessage(
+                            mode,
+                            this.config.viewId,
+                            {
+                                data: paramData
+                            }
+                        )
+                    );
+                }
+
+            }
+        }
     }
 }

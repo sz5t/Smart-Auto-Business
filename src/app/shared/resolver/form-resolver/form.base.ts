@@ -1,4 +1,4 @@
-import { BSN_FORM_STATUS, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT } from './../../../core/relative-Service/BsnTableStatus';
+import { BSN_FORM_STATUS, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES } from './../../../core/relative-Service/BsnTableStatus';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { FormBuilder, Validators } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
@@ -467,7 +467,7 @@ export class CnFormBase extends CnComponentBase {
         return this.apiResource[method](url, body).toPromise();
     }
 
-    public getAjaxConfig(c, ajaxConfigs, callback?) {
+    public getAjaxConfig(c, ajaxConfigs, callback?, dialog?) {
         if (c) {
             const url = this.buildUrl(c.url);
             const params = this.buildParameter(c.params);
@@ -485,9 +485,13 @@ export class CnFormBase extends CnComponentBase {
                                     response,
                                     ajaxConfigs,
                                     () => {
+                                        this.sendCascadeMessage(dialog, response.data);
                                         if (callback) {
                                             callback();
-                                        }
+                                        } 
+                                        // else {
+                                        //     this.sendCascadeMessage(dialog, response.data);
+                                        // }
                                     }
                                 );
                             } else {
@@ -496,9 +500,13 @@ export class CnFormBase extends CnComponentBase {
                                     response,
                                     '操作成功',
                                     () => {
+                                        this.sendCascadeMessage(dialog, response.data);
                                         if (callback) {
                                             callback();
-                                        }
+                                        } 
+                                        // else {
+                                        //     this.sendCascadeMessage(dialog, response.data);
+                                        // }
                                     },
                                     c
                                 );
@@ -518,17 +526,28 @@ export class CnFormBase extends CnComponentBase {
                             response,
                             ajaxConfigs,
                             () => {
+                                this.sendCascadeMessage(dialog, response.data);
                                 if (callback) {
+
+                                   
                                     callback();
-                                }
+                                } 
+                                // else {
+                                //     this.sendCascadeMessage(dialog, response.data);
+                                // }
                             },
                         );
                     } else {
                         // 没有输出参数，进行默认处理
                         this.showAjaxMessage(response, '操作成功', () => {
+                            this.sendCascadeMessage(dialog, response.data);
                             if (callback) {
+                               
                                 callback();
-                            }
+                            } 
+                            // else {
+                            //     this.sendCascadeMessage(dialog, response.data);
+                            // }
                         }, c);
                     }
                 })();
@@ -536,7 +555,7 @@ export class CnFormBase extends CnComponentBase {
         }
     }
 
-    public resolveAjaxConfig(ajaxConfig, formState, callback?) {
+    public resolveAjaxConfig(ajaxConfig, formState, callback?, dialog?) {
         let enterAjaxConfig;
         if (formState === BSN_FORM_STATUS.TEXT) {
             enterAjaxConfig = ajaxConfig.filter(item => !item.parent && item.ajaxType === 'delete');
@@ -544,8 +563,8 @@ export class CnFormBase extends CnComponentBase {
         } else {
             enterAjaxConfig = ajaxConfig.filter(item => !item.parent && item.ajaxType === formState);
         }
-        if (Array.isArray(enterAjaxConfig) && enterAjaxConfig[0]) {
-            this.getAjaxConfig(enterAjaxConfig[0], ajaxConfig, callback);
+        if (Array.isArray(enterAjaxConfig) && enterAjaxConfig[0] ) {
+            this.getAjaxConfig(enterAjaxConfig[0], ajaxConfig, callback, dialog);
         } else {
             let msg = '';
             switch (formState) {
@@ -562,4 +581,72 @@ export class CnFormBase extends CnComponentBase {
         }
     }
 
+    public sendCascadeMessage(config, returnValue?: any) {
+        // 发送消息 刷新其他界面
+        if (
+            config.componentType &&
+            config.componentType.parent === true
+        ) {
+            this.cascadeBase.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                    config.viewId,
+                    {
+                        data: { ...this.returnValue, ...this.value }
+                    }
+                )
+            );
+        }
+
+        if (
+            config.componentType &&
+            config.componentType.child === true
+        ) {
+            this.cascadeBase.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                    config.viewId,
+                    {
+                        data: { ...this.returnValue, ...this.value }
+                    }
+                )
+            );
+        }
+
+        if (config.componentType && config.componentType.toAsyncTree === true) {
+            // 发送操作完成的ids
+            const objs = CommonTools.getReturnIdsAndType(returnValue);
+            if (objs && Array.isArray(objs) && objs.length > 0) {
+
+                for (const r_val of objs) {
+                    let mode: string;
+                    let paramData: any;
+                    switch (r_val.type) {
+                        case 'add':
+                        mode = BSN_COMPONENT_CASCADE_MODES.ADD_ASYNC_TREE_NODE;
+                        paramData = {_add_ids: r_val.ids.join(',')};
+                        break;
+                        case 'edit':
+                        mode = BSN_COMPONENT_CASCADE_MODES.EDIT_ASNYC_TREE_NODE;
+                        paramData = {_edit_ids: r_val.ids.join(',')};
+                        break;
+                        case 'delete':
+                        mode = BSN_COMPONENT_CASCADE_MODES.DELETE_ASYNC_TREE_NODE;
+                        paramData = {_del_ids: r_val.ids.join(',')};
+                        break;
+                    }
+                    this.cascadeBase.next(
+                        new BsnComponentMessage(
+                            mode,
+                            config.viewId,
+                            {
+                                data: paramData
+                            }
+                        )
+                    );
+                }
+
+            }
+        }
+    }
 }

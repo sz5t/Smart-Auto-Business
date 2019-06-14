@@ -846,7 +846,6 @@ export class GridBase extends CnComponentBase {
             },
             nzFooter: footer
         });
-
         if (dialog.buttons) {
             dialog.buttons.forEach(btn => {
                 const button = {};
@@ -856,9 +855,10 @@ export class GridBase extends CnComponentBase {
                     if (btn['name'] === 'save2') {
                         (async () => {
                             const result = await componentInstance.buttonAction(
-                                btn,
+                                btn, dialog,
                                 () => {
                                     modal.close();
+                                    // if(this._callback)
                                     this._callback();
                                 }
                             );
@@ -867,9 +867,10 @@ export class GridBase extends CnComponentBase {
                     if (btn['name'] === 'save') {
                         (async () => {
                             const result = await componentInstance.buttonAction(
-                                btn,
+                                btn, dialog,
                                 () => {
                                     modal.close();
+                                    // if(this._callback)
                                     this._callback();
                                 }
                             );
@@ -877,9 +878,10 @@ export class GridBase extends CnComponentBase {
                     } else if (btn['name'] === 'saveAndKeep') {
                         (async () => {
                             const result = await componentInstance.buttonAction(
-                                btn,
+                                btn, dialog,
                                 () => {
                                     modal.close();
+                                    // if(this._callback)
                                     this._callback();
                                 }
                             );
