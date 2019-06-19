@@ -36,6 +36,7 @@ import { CommonTools } from '@core/utility/common-tools';
 import { Observer, Observable, Subscription } from 'rxjs';
 import { CacheService } from '@delon/cache';
 import { SystemResource } from '@core/utility/system-resource';
+import { BeforeOperation } from '../before-operation.base';
 import { ActivatedRoute } from '@angular/router';
 @Component({
     // tslint:disable-next-line:component-selector
@@ -146,6 +147,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     public is_Selectgrid = true;
     public isLoading = false;
     public searchValue;
+    public beforeOperation;
     @Output() public updateValue = new EventEmitter();
     constructor(
         private _http: ApiService,
@@ -190,6 +192,19 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
         } else {
             this.loadTreeData();
         }
+
+        // 初始化前置条件验证对象
+        this.beforeOperation = new BeforeOperation({
+            config: this.config,
+            message: this.baseMessage,
+            modal: this.baseModal,
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            cacheValue: this.cacheValue.getNone('userInfo')
+                ? this.cacheValue.getNone('userInfo')
+                : {},
+            apiResource: this.apiResource
+        });
     }
 
     public resolverRelation() {
@@ -227,6 +242,8 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                         this.windowDialog(option);
                         break;
                     case BSN_COMPONENT_MODES.FORM:
+                        this.beforeOperation.operationItemData = this.selectedItem;
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
                         this.formDialog(option);
                         break;
                     case BSN_COMPONENT_MODES.SEARCH:
@@ -832,7 +849,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     }
 
     private _getAjaxConfig(c, option) {
-        let msg = '操作成功!';
+        let msg ;
         if (c.action) {
             let handleData;
             // 所有获取数据的方法都会将数据保存至tempValue
@@ -841,19 +858,51 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
             switch (c.action) {
                 case BSN_COMPONENT_MODES.REFRESH:
                     this.load();
+                    msg = '操作完成';
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_NODES_CHECKED_KEY:
+                    if (
+                        this.treeData.filter(item => item.checked === true)
+                            .length <= 0
+                    ) {
+                        this.baseMessage.create('info', '请选择要执行的数据');
+                        return;
+                    }
                     handleData = this._getCheckedNodesIds();
+                    this.beforeOperation.operationItemsData = handleData;
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return;
+                    }
+                    msg = '操作完成';
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_NODE_SELECTED:
                     handleData = this._getSelectedNodeId();
+                    this.beforeOperation.operationItemData = handleData;
+                    if (this.beforeOperation.beforeItemDataOperation(option)) {
+                        return;
+                    }
+
+                    msg = '操作完成';
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_NODE_CHECKED:
+                    if (
+                        this.treeData.filter(item => item.checked === true)
+                            .length <= 0
+                    ) {
+                        this.baseMessage.create('info', '请选择要执行的数据');
+                        return;
+                    }
                     handleData = this._getCheckedNodes();
+                    this.beforeOperation.operationItemsData = handleData;
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return;
+                    }
+                    msg = '操作完成';
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_DOWNLOAD:
                     handleData = this._getSelectedNodeId();
                     window.open(`${SystemResource.appSystem.Server}file/download?_ids=${handleData['Id']}`)
+                    msg = '操作完成';
                     return;
             }
             if (c.message) {
