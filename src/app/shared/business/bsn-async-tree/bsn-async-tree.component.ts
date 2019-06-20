@@ -30,6 +30,7 @@ import { CacheService } from '@delon/cache';
 import { ActivatedRoute } from '@angular/router';
 import { GridBase } from '../grid.base';
 import { SystemResource } from '@core/utility/system-resource';
+import { BeforeOperation } from '../before-operation.base';
 
 @Component({
     selector: 'cn-bsn-async-tree',
@@ -116,7 +117,7 @@ export class BsnAsyncTreeComponent extends GridBase
     public _toTreeBefore = [];
     public activedNode: NzTreeNode;
     public selectedItem: any;
-
+    public beforeOperation;
     public _statusSubscription: Subscription;
     public _cascadeSubscription: Subscription;
     public isLoading = false;
@@ -159,6 +160,19 @@ export class BsnAsyncTreeComponent extends GridBase
         } else {
             this.loadTreeData();
         }
+
+        // 初始化前置条件验证对象
+        this.beforeOperation = new BeforeOperation({
+            config: this.config,
+            message: this.baseMessage,
+            modal: this.baseModal,
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            cacheValue: this.cacheValue.getNone('userInfo')
+                ? this.cacheValue.getNone('userInfo')
+                : {},
+            apiResource: this.apiResource
+        });
     }
 
     public ngAfterViewInit() {
@@ -199,6 +213,8 @@ export class BsnAsyncTreeComponent extends GridBase
                         this.windowDialog(option);
                         break;
                     case BSN_COMPONENT_MODES.FORM:
+                        this.beforeOperation.operationItemData = this.selectedItem;
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
                         this.formDialog(option);
                         break;
                     case BSN_COMPONENT_MODES.SEARCH:
@@ -772,7 +788,7 @@ export class BsnAsyncTreeComponent extends GridBase
     }
 
     private _getAjaxConfig(c, option) {
-        let msg = '操作成功!';
+        let msg ;
         if (c.action) {
             let handleData;
             // 所有获取数据的方法都会将数据保存至tempValue
@@ -781,19 +797,85 @@ export class BsnAsyncTreeComponent extends GridBase
             switch (c.action) {
                 case BSN_COMPONENT_MODES.REFRESH:
                     this.loadTreeData();
+                    msg = '操作完成';
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_NODES_CHECKED_KEY:
+                    if (
+                        this.treeObj.getCheckedNodeList().length <= 0
+                        // this.treeData.filter(item => item.checked === true)
+                        //     .length <= 0
+                    ) {
+                        this.baseMessage.create('info', '请选择要执行的数据');
+                        return;
+                    }
                     handleData = this._getCheckedNodesIds();
+                    this.beforeOperation.operationItemsData = handleData;
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return;
+                    }
+                    msg = '操作完成';
+                    break;
+                case BSN_EXECUTE_ACTION.EXECUTE_ALL_NODES_CHECKED_KEY:
+                    if (
+                        this.treeObj.getCheckedNodeList().length <= 0
+                        // this.treeData.filter(item => item.checked === true)
+                        //     .length <= 0
+                    ) {
+                        this.baseMessage.create('info', '请选择要执行的数据');
+                        return;
+                    }
+                    handleData = this._getAllCheckedNodesIds();
+                    this.beforeOperation.operationItemsData = handleData;
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return;
+                    }
+                    msg = '操作完成';
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_NODE_SELECTED:
                     handleData = this._getSelectedNodeId();
+                    this.beforeOperation.operationItemData = handleData;
+                    if (this.beforeOperation.beforeItemDataOperation(option)) {
+                        return;
+                    }
+
+                    msg = '操作完成';
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_NODE_CHECKED:
+                    if (
+                        this.treeObj.getCheckedNodeList().length <= 0
+                        // this.treeData[0].children.filter(item => item.checked === true)
+                        //     .length <= 0
+                    ) {
+                        this.baseMessage.create('info', '请选择要执行的数据');
+                        return;
+                    }
                     handleData = this._getCheckedNodes();
+                    this.beforeOperation.operationItemsData = handleData;
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return;
+                    }
+                    msg = '操作完成';
+                    break;
+                case BSN_EXECUTE_ACTION.EXECUTE_ALL_NODE_CHECKED:
+                    if (
+                        this.treeObj.getCheckedNodeList().length <= 0
+                        // this.treeData[0].children.filter(item => item.checked === true)
+                        //     .length <= 0
+                    ) {
+                        this.baseMessage.create('info', '请选择要执行的数据');
+                        return;
+                    }
+                    handleData = this._getAllCheckedNodes();
+                    this.beforeOperation.operationItemsData = handleData;
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return;
+                    }
+                    msg = '操作完成';
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_DOWNLOAD:
                     handleData = this._getSelectedNodeId();
                     window.open(`${SystemResource.appSystem.Server}file/download?_ids=${handleData['Id']}`)
+                    msg = '操作完成';
                     return;
             }
             if (c.message) {
@@ -944,9 +1026,17 @@ export class BsnAsyncTreeComponent extends GridBase
         return list;
     }
 
+    private _getAllCheckedNodes() {
+        let checkedNodes = [];
+        const currentNodes = [...this.treeObj.getCheckedNodeList()];
+        currentNodes.forEach(node => {
+            checkedNodes = checkedNodes.concat([...this._getCheckedNodesFromParent(node)]);
+        });
+        this.tempValue['_allCheckedNodes'] = checkedNodes;
+        return checkedNodes;
+    }
 
     private _getCheckedNodes() {
-
         let checkedNodes = [];
         const currentNodes = [...this.treeObj.getCheckedNodeList()];
         currentNodes.forEach(node => {
@@ -956,6 +1046,18 @@ export class BsnAsyncTreeComponent extends GridBase
 
         this.tempValue['_checkedNodes'] = checkedNodes;
         return checkedNodes;
+    }
+
+    private _getAllCheckedNodesIds() {
+        const checkedIds = [];
+        const checkedNodes = this._getAllCheckedNodes();
+        if (checkedNodes && checkedNodes.length > 0) {
+            checkedNodes.forEach(node => {
+                checkedIds.push(node.key);
+            })
+        }
+        this.tempValue['_checkedIds'] = checkedIds.join(',');
+        return checkedIds.join(',');
     }
 
     private _getCheckedNodesIds() {
@@ -975,8 +1077,6 @@ export class BsnAsyncTreeComponent extends GridBase
         this.tempValue['_selectedNode'] = selectedNodes[0].origin;
         return selectedNodes[0].origin;
     }
-
-    
 
     public sendCascadeMessage(returnValue?: any) {
         // 发送消息 刷新其他界面
