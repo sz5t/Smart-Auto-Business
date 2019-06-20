@@ -143,7 +143,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
     }
 
     public ngOnDestroy() {
-        //this.unsubscribe();
+        // this.unsubscribe();
     }
 
     public initFormState() {

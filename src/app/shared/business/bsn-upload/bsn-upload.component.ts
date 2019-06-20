@@ -34,6 +34,7 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
     public refObj;
     public uploading = false;
     public fileList: UploadFile[] = [];
+    public securityList = [];
     public uploadList = [];
     public loading = false;
     public securityLevel;
@@ -50,20 +51,41 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
         if (this.config.showList) {
             this.isUpload = false;
         }
+        this.getsecurityList();
         this.loadUploadList();
     }
 
     public ngAfterViewInit() {
        // this.loadUploadList();
     }
+    
+    public getsecurityList() {
+           this._apiService
+            .get(
+                this.config.securityConfig['SecurityUrl'],
+                CommonTools.parametersResolver({
+                    params: this.config.securityConfig['params'],
+                    tempValue: this.refObj
+                })
+            )
+            .subscribe(
+                result => {
+                    this.securityList = result.data;
+                        this.loading = false;
+                },
+                error => {
+                        this.loading = false;
+                }
+            );
+    }
 
     public async loadUploadList() {
         this.loading = true;
            this._apiService
             .get(
-                this.config.listUrl,
+                this.config.ajaxConfig['listUrl'],
                 CommonTools.parametersResolver({
-                    params: this.config.params,
+                    params: this.config.ajaxConfig['params'],
                     tempValue: this.refObj
                 })
             )
@@ -115,7 +137,7 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
         setTimeout(() => {
             this.uploading = true;
         });
-        this._apiService.post(this.config.url, formData).subscribe(
+        this._apiService.post(this.config.ajaxConfig['url'], formData).subscribe(
             result => {
                 setTimeout(() => {
                     this.uploading = false;    
@@ -134,14 +156,14 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
 
     public download(id) {
         this._apiService
-            .get(this.config.downloadUrl, { _ids: id })
+            .get(this.config.ajaxConfig['downloadUrl'], { _ids: id })
             .subscribe(result => {
                 this._message.success('下载成功');
             });
     }
 
     public delete(id) {
-        this._apiService.delete(this.config.deleteUrl, { _ids: id }).subscribe(
+        this._apiService.delete(this.config.ajaxConfig['deleteUrl'], { _ids: id }).subscribe(
             result => {
                 this._message.success('附件删除成功');
                 this.loadUploadList();

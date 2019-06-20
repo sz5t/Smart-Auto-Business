@@ -399,7 +399,7 @@ export class CommonTools {
         return strQ;
     }
 
-    public static getNowFormatDate(type,seperator1, seperator2) {
+    public static getNowFormatDate(type, seperator1, seperator2) {
         const date = new Date();
         seperator1 = seperator1 ? seperator1 : '';
         seperator2 = seperator2 ? seperator2 : '';
@@ -417,7 +417,7 @@ export class CommonTools {
         }
 
         let currentDate;
-        switch(type) {
+        switch (type) {
             case 'year':
                 currentDate = date.getFullYear();
             break;

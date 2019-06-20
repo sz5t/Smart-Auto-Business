@@ -12,7 +12,7 @@ import { NzDropdownService, NzDropdownContextComponent, NzMenuItemDirective } fr
     selector: 'bsn-data-step',
     template: `
     <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
-        <div 
+        <div
             (contextmenu)="contextMenu($event,template)"
             [ngStyle]="{overflow: 'auto',height: config.scrollHeight, width: config.scrollWidth}"
             infiniteScroll
@@ -25,7 +25,7 @@ import { NzDropdownService, NzDropdownContextComponent, NzMenuItemDirective } fr
         <ul nz-menu nzInDropDown (nzClick)="close($event)">
           <li nz-menu-item>一级数据</li>
           <li nz-menu-item>二级数据</li>
-          <li nz-menu-item>三级数据</li> 
+          <li nz-menu-item>三级数据</li>
         </ul>
       </ng-template>
     </nz-spin>`,
@@ -93,10 +93,10 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                             this.graph.read({ nodes: crNodes })
                         }
                         if (!this._lastNode && crNodes.length > 0) {
-                            
+
                             this._lastNode = this.graph._cfg._itemMap[crNodes[0].Id];
                         }
-                        
+
                         this.isLoading = false
                     }
                 })
@@ -330,7 +330,7 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                                         break
                                 }
                             }
-                            
+
                         }
                     })
                 }
