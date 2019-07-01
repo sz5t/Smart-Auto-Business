@@ -279,7 +279,7 @@ export class CnGridSelectCustomMultipleComponent  extends CnComponentBase  imple
                   this._value = this._value.substring(0, this._value.length - 1);
                 }
                 // this.valueChange(this._valuetext, this.selectedValue);
-                this.valueChange(componentInstance.value[valueName]);
+                this.valueChange(this._value);
               }
 
               modal.close();
@@ -295,7 +295,6 @@ export class CnGridSelectCustomMultipleComponent  extends CnComponentBase  imple
   }
 
   public async valueChange(name?, dataItemValue?) {
-
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
     if (name) {
