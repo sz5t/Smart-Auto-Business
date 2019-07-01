@@ -1,0 +1,18 @@
+<nz-form-label [nzSpan]="config.labelSize">
+  {{config.label}}
+</nz-form-label>
+
+<nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+  <nz-tree-select
+                  [nzDropdownMatchSelectWidth]="true"
+                  formControlName="{{config.name}}"
+                  [nzNodes]="treeData"
+                  nzPlaceHolder="{{config.placeholder}}"
+                  [(ngModel)]="_selectedValue"
+                  [nzCheckable]="config.multiple ? config.multiple : false"
+                  [nzDropdownStyle]="config.style ? config.style : {'max-height': '300px'}"
+                  [nzAsyncData]="config.asyncData"
+                  (nzExpandChange)="expandNode($event)"
+                  (ngModelChange)="valueChange($event)">
+              </nz-tree-select>
+</nz-form-control>

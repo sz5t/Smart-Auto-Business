@@ -130,6 +130,7 @@ import { CnFormMarkdownComponent } from './components/cn-form-markdown/cn-form-m
 import { CnFormMarkdownlabelComponent } from '@shared/components/cn-form-markdownlabel/cn-form-markdownlabel.component';
 import { BsnMarkdownlabelComponent } from '@shared/business/bsn-markdown/bsn-markdownlabel.component';
 import { CnGridMarkdownlabelComponent } from '@shared/components/cn-grid-markdownlabel/cn-grid-markdownlabel.component';
+import { CnFormSelectAsyncTreeComponent } from './components/cn-form-select-async-tree/cn-form-select-async-tree.component';
 
 
 const THIRDMODULES = [
@@ -192,6 +193,7 @@ const COMPONENTS = [
     LineChartComponent,
     BarChartComponent,
     CnFormSelectTreeComponent,
+    CnFormSelectAsyncTreeComponent,
     CnFormSelectTreeMultipleComponent,
     BsnAccordionComponent,
     BsnTabsComponent,
@@ -281,7 +283,7 @@ const DIRECTIVES = [
         ...DIRECTIVES,
         BtnTableFieldLimit,
         SafeUrlPipe,
-        BtnTableStatusInfoPipe
+        BtnTableStatusInfoPipe,
     ],
     exports: [
         CommonModule,

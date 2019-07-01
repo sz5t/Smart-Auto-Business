@@ -42,6 +42,7 @@ import { CnFormSelectCustomMultipleComponent } from '@shared/components/cn-form-
 import { CnFormImgComponent } from '@shared/components/cn-form-img/cn-form-img.component';
 import { CnFormSearchInputComponent } from '@shared/components/cn-form-search-input/cn-form-search-input.component';
 import { CnFormMarkdownComponent } from '@shared/components/cn-form-markdown/cn-form-markdown.component';
+import { CnFormSelectAsyncTreeComponent } from '@shared/components/cn-form-select-async-tree/cn-form-select-async-tree.component';
 
 const components: { [type: string]: Type<any> } = {
     input: CnFormInputComponent,
@@ -56,6 +57,7 @@ const components: { [type: string]: Type<any> } = {
     radioGroup: CnFormRadioGroupComponent,
     search: CnFormSearchComponent,
     selectTree: CnFormSelectTreeComponent,
+    selectAsyncTree: CnFormSelectAsyncTreeComponent,
     selectTreeMultiple: CnFormSelectTreeMultipleComponent,
     textarea: CnFormTextareaComponent,
     hidden: CnFormHiddenComponent,

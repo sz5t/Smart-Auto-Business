@@ -3167,7 +3167,7 @@ export class BsnTableComponent extends CnComponentBase
                 button['onClick'] = componentInstance => {
                     if (btn['name'] === 'save') {
                         componentInstance.buttonAction(
-                            btn,
+                            btn, dialog,
                             () => {
                                 modal.close();
                                 this.load();
@@ -3175,7 +3175,7 @@ export class BsnTableComponent extends CnComponentBase
                         );
                     } else if (btn['name'] === 'saveAndKeep') {
                         componentInstance.buttonAction(
-                            btn,
+                            btn, dialog,
                             () => {
                                 this._resetForm(componentInstance);
                                 this.load();

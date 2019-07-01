@@ -41,7 +41,7 @@ export class CnDatePickerComponent implements OnInit {
 
     public valueChange(val?: Date) {
         if (val) {
-            const year = getISOYear(this.date);
+            const year = getISOYear(val);
             const month = this.getNewDate(getMonth(val) + 1);
             const date = this.getNewDate(getDate(val));
             const backValue = {

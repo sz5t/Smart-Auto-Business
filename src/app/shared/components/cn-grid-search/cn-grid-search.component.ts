@@ -140,7 +140,12 @@ export class CnGridSearchComponent implements OnInit {
       }
     }
     this.setOP();  // 简析条件参数
-    this.AfterValue = 'eq';
+    if (this.config.type === 'input') {
+      this.AfterValue = 'ctn';
+    } else {
+      this.AfterValue = 'eq'
+    }
+    
   }
 
   // 默认 Edit 简析操作条件
