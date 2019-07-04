@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { ApiService } from '@core/utility/api-service';
 import { APIResource } from '@core/utility/api-resource';
+import { CacheService } from '@delon/cache';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -36,9 +37,12 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
     private resultData;
     private cascadeValue = {};
     private cascadeSetValue = {};
+    public cacheValue;
     public _clear = true;
     // _selectedMultipleOption:any[];
-    constructor(private apiService: ApiService) {}
+    constructor(private apiService: ApiService, private cacheService: CacheService) {
+        this.cacheValue = this.cacheService;
+    }
 
     public async ngOnInit() {
         if (this.casadeData) {
@@ -157,6 +161,13 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
                         return null;
                     }
                     // params[param.name] = this.cascadeValue[param.valueName];
+                } else if (param.type === 'cacheValue') {
+                    const cache = this.cacheValue.getNone('userInfo');
+                    if (param['datatype']) {
+                        params[param.name] = this.getParameters(param['datatype'], cache[param['valueName']]);
+                    } else {
+                        params[param.name] = cache[param['valueName']];
+                    }
                 }
             });
 
@@ -245,6 +256,58 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
             this.value.data = null;
             this.updateValue.emit(this.value);
         }
+    }
+
+    // 参数判断
+    public getParameters(datatype?, inputValue?) {
+        let strQ = '';
+        if (!inputValue) {
+            // return strQ;
+        }
+        switch (datatype) {
+            case 'eq': // =
+                strQ = strQ + 'eq(' + inputValue + ')';
+                break;
+            case 'neq': // !=
+                strQ = strQ + '!eq(' + inputValue + ')';
+                break;
+            case 'ctn': // like
+                strQ = strQ + 'ctn(\'%' + inputValue + '%\')';
+                break;
+            case 'nctn': // not like
+                strQ = strQ + '!ctn(\'%' + inputValue + '%\')';
+                break;
+            case 'in': // in  如果是input 是这样取值，其他则是多选取值
+                strQ = strQ + 'in(' + inputValue + ')';
+                break;
+            case 'nin': // not in  如果是input 是这样取值，其他则是多选取值
+                strQ = strQ + '!in(' + inputValue + ')';
+                break;
+            case 'btn': // between  
+                strQ = strQ + 'btn(' + inputValue + ')';
+                break;
+            case 'ge': // >=  
+                strQ = strQ + 'ge(' + inputValue + ')';
+                break;
+            case 'gt': // >  
+                strQ = strQ + 'gt(' + inputValue + ')';
+                break;
+            case 'le': // <=  
+                strQ = strQ + 'le(' + inputValue + ')';
+                break;
+            case 'lt': // <  
+                strQ = strQ + 'lt(' + inputValue + ')';
+                break;
+            default:
+                strQ = inputValue;
+                break;
+        }
+
+        if (!inputValue) {
+            strQ = null;
+        }
+
+        return strQ;
     }
 
     public isString(obj) {

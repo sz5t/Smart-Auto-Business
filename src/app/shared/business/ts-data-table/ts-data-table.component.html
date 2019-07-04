@@ -22,7 +22,6 @@
                         <span *ngIf="!col.button">{{col.title}}</span>
                         <button *ngIf="col.button" nz-button nzType="primary" nzBlock (click)="titleToolbarAction(col)">{{col.title}}</button>
                     </ng-container>
-
                 </th>
             </ng-template>
         </tr>
@@ -63,12 +62,9 @@
                                         [changeConfig]="changeConfig_newSearch.hasOwnProperty(data.key) ? changeConfig_newSearch[data.key][col.editor.field]:''"
                                         (updateValue)="valueChangeSearch($event)">
                                     </cn-grid-search>
-
-
                                 </ng-container>
                             </ng-container>
                             <ng-container *ngIf="!col.editor">
-
                                 <ng-container *ngIf="!col.type && col.field !=='_serilize' ">
                                     <cn-grid-search *ngIf="!col.searcheditor && !col.editor" [searchConfigType]="'default'" [bsnData]="tempValue" [initData]="initData"
                                         [rowData]="editCache[data.key].data" [dataSet]="null" [config]="col" [value]="{key:data.key,name:col.field,data:null,dataText:null}"
@@ -80,16 +76,13 @@
                                             <button  nz-button nzType="primary" nzBlock (click)="execFun('deleteRow',data.key)">删除</button>
                                     </div>
                                 </ng-container>
-
                             </ng-container>
-
                         </td>
                     </ng-template>
                 </tr>
             </ng-container>
             <ng-container *ngIf="data.row_status != 'search'">
                 <tr (click)="selectRow(data, $event)" [ngStyle]="{'background-color':data.selected?'rgb(236, 246, 253)':''}">
-
                     <ng-container *ngIf="config.checkedConfig">
                         <td *ngIf="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
                             <!-- [nzShowCheckbox]="config.showCheckBox" _serilize  nzCheckedChildren="data[config.columns[0].field]" nzUnCheckedChildren="data[config.columns[0].field]" -->
@@ -102,7 +95,6 @@
                         <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
                         </td>
                     </ng-container>
-
                     <ng-template ngFor let-col [ngForOf]="config.columns">
                         <td *ngIf="!col.hidden">
                             <ng-container *ngIf="col.editor">
@@ -112,12 +104,10 @@
                                     </div>
                                     <ng-container *ngIf="_isArray(col.editor)">
                                         <!-- <p>调用新的简析方法,将配置简析</p> -->
-
                                         <cn-grid-edit *ngIf="col.editor" [searchConfigType]="'default'" [bsnData]="tempValue" [initData]="initData" [rowData]="editCache[data.key].data"
                                             [dataSet]="null" [config]="col" [value]="{key:data.key,name:col.field,data:null,dataText:null}"
                                             [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.field]:''"
                                             (updateValue)="valueChange($event)"></cn-grid-edit>
-
                                     </ng-container>
                                     <ng-container *ngIf="!_isArray(col.editor)">
                                         <ng-container [bsnData]="tempValue" [initData]="initData" [rowData]="editCache[data.key].data" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
@@ -144,7 +134,6 @@
                                     </div>
                                 </ng-container>
                             </ng-container>
-
                         </td>
                     </ng-template>
                 </tr>
