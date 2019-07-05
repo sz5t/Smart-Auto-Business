@@ -87,7 +87,9 @@ export class CnGridUploadComponent extends CnComponentBase implements OnInit {
         refObj: obj
       },
       nzFooter: footer,
-      nzOnOk: () => new Promise(resolve => (setTimeout(resolve, 0)))
+      nzOnOk: () => {
+        new Promise(resolve => (setTimeout(resolve, 0)));
+      } 
     });
   }
 }

@@ -712,11 +712,9 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                                     d[m.name] &&
                                     d[m.name] === m.value
                                 ) {
-                                    if (d['parentId'] !== null) {
-
+                                    if (d['parentId'] !== null ) {
                                     }
                                     d['checked'] = true;
-
                                 }
                             });
                         }

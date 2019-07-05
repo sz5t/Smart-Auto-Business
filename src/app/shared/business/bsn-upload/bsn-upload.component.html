@@ -25,7 +25,7 @@
             <nz-select style="width: 150px;" [(ngModel)]="securityLevel" nzPlaceHolder="--密级选择--">
                 <!--<nz-option nzValue="1" nzLabel="公开"></nz-option>
                 <nz-option nzValue="2" nzLabel="保密"></nz-option>-->
-                <nz-option *ngFor="let security of securityList" [nzValue]="security.valuesid" [nzLabel]="security.valuesname"></nz-option>
+                <nz-option *ngFor="let security of securityList" [nzValue]="security[config.securityConfig.valueName]" [nzLabel]="security[config.securityConfig.labelName]"></nz-option>
             </nz-select>
         </div>
 

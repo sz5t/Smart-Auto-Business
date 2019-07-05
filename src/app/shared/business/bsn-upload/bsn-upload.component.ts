@@ -51,8 +51,12 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
         if (this.config.showList) {
             this.isUpload = false;
         }
-        this.getsecurityList();
-        this.loadUploadList();
+        if (this.config.securityConfig) {
+            this.getsecurityList();
+            this.loadUploadList();
+        } else if (!this.config.securityConfig) {
+            this.loadUploadList();
+        }
     }
 
     public ngAfterViewInit() {
@@ -81,7 +85,8 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
 
     public async loadUploadList() {
         this.loading = true;
-           this._apiService
+        if (this.config.ajaxConfig) {
+            this._apiService
             .get(
                 this.config.ajaxConfig['listUrl'],
                 CommonTools.parametersResolver({
@@ -98,6 +103,26 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
                         this.loading = false;
                 }
             );
+        } else {
+            this._apiService
+            .get(
+                this.config['listUrl'],
+                CommonTools.parametersResolver({
+                    params: this.config['params'],
+                    tempValue: this.refObj
+                })
+            )
+            .subscribe(
+                result => {
+                    this.uploadList = result.data;
+                        this.loading = false;
+                },
+                error => {
+                        this.loading = false;
+                }
+            );
+        }
+           
     }
 
     public handleChange({ file, fileList }): void {

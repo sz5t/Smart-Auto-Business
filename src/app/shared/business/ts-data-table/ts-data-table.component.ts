@@ -4531,4 +4531,3 @@ export class TsDataTableComponent extends CnComponentBase
     }
 
 }
-

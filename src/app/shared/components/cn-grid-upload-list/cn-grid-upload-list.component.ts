@@ -107,7 +107,10 @@ export class CnGridUploadListComponent extends CnComponentBase implements OnInit
         config: dialog.ajaxConfig,
         refObj: obj
       },
-      nzFooter: footer
+      nzFooter: footer,
+      nzOnOk: () => {
+        new Promise(resolve => (setTimeout(resolve, 0)));
+      } 
     });
   }
 
