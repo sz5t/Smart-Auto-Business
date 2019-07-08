@@ -283,9 +283,43 @@ export class BeforeOperation {
         } else if (iniValue && tmpValue) {
             result = iniValue !== tmpValue;
         }
-
         return result;
 
+    }
+
+    // 批量进行前置事件判断
+    private innerValueCheckValueCondition(statusItem, item?) {
+        // 判断与固定值做验证还是与当前行数据验证
+        let result = false;
+        let tmpValue;
+        let cchValue;
+        let iniValue;
+        let checkeditem;
+        checkeditem = item[statusItem['valueName']];
+        if (statusItem['tempValue']) {
+            tmpValue = this.tempValue[statusItem['tempValue']];
+        }
+        if (statusItem['cacheValue']) {
+            cchValue = this.cacheValue[statusItem['cacheValue']];
+        }
+        if (statusItem['initValue']) {
+            iniValue = this.initValue[statusItem['initValue']];
+        }
+
+        if (tmpValue && cchValue) {
+            result = tmpValue !== cchValue;
+        } else if (tmpValue && iniValue) {
+            result = tmpValue !== iniValue;
+        } else if (tmpValue && checkeditem) {
+            result = tmpValue !== checkeditem;
+        } else if (cchValue && iniValue) {
+            result = cchValue !== iniValue;
+        } else if (cchValue && checkeditem) {
+            result = cchValue !== checkeditem;
+        } else if (iniValue && checkeditem) {
+            result = iniValue !== checkeditem;
+        }
+        return result;
     }
 
     private matchTempValueCondition(statusItem) {
@@ -369,6 +403,7 @@ export class BeforeOperation {
      */
     private handleCheckedRowsOperationConditions(conditions) {
         const orResult = [];
+        const foreachresult = [];
         conditions.forEach(elements => {
             // 解析‘与’的关系条件
             const andResults = [];
@@ -392,15 +427,19 @@ export class BeforeOperation {
                         andResult = this.matchCheckedCacheValueCondition(item);
                         break;
                     case 'innerValue':
-                        andResult = this.innerValueCondition(item);
+                         this.operationItemsData.forEach(element => {
+                            foreachresult.push(this.innerValueCheckValueCondition(item, element));
+                        });
+                        andResult = foreachresult.every(s => s === true);
                         break;
                 }
                 andResults.push(andResult);
             });
-            // 解析’或‘的关系条件
             const and = andResults.every(s => s === true);
             orResult.push(and);
+
         });
+        // 解析’或‘的关系条件
         return orResult.some(s => s === true);
     }
 
