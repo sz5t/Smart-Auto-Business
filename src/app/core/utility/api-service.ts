@@ -106,6 +106,24 @@ export class ApiService {
         return this.httpClient.request('GET', urls);
     }
 
+    public login(resource, body?, params?) {
+        return this.httpClient.request('POST', resource, {
+            body: body,
+            params: params,
+            headers: this.setLoginHeaders()
+        }); 
+    }
+
+    public setLoginHeaders() {
+        const token = this.tokenService.get().token;
+        if (token !== 'null') {
+            // const userToken = JSON.parse(this.tokenService.get().token);
+            return new HttpHeaders()
+                .set('X-Requested-With', 'XMLHttpRequest')
+                // .set('_projectId', '7fe971700f21d3a796d2017398812dcf');
+        }
+    }
+
     public addOperationLog(params: OperationLogModel) {
         // inner log info from system login
         params['userId'] = this.cacheService.getNone('userInfo')['userId'] ? this.cacheService.getNone('userInfo')['userId'] : 'unknown';

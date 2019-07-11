@@ -1,6 +1,6 @@
 <form nz-form [formGroup]="form" (ngSubmit)="submit()" role="form">
     <nz-tabset [nzAnimated]="false" class="tabs" (nzSelectChange)="switchLogin($event)">
-        <nz-tab nzTitle="配置系统">
+        <nz-tab nzTitle="配置系统" hidden="true">
             <nz-alert *ngIf="error" [nzType]="'error'" [nzMessage]="error" [nzShowIcon]="true" class="mb-lg"></nz-alert>
             <nz-form-item>
                 <nz-form-control>
@@ -20,36 +20,6 @@
                     <nz-form-explain *ngIf="password.dirty && password.errors">
                         请输入密码！
                     </nz-form-explain>
-                </nz-form-control>
-            </nz-form-item>
-        </nz-tab>
-        <nz-tab nzTitle="用户系统">
-            <nz-alert *ngIf="errorApp" [nzType]="'error'" [nzMessage]="errorApp" [nzShowIcon]="true" class="mb-lg"></nz-alert>
-            <nz-form-item>
-                <nz-form-control>
-                    <nz-input-group nzSize="large" [nzPrefix]="prefixUser2">
-                        <input nz-input formControlName="uName" placeholder="登录账号">
-                    </nz-input-group>
-                    <ng-template #prefixUser2><i nz-icon type="user" [theme]="twotone"></i></ng-template>
-                    <nz-form-explain *ngIf="uName.dirty && uName.errors">请输入账户名且至少一个字符！</nz-form-explain>
-                </nz-form-control>
-            </nz-form-item>
-            <nz-form-item>
-                <nz-form-control>
-                    <!-- <nz-row [nzGutter]="8">
-                        <nz-col [nzSpan]="16"> -->
-                    <nz-input-group nzSize="large" [nzPrefix]="prefixPwd2">
-                        <input nz-input type="password" formControlName="uPassword" placeholder="登录密码">
-                        <ng-template #prefixPwd2><i nz-icon type="lock" [theme]="twotone"></i></ng-template>
-                    </nz-input-group>
-                    <nz-form-explain *ngIf="uPassword.dirty && uPassword.errors">
-                        请输入密码！
-                    </nz-form-explain>
-                    <!-- </nz-col>
-                    <nz-col [nzSpan]="8">
-                        <button nz-button nzSize="large" (click)="getCaptcha()" [disabled]="count" class="ant-btn__block">{{ count ? count + 's' : '获取验证码' }}</button>
-                    </nz-col>
-                </nz-row> -->
                 </nz-form-control>
             </nz-form-item>
         </nz-tab>

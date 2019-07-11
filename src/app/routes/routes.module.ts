@@ -9,6 +9,7 @@ import { DashboardMonitorComponent } from './dashboard/monitor/monitor.component
 import { DashboardWorkplaceComponent } from './dashboard/workplace/workplace.component';
 // passport pages
 import { UserLoginComponent } from './passport/login/login.component';
+import { CustomerLoginComponent } from './passport/customer-login/customer-login.component';
 import { UserRegisterComponent } from './passport/register/register.component';
 import { UserRegisterResultComponent } from './passport/register-result/register-result.component';
 // single pages
@@ -31,6 +32,7 @@ import { BtnTableFieldLimit } from '@core/pipe/btn-table-field-limit.pipe';
         UserLoginComponent,
         UserRegisterComponent,
         UserRegisterResultComponent,
+        CustomerLoginComponent,
         // single pages
         UserLockComponent,
         CallbackComponent,

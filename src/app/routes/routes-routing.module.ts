@@ -21,6 +21,7 @@ import { Exception403Component } from './exception/403.component';
 import { Exception404Component } from './exception/404.component';
 import { Exception500Component } from './exception/500.component';
 import { AuthGuard } from '@core/utility/auth-guard';
+import { CustomerLoginComponent } from './passport/customer-login/customer-login.component';
 
 const routes: Routes = [
     {
@@ -57,7 +58,9 @@ const routes: Routes = [
         path: 'passport',
         component: LayoutPassportComponent,
         children: [
-            { path: 'login', component: UserLoginComponent},
+            { path: 'login', component: CustomerLoginComponent},
+            { path: 'admin', component: UserLoginComponent},
+            // { path: 'implementation-login', component: UserLoginComponent},
             { path: 'register', component: UserRegisterComponent },
             { path: 'register-result', component: UserRegisterResultComponent }
         ],

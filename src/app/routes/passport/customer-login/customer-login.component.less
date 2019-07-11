@@ -1,0 +1,108 @@
+@import '../../../../../node_modules/@delon/theme/styles/default';
+
+:host {
+    display: block;
+    width: 400px;
+    margin: 0 auto;
+
+	::ng-deep {
+        .card {
+            height: 500px;
+            width: 348px;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            // box-shadow:4px 6px 9px #999, 2px 2px 20px #999;
+            margin-bottom: 15px;
+            margin: 0 auto;
+            transform:perspective(500px) rotatey(0deg);
+            transform-style:preserve-3d;
+            position: relative;
+        }
+
+        .card .card_logo {
+            margin-top: 70px;
+            width: 348px;
+            //border-radius: 20px 20px 0px 0px;
+            //text-shadow:4px 4px 8px #111;
+            //box-shadow:4px 6px 9px #999, 2px 2px 20px #999;
+            font-size: 300px;
+            //border-radius: 20px;
+        }
+
+        .card .login_text {
+            margin-top:25px;
+            width: 348px;
+            height: 120px;
+            font-weight: 500px;
+            font-size: 40px;
+            text-align: center;
+            color: #555;
+            
+            border-radius: 20px;
+            // text-shadow:4px 4px 8px #111;
+            // -webkit-box-shadow:4px 0px 20px #999; box-shadow:4px 4px 20px #999;
+        }
+
+        form{
+            margin-top:70px;
+            padding-left: 30px;
+        }
+
+        .card .login_text i{
+            padding-top: 45px;
+            font-size: 40px;
+        }
+
+        .ant-tabs .ant-tabs-bar {
+            border-bottom: 0;
+            margin-bottom: 24px;
+            text-align: center;
+          }
+          .ant-tabs-tab {
+              font-size: 20px;
+              line-height: 24px;
+          }
+
+          .ant-tabs-content {
+              padding: 10px;
+          }
+          .ant-input-affix-wrapper .ant-input:not(:first-child) {
+              padding-left: 34px;
+          }
+
+
+        .ant-input-affix-wrapper .ant-input:not(:first-child) {
+            padding-left: 34px;
+        }
+
+        .icon {
+            font-size: 24px;
+            color: rgba(0, 0, 0, 0.2);
+            margin-left: 16px;
+            vertical-align: middle;
+            cursor: pointer;
+            transition: color .3s;
+
+            &:hover {
+                color: @primary-color;
+            }
+        }
+
+        .other {
+            text-align: left;
+            margin-top: 24px;
+            line-height: 22px;
+            color: #f3f3f3;
+
+            nz-tooltip {
+                vertical-align: middle;
+            }
+
+            .register {
+                font-weight: 400;
+                font-size: 1.3em;
+                float: right;
+            }
+        }
+	}
+}
