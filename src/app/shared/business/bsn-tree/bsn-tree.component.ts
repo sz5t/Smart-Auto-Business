@@ -860,7 +860,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_NODES_CHECKED_KEY:
                     if (
-                        this.treeData.filter(item => item.checked === true)
+                        this._toTreeBefore.filter(item => item.checked === true)
                             .length <= 0
                     ) {
                         this.baseMessage.create('info', '请选择要执行的数据');

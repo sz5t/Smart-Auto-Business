@@ -84,12 +84,12 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
       remember: [true]
     });
     modalSrv.closeAll();
-    this.tokenService.clear();
-    this.cacheService.clear();
-    this.menuService.clear();
   }
 
   public ngOnInit(): void {
+    this.tokenService.clear();
+    this.cacheService.clear();
+    this.menuService.clear();
     this.titleService.setTitle('SmartOne');
     this.cacheService.set('AppName', 'SmartOne');
 
