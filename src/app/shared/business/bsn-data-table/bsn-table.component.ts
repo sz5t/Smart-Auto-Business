@@ -445,7 +445,7 @@ export class BsnTableComponent extends CnComponentBase
                             BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
                             this.config.viewId,
                             {
-                                data: this._selectRow
+                                data: {...this._selectRow, ...this.tempValue}
                             }
                         )
                     );
@@ -2088,6 +2088,9 @@ export class BsnTableComponent extends CnComponentBase
                     // 获取更新状态的数据
 
                     break;
+                case BSN_EXECUTE_ACTION.EXECUTE_MESSAGE:
+                    handleData = {};
+                    break;
             }
             if (c.message) {
                 this.baseModal.confirm({
@@ -2729,6 +2732,7 @@ export class BsnTableComponent extends CnComponentBase
         if (this.config.showCheckBox && this.config.componentType.sendIds) {
             this.sendCheckedRowData();
         }
+        // console.log('datalist', this.dataList);
     }
 
     public cancelRow() {

@@ -173,7 +173,6 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private changeTab($event: NzTabChangeEvent) {
     this.isCardLogin = !$event.index;
-    console.log(this.isCardLogin);
   }
 
 

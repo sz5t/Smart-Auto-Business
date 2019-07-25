@@ -218,7 +218,7 @@ export class TreeGridBase extends CnComponentBase {
                     handleData = this.getCheckedItems();
                     this.beforeOperation.operationItemsData = handleData;
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
-                        return ;
+                        return;
                     }
 
                     msg = '操作完成';
@@ -244,7 +244,7 @@ export class TreeGridBase extends CnComponentBase {
                     } else {
                         this.baseMessage.info('未选中任何数据,无法进行操作!');
                     }
-                    
+
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_CHECKED_ID:
                     if (
@@ -333,7 +333,7 @@ export class TreeGridBase extends CnComponentBase {
                                     );
                                     // this._callback(focusIds);
                                     this._operationCallback(focusIds);
-                                    
+
                                 }
                             );
                         } else {
@@ -344,12 +344,12 @@ export class TreeGridBase extends CnComponentBase {
                                 );
                                 // this._callback(focusIds);
                                 this._operationCallback(focusIds);
-                                
+
                             });
                         }
                     })();
                 },
-                nzOnCancel() {}
+                nzOnCancel() { }
             });
         } else {
             (async () => {
@@ -372,7 +372,7 @@ export class TreeGridBase extends CnComponentBase {
                         f => f.parentName && f.parentName === c.name
                     );
                     nextConfig &&
-                    nextConfig.map(currentAjax => {
+                        nextConfig.map(currentAjax => {
                             this.getAjaxConfig(
                                 currentAjax,
                                 c
@@ -555,21 +555,21 @@ export class TreeGridBase extends CnComponentBase {
         if (response.isSuccess) {
             const msg =
                 c.outputParams[
-                    c.outputParams.findIndex(
-                        m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
-                    )
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
+                )
                 ];
             const value =
                 c.outputParams[
-                    c.outputParams.findIndex(
-                        m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
-                    )
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
+                )
                 ];
             const table =
                 c.outputParams[
-                    c.outputParams.findIndex(
-                        m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
-                    )
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
+                )
                 ];
             const msgObj = response.data[msg.name]
                 ? response.data[msg.name].split(':')
@@ -613,7 +613,7 @@ export class TreeGridBase extends CnComponentBase {
                                         );
                                     });
                             },
-                            nzOnCancel: () => {}
+                            nzOnCancel: () => { }
                         };
                         this.baseModal[messageType](options);
                         break;
@@ -664,7 +664,7 @@ export class TreeGridBase extends CnComponentBase {
             success: true,
             msg: []
         };
-        
+
         const desc = cfg && cfg.description ? cfg.description : '执行操作,';
         if (result && Array.isArray(result)) {
             result.forEach(res => {
@@ -684,7 +684,7 @@ export class TreeGridBase extends CnComponentBase {
                     eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                     description: `${desc} [执行成功] 数据为: ${JSON.stringify(result['data'])}`
-                }).subscribe(result => {});
+                }).subscribe(result => { });
             } else {
                 this.baseMessage.error(rs.msg.join('<br/>'));
                 this.apiResource.addOperationLog({
@@ -692,12 +692,12 @@ export class TreeGridBase extends CnComponentBase {
                     eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                     description: `${desc} [执行失败] 数据为: ${rs.msg.join('<br/>')}`
-                }).subscribe(result => {});
+                }).subscribe(result => { });
             }
         } else {
             if (result.isSuccess) {
                 this.baseMessage.success(message);
-                if (this.cfg.componentType && this.cfg.componentType.parent  === true) {
+                if (this.cfg.componentType && this.cfg.componentType.parent === true) {
                     this.cascadeBase.next(
                         new BsnComponentMessage(
                             BSN_COMPONENT_CASCADE_MODES.REFRESH,
@@ -715,8 +715,8 @@ export class TreeGridBase extends CnComponentBase {
                     eventId: BSN_OPERATION_LOG_TYPE.SQL,
                     eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                    description: `${desc} [执行成功] 数据为: ${JSON.stringify(result['data'])}` 
-                }).subscribe(result => {});
+                    description: `${desc} [执行成功] 数据为: ${JSON.stringify(result['data'])}`
+                }).subscribe(result => { });
             } else {
                 this.baseMessage.error(result.message);
                 this.apiResource.addOperationLog({
@@ -724,7 +724,7 @@ export class TreeGridBase extends CnComponentBase {
                     eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                     description: `${desc} [执行失败] 数据为: ${result.message}`
-                }).subscribe(result => {});
+                }).subscribe(result => { });
             }
         }
     }
@@ -858,20 +858,31 @@ export class TreeGridBase extends CnComponentBase {
         if (dialog.type === 'add') {
         } else if (dialog.type === 'edit') {
             if (!this.selectedItem) {
-                this.baseMessage.warning('请选中一条需要添加附件的记录！');
-                return false;
+                if (!this.tempValue['checkedIds']) {
+                    this.baseMessage.warning('请选中一条需要添加附件的记录！');
+                    return false;
+                } else {
+                    obj = {
+                        ...this.initValue,
+                        ...this.tempValue,
+                        _parentId: this.tempValue['_parentId']
+                            ? this.tempValue['_parentId']
+                            : ''
+                    }
+                }
+            } else {
+                const sItem = this.selectedItem ? this.selectedItem : {};
+                obj = {
+                    ...this.initValue,
+                    ...this.tempValue,
+                    ...sItem,
+                    _id: sItem[dialog.keyId] ? sItem[dialog.keyId] : '',
+                    _parentId: this.tempValue['_parentId']
+                        ? this.tempValue['_parentId']
+                        : ''
+                }
             }
         }
-        const sItem = this.selectedItem ? this.selectedItem : {};
-        obj = {
-            ...this.initValue,
-            ...this.tempValue,
-            ...sItem,
-            _id: sItem[dialog.keyId] ? sItem[dialog.keyId] : '',
-            _parentId: this.tempValue['_parentId']
-                ? this.tempValue['_parentId']
-                : ''
-        };
         const footer = [];
         const modal = this.baseModal.create({
             nzTitle: dialog.title,
@@ -1104,7 +1115,7 @@ export class TreeGridBase extends CnComponentBase {
     }
 
     protected buildRecursive() {
-        return { _recursive: true};
+        return { _recursive: true };
     }
 
     public sort(sort: { key: string; value: string }) {

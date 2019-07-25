@@ -122,7 +122,8 @@ export class CnGridSearchComponent implements OnInit {
     { lable: '大于等于', value: 'ge', select: false },
     { lable: '大于', value: 'gt', select: false },
     { lable: '小于等于', value: 'le', select: false },
-    { lable: '小于', value: 'lt', select: false }
+    { lable: '小于', value: 'lt', select: false },
+    { lable: '首字母匹配', value: 'fm', select: false }
     // { lable: '自定义', value: 'zdy', select: false }
   ];
   public searchValue;
@@ -165,12 +166,13 @@ export class CnGridSearchComponent implements OnInit {
       this.op = newOp;
     } else if (this.config.type === 'input') {
       const newOp = [
+        { lable: '首字母匹配', value: 'fm', select: false },
+        { lable: '部分一致', value: 'ctn', select: true },
         { lable: '等于', value: 'eq', select: false },
         { lable: '不等于', value: 'neq', select: false },
-        { lable: '部分一致', value: 'ctn', select: true },
         { lable: '不属于', value: 'nctn', select: false },
         { lable: '包含', value: 'in', select: false },
-        { lable: '不包含', value: 'nin', select: false },
+        { lable: '不包含', value: 'nin', select: false }
       ];
       this.op = newOp;
 
@@ -222,6 +224,9 @@ export class CnGridSearchComponent implements OnInit {
       case 'ctn': // like
         strQ = strQ + 'ctn(\'%' + this.inputValue + '%\')';
         break;
+      case 'fm': // like
+        strQ = strQ + 'ctn(' + this.inputValue + '%\')';
+        break;
       case 'nctn': // not like
         strQ = strQ + '!ctn(\'%' + this.inputValue + '%\')';
         break;
@@ -256,6 +261,9 @@ export class CnGridSearchComponent implements OnInit {
         break;
       case 'nctn': // not like
         strQ = strQ + '!ctn(\'%' + inputValue + '%\')';
+        break;
+      case 'fm': // like
+        strQ = strQ + 'ctn(\'' + inputValue + '%\')';
         break;
       case 'in': // in  如果是input 是这样取值，其他则是多选取值
         strQ = strQ + 'in(' + inputValue + ')';

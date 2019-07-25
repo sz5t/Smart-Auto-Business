@@ -58,7 +58,7 @@
                                 </ng-container>
                                 <ng-container *ngIf="col.type">
                                     <div class="editable-row-operations">
-                                        <a href="#">删除</a>
+                                        <button nz-button nzType="link">删除</button>
                                     </div>
                                 </ng-container>
 
@@ -102,7 +102,8 @@
                                 <ng-container *ngIf="col.type">
                                     <div class="editable-row-operations">
 
-                                        <a href="#" (click)="execFun('deleteRow',data.key)">删除</a>
+                                        <!-- <a href="#" (click)="execFun('deleteRow',data.key)">删除</a> -->
+                                        <button nz-button nzType="link" (click)="execFun('deleteRow',data.key)">删除</button>
                                         <!-- <ng-container *ngIf="!editCache[data.key].edit">
                                                                                                                                                                 <a (click)="startEdit(data.key)">Edit</a>
                                                                                                                                                 </ng-container>

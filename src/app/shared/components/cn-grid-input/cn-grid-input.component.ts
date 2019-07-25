@@ -52,7 +52,7 @@ export class CnGridInputComponent implements OnInit {
     }
 
     public valueChange(name?) {
-        this. VisibleChange(name);
+        this.VisibleChange(name);
         this.value.data = name;
         this.updateValue.emit(this.value);
     }
@@ -78,15 +78,20 @@ export class CnGridInputComponent implements OnInit {
         // "validations": [
         //     {
         //       "validator": "compare",
-        //       “compareValueName”:"",
-        //        “compareType”:"<=",
+        //       "compareValueName":"",
+        //       "compareType":"<=",
         //       "errorMessage": "当前值不合理"
         //     }
         //   ]
         if (this.config.validations) {
             this.config.validations.forEach(v => {
+                let v2
                 if (v.validator === 'compare') {
-                    const v2 = this.rowData[v['compareValueName']];
+                    if (this.rowData[v['compareValueName']] !== undefined) {
+                        v2 = this.rowData[v['compareValueName']];
+                    } else {
+                        v2 = this.rowData[v['value']];
+                    };
                     const type = v['compareType'];
                     this.message = v['errorMessage'];
                     if (this.valueToValidations(val, v2, type)) {

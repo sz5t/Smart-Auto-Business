@@ -728,6 +728,7 @@ export class FormResolverComponent extends CnFormBase
                                 this.sendCascadeMessage();
                             }
                         );
+                        modal.close();
                     } else if (btn['name'] === 'saveAndKeep') {
                         componentInstance.buttonAction(
                             btn,

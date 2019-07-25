@@ -161,7 +161,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
 
     // 加载编辑数据
     public load() {
-
         if (this.config.ajaxConfig && this.formState === BSN_FORM_STATUS.EDIT) {
             const url = this.buildUrl(this.config.ajaxConfig.url);
             const params = this.buildParameter(this.config.ajaxConfig.params);

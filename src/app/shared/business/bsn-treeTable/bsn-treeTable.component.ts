@@ -137,7 +137,6 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         };
 
         this.windowCallback = (reload?) => {
-            debugger;
             if (this.selectedItem && !reload) {
                 this.expandCurrentRow();
             } else {
@@ -848,7 +847,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
 
     public checkAll(value) {
         this.dataList.forEach(d => {
-            d['checked'] = value;
+            d.checked = value;
         })
         this.refChecked();
     }
@@ -861,8 +860,45 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         this.dataList.forEach(r => {
             allCount += r.checked ? 1 : 0;
         });
-
         this.indeterminate = this.allChecked ? false : allCount > 0;
+        // if (this.config.checked) {
+        //     this._getCheckItemsId();
+        // }
+        // this.tempValue['_checkedIds'];
+    }
+
+    // private sendCheckedRowData() {
+    //     const checkedIds = this._getCheckItemsId();
+    //     this.cascade.next(
+    //         new BsnComponentMessage(
+    //             BSN_COMPONENT_CASCADE_MODES['REFRESH_BY_IDS'],
+    //             this.config.viewId,
+    //             {
+    //                 data: checkedIds
+    //             }
+    //         )
+    //     );
+    // }
+
+    private _getCheckItemsId() {
+        const serverData = [];
+        this.dataList.forEach(item => {
+            // if (item.checked === true && item['row_status'] === 'adding') {
+            //     // 删除新增临时数据
+            //     newData.push(item.key);
+            // }
+            if (
+                item.checked === true &&
+                item['row_status'] !== 'adding' &&
+                item['row_status'] !== 'updating' &&
+                item['row_status'] !== 'search'
+            ) {
+                // 删除服务端数据
+                serverData.push(item['Id']);
+            }
+        });
+        this.tempValue['checkedIds'] = serverData.join(',');
+        return serverData.join(',');
     }
 
     private _getAddedAndUpdatingRows() {
@@ -2549,6 +2585,8 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
     }
 
     public formDialog(option) {
+        const checkdata = this._getCheckItemsId();
+        this.tempValue['checkedIds'] = checkdata;
         if (this.config.formDialog && this.config.formDialog.length > 0) {
             const index = this.config.formDialog.findIndex(
                 item => item.name === option.actionName
