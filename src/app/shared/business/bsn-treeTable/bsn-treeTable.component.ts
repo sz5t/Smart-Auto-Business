@@ -290,7 +290,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                             // this.beforeOperation.operationItemData = [
                             //     // ...this.getAddedRows(),
                             //     // ...this.getEditedRows()
-                                
+
                             // ];
                             this.beforeOperation.operationItemsData = this.getCheckedItems();
                             !this.beforeOperation.beforeItemDataOperation(option) &&
@@ -335,9 +335,16 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                                 this.windowDialog(option);
                             break;
                         case BSN_COMPONENT_MODES.FORM:
-                            this.beforeOperation.operationItemData = this.selectedItem;
-                            !this.beforeOperation.beforeItemDataOperation(option) &&
+                            if (!this.selectedItem) {
+                                this.beforeOperation.operationItemsData = this.getCheckedItems();
+                                !this.beforeOperation.beforeItemsDataOperation(option) &&
                                 this.formDialog(option);
+                            } else {
+                                this.beforeOperation.operationItemData = this.selectedItem;
+                                !this.beforeOperation.beforeItemDataOperation(option) &&
+                                this.formDialog(option);
+                            }
+                            
                             break;
                         case BSN_COMPONENT_MODES.SEARCH:
                             this.searchRow(option);
@@ -628,8 +635,8 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         data['selected'] = true;
         if (this.editCache[data.key].edit) {
             // if (data['row_status'] === 'updating' || data['row_status'] === 'adding') {
-                data['selected'] = true;
-                data['checked'] = true;
+            data['selected'] = true;
+            data['checked'] = true;
             // }
         } else {
             if (data['checked']) {
@@ -725,7 +732,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                 if (level > 0) {
                     newRowData['level'] = level + 1;
                 }
-                
+
                 this.dataList.splice(parentIndex + 1, 0, newRowData);
             }
         }

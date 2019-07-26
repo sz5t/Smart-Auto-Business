@@ -28,7 +28,13 @@ export class CnGridInputComponent implements OnInit {
             this.config['readonly'] = null;
         }
         if (this.value) {
-            this._value = this.value.data;
+            if (this.value.data === '') {
+                this._value = this.config.defaultValue;
+                this.value.data = this._value;
+                this.updateValue.emit(this.value);
+            } else {
+                this._value = this.value.data
+            }
         }
         for (const key in this.casadeData) {
             if (key === 'setValue') {
