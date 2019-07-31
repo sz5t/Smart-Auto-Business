@@ -298,6 +298,10 @@ export class TreeGridBase extends CnComponentBase {
                     }
                     this.buildConfirm(c, option.ajaxConfig, handleData, msg);
                     break;
+            case BSN_EXECUTE_ACTION.EXECUTE_MESSAGE:
+                    handleData = {};
+                    this.buildConfirm(c, option.ajaxConfig, handleData, msg);
+                    break;
             }
         }
     }
