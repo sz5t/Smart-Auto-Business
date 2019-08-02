@@ -155,6 +155,38 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
         }
     }
 
+    private getResultNodesNew(resultNodes: any[]) {
+        resultNodes.forEach((nodeData, i) => {
+            if (this._lastNode && (this._lastNode.model['Id'] === nodeData['Id'])) {
+                this.buildNodeNew(nodeData);
+            } else if (!this._lastNode) {
+                this.buildNodeNew(nodeData);
+            }
+            if (this.config.direction === 'horizontal') {
+                nodeData['x'] = this.config.startX * i === 0 ? this.config.startX : this.config.startX + this.config.startX * i;
+                nodeData['y'] = this.config.startY + 25;
+            } else if (this.config.direction === 'vertical') {
+                nodeData['y'] = this.config.startY * i === 0 ? this.config.startY : this.config.startY + this.config.startY * i;
+            }
+            nodeData['label'] = nodeData[this.config.textField];
+            if (nodeData['type'] === 'child') {
+            }
+        });
+    }
+
+    private buildNodeNew(nodeData: any) {
+        nodeData['color'] = this.sNodeClickColor;
+        nodeData['style'] = { stroke: '#000' };
+        if (nodeData[this.config]) {
+            this.tempValue['_selectedNode'] = nodeData;
+        }
+        if (this.config.componentType && this.config.componentType.parent === true) {
+            this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
+                data: this.tempValue['_selectedNode']
+            }));
+        }
+    }
+
     public sortData(data, type) {
         if (type === 'children' && this.config.childSortField && this.config.childSortField.length > 0) {
             return data.sort((x, y) => x['childSortField'] - y['childSortField'])

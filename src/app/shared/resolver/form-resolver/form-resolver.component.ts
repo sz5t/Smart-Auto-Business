@@ -223,7 +223,8 @@ export class FormResolverComponent extends CnFormBase
                                     (returnValue) => {
                                         this.load();
                                         this.sendCascadeMessage();
-                                    }
+                                    },
+                                    option
                                 );
                             }
                             break;
@@ -485,7 +486,7 @@ export class FormResolverComponent extends CnFormBase
                 this.baseMessage.warning('删除数据的_ids不存在，无法进行删除！');
                 return;
             } else {
-
+            
                 const res = await this.execute(
                     url,
                     deleteConfig[i].ajaxType,
@@ -726,7 +727,8 @@ export class FormResolverComponent extends CnFormBase
                                 modal.close();
                                 this.load();
                                 this.sendCascadeMessage();
-                            }
+                            },
+                            dialog
                         );
                         modal.close();
                     } else if (btn['name'] === 'saveAndKeep') {
@@ -736,7 +738,8 @@ export class FormResolverComponent extends CnFormBase
                                 this.resetForm();
                                 this.load();
                                 this.sendCascadeMessage();
-                            }
+                            },
+                            dialog
                         );
                     } else if (btn['name'] === 'close') {
                         modal.close();

@@ -468,8 +468,8 @@ export class CommonTools {
         const add_val: {ids: string[], type: string} = {ids: [], type: 'add'};
         const edit_val: {ids: string[], type: string} = {ids: [], type: 'edit'};
         const del_val: {ids: string[], type: string} = {ids: [], type: 'delete'}
+        console.log(val['$focusedOper$']);
         if (val && Array.isArray(val)) {
-            
             for (const v of val) {
                 const mes = v['$focusedOper$'].split('_');
                 switch (mes[1]) {
@@ -493,6 +493,8 @@ export class CommonTools {
             if (edit_val.ids.length > 0) {
                 ps.push(del_val);
             }
+        } else if (!val['$focusedOper$']) {
+            ps.push({ids: val, type: 'simple'});
         } else {
             const mes2  = val['$focusedOper$'].split('_');
             switch (mes2[1]) {

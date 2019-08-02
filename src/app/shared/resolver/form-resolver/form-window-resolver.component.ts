@@ -238,7 +238,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
         }
     }
 
-    public buttonAction(btn, dialog?, callback?) {
+    public buttonAction(btn, callback?, dialog?) {
         if (this.checkFormValidation()) {
             // 1、支持原生API资源调用
             // 2、支持SQL存储过程和返回结果后续操作
