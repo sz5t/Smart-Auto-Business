@@ -42,7 +42,7 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
     public bNodeColor
     public sNodeColor = '#eee'
     public sNodeEnterColor = '#00B2EE'
-    public sNodeClickColor = '#9BCD9B'
+    public sNodeClickColor = '#9BCD9C'
     public _lastNode
     public _statusSubscription
     public _cascadeSubscription
@@ -119,7 +119,7 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                 this.decorateNode(nodeData, 0)
             })
         }
-        this.getResultNodes(resultNodes);
+        this.getResultNodesNew(resultNodes);
         return resultNodes
     }
 
@@ -157,11 +157,11 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
 
     private getResultNodesNew(resultNodes: any[]) {
         resultNodes.forEach((nodeData, i) => {
-            if (this._lastNode && (this._lastNode.model['Id'] === nodeData['Id'])) {
+            // if (this._lastNode && (this._lastNode.model['Id'] === nodeData['Id'])) {
+            //     this.buildNodeNew(nodeData);
+            // } else if (!this._lastNode) {
                 this.buildNodeNew(nodeData);
-            } else if (!this._lastNode) {
-                this.buildNodeNew(nodeData);
-            }
+            // }
             if (this.config.direction === 'horizontal') {
                 nodeData['x'] = this.config.startX * i === 0 ? this.config.startX : this.config.startX + this.config.startX * i;
                 nodeData['y'] = this.config.startY + 25;
@@ -175,15 +175,23 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
     }
 
     private buildNodeNew(nodeData: any) {
-        nodeData['color'] = this.sNodeClickColor;
-        nodeData['style'] = { stroke: '#000' };
-        if (nodeData[this.config]) {
-            this.tempValue['_selectedNode'] = nodeData;
-        }
-        if (this.config.componentType && this.config.componentType.parent === true) {
-            this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
-                data: this.tempValue['_selectedNode']
-            }));
+        // nodeData['color'] = this.sNodeClickColor;
+        // nodeData['style'] = { stroke: '#000' };
+        if (this.config.processNode) {
+            this.config.processNode.propetry.forEach(element => {
+                if (element['value'] === nodeData[this.config.processNode['field']]) {
+                    nodeData['color'] = element['color'];
+                    if (nodeData[this.config.processNode['field']] === this.config.processNode['selected']) {
+                        // nodeData['style'] = { stroke: '#000' };
+                        this.tempValue['_selectedNode'] = nodeData;
+                        if (this.config.componentType && this.config.componentType.parent === true) {
+                            this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
+                                data: this.tempValue['_selectedNode']
+                            }));
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -421,20 +429,21 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
             graph.on('node:click', ev => {
                 if (!this._lastNode) {
                     graph.update(ev.item, {
-                        color: this.sNodeClickColor,
-                        style: { stroke: '#000' }
+                        // color: this.sNodeClickColor,
+                        style: { stroke: '#000'}
                     })
                     this._lastNode = ev.item
                 }
                 if (this._lastNode !== ev.item) {
                     graph.update(ev.item, {
-                        color: this.sNodeClickColor,
-                        style: { stroke: '#000' }
+                        // color: this.sNodeClickColor,
+                        style: { stroke: '#000'}
                     })
 
                     graph.update(this._lastNode, {
-                        color: this.config.styles ? this.config.styles[this._lastNode.model.level].background : this.defaultStyle.background,
-                        style: { stroke: this.config.styles ? this.config.styles[this._lastNode.model.level].stroke : this.defaultStyle.color }
+                        // color: this.config.styles ? this.config.styles[this._lastNode.model.level].background : this.defaultStyle.background,
+                        // style: { stroke: this.config.styles ? this.config.styles[this._lastNode.model.level].stroke : this.defaultStyle.color }
+                        style: { stroke: '' }
                     })
                     this._lastNode = ev.item
                 }
