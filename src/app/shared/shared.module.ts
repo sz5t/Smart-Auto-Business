@@ -131,6 +131,7 @@ import { CnFormMarkdownlabelComponent } from '@shared/components/cn-form-markdow
 import { BsnMarkdownlabelComponent } from '@shared/business/bsn-markdown/bsn-markdownlabel.component';
 import { CnGridMarkdownlabelComponent } from '@shared/components/cn-grid-markdownlabel/cn-grid-markdownlabel.component';
 import { CnFormSelectAsyncTreeComponent } from './components/cn-form-select-async-tree/cn-form-select-async-tree.component';
+import { BsnEntryCardListComponent } from './business/bsn-entry-card-list/bsn-entry-card-list.component';
 
 
 const THIRDMODULES = [
@@ -253,7 +254,8 @@ const COMPONENTS = [
     CnFormMarkdownComponent,
     CnFormMarkdownlabelComponent,
     BsnMarkdownlabelComponent,
-    CnGridMarkdownlabelComponent
+    CnGridMarkdownlabelComponent,
+    BsnEntryCardListComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

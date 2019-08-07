@@ -1,0 +1,74 @@
+@import '../../../../styles.less';
+@import '../../../../styles/theme.less';
+
+
+.card_hover {
+
+}
+.card_hover:hover {
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6);
+    transform: scale(1.05);
+    transition: All 0.4s ease-in-out;
+}
+
+:host {
+    ::ng-deep{
+        .selectionOperation {
+            margin-right:15px;
+            margin-bottom:8px;
+        }
+        .selectedItem {
+            background: #aaffff;
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6);
+            transform: scale(1.05);
+            transition: All 0.4s ease-in-out;
+            // z-index:1000;
+            // position: relative;     
+            // overflow: hidden;
+            // padding: 6px;
+        }
+
+        .showOperations {
+            transition: All 0.4s ease-in-out;
+            display: block;
+        }
+
+        .hiddenOperations {
+            transition: All 0.4s ease-out-in;
+            display: none;
+        }
+        .unselectedItem {
+            background-color: @primary-2;
+            transition: All 0.4s ease-in-out;
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .listItem {
+            // padding: 6px;
+            // border-radius: 6px;
+        }
+
+        .table-operations {
+            text-align: center;
+        }
+
+        .ant-btn{
+            height:36px;
+        }
+
+        
+
+        
+
+        // .item-operations [nzButton]{
+        //     border: 1px solid #ccc;
+        //     // color: #333;
+        //     padding-left: 16px;
+        //     padding-right: 16px;
+        //     padding-top:8px;
+        //     padding-bottom: 8px;
+            
+        //     // border-radius: 4px;
+        // }
+
+    }
+}

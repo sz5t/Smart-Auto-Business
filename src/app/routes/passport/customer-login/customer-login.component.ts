@@ -2,7 +2,7 @@ import { SysResource } from '@core/utility/sys-resource';
 
 import { SettingsService, TitleService, MenuService } from '@delon/theme';
 import { Component, OnDestroy, Inject, Optional, OnInit, AfterViewInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NzMessageService, NzModalService, NzTabChangeEvent } from 'ng-zorro-antd';
 import {
@@ -59,6 +59,7 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     ajaxType: 'get',
     params: []
   };
+  private entry_url = '';
   constructor(
     fb: FormBuilder,
     private router: Router,
@@ -71,6 +72,7 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     private socialService: SocialService,
     private titleService: TitleService,
     private menuService: MenuService,
+    private _router: ActivatedRoute,
     @Optional()
     @Inject(ReuseTabService)
     private reuseTabService: ReuseTabService,
@@ -94,6 +96,8 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     this.cacheService.set('AppName', 'SmartOne');
 
     this.cacheService.set('currentConfig', SystemResource.settingSystem);
+    this._router.data.subscribe(d => this.entry_url = d.path);
+    
   }
 
   public async  ngAfterViewInit() {
@@ -123,7 +127,7 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
             that.tokenService.set(token); // 后续projectId需要进行动态获取
             // let url = user.data.modules[0].link;
             let url = '/dashboard/v1';
-            that.router.navigate([`${url}`]);
+            that.router.navigate([`${that.entry_url}`]);
           } else {
             that.showError(user.message);
             ws.send('reload');
@@ -289,7 +293,7 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
       this.cacheService.set('Menus', menus);
       this.menuService.add(menus);
 
-      this.router.navigate([`${url}`]);
+      this.router.navigate([`${this.entry_url}`]);
     } else {
       this.showError(user.message);
     }

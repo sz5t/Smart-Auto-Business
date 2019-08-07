@@ -334,6 +334,14 @@ export class CommonTools {
                                     })
                                 }
                             }
+                            break;
+                            case BSN_PARAMETER_TYPE.ROUTER_VALUE:
+                                if (model.cacheValue) {
+                                    const cache = model.cacheValue.getNone('routerValue');
+                                    result[param['name']] =
+                                        cache[param['valueName']];
+                                }
+                                break;
                     }
                 }
             });

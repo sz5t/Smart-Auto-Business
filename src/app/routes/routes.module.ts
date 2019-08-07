@@ -1,3 +1,4 @@
+import { ModuleEntryComponent } from './template/module-entry/module-entry.component';
 import { NgModule } from '@angular/core';
 
 import { SharedModule } from '@shared/shared.module';
@@ -28,6 +29,7 @@ import { BtnTableFieldLimit } from '@core/pipe/btn-table-field-limit.pipe';
         DashboardAnalysisComponent,
         DashboardMonitorComponent,
         DashboardWorkplaceComponent,
+        ModuleEntryComponent,
         // passport pages
         UserLoginComponent,
         UserRegisterComponent,

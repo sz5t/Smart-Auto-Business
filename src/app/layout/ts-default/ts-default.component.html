@@ -1,0 +1,10 @@
+<div class="wrapper">
+    <div class="router-progress-bar" *ngIf="isFetching"></div>
+    <!-- <app-ts-header class="header"></app-ts-header> -->
+    <!-- <app-ts-sidebar class="aside"></app-ts-sidebar> -->
+    <section class="ts-content">
+        <!-- <reuse-tab></reuse-tab> -->
+        <router-outlet></router-outlet>
+    </section>
+</div>
+<nz-back-top></nz-back-top>

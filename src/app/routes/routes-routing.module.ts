@@ -22,6 +22,8 @@ import { Exception404Component } from './exception/404.component';
 import { Exception500Component } from './exception/500.component';
 import { AuthGuard } from '@core/utility/auth-guard';
 import { CustomerLoginComponent } from './passport/customer-login/customer-login.component';
+import { ModuleEntryComponent } from './template/module-entry/module-entry.component';
+import { TsLayoutDefaultComponent } from 'app/layout/ts-default/ts-default.component';
 
 const routes: Routes = [
     {
@@ -42,7 +44,28 @@ const routes: Routes = [
             { path: 'system', loadChildren: './system/system.module#SystemModule'},
             { path: 'settings', loadChildren: './settings/settings.module#SettingsModule'},
             // { path: 'test', loadChildren: './cn-test/cn-test.module#CnTestModule'},
+            {
+                path: 'entry', component: ModuleEntryComponent , data: { title: '工作中心'}, canActivate: [AuthGuard]
+            },
             { path: 'template', loadChildren: './template/template.module#TemplateModule', canActivate: [AuthGuard]}
+        ]
+    },
+    {
+        path: 'app',
+        component: TsLayoutDefaultComponent,
+        children: [
+            {
+                path: '', redirectTo: 'workplace', pathMatch: 'full', canActivate: [AuthGuard]
+            },
+            // {
+            //     path: 'workplace', component: TsWorkPlaceComponent , data: { title: '工作台'}
+            // },
+            {
+                path: 'entry', component: ModuleEntryComponent , data: { title: '工作台'}, canActivate: [AuthGuard]
+            },
+            {
+                path: 'template', loadChildren: './template/template.module#TemplateModule'
+            }
         ]
     },
     // 全屏布局
@@ -58,9 +81,9 @@ const routes: Routes = [
         path: 'passport',
         component: LayoutPassportComponent,
         children: [
-            { path: 'login', component: CustomerLoginComponent},
+            { path: 'login', component: CustomerLoginComponent, data: {path: '/dashboard/v1'}},
             { path: 'admin', component: UserLoginComponent},
-            // { path: 'implementation-login', component: UserLoginComponent},
+            { path: 'app', component: CustomerLoginComponent, data: {path: '/app/entry'}},
             { path: 'register', component: UserRegisterComponent },
             { path: 'register-result', component: UserRegisterResultComponent }
         ],

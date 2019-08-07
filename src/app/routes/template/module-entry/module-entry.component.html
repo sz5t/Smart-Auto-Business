@@ -1,0 +1,48 @@
+<div style="position:relative;">
+        <!-- <page-header class="templateHeader" [title]="config.title" style="position:fixed; width: 100%;z-index: 999;">
+                <ng-template #content>
+                        <div class="template_desc">{{config.desc}}</div>
+                </ng-template>
+                <ng-template #logo>
+                        <div class="template_logo">
+                                <i nz-icon type="schedule" theme="outline"></i>
+                        </div>
+                </ng-template>
+                <ng-template #extra>
+                        <nz-button-group>
+                          <button nz-button (click)="isCollapsed=!isCollapsed"><i class="trigger" nz-icon [type]="isCollapsed?'menu-unfold':'menu-fold'"></i></button>
+                        </nz-button-group>
+                         <nz-dropdown class="mx-sm">
+                          <button nz-button nz-dropdown><i nz-icon type="ellipsis"></i></button>
+                          <ul nz-menu>
+                            <li nz-menu-item>选项一</li>
+                            <li nz-menu-item>选项二</li>
+                            <li nz-menu-item>选项三</li>
+                          </ul>
+                        </nz-dropdown>
+                        <button nz-button [nzType]="'primary'">主操作</button>
+                        
+                        
+                      </ng-template>
+                
+        </page-header> -->
+
+        <nz-page-header class="templateHeader" [nzBackIcon]="backIcon">
+                <nz-page-header-title>工作中心</nz-page-header-title>
+                <!-- <nz-page-header-subtitle></nz-page-header-subtitle> -->
+                <nz-page-header-extra>
+                        <button nz-button nzType="primary" (click)="logout()">退出登录</button>
+                </nz-page-header-extra>
+        </nz-page-header>
+        <ng-template #backIcon>
+                <i nz-icon style="font-size:16px" type="schedule" theme="outline"></i>
+        </ng-template>
+        
+        <div class="workplace">
+                <bsn-entry-card-list></bsn-entry-card-list>
+        </div>
+</div>
+
+        
+        
+        

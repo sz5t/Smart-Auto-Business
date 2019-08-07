@@ -186,6 +186,21 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                 }
                                             },
                                             {
+                                                title: 'APP_URL',
+                                                field: 'appUrl',
+                                                width: '150px',
+                                                hidden: false,
+                                                expand: false,
+                                                editor: {
+                                                    type: 'input',
+                                                    field: 'appUrl',
+                                                    options: {
+                                                        type: 'input',
+                                                        inputType: 'text'
+                                                    }
+                                                }
+                                            },
+                                            {
                                                 title: '图标',
                                                 field: 'icon',
                                                 width: '100px',
@@ -568,6 +583,16 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                                     },
                                                                     {
                                                                         name:
+                                                                            'appUrl',
+                                                                        type:
+                                                                            'componentValue',
+                                                                        valueName:
+                                                                            'appUrl',
+                                                                        value:
+                                                                            ''
+                                                                    },
+                                                                    {
+                                                                        name:
                                                                             'icon',
                                                                         type:
                                                                             'componentValue',
@@ -680,6 +705,16 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                                             'componentValue',
                                                                         valueName:
                                                                             'url',
+                                                                        value:
+                                                                            ''
+                                                                    },
+                                                                    {
+                                                                        name:
+                                                                            'appUrl',
+                                                                        type:
+                                                                            'componentValue',
+                                                                        valueName:
+                                                                            'appUrl',
                                                                         value:
                                                                             ''
                                                                     },

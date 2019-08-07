@@ -1,89 +1,95 @@
 // import { CnCodeEditComponent } from '@shared/components/cn-code-edit/cn-code-edit.component';
-import { CommonModule } from "@angular/common";
-import { NgModule } from "@angular/core";
-import { SharedModule } from "@shared/shared.module";
-import { SingleTableComponent } from "./single-table/single-table.component";
-import { MulitTableComponent } from "./mulit-table/mulit-table.component";
-import { TreeTableComponent } from "./tree-table/tree-table.component";
-import { TreeAndTableComponent } from "./tree-and-table/tree-and-table.component";
-import { TreeAndTabsComponent } from "./tree-and-tabs/tree-and-tabs.component";
-import { RouterModule, Routes } from "@angular/router";
-import { TreeAndMultiTableComponent } from "./tree-and-multi-table/tree-and-multi-table.component";
-import { TreeAndFormComponent } from "./tree-and-form/tree-and-form.component";
-import { DynamicTemplateComponent } from "./dynamic-template/dynamic-template.component";
-import { TableChartComponent } from "./table-chart/table-chart.component";
-import { AuthGuard } from "@core/utility/auth-guard";
-import { CnAppDocumentComponent } from "./app-document/app-document.component";
-import { CnApiDocumentComponent } from "./api-document/api-document.component";
-import { TreeAndSubTableComponent } from "./tree-and-sub-table/tree-and-sub-table.component";
-import { TreeTransferComponent } from "./tree-transform/tree-transfer.component";
-import { ReportTemplateComponent } from "./report-template/report-template.component";
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { SharedModule } from '@shared/shared.module';
+import { SingleTableComponent } from './single-table/single-table.component';
+import { MulitTableComponent } from './mulit-table/mulit-table.component';
+import { TreeTableComponent } from './tree-table/tree-table.component';
+import { TreeAndTableComponent } from './tree-and-table/tree-and-table.component';
+import { TreeAndTabsComponent } from './tree-and-tabs/tree-and-tabs.component';
+import { RouterModule, Routes } from '@angular/router';
+import { TreeAndMultiTableComponent } from './tree-and-multi-table/tree-and-multi-table.component';
+import { TreeAndFormComponent } from './tree-and-form/tree-and-form.component';
+import { DynamicTemplateComponent } from './dynamic-template/dynamic-template.component';
+import { TableChartComponent } from './table-chart/table-chart.component';
+import { AuthGuard } from '@core/utility/auth-guard';
+import { CnAppDocumentComponent } from './app-document/app-document.component';
+import { CnApiDocumentComponent } from './api-document/api-document.component';
+import { TreeAndSubTableComponent } from './tree-and-sub-table/tree-and-sub-table.component';
+import { TreeTransferComponent } from './tree-transform/tree-transfer.component';
+import { ReportTemplateComponent } from './report-template/report-template.component';
+import { AppTemplateComponent } from './app-template/app-template.component';
 
 const routes: Routes = [
     {
-        path: "singleTable",
+        path: 'singleTable',
         component: SingleTableComponent,
         canActivate: [AuthGuard]
     },
     {
-        path: "mulitTable",
+        path: 'mulitTable',
         component: MulitTableComponent,
         canActivate: [AuthGuard]
     },
     {
-        path: "treeTable",
+        path: 'treeTable',
         component: TreeTableComponent,
         canActivate: [AuthGuard]
     },
-    { path: "treeAndTable", component: TreeAndTableComponent },
+    { path: 'treeAndTable', component: TreeAndTableComponent },
     {
-        path: "treeAndMulitTable",
+        path: 'treeAndMulitTable',
         component: TreeAndMultiTableComponent,
         canActivate: [AuthGuard]
     },
     {
-        path: "treeAndTabs",
+        path: 'treeAndTabs',
         component: TreeAndTabsComponent,
         canActivate: [AuthGuard]
     },
     {
-        path: "treeAndForm",
+        path: 'treeAndForm',
         component: TreeAndFormComponent,
         canActivate: [AuthGuard]
     },
     {
-        path: "tableChart",
+        path: 'tableChart',
         component: TableChartComponent,
         canActivate: [AuthGuard]
     },
     {
-        path: "APPConfigIntro",
+        path: 'APPConfigIntro',
         component: CnAppDocumentComponent,
         canActivate: [AuthGuard]
     },
     {
-        path: "APIIntro",
+        path: 'APIIntro',
         component: CnApiDocumentComponent,
         canActivate: [AuthGuard]
     },
     {
-        path: "treeAndSubTable",
+        path: 'treeAndSubTable',
         component: TreeAndSubTableComponent,
         canActivate: [AuthGuard]
     },
     {
-        path: "treeAndTransfer",
+        path: 'treeAndTransfer',
         component: TreeTransferComponent,
         canActivate: [AuthGuard]
     },
     {
-        path: "reportTemplate",
+        path: 'reportTemplate',
         component: ReportTemplateComponent,
         canActivate: [AuthGuard]
     },
     {
-        path: "dynamicTemplate/:name",
+        path: 'dynamicTemplate/:name',
         component: DynamicTemplateComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'appTemplate/:name',
+        component: AppTemplateComponent,
         canActivate: [AuthGuard]
     }
 ];
@@ -97,6 +103,7 @@ const COMPONENT_NOROUNT = [
     TreeAndMultiTableComponent,
     TreeAndFormComponent,
     DynamicTemplateComponent,
+    AppTemplateComponent,
     // CnCodeEditComponent,
     CnAppDocumentComponent,
     CnApiDocumentComponent,
