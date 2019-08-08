@@ -51,7 +51,8 @@
                             <ng-template #nzContent>
                               <nz-card  [ngClass]="{'bg-grey-lighter': true, 'card_hover': true}">
                                     <a class="d-block text-center">
-                                            <i class="anticon anticon-appstore-o display-1 mb-md text-primary"></i>
+                                            <i nz-icon [nzType]="fun.icon" nzTheme="outline" class="text-blue-5 display-1 mb-md"></i>
+                                            <!-- <i class="anticon anticon-user display-1 mb-md"></i> -->
                                         <h2>{{fun.text}}</h2>
                                     </a>
                               </nz-card>
@@ -62,6 +63,6 @@
                 
         </nz-card>
         <ng-template #title>
-                <h1><span style="color:#333;font-weight: 500;"><i nz-icon  [type]="module.icon" nzTheme="outline"></i> {{module.text}}</span></h1> 
+                <h1><span style="color:#333;font-weight: 500;"> {{module.text}}</span></h1> 
          </ng-template>
 </ng-template>

@@ -1,7 +1,10 @@
 import { CacheService } from '@delon/cache';
 import { ApiService } from '@core/utility/api-service';
-import { Component, OnInit, ViewChild, OnDestroy, TemplateRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, ViewChild, OnDestroy, TemplateRef, Inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SettingsService, MenuService } from '@delon/theme';
+import { NzModalService } from 'ng-zorro-antd';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 
 @Component({
     selector: 'cn-app-template',
@@ -24,7 +27,12 @@ export class AppTemplateComponent implements OnInit, OnDestroy {
     constructor(
         private _http: ApiService,
         private _cacheService: CacheService,
-        private _route: ActivatedRoute
+        private _route: ActivatedRoute,
+        public settings: SettingsService,
+        private menuService: MenuService,
+        private router: Router,
+        private modal: NzModalService,
+        @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
     ) { }
 
     public ngOnInit() {
@@ -64,11 +72,21 @@ export class AppTemplateComponent implements OnInit, OnDestroy {
     }
 
     public returnMain() {
-
+        this.router.navigateByUrl('/app/entry');
     }
 
     public loginOut() {
-        
+        this.modal.confirm({
+            nzTitle: '确认要关闭本系统吗？',
+            nzContent: '关闭后将清空相关操作数据！',
+            nzOnOk: () => {
+                this.tokenService.clear();
+                this._cacheService.clear();
+                this.menuService.clear();
+                // console.log(this.tokenService.login_url);
+                this.router.navigateByUrl('/passport/app');
+            }
+        });
     }
 
 }
