@@ -226,6 +226,8 @@ export class FormResolverComponent extends CnFormBase
                                     },
                                     option
                                 );
+                                this.load();
+                            this.formState = BSN_FORM_STATUS.TEXT;
                             }
                             break;
                         case BSN_COMPONENT_MODES.WINDOW:

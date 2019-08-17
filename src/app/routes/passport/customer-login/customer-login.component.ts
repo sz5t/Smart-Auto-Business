@@ -22,6 +22,7 @@ import { ApiService } from '@core/utility/api-service';
 import { HttpClient } from '@angular/common/http';
 import { SystemResource } from '@core/utility/system-resource';
 import { CommonTools } from '@core/utility/common-tools';
+import { timeout } from 'rxjs/operators';
 
 @Component({
   selector: 'customer-login',
@@ -37,7 +38,9 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
   private loading = false;
   // 当前选择登录系统的配置项
   private _currentSystem;
-  private isCardLogin = true;
+  private isCardLogin = false;
+  private mediaStreamTrack = null;
+  public timeout ;
   private ajax = {
     url: 'open/getEquipment',
     ajaxType: 'get',
@@ -59,6 +62,23 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     ajaxType: 'get',
     params: []
   };
+  private isFaceLogin = true;
+  private faceAjax = {
+    url: 'open/getEquipment',
+    ajaxType: 'get',
+    params: [
+      {
+        'name': 'typeCode',
+        'type': 'value',
+        'value': 'FACERECOGNITION'
+      },
+      {
+        'name': 'clientIp',
+        'type': 'value',
+        'value': ''
+      }
+    ]
+  }
   private entry_url = '';
   constructor(
     fb: FormBuilder,
@@ -97,15 +117,18 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
 
     this.cacheService.set('currentConfig', SystemResource.settingSystem);
     this._router.data.subscribe(d => this.entry_url = d.path);
-    
+    // this.FaceRecognition();
+
   }
 
   public async  ngAfterViewInit() {
-
+    if (this.isFaceLogin) {
+      this.getMedia();
+    }
     const that = this;
     const clientIp = await this.loadClientIP();
     this.ajax.params[1]['value'] = clientIp;
-    const wsString = await this.loadWsConfig();
+    const wsString = await this.loadWsConfig(1);
     const ws = new WebSocket(wsString);
     ws.onopen = function () {
       // Web Socket 已连接上，使用 send() 方法发送数据
@@ -116,6 +139,7 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     ws.onmessage = function (evt) {
       const received_msg = evt.data;
       console.log('数据已接收...', received_msg);
+      // that.apiService.login('common/login2', { Id: '16ed21bd7a7a41f5bea2ebaa258908cf' })
       that.apiService.login('common/card/login', { cardNo: received_msg })
         .toPromise()
         .then(user => {
@@ -142,6 +166,109 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     };
   }
 
+  public async FaceRecognition(image?) {
+    const that = this;
+    const clientIp = await this.loadClientIP();
+    this.faceAjax.params[1]['value'] = clientIp;
+    const wsString = await this.loadWsConfig(2);
+    const ws = new WebSocket(wsString);
+    ws.onopen = function () {
+      // Web Socket 已连接上，使用 send() 方法发送数据
+      // 连接服务端socket
+      ws.send(image);
+      console.log('数据发送中...');
+    };
+    ws.onmessage = function (evt) {
+      const received_msg = evt.data;
+      console.log('数据已接收...', received_msg);
+      that.apiService.login('common/login2', { Id: received_msg })
+        .toPromise()
+        .then(user => {
+          if (user.isSuccess) {
+            console.log(user.data);
+            that.closeMedia();
+            clearTimeout(that.timeout);
+            that.cacheService.set('userInfo', user.data);
+            const token: ITokenModel = { token: user.data.token };
+            that.tokenService.set(token); // 后续projectId需要进行动态获取
+            // let url = user.data.modules[0].link;
+            let url = '/dashboard/v1';
+            let menus;
+            // 解析平台
+            // const projModule = await this._loadProjectModule();
+            menus = [
+              {
+                text: '功能导航',
+                i18n: '',
+                group: true,
+                hideInBreadcrumb: true,
+                children: []
+              }
+            ];
+            // menus[0].children = this.arrayToTree(projModule.data, null);
+            menus[0].children = user.data.modules;
+            url = '/dashboard/v1';
+
+            that.cacheService.set('Menus', menus);
+            that.menuService.add(menus);
+            that.router.navigate([`${that.entry_url}`]);
+          } else {
+            that.showError(user.message);
+            ws.send('reload');
+          }
+
+        });
+
+    };
+    ws.onclose = function () {
+      // 关闭 websocket
+      console.log('连接已关闭...');
+    };
+  }
+
+  public getMedia() {
+    const constraints = {
+      video: { width: 300, height: 300 },
+      audio: true
+    };
+    // 获得video摄像头区域
+    const video = <HTMLVideoElement>document.getElementById('video');
+    // 这里介绍新的方法，返回一个 Promise对象
+    // 这个Promise对象返回成功后的回调函数带一个 MediaStream 对象作为其参数
+    // then()是Promise对象里的方法
+    // then()方法是异步执行，当then()前的方法执行完后再执行then()内部的程序
+    // 避免数据没有获取到
+    const promise = navigator.mediaDevices.getUserMedia(constraints);
+    const that = this;
+    promise.then(function (MediaStream) {
+      console.log(that.mediaStreamTrack);
+      //  this.mediaStreamTrack = MediaStream.getTracks()[0];
+      that.mediaStreamTrack = typeof MediaStream['stop'] === 'function' ? MediaStream : MediaStream.getTracks()[1];
+      video.srcObject = MediaStream;
+      video.play();
+    });
+
+    this.timeout = setTimeout(() => {
+      this.takePhoto();
+    }, 3000);
+  }
+
+  public takePhoto() {
+    // 获得Canvas对象
+    let video = <HTMLVideoElement>document.getElementById('video');
+    let canvas = <HTMLCanvasElement>document.getElementById('canvas');
+    let ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, 500, 500);
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.6)
+    // console.log(dataUrl);
+    this.FaceRecognition(dataUrl);
+  }
+
+  public closeMedia() {
+    console.log(this.mediaStreamTrack);
+    this.mediaStreamTrack && this.mediaStreamTrack.stop();
+  }
+
   public isString(obj) {
     // 判断对象是否是字符串
     return Object.prototype.toString.call(obj) === '[object String]';
@@ -157,26 +284,45 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     return ip;
   }
 
-  public async loadWsConfig() {
+  public async loadWsConfig(i: number) {
     let wsString;
-    const url = this._buildURL(this.ajax.url);
-    const params = {
-      ...this._buildParameters(this.ajax.params)
-    };
-    const loadData = await this._load(url, params);
-    if (loadData && loadData.status === 200 && loadData.isSuccess) {
-      if (loadData.data.length > 0) {
-        loadData.data.forEach(element => {
-          wsString = 'ws://' + element['webSocketIp'] + ':' + element['webSocketPort'] + '/' + element['connEntry'];
-          return true;
-        });
+    if (i === 1) {
+      const url = this._buildURL(this.ajax.url);
+      const params = {
+        ...this._buildParameters(this.ajax.params)
+      };
+    } else if (i === 2) {
+      const url = this._buildURL(this.faceAjax.url);
+      const params = {
+        ...this._buildParameters(this.faceAjax.params)
       }
+      const loadData = await this._load(url, params);
+      if (loadData && loadData.status === 200 && loadData.isSuccess) {
+        if (loadData.data.length > 0) {
+          loadData.data.forEach(element => {
+            wsString = 'ws://' + element['webSocketIp'] + ':' + element['webSocketPort'] + '/' + element['connEntry'];
+            return true;
+          });
+        }
+      }
+      return wsString;
     }
-    return wsString;
   }
 
   private changeTab($event: NzTabChangeEvent) {
-    this.isCardLogin = !$event.index;
+    if ($event.index === 0) {
+      this.getMedia();
+    }
+    if ($event.index !== 0) {
+      this.isFaceLogin = false
+      this.closeMedia();
+    }
+    if ($event.index === 1) {
+      this.isCardLogin = true
+    }
+    if ($event.index !== 1) {
+      this.isCardLogin = false
+    }
   }
 
 
@@ -204,7 +350,8 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
 
 
   private chooseLogin() {
-    this.isCardLogin = !this.isCardLogin;
+    // this.isCardLogin = !this.isCardLogin;
+    // this.isFaceLogin = !this.isFaceLogin;
   }
   // region: fields
 
@@ -446,6 +593,7 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
 
   public ngOnDestroy(): void {
     // if (this.interval$) clearInterval(this.interval$);
+    // this.mediaStreamTrack.stop();
   }
 
   public arrayToTree(data, parentid): any[] {

@@ -80,7 +80,7 @@ export class ModuleEntryComponent implements OnInit, OnDestroy {
                 // this.router.navigateByUrl(this.tokenService.login_url);
                 // new Promise((resolve, reject) => {
                 //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
-                this.router.navigateByUrl('/passport/ts-login').catch(() => {
+                this.router.navigateByUrl('/passport/app').catch(() => {
                     this.apiService.post('login_out');
                 });    
                 // }).catch(() => console.log('Oops errors!'));

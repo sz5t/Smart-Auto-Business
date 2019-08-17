@@ -59,7 +59,7 @@ export class CnGridSapnComponent extends CnComponentBase implements OnInit {
             return true;
           } else {
             this.isShow = false;
-            this.showShortLable = regularData.substring(1, regularflag);
+            this.showShortLable = regularData.substring(0, regularflag);
             return true;
           }
         }

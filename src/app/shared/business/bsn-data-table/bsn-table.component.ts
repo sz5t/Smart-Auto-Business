@@ -492,6 +492,7 @@ export class BsnTableComponent extends CnComponentBase
                                             });
 
                                         }
+                                        // console.log('495 tempvalue:', this.tempValue);
                                     }
 
                                     // 匹配及联模式
@@ -575,7 +576,7 @@ export class BsnTableComponent extends CnComponentBase
                 } else {
                     resData = loadData.data.rows;
                 }
-
+                // console.log('579 resdata:', resData);
                 if (resData) {
                     let focusId;
                     if (loadData.data.focusedId) {
@@ -2067,7 +2068,6 @@ export class BsnTableComponent extends CnComponentBase
                     if (c.ajaxType !== 'post') {
                         return;
                     }
-
                     handleData = this._getAddedRows();
                     msg = '新增数据保存成功';
                     if (handleData && handleData.length <= 0) {
@@ -3171,19 +3171,19 @@ export class BsnTableComponent extends CnComponentBase
                 button['onClick'] = componentInstance => {
                     if (btn['name'] === 'save') {
                         componentInstance.buttonAction(
-                            btn, dialog,
+                            btn,
                             () => {
                                 modal.close();
                                 this.load();
-                            }
+                            }, dialog
                         );
                     } else if (btn['name'] === 'saveAndKeep') {
                         componentInstance.buttonAction(
-                            btn, dialog,
+                            btn,
                             () => {
                                 this._resetForm(componentInstance);
                                 this.load();
-                            }
+                            }, dialog
                         );
                     } else if (btn['name'] === 'close') {
                         this.load();

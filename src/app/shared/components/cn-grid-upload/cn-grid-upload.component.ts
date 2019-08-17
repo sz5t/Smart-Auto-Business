@@ -77,7 +77,7 @@ export class CnGridUploadComponent extends CnComponentBase implements OnInit {
       _id: this.rowData[dialog.keyId],
       _parentId: this.tempValue['_parentId']
     };
-    const config = {'ajaxConfig': dialog.ajaxConfig, 'securityConfig': dialog.SecurityConfig }
+    const config = {'ajaxConfig': dialog.ajaxConfig, 'securityConfig': dialog.SecurityConfig, 'showpicture' : dialog.showpicture}
     const modal = this.baseModal.create({
       nzTitle: dialog.title,
       nzWidth: dialog.width,

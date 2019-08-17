@@ -167,6 +167,26 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
                 setTimeout(() => {
                     this.uploading = false;    
                 });
+                if (this.config.showpicture) {
+                    this._apiService.post(
+                        this.config.ajaxConfig['faceUrl'],
+                        {
+                         'refDataId' : result.data['refDataId'], 
+                         'path' : result.data['urlPath'], 
+                         'code': result.data['code'],
+                         'suffix': result.data['suffix']
+                        }
+                    )
+                    .subscribe(
+                        resultlist => {
+                            // this.uploadList = result.data;
+                                this.loading = false;
+                        },
+                        error => {
+                                this.loading = false;
+                        }
+                    );
+                }
                 this._message.success('上传成功！');
                 this.loadUploadList();
             },
@@ -177,6 +197,7 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
                 this._message.error('上传失败！');
             }
         );
+       
     }
 
     public download(id) {
