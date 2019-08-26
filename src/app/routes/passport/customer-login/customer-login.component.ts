@@ -40,7 +40,7 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
   private _currentSystem;
   private isCardLogin = false;
   private mediaStreamTrack = null;
-  public timeout ;
+  public timeout;
   private ajax = {
     url: 'open/getEquipment',
     ajaxType: 'get',
@@ -124,7 +124,12 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
   public async  ngAfterViewInit() {
     if (this.isFaceLogin) {
       this.getMedia();
+    } else if (this.isCardLogin) {
+      this.getCard();
     }
+  }
+
+  public async getCard() {
     const that = this;
     const clientIp = await this.loadClientIP();
     this.ajax.params[1]['value'] = clientIp;
@@ -139,7 +144,6 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     ws.onmessage = function (evt) {
       const received_msg = evt.data;
       console.log('数据已接收...', received_msg);
-      // that.apiService.login('common/login2', { Id: '16ed21bd7a7a41f5bea2ebaa258908cf' })
       that.apiService.login('common/card/login', { cardNo: received_msg })
         .toPromise()
         .then(user => {
@@ -150,8 +154,8 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
             const token: ITokenModel = { token: user.data.token };
             that.tokenService.set(token); // 后续projectId需要进行动态获取
             // let url = user.data.modules[0].link;
-            let url = '/dashboard/v1';
-            that.router.navigate([`${that.entry_url}`]);
+            let url = '/ts/entry';
+            that.router.navigate([`${url}`]);
           } else {
             that.showError(user.message);
             ws.send('reload');
@@ -238,15 +242,33 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     // then()是Promise对象里的方法
     // then()方法是异步执行，当then()前的方法执行完后再执行then()内部的程序
     // 避免数据没有获取到
-    const promise = navigator.mediaDevices.getUserMedia(constraints);
+    // const promise = navigator.mediaDevices.getUserMedia(constraints);
     const that = this;
-    promise.then(function (MediaStream) {
-      console.log(that.mediaStreamTrack);
-      //  this.mediaStreamTrack = MediaStream.getTracks()[0];
-      that.mediaStreamTrack = typeof MediaStream['stop'] === 'function' ? MediaStream : MediaStream.getTracks()[1];
-      video.srcObject = MediaStream;
-      video.play();
-    });
+    // promise.then(function (MediaStream) {
+    //   console.log(that.mediaStreamTrack);
+    //   //  this.mediaStreamTrack = MediaStream.getTracks()[0];
+    //   that.mediaStreamTrack = typeof MediaStream['stop'] === 'function' ? MediaStream : MediaStream.getTracks()[1];
+    //   video.srcObject = MediaStream;
+    //   video.play();
+    // });
+
+    window.navigator['getMedia'] = window.navigator.getUserMedia ||
+                window.navigator['webkitGetUserMedia'] ||
+                window.navigator['mozGetUserMedia'] ||
+                window.navigator['msGetUserMedia'];
+            window.navigator['getMedia']({
+                video: true, // 使用摄像头对象
+                audio: false  // 不适用音频
+            }, function (MediaStream) {
+                // console.log(MediaStream, MediaStream.getTracks());
+                that.mediaStreamTrack = typeof MediaStream.stop === 'function' ? MediaStream : MediaStream.getTracks()[0];
+                video.srcObject = MediaStream;
+               // video.src = vendorUrl.createObjectURL(strem);
+                video.play();
+
+            }, function (error) {
+                console.log(error);
+            });
 
     this.timeout = setTimeout(() => {
       this.takePhoto();
@@ -312,17 +334,18 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
   private changeTab($event: NzTabChangeEvent) {
     if ($event.index === 0) {
       this.getMedia();
-    }
-    if ($event.index !== 0) {
+  }
+  if ($event.index !== 0) {
       this.isFaceLogin = false
       this.closeMedia();
-    }
-    if ($event.index === 1) {
+  }
+  if ($event.index === 1) {
       this.isCardLogin = true
-    }
-    if ($event.index !== 1) {
+      this.getCard();
+  }
+  if ($event.index !== 1) {
       this.isCardLogin = false
-    }
+  }
   }
 
 

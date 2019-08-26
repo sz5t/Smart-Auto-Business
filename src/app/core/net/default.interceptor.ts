@@ -70,7 +70,7 @@ export class DefaultInterceptor implements HttpInterceptor {
                 ) {
                     this.goTo("/passport/login");
                 } else {
-                    this.msg.error(`${EvMsg.message}`);
+                    // this.msg.error(`${EvMsg.message}`);
                 }
                 // this.goTo(`/${event.status}`);
                 break;

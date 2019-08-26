@@ -34,12 +34,18 @@ export class CnGridMarkdownlabelComponent extends CnComponentBase implements OnI
   public updateValue = new EventEmitter();
   public _value;
   public isUpload = false;
+  public height;
   constructor(private modalService: NzModalService) {
     super();
     this.baseModal = this.modalService;
   }
 
   public ngOnInit() {
+    if (this.config.height) {
+      this.height = this.config.height
+    } else {
+      this.height = '100px'
+    }
     if (this.bsnData) {
       for (const key in this.bsnData) {
         if (this.bsnData.hasOwnProperty(key)) {

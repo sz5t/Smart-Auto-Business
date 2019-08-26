@@ -186,15 +186,24 @@ export class BsnTransferComponent extends CnComponentBase implements OnInit, OnD
         if (ajaxConfig) {
             ajaxConfig.map(async config => {
                 const params = [];
+                let ids = {};
+                let itemtemp = {};
                 if (Array.isArray(list) && list.length > 0) {
                     list.forEach(listItem => {
                         const param = this._buildParameters(config.params, listItem);
-                        params.push(param);
+                        params.push(param['Id']);
+                        itemtemp = param;
+                        // if (ids['ids']) {
+                        //     ids = {ids : ids['ids'] + ',' + param['Id']};
+                        // } else {
+                        //     ids = {ids : param['Id']};
+                        // }
                     });
                 }
+                itemtemp['ids'] = params.join(',');
                 const response = await this[config.ajaxType](
                     config.url,
-                    params
+                    itemtemp
                 );
                 result.push(response);
             });
@@ -210,13 +219,16 @@ export class BsnTransferComponent extends CnComponentBase implements OnInit, OnD
         if (ajaxConfig) {
             ajaxConfig.map(async config => {
                 const params = [];
+                let itemtemp = {};
                 if (Array.isArray(list) && list.length > 0) {
                     list.forEach(listItem => {
                         const param = this._buildParameters(config.params, listItem);
-                        params.push(param);
+                        params.push(param['Id']);
+                        itemtemp = param;
                     });
                 }
-                result.push(await this[config.ajaxType](config.url, params));
+                itemtemp['ids'] = params.join(',');
+                result.push(await this[config.ajaxType](config.url, itemtemp));
             });
             Promise.all(result).then(() => {
                 this.load();

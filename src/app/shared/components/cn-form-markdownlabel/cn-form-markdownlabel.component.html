@@ -6,6 +6,6 @@
   <input nz-input  formControlName="{{config.name}}" type="hidden" placeholder="{{config.placeholder}}"
     [(ngModel)]="_value">
   <ng-container *ngIf="config !== undefined">
-    <bsn-markdownlabel [value]="_value">loading...</bsn-markdownlabel>
+    <bsn-markdownlabel [height]="height" [value]="_value">loading...</bsn-markdownlabel>
   </ng-container>
 </nz-form-control>

@@ -910,32 +910,32 @@ export class TreeGridBase extends CnComponentBase {
                     if (btn['name'] === 'save2') {
                         (async () => {
                             const result = await componentInstance.buttonAction(
-                                btn, dialog,
+                                btn, 
                                 () => {
                                     modal.close();
                                     this.windowCallback(true);
-                                }
+                                }, dialog
                             );
                         })();
                     }
                     if (btn['name'] === 'save') {
                         (async () => {
                             const result = await componentInstance.buttonAction(
-                                btn, dialog,
+                                btn,
                                 () => {
                                     modal.close();
                                     this.windowCallback(true);
-                                }
+                                }, dialog
                             );
                         })();
                     } else if (btn['name'] === 'saveAndKeep') {
                         (async () => {
                             const result = await componentInstance.buttonAction(
-                                btn, dialog,
+                                btn,
                                 () => {
                                     modal.close();
                                     this.windowCallback(true);
-                                }
+                                }, dialog
                             );
                         })();
                     } else if (btn['name'] === 'close') {

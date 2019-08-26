@@ -30,9 +30,15 @@ export class CnFormMarkdownlabelComponent implements OnInit {
   public permissions = [];
   constructor() { }
   public nzWidth = 1024;
+  public height;
   // 模板配置
 
   public ngOnInit(): void {
+    if (this.config.height) {
+      this.height = this.config.height
+    } else {
+      this.height = '100px'
+    }
     // this._value = this.formGroup.value[this.config.name];
     if (this.changeConfig) {
       if (this.changeConfig['cascadeValue']) {

@@ -7,7 +7,11 @@ import { CommonTools } from '@core/utility/common-tools';
 })
 export class BsnMarkdownlabelComponent implements OnInit , OnChanges {
 
+  @Input()
+  public config;
   @Input() public value;
+  @Input()
+  public height;
   /**
    * 将子组件获取的内容传输到父组件
    */
@@ -18,8 +22,6 @@ export class BsnMarkdownlabelComponent implements OnInit , OnChanges {
   @ViewChild('tablecontentview') public tablecontentview: ElementRef<any>;
   // StackEditor
   public ngOnInit() {
-
-
   }
   public ngAfterViewInit(): void {
 

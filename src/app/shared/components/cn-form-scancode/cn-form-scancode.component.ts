@@ -5,41 +5,41 @@ import {
     Input,
     Output,
     EventEmitter
-} from "@angular/core";
+} from '@angular/core';
 import {
     BSN_COMPONENT_MODES,
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
     BSN_COMPONENT_CASCADE_MODES
-} from "@core/relative-Service/BsnTableStatus";
-import { Observable, Observer } from "rxjs";
-import { ApiService } from "@core/utility/api-service";
-import { FormGroup } from "@angular/forms";
+} from '@core/relative-Service/BsnTableStatus';
+import { Observable, Observer } from 'rxjs';
+import { ApiService } from '@core/utility/api-service';
+import { FormGroup } from '@angular/forms';
 
 @Component({
-    selector: "cn-form-scancode,[cn-form-scancode]",
-    templateUrl: "./cn-form-scancode.component.html",
-    styleUrls: ["./cn-form-scancode.component.css"]
+    selector: 'cn-form-scancode,[cn-form-scancode]',
+    templateUrl: './cn-form-scancode.component.html',
+    styleUrls: ['./cn-form-scancode.component.css']
 })
 export class CnFormScancodeComponent implements OnInit {
     @Input()
-    config;
+    public config;
     @Input()
-    value;
+    public value;
     @Input()
-    bsnData;
+    public bsnData;
     @Input()
-    rowData;
+    public rowData;
     @Input()
-    dataSet;
-    formGroup: FormGroup;
+    public dataSet;
+    public formGroup: FormGroup;
     // @Output() updateValue = new EventEmitter();
     @Output()
-    updateValue = new EventEmitter();
-    _options = [];
-    cascadeValue = {};
-    resultData;
-    _value;
+    public updateValue = new EventEmitter();
+    public _options = [];
+    public cascadeValue = {};
+    public resultData;
+    public _value;
     constructor(
         @Inject(BSN_COMPONENT_MODES)
         private stateEvents: Observable<BsnComponentMessage>,
@@ -50,10 +50,10 @@ export class CnFormScancodeComponent implements OnInit {
         private apiService: ApiService
     ) { }
 
-    ngOnInit() { }
+    public ngOnInit() { }
     isScan = true;
     oldvalue = null;
-    async onKeyPress(e) {
+    public async onKeyPress(e) {
         if (e.code === 'Enter') {
             this.isScan = false;
             this.oldvalue = this._value;
@@ -94,7 +94,7 @@ export class CnFormScancodeComponent implements OnInit {
         }
     }
 
-    async asyncLoad(p?, componentValue?, type?) {
+    public async asyncLoad(p?, componentValue?, type?) {
         if (!p) {
             return [];
         }
@@ -103,9 +103,9 @@ export class CnFormScancodeComponent implements OnInit {
         let url;
         if (p) {
             p.params.forEach(param => {
-                if (param.type === "tempValue") {
+                if (param.type === 'tempValue') {
                     if (type) {
-                        if (type === "load") {
+                        if (type === 'load') {
                             if (this.bsnData[param.valueName]) {
                                 params[param.name] = this.bsnData[
                                     param.valueName
@@ -123,49 +123,49 @@ export class CnFormScancodeComponent implements OnInit {
                             params[param.name] = this.bsnData[param.valueName];
                         }
                     }
-                } else if (param.type === "value") {
+                } else if (param.type === 'value') {
                     params[param.name] = param.value;
-                } else if (param.type === "componentValue") {
+                } else if (param.type === 'componentValue') {
                     params[param.name] = componentValue[param.valueName];
-                } else if (param.type === "scanCodeValue") {
+                } else if (param.type === 'scanCodeValue') {
                     params[param.name] = this._value;
-                } else if (param.type === "cascadeValue") {
+                } else if (param.type === 'cascadeValue') {
                     params[param.name] = this.cascadeValue[param.valueName];
                 }
             });
             if (this.isString(p.url)) {
                 url = p.url;
             } else {
-                let pc = "null";
+                let pc = 'null';
                 p.url.params.forEach(param => {
-                    if (param["type"] === "value") {
+                    if (param['type'] === 'value') {
                         pc = param.value;
-                    } else if (param.type === "componentValue") {
+                    } else if (param.type === 'componentValue') {
                         pc = componentValue[param.valueName];
-                    } else if (param.type === "tempValue") {
+                    } else if (param.type === 'tempValue') {
                         pc = this.bsnData[param.valueName];
-                    } else if (param.type === "scanCodeValue") {
+                    } else if (param.type === 'scanCodeValue') {
                         pc = this._value;
                     }
                 });
 
-                url = p.url["parent"] + "/" + pc + "/" + p.url["child"];
+                url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
             }
         }
-        if (p.ajaxType === "get" && tag) {
+        if (p.ajaxType === 'get' && tag) {
             return this.apiService.get(url, params).toPromise();
         }
     }
 
-    isString(obj) {
+    public isString(obj) {
         // 判断对象是否是字符串
-        return Object.prototype.toString.call(obj) === "[object String]";
+        return Object.prototype.toString.call(obj) === '[object String]';
     }
 
-    valueChange(name?, dataItem?) {
+    public valueChange(name?, dataItem?) {
         const backValue = { name: this.config.name, value: name };
         if (dataItem) {
-            backValue["dataItem"] = dataItem;
+            backValue['dataItem'] = dataItem;
         }
         this.updateValue.emit(backValue);
     }
