@@ -173,6 +173,7 @@ export class FormResolverComponent extends CnFormBase
 
     // region: 解析消息
     private resolverRelation() {
+        this.config;
         // 注册按钮状态触发接收器
         this.statusSubscriptions = this.stateEvents.subscribe(updateState => {
             if (updateState._viewId === this.config.viewId) {
@@ -227,7 +228,9 @@ export class FormResolverComponent extends CnFormBase
                                     option
                                 );
                                 this.load();
-                            this.formState = BSN_FORM_STATUS.TEXT;
+                                if (this.config.finishText) {
+                                    this.formState = BSN_FORM_STATUS.TEXT;
+                                }
                             }
                             break;
                         case BSN_COMPONENT_MODES.WINDOW:
