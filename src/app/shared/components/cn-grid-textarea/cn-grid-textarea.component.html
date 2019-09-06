@@ -1,0 +1,14 @@
+<input  nz-input
+[ngStyle]="{'width':config.width}"
+type="{{config.inputType}}"
+[nzSize]="config.size"
+placeholder="{{config.placeholder}}"
+readonly="{{config.readonly}}"
+disabled="{{config.disabled}}"
+[(ngModel)]="_value"
+(blur)="onblur($event,'end')" (keyup)="onKeyPress($event,'end')"
+>
+<ng-container *ngIf="Visible">
+    <i nz-icon type="exclamation-circle" style="margin-right: 8px; color: crimson"></i><span style="color: crimson">{{message}}</span>
+    <!-- <i nz-icon type="file" style="margin-right: 8px"></i> <span>数据不准确</span> -->
+</ng-container>

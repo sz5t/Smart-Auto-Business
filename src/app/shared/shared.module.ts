@@ -103,7 +103,6 @@ import { BsnReportComponent } from './business/bsn-report/bsn-report.component';
 import { BsnAsyncTreeTableComponent } from './business/bsn-treeTable/bsn-treeTable.component';
 import { CnFormSelectGridMultipleComponent } from './components/cn-form-select-grid-multiple/cn-form-select-grid-multiple.component';
 import { CnGridSelectGridMultipleComponent } from './components/cn-grid-select-grid-multiple/cn-grid-select-grid-multiple.component';
-import { TsDataTableComponent } from './business/ts-data-table/ts-data-table.component';
 import { CnGridSelectMultipleComponent } from '@shared/components/cn-grid-select-multiple/cn-grid-select-multiple.component';
 import { CnGridEditComponent } from './components/cn-grid-edit/cn-grid-edit.component';
 import { BsnTagComponent } from './business/bsn-tag/bsn-tag.component';
@@ -132,6 +131,8 @@ import { BsnMarkdownlabelComponent } from '@shared/business/bsn-markdown/bsn-mar
 import { CnGridMarkdownlabelComponent } from '@shared/components/cn-grid-markdownlabel/cn-grid-markdownlabel.component';
 import { CnFormSelectAsyncTreeComponent } from './components/cn-form-select-async-tree/cn-form-select-async-tree.component';
 import { BsnEntryCardListComponent } from './business/bsn-entry-card-list/bsn-entry-card-list.component';
+import { CnGridTextareaComponent } from './components/cn-grid-textarea/cn-grid-textarea.component';
+import { TsDataTableComponent } from './business/ts-data-table/ts-data-table.component';
 
 
 const THIRDMODULES = [
@@ -255,6 +256,7 @@ const COMPONENTS = [
     CnFormMarkdownlabelComponent,
     BsnMarkdownlabelComponent,
     CnGridMarkdownlabelComponent,
+    CnGridTextareaComponent,
     BsnEntryCardListComponent
 ];
 const DIRECTIVES = [

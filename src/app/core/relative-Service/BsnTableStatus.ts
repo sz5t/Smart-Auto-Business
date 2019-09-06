@@ -32,7 +32,12 @@ export interface ComponentModes {
     FORM_ADD: string,
     FORM_EDIT: string,
     FORM_LOAD: string,
-    IMPORT_EXCEL: string
+    IMPORT_EXCEL: string,
+    SEND_ORDER: string,
+
+    // tstable
+    AUTO_PLAY: 'autoPlay',
+    CALL_INTERFACE: 'callInterface'
 
 }
 
@@ -68,7 +73,12 @@ export const BSN_COMPONENT_MODES: ComponentModes = {
     FORM_ADD: 'formAdd',
     FORM_EDIT: 'formEdit',
     FORM_LOAD: 'formLoad',
-    IMPORT_EXCEL: 'importExcel'
+    IMPORT_EXCEL: 'importExcel',
+    SEND_ORDER: 'sendOrder',
+
+    // tstable
+    AUTO_PLAY: 'autoPlay',
+    CALL_INTERFACE: 'callInterface'
 };
 
 export const BSN_FORM_STATUS = {
@@ -116,7 +126,9 @@ export const BSN_EXECUTE_ACTION = {
     EXECUTE_EDIT_TREE_ROW: 'EXECUTE_EDIT_TREE_ROW',
     EXECUTE_AND_LOAD: 'EXECUTE_AND_LOAD',
     EXECUTE_DOWNLOAD: 'EXECUTE_DOWNLOAD',
-    EXECUTE_MESSAGE: 'EXECUTE_MESSAGE'
+    EXECUTE_MESSAGE: 'EXECUTE_MESSAGE',
+    EXECUTE_EDIT_ALL_ROW: 'EXECUTE_EDIT_ALL_ROW'
+
 };
 
 export const BSN_OUTPOUT_PARAMETER_TYPE = {
@@ -153,7 +165,10 @@ export const BSN_COMPONENT_CASCADE_MODES = {
     DELETE_ASYNC_TREE_NODE: 'deleteAsyncTreeNode',
 
     // form
-    LOAD_FORM: 'loadForm'
+    LOAD_FORM: 'loadForm',
+
+    // tstable
+    START_AUTO_PLAY: 'startAutoPlay'
 };
 
 export const BSN_COMPONENT_CASCADE = new InjectionToken<string>(

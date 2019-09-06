@@ -1,0 +1,46 @@
+@import '../../../../styles.less';
+@import '../../../../styles/theme.less';
+:host{
+    ::ng-deep {
+        .selectedRow {
+            background-color:  @primary-4;
+            color: @text-color-dark;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .cellFont {
+            font-size:1.3em;
+            font-weight:600;
+        }
+        .ant-table {
+            font-size:1.3em;
+            font-weight:600;
+        }
+        .ant-btn {
+            padding-top: 30px;
+            padding-left:40px;
+            padding-right:40px;
+            padding-bottom: 50px;
+            font: weight 800;
+            font-size:1.5em;
+        }
+        th .ant-btn{
+            padding-top: 10px;
+            padding-left: 15px;
+            padding-right: 15px;
+            padding-bottom: 30px;
+            font: weight 800;
+            font-size:0.8em;
+        }
+        th.ng-star-inserted{
+            text-align: center;
+        }
+        td.ng-star-inserted{
+            text-align: center;
+        }
+    }
+}

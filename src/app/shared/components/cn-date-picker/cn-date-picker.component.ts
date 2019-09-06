@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { getISOYear, getMonth, getISODay, getDate } from 'date-fns';
+import { getISOYear, getMonth, getISODay, getDate, getHours, getMinutes, getSeconds } from 'date-fns';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -26,14 +26,19 @@ export class CnDatePickerComponent implements OnInit {
                 const year = getISOYear(this.date);
                 const month = this.getNewDate(getMonth(this.date) + 1);
                 const date = this.getNewDate(getDate(this.date));
+                const hour = this.getNewDate(getHours(this.date));
+                const minute = this.getNewDate(getMinutes(this.date));
+                const second = this.getNewDate(getSeconds(this.date));
                 setTimeout(s => {
-
+                    // this.controlValue = this.date;
                     this.controlValue = `${year}${
                         this.config.sep1 ? this.config.sep1 : '-'
-                        }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date}`
+                        }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date
+                        }${' '}${hour}${':'}${minute}${':'}${second}`
                     this.value = `${year}${
                         this.config.sep1 ? this.config.sep1 : '-'
-                        }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date}`
+                        }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date
+                        }${' '}${hour}${':'}${minute}${':'}${second}`
                 }, 0);
             }
         }
@@ -44,11 +49,15 @@ export class CnDatePickerComponent implements OnInit {
             const year = getISOYear(val);
             const month = this.getNewDate(getMonth(val) + 1);
             const date = this.getNewDate(getDate(val));
+            const hour = this.getNewDate(getHours(val));
+            const minute = this.getNewDate(getMinutes(val));
+            const second = this.getNewDate(getSeconds(val));
             const backValue = {
                 name: this.config.name,
                 value: `${year}${
                     this.config.sep1 ? this.config.sep1 : '-'
-                    }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date}`
+                    }${month}${this.config.sep1 ? this.config.sep1 : '-'}${date
+                    }${' '}${hour}${':'}${minute}${':'}${second}`
             };
             setTimeout(s => {
                 this.value = backValue.value;

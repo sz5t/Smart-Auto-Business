@@ -162,62 +162,122 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
         setTimeout(() => {
             this.uploading = true;
         });
-        this._apiService.post(this.config.ajaxConfig['url'], formData).subscribe(
-            result => {
-                setTimeout(() => {
-                    this.uploading = false;    
-                });
-                if (this.config.showpicture) {
-                    this._apiService.post(
-                        this.config.ajaxConfig['faceUrl'],
-                        {
-                         'refDataId' : result.data['refDataId'], 
-                         'path' : result.data['urlPath'], 
-                         'code': result.data['code'],
-                         'suffix': result.data['suffix']
-                        }
-                    )
-                    .subscribe(
-                        resultlist => {
-                            // this.uploadList = result.data;
-                                this.loading = false;
-                        },
-                        error => {
-                                this.loading = false;
-                        }
-                    );
+        if (this.config.ajaxConfig) {
+            this._apiService.post(this.config.ajaxConfig['url'], formData).subscribe(
+                result => {
+                    setTimeout(() => {
+                        this.uploading = false;    
+                    });
+                    if (this.config.showpicture) {
+                        this._apiService.post(
+                            this.config.ajaxConfig['faceUrl'],
+                            {
+                             'refDataId' : result.data['refDataId'], 
+                             'path' : result.data['urlPath'], 
+                             'code': result.data['code'],
+                             'suffix': result.data['suffix']
+                            }
+                        )
+                        .subscribe(
+                            resultlist => {
+                                // this.uploadList = result.data;
+                                    this.loading = false;
+                            },
+                            error => {
+                                    this.loading = false;
+                            }
+                        );
+                    }
+                    this._message.success('上传成功！');
+                    this.loadUploadList();
+                },
+                error => {
+                    setTimeout(() => {
+                        this.uploading = false;    
+                    });
+                    this._message.error('上传失败！');
                 }
-                this._message.success('上传成功！');
-                this.loadUploadList();
-            },
-            error => {
-                setTimeout(() => {
-                    this.uploading = false;    
-                });
-                this._message.error('上传失败！');
-            }
-        );
+            );
+        } else {
+            this._apiService.post(this.config['url'], formData).subscribe(
+                result => {
+                    setTimeout(() => {
+                        this.uploading = false;    
+                    });
+                    if (this.config.showpicture) {
+                        this._apiService.post(
+                            this.config['faceUrl'],
+                            {
+                             'refDataId' : result.data['refDataId'], 
+                             'path' : result.data['urlPath'], 
+                             'code': result.data['code'],
+                             'suffix': result.data['suffix']
+                            }
+                        )
+                        .subscribe(
+                            resultlist => {
+                                // this.uploadList = result.data;
+                                    this.loading = false;
+                            },
+                            error => {
+                                    this.loading = false;
+                            }
+                        );
+                    }
+                    this._message.success('上传成功！');
+                    this.loadUploadList();
+                },
+                error => {
+                    setTimeout(() => {
+                        this.uploading = false;    
+                    });
+                    this._message.error('上传失败！');
+                }
+            );
+        }
+        
        
     }
 
     public download(id) {
-        this._apiService
+        if (this.config.ajaxConfig) {
+            this._apiService
             .get(this.config.ajaxConfig['downloadUrl'], { _ids: id })
             .subscribe(result => {
                 this._message.success('下载成功');
             });
+        } else {
+            this._apiService
+            .get(this.config['downloadUrl'], { _ids: id })
+            .subscribe(result => {
+                this._message.success('下载成功');
+            });
+        }
+        
     }
 
     public delete(id) {
-        this._apiService.delete(this.config.ajaxConfig['deleteUrl'], { _ids: id }).subscribe(
-            result => {
-                this._message.success('附件删除成功');
-                this.loadUploadList();
-            },
-            error => {
-                this._message.success('附件删除失败！');
-            }
-        );
+        if (this.config.ajaxConfig) {
+            this._apiService.delete(this.config.ajaxConfig['deleteUrl'], { _ids: id }).subscribe(
+                result => {
+                    this._message.success('附件删除成功');
+                    this.loadUploadList();
+                },
+                error => {
+                    this._message.success('附件删除失败！');
+                }
+            );
+        } else {
+            this._apiService.delete(this.config['deleteUrl'], { _ids: id }).subscribe(
+                result => {
+                    this._message.success('附件删除成功');
+                    this.loadUploadList();
+                },
+                error => {
+                    this._message.success('附件删除失败！');
+                }
+            );
+        }
     }
 
     public cancel() {

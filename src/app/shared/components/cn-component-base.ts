@@ -68,6 +68,14 @@ export class CnComponentBase {
         this._baseModal = value;
     }
 
+    private _baseDrawer;
+    public get baseDrawer() {
+        return this._baseDrawer;
+    }
+    public set baseDrawer(value) {
+        this._baseDrawer = value;
+    }
+
     private _apiResource;
     public get apiResource() {
         return this._apiResource;

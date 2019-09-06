@@ -68,6 +68,28 @@ export class FormResolverComponent extends CnFormBase
     public change_config = {};
     public cascadeList = {};
     public toolbarConfig = [];
+    private ipConfig = {
+        url: 'utils/getClientIp',
+        ajaxType: 'get',
+        params: []
+    };
+    private ajax = {
+        url: 'open/getEquipment',
+        ajaxType: 'get',
+        params: [
+            {
+                'name': 'typeCode',
+                'type': 'value',
+                'value': 'ELECTRICMACHINERY'
+            },
+            {
+                'name': 'clientIp',
+                'type': 'value',
+                'value': ''
+            }
+        ]
+    };
+    public ws;
     constructor(
         private builder: FormBuilder,
         private apiService: ApiService,
@@ -242,6 +264,11 @@ export class FormResolverComponent extends CnFormBase
                         case BSN_COMPONENT_MODES.UPLOAD:
                             this.uploadDialog(option);
                             break;
+                        case BSN_COMPONENT_MODES.SEND_ORDER:
+                            if (option.ajaxConfig) {
+                                this.sendElectricOrder(option.ajaxConfig);
+                            }
+                            break;
                     }
                 }
             }
@@ -339,7 +366,7 @@ export class FormResolverComponent extends CnFormBase
             })
             const url = this.buildUrl(this.config.ajaxConfig.url);
             const params = this.buildParameter(this.config.ajaxConfig.params);
-            this.execute(url, this.config.ajaxConfig.ajaxType , params).then(result => {
+            this.execute(url, this.config.ajaxConfig.ajaxType, params).then(result => {
 
                 let res;
                 if (Array.isArray(result.data)) {
@@ -353,7 +380,7 @@ export class FormResolverComponent extends CnFormBase
                     // 给主键赋值
                     if (this.config.keyId) {
                         this.tempValue['_id'] =
-                        res[this.config.keyId];
+                            res[this.config.keyId];
                     } else {
                         if (res['Id']) {
                             this.tempValue['_id'] = res['Id'];
@@ -391,6 +418,78 @@ export class FormResolverComponent extends CnFormBase
             // }
 
         }
+    }
+
+    // 给电机发送指定命令
+    public async sendElectricOrder(config) {
+        const that = this;
+        const clientIp = await this.loadClientIP();
+        this.ajax.params[1]['value'] = clientIp;
+        const wsString = await this.loadWsConfig(1);
+        that.ws = new WebSocket(wsString);
+        const params = this.buildParameter(config[0].params)
+        that.ws.onopen = function () {
+            // Web Socket 已连接上，使用 send() 方法发送数据
+            // 连接服务端socket
+            that.ws.send(params['message']);
+            console.log('数据发送中...');
+        };
+        that.ws.onmessage = function (evt) {
+            const received_msg = evt.data;
+            that.ws.close();
+            that.ws = null;
+            console.log('数据已接收...', received_msg);
+        };
+        that.ws.onclose = function () {
+            // 关闭 websocket
+            console.log('连接已关闭...');
+        };
+    }
+
+    public async loadClientIP() {
+        let ip;
+        const url = this.ipConfig.url;
+        const loadData = await this._load(url, {});
+        if (loadData.isSuccess) {
+            ip = loadData.data.clientIp;
+        }
+        return ip;
+    }
+
+    private async _load(url, params) {
+        return this.apiService.get(url, params).toPromise();
+    }
+
+    public async loadWsConfig(i: number) {
+        let wsString;
+        const url = this._buildURL(this.ajax.url);
+        const params = {
+                ...this.buildParameter(this.ajax.params)
+            };
+        const loadData = await this._load(url, params);
+        if (loadData && loadData.status === 200 && loadData.isSuccess) {
+            if (loadData.data.length > 0) {
+                loadData.data.forEach(element => {
+                    wsString = 'ws://' + element['webSocketIp'] + ':' + element['webSocketPort'] + '/' + element['connEntry'];
+                    return true;
+                });
+            }
+        }
+        return wsString;
+    }
+
+    private _buildURL(ajaxUrl) {
+        let url = '';
+        if (ajaxUrl && this.isString(ajaxUrl)) {
+            url = ajaxUrl;
+        } else if (ajaxUrl) {
+        }
+        return url;
+    }
+
+    // 判断对象是否是字符串
+    public isString(obj) {
+        return Object.prototype.toString.call(obj) === '[object String]';
     }
 
     /**
@@ -491,7 +590,7 @@ export class FormResolverComponent extends CnFormBase
                 this.baseMessage.warning('删除数据的_ids不存在，无法进行删除！');
                 return;
             } else {
-            
+
                 const res = await this.execute(
                     url,
                     deleteConfig[i].ajaxType,
@@ -571,17 +670,17 @@ export class FormResolverComponent extends CnFormBase
                     let paramData: any;
                     switch (r_val.type) {
                         case 'add':
-                        mode = BSN_COMPONENT_CASCADE_MODES.ADD_ASYNC_TREE_NODE;
-                        paramData = {_add_ids: r_val.ids.join(',')};
-                        break;
+                            mode = BSN_COMPONENT_CASCADE_MODES.ADD_ASYNC_TREE_NODE;
+                            paramData = { _add_ids: r_val.ids.join(',') };
+                            break;
                         case 'edit':
-                        mode = BSN_COMPONENT_CASCADE_MODES.EDIT_ASNYC_TREE_NODE;
-                        paramData = {_edit_ids: r_val.ids.join(',')};
-                        break;
+                            mode = BSN_COMPONENT_CASCADE_MODES.EDIT_ASNYC_TREE_NODE;
+                            paramData = { _edit_ids: r_val.ids.join(',') };
+                            break;
                         case 'delete':
-                        mode = BSN_COMPONENT_CASCADE_MODES.DELETE_ASYNC_TREE_NODE;
-                        paramData = {_del_ids: r_val.ids.join(',')};
-                        break;
+                            mode = BSN_COMPONENT_CASCADE_MODES.DELETE_ASYNC_TREE_NODE;
+                            paramData = { _del_ids: r_val.ids.join(',') };
+                            break;
                     }
                     this.cascade.next(
                         new BsnComponentMessage(
@@ -1201,21 +1300,21 @@ export class FormResolverComponent extends CnFormBase
                                             // 静态数据
                                             setoutputValuedata['data'] = caseItem['outputValue']['value'];
                                         }
-                                        if ( caseItem['outputValue']['type'] === 'selectValue') {
+                                        if (caseItem['outputValue']['type'] === 'selectValue') {
                                             // 选中行数据[这个是单值]
-                                            setoutputValuedata['data'] =    data[ caseItem['outputValue']['valueName']];
+                                            setoutputValuedata['data'] = data[caseItem['outputValue']['valueName']];
                                         }
-                                        if ( caseItem['outputValue']['type'] === 'selectObjectValue') {
+                                        if (caseItem['outputValue']['type'] === 'selectObjectValue') {
                                             // 选中行对象数据
                                             if (data.dataItem) {
-                                                setoutputValuedata['data'] = data.dataItem[caseItem['outputValue'][ 'valueName'  ] ];
+                                                setoutputValuedata['data'] = data.dataItem[caseItem['outputValue']['valueName']];
                                             } else {
                                                 setoutputValuedata['data'] = null;
                                             }
                                         }
                                         // 将值回写
-                                        if ( setoutputValuedata.hasOwnProperty('data') ) {
-                                            const setoutputValuedataObj = {name: caseItem['outputValue']['outputName'] , data: setoutputValuedata['data']};
+                                        if (setoutputValuedata.hasOwnProperty('data')) {
+                                            const setoutputValuedataObj = { name: caseItem['outputValue']['outputName'], data: setoutputValuedata['data'] };
                                             this.returnItemValue.emit(setoutputValuedataObj);
                                         }
                                     }
