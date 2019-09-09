@@ -40,6 +40,7 @@ import { CnGridUploadListComponent } from '@shared/components/cn-grid-upload-lis
 import { CnGridImgComponent } from '@shared/components/cn-grid-img/cn-grid-img.component';
 import { CnGridSapnComponent } from '@shared/components/cn-grid-sapn/cn-grid-sapn.component';
 import { CnGridMarkdownlabelComponent } from '@shared/components/cn-grid-markdownlabel/cn-grid-markdownlabel.component';
+import { CnGridTextareaComponent } from '@shared/components/cn-grid-textarea/cn-grid-textarea.component';
 const components: { [type: string]: Type<any> } = {
     input: CnGridInputComponent,
     select: CnGridSelectComponent,
@@ -63,7 +64,8 @@ const components: { [type: string]: Type<any> } = {
     uploadList: CnGridUploadListComponent,
     img: CnGridImgComponent,
     span: CnGridSapnComponent,
-    markdownlabel: CnGridMarkdownlabelComponent
+    markdownlabel: CnGridMarkdownlabelComponent,
+    textArea: CnGridTextareaComponent
 };
 
 // export const EXE_COUNTER_VALUE_ACCESSOR: any = {
