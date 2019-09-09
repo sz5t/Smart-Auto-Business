@@ -117,8 +117,8 @@ export class TsDataTableComponent extends CnComponentBase
     public changeConfig_newSearch = {};
     public ajaxColumns; // 动态列
     // 自动播放的变量
-    public loadautotime ;
-    public messageautotime ;
+    public loadautotime;
+    public messageautotime;
     // 前置条件集合
     public beforeOperation;
     constructor(
@@ -415,12 +415,12 @@ export class TsDataTableComponent extends CnComponentBase
         if (!this.config.ajaxproc) {
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
-                     await this.load();
-                     this.loadAutoPlay();
-                 } else if (this.config.componentType.own === true) {
+                    await this.load();
+                    this.loadAutoPlay();
+                } else if (this.config.componentType.own === true) {
                     this.load();
                 }
-             } else {
+            } else {
                 this.load();
             }
             // 初始化级联
@@ -750,7 +750,7 @@ export class TsDataTableComponent extends CnComponentBase
                     );
             }
         });
-      
+
     }
 
     private emptyLoad() {
@@ -859,199 +859,199 @@ export class TsDataTableComponent extends CnComponentBase
             ...this._buildFocusId(),
             ...this._buildSearch()
         };
-      // (async () => {
-            const method = this.config.ajaxConfig.ajaxType;
-            const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
-            if (loadData.isSuccess) {
-                let resData;
+        // (async () => {
+        const method = this.config.ajaxConfig.ajaxType;
+        const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
+        if (loadData.isSuccess) {
+            let resData;
 
-                if (method === 'proc') {
-                    resData = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
-                    this.loadbypage();
+            if (method === 'proc') {
+                resData = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
+                this.loadbypage();
+            } else {
+                resData = loadData.data.rows;
+            }
+            if (resData) {
+                let focusId;
+                if (loadData.data.focusedId) {
+                    focusId = loadData.data.focusedId[0];
                 } else {
-                    resData = loadData.data.rows;
-                }
-                if (resData) {
-                    let focusId;
-                    if (loadData.data.focusedId) {
-                        focusId = loadData.data.focusedId[0];
-                    } else {
-                        const slcId = this._selectRow['key'];
-                        if (slcId) {
-                            if (resData.length > 0 &&
-                                resData.filter(s => s[this.config.keyId] === slcId).length > 0
-                            ) {
-                                focusId = slcId;
-                            } else {
-                                resData.length > 0 &&
-                                    (focusId = resData[0].Id);
-                            }
+                    const slcId = this._selectRow['key'];
+                    if (slcId) {
+                        if (resData.length > 0 &&
+                            resData.filter(s => s[this.config.keyId] === slcId).length > 0
+                        ) {
+                            focusId = slcId;
                         } else {
                             resData.length > 0 &&
                                 (focusId = resData[0].Id);
                         }
-
-                    }
-                    if (resData.length > 0) {
-                        this.dataList = resData;
-                        resData.forEach((row, index) => {
-                            row['key'] = row[this.config.keyId]
-                                ? row[this.config.keyId]
-                                : 'Id';
-                            if (this.is_Selectgrid) {
-                                if (row.Id === focusId) {
-                                    if (this.editCache[row['key']]) {
-                                        this.editCache[row['key']]['edit'] = false;
-                                    }
-                                    this.selectRow(row);
-                                }
-                            }
-                            // if (loadData.data.page) {
-                            if (loadData.data.page === 1) {
-                                row['_serilize'] = index + 1;
-                            } else {
-                                row['_serilize'] =
-                                    (loadData.data.page - 1) *
-                                    loadData.data.pageSize +
-                                    index +
-                                    1;
-                            }
-                            // if (index >= this.config.pageSize) {
-                            //     loadData.data.page = loadData.data.page + 1;
-                            //     row['_serilize'] = index - this.config.pageSize + 1;
-                            // }
-                            // } else {
-                            //     loadData.data.page = 1;
-                            //     row['_serilize'] = index + 1;
-                            // }
-
-                            if (this.config.checkedMapping) {
-                                this.config.checkedMapping.forEach(m => {
-                                    if (
-                                        row[m.name] &&
-                                        row[m.name] === m.value
-                                    ) {
-                                        row['checked'] = true;
-                                    }
-                                });
-                            }
-                        });
                     } else {
-                        this.dataList = [];
-                        this._selectRow = {};
-                        this.emptyLoad();
+                        resData.length > 0 &&
+                            (focusId = resData[0].Id);
                     }
-                    this._updateEditCacheByLoad(resData);
-                    // this.dataList = loadData.data.rows;
-                    this.total = loadData.data.total;
-                    if (this.is_Search) {
-                        this.createSearchRow();
-                    }
+
+                }
+                if (resData.length > 0) {
+                    this.dataList = resData;
+                    resData.forEach((row, index) => {
+                        row['key'] = row[this.config.keyId]
+                            ? row[this.config.keyId]
+                            : 'Id';
+                        if (this.is_Selectgrid) {
+                            if (row.Id === focusId) {
+                                if (this.editCache[row['key']]) {
+                                    this.editCache[row['key']]['edit'] = false;
+                                }
+                                this.selectRow(row);
+                            }
+                        }
+                        // if (loadData.data.page) {
+                        if (loadData.data.page === 1) {
+                            row['_serilize'] = index + 1;
+                        } else {
+                            row['_serilize'] =
+                                (loadData.data.page - 1) *
+                                loadData.data.pageSize +
+                                index +
+                                1;
+                        }
+                        // if (index >= this.config.pageSize) {
+                        //     loadData.data.page = loadData.data.page + 1;
+                        //     row['_serilize'] = index - this.config.pageSize + 1;
+                        // }
+                        // } else {
+                        //     loadData.data.page = 1;
+                        //     row['_serilize'] = index + 1;
+                        // }
+
+                        if (this.config.checkedMapping) {
+                            this.config.checkedMapping.forEach(m => {
+                                if (
+                                    row[m.name] &&
+                                    row[m.name] === m.value
+                                ) {
+                                    row['checked'] = true;
+                                }
+                            });
+                        }
+                    });
                 } else {
-                    this._updateEditCacheByLoad([]);
-                    this.dataList = loadData.data;
-                    this.total = 0;
-                    if (this.is_Search) {
-                        this.createSearchRow();
-                    }
+                    this.dataList = [];
+                    this._selectRow = {};
                     this.emptyLoad();
                 }
-
-                // let data;
-                // if (method === 'proc') {
-                //     data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
-                //     this.dataList = data;
-                //     this.dataList.forEach(d => {
-                //         d['key'] = d[this.config.keyId]
-                //             ? d[this.config.keyId]
-                //             : 'Id';
-                //     })
-                // } else {
-                //     data = loadData.data.rows;
-                //     if (data) {
-                //         // 设置聚焦ID
-                //         // 默认第一行选中，如果操作后有focusId则聚焦ID为FocusId
-                //         let focusId;
-                //         if (loadData.FocusId) {
-                //             focusId = loadData.FocusId;
-                //         } else {
-                //             loadData.data.rows.length > 0 &&
-                //                 (focusId = loadData.data.rows[0].Id);
-                //         }
-                //         if (loadData.data.rows.length > 0) {
-                //             loadData.data.rows.forEach((row, index) => {
-                //                 row['key'] = row[this.config.keyId]
-                //                     ? row[this.config.keyId]
-                //                     : 'Id';
-                //                 if (this.is_Selectgrid) {
-                //                     if (row.Id === focusId) {
-                //                         !this.config.isDefaultNotSelected && this.selectRow(row);
-                //                     }
-                //                 }
-                //                 if (loadData.data.page === 1) {
-                //                     row['_serilize'] = index + 1;
-                //                 } else {
-                //                     row['_serilize'] =
-                //                         (loadData.data.page - 1) *
-                //                         loadData.data.pageSize +
-                //                         index +
-                //                         1;
-                //                 }
-
-                //                 if (this.config.checkedMapping) {
-                //                     this.config.checkedMapping.forEach(m => {
-                //                         if (
-                //                             row[m.name] &&
-                //                             row[m.name] === m.value
-                //                         ) {
-                //                             row['checked'] = true;
-                //                         }
-                //                     });
-                //                 }
-                //             });
-                //         } else {
-                //             this._selectRow = {};
-                //         }
-
-                //         this._updateEditCacheByLoad(loadData.data.rows);
-                //         this.dataList = loadData.data.rows;
-                //         this.total = loadData.data.total;
-                //         if (this.is_Search) {
-                //             this.createSearchRow();
-                //         }
-                //     } else {
-                //         this._updateEditCacheByLoad([]);
-                //         this.dataList = loadData.data;
-                //         this.total = 0;
-                //         if (this.is_Search) {
-                //             this.createSearchRow();
-                //         }
-                //     }
-                // }
+                this._updateEditCacheByLoad(resData);
+                // this.dataList = loadData.data.rows;
+                this.total = loadData.data.total;
+                if (this.is_Search) {
+                    this.createSearchRow();
+                }
             } else {
                 this._updateEditCacheByLoad([]);
-                this.dataList = [];
+                this.dataList = loadData.data;
                 this.total = 0;
                 if (this.is_Search) {
                     this.createSearchRow();
                 }
-            }
-            // liu
-            if (!this.is_Selectgrid) {
-                this.setSelectRow();
+                this.emptyLoad();
             }
 
-            // 初始化datagrid 编辑状态 liu 20181226
-            // this.dataList.forEach(row => {
-            //     this._startEdit(row['key'].toString());
-            // });
+            // let data;
+            // if (method === 'proc') {
+            //     data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
+            //     this.dataList = data;
+            //     this.dataList.forEach(d => {
+            //         d['key'] = d[this.config.keyId]
+            //             ? d[this.config.keyId]
+            //             : 'Id';
+            //     })
+            // } else {
+            //     data = loadData.data.rows;
+            //     if (data) {
+            //         // 设置聚焦ID
+            //         // 默认第一行选中，如果操作后有focusId则聚焦ID为FocusId
+            //         let focusId;
+            //         if (loadData.FocusId) {
+            //             focusId = loadData.FocusId;
+            //         } else {
+            //             loadData.data.rows.length > 0 &&
+            //                 (focusId = loadData.data.rows[0].Id);
+            //         }
+            //         if (loadData.data.rows.length > 0) {
+            //             loadData.data.rows.forEach((row, index) => {
+            //                 row['key'] = row[this.config.keyId]
+            //                     ? row[this.config.keyId]
+            //                     : 'Id';
+            //                 if (this.is_Selectgrid) {
+            //                     if (row.Id === focusId) {
+            //                         !this.config.isDefaultNotSelected && this.selectRow(row);
+            //                     }
+            //                 }
+            //                 if (loadData.data.page === 1) {
+            //                     row['_serilize'] = index + 1;
+            //                 } else {
+            //                     row['_serilize'] =
+            //                         (loadData.data.page - 1) *
+            //                         loadData.data.pageSize +
+            //                         index +
+            //                         1;
+            //                 }
 
-            setTimeout(() => {
-                this.loading = false;
-            });
-    //   })();
+            //                 if (this.config.checkedMapping) {
+            //                     this.config.checkedMapping.forEach(m => {
+            //                         if (
+            //                             row[m.name] &&
+            //                             row[m.name] === m.value
+            //                         ) {
+            //                             row['checked'] = true;
+            //                         }
+            //                     });
+            //                 }
+            //             });
+            //         } else {
+            //             this._selectRow = {};
+            //         }
+
+            //         this._updateEditCacheByLoad(loadData.data.rows);
+            //         this.dataList = loadData.data.rows;
+            //         this.total = loadData.data.total;
+            //         if (this.is_Search) {
+            //             this.createSearchRow();
+            //         }
+            //     } else {
+            //         this._updateEditCacheByLoad([]);
+            //         this.dataList = loadData.data;
+            //         this.total = 0;
+            //         if (this.is_Search) {
+            //             this.createSearchRow();
+            //         }
+            //     }
+            // }
+        } else {
+            this._updateEditCacheByLoad([]);
+            this.dataList = [];
+            this.total = 0;
+            if (this.is_Search) {
+                this.createSearchRow();
+            }
+        }
+        // liu
+        if (!this.is_Selectgrid) {
+            this.setSelectRow();
+        }
+
+        // 初始化datagrid 编辑状态 liu 20181226
+        // this.dataList.forEach(row => {
+        //     this._startEdit(row['key'].toString());
+        // });
+
+        setTimeout(() => {
+            this.loading = false;
+        });
+        //   })();
         // console.log('load:', this.dataList);
-        
+
     }
 
     public loadAutoPlay() {
@@ -1066,13 +1066,14 @@ export class TsDataTableComponent extends CnComponentBase
                 }, this.config.timeInterval)
             } else {
                 this.loadautotime = setInterval(() => {
-                if (this.pageIndex >= this.pagetotal) {
-                    this.pageIndex = 1;
-                } else {
-                    this.pageIndex = this.pageIndex + 1;
-                }
-                this.load();
-            }, this.config.timeInterval)}
+                    if (this.pageIndex >= this.pagetotal) {
+                        this.pageIndex = 1;
+                    } else {
+                        this.pageIndex = this.pageIndex + 1;
+                    }
+                    this.load();
+                }, this.config.timeInterval)
+            }
         }
     }
 
@@ -1091,15 +1092,16 @@ export class TsDataTableComponent extends CnComponentBase
                 }, this.config.timeInterval)
             } else {
                 this.messageautotime = setInterval(() => {
-                this.pagetotal = Math.ceil(this.total / this.pageSize);
-                // console.log('pagetotal:', this.pagetotal, 'pageIndex:', this.pageIndex);
-                if (this.pageIndex >= this.pagetotal) {
-                    this.pageIndex = 1;
-                } else {
-                    this.pageIndex = this.pageIndex + 1;
-                }
-                this.load();
-            }, this.config.timeInterval)}
+                    this.pagetotal = Math.ceil(this.total / this.pageSize);
+                    // console.log('pagetotal:', this.pagetotal, 'pageIndex:', this.pageIndex);
+                    if (this.pageIndex >= this.pagetotal) {
+                        this.pageIndex = 1;
+                    } else {
+                        this.pageIndex = this.pageIndex + 1;
+                    }
+                    this.load();
+                }, this.config.timeInterval)
+            }
         }
     }
 
@@ -2734,7 +2736,7 @@ export class TsDataTableComponent extends CnComponentBase
                 );
                 if (childrenConfig.length > 0) {
                     //  目前紧支持一次执行一个分之步骤
-                this._getAjaxConfig(childrenConfig[0], ajaxConfig);
+                    this._getAjaxConfig(childrenConfig[0], ajaxConfig);
                 }
             }
 
@@ -4861,6 +4863,9 @@ export class TsDataTableComponent extends CnComponentBase
         fieldConfig.forEach(f => {
             const cf = {};
             cf['title'] = f.title;
+            cf['subtitle'] = f.subtitle ? f.subtitle : null;
+            cf['subtitletext'] = f.subtitletext ? f.subtitletext : null;
+            cf['text'] = f.text ? f.text : null;
             cf['field'] = f.field;
             cf['width'] = f.width;
             cf['hidden'] = f.hidden;
@@ -4960,7 +4965,11 @@ export class TsDataTableComponent extends CnComponentBase
                         loadData.data.forEach(element => {
                             const column = {};
                             this.config.columnsConfig.forEach(cc => {
-                                column[cc.name] = element[cc.feild];
+                                if (cc.feild) {
+                                    column[cc.name] = element[cc.feild];
+                                } else {
+                                    column[cc.name] = cc['value'];
+                                }
                             });
                             loadColumns.push(column);
                         });

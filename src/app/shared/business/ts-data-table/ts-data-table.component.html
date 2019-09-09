@@ -1,13 +1,13 @@
 <nz-layout>
     <nz-content>
             <nz-card [nzBordered]="true" [nzBodyStyle]="config.bodyStyle?config.bodyStyle:{height: '500px'}">
-                    <nz-table #nzTable [nzData]="dataList" [nzSize]="config.size" [nzFrontPagination]="false" [nzShowSizeChanger]="true" [nzTotal]="total"
+                    <nz-table #nzTable  [nzBordered]="config.bordered?config.bordered:false"  [nzData]="dataList" [nzSize]="config.size" [nzFrontPagination]="false" [nzShowSizeChanger]="true" [nzTotal]="total"
                     [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzShowTotal]="totals" [nzPageSizeOptions]="config.pageSizeOptions ? config.pageSizeOptions :[]"
                     [nzLoading]="loading" (nzPageIndexChange)="searchData()" (nzPageSizeChange)="searchData(true)" [nzTitle]="this.config.title ? title : false"
                      [nzNoResult]="noResult"  [nzLoadingDelay]="50" [nzScroll]="config.scroll ? config.scroll : {}">
                     <thead (nzSortChange)="sort($event)" nzSingleSort>
                         <tr (contextmenu)="contextMenu($event,contextTemplate)">
-                            <th *ngIf="config.showCheckBox" nzLeft="0px" [nzWidth]="config.checkedConfig.width?config.checkedConfig.width:'10px'" [nzShowCheckbox]="config.showCheckBox ? config.showCheckBox : false"
+                            <th [attr.rowspan]="config.checkedConfig.rowspan?config.checkedConfig.rowspan:1" *ngIf="config.showCheckBox" nzLeft="0px" [nzWidth]="config.checkedConfig.width?config.checkedConfig.width:'10px'" [nzShowCheckbox]="config.showCheckBox ? config.showCheckBox : false"
                                 [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="checkAll($event)">
                             </th>
                             <ng-template ngFor let-col [ngForOf]="config.columns">
@@ -25,6 +25,22 @@
                                     </ng-container>
                                 </th>
                             </ng-template>
+
+                        </tr>
+                        <tr *ngIf="config.columnsGroup">
+                                <ng-template ngFor let-col [ngForOf]="config.columns">
+                                    <th [nzWidth]="col.width" [nzShowSort]="col.showSort" [nzShowFilter]="col.showFilter" *ngIf="!col.hidden" [nzSortKey]="col.field"
+                                        [ngClass]="[col.titleAlign ? col.titleAlign : '']">
+                                        <ng-container *ngIf="config.checkedConfig">
+                                            <span *ngIf="col.subtitletext">{{col.subtitle}}</span>
+                                            <button *ngIf="!col.subtitletext" nz-button nzType="primary" nzBlock (click)="titleToolbarAction(col)">{{col.subtitle}}xx</button>
+                                        </ng-container>
+                                        <ng-container *ngIf="!config.checkedConfig">
+                                            <span *ngIf="!col.button">{{col.subtitle}}</span>
+                                            <button *ngIf="col.button" nz-button nzType="primary" nzBlock (click)="titleToolbarAction(col)">{{col.subtitle}}</button>
+                                        </ng-container>
+                                    </th>
+                                </ng-template>
                         </tr>
                     </thead>
                     <tbody>
@@ -111,7 +127,7 @@
                                                             (updateValue)="valueChange($event)"></cn-grid-edit>
                                                     </ng-container>
                                                     <ng-container *ngIf="!_isArray(col.editor)">
-                                                        <ng-container [bsnData]="tempValue" [initData]="initData" [rowData]="editCache[data.key].data" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                                                        <ng-container [bsnData]="tempValue" [initData]="initData" [rowData]="editCache[data.key]['data']" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
                                                             CnGridEditorDirective *ngIf="editCache[data.key].edit" [config]="col.editor.options"
                                                             [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field],dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
                                                             [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
@@ -177,7 +193,7 @@
     <nz-footer style="text-align: center; padding: 0px" *ngIf="config.toolbar">
         <nz-card>
                 <bsn-toolbar  [permissions]="permissions ? permissions : []" [config]="config.toolbar" [viewId]="config.viewId"></bsn-toolbar>
-        </nz-card>    
+        </nz-card>
     </nz-footer>
 </nz-layout>
 
