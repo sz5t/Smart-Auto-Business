@@ -33,7 +33,7 @@
                                         [ngClass]="[col.titleAlign ? col.titleAlign : '']">
                                         <ng-container *ngIf="config.checkedConfig">
                                             <span *ngIf="col.subtitletext">{{col.subtitle}}</span>
-                                            <button *ngIf="!col.subtitletext" nz-button nzType="primary" nzBlock (click)="titleToolbarAction(col)">{{col.subtitle}}xx</button>
+                                            <button *ngIf="!col.subtitletext" nz-button nzType="primary" nzBlock (click)="titleToolbarAction(col)">{{col.subtitle}}</button>
                                         </ng-container>
                                         <ng-container *ngIf="!config.checkedConfig">
                                             <span *ngIf="!col.button">{{col.subtitle}}</span>

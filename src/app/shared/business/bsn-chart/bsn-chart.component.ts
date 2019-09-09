@@ -229,7 +229,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
    * CreateChart_Line  生成折线图
    */
   public CreateChart_Line() {
-
     this.chart = new G2.Chart({
       container: this.chartElement.nativeElement, // 指定图表容器 ID
       animate: true, // 动画 默认true
@@ -251,6 +250,82 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       this.chart.axis(this.config.y.name, this.config.y.axis);
     }
 
+    if (this.config.peakValue) {
+      if (!this.config.eachPeakValue) {
+        const max_min = this.findMaxMin();
+        const max = max_min.max;
+        const min = max_min.min;
+        this.chart.guide().dataMarker({
+          top: true,
+          content: '峰值：' + max[this.config.y.name],
+          position: [max[this.config.x.name], max[this.config.y.name]],
+          style: {
+            text: {
+              fontSize: 13,
+              stroke: 'white',
+              lineWidth: 2
+            }
+          },
+          lineLength: 30
+        });
+        this.chart.guide().dataMarker({
+          top: true,
+          content: '谷值：' + min[this.config.y.name],
+          position: [min[this.config.x.name], min[this.config.y.name]],
+          style: {
+            text: {
+              fontSize: 13,
+              stroke: 'white',
+              lineWidth: 2
+            }
+          },
+          lineLength: 50
+        });
+      } else {
+        const group = [];
+        group.push(this.dataList[0][this.config.groupName]);
+        for (let i = 0; i < this.dataList.length; i++) {
+          for (let j = 0; j < group.length; j++) {
+            if (!group.includes(this.dataList[i][this.config.groupName])) {
+            // if (this.dataList[i][this.config.groupName] !== group[group.length - 1]) {
+              group.push(this.dataList[i][this.config.groupName]);
+            }
+          }
+        }
+        group.forEach(element => {
+          const max_min = this.findMaxMin(element);
+          const max = max_min.max;
+          const min = max_min.min;
+          this.chart.guide().dataMarker({
+            top: true,
+            content: element + '的峰值：' + max[this.config.y.name],
+            position: [max[this.config.x.name], max[this.config.y.name]],
+            style: {
+              text: {
+                fontSize: 13,
+                stroke: 'white',
+                lineWidth: 2
+              }
+            },
+            lineLength: 30
+          });
+          this.chart.guide().dataMarker({
+            top: true,
+            content: element + '的谷值：' + min[this.config.y.name],
+            position: [min[this.config.x.name], min[this.config.y.name]],
+            style: {
+              text: {
+                fontSize: 13,
+                stroke: 'white',
+                lineWidth: 2
+              }
+            },
+            lineLength: 50
+          });
+        });
+      }
+
+    }
 
     if (this.config.legend) {
       this.chart.legend(this.config.legend);
@@ -260,6 +335,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         type: 'line'
       }
     });
+
     if (this.config.groupName) {
       this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).shape(this.config.shape ? this.config.shape : 'circle');
       this.chart.point().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).size(4).shape('circle').style({
@@ -520,6 +596,53 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     }
     if (this._cascadeSubscription) {
       this._cascadeSubscription.unsubscribe();
+    }
+  }
+
+  // 计算峰值
+  public findMaxMin(e?) {
+    if (!e) {
+      let maxValue = 0;
+      let minValue = 50000;
+      let maxObj = null;
+      let minObj = null;
+      for (let i = 0; i < this.dataList.length; i++) {
+        const d = this.dataList[i];
+        if (d[this.config.y.name] > maxValue) {
+          maxValue = d[this.config.y.name];
+          maxObj = d;
+        }
+        if (d[this.config.y.name] < minValue) {
+          minValue = d[this.config.y.name];
+          minObj = d;
+        }
+      }
+      return {
+        max: maxObj,
+        min: minObj
+      };
+    } else {
+      let maxValue = 0;
+      let minValue = 50000;
+      let maxObj = null;
+      let minObj = null;
+      for (let i = 0; i < this.dataList.length; i++) {
+        const d = this.dataList[i];
+        if (d[this.config.groupName] === e) {
+          if (d[this.config.y.name] > maxValue) {
+            maxValue = d[this.config.y.name];
+            maxObj = d;
+          }
+          if (d[this.config.y.name] < minValue) {
+            minValue = d[this.config.y.name];
+            minObj = d;
+          }
+        }
+      }
+      return {
+        max: maxObj,
+        min: minObj
+      };
     }
   }
 }
