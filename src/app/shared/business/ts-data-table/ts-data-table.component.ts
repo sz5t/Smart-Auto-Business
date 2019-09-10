@@ -675,6 +675,10 @@ export class TsDataTableComponent extends CnComponentBase
                                         }
                                         // this.load();
                                         break;
+                                    case BSN_COMPONENT_CASCADE_MODES.CREATE_DYNAMIC_TABLE:
+                                            this.loadDynamicColumns();
+                                            this.load();
+                                        break;
 
                                 }
                             }
