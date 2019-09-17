@@ -380,6 +380,7 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                                             option.data[param['pid']];
                                     });
                                 }
+                                if (cascadeEvent._mode === mode) {
                                 // 匹配及联模式
                                 switch (mode) {
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH:
@@ -389,7 +390,7 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                                         this.load();
                                         break;
                                 }
-                            }
+                            }}
                         });
                     }
                 }

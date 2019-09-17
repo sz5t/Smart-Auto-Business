@@ -284,7 +284,7 @@ export class CnFormBase extends CnComponentBase {
             const msgObj = msg
                 ? response.data[msg.name].split(':')
                 : null;
-            const valueObj = response.data ? response.data : {};
+            
             // const tableObj = response.data[table.name] ? response.data[table.name] : [];
             if (msgObj && msgObj.length > 1) {
                 const messageType = msgObj[0];
@@ -347,6 +347,15 @@ export class CnFormBase extends CnComponentBase {
                         this.baseMessage.success(msgObj[1]);
                         callback && callback();
                         break;
+                    case 'finish':
+                        options = {
+                            nzTitle: '',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.baseMessage.success(msgObj[1]);
+                        callback && callback();
+                        return;
                     case 'continue':
                         // const childrenConfig = ajaxConfig.filter(
                         //     f => f.parentName && f.parentName === c.name
@@ -369,6 +378,7 @@ export class CnFormBase extends CnComponentBase {
             //         '存储过程返回结果异常：未获得输出的消息内容'
             //     );
             // }
+            const valueObj = response.data ? response.data : {};
             this.returnValue = valueObj;
             if (this.returnValue) {
                 const childrenConfig = ajaxConfig.filter(

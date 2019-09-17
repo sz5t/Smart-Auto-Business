@@ -38,6 +38,8 @@ import { BeforeOperation } from '../before-operation.base';
 import { createEmitAndSemanticDiagnosticsBuilderProgram } from 'typescript';
 import { ActivatedRoute } from '@angular/router';
 import { XlsxService } from '@delon/abc';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: CnFormWindowResolverComponent,
@@ -2545,7 +2547,6 @@ export class BsnTableComponent extends CnComponentBase
         const updatedRows = [];
         this.dataList.map(item => {
             delete item['$type'];
-
             if (item['row_status'] === 'updating') {
                 item = JSON.parse(
                     JSON.stringify(this.editCache[item.key].data)
@@ -4105,22 +4106,40 @@ export class BsnTableComponent extends CnComponentBase
 
         const loadData = await this._load(url, params, 'get');
         if (loadData.isSuccess && loadData.data.length > 0) {
+            let i = 0;
             for (const d of loadData.data) {
-                data.push(col.map(c => { if (c.hidden) { } else return d[c.field as string]; }))
+              i++;
+                data.push(col.map(c => { if (c.hidden) { } else {
+                    if (c.field === '_serilize') {
+                        return i.toString();
+                    } else {
+                        return d[c.field as string];
+                    }
+                  
+                }
+                 }))
             }
 
         } else {
             this.modalService.warning({ nzTitle: '没有可以导出的数据'});
         }
-
-        this.xlsx.export({
-            sheets: [
-                {
-                    data: data,
-                    name: 'sheet name'
-                }
-            ]
-        });
+            const json = data;
+            // console.log('data:', data, loadData);
+            // 这个nameList (随便起的名字)，是要导出的json数据
+            const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
+            const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+            const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+            // 这里类型如果不正确，下载出来的可能是类似xml文件的东西或者是类似二进制的东西等
+            this.saveAsExcelFile(excelBuffer, 'nameList');
+        
+        // this.xlsx.export({
+        //     sheets: [
+        //         {
+        //             data: data,
+        //             name: 'sheet name'
+        //         }
+        //     ]
+        // });
 
         setTimeout(() => {
             this.loading = false;
@@ -4154,17 +4173,34 @@ export class BsnTableComponent extends CnComponentBase
         this.dataList.forEach(i =>
             data.push(col.map(c => { if (c.hidden) { } else return i[c.field as string]; }))
         );
-        this.xlsx.export({
-            sheets: [
-                {
-                    data: data,
-                    name: 'sheet name'
-                }
-            ]
-        });
+
+        const json = data;
+            // console.log('data:', data, loadData);
+            // 这个nameList (随便起的名字)，是要导出的json数据
+            const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
+            const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+            const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+            // 这里类型如果不正确，下载出来的可能是类似xml文件的东西或者是类似二进制的东西等
+            this.saveAsExcelFile(excelBuffer, 'nameList');
+        // this.xlsx.export({
+        //     sheets: [
+        //         {
+        //             data: data,
+        //             name: 'sheet name'
+        //         }
+        //     ]
+        // });
     }
     public _isArray(a) {
         return (Object.prototype.toString.call(a) === '[object Array]');
     }
+
+    private saveAsExcelFile(buffer: any, fileName: string) {
+        const data: Blob = new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+  });
+  FileSaver.saveAs(data, fileName + '_' + new Date().getTime() + '.xlsx');
+          // 如果写成.xlsx,可能不能打开下载的文件，这可能与Excel版本有关
+  }
 
 }

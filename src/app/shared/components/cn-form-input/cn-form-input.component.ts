@@ -1,5 +1,5 @@
 import { FormGroup } from '@angular/forms';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'cn-form-input',
@@ -26,6 +26,8 @@ import { Component, Input, OnInit } from '@angular/core';
 export class CnFormInputComponent implements OnInit {
   @Input() config;
   @Input() formGroup: FormGroup;
+  @Output()
+  public updateValue = new EventEmitter();
   model;
   public inputReadonly = false;
   constructor(
@@ -42,5 +44,26 @@ export class CnFormInputComponent implements OnInit {
       this.inputReadonly = true;
     }
   }
+
+  public valueChange(name?) {
+    const backValue = { name: this.config.name, value: name };
+    this.updateValue.emit(backValue);
+}
+
+public onblur(e?, type?) {
+    this.assemblyValue();
+
+}
+public onKeyPress(e?, type?) {
+    if (e.code === 'Enter') {
+        this.assemblyValue();
+    }
+}
+
+// 组装值
+public assemblyValue() {
+   // this._value = this._value.trim();
+    this.valueChange(this.model);
+}
 
 }

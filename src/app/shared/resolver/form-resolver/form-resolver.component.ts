@@ -137,6 +137,7 @@ export class FormResolverComponent extends CnFormBase
                 : {},
             apiResource: this.apiResource
         });
+        this.GetToolbarEvents();
     }
 
     // region: 组件生命周期事件
@@ -245,7 +246,7 @@ export class FormResolverComponent extends CnFormBase
                                     this.formState,
                                     (returnValue) => {
                                         this.load();
-                                        this.sendCascadeMessage();
+                                        // this.sendCascadeMessage();
                                     },
                                     option
                                 );
@@ -278,7 +279,6 @@ export class FormResolverComponent extends CnFormBase
             this.config.componentType &&
             this.config.componentType.child === true
         ) {
-
             this.cascadeSubscriptions = this.cascadeEvents.subscribe(
                 cascadeEvent => {
                     // 解析子表消息配置

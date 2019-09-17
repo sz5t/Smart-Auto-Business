@@ -17,7 +17,9 @@
                 placeholder="{{config.placeholder}}"
                 disabled="{{config.disabled}}"
                 readonly="inputReadonly"
-                [(ngModel)]="model"/>
+                [(ngModel)]="model"
+                (blur)="onblur($event,'end')" (keyup)="onKeyPress($event,'end')"/>
+                
         </ng-container>
         <ng-container *ngIf="!inputReadonly">
                 <input nz-input
@@ -26,7 +28,8 @@
                 [nzSize]="config.size"
                 placeholder="{{config.placeholder}}"
                 disabled="{{config.disabled}}"
-                [(ngModel)]="model"/>
+                [(ngModel)]="model"
+                (blur)="onblur($event,'end')" (keyup)="onKeyPress($event,'end')"/>
         </ng-container>
 
 

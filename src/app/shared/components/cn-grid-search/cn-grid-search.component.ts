@@ -166,8 +166,8 @@ export class CnGridSearchComponent implements OnInit {
       this.op = newOp;
     } else if (this.config.type === 'input') {
       const newOp = [
-        { lable: '首字母匹配', value: 'fm', select: false },
         { lable: '部分一致', value: 'ctn', select: true },
+        { lable: '首字母匹配', value: 'fm', select: false },
         { lable: '等于', value: 'eq', select: false },
         { lable: '不等于', value: 'neq', select: false },
         { lable: '不属于', value: 'nctn', select: false },
