@@ -6,7 +6,8 @@ import {
     OnChanges,
     OnDestroy,
     OnInit,
-    Output
+    Output,
+    AfterViewInit
 } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -100,6 +101,22 @@ export class SearchResolverComponent extends CnComponentBase
                 this.change_config[control.name] = null;
             });
         });
+
+        setTimeout(s => {
+            if (this.config.loadsendmsg) {
+                // console.log(this.value);
+                this.cascade.next(
+                    new BsnComponentMessage(
+                        BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                        this.config.viewId,
+                        {
+                            data:  this.value 
+                        }
+                    )
+                );
+            }
+        }, 0)
+      
     }
 
     public ngOnChanges() { }
@@ -650,6 +667,7 @@ export class SearchResolverComponent extends CnComponentBase
     }
 
     public valueChange(data?) {
+        // console.log(data);
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
         const sendCasade = data.name;

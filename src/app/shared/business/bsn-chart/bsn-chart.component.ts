@@ -3,7 +3,7 @@ import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService, NzDropdownService } from 'ng-zorro-antd';
 import { CacheService } from '@delon/cache';
 import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
-import { Observer, Observable, Subscription } from 'rxjs';
+import { Observer, Observable, Subscription, config } from 'rxjs';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
 
@@ -21,6 +21,9 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   @Input() public value;
   @Input() public bsnData;
   @Input() public ref;
+  public originDv;
+  public showdata = []; // 展示的数组
+  public autoPlay;
   // tempValue = {};
   @Output() public updateValue = new EventEmitter();
   @ViewChild('chartContainer') public chartElement: ElementRef;
@@ -236,7 +239,46 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       height: this.config.height ? this.config.height : 300, // 指定图表高度
       padding: 'auto'
     });
-    this.chart.source(this.dataList);
+    const ds = new DataSet({
+      state: {
+        start: new Date(this.dataList[0]['monitortime']).getTime(),
+        end: new Date(this.dataList[this.dataList.length - 1]['monitortime']).getTime()
+      }
+    });
+    if (this.config.showSlider) {
+      this.originDv = ds.createView('origin');
+      this.originDv.source(this.showdata).transform({
+        type: 'fold',
+        fields: [this.config.y.name],
+        retains: [this.config.y.name, this.config.x.name]
+      }).transform({
+        type: 'filter',
+        callback: (obj) => {
+          const time = new Date(obj.monitortime).getTime(); // !注意：时间格式，建议转换为时间戳进行比较
+          return time >= ds.state.start && time <= ds.state.end;
+        }
+      });
+      this.chart.interact('slider', {
+        container: 'slider',
+        start: ds.state.start, // 和状态量对应
+        end: ds.state.end,
+        xAxis: this.config.x.name,
+        yAxis: this.config.y.name,
+        data: this.originDv,
+        backgroundChart: {
+          type: 'line',
+          color: 'grey'
+        },
+        onChange: (_ref) => {
+          const startValue = _ref.startValue, endValue = _ref.endValue;
+          ds.setState('start', startValue);
+          ds.setState('end', endValue);
+        }
+      });
+    } else {
+      this.originDv = this.showdata;
+    }
+    this.chart.source(this.originDv);
     if (this.config.y.scale) {
       this.chart.scale(this.config.y.name, this.config.y.scale);
     }
@@ -249,56 +291,15 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     if (this.config.y.axis) {
       this.chart.axis(this.config.y.name, this.config.y.axis);
     }
-
-    if (this.config.peakValue) {
-      if (!this.config.eachPeakValue) {
-        const max_min = this.findMaxMin();
-        const max = max_min.max;
-        const min = max_min.min;
-        this.chart.guide().dataMarker({
-          top: true,
-          content: '峰值：' + max[this.config.y.name],
-          position: [max[this.config.x.name], max[this.config.y.name]],
-          style: {
-            text: {
-              fontSize: 13,
-              stroke: 'white',
-              lineWidth: 2
-            }
-          },
-          lineLength: 30
-        });
-        this.chart.guide().dataMarker({
-          top: true,
-          content: '谷值：' + min[this.config.y.name],
-          position: [min[this.config.x.name], min[this.config.y.name]],
-          style: {
-            text: {
-              fontSize: 13,
-              stroke: 'white',
-              lineWidth: 2
-            }
-          },
-          lineLength: 50
-        });
-      } else {
-        const group = [];
-        group.push(this.dataList[0][this.config.groupName]);
-        for (let i = 0; i < this.dataList.length; i++) {
-          for (let j = 0; j < group.length; j++) {
-            if (!group.includes(this.dataList[i][this.config.groupName])) {
-            // if (this.dataList[i][this.config.groupName] !== group[group.length - 1]) {
-              group.push(this.dataList[i][this.config.groupName]);
-            }
-          }
-        }
-        group.forEach(element => {
-          const max_min = this.findMaxMin(element);
+    if (!this.config.autoPlay) {
+      if (this.config.peakValue) {
+        if (!this.config.eachPeakValue) {
+          const max_min = this.findMaxMin();
           const max = max_min.max;
           const min = max_min.min;
           this.chart.guide().dataMarker({
             top: true,
-            content: element + '的峰值：' + max[this.config.y.name],
+            content: '峰值：' + max[this.config.y.name],
             position: [max[this.config.x.name], max[this.config.y.name]],
             style: {
               text: {
@@ -307,11 +308,11 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
                 lineWidth: 2
               }
             },
-            lineLength: 30
+            lineLength: 40
           });
           this.chart.guide().dataMarker({
             top: true,
-            content: element + '的谷值：' + min[this.config.y.name],
+            content: '谷值：' + min[this.config.y.name],
             position: [min[this.config.x.name], min[this.config.y.name]],
             style: {
               text: {
@@ -322,9 +323,94 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
             },
             lineLength: 50
           });
-        });
+        } else {
+          const group = [];
+          group.push(this.dataList[0][this.config.groupName]);
+          for (let i = 0; i < this.dataList.length; i++) {
+            for (let j = 0; j < group.length; j++) {
+              if (!group.includes(this.dataList[i][this.config.groupName])) {
+                // if (this.dataList[i][this.config.groupName] !== group[group.length - 1]) {
+                group.push(this.dataList[i][this.config.groupName]);
+              }
+            }
+          }
+          group.forEach(element => {
+            const max_min = this.findMaxMin(element);
+            const max = max_min.max;
+            const min = max_min.min;
+            this.chart.guide().dataMarker({
+              top: true,
+              content: element + '的峰值：' + max[this.config.y.name],
+              position: [max[this.config.x.name], max[this.config.y.name]],
+              style: {
+                text: {
+                  fontSize: 13,
+                  stroke: 'white',
+                  lineWidth: 2
+                }
+              },
+              lineLength: 30
+            });
+            this.chart.guide().dataMarker({
+              top: true,
+              content: element + '的谷值：' + min[this.config.y.name],
+              position: [min[this.config.x.name], min[this.config.y.name]],
+              style: {
+                text: {
+                  fontSize: 13,
+                  stroke: 'white',
+                  lineWidth: 2
+                }
+              },
+              lineLength: 50
+            });
+          });
+        }
       }
+    } else {
+      // 标记最大值
+      this.chart.guide().dataMarker({
+        top: true,
+        content: '当前峰值',
+        position: () => {
+          const obj = this.findMax();
+          if (obj) {
+            return [obj[this.config.x.name], obj[this.config.y.name]];
+          }
+          return [0, 0];
+        },
+        style: {
+          text: {
+            fontSize: 13
+          },
+          point: {
+            stroke: '#606060'
+          }
+        },
+        lineLength: 50
+      });
 
+      // 标记最小值
+      this.chart.guide().dataMarker({
+        top: true,
+        content: '当前谷值',
+        position: () => {
+          const obj = this.findMin();
+          if (obj) {
+            return [obj[this.config.x.name], obj[this.config.y.name]];
+          }
+          return [0, 0];
+        },
+        style: {
+          text: {
+            fontSize: 13
+          },
+          point: {
+            stroke: '#606060'
+          }
+        },
+        lineLength: 50
+      });
     }
 
     if (this.config.legend) {
@@ -342,7 +428,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         stroke: '#fff',
         lineWidth: 1
       });
-
     } else {
       this.chart.line().position(this.config.x.name + '*' + this.config.y.name).shape(this.config.shape ? this.config.shape : 'circle');
       this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('circle').style({
@@ -350,8 +435,19 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         lineWidth: 1
       });
     }
-
     this.chart.render();
+    if (this.config.autoPlay) {
+      let next = 1;
+      this.autoPlay = setInterval(() => {
+        if (this.dataList[this.dataList.length - 1] !== this.showdata[this.config.showDataLength - 1]) {
+          // console.log(111);
+          this.showdata.shift();
+          this.showdata.push(this.dataList[this.config.showDataLength - 1 + next])
+          this.chart.changeData(this.showdata);
+          next = next + 1;
+        }
+      }, this.config.intervalTime)
+    }
   }
 
   public CreateChart_MiniLine() {
@@ -419,13 +515,11 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
 
 
   public async load_data() {
-
     const url = this._buildURL(this.config.ajaxConfig.url);
     const params = {
       ...this._buildParameters(this.config.ajaxConfig.params),
       ...this._buildFilter(this.config.ajaxConfig.filter)
     };
-
     const method = this.config.ajaxConfig.ajaxType;
     const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
     if (loadData.isSuccess) {
@@ -443,6 +537,17 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       }
     } else {
       this.dataList = [];
+    }
+    if (this.config.showDataLength) {
+      if (this.dataList.length > this.config.showDataLength) {
+        for (let i = 0; i < this.config.showDataLength; i++) {
+          this.showdata.push(this.dataList[i]);
+        }
+      } else {
+        this.showdata = this.dataList;
+      }
+    } else {
+      this.showdata = this.dataList;
     }
   }
 
@@ -597,9 +702,12 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     if (this._cascadeSubscription) {
       this._cascadeSubscription.unsubscribe();
     }
+    if (this.autoPlay) {
+      clearInterval(this.autoPlay);
+    }
   }
 
-  // 计算峰值
+  // 静态图表计算峰值
   public findMaxMin(e?) {
     if (!e) {
       let maxValue = 0;
@@ -644,5 +752,32 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         min: minObj
       };
     }
+  }
+
+  // 动态轮播最大值最小值计算
+  public findMax() {
+    let maxValue = 0;
+    let maxObj = null;
+    for (let i = 0; i < this.showdata.length; i++) {
+      let d = this.showdata[i];
+      if (d[this.config.y.name] > maxValue) {
+        maxValue = d[this.config.y.name];
+        maxObj = d;
+      }
+    }
+    return maxObj;
+  }
+
+  public findMin() {
+    let minValue = 50000;
+    let minObj = null;
+    for (let i = 0; i < this.showdata.length; i++) {
+      let d = this.showdata[i];
+      if (d[this.config.y.name] < minValue) {
+        minValue = d[this.config.y.name];
+        minObj = d;
+      }
+    }
+    return minObj;
   }
 }

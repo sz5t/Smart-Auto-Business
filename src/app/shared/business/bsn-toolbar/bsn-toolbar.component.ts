@@ -140,14 +140,22 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
                 ? BSN_COMPONENT_MODES[btn.action]
                 : BSN_COMPONENT_MODES['EXECUTE'];
             this._cascadeState = this.state.next(
-                new BsnComponentMessage(action, this.viewId, {
+                new BsnComponentMessage(action, this.viewId ? this.viewId : this.config.targetViewId, {
                     type: btn.actionType ? btn.actionType : null,
                     name: btn.name ? btn.name : '',
                     actionName: btn.actionName ? btn.actionName : null,
                     ajaxConfig: btn.ajaxConfig ? btn.ajaxConfig : null
                 })
             );
-            this.toolbarsisLoading[btn.name] = true;
+            if (this.toolbarsisLoading.length > 1) {
+                this.toolbarsisLoading.forEach(e => {
+                    if (e[btn.name]) {
+                        e[btn.name] = true;
+                    }
+                });
+            } else {
+                this.toolbarsisLoading[btn.name] = true;
+            }
         }
     }
 

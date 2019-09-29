@@ -1,5 +1,5 @@
 import { BSN_PARAMETER_TYPE } from '@core/relative-Service/BsnTableStatus';
-import { getISOYear, getMonth, getISOWeek, getDate } from 'date-fns';
+import { getISOYear, getMonth, getISOWeek, getDate, getHours, getMinutes, getSeconds, addDays, addHours, subDays, subHours } from 'date-fns';
 import { ActivatedRoute } from '@angular/router';
 import { BlockScopeAwareRuleWalker } from 'tslint';
 export interface ParametersResolverModel {
@@ -54,11 +54,11 @@ export class CommonTools {
                                 model.tempValue &&
                                 model.tempValue[param['valueName']]
                             ) {
-                               // result[param['name']] = model.tempValue[param['valueName']];
+                                // result[param['name']] = model.tempValue[param['valueName']];
                                 if (param['datatype']) {
-                                    result[param['name']] = this.getParameters(param['datatype'],  model.tempValue[param['valueName']]);
+                                    result[param['name']] = this.getParameters(param['datatype'], model.tempValue[param['valueName']]);
                                 } else {
-                                    result[param['name']] =  model.tempValue[param['valueName']];
+                                    result[param['name']] = model.tempValue[param['valueName']];
                                 }
                             } else {
                                 if (
@@ -68,32 +68,56 @@ export class CommonTools {
                                 ) {
                                     // result[param['name']] = param.value;
                                     if (param['datatype']) {
-                                        result[param['name']] = this.getParameters(param['datatype'],   param.value);
+                                        result[param['name']] = this.getParameters(param['datatype'], param.value);
                                     } else {
-                                        result[param['name']] =  param.value;
+                                        result[param['name']] = param.value;
                                     }
                                 } else if (param['defaultDate']) {
                                     const dateType = param['defaultDate'];
                                     let dValue;
                                     switch (dateType) {
                                         case 'defaultWeek':
-                                        dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
-                                        break;
+                                            dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
+                                            break;
                                         case 'defaultDay':
-                                        dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
-                                        break;
+                                            dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
+                                            break;
                                         case 'defaultMonth':
-                                        dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1 }`;
-                                        break;
+                                            dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}`;
+                                            break;
                                         case 'defaultYear':
-                                        dValue = `${getISOYear(Date.now())}`;
-                                        break;
+                                            dValue = `${getISOYear(Date.now())}`;
+                                            break;
+                                        case 'beforeDay':
+                                            if (param['days']) {
+                                                const beforedays = subDays(Date.now(), param['days']);
+                                                dValue = `${getISOYear(beforedays)}-${getMonth(beforedays) + 1}-${getDate(beforedays)}`;
+                                            }
+                                            break;
+                                        case 'afterDay':
+                                            if (param['days']) {
+                                                const beforedays = addDays(Date.now(), param['days']);
+                                                dValue = `${getISOYear(beforedays)}-${getMonth(beforedays) + 1}-${getDate(beforedays)}`;
+                                            }
+                                            break;
+                                        case 'beforeHour':
+                                            if (param['hours']) {
+                                                const beforedays = subHours(Date.now(), param['hours']);
+                                                dValue = `${getISOYear(beforedays)}-${getMonth(beforedays) + 1}-${getDate(beforedays)}${' '}${getHours(beforedays)}${':'}${getMinutes(beforedays)}${':'}${getSeconds(beforedays)}`;
+                                            }
+                                            break;
+                                        case 'afterHour':
+                                            if (param['hours']) {
+                                                const beforedays = addHours(Date.now(), param['hours']);
+                                                dValue = `${getISOYear(beforedays)}-${getMonth(beforedays) + 1}-${getDate(beforedays)}${' '}${getHours(beforedays)}${':'}${getMinutes(beforedays)}${':'}${getSeconds(beforedays)}`;
+                                            }
+                                            break;
                                     }
                                     // result[param['name']] = dValue;
                                     if (param['datatype']) {
-                                        result[param['name']] = this.getParameters(param['datatype'],   dValue);
+                                        result[param['name']] = this.getParameters(param['datatype'], dValue);
                                     } else {
-                                        result[param['name']] =  dValue;
+                                        result[param['name']] = dValue;
                                     }
                                 }
                             }
@@ -104,56 +128,56 @@ export class CommonTools {
                             }
                             // result[param['name']] = param.value;
                             if (param['datatype']) {
-                                result[param['name']] = this.getParameters(param['datatype'],  param.value);
+                                result[param['name']] = this.getParameters(param['datatype'], param.value);
                             } else {
-                                result[param['name']] =  param.value;
+                                result[param['name']] = param.value;
                             }
                             break;
                         case BSN_PARAMETER_TYPE.ITEM:
-                        if (model.item) {
                             if (model.item) {
-                                // 判断组件取值是否为null
-                                if (
-                                    model.item[param['valueName']] ===
-                                    null ||
-                                    model.item[param['valueName']] ===
-                                    undefined
-                                ) {
-                                    if (param['value'] !== undefined) {
-                                        if (param['datatype']) {
-                                            result[param['name']] = this.getParameters(param['datatype'], param['value']);
-                                        } else if (param['defaultDate']) {
-                                            const dateType = param['defaultDate'];
-                                            let dValue;
-                                            switch (dateType) {
-                                                case 'defaultWeek':
-                                                dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
-                                                break;
-                                                case 'defaultDay':
-                                                dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
-                                                break;
-                                                case 'defaultMonth':
-                                                dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1 }`;
-                                                break;
-                                                case 'defaultYear':
-                                                dValue = `${getISOYear(Date.now())}`;
-                                                break;
+                                if (model.item) {
+                                    // 判断组件取值是否为null
+                                    if (
+                                        model.item[param['valueName']] ===
+                                        null ||
+                                        model.item[param['valueName']] ===
+                                        undefined
+                                    ) {
+                                        if (param['value'] !== undefined) {
+                                            if (param['datatype']) {
+                                                result[param['name']] = this.getParameters(param['datatype'], param['value']);
+                                            } else if (param['defaultDate']) {
+                                                const dateType = param['defaultDate'];
+                                                let dValue;
+                                                switch (dateType) {
+                                                    case 'defaultWeek':
+                                                        dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
+                                                        break;
+                                                    case 'defaultDay':
+                                                        dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
+                                                        break;
+                                                    case 'defaultMonth':
+                                                        dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}`;
+                                                        break;
+                                                    case 'defaultYear':
+                                                        dValue = `${getISOYear(Date.now())}`;
+                                                        break;
+                                                }
+                                                result[param['name']] = dValue;
+                                            } else {
+                                                result[param['name']] = param['value'];
                                             }
-                                            result[param['name']] = dValue;
-                                        } else {
-                                            result[param['name']] = param['value'];
                                         }
-                                    }
-                                } else {
-                                    if (param['datatype']) {
-                                        result[param['name']] = this.getParameters(param['datatype'], model.item[param['valueName']]);
                                     } else {
-                                        result[param['name']] = model.item[param['valueName']];
+                                        if (param['datatype']) {
+                                            result[param['name']] = this.getParameters(param['datatype'], model.item[param['valueName']]);
+                                        } else {
+                                            result[param['name']] = model.item[param['valueName']];
+                                        }
                                     }
                                 }
                             }
-                        }
-                        break;
+                            break;
                         case BSN_PARAMETER_TYPE.COMPONENT_VALUE:
                             if (model.componentValue) {
                                 // 判断组件取值是否为null
@@ -171,17 +195,17 @@ export class CommonTools {
                                             let dValue;
                                             switch (dateType) {
                                                 case 'defaultWeek':
-                                                dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
-                                                break;
+                                                    dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
+                                                    break;
                                                 case 'defaultDay':
-                                                dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
-                                                break;
+                                                    dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
+                                                    break;
                                                 case 'defaultMonth':
-                                                dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1 }`;
-                                                break;
+                                                    dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}`;
+                                                    break;
                                                 case 'defaultYear':
-                                                dValue = `${getISOYear(Date.now())}`;
-                                                break;
+                                                    dValue = `${getISOYear(Date.now())}`;
+                                                    break;
                                             }
                                             result[param['name']] = dValue;
                                         } else {
@@ -200,49 +224,49 @@ export class CommonTools {
                         case BSN_PARAMETER_TYPE.GUID:
                             // result[param['name']] = CommonTools.uuID(32);
                             if (param['datatype']) {
-                                result[param['name']] = this.getParameters(param['datatype'],   CommonTools.uuID(32));
+                                result[param['name']] = this.getParameters(param['datatype'], CommonTools.uuID(32));
                             } else {
-                                result[param['name']] =   CommonTools.uuID(32);
+                                result[param['name']] = CommonTools.uuID(32);
                             }
                             break;
                         case BSN_PARAMETER_TYPE.CHECKED:
                             if (model.item) {
-                               // result[param['name']] = model.item[param['valueName']];
-                                    if (param['datatype']) {
-                                        result[param['name']] = this.getParameters(param['datatype'],  model.item[param['valueName']]);
-                                    } else {
-                                        result[param['name']] =   model.item[param['valueName']];
-                                    }
+                                // result[param['name']] = model.item[param['valueName']];
+                                if (param['datatype']) {
+                                    result[param['name']] = this.getParameters(param['datatype'], model.item[param['valueName']]);
+                                } else {
+                                    result[param['name']] = model.item[param['valueName']];
+                                }
                             }
                             break;
                         case BSN_PARAMETER_TYPE.SELECTED:
                             if (model.item) {
-                               //  result[param['name']] = model.item[param['valueName']];
-                                    if (param['datatype']) {
-                                        result[param['name']] = this.getParameters(param['datatype'],  model.item[param['valueName']]);
-                                    } else {
-                                        result[param['name']] =  model.item[param['valueName']];
-                                    }
+                                //  result[param['name']] = model.item[param['valueName']];
+                                if (param['datatype']) {
+                                    result[param['name']] = this.getParameters(param['datatype'], model.item[param['valueName']]);
+                                } else {
+                                    result[param['name']] = model.item[param['valueName']];
+                                }
                             }
                             break;
                         case BSN_PARAMETER_TYPE.CHECKED_ID:
                             if (model.item) {
                                 // result[param['name']] = model.item;
                                 if (param['datatype']) {
-                                    result[param['name']] = this.getParameters(param['datatype'],  model.item);
+                                    result[param['name']] = this.getParameters(param['datatype'], model.item);
                                 } else {
-                                    result[param['name']] =  model.item;
+                                    result[param['name']] = model.item;
                                 }
                             }
                             break;
                         case BSN_PARAMETER_TYPE.CHECKED_ROW: // 后续替换为 CHECKED
                             if (model.item) {
-                             //   result[param['name']] = model.item[param['valueName']];
-                                    if (param['datatype']) {
-                                        result[param['name']] = this.getParameters(param['datatype'], model.item[param['valueName']]);
-                                    } else {
-                                        result[param['name']] = model.item[param['valueName']];
-                                    }
+                                //   result[param['name']] = model.item[param['valueName']];
+                                if (param['datatype']) {
+                                    result[param['name']] = this.getParameters(param['datatype'], model.item[param['valueName']]);
+                                } else {
+                                    result[param['name']] = model.item[param['valueName']];
+                                }
                             }
                             break;
                         case BSN_PARAMETER_TYPE.SELECTED_ROW: // 后续替换 SELECTED
@@ -267,17 +291,17 @@ export class CommonTools {
                                             let dValue;
                                             switch (dateType) {
                                                 case 'defaultWeek':
-                                                dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
-                                                break;
+                                                    dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
+                                                    break;
                                                 case 'defaultDay':
-                                                dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
-                                                break;
+                                                    dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
+                                                    break;
                                                 case 'defaultMonth':
-                                                dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1 }`;
-                                                break;
+                                                    dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}`;
+                                                    break;
                                                 case 'defaultYear':
-                                                dValue = `${getISOYear(Date.now())}`;
-                                                break;
+                                                    dValue = `${getISOYear(Date.now())}`;
+                                                    break;
                                             }
                                             result[param['name']] = dValue;
                                         } else {
@@ -298,21 +322,21 @@ export class CommonTools {
                             if (model.cacheValue) {
                                 const cache = model.cacheValue.getNone('userInfo');
                                 // result[param['name']] = cache.value[param['valueName']];
-                                    if (param['datatype']) {
-                                        result[param['name']] = this.getParameters(param['datatype'], cache[param['valueName']]);
-                                    } else {
-                                        result[param['name']] = cache[param['valueName']];
-                                    }
+                                if (param['datatype']) {
+                                    result[param['name']] = this.getParameters(param['datatype'], cache[param['valueName']]);
+                                } else {
+                                    result[param['name']] = cache[param['valueName']];
+                                }
                             }
                             break;
                         case BSN_PARAMETER_TYPE.CASCADE_VALUE:
                             if (model.cascadeValue) {
-                               // result[param['name']] = model.cascadeValue[param['valueName']];
-                                    if (param['datatype']) {
-                                        result[param['name']] = this.getParameters(param['datatype'], model.cascadeValue[param['valueName']]);
-                                    } else {
-                                        result[param['name']] = model.cascadeValue[param['valueName']];
-                                    }
+                                // result[param['name']] = model.cascadeValue[param['valueName']];
+                                if (param['datatype']) {
+                                    result[param['name']] = this.getParameters(param['datatype'], model.cascadeValue[param['valueName']]);
+                                } else {
+                                    result[param['name']] = model.cascadeValue[param['valueName']];
+                                }
                             }
                             break;
                         case BSN_PARAMETER_TYPE.RETURN_VALUE:
@@ -328,20 +352,20 @@ export class CommonTools {
                                         result[param['name']] = this.getParameters(param['datatype'], r['name']);
                                     })
 
-                                }  else {
+                                } else {
                                     model.router.params.subscribe(r => {
                                         result[param['name']] = r.name;
                                     })
                                 }
                             }
                             break;
-                            case BSN_PARAMETER_TYPE.ROUTER_VALUE:
-                                if (model.cacheValue) {
-                                    const cache = model.cacheValue.getNone('routerValue');
-                                    result[param['name']] =
-                                        cache[param['valueName']];
-                                }
-                                break;
+                        case BSN_PARAMETER_TYPE.ROUTER_VALUE:
+                            if (model.cacheValue) {
+                                const cache = model.cacheValue.getNone('routerValue');
+                                result[param['name']] =
+                                    cache[param['valueName']];
+                            }
+                            break;
                     }
                 }
             });
@@ -428,25 +452,25 @@ export class CommonTools {
         switch (type) {
             case 'year':
                 currentDate = date.getFullYear();
-            break;
+                break;
             case 'month':
-            currentDate = date.getFullYear() + seperator1 + month;
-            break;
+                currentDate = date.getFullYear() + seperator1 + month;
+                break;
             case 'day':
-            currentDate = date.getFullYear() + seperator1 + month + seperator1 + day;
-            break;
+                currentDate = date.getFullYear() + seperator1 + month + seperator1 + day;
+                break;
             case 'hh':
-            currentDate = date.getFullYear() + seperator1 + month + seperator1 + day
-                + ' ' + hours;
-            break;
+                currentDate = date.getFullYear() + seperator1 + month + seperator1 + day
+                    + ' ' + hours;
+                break;
             case 'mm':
-            currentDate = date.getFullYear() + seperator1 + month + seperator1 + day
-                + ' ' + hours + seperator2 + minutes;
-            break;
+                currentDate = date.getFullYear() + seperator1 + month + seperator1 + day
+                    + ' ' + hours + seperator2 + minutes;
+                break;
             case 'ss':
-            currentDate = date.getFullYear() + seperator1 + month + seperator1 + day
-                + ' ' + hours + seperator2 + minutes + seperator2 + seconds;
-            break;
+                currentDate = date.getFullYear() + seperator1 + month + seperator1 + day
+                    + ' ' + hours + seperator2 + minutes + seperator2 + seconds;
+                break;
         }
 
 
@@ -458,24 +482,24 @@ export class CommonTools {
         switch (method) {
             case 'post':
                 operation = '保存数据';
-            break;
+                break;
             case 'put':
                 operation = '修改数据';
-            break;
+                break;
             case 'delete':
                 operation = '删除数据';
-            break;
+                break;
             case 'get':
                 operation = '获取数据';
-            break;
+                break;
         }
     }
 
     public static getReturnIdsAndType(val) {
-        const ps: {ids: string[], type: string}[] = []; 
-        const add_val: {ids: string[], type: string} = {ids: [], type: 'add'};
-        const edit_val: {ids: string[], type: string} = {ids: [], type: 'edit'};
-        const del_val: {ids: string[], type: string} = {ids: [], type: 'delete'}
+        const ps: { ids: string[], type: string }[] = [];
+        const add_val: { ids: string[], type: string } = { ids: [], type: 'add' };
+        const edit_val: { ids: string[], type: string } = { ids: [], type: 'edit' };
+        const del_val: { ids: string[], type: string } = { ids: [], type: 'delete' }
         console.log(val['$focusedOper$']);
         if (val && Array.isArray(val)) {
             for (const v of val) {
@@ -483,13 +507,13 @@ export class CommonTools {
                 switch (mes[1]) {
                     case 'add':
                         add_val['ids'].push(mes[0]);
-                    break;
+                        break;
                     case 'edit':
                         edit_val['ids'].push(mes[0]);
-                    break;
+                        break;
                     case 'delete':
                         del_val['ids'].push(mes[0])
-                    break;
+                        break;
                 }
             }
             if (add_val.ids.length > 0) {
@@ -502,9 +526,9 @@ export class CommonTools {
                 ps.push(del_val);
             }
         } else if (!val['$focusedOper$']) {
-            ps.push({ids: val, type: 'simple'});
+            ps.push({ ids: val, type: 'simple' });
         } else {
-            const mes2  = val['$focusedOper$'].split('_');
+            const mes2 = val['$focusedOper$'].split('_');
             switch (mes2[1]) {
                 case 'add':
                     add_val['ids'].push(mes2[0]);
@@ -518,7 +542,7 @@ export class CommonTools {
                     del_val['ids'].push(mes2[0]);
                     ps.push(del_val);
                     break;
-            } 
+            }
         }
         return ps;
     }

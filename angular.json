@@ -42,7 +42,7 @@
                             "src/assets/vender/code-edit/addon/hint/sql-hint.js",
                             "src/assets/vender/showndown/showdown.min.js",
                             "src/assets/vender/GridPP/grhtml5-6.6-min.js",
-
+                            "node_modules/@antv/data-set/build/data-set.js",
                             "src/assets/editor.md-master/jquery-1.12.1.min.js",
                             "src/assets/editor.md-master/lib/flowchart.min.js",
                             "src/assets/editor.md-master/lib/jquery.flowchart.min.js",
