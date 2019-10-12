@@ -235,7 +235,7 @@ export class GridBase extends CnComponentBase {
                     } else {
                         this.baseMessage.info('未选中任何数据,无法进行操作!');
                     }
-                    
+
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_CHECKED_ID:
                     if (
@@ -243,12 +243,12 @@ export class GridBase extends CnComponentBase {
                             .length <= 0
                     ) {
                         this.baseMessage.create('info', '请勾选要执行操作的数据');
-                        return ;
+                        return;
                     }
                     handleData = this.getCheckItemsId();
                     this.beforeOperation.operationItemsData = this.getCheckedItems();
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
-                        return ;
+                        return;
                     }
                     msg = '操作完成';
                     this.buildConfirm(c, option.ajaxConfig, handleData, msg);
@@ -258,7 +258,7 @@ export class GridBase extends CnComponentBase {
                     msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         // this.baseMessage.info('请勾选要执行编辑的数据')
-                        return ;
+                        return;
                     } else {
                         this.buildConfirm(c, option.ajaxConfig, handleData, msg);
                     }
@@ -332,12 +332,12 @@ export class GridBase extends CnComponentBase {
                                     response.data
                                 );
                                 this._callback(focusIds);
-                                
+
                             });
                         }
                     })();
                 },
-                nzOnCancel() {}
+                nzOnCancel() { }
             });
         } else {
             (async () => {
@@ -530,25 +530,34 @@ export class GridBase extends CnComponentBase {
         if (response.isSuccess) {
             const msg =
                 c.outputParams[
-                    c.outputParams.findIndex(
-                        m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
-                    )
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
+                )
                 ];
             const value =
                 c.outputParams[
-                    c.outputParams.findIndex(
-                        m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
-                    )
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
+                )
                 ];
             const table =
                 c.outputParams[
-                    c.outputParams.findIndex(
-                        m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
-                    )
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
+                )
+                ];
+            const tempValue =
+                c.outputParams[
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TEMPVALUE
+                )
                 ];
             const msgObj = response.data[msg.name]
                 ? response.data[msg.name].split(':')
                 : '';
+            const temObj = tempValue
+                ? response.data[tempValue.name]
+                : null;
             // const valueObj = response.data[value.name] ? response.data[value.name] : [];
             // const tableObj = response.data[table.name] ? response.data[table.name] : [];
             if (msgObj && msgObj.length > 1) {
@@ -588,7 +597,7 @@ export class GridBase extends CnComponentBase {
                                         );
                                     });
                             },
-                            nzOnCancel: () => {}
+                            nzOnCancel: () => { }
                         };
                         this.baseModal[messageType](options);
                         break;
@@ -607,9 +616,14 @@ export class GridBase extends CnComponentBase {
                             nzContent: msgObj[1]
                         };
                         this.baseMessage.success(msgObj[1]);
-                        callback && callback();
+                        if (!response.data) {
+                            callback && callback();
+                        }
                         break;
                 }
+                const valueObj = response.data ? response.data : {};
+                this.returnValue = valueObj;
+                callback();
                 // if(options) {
                 //     this.modalService[messageType](options);
                 //
@@ -658,7 +672,7 @@ export class GridBase extends CnComponentBase {
                     eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                     description: `${desc} [执行成功] 数据为: ${JSON.stringify(result['data'])}`
-                }).subscribe(result => {});
+                }).subscribe(result => { });
             } else {
                 this.baseMessage.error(rs.msg.join('<br/>'));
                 this.apiResource.addOperationLog({
@@ -666,7 +680,7 @@ export class GridBase extends CnComponentBase {
                     eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                     description: `${desc} [执行失败] 数据为: ${rs.msg.join('<br/>')}`
-                }).subscribe(result => {});
+                }).subscribe(result => { });
             }
         } else {
             if (result.isSuccess) {
@@ -679,8 +693,8 @@ export class GridBase extends CnComponentBase {
                     eventId: BSN_OPERATION_LOG_TYPE.SQL,
                     eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
-                    description: `${desc} [执行成功] 数据为: ${JSON.stringify(result['data'])}` 
-                }).subscribe(result => {});
+                    description: `${desc} [执行成功] 数据为: ${JSON.stringify(result['data'])}`
+                }).subscribe(result => { });
             } else {
                 this.baseMessage.error(result.message);
                 this.apiResource.addOperationLog({
@@ -688,7 +702,7 @@ export class GridBase extends CnComponentBase {
                     eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                     description: `${desc} [执行失败] 数据为: ${result.message}`
-                }).subscribe(result => {});
+                }).subscribe(result => { });
             }
         }
     }
@@ -855,35 +869,35 @@ export class GridBase extends CnComponentBase {
                     if (btn['name'] === 'save2') {
                         (async () => {
                             const result = await componentInstance.buttonAction(
-                                btn, dialog,
-                                () => {
+                                btn,
+                                (returnvalue) => {
                                     modal.close();
                                     // if(this._callback)
-                                    this._callback();
-                                }
+                                    this._callback(returnvalue);
+                                }, dialog
                             );
                         })();
                     }
                     if (btn['name'] === 'save') {
                         (async () => {
                             const result = await componentInstance.buttonAction(
-                                btn, dialog,
-                                () => {
+                                btn,
+                                (returnvalue) => {
                                     modal.close();
                                     // if(this._callback)
-                                    this._callback();
-                                }
+                                    this._callback(returnvalue);
+                                }, dialog
                             );
                         })();
                     } else if (btn['name'] === 'saveAndKeep') {
                         (async () => {
                             const result = await componentInstance.buttonAction(
-                                btn, dialog,
-                                () => {
+                                btn,
+                                (returnvalue) => {
                                     modal.close();
                                     // if(this._callback)
-                                    this._callback();
-                                }
+                                    this._callback(returnvalue);
+                                }, dialog
                             );
                         })();
                     } else if (btn['name'] === 'close') {
@@ -1067,7 +1081,7 @@ export class GridBase extends CnComponentBase {
     }
 
     protected buildRecursive() {
-        return { _recursive: true};
+        return { _recursive: true };
     }
 
     public sort(sort: { key: string; value: string }) {
