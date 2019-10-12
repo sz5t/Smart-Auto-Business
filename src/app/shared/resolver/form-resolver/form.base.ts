@@ -281,8 +281,18 @@ export class CnFormBase extends CnComponentBase {
                     m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
                 )
                 ];
+            const tempValue =
+                c.outputParams[
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TEMPVALUE
+                )
+                ];
             const msgObj = msg
                 ? response.data[msg.name].split(':')
+                : null;
+
+            const temObj = tempValue
+                ? response.data[tempValue.name]
                 : null;
             
             // const tableObj = response.data[table.name] ? response.data[table.name] : [];
@@ -345,7 +355,9 @@ export class CnFormBase extends CnComponentBase {
                             nzContent: msgObj[1]
                         };
                         this.baseMessage.success(msgObj[1]);
-                        callback && callback();
+                        if (!response.data) {
+                            callback && callback();
+                        }
                         break;
                     case 'finish':
                         options = {
@@ -497,7 +509,11 @@ export class CnFormBase extends CnComponentBase {
                                     () => {
                                         this.sendCascadeMessage(dialog, response.data);
                                         if (callback) {
-                                            callback();
+                                            if (dialog && dialog.componentType.toAsyncTree) {
+                                                callback(response);
+                                            } else {
+                                                callback();
+                                            }
                                         } 
                                         // else {
                                         //     this.sendCascadeMessage(dialog, response.data);
@@ -512,7 +528,11 @@ export class CnFormBase extends CnComponentBase {
                                     () => {
                                         this.sendCascadeMessage(dialog, response.data);
                                         if (callback) {
-                                            callback();
+                                            if (dialog && dialog.componentType.toAsyncTree) {
+                                                callback(response.data);
+                                            } else {
+                                                callback();
+                                            }
                                         } 
                                         // else {
                                         //     this.sendCascadeMessage(dialog, response.data);
@@ -538,9 +558,11 @@ export class CnFormBase extends CnComponentBase {
                             () => {
                                 this.sendCascadeMessage(dialog, response.data);
                                 if (callback) {
-
-                                   
-                                    callback();
+                                    if (dialog && dialog.componentType.toAsyncTree) {
+                                        callback(response);
+                                    } else {
+                                        callback();
+                                    }
                                 } 
                                 // else {
                                 //     this.sendCascadeMessage(dialog, response.data);
@@ -552,8 +574,11 @@ export class CnFormBase extends CnComponentBase {
                         this.showAjaxMessage(response, '操作成功', () => {
                             this.sendCascadeMessage(dialog, response.data);
                             if (callback) {
-                               
-                                callback();
+                                if (dialog && dialog.componentType.toAsyncTree) {
+                                    callback(response);
+                                } else {
+                                    callback();
+                                }
                             } 
                             // else {
                             //     this.sendCascadeMessage(dialog, response.data);

@@ -136,7 +136,8 @@ export const BSN_OUTPOUT_PARAMETER_TYPE = {
     TABLE: 'table',
     VALUE: 'value',
     MESSAGE: 'message',
-    NEXT: 'next'
+    NEXT: 'next',
+    TEMPVALUE: 'tempValue'
 };
 
 export const BSN_COMPONENT_CASCADE_MODES = {

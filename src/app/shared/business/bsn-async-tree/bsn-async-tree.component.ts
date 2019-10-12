@@ -141,8 +141,36 @@ export class BsnAsyncTreeComponent extends GridBase
         this.baseModal = this._modal;
         this.cascadeBase = this.cascade;
         this.statusSubscriptions = this.eventStatus;
-        this.callback = function() {};
+        this.callback = function(returndata) {
+            console.log(returndata);
+            // 发送操作完成的ids
+            const objs = CommonTools.getReturnIdsAndType(returndata.data);
+            if (objs && Array.isArray(objs) && objs.length > 0) {
+                for (const r_val of objs) {
+                    let mode: string;
+                    switch (r_val.type) {
+                        case 'add':
+                            mode = BSN_COMPONENT_CASCADE_MODES.ADD_ASYNC_TREE_NODE;
+                            this.addChildrenNode(returndata.data.curId);
+                            break;
+                        case 'edit':
+                            mode = BSN_COMPONENT_CASCADE_MODES.EDIT_ASNYC_TREE_NODE;
+                            this.updateNode(returndata.data.curId);
+                            break;
+                        case 'delete':
+                            mode = BSN_COMPONENT_CASCADE_MODES.DELETE_ASYNC_TREE_NODE;
+                            this.deleteNodes(returndata.data.curId);
+                            break;
+                        case 'simple':
+                            mode = BSN_COMPONENT_CASCADE_MODES.DELETE_ASYNC_TREE_NODE;
+                            this.deleteNodes(returndata.data.curId);
+                            break;
+                    }
+                }
 
+            }
+        };
+        // this.callback = this.loadTreeData;
         // this.windowCallback = this.load;
     }
 
@@ -427,6 +455,42 @@ export class BsnAsyncTreeComponent extends GridBase
                     }
                 )
             })();
+        } else {
+            (async() => {
+                this._execute(this.config.ajaxConfig.url, 'get', {'Id': `in(${keys})`}).then(
+                    result => {
+                        if (result.isSuccess) {
+                            const currentSelectedNode = this.treeObj.getTreeNodeByKey(this.selectedItem.key);
+                            const addNodes = [];
+                            for (const d of result.data) {
+                                const title_index = this.config.columns.findIndex(c => c.field === 'title');
+                                const key_index = this.config.columns.findIndex(c => c.field === 'key');
+                                const parent_index = this.config.columns.findIndex(c => c.field === 'parentId');
+                                let node = {};
+                                node['title'] = d[this.config.columns[title_index]['valueName']] ? d[this.config.columns[title_index]['valueName']] : '';
+                                node['key'] = d[this.config.columns[key_index]['valueName']] ? d[this.config.columns[key_index]['valueName']] : '';
+                                node['parentId'] = d[this.config.columns[parent_index]['valueName']] ? d[this.config.columns[parent_index]['valueName']] : '';
+                                node['origin'] = d ? d : {};
+                                node['selected'] = false;
+                                addNodes.push(node);
+                            }
+                            this.treeData = this.treeObj.getTreeNodes();
+                            // 打开节点, 重新异步加载数据
+                            if (!currentSelectedNode.isExpanded) {
+                                currentSelectedNode.setExpanded(true);
+                                this.expandNode({node: currentSelectedNode}, this.setChildrenSelectedNode, this);
+                            } else { // 节点已经打开,直接在节点下添加子节点
+                                currentSelectedNode.addChildren(addNodes, 0);
+                                this.setChildrenSelectedNode(this);
+                            }
+                            // if (addNodes.length > 0) {
+
+
+                            // }
+                        }
+                    }
+                )
+            })()
         }
     }
 
@@ -894,14 +958,16 @@ export class BsnAsyncTreeComponent extends GridBase
                                     c,
                                     response,
                                     option.ajaxConfig,
-                                    () => {
-                                        this.loadTreeData();
+                                    (returnvalue) => {
+                                        this.callback(response);
+                                        // this.loadTreeData();
                                     }
                                 );
                             } else {
                                 // 没有输出参数，进行默认处理
                                 this.showAjaxMessage(response, msg, () => {
-                                    this.loadTreeData();
+                                    this.callback(response);
+                                    // this.loadTreeData();
                                 }, c);
                             }
                         })();
@@ -927,7 +993,8 @@ export class BsnAsyncTreeComponent extends GridBase
                                         this.config.viewId
                                     )
                                 );
-                                this.loadTreeData();
+                                this.callback(response);
+                                // this.loadTreeData();
                             }
                         );
                     } else {
@@ -939,7 +1006,8 @@ export class BsnAsyncTreeComponent extends GridBase
                                     this.config.viewId
                                 )
                             );
-                            this.loadTreeData();
+                            this.callback(response);
+                            // this.loadTreeData();
                         }, c);
                     }
                 })();

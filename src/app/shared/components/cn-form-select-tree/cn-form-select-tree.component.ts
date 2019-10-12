@@ -13,6 +13,7 @@ import { APIResource } from '@core/utility/api-resource';
 import { FormGroup } from '@angular/forms';
 import { NzTreeNode } from 'ng-zorro-antd';
 import { CommonTools } from '@core/utility/common-tools';
+import { CacheService } from '@delon/cache';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -31,6 +32,7 @@ export class CnFormSelectTreeComponent implements OnInit {
     @Input() public casadeData;
     @Input() public initValue;
     @Input() public changeConfig;
+    public cacheValue;
     public treeData = [];
     public treeDatalist = [];
     public _tempValue = {};
@@ -46,7 +48,9 @@ export class CnFormSelectTreeComponent implements OnInit {
     // value;
     public _selectedValue: string;
     public treecolumns = {};
-    constructor(private _http: ApiService) {}
+    constructor(private _http: ApiService, private cacheService: CacheService) {
+        this.cacheValue = this.cacheService;
+    }
 
     public ngOnInit() {
         // this.treeData = [
@@ -168,7 +172,7 @@ export class CnFormSelectTreeComponent implements OnInit {
                             parent = fieldIdentity;
                         } else if (param.type === 'cascadeValue') {
                             parent = this.cascadeValue[param.valueName];
-                        }
+                        } 
                     });
                 }
                 // const result = [new NzTreeNode({
@@ -268,6 +272,8 @@ export class CnFormSelectTreeComponent implements OnInit {
                     params[param.name] = this.cascadeValue[param.valueName];
                 } else if (param.type === 'initValue') {
                     params[param.name] = this.initValue[param.valueName];
+                } else if (param.type === 'cacheValue') {
+                    params[param.name] = this.cacheValue.getNone('userInfo')[param.valueName];
                 }
             });
             if (this.isString(p.url)) {
@@ -285,7 +291,7 @@ export class CnFormSelectTreeComponent implements OnInit {
                     } else if (param.type === 'tempValue') {
                         // pc = this._tempValue[param.valueName];
                         pc = this.bsnData[param.valueName];
-                    }
+                    } 
                 });
                 url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
             }

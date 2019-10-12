@@ -54,7 +54,9 @@
                             "src/assets/editor.md-master/editormd.js",
                             "src/assets/editor.md-master/dom-to-image.min.js",
                             "src/assets/editor.md-master/FileSaver.min.js",
-                            "src/assets/editor.md-master/html2canvas.js"
+                            "src/assets/editor.md-master/html2canvas.js",
+                            "src/assets/vender/imageZoom/intense.js",
+                            "src/assets/vender/imageZoom/MagicZoom.js"
 
 
                         ]

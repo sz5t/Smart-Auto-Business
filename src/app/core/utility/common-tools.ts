@@ -1,5 +1,5 @@
 import { BSN_PARAMETER_TYPE } from '@core/relative-Service/BsnTableStatus';
-import { getISOYear, getMonth, getISOWeek, getDate, getHours, getMinutes, getSeconds, addDays, addHours, subDays, subHours } from 'date-fns';
+import { getISOYear, getMonth, getISOWeek, getDate, getHours, getMinutes, getSeconds, addDays, addHours, subDays, subHours, getTime } from 'date-fns';
 import { ActivatedRoute } from '@angular/router';
 import { BlockScopeAwareRuleWalker } from 'tslint';
 export interface ParametersResolverModel {
@@ -87,6 +87,9 @@ export class CommonTools {
                                             break;
                                         case 'defaultYear':
                                             dValue = `${getISOYear(Date.now())}`;
+                                            break;
+                                        case 'defaultDayTime':
+                                            dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}${' '}${getHours(getTime(Date.now()))}${':'}${getMinutes(getTime(Date.now()))}${':'}${getSeconds(getTime(Date.now()))}`;
                                             break;
                                         case 'beforeDay':
                                             if (param['days']) {
@@ -500,7 +503,7 @@ export class CommonTools {
         const add_val: { ids: string[], type: string } = { ids: [], type: 'add' };
         const edit_val: { ids: string[], type: string } = { ids: [], type: 'edit' };
         const del_val: { ids: string[], type: string } = { ids: [], type: 'delete' }
-        console.log(val['$focusedOper$']);
+        // console.log(val['$focusedOper$']);
         if (val && Array.isArray(val)) {
             for (const v of val) {
                 const mes = v['$focusedOper$'].split('_');

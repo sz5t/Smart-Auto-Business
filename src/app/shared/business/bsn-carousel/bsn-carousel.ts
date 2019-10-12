@@ -23,31 +23,25 @@ import { Observable, Observer } from 'rxjs';
 import { CommonTools } from '@core/utility/common-tools';
 import { initDomAdapter } from '@angular/platform-browser/src/browser';
 import { AdNumberToChineseModule } from '@delon/abc';
+import { NzCarouselComponent } from 'ng-zorro-antd';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'bsn-carousel',
     template: `
+    
   <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
-    <nz-carousel [nzEffect]="'fade'" [nzAutoPlay]="config.autoPlay">
-    <div nz-carousel-content *ngFor="let img of imgList">
-        <img alt="{{img.alt}}" src="{{serverPath + img.src}}"/></div>
+    <nz-carousel #carousel [nzEffect]="'fade'" [nzAutoPlay]="config.autoPlay" [nzEnableSwipe]="config.enableSwipe" >
+        <div nz-carousel-content *ngFor="let img of imgList">
+            <img class="image" alt="{{img.alt}}" src="{{serverPath + img.src}}"/>
+        </div>
     </nz-carousel>
-  </nz-spin>
+    </nz-spin>
+    
+    
+  
   
     `,
-    styles: [
-        `
-            [nz-carousel-content] {
-                text-align: center;
-                height: 400px;
-                min-height: 400px;
-                line-height: 400px;
-                background: #364d79;
-                color: #000;
-                overflow: hidden;
-            }
-        `
-    ]
+    styleUrls: [`./bsn-carousel.less`]
 })
 export class BsnCarouselComponent extends CnComponentBase
     implements OnInit, AfterViewInit, OnDestroy {
@@ -55,6 +49,10 @@ export class BsnCarouselComponent extends CnComponentBase
     public config;
     @Input()
     public initData;
+    @Input()
+    public tempValue;
+    @ViewChild('carousel')
+    private carousel: NzCarouselComponent;
     public isLoading = true;
     public imgList = [];
     public _statusSubscription;
@@ -69,36 +67,74 @@ export class BsnCarouselComponent extends CnComponentBase
         private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascadeEvents: Observable<BsnComponentMessage>
-    ) { 
+    ) {
         super();
     }
 
     public ngOnInit() {
         if (this.initData) {
-            this.initValue = this.initValue;
+            this.initValue = this.initData;
         }
         this.resolverRelation();
     }
 
-    public load() {
+    public async load() {
         this.imgList = [];
-        this.get().then(response => {
+        // this.get().then(response => {
+        //     if (response.isSuccess) {
+        //         // 构建数据源
+        //         response.data.forEach(d => {
+        //             const imgItem = {};
+        //             this.config.dataMapping.forEach(element => {
+        //                 if (element['field'] === 'urlPath') {
+        //                     if(d[element['field']]){
+        //                         imgItem[element['name']] = (d[element['field']]).replace('/^\\/$', function(s) {
+        //                             return s = '/';
+        //                        });  
+        //                     }              
+        //                 } else {
+        //                     imgItem[element['name']] = d[element['field']];                    
+        //                 }
+
+        //             });
+        //             this.imgList.push(imgItem);
+        //         });
+
+        //         setTimeout(() => {
+        //             this.isLoading = false;
+        //         })
+        //         // this.carousel.activeIndex = 0;
+        //         this.carousel.goTo(0);
+        //     }
+        // });
+        (async () => {
+            const response = await this.get();
             if (response.isSuccess) {
                 // 构建数据源
                 response.data.forEach(d => {
                     const imgItem = {};
                     this.config.dataMapping.forEach(element => {
-                        imgItem[element['name']] = d[element['field']];                    
+                        if (element['field'] === 'urlPath') {
+                            if (d[element['field']]) {
+                                imgItem[element['name']] = (d[element['field']]).replace('/^\\/$', function (s) {
+                                    return s = '/';
+                                });
+                            }
+                        } else {
+                            imgItem[element['name']] = d[element['field']];
+                        }
+
                     });
                     this.imgList.push(imgItem);
                 });
-                setTimeout(() => {
-                    this.isLoading = false;
-                })
-                
+                this.isLoading = false;
+
+                // this.carousel.activeIndex = 0;
+                this.carousel.goTo(0);
             }
-        });
-        
+            window.setTimeout(() => { this.showImage(); }, 1000);
+        })();
+
     }
 
     public async get() {
@@ -108,7 +144,7 @@ export class BsnCarouselComponent extends CnComponentBase
             tempValue: this.tempValue,
             initValue: this.initValue,
             cacheValue: this._cacheService
-        }); 
+        });
         return this._apiService
             .get(url, params).toPromise();
     }
@@ -132,7 +168,7 @@ export class BsnCarouselComponent extends CnComponentBase
                                 // 获取当前设置的级联的模式
                                 const mode =
                                     BSN_COMPONENT_CASCADE_MODES[
-                                        relation.cascadeMode
+                                    relation.cascadeMode
                                     ];
                                 // 获取传递的消息数据
                                 const option = cascadeEvent.option;
@@ -167,10 +203,9 @@ export class BsnCarouselComponent extends CnComponentBase
     }
 
     public ngAfterViewInit() {
-        if (this.config.componentType.owner) {
+        if (this.config.componentType.own) {
             this.load();
         }
-        
     }
 
     public ngOnDestroy() {
@@ -179,6 +214,16 @@ export class BsnCarouselComponent extends CnComponentBase
         }
         if (this._cascadeSubscription) {
             this._cascadeSubscription.unsubscribe();
+        }
+    }
+
+    /**
+     * showImage
+     */
+    public showImage() {
+        const elements = document.querySelectorAll('.image');
+        if (elements.length > 0) {
+            Intense(elements);
         }
     }
 }

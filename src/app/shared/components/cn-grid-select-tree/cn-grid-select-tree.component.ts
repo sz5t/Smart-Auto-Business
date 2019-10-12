@@ -2,11 +2,13 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ApiService } from '@core/utility/api-service';
 import {CommonTools} from '@core/utility/common-tools';
 import {NzTreeNode} from 'ng-zorro-antd';
+import { CacheService } from '@delon/cache';
 
 @Component({
     selector: 'cn-grid-select-tree',
     templateUrl: './cn-grid-select-tree.component.html',
 })
+
 export class CnGridSelectTreeComponent implements OnInit {
     @Input() config;
     @Input() value;
@@ -15,6 +17,7 @@ export class CnGridSelectTreeComponent implements OnInit {
     @Input() dataSet;
     @Input() casadeData;
     @Output() updateValue = new EventEmitter();
+    public cacheValue;
     _selectedValue;
     treeData = [];
     treeDatalist = [];
@@ -22,8 +25,10 @@ export class CnGridSelectTreeComponent implements OnInit {
     cascadeValue = {};
     cascadeSetValue = {};
     constructor(
-        private apiService: ApiService
-    ) { }
+        private apiService: ApiService, private cacheService: CacheService
+    ) {
+        this.cacheValue = this.cacheService;
+     }
     _selectedMultipleOption;
 
     treecolumns = {};
@@ -122,6 +127,7 @@ export class CnGridSelectTreeComponent implements OnInit {
 
                 // result[0].children.push(...);
                 this.treeData = this.listToAsyncTreeData(TotreeBefore, parent);
+                console.log(this.treeData);
             }
 
 
@@ -169,7 +175,8 @@ export class CnGridSelectTreeComponent implements OnInit {
                     params[param.name] = componentValue;
                 } else if (param.type === 'cascadeValue') {
                     params[param.name] = this.cascadeValue[param.valueName];
-
+                } else if (param.type === 'cacheValue') {
+                    params[param.name] = this.cacheValue[param.valueName];
                 }
             });
             if (this.isString(p.url)) {
@@ -188,7 +195,8 @@ export class CnGridSelectTreeComponent implements OnInit {
                         pc = this._tempValue[param.valueName];
                     } else if (param.type === 'cascadeValue') {
                         pc = this.cascadeValue[param.valueName];
-    
+                    } else if (param.type === 'cacheValue') {
+                        params[param.name] = this.cacheValue[param.valueName];
                     }
                 });
                 url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
@@ -199,7 +207,7 @@ export class CnGridSelectTreeComponent implements OnInit {
         }
     }
 
-    listToAsyncTreeData(data, parentid): NzTreeNode[] {
+    listToAsyncTreeData(data, parentid) {
         const result: NzTreeNode[] = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
@@ -212,7 +220,7 @@ export class CnGridSelectTreeComponent implements OnInit {
                     data[i]['isLeaf'] = false;
                 }
                 data[i].level = '';
-                result.push(new NzTreeNode(data[i]));
+                result.push(data[i]);
             }
         }
         return result;

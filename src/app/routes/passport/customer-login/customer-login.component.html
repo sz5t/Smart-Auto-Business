@@ -1,17 +1,5 @@
 <nz-tabset [nzAnimated]="true" class="tabs" (nzSelectChange)=changeTab($event)>
-    <nz-tab [nzTitle]="card">
-        <div class="card">
-
-            <i class="card_logo" nz-icon type="idcard" theme="twotone" twoToneColor="#eee"></i>
-            <nz-alert *ngIf="errorApp" [nzType]="'error'" [nzMessage]="errorApp" [nzShowIcon]="true" class="mb-lg">
-            </nz-alert>
-        </div>
-
-        <ng-template #card>
-            <i nz-icon type="idcard"></i> 刷卡登录
-        </ng-template>
-    </nz-tab>
-    <nz-tab [nzTitle]="user">
+    <nz-tab  [nzTitle]="user">
         <ng-template #user>
             <i nz-icon type="user"></i> 账户登录
         </ng-template>
@@ -43,6 +31,18 @@
                     class="ant-btn__block">登录</button>
             </nz-form-item>
         </form>
+    </nz-tab>
+    <nz-tab *ngIf="false" [nzTitle]="card">
+        <div class="card">
+
+            <i class="card_logo" nz-icon type="idcard" theme="twotone" twoToneColor="#eee"></i>
+            <nz-alert *ngIf="errorApp" [nzType]="'error'" [nzMessage]="errorApp" [nzShowIcon]="true" class="mb-lg">
+            </nz-alert>
+        </div>
+
+        <ng-template #card>
+            <i nz-icon type="idcard"></i> 刷卡登录
+        </ng-template>
     </nz-tab>
     <nz-tab *ngIf="false" [nzTitle]="face">
         <div class="face">

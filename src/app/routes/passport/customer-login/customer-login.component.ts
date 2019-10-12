@@ -38,7 +38,7 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
   private loading = false;
   // 当前选择登录系统的配置项
   private _currentSystem;
-  private isCardLogin = true;
+  private isCardLogin = false;
   private mediaStreamTrack = null;
   public timeout;
   public ws;
@@ -343,11 +343,11 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
       this.isFaceLogin = false
       this.closeMedia();
     }
-    if ($event.index === 0) {
+    if ($event.index === 1) {
       this.isCardLogin = true
       this.getCard();
     }
-    if ($event.index !== 0) {
+    if ($event.index !== 1) {
       this.isCardLogin = false
     }
   }
