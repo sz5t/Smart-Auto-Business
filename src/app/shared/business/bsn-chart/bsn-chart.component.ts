@@ -61,10 +61,11 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
 
   public ngOnInit() {
     this.resolverRelation();
+    // this.load();
   }
 
   public ngAfterViewInit() {
-    this.load();
+   this.load();
   }
   public ngAfterContentInit() {
 
@@ -75,30 +76,33 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
 
     await this.load_data();
 
-    if (this.config.type) {
-      const key = this.config.type;
-      switch (key) {
-        case 'bar':
-          this.CreateChart_Bar()
-          break;
-        case 'mini_bar':
-          this.CreateChart_MiniBar()
-          break;
-
-        case 'pie':
-          this.CreateChart_Pie()
-          break;
-        case 'line':
-          this.CreateChart_Line()
-          break;
-        case 'mini_line':
-          this.CreateChart_MiniLine()
-          break;
-
-        default:
-          break;
+    // setTimeout(() => {
+      if (this.config.type) {
+        const key = this.config.type;
+        switch (key) {
+          case 'bar':
+            this.CreateChart_Bar()
+            break;
+          case 'mini_bar':
+            this.CreateChart_MiniBar()
+            break;
+  
+          case 'pie':
+            this.CreateChart_Pie()
+            break;
+          case 'line':
+            this.CreateChart_Line()
+            break;
+          case 'mini_line':
+            this.CreateChart_MiniLine()
+            break;
+  
+          default:
+            break;
+        }
       }
-    }
+    // }, 3000);
+    
   }
 
   /**
@@ -391,12 +395,22 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     });
     const x = this.config.x.name;
     const data = this.showdata;
-    this.ds = new DataSet({
-      state: {
-        from: new Date(this.dataList[0][x]).getTime(),
-        to: new Date(this.dataList[this.config.showDataLength - 1][x]).getTime()
-      }
-    });
+    // console.log(data.length);
+    if (data.length < this.config.showDataLength) {
+      this.ds = new DataSet({
+        state: {
+          from: new Date(this.dataList[0][x]).getTime(),
+          to: new Date(this.dataList[data.length - 1][x]).getTime()
+        }
+      });
+    } else {
+      this.ds = new DataSet({
+        state: {
+          from: new Date(this.dataList[0][x]).getTime(),
+          to: new Date(this.dataList[this.config.showDataLength - 1][x]).getTime()
+        }
+      });
+    }
     if (this.config.y.scale) {
       this.chart.scale(this.config.y.name, this.config.y.scale);
     }
@@ -427,7 +441,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     this.writepoint(this.chart);
     this.chart.render();
     if (this.config.showSlider) {
-        this.slider = new Slider({
+      this.slider = new Slider({
         container: document.getElementById('slider'),
         padding: [0, 100, 0],
         start: this.ds.state.from,
@@ -453,7 +467,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
           this.ds.setState('to', endValue);
           setTimeout(() => {
             this.writepoint(this.chart, startValue, endValue);
-           // this.chart.render();
+            // this.chart.render();
           }, 10);
         }
       });
@@ -855,14 +869,15 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         let minValue = 50000;
         let maxObj = null;
         let minObj = null;
-        for (let i = 0; i < this.dataList.length; i++) {
+        const length = this.dataList.length > this.config.showDataLength ? this.config.showDataLength : this.dataList.length
+        for (let i = 0; i < length; i++) {
           // 日期转时间戳进行比较
           const d = this.dataList[i];
           let date = this.dataList[i][this.config.x.name];
           date = date.replace(/-/g, '/');
           date = new Date(date).getTime();
           if (date > start && date < end) {
-            if (d[this.config.y.name] > maxValue) {
+            if (d[this.config.y.name] >= maxValue) {
               maxValue = d[this.config.y.name];
               maxObj = d;
             }
@@ -881,10 +896,11 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         let minValue = 50000;
         let maxObj = null;
         let minObj = null;
-        for (let i = 0; i < this.config.showDataLength - 1; i++) {
+        const length = this.dataList.length > this.config.showDataLength ? this.config.showDataLength : this.dataList.length
+        for (let i = 0; i < length; i++) {
           const d = this.dataList[i];
           if (d[this.config.groupName] === e) {
-            if (d[this.config.y.name] > maxValue) {
+            if (d[this.config.y.name] >= maxValue) {
               maxValue = d[this.config.y.name];
               maxObj = d;
             }
@@ -908,9 +924,10 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         let minValue = 50000;
         let maxObj = null;
         let minObj = null;
-        for (let i = 0; i < this.config.showDataLength - 1; i++) {
+        const length = this.dataList.length > this.config.showDataLength ? this.config.showDataLength : this.dataList.length
+        for (let i = 0; i < length - 1; i++) {
           const d = this.dataList[i];
-          if (d[this.config.y.name] > maxValue) {
+          if (d[this.config.y.name] >= maxValue) {
             maxValue = d[this.config.y.name];
             maxObj = d;
           }
@@ -928,10 +945,11 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         let minValue = 50000;
         let maxObj = null;
         let minObj = null;
-        for (let i = 0; i < this.config.showDataLength - 1; i++) {
+        const length = this.dataList.length > this.config.showDataLength ? this.config.showDataLength : this.dataList.length
+        for (let i = 0; i < length - 1; i++) {
           const d = this.dataList[i];
           if (d[this.config.groupName] === e) {
-            if (d[this.config.y.name] > maxValue) {
+            if (d[this.config.y.name] >= maxValue) {
               maxValue = d[this.config.y.name];
               maxObj = d;
             }
@@ -985,32 +1003,35 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
           const max_min = this.findMaxMin(start, end);
           const max = max_min.max;
           const min = max_min.min;
-          charts.guide().dataMarker({
-            top: true,
-            content: '峰值：' + max[this.config.y.name],
-            position: [max[this.config.x.name], max[this.config.y.name]],
-            style: {
-              text: {
-                fontSize: 13,
-                stroke: 'white',
-                lineWidth: 2
-              }
-            },
-            lineLength: 40
-          });
-          charts.guide().dataMarker({
-            top: true,
-            content: '谷值：' + min[this.config.y.name],
-            position: [min[this.config.x.name], min[this.config.y.name]],
-            style: {
-              text: {
-                fontSize: 13,
-                stroke: 'white',
-                lineWidth: 2
-              }
-            },
-            lineLength: 50
-          });
+          if (max_min) {
+            charts.guide().dataMarker({
+              top: true,
+              content: '峰值：' + max[this.config.y.name],
+              position: [max[this.config.x.name], max[this.config.y.name]],
+              style: {
+                text: {
+                  fontSize: 13,
+                  stroke: 'white',
+                  lineWidth: 2
+                }
+              },
+              lineLength: 40
+            });
+            charts.guide().dataMarker({
+              top: true,
+              content: '谷值：' + min[this.config.y.name],
+              position: [min[this.config.x.name], min[this.config.y.name]],
+              style: {
+                text: {
+                  fontSize: 13,
+                  stroke: 'white',
+                  lineWidth: 2
+                }
+              },
+              lineLength: 50
+            });
+
+          }
         } else {
           const group = [];
           group.push(this.dataList[0][this.config.groupName]);
@@ -1026,32 +1047,35 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
             const max_min = this.findMaxMin(start, end, element);
             const max = max_min.max;
             const min = max_min.min;
-            charts.guide().dataMarker({
-              top: true,
-              content: element + '的峰值：' + max[this.config.y.name],
-              position: [max[this.config.x.name], max[this.config.y.name]],
-              style: {
-                text: {
-                  fontSize: 13,
-                  stroke: 'white',
-                  lineWidth: 2
-                }
-              },
-              lineLength: 30
-            });
-            charts.guide().dataMarker({
-              top: true,
-              content: element + '的谷值：' + min[this.config.y.name],
-              position: [min[this.config.x.name], min[this.config.y.name]],
-              style: {
-                text: {
-                  fontSize: 13,
-                  stroke: 'white',
-                  lineWidth: 2
-                }
-              },
-              lineLength: 50
-            });
+            if (max_min) {
+              charts.guide().dataMarker({
+                top: true,
+                content: element + '的峰值：' + max[this.config.y.name],
+                position: [max[this.config.x.name], max[this.config.y.name]],
+                style: {
+                  text: {
+                    fontSize: 13,
+                    stroke: 'white',
+                    lineWidth: 2
+                  }
+                },
+                lineLength: 30
+              });
+              charts.guide().dataMarker({
+                top: true,
+                content: element + '的谷值：' + min[this.config.y.name],
+                position: [min[this.config.x.name], min[this.config.y.name]],
+                style: {
+                  text: {
+                    fontSize: 13,
+                    stroke: 'white',
+                    lineWidth: 2
+                  }
+                },
+                lineLength: 50
+              });
+
+            }
           });
         }
       }

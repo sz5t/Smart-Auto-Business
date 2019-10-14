@@ -447,7 +447,7 @@ export class BsnTableComponent extends CnComponentBase
                             BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
                             this.config.viewId,
                             {
-                                data: {...this._selectRow, ...this.tempValue}
+                                data: { ...this._selectRow, ...this.tempValue }
                             }
                         )
                     );
@@ -547,14 +547,13 @@ export class BsnTableComponent extends CnComponentBase
             )
         );
     }
-    public load() {
+    public load(sd?: boolean) {
         this.changeConfig_new = {};
         // this._selectRow = {};
         // this.pageIndex = pageIndex;
         setTimeout(() => {
             this.loading = true;
         });
-
         this.allChecked = false;
         this.checkedCount = 0;
         const url = this._buildURL(this.config.ajaxConfig.url);
@@ -565,7 +564,7 @@ export class BsnTableComponent extends CnComponentBase
             ...this._buildFilter(this.config.ajaxConfig.filter),
             ...this._buildSort(),
             ...this._buildColumnFilter(),
-            ...this._buildFocusId(),
+            ...this._buildFocusId(sd),
             ...this._buildSearch()
         };
         (async () => {
@@ -1936,17 +1935,17 @@ export class BsnTableComponent extends CnComponentBase
                     let paramData: any;
                     switch (r_val.type) {
                         case 'add':
-                        mode = BSN_COMPONENT_CASCADE_MODES.ADD_ASYNC_TREE_NODE;
-                        paramData = {_add_ids: r_val.ids.join(',')};
-                        break;
+                            mode = BSN_COMPONENT_CASCADE_MODES.ADD_ASYNC_TREE_NODE;
+                            paramData = { _add_ids: r_val.ids.join(',') };
+                            break;
                         case 'edit':
-                        mode = BSN_COMPONENT_CASCADE_MODES.EDIT_ASNYC_TREE_NODE;
-                        paramData = {_edit_ids: r_val.ids.join(',')};
-                        break;
+                            mode = BSN_COMPONENT_CASCADE_MODES.EDIT_ASNYC_TREE_NODE;
+                            paramData = { _edit_ids: r_val.ids.join(',') };
+                            break;
                         case 'delete':
-                        mode = BSN_COMPONENT_CASCADE_MODES.DELETE_ASYNC_TREE_NODE;
-                        paramData = {_del_ids: r_val.ids.join(',')};
-                        break;
+                            mode = BSN_COMPONENT_CASCADE_MODES.DELETE_ASYNC_TREE_NODE;
+                            paramData = { _del_ids: r_val.ids.join(',') };
+                            break;
                     }
                     this.cascade.next(
                         new BsnComponentMessage(
@@ -2129,7 +2128,7 @@ export class BsnTableComponent extends CnComponentBase
                                     f => f.parentName && f.parentName === c.name
                                 );
                                 nextConfig &&
-                                nextConfig.map(currentAjax => {
+                                    nextConfig.map(currentAjax => {
                                         this._getAjaxConfig(
                                             currentAjax,
                                             c
@@ -2189,7 +2188,7 @@ export class BsnTableComponent extends CnComponentBase
                             f => f.parentName && f.parentName === c.name
                         );
                         nextConfig &&
-                        nextConfig.map(currentAjax => {
+                            nextConfig.map(currentAjax => {
                                 this._getAjaxConfig(
                                     currentAjax,
                                     c
@@ -2635,6 +2634,7 @@ export class BsnTableComponent extends CnComponentBase
                     )
                 );
             } else {
+                // console.log('222', this._selectRow);
                 this.updateValue.emit(this._selectRow);
             }
         }
@@ -2686,7 +2686,7 @@ export class BsnTableComponent extends CnComponentBase
         if (reset) {
             this.pageIndex = 1;
         }
-        this.load();
+        this.load(true);
     }
 
     public sort(sort: { key: string; value: string }) {
@@ -2764,12 +2764,12 @@ export class BsnTableComponent extends CnComponentBase
         this.dataList = this.dataList.filter(d => {
             if (d['checked']) {
                 if (d['row_status'] === 'adding') {
-                     return false;
+                    return false;
                 } else if (d['row_status'] === 'search') {
                     this.is_Search = false;
                     this.search_Row = {};
                     return false;
-                }  else {
+                } else {
                     this._cancelEdit(d.key);
                     return true;
                 }
@@ -2778,7 +2778,7 @@ export class BsnTableComponent extends CnComponentBase
             }
         });
         this.refChecked();
-     //   this.dataList = JSON.parse(JSON.stringify(this.dataList));
+        //   this.dataList = JSON.parse(JSON.stringify(this.dataList));
         return true;
     }
 
@@ -2960,11 +2960,13 @@ export class BsnTableComponent extends CnComponentBase
      * @returns {{}}
      * @private
      */
-    private _buildFocusId() {
+    private _buildFocusId(sd?: boolean) {
         const focusParams = {};
-        // 服务器端待解决
-        if (this.focusIds) {
-            focusParams['_focusedId'] = this.focusIds;
+        if (!sd) {
+            // 服务器端待解决
+            if (this.focusIds) {
+                focusParams['_focusedId'] = this.focusIds;
+            }
         }
         return focusParams;
     }
@@ -4083,7 +4085,7 @@ export class BsnTableComponent extends CnComponentBase
             // 自定义导出结果
             url = this._buildURL(option.ajaxConfig.url);
             col = this.config.exportColumns;
-            data = [col.map(c => {c.title})];
+            data = [col.map(c => { c.title })];
         } else {
             // 导出表格结果
             url = this._buildURL(this.config.ajaxConfig.url);
@@ -4108,30 +4110,31 @@ export class BsnTableComponent extends CnComponentBase
         if (loadData.isSuccess && loadData.data.length > 0) {
             let i = 0;
             for (const d of loadData.data) {
-              i++;
-                data.push(col.map(c => { if (c.hidden) { } else {
-                    if (c.field === '_serilize') {
-                        return i.toString();
-                    } else {
-                        return d[c.field as string];
+                i++;
+                data.push(col.map(c => {
+                    if (c.hidden) { } else {
+                        if (c.field === '_serilize') {
+                            return i.toString();
+                        } else {
+                            return d[c.field as string];
+                        }
+
                     }
-                  
-                }
-                 }))
+                }))
             }
 
         } else {
-            this.modalService.warning({ nzTitle: '没有可以导出的数据'});
+            this.modalService.warning({ nzTitle: '没有可以导出的数据' });
         }
-            const json = data;
-            // console.log('data:', data, loadData);
-            // 这个nameList (随便起的名字)，是要导出的json数据
-            const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
-            const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-            const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-            // 这里类型如果不正确，下载出来的可能是类似xml文件的东西或者是类似二进制的东西等
-            this.saveAsExcelFile(excelBuffer, 'nameList');
-        
+        const json = data;
+        // console.log('data:', data, loadData);
+        // 这个nameList (随便起的名字)，是要导出的json数据
+        const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
+        const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+        const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        // 这里类型如果不正确，下载出来的可能是类似xml文件的东西或者是类似二进制的东西等
+        this.saveAsExcelFile(excelBuffer, 'nameList');
+
         // this.xlsx.export({
         //     sheets: [
         //         {
@@ -4175,13 +4178,13 @@ export class BsnTableComponent extends CnComponentBase
         );
 
         const json = data;
-            // console.log('data:', data, loadData);
-            // 这个nameList (随便起的名字)，是要导出的json数据
-            const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
-            const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-            const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-            // 这里类型如果不正确，下载出来的可能是类似xml文件的东西或者是类似二进制的东西等
-            this.saveAsExcelFile(excelBuffer, 'nameList');
+        // console.log('data:', data, loadData);
+        // 这个nameList (随便起的名字)，是要导出的json数据
+        const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
+        const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+        const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        // 这里类型如果不正确，下载出来的可能是类似xml文件的东西或者是类似二进制的东西等
+        this.saveAsExcelFile(excelBuffer, 'nameList');
         // this.xlsx.export({
         //     sheets: [
         //         {
@@ -4197,10 +4200,10 @@ export class BsnTableComponent extends CnComponentBase
 
     private saveAsExcelFile(buffer: any, fileName: string) {
         const data: Blob = new Blob([buffer], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
-  });
-  FileSaver.saveAs(data, fileName + '_' + new Date().getTime() + '.xlsx');
-          // 如果写成.xlsx,可能不能打开下载的文件，这可能与Excel版本有关
-  }
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
+        });
+        FileSaver.saveAs(data, fileName + '_' + new Date().getTime() + '.xlsx');
+        // 如果写成.xlsx,可能不能打开下载的文件，这可能与Excel版本有关
+    }
 
 }

@@ -8,7 +8,9 @@ import {
     OnDestroy,
     OnInit,
     Type,
-    ViewContainerRef
+    ViewContainerRef,
+    Output,
+    EventEmitter
 } from '@angular/core';
 import { ComponentResolverComponent } from '@shared/resolver/component-resolver/component-resolver.component';
 import { Observable, Observer, Subscription } from 'rxjs/index';
@@ -30,6 +32,9 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
     public config;
     @Input()
     public layoutId;
+    @Output()
+    public updateValue = new EventEmitter();
+    public value;
     @Input()
     public permissions;
     public component: ComponentRef<any>;
@@ -125,6 +130,14 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
         this.component.instance.tempValue = data;
         this.component.instance.initData = initValue ? initValue : data;
         this.component.instance.permissions = this.permissions;
+        this.component.instance.updateValue.subscribe(event => {
+            this.valueChange(event);
+        });
+    }
+
+    public valueChange(data?) {
+        this.value = data;
+        this.updateValue.emit(data);
     }
 
     public ngOnDestroy() {
