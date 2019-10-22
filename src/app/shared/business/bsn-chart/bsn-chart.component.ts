@@ -29,6 +29,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   public autoPlay;
   public ds; // 展示的部分数据源
   public datalength; // 真实的数据长度
+  public next = 1; // 自动播放的标识变量
 
   public offlineChartData = [
     { 'x': 1570690460771, 'y1': 31, 'y2': 78 },
@@ -65,7 +66,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   }
 
   public ngAfterViewInit() {
-   this.load();
+    this.load();
   }
   public ngAfterContentInit() {
 
@@ -77,32 +78,35 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     await this.load_data();
 
     // setTimeout(() => {
-      if (this.config.type) {
-        const key = this.config.type;
-        switch (key) {
-          case 'bar':
-            this.CreateChart_Bar()
-            break;
-          case 'mini_bar':
-            this.CreateChart_MiniBar()
-            break;
-  
-          case 'pie':
-            this.CreateChart_Pie()
-            break;
-          case 'line':
-            this.CreateChart_Line()
-            break;
-          case 'mini_line':
-            this.CreateChart_MiniLine()
-            break;
-  
-          default:
-            break;
-        }
+    if (this.config.type) {
+      if (this.chart) {
+        this.chart.clear();
       }
+      const key = this.config.type;
+      switch (key) {
+        case 'bar':
+          this.CreateChart_Bar()
+          break;
+        case 'mini_bar':
+          this.CreateChart_MiniBar()
+          break;
+
+        case 'pie':
+          this.CreateChart_Pie()
+          break;
+        case 'line':
+          this.CreateChart_Line()
+          break;
+        case 'mini_line':
+          this.CreateChart_MiniLine()
+          break;
+
+        default:
+          break;
+      }
+    }
     // }, 3000);
-    
+
   }
 
   /**
@@ -260,15 +264,9 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         end: new Date(this.dataList[10]['monitortime']).getTime()
       }
     });
-    const datads = new DataSet({
-      state: {
-        start: new Date(this.dataList[0]['monitortime']).getTime(),
-        end: new Date(this.dataList[this.dataList.length - 1]['monitortime']).getTime()
-      }
-    });
-    console.log(this.ds, datads);
+    // console.log(this.ds, datads);
     if (this.config.showSlider) {
-      this.originDv = datads.createView('origin');
+      this.originDv = this.ds.createView('origin');
       this.originDv.source(this.showdata).transform({
         type: 'fold',
         fields: [this.config.y.name],
@@ -337,39 +335,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       });
     }
 
-    // if (this.config.showGuide) {
-    //   // 直线的辅助线
-    //   if (this.config.guideLine) {
-    //     this.chart.guide().line({
-    //       top: true,
-    //       start: ['min', this.config.guideLine.start],
-    //       end: ['max', this.config.guideLine.end],
-    //       lineStyle: {
-    //         stroke: '#F5222D',
-    //         lineWidth: 2
-    //       },
-    //       text: {
-    //         content: this.config.text.content,
-    //         position: 'start',
-    //         offsetX: 20,
-    //         offsetY: -5,
-    //         style: {
-    //           fontSize: 14,
-    //           fill: '#F5222D',
-    //           opacity: 0.5
-    //         }
-    //       }
-    //     })
-    //   }
-
-    //   // 动态的辅助线
-    //   if (this.config.guideAjax) {
-    //     this.load_guide();
-    //     this.showguide.forEach(e => {
-
-    //     });
-    //   }
-    // }
+    
     this.chart.render();
     if (this.config.autoPlay) {
       let next = 1;
@@ -438,9 +404,47 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       stroke: '#fff',
       lineWidth: 1
     });
-    this.writepoint(this.chart);
+
+    if (this.config.peakValue || this.config.eachPeakValue) {
+      this.writepoint(this.chart);
+    }
+
+    if (this.config.showGuide) {
+      // 直线的辅助线
+      if (this.config.guideLine) {
+        this.chart.guide().line({
+          top: true,
+          start: ['min', this.config.guideLine.start],
+          end: ['max', this.config.guideLine.end],
+          lineStyle: {
+            stroke: '#F5222D',
+            lineWidth: 2
+          },
+          text: {
+            content: this.config.text.content,
+            position: 'start',
+            offsetX: 20,
+            offsetY: -5,
+            style: {
+              fontSize: 14,
+              fill: '#F5222D',
+              opacity: 0.5
+            }
+          }
+        })
+      }
+
+      // 动态的辅助线
+      if (this.config.guideAjax) {
+        this.load_guide();
+        this.showguide.forEach(e => {
+          
+        });
+      }
+    }
+
     this.chart.render();
-    if (this.config.showSlider) {
+    if (this.config.showSlider && !this.config.autoPlay) {
       this.slider = new Slider({
         container: document.getElementById('slider'),
         padding: [0, 100, 0],
@@ -475,16 +479,49 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       this.slider.render();
     }
 
+    if (this.config.showSlider && this.config.autoPlay) {
+      this.originDv = this.ds.createView('origin');
+      this.originDv.source(this.showdata).transform({
+        type: 'fold',
+        fields: [this.config.y.name],
+        retains: [this.config.y.name, this.config.x.name]
+      }).transform({
+        type: 'filter',
+        callback: (obj) => {
+          const time = new Date(obj.monitortime).getTime(); // !注意：时间格式，建议转换为时间戳进行比较
+          return time >= this.ds.state.start && time <= this.ds.state.end;
+        }
+      });
+      this.slider = new Slider({
+        container: 'slider',
+        start: this.ds.state.start, // 和状态量对应
+        end: this.ds.state.end,
+        xAxis: this.config.x.name,
+        yAxis: this.config.y.name,
+        data: this.showdata,
+        backgroundChart: {
+          type: 'line',
+          color: 'grey'
+        },
+        onChange: (_ref) => {
+          const startValue = _ref.startValue, endValue = _ref.endValue;
+          this.ds.setState('start', startValue);
+          this.ds.setState('end', endValue);
+        }
+      });
+      this.slider.render();
+      // this.chart.interact('slider', this.slider);
+    }
+
     if (this.config.autoPlay) {
-      let next = 1;
+
       this.autoPlay = setInterval(() => {
+        this.next = this.next + 1;
         if (this.dataList[this.dataList.length - 1] !== this.showdata[this.config.showDataLength - 1]) {
-          // console.log(111);
           this.showdata.shift();
-          this.showdata.push(this.dataList[this.config.showDataLength - 1 + next])
+          this.showdata.push(this.dataList[this.config.showDataLength - 1 + this.next]);
           this.chart.changeData(this.showdata);
           this.slider.changeData(this.showdata);
-          next = next + 1;
         }
       }, this.config.intervalTime)
     }
@@ -766,6 +803,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     }
     return filter;
   }
+
   private async _load(url, params, method) {
     const mtd = method === 'proc' ? 'post' : method;
     return this._http[mtd](url, params).toPromise();
@@ -1081,13 +1119,14 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       }
     } else {
       // 标记最大值
+      const maxobj = this.findMax();
+      const minobj = this.findMin();
       charts.guide().dataMarker({
         top: true,
-        content: '当前峰值',
+        content: '当前峰值:' + maxobj[this.config.y.name],
         position: () => {
-          const obj = this.findMax();
-          if (obj) {
-            return [obj[this.config.x.name], obj[this.config.y.name]];
+          if (maxobj) {
+            return [maxobj[this.config.x.name], maxobj[this.config.y.name]];
           }
           return [0, 0];
         },
@@ -1105,11 +1144,10 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       // 标记最小值
       charts.guide().dataMarker({
         top: true,
-        content: '当前谷值',
+        content: '当前谷值:' + minobj[this.config.y.name],
         position: () => {
-          const obj = this.findMin();
-          if (obj) {
-            return [obj[this.config.x.name], obj[this.config.y.name]];
+          if (minobj) {
+            return [minobj[this.config.x.name], minobj[this.config.y.name]];
           }
           return [0, 0];
         },

@@ -200,7 +200,7 @@ export class CnGridSearchComponent implements OnInit {
   }
 
   public onblur() {
-    this.CreateSearch();
+   this.CreateSearch();
 
   }
   public async onKeyPress(e) {
@@ -312,7 +312,6 @@ export class CnGridSearchComponent implements OnInit {
         backvalue = backdata;
       }
     }
-
     this.CreateSearchChange(backvalue);
 
   }

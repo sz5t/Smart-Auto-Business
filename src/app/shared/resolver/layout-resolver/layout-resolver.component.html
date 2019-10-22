@@ -20,7 +20,7 @@
                                         {{ c.title }}
                                     </ng-template>
                                     <div *ngIf="c.handle && c.handle === 'single'; else: elseTemplate">
-                                        <ng-container cnLayoutResolverDirective [layoutId]="layoutId" [config]="c"
+                                        <ng-container cnLayoutResolverDirective [initData]="initData" [layoutId]="layoutId" [config]="c"
                                             [permissions]="permissions" (updateValue)="valueChange($event)"></ng-container>
                                     </div>
                                     <ng-template #elseTemplate>
@@ -53,7 +53,7 @@
 
                         </ng-template>
                         <div *ngIf="c.handle && c.handle === 'single'; else: elseTemplate">
-                            <ng-container cnLayoutResolverDirective [layoutId]="layoutId" [config]="c"
+                            <ng-container cnLayoutResolverDirective [initData]="initData" [layoutId]="layoutId" [config]="c"
                                 [permissions]="permissions" (updateValue)="valueChange($event)"></ng-container>
                         </div>
                         <ng-template #elseTemplate>

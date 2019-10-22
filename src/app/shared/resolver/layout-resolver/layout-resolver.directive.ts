@@ -37,6 +37,8 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
     public value;
     @Input()
     public permissions;
+    @Input()
+    public initData;
     public component: ComponentRef<any>;
     public _statusSubscription: Subscription;
     public _cascadeSubscription: Subscription;
@@ -55,7 +57,7 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
 
     public ngOnInit() {
         this.resolveRelation();
-        this.buildComponent(this.config.viewCfg[0]);
+        this.buildComponent(this.config.viewCfg[0], null, null, this.initData);
     }
 
     public resolveRelation() {

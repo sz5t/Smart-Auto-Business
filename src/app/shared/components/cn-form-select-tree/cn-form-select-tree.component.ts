@@ -333,6 +333,7 @@ export class CnFormSelectTreeComponent implements OnInit {
             const backValue = { name: this.config.name, value: null };
             this.updateValue.emit(backValue);
         }
+        this._selectedValue = val;
        // console.log('***下拉树返回值***' , this.value);
 
     }

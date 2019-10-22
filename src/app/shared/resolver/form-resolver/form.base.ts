@@ -509,8 +509,12 @@ export class CnFormBase extends CnComponentBase {
                                     () => {
                                         this.sendCascadeMessage(dialog, response.data);
                                         if (callback) {
-                                            if (dialog && dialog.componentType.toAsyncTree) {
-                                                callback(response);
+                                            if (dialog && dialog.componentType) {
+                                                if (dialog.componentType.toAsyncTree) {
+                                                    callback(response);
+                                                } else {
+                                                    callback();
+                                                }
                                             } else {
                                                 callback();
                                             }
@@ -528,8 +532,12 @@ export class CnFormBase extends CnComponentBase {
                                     () => {
                                         this.sendCascadeMessage(dialog, response.data);
                                         if (callback) {
-                                            if (dialog && dialog.componentType.toAsyncTree) {
-                                                callback(response.data);
+                                            if (dialog && dialog.componentType) {
+                                                if (dialog.componentType.toAsyncTree) {
+                                                    callback(response);
+                                                } else {
+                                                    callback();
+                                                }
                                             } else {
                                                 callback();
                                             }
@@ -558,8 +566,12 @@ export class CnFormBase extends CnComponentBase {
                             () => {
                                 this.sendCascadeMessage(dialog, response.data);
                                 if (callback) {
-                                    if (dialog && dialog.componentType.toAsyncTree) {
-                                        callback(response);
+                                    if (dialog && dialog.componentType) {
+                                        if (dialog.componentType.toAsyncTree) {
+                                            callback(response);
+                                        } else {
+                                            callback();
+                                        }
                                     } else {
                                         callback();
                                     }
@@ -574,8 +586,12 @@ export class CnFormBase extends CnComponentBase {
                         this.showAjaxMessage(response, '操作成功', () => {
                             this.sendCascadeMessage(dialog, response.data);
                             if (callback) {
-                                if (dialog && dialog.componentType.toAsyncTree) {
-                                    callback(response);
+                                if (dialog && dialog.componentType) {
+                                    if (dialog.componentType.toAsyncTree) {
+                                        callback(response);
+                                    } else {
+                                        callback();
+                                    }
                                 } else {
                                     callback();
                                 }

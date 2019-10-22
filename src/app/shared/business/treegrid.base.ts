@@ -264,6 +264,10 @@ export class TreeGridBase extends CnComponentBase {
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_ROW:
                     handleData = this.getEditedRows();
+                    this.beforeOperation.operationItemsData = handleData;
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return;
+                    }
                     msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         // this.baseMessage.info('请勾选要执行编辑的数据')
@@ -275,6 +279,10 @@ export class TreeGridBase extends CnComponentBase {
                 case BSN_EXECUTE_ACTION.EXECUTE_SAVE_ROW:
                     // 获取更新状态的数据
                     handleData = this.getAddedRows();
+                    this.beforeOperation.operationItemsData = handleData;
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return;
+                    }
                     msg = '新增数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
@@ -283,6 +291,10 @@ export class TreeGridBase extends CnComponentBase {
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_TREE_ROW:
                     handleData = this._getTreeEditRows();
+                    this.beforeOperation.operationItemsData = this.getCheckedItems();
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return;
+                    }
                     msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
@@ -292,13 +304,17 @@ export class TreeGridBase extends CnComponentBase {
                 case BSN_EXECUTE_ACTION.EXECUTE_SAVE_TREE_ROW:
                     // 获取更新状态的数据
                     handleData = this._getTreeAddedRows();
+                    this.beforeOperation.operationItemsData = handleData;
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return;
+                    }
                     msg = '新增数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
                     }
                     this.buildConfirm(c, option.ajaxConfig, handleData, msg);
                     break;
-            case BSN_EXECUTE_ACTION.EXECUTE_MESSAGE:
+                case BSN_EXECUTE_ACTION.EXECUTE_MESSAGE:
                     handleData = {};
                     this.buildConfirm(c, option.ajaxConfig, handleData, msg);
                     break;
@@ -738,6 +754,7 @@ export class TreeGridBase extends CnComponentBase {
         this.apiResource.getLocalData(dialog.layoutName).subscribe(data => {
             const temp = this.tempValue ? this.tempValue : {};
             const iniValue = this.initValue ? this.initValue : {};
+            const showcheckedids = {Ids: this.getCheckItemsId() ? this.getCheckItemsId() : ''}
             const modal = this.baseModal.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
@@ -746,10 +763,11 @@ export class TreeGridBase extends CnComponentBase {
                 nzComponentParams: {
                     config: data,
                     permissions: this.permission,
-                    initData: { ...temp, ...this.selectedItem, ...iniValue }
+                    initData: { ...temp, ...this.selectedItem, ...iniValue, ...showcheckedids}
                 },
                 nzFooter: footer
             });
+            // console.log('modal', modal.nzComponentParams);
             if (dialog.buttons) {
                 dialog.buttons.forEach(btn => {
                     const button = {};
@@ -910,7 +928,7 @@ export class TreeGridBase extends CnComponentBase {
                     if (btn['name'] === 'save2') {
                         (async () => {
                             const result = await componentInstance.buttonAction(
-                                btn, 
+                                btn,
                                 () => {
                                     modal.close();
                                     this.windowCallback(true);
@@ -1108,14 +1126,46 @@ export class TreeGridBase extends CnComponentBase {
         let search = {};
         if (this.search_Row) {
             const searchData = JSON.parse(JSON.stringify(this.search_Row));
+            // const searchData = this.search_Row;
             delete searchData['key'];
             delete searchData['checked'];
             delete searchData['row_status'];
             delete searchData['selected'];
-
-            search = searchData;
+            // for (const prop in searchData) {
+            //     const oldprop = searchData[prop]
+            //     const newprop = '_root.' + prop;
+            //     delete searchData[prop];
+            //     searchData[newprop] = oldprop;
+            // }
+            search = JSON.parse(JSON.stringify(searchData));
+            // search = searchData;
         }
         return search;
+    }
+
+    protected buildRootSearch() {
+       
+        if (this.search_Row) {
+            let search = {};
+            const searchData = JSON.parse(JSON.stringify(this.search_Row));
+            // const searchData = this.search_Row;
+            delete searchData['key'];
+            delete searchData['checked'];
+            delete searchData['row_status'];
+            delete searchData['selected'];
+            for (const prop in searchData) {
+                const oldprop = searchData[prop]
+                const newprop = '_root.' + prop;
+                delete searchData[prop];
+                searchData[newprop] = oldprop;
+            }
+            search = JSON.parse(JSON.stringify(searchData));
+            return search;
+            // search = searchData;
+        } else {
+            return null;
+        }
+      
     }
 
     protected buildRecursive() {

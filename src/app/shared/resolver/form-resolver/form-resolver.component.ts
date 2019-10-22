@@ -222,6 +222,7 @@ export class FormResolverComponent extends CnFormBase
                         case BSN_COMPONENT_MODES.SAVE:
                             if (option.ajaxConfig) {
                                 this.saveForm_2(option.ajaxConfig);
+
                             } else {
                                 this.message.info('未配置任何操作!');
                             }
@@ -239,6 +240,7 @@ export class FormResolverComponent extends CnFormBase
                             }
                             break;
                         case BSN_COMPONENT_MODES.EXECUTE:
+                            // console.log(this.initData);
                             if (option.ajaxConfig) {
                                 // 根据表单状态进行具体配置操作
                                 this.resolveAjaxConfig(
@@ -411,6 +413,10 @@ export class FormResolverComponent extends CnFormBase
             );
             result = await this[method](ajaxConfigs[index]);
 
+            if (this.config.finishText) {
+                this.load();
+                this.formState = BSN_FORM_STATUS.TEXT;
+            }
             // if (result.isSuccess) {
             //     debugger;
             //     const returnValue = this.getReturnIdsAndType(result.data);
@@ -464,8 +470,8 @@ export class FormResolverComponent extends CnFormBase
         let wsString;
         const url = this._buildURL(this.ajax.url);
         const params = {
-                ...this.buildParameter(this.ajax.params)
-            };
+            ...this.buildParameter(this.ajax.params)
+        };
         const loadData = await this._load(url, params);
         if (loadData && loadData.status === 200 && loadData.isSuccess) {
             if (loadData.data.length > 0) {
@@ -664,7 +670,6 @@ export class FormResolverComponent extends CnFormBase
             // 发送操作完成的ids
             const objs = CommonTools.getReturnIdsAndType(returnValue);
             if (objs && Array.isArray(objs) && objs.length > 0) {
-
                 for (const r_val of objs) {
                     let mode: string;
                     let paramData: any;

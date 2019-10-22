@@ -373,9 +373,12 @@ export class BsnTableComponent extends CnComponentBase
                             break;
                         case BSN_COMPONENT_MODES.FORM_BATCH:
                             this.beforeOperation.operationItemsData = this._getCheckedItems();
-                            !this.beforeOperation.beforeItemsDataOperation(
+                            if (!this.beforeOperation.beforeItemsDataOperation(
                                 option
-                            ) && this.formBatchDialog(option);
+                            )) {
+                                this.formBatchDialog(option);
+                                this.load();
+                            }
                             break;
                         case BSN_COMPONENT_MODES.IMPORT_EXCEL:
                             this.importExcelDialog(option);
@@ -3049,7 +3052,8 @@ export class BsnTableComponent extends CnComponentBase
                                     () => {
                                         modal.close();
                                         this.load();
-                                    }
+                                    },
+                                    dialog
                                 );
 
                             })();
@@ -4072,6 +4076,7 @@ export class BsnTableComponent extends CnComponentBase
         this.is_drag = false;
     }
 
+    // 表格导出excel
     private async exportExcel(option) {
         setTimeout(() => {
             this.loading = true;

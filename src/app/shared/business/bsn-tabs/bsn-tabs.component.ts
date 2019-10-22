@@ -107,7 +107,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
 
                                 const mode =
                                     BSN_COMPONENT_CASCADE_MODES[
-                                        relation.cascadeMode
+                                    relation.cascadeMode
                                     ];
                                 // 获取传递的消息数据
                                 const option = cascadeEvent.option;
@@ -126,11 +126,10 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
                                                 });
                                                 this.tempValue = t;
                                             }
-
                                             // 刷新当前页签，重新设置激活状态
                                             this.config = CommonTools.deepCopy(this.config);
                                         }
-                                    break;
+                                        break;
                                     case BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD:
                                         // 获取相关配置，该配置获取所有标签页
                                         // 找出标签页中设置替换刷新的配置标签
@@ -163,7 +162,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
                                         //     //     }
                                         //     // });
                                         // }
-                                    break;
+                                        break;
                                 }
                             }
                         });

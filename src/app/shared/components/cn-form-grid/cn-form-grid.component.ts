@@ -79,6 +79,7 @@ export class CnFormGridComponent implements OnInit {
   }
 
   public valueChangeTable(name?) {
+    // console.log("valueChangeTable",name);
     this._value = name;
      this.valueChange(this._value);
 

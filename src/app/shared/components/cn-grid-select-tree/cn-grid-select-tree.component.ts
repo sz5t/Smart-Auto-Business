@@ -127,7 +127,7 @@ export class CnGridSelectTreeComponent implements OnInit {
 
                 // result[0].children.push(...);
                 this.treeData = this.listToAsyncTreeData(TotreeBefore, parent);
-                console.log(this.treeData);
+                // console.log(this.treeData);
             }
 
 

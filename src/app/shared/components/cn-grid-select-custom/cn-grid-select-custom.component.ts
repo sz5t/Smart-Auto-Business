@@ -247,6 +247,7 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
                 this._valuetext = componentInstance.value[labelName];
                 this.selectedValue = componentInstance.value;
                 // this.valueChange(this._valuetext, this.selectedValue);
+                // console.log('111', componentInstance.value);
                 this.valueChange(componentInstance.value[valueName], this.selectedValue);
               }
 

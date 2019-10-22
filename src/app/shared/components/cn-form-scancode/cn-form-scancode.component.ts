@@ -167,6 +167,7 @@ export class CnFormScancodeComponent implements OnInit {
         if (dataItem) {
             backValue['dataItem'] = dataItem;
         }
+        // console.log('dddddd===', backValue);
         this.updateValue.emit(backValue);
     }
 }
