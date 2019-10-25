@@ -4461,10 +4461,10 @@ export class TsDataTableComponent extends CnComponentBase
         if (index > -1) {
             option = this.toolbarConfig[index];
         }
-        if (option['action']) {
-            model = BSN_COMPONENT_MODES[option['action']];
-        } else {
+        if (!option['action']) {
             model = BSN_COMPONENT_MODES['EXECUTE'];
+        } else {
+            model = BSN_COMPONENT_MODES[option['action']] ? BSN_COMPONENT_MODES[option['action']] : option['action'];
         }
         // option 操作的详细配置
         // 根据当前行绑定操作名称-》找到对应的操作配置

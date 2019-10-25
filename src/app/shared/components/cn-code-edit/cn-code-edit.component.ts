@@ -17,7 +17,7 @@ export class CnCodeEditComponent implements OnInit , AfterViewInit {
     ) { }
 
     ngOnInit() {
-
+      
     }
     /**
      * text/x-sql

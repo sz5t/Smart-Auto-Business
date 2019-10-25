@@ -412,7 +412,7 @@ export class FormResolverComponent extends CnFormBase
                 item => item.ajaxType === method
             );
             result = await this[method](ajaxConfigs[index]);
-
+            this.sendCascadeMessage();
             if (this.config.finishText) {
                 this.load();
                 this.formState = BSN_FORM_STATUS.TEXT;
@@ -1704,6 +1704,10 @@ export class FormResolverComponent extends CnFormBase
         if (index > -1) {
             updateState = this.toolbarConfig[index];
         }
+        if (!updateState.action) {
+            updateState.action = BSN_COMPONENT_MODES['EXECUTE'];
+        }
+        updateState.action = BSN_COMPONENT_MODES[updateState.action] ? BSN_COMPONENT_MODES[updateState.action] : updateState.action;
         const option = updateState;
         this.beforeOperation.operationItemData = this.value;
         if (!this.beforeOperation.beforeItemDataOperation(option)) {

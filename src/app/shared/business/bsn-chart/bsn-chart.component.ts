@@ -27,7 +27,8 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   public showguide = []; // 辅助线的数组
   public guidedataList = []; // 辅助线的数据集合
   public autoPlay;
-  public ds; // 展示的部分数据源
+  public ds; // 读取的全部数据
+  public dv; // 根据要求过滤出的视图
   public datalength; // 真实的数据长度
   public next = 1; // 自动播放的标识变量
 
@@ -76,6 +77,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   public async load() {
 
     await this.load_data();
+    await this.load_guide();
 
     // setTimeout(() => {
     if (this.config.type) {
@@ -335,7 +337,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       });
     }
 
-    
+
     this.chart.render();
     if (this.config.autoPlay) {
       let next = 1;
@@ -389,8 +391,8 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     if (this.config.y.axis) {
       this.chart.axis(this.config.y.name, this.config.y.axis);
     }
-    const dv = this.ds.createView();
-    dv.source(data)
+    this.dv = this.ds.createView();
+    this.dv.source(data)
       .transform({
         type: 'filter',
         callback: obj => {
@@ -398,52 +400,16 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
           return (new Date(obj[x])).getTime() >= this.ds.state.from && (new Date(obj[x])).getTime() <= this.ds.state.to;
         }
       });
-    this.chart.source(dv);
+    this.chart.source(this.dv);
     this.chart.line().position(this.config.x.name + '*' + this.config.y.name).shape(this.config.shape ? this.config.shape : 'circle');
     this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('circle').style({
       stroke: '#fff',
       lineWidth: 1
     });
 
-    if (this.config.peakValue || this.config.eachPeakValue) {
-      this.writepoint(this.chart);
+    if (this.config.haveGuide) {
+      this.allGuide(this.chart);
     }
-
-    if (this.config.showGuide) {
-      // 直线的辅助线
-      if (this.config.guideLine) {
-        this.chart.guide().line({
-          top: true,
-          start: ['min', this.config.guideLine.start],
-          end: ['max', this.config.guideLine.end],
-          lineStyle: {
-            stroke: '#F5222D',
-            lineWidth: 2
-          },
-          text: {
-            content: this.config.text.content,
-            position: 'start',
-            offsetX: 20,
-            offsetY: -5,
-            style: {
-              fontSize: 14,
-              fill: '#F5222D',
-              opacity: 0.5
-            }
-          }
-        })
-      }
-
-      // 动态的辅助线
-      if (this.config.guideAjax) {
-        this.load_guide();
-        this.showguide.forEach(e => {
-          
-        });
-      }
-    }
-
-    this.chart.render();
     if (this.config.showSlider && !this.config.autoPlay) {
       this.slider = new Slider({
         container: document.getElementById('slider'),
@@ -470,9 +436,11 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
           this.ds.setState('from', startValue);
           this.ds.setState('to', endValue);
           setTimeout(() => {
-            this.writepoint(this.chart, startValue, endValue);
+            // this.chart.guide().clear();
+            this.allGuide(this.chart, startValue, endValue);
             // this.chart.render();
-          }, 10);
+          });
+         
         }
       });
 
@@ -513,6 +481,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       // this.chart.interact('slider', this.slider);
     }
 
+    this.chart.render();
     if (this.config.autoPlay) {
 
       this.autoPlay = setInterval(() => {
@@ -525,82 +494,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         }
       }, this.config.intervalTime)
     }
-
-    // const data = [
-    //   {'title': 'Unforgettable', 'artist': 'Nat \'King\' Cole', 'release': 1951, 'year': '1999', 'rank': '1188', 'count': 20}, 
-    //   {'title': 'La Mer', 'artist': 'Charles Trenet', 'release': 1952, 'year': '1999', 'rank': '1249', 'count': 24}, {'title': 'White Christmas', 'artist': 'Bing Crosby', 'release': 1954, 'year': '1999', 'rank': '218', 'count': 10}, {'title': '(We\'re gonna) Rock Around The Clock', 'artist': 'Bill Haley & The Comets', 'release': 1955, 'year': '1999', 'rank': '239', 'count': 19}, {'title': 'Heartbreak Hotel', 'artist': 'Elvis Presley', 'release': 1956, 'year': '1999', 'rank': '558', 'count': 109}, {'title': 'Jailhouse Rock', 'artist': 'Elvis Presley', 'release': 1957, 'year': '1999', 'rank': '247', 'count': 188}, {'title': 'Johnny B. Goode', 'artist': 'Chuck Berry', 'release': 1958, 'year': '1999', 'rank': '714', 'count': 89}, {'title': 'One Night', 'artist': 'Elvis Presley', 'release': 1959, 'year': '1999', 'rank': '622', 'count': 71}, {'title': 'It\'s Now Or Never', 'artist': 'Elvis Presley', 'release': 1960, 'year': '1999', 'rank': '285', 'count': 221}, {'title': 'Non Je Ne Regrette Rien', 'artist': 'Edith Piaf', 'release': 1961, 'year': '1999', 'rank': '106', 'count': 178}, {'title': 'Take Five', 'artist': 'Dave Brubeck', 'release': 1962, 'year': '1999', 'rank': '279', 'count': 204}, {'title': 'Blowing In The Wind', 'artist': 'Bob Dylan', 'release': 1963, 'year': '1999', 'rank': '94', 'count': 323}, {'title': 'House Of The Rising Sun', 'artist': 'The Animals', 'release': 1964, 'year': '1999', 'rank': '13', 'count': 543}, {'title': 'Yesterday', 'artist': 'The Beatles', 'release': 1965, 'year': '1999', 'rank': '6', 'count': 909}, {'title': 'Paint It Black', 'artist': 'The Rolling Stones', 'release': 1966, 'year': '1999', 'rank': '33', 'count': 1077}, {'title': 'A Whiter Shade Of Pale', 'artist': 'Procol Harum', 'release': 1967, 'year': '1999', 'rank': '10', 'count': 1190}, {'title': 'Hey Jude', 'artist': 'The Beatles', 'release': 1968, 'year': '1999', 'rank': '11', 'count': 1037}, {'title': 'Space Oddity', 'artist': 'David Bowie', 'release': 1969, 'year': '1999', 'rank': '59', 'count': 1344}, {'title': 'Bridge Over Troubled Water', 'artist': 'Simon & Garfunkel', 'release': 1970, 'year': '1999', 'rank': '9', 'count': 1111}, {'title': 'Stairway To Heaven', 'artist': 'Led Zeppelin', 'release': 1971, 'year': '1999', 'rank': '4', 'count': 1132}, {'title': 'Child In Time', 'artist': 'Deep Purple', 'release': 1972, 'year': '1999', 'rank': '3', 'count': 1117}, {'title': 'Angie', 'artist': 'The Rolling Stones', 'release': 1973, 'year': '1999', 'rank': '8', 'count': 1183}, {'title': 'School', 'artist': 'Supertramp', 'release': 1974, 'year': '1999', 'rank': '26', 'count': 1011}, {'title': 'Bohemian Rhapsody', 'artist': 'Queen', 'release': 1975, 'year': '1999', 'rank': '1', 'count': 978}, {'title': 'Dancing Queen', 'artist': 'ABBA', 'release': 1976, 'year': '1999', 'rank': '16', 'count': 1111}, {'title': 'Hotel California', 'artist': 'Eagles', 'release': 1977, 'year': '1999', 'rank': '2', 'count': 1284}, {'title': 'Paradise By The Dashboard Light', 'artist': 'Meat Loaf', 'release': 1978, 'year': '1999', 'rank': '5', 'count': 1187}, {'title': 'Another Brick In The Wall', 'artist': 'Pink Floyd', 'release': 1979, 'year': '1999', 'rank': '17', 'count': 1266}, {'title': 'The Winner Takes It All', 'artist': 'ABBA', 'release': 1980, 'year': '1999', 'rank': '35', 'count': 926}, {'title': 'The River', 'artist': 'Bruce Springsteen', 'release': 1981, 'year': '1999', 'rank': '48', 'count': 723}, {'title': 'Old And Wise', 'artist': 'The Alan Parsons Project', 'release': 1982, 'year': '1999', 'rank': '24', 'count': 945}, {'title': 'Goodnight Saigon', 'artist': 'Billy Joel', 'release': 1983, 'year': '1999', 'rank': '14', 'count': 748}, {'title': 'Over De Muur', 'artist': 'Klein Orkest', 'release': 1984, 'year': '1999', 'rank': '32', 'count': 1166}, {'title': 'Sunday Bloody Sunday', 'artist': 'U2', 'release': 1985, 'year': '1999', 'rank': '18', 'count': 1087}, {'title': 'Who Wants To Live Forever', 'artist': 'Queen', 'release': 1986, 'year': '1999', 'rank': '30', 'count': 836}, {'title': 'With Or Without You', 'artist': 'U2', 'release': 1987, 'year': '1999', 'rank': '51', 'count': 816}, {'title': 'Wonderful Tonight', 'artist': 'Eric Clapton', 'release': 1988, 'year': '1999', 'rank': '91', 'count': 515}, {'title': 'Eternal Flame', 'artist': 'Bangles', 'release': 1989, 'year': '1999', 'rank': '96', 'count': 495}, {'title': 'Nothing Compares 2 U', 'artist': 'Sinead O\'Connor', 'release': 1990, 'year': '1999', 'rank': '90', 'count': 426}, {'title': 'Losing My Religion', 'artist': 'R.E.M.', 'release': 1991, 'year': '1999', 'rank': '25', 'count': 415}, {'title': 'Tears In Heaven', 'artist': 'Eric Clapton', 'release': 1992, 'year': '1999', 'rank': '21', 'count': 435}, {'title': 'Everybody Hurts', 'artist': 'R.E.M.', 'release': 1993, 'year': '1999', 'rank': '31', 'count': 301}, {'title': 'Stil In Mij', 'artist': 'Van Dik Hout', 'release': 1994, 'year': '1999', 'rank': '65', 'count': 373}, {'title': 'Conquest Of Paradise', 'artist': 'Vangelis', 'release': 1995, 'year': '1999', 'rank': '157', 'count': 315}, {'title': 'Con Te Partiro', 'artist': 'Andrea Bocelli', 'release': 1996, 'year': '1999', 'rank': '109', 'count': 362}, {'title': 'Candle In The Wind (1997)', 'artist': 'Elton John', 'release': 1997, 'year': '1999', 'rank': '37', 'count': 451}, {'title': 'My Heart Will Go On', 'artist': 'Celine Dion', 'release': 1998, 'year': '1999', 'rank': '41', 'count': 415}, {'title': 'The Road Ahead', 'artist': 'City To City', 'release': 1999, 'year': '1999', 'rank': '1999', 'count': 262}, {'title': 'What It Is', 'artist': 'Mark Knopfler', 'release': 2000, 'year': '2000', 'rank': '545', 'count': 291}, {'title': 'Overcome', 'artist': 'Live', 'release': 2001, 'year': '2001', 'rank': '879', 'count': 111}, {'title': 'Mooie Dag', 'artist': 'Blof', 'release': 2002, 'year': '2003', 'rank': '147', 'count': 256}, {'title': 'Clocks', 'artist': 'Coldplay', 'release': 2003, 'year': '2003', 'rank': '733', 'count': 169}, {'title': 'Sunrise', 'artist': 'Norah Jones', 'release': 2004, 'year': '2004', 'rank': '405', 'count': 256}, {'title': 'Nine Million Bicycles', 'artist': 'Katie Melua', 'release': 2005, 'year': '2005', 'rank': '23', 'count': 250}, {'title': 'Rood', 'artist': 'Marco Borsato', 'release': 2006, 'year': '2006', 'rank': '17', 'count': 159}, {'title': 'If You Were A Sailboat', 'artist': 'Katie Melua', 'release': 2007, 'year': '2007', 'rank': '101', 'count': 256}, {'title': 'Dochters', 'artist': 'Marco Borsato', 'release': 2008, 'year': '2009', 'rank': '25', 'count': 268}, {'title': 'Viva La Vida', 'artist': 'Coldplay', 'release': 2009, 'year': '2009', 'rank': '11', 'count': 228}, {'title': 'Need You Now', 'artist': 'Lady Antebellum', 'release': 2010, 'year': '2010', 'rank': '210', 'count': 121}, {'title': 'Someone Like You', 'artist': 'Adele', 'release': 2011, 'year': '2011', 'rank': '6', 'count': 187}, {'title': 'I Follow Rivers', 'artist': 'Triggerfinger', 'release': 2012, 'year': '2012', 'rank': '79', 'count': 167}, {'title': 'Get Lucky', 'artist': 'Daft Punk', 'release': 2013, 'year': '2013', 'rank': '357', 'count': 141}, {'title': 'Home', 'artist': 'Dotan', 'release': 2014, 'year': '2014', 'rank': '82', 'count': 76}, {'title': 'Hello', 'artist': 'Adele', 'release': 2015, 'year': '2015', 'rank': '23', 'count': 29}];
-    // const this.ds = new DataSet({
-    //   state: {
-    //     from: 1970,
-    //     to: 1990
-    //   }
-    // });
-    // const dv = this.ds.createView();
-    // dv.source(data)
-    //   .transform({
-    //     type: 'filter',
-    //     callback: obj => {
-    //       return obj.release >= this.ds.state.from && obj.release <= this.ds.state.to;
-    //     }
-    //   });
-
-    // const chart = new G2.Chart({
-    //   container: this.chartElement.nativeElement,
-    //   forceFit: true,
-    //   height: 350,
-    //   animate: false,
-    //   padding: [ 20, 100, 60 ]
-    // });
-    // chart.source(dv, { 
-    //   count: {
-    //     alias: 'top2000 唱片总量'
-    //   },
-    //   release: {
-    //     alias: '唱片发行年份'
-    //   }
-    // });
-    // chart.interval().position('release*count').color('#e50000');
-    // chart.render();
-
-    // const slider = new Slider({
-    //   container: document.getElementById('slider'),
-    //   padding: [ 20, 100, 60 ],
-    //   start: this.ds.state.from,
-    //   end: this.ds.state.to,
-    //   data,
-    //   xAxis: 'release',
-    //   yAxis: 'count',
-    //   scales: {
-    //     release: {
-    //       formatter: (val) => {
-    //         return parseInt(val, 10);
-    //       }
-    //     }
-    //   },
-    //   backgroundChart: {
-    //     type: 'interval',
-    //     color: 'rgba(0, 0, 0, 0.3)'
-    //   },
-    //   onChange: ({ startText, endText }) => {
-    //     // !!! 更新状态量
-    //     this.ds.setState('from', startText);
-    //     this.ds.setState('to', endText);
-    //   }
-    // });
-
-    // slider.render();
-
-    // 更新数据源示例
-    // $('#changeData').click( ev => {
-    //   const newData = data.slice(10, 90);
-    //   this.ds.setState('from', 2000);
-    //   this.ds.setState('to', 2015);
-    //   dv.source(newData); // dv 重新装载数据即可
-    //   slider.start = 2000;
-    //   slider.end = 2015;
-    //   slider.changeData(newData);
-    // });
-
   }
 
   public CreateChart_MiniLine() {
@@ -704,42 +597,40 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   }
 
   public async load_guide() {
-    this.config.guideAjax.forEach(async e => {
-      const url = this._buildURL(this.config.guideAjax.url);
-      const params = {
-        ...this._buildParameters(this.config.guideAjax.params),
-        ...this._buildFilter(this.config.guideAjax.filter)
-      };
-      const method = this.config.guideAjax.ajaxType;
-      const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
-      if (loadData.isSuccess) {
-        let data;
-        if (method === 'proc') {
-          data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
+    const url = this._buildURL(this.config.guideConfig.url);
+    const params = {
+      ...this._buildParameters(this.config.guideConfig.params),
+      ...this._buildFilter(this.config.guideConfig.filter)
+    };
+    const method = this.config.guideConfig.ajaxType;
+    const loadData = await this._load(url, params, this.config.guideConfig.ajaxType);
+    if (loadData.isSuccess) {
+      let data;
+      if (method === 'proc') {
+        data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
+        this.guidedataList = data;
+      } else {
+        data = loadData.data;  // data 是数组
+        if (data) {
           this.guidedataList = data;
         } else {
-          data = loadData.data;  // data 是数组
-          if (data) {
-            this.guidedataList = data;
-          } else {
-            this.guidedataList = [];
-          }
+          this.guidedataList = [];
         }
-      } else {
-        this.guidedataList = [];
       }
-      if (this.config.showDataLength) {
-        if (this.guidedataList.length > this.config.showDataLength) {
-          for (let i = 0; i < this.config.showDataLength; i++) {
-            this.showguide.push(this.guidedataList[i]);
-          }
-        } else {
-          this.showguide = this.guidedataList;
+    } else {
+      this.guidedataList = [];
+    }
+    if (this.config.showDataLength) {
+      if (this.guidedataList.length > this.config.showDataLength) {
+        for (let i = 0; i < this.config.showDataLength; i++) {
+          this.showguide.push(this.guidedataList[i]);
         }
       } else {
         this.showguide = this.guidedataList;
       }
-    });
+    } else {
+      this.showguide = this.guidedataList;
+    }
   }
 
 
@@ -1032,15 +923,26 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     return minObj;
   }
 
+  // 辅助标记的总方法
+  public allGuide(charts?, start?, end?) {
+    charts.guide().clear();
+    if (this.config.showGuide) {
+      this.writeguide(charts, start, end);
+    }
+    if (this.config.peakValue || this.config.eachPeakValue) {
+      this.writepoint(charts, start, end);
+    }
+  }
+
   // 绘制最值标记点
   public writepoint(charts?, start?, end?) {
-    charts.guide().clear();
     if (!this.config.autoPlay) {
       if (this.config.peakValue) {
         if (!this.config.eachPeakValue) {
           const max_min = this.findMaxMin(start, end);
           const max = max_min.max;
           const min = max_min.min;
+          // console.log(max[this.config.x.name], min[this.config.x.name]);
           if (max_min) {
             charts.guide().dataMarker({
               top: true,
@@ -1068,7 +970,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
               },
               lineLength: 50
             });
-
           }
         } else {
           const group = [];
@@ -1162,5 +1063,175 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         lineLength: 50
       });
     }
+  }
+
+  // 绘制辅助线
+  public writeguide(charts?, start?, end?) {
+    // 动态的辅助线
+    if (this.config.guideConfig) {
+      // 解析相关字段
+      const maxvalue = this.config.guide.maxvalue;
+      const minvalue = this.config.guide.minvalue;
+      const starttime = this.config.guide.start;
+      const endtime = this.config.guide.end;
+      // 辅助线展示的起始
+      let lineStartTime;
+      let lineEndTime;
+      if (!start) {
+        start = this.dv.rows[0][this.config.x.name];
+        end = this.dv.rows[this.dv.rows.length - 1][this.config.x.name];
+        if (this.config.guideConfig.guideType === 'line') {
+          this.showguide.forEach(e => {
+            if (e[starttime] <= end) {
+              lineEndTime = e[endtime] < end ? e[endtime] : end
+              charts.guide().line({
+                top: true,
+                start: [e[starttime], e[maxvalue]],
+                end: [lineEndTime, e[maxvalue]],
+
+                lineStyle: {
+                  stroke: '#F5222D',
+                  lineWidth: 2
+                },
+                text: {
+                  content: '预警上限',
+                  position: 'start',
+                  offsetX: 20,
+                  offsetY: -5,
+                  style: {
+                    fontSize: 14,
+                    fill: '#F5222D',
+                    opacity: 0.5
+                  }
+                }
+              });
+              charts.guide().line({
+                top: true,
+                start: [e[starttime], e[minvalue]],
+                end: [lineEndTime, e[minvalue]],
+
+                lineStyle: {
+                  stroke: '#F5222D',
+                  lineWidth: 2
+                },
+                text: {
+                  content: '预警下限',
+                  position: 'start',
+                  offsetX: 20,
+                  offsetY: -5,
+                  style: {
+                    fontSize: 14,
+                    fill: '#F5222D',
+                    opacity: 0.5
+                  }
+                }
+              });
+              // 对相关曲线进行染色处理
+              if (this.config.guideColor) {
+                charts.guide().regionFilter({
+                  top: true,
+                  start: [e[starttime], e[maxvalue]],
+                  end: [lineEndTime, 'max'],
+                  color: '#FF4D4F'
+                });
+                charts.guide().regionFilter({
+                  top: true,
+                  start: [e[starttime], e[minvalue]],
+                  end: [lineEndTime, 'min'],
+                  color: '#FF4D4F'
+                });
+              }
+            }
+          });
+        } else {
+          this.showguide.forEach(e => {
+
+          });
+        }
+      } else {
+        // 带状区域的辅助线
+        if (this.config.guideConfig.guideType === 'line') {
+          // 库里面的基线的起始
+          let dataStartTime ; 
+          let dataEndTime ;
+          // 用时间戳的判断
+          this.showguide.forEach(e => {
+            dataStartTime = new Date(e[starttime].replace(/-/g, '/')).getTime();
+            dataEndTime = new Date(e[endtime].replace(/-/g, '/')).getTime();
+            if (dataStartTime <= end) {
+              lineStartTime = start > dataStartTime ? start : dataStartTime;
+              lineEndTime = end > dataEndTime ? dataEndTime : end;
+              lineStartTime = this.transTimeString(lineStartTime);
+              lineEndTime = this.transTimeString(lineEndTime);
+              charts.guide().line({
+                top: true,
+                start: [lineStartTime, e[maxvalue]],
+                end: [lineEndTime, e[maxvalue]],
+
+                lineStyle: {
+                  stroke: '#F5222D',
+                  lineWidth: 2
+                },
+                text: {
+                  content: '预警上限',
+                  position: 'start',
+                  offsetX: 20,
+                  offsetY: -5,
+                  style: {
+                    fontSize: 14,
+                    fill: '#F5222D',
+                    opacity: 0.5
+                  }
+                }
+              });
+              charts.guide().line({
+                top: true,
+                start: [lineStartTime, e[minvalue]],
+                end: [lineEndTime, e[minvalue]],
+
+                lineStyle: {
+                  stroke: '#F5222D',
+                  lineWidth: 2
+                },
+                text: {
+                  content: '预警下限',
+                  position: 'start',
+                  offsetX: 20,
+                  offsetY: -5,
+                  style: {
+                    fontSize: 14,
+                    fill: '#F5222D',
+                    opacity: 0.5
+                  }
+                }
+              });
+              if (this.config.guideColor) {
+                charts.guide().regionFilter({
+                  top: true,
+                  start: [e[starttime], e[maxvalue]],
+                  end: [lineEndTime, 'max'],
+                  color: '#FF4D4F'
+                });
+                charts.guide().regionFilter({
+                  top: true,
+                  start: [e[starttime], e[minvalue]],
+                  end: [lineEndTime, 'min'],
+                  color: '#FF4D4F'
+                });
+              }
+            }
+          });
+        } else { // 折线辅助线
+          this.showguide.forEach(e => {
+
+          });
+        }
+      }
+    }
+  }
+
+  // 时间戳转时间字符串
+  public transTimeString(time) {
+    return `${getISOYear(time)}-${getMonth(time) + 1}-${getDate(time)}${' '}${getHours(getTime(time))}${':'}${getMinutes(getTime(time))}${':'}${getSeconds(getTime(time))}`;
   }
 }

@@ -27,7 +27,7 @@
                         <ul nz-menu>
                             <li nz-menu-item (click)="toolbarAction(b)" *ngFor="let b of btn.buttons">
                                 <strong>
-                                        <a  [attr.disabled]="b.disabled"> <i nz-icon type="btn.icon" [theme]="btn.theme ? btn.theme : 'outline'"></i>{{b.text}}</a>
+                                        <a  [attr.disabled]="b.disabled"> <i nz-icon [type]="b.icon" [theme]="b.theme ? b.theme : 'outline'"></i>{{b.text}}</a>
                                 </strong>
                             </li>
                         </ul>
