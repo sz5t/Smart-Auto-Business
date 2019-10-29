@@ -77,7 +77,9 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   public async load() {
 
     await this.load_data();
-    await this.load_guide();
+    if (this.config.haveGuide) {
+      await this.load_guide();
+    }
 
     // setTimeout(() => {
     if (this.config.type) {
@@ -92,7 +94,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         case 'mini_bar':
           this.CreateChart_MiniBar()
           break;
-
         case 'pie':
           this.CreateChart_Pie()
           break;
@@ -392,20 +393,66 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       this.chart.axis(this.config.y.name, this.config.y.axis);
     }
     this.dv = this.ds.createView();
-    this.dv.source(data)
-      .transform({
-        type: 'filter',
-        callback: obj => {
-          const a = new Date(obj[x]);
-          return (new Date(obj[x])).getTime() >= this.ds.state.from && (new Date(obj[x])).getTime() <= this.ds.state.to;
+
+    if (this.config.guideScale.y) {
+      let grouptext;
+      for (let i = 0; i < this.config.guideScale.y.length; i++) {
+        if (grouptext) {
+          grouptext += this.config.guideScale.y[i]['name'] + ','
+        } else {
+          grouptext = this.config.guideScale.y[i]['name'] + ','
         }
-      });
+      }
+      grouptext = grouptext.substring(0, grouptext.length - 1);
+      let test = grouptext.filter(',')
+      console.log(test);
+      this.dv.source(data)
+        .transform({
+          type: 'filter',
+          callback: obj => {
+            const a = new Date(obj[x]);
+            return (new Date(obj[x])).getTime() >= this.ds.state.from && (new Date(obj[x])).getTime() <= this.ds.state.to;
+          }
+        })
+        .transform({
+          type: 'fold',
+          fields: [this.config.y.name, grouptext], // 展开字段集
+          key: 'city', // key字段
+          value: 'value' // value字段
+        });
+    } else {
+      this.dv.source(data)
+        .transform({
+          type: 'filter',
+          callback: obj => {
+            const a = new Date(obj[x]);
+            return (new Date(obj[x])).getTime() >= this.ds.state.from && (new Date(obj[x])).getTime() <= this.ds.state.to;
+          }
+        });
+    }
     this.chart.source(this.dv);
-    this.chart.line().position(this.config.x.name + '*' + this.config.y.name).shape(this.config.shape ? this.config.shape : 'circle');
-    this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('circle').style({
-      stroke: '#fff',
-      lineWidth: 1
-    });
+    if (this.config.guideScale.y) {
+      this.config.guideScale.y.forEach(e => {
+        this.chart.line().position(this.config.x.name + '*' + 'value').color('city').shape(this.config.shape ? this.config.shape : 'circle');
+        // this.chart.point().position(this.config.x.name + '*' + this.config.y.name).color(e.name).size(4).shape('circle').style({
+        //   stroke: '#fff',
+        //   lineWidth: 1
+        // });
+      });
+    }
+    if (this.config.groupName) {
+      this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).shape(this.config.shape ? this.config.shape : 'circle');
+      this.chart.point().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).size(4).shape('circle').style({
+        stroke: '#fff',
+        lineWidth: 1
+      });
+    } else {
+      this.chart.line().position(this.config.x.name + '*' + this.config.y.name).shape(this.config.shape ? this.config.shape : 'circle');
+      this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('circle').style({
+        stroke: '#fff',
+        lineWidth: 1
+      });
+    }
 
     if (this.config.haveGuide) {
       this.allGuide(this.chart);
@@ -440,7 +487,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
             this.allGuide(this.chart, startValue, endValue);
             // this.chart.render();
           });
-         
+
         }
       });
 
@@ -448,22 +495,22 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     }
 
     if (this.config.showSlider && this.config.autoPlay) {
-      this.originDv = this.ds.createView('origin');
-      this.originDv.source(this.showdata).transform({
-        type: 'fold',
-        fields: [this.config.y.name],
-        retains: [this.config.y.name, this.config.x.name]
-      }).transform({
-        type: 'filter',
-        callback: (obj) => {
-          const time = new Date(obj.monitortime).getTime(); // !注意：时间格式，建议转换为时间戳进行比较
-          return time >= this.ds.state.start && time <= this.ds.state.end;
-        }
-      });
+      // this.originDv = this.ds.createView('origin');
+      // this.originDv.source(this.showdata).transform({
+      //   type: 'fold',
+      //   fields: [this.config.y.name],
+      //   retains: [this.config.y.name, this.config.x.name]
+      // }).transform({
+      //   type: 'filter',
+      //   callback: (obj) => {
+      //     const time = new Date(obj.monitortime).getTime(); // !注意：时间格式，建议转换为时间戳进行比较
+      //     return time >= this.ds.state.from && time <= this.ds.state.to;
+      //   }
+      // });
       this.slider = new Slider({
         container: 'slider',
-        start: this.ds.state.start, // 和状态量对应
-        end: this.ds.state.end,
+        start: this.ds.state.from, // 和状态量对应
+        end: this.ds.state.to,
         xAxis: this.config.x.name,
         yAxis: this.config.y.name,
         data: this.showdata,
@@ -471,10 +518,23 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
           type: 'line',
           color: 'grey'
         },
+        scales:
+        {
+          [x]: {
+            formatter: (val) => {
+              return `${getISOYear(val)}-${getMonth(val) + 1}-${getDate(val)}${' '}${getHours(getTime(val))}${':'}${getMinutes(getTime(val))}${':'}${getSeconds(getTime(val))}`;
+            }
+          }
+        },
         onChange: (_ref) => {
           const startValue = _ref.startValue, endValue = _ref.endValue;
-          this.ds.setState('start', startValue);
-          this.ds.setState('end', endValue);
+          this.ds.setState('from', startValue);
+          this.ds.setState('to', endValue);
+          setTimeout(() => {
+            // this.chart.guide().clear();
+            this.allGuide(this.chart, startValue, endValue);
+            // this.chart.render();
+          });
         }
       });
       this.slider.render();
@@ -483,13 +543,19 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
 
     this.chart.render();
     if (this.config.autoPlay) {
-
       this.autoPlay = setInterval(() => {
         this.next = this.next + 1;
         if (this.dataList[this.dataList.length - 1] !== this.showdata[this.config.showDataLength - 1]) {
           this.showdata.shift();
           this.showdata.push(this.dataList[this.config.showDataLength - 1 + this.next]);
+          this.slider.start = new Date(this.showdata[0][this.config.x.name].replace(/-/g, '/')).getTime();
+          this.slider.end = new Date(this.showdata[this.config.showDataLength - 1][this.config.x.name].replace(/-/g, '/')).getTime();
           this.chart.changeData(this.showdata);
+          setTimeout(() => {
+            // this.chart.guide().clear();
+            this.allGuide(this.chart, this.slider.start, this.slider.end);
+            this.chart.repaint();
+          });
           this.slider.changeData(this.showdata);
         }
       }, this.config.intervalTime)
@@ -1143,22 +1209,20 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
               }
             }
           });
-        } else {
-          this.showguide.forEach(e => {
+        } else if (this.config.guideConfig.guideType === 'circle') {
 
-          });
         }
       } else {
         // 带状区域的辅助线
         if (this.config.guideConfig.guideType === 'line') {
           // 库里面的基线的起始
-          let dataStartTime ; 
-          let dataEndTime ;
+          let dataStartTime;
+          let dataEndTime;
           // 用时间戳的判断
           this.showguide.forEach(e => {
             dataStartTime = new Date(e[starttime].replace(/-/g, '/')).getTime();
             dataEndTime = new Date(e[endtime].replace(/-/g, '/')).getTime();
-            if (dataStartTime <= end) {
+            if (dataEndTime > start) {
               lineStartTime = start > dataStartTime ? start : dataStartTime;
               lineEndTime = end > dataEndTime ? dataEndTime : end;
               lineStartTime = this.transTimeString(lineStartTime);
