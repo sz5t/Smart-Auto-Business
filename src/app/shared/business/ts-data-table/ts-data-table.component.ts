@@ -2900,6 +2900,21 @@ export class TsDataTableComponent extends CnComponentBase
         return serverData.join(',');
     }
 
+    private _getNormalCheckedItemsId() {
+        const serverData = [];
+        this.dataList.forEach(item => {
+           
+            if (
+                item.checked === true
+            ) {
+                // 删除服务端数据
+                serverData.push(item['Id']);
+            }
+        });
+        this.tempValue['_normalCheckedIds'] = serverData.join(',');
+        return serverData.join(',');
+    }
+
     private _getAddedRows() {
         const addedRows = [];
         this.dataList.map(item => {
@@ -3576,7 +3591,7 @@ export class TsDataTableComponent extends CnComponentBase
             const selectedRow = this._selectRow ? this._selectRow : {};
             const tmpValue = this.tempValue ? this.tempValue : {};
             const handle = handleData ? handleData : {};
-            // const checkedIds = {'_checkedIds': this._getCheckItemsId() ? this._getCheckItemsId() : ''};
+            this._getNormalCheckedItemsId();
             drawer = this.baseDrawer.create({
                 // nzTitle: dialog.title,
                 nzWidth: dialog.width,
@@ -3594,7 +3609,7 @@ export class TsDataTableComponent extends CnComponentBase
                 nzContentParams: {
                     permissions: this.permissions,
                     config: data,
-                    initData: { ...tmpValue, ...selectedRow, ...handle, ...this.initValue }
+                    initData: {...tmpValue, ...selectedRow, ...handle, ...this.initValue }
                 }
             });
 

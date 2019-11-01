@@ -18,7 +18,7 @@ import { NzMessageService } from "ng-zorro-antd";
 import { _HttpClient } from "@delon/theme";
 import { environment } from "@env/environment";
 import { APIResource } from "@core/utility/api-resource";
-import { SystemResource } from "@core/utility/system-resource";
+import { SystemResource, SystemResource_1 } from "@core/utility/system-resource";
 
 /**
  * 默认HTTP拦截器，其注册细节见 `app.module.ts`
@@ -93,7 +93,9 @@ export class DefaultInterceptor implements HttpInterceptor {
 
         if (!url.startsWith("https://") && !url.startsWith("http://")) {
             url = this._buildURL() + url;
+            
         }
+        url = this._replaceCurrentURL(url)
 
         const newReq = req.clone({
             url: url
@@ -120,5 +122,35 @@ export class DefaultInterceptor implements HttpInterceptor {
             url = currentConfig.Server;
         }
         return url;
+    }
+
+    private _replaceCurrentURL(oldUrl: string): string {
+        const reg = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
+        const reg_port = /:\d{1,5}/;
+        const reg_all = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}/
+        const ip = reg_all.exec(oldUrl)[0];
+        
+        const href = window.location.href;
+
+        const port = reg_port.exec(href)[0];
+        const subPort = reg_port.exec(href)[0].substring(1, port.length);
+
+        let match, matchIP;
+        if (href.indexOf('localhost') < 0) {
+            match = reg.exec(window.location.href)[0].replace(/\./g, '_');  
+            
+            matchIP = `url_${match}_${subPort}`;
+        } else {
+            matchIP = `url_localhost_${subPort}`;
+        }
+        let newIP;
+        if (oldUrl.indexOf('api.cfg') > 0) {
+            newIP = SystemResource_1[matchIP].settingSystemServer;
+        } else if (oldUrl.indexOf('ReportServer.ashx') > 0) {
+            newIP = SystemResource_1[matchIP].reportServerUrl;
+        } else {
+            newIP = SystemResource_1[matchIP].localResourceUrl;
+        }
+        return oldUrl.replace(ip, newIP);
     }
 }

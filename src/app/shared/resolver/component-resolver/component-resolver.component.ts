@@ -135,6 +135,7 @@ export class ComponentResolverComponent
             }
 
             if (this.initData) {
+                console.log('component-resolver', this.initData);
                 this.componentRef.instance.initData = this.initData;
             }
             if (this.componentRef.instance.hasOwnProperty('permissions')) {

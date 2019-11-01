@@ -1,5 +1,5 @@
 import { SystemModule } from './../../../routes/system/system.module';
-import { SystemResource } from '@core/utility/system-resource';
+import { SystemResource, SystemResource_1 } from '@core/utility/system-resource';
 import { getService } from './../../../../testing/common.spec';
 import { ApiService } from './../../../core/utility/api-service';
 import { APIResource } from '@core/utility/api-resource';
@@ -87,8 +87,37 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
         }
 
         const resource = `${this.config.ajaxConfig.url}&${url.join('&')}`;
-        this.reportURL = `${SystemResource.reportServer.url}?inline=${inline}&report=${report}&type=pdf&resource=${resource}`;
-        console.log(this.reportURL);
+        this.reportURL = `${this._replaceCurrentURL(SystemResource.reportServer.url)}?inline=${inline}&report=${report}&type=pdf&resource=${resource}`;
+        console.log(this._replaceCurrentURL(this.reportURL));
+    }
+    private _replaceCurrentURL(oldUrl: string): string {
+        const reg = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
+        const reg_port = /:\d{1,5}/;
+        const reg_all = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}/
+        const ip = reg_all.exec(oldUrl)[0];
+        
+        const href = window.location.href;
+
+        const port = reg_port.exec(href)[0];
+        const subPort = reg_port.exec(href)[0].substring(1, port.length);
+
+        let match, matchIP;
+        if (href.indexOf('localhost') < 0) {
+            match = reg.exec(window.location.href)[0].replace(/\./g, '_');  
+            
+            matchIP = `url_${match}_${subPort}`;
+        } else {
+            matchIP = `url_localhost_${subPort}`;
+        }
+        let newIP;
+        if (oldUrl.indexOf('api.cfg') > 0) {
+            newIP = SystemResource_1[matchIP].settingSystemServer;
+        } else if (oldUrl.indexOf('ReportServer.ashx') > 0) {
+            newIP = SystemResource_1[matchIP].reportServerUrl;
+        } else {
+            newIP = SystemResource_1[matchIP].localResourceUrl;
+        }
+        return oldUrl.replace(ip, newIP);
     }
 
     public async load() {

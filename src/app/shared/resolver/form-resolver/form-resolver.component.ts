@@ -161,6 +161,7 @@ export class FormResolverComponent extends CnFormBase
             });
         }
         this.initValue = this.initData ? this.initData : {};
+        console.log('form-resolver', this.initValue);
         this.cacheValue = this.cacheService ? this.cacheService : {};
 
         this.form = this.createGroup();

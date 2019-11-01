@@ -34,9 +34,9 @@ export class AppComponent implements OnInit {
         private titleSrv: TitleService,
         @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
     ) {
-        if (typeof G2 !== 'undefined') {
+        //if (typeof G2 !== 'undefined') {
             G2.track(false);
-        }
+        //}
         this.iconService.addIcon(ApartmentOutline);
         this.iconService.twoToneColor = { primaryColor: '#1890ff' };
     }
