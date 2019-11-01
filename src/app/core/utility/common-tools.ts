@@ -1,5 +1,5 @@
 import { BSN_PARAMETER_TYPE } from '@core/relative-Service/BsnTableStatus';
-import { getISOYear, getMonth, getISOWeek, getDate, getHours, getMinutes, getSeconds, addDays, addHours, subDays, subHours, getTime } from 'date-fns';
+import { getISOYear, getMonth, getISOWeek, getDate, getHours, getMinutes, getSeconds, addDays, addHours, subDays, subHours, getTime, subMonths } from 'date-fns';
 import { ActivatedRoute } from '@angular/router';
 import { BlockScopeAwareRuleWalker } from 'tslint';
 export interface ParametersResolverModel {
@@ -75,44 +75,79 @@ export class CommonTools {
                                 } else if (param['defaultDate']) {
                                     const dateType = param['defaultDate'];
                                     let dValue;
+                                    let month;
+                                    let day;
+                                    let hour;
+                                    let minute;
+                                    let second;
                                     switch (dateType) {
                                         case 'defaultWeek':
                                             dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
                                             break;
                                         case 'defaultDay':
-                                            dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
+                                            month = this.timepluszero(getMonth(getTime(Date.now())) + 1);
+                                            day = this.timepluszero(getDate(getTime(Date.now())));
+                                            dValue = `${getISOYear(Date.now())}-${month}-${day}`;
                                             break;
                                         case 'defaultMonth':
-                                            dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}`;
+                                            month = this.timepluszero(getMonth(getTime(Date.now())) + 1);
+                                            dValue = `${getISOYear(Date.now())}-${month}`;
                                             break;
                                         case 'defaultYear':
                                             dValue = `${getISOYear(Date.now())}`;
                                             break;
                                         case 'defaultDayTime':
-                                            dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}${' '}${getHours(getTime(Date.now()))}${':'}${getMinutes(getTime(Date.now()))}${':'}${getSeconds(getTime(Date.now()))}`;
+                                            month = this.timepluszero(getMonth(getTime(Date.now())) + 1);
+                                            day = this.timepluszero(getDate(getTime(Date.now())));
+                                            hour = this.timepluszero(getHours(getTime(Date.now())));
+                                            minute = this.timepluszero(getMinutes(getTime(Date.now())));
+                                            second = this.timepluszero(getSeconds(getTime(Date.now())));
+                                            dValue = `${getISOYear(Date.now())}-${month}-${day}${' '}${hour}${':'}${minute}${':'}${second}`;
+                                            break;
+                                        case 'beforeMonth':
+                                            if (param['Months']) {
+                                                const beforemonths = getTime(subMonths(Date.now(), param['Months']));
+                                                month = this.timepluszero(getMonth(beforemonths));
+                                                day = this.timepluszero(getDate(beforemonths));
+                                                dValue = `${getISOYear(beforemonths)}-${month}-${day}`;
+                                            }
                                             break;
                                         case 'beforeDay':
                                             if (param['days']) {
-                                                const beforedays = subDays(Date.now(), param['days']);
-                                                dValue = `${getISOYear(beforedays)}-${getMonth(beforedays) + 1}-${getDate(beforedays)}`;
+                                                const beforedays = getTime(subDays(Date.now(), param['days']));
+                                                month = this.timepluszero(getMonth(beforedays));
+                                                day = this.timepluszero(getDate(beforedays));
+                                                dValue = `${getISOYear(beforedays)}-${month}-${day}`;
                                             }
                                             break;
                                         case 'afterDay':
                                             if (param['days']) {
-                                                const beforedays = addDays(Date.now(), param['days']);
-                                                dValue = `${getISOYear(beforedays)}-${getMonth(beforedays) + 1}-${getDate(beforedays)}`;
+                                                const beforedays = getTime(addDays(Date.now(), param['days']));
+                                                month = this.timepluszero(getMonth(beforedays));
+                                                day = this.timepluszero(getDate(beforedays));
+                                                dValue = `${getISOYear(beforedays)}-${month}-${day}`;
                                             }
                                             break;
                                         case 'beforeHour':
                                             if (param['hours']) {
-                                                const beforedays = subHours(Date.now(), param['hours']);
-                                                dValue = `${getISOYear(beforedays)}-${getMonth(beforedays) + 1}-${getDate(beforedays)}${' '}${getHours(beforedays)}${':'}${getMinutes(beforedays)}${':'}${getSeconds(beforedays)}`;
+                                                const beforedays = getTime(subHours(Date.now(), param['hours']));
+                                                month = this.timepluszero(getMonth(beforedays));
+                                                day = this.timepluszero(getDate(beforedays));
+                                                hour = this.timepluszero(getHours(beforedays));
+                                                minute = this.timepluszero(getMinutes(beforedays));
+                                                second = this.timepluszero(getSeconds(beforedays));
+                                                dValue = `${getISOYear(beforedays)}-${month}-${day}${' '}${hour}${':'}${minute}${':'}${second}`;
                                             }
                                             break;
                                         case 'afterHour':
                                             if (param['hours']) {
-                                                const beforedays = addHours(Date.now(), param['hours']);
-                                                dValue = `${getISOYear(beforedays)}-${getMonth(beforedays) + 1}-${getDate(beforedays)}${' '}${getHours(beforedays)}${':'}${getMinutes(beforedays)}${':'}${getSeconds(beforedays)}`;
+                                                const beforedays = getTime(addHours(Date.now(), param['hours']));
+                                                month = this.timepluszero(getMonth(beforedays));
+                                                day = this.timepluszero(getDate(beforedays));
+                                                hour = this.timepluszero(getHours(beforedays));
+                                                minute = this.timepluszero(getMinutes(beforedays));
+                                                second = this.timepluszero(getSeconds(beforedays));
+                                                dValue = `${getISOYear(beforedays)}-${month}-${day}${' '}${hour}${':'}${minute}${':'}${second}`;
                                             }
                                             break;
                                     }
@@ -550,5 +585,13 @@ export class CommonTools {
         return ps;
     }
 
+    // 时间的补0判断
+    public static timepluszero(time) {
+        if (time < 10) {
+            return `${0}${time}`;
+        } else {
+            return `${time}`;
+        }
+    }
 
 }
