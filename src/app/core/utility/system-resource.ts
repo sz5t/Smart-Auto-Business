@@ -59,6 +59,24 @@ export const SystemResource_1 = {
         /**报表  */
         reportServerUrl: '10.129.7.4:8088'
       },
+      'url_192_168_0_10_8083': {
+        localResourceUrl: '192.168.0.10:8083',
+        /** 后台服务 */
+        settingSystemServer: '192.168.0.10:8081',
+        /** 后台服务 */
+        appSystemServer: '192.168.0.10:8081',
+        /**报表  */
+        reportServerUrl: '192.168.0.10:8088'
+      },
+      'url_10_129_150_111_8083': {
+        localResourceUrl: '10.129.150.111:8083',
+        /** 后台服务 */
+        settingSystemServer: '10.129.150.111:8081',
+        /** 后台服务 */
+        appSystemServer: '10.129.150.111:8081',
+        /**报表  */
+        reportServerUrl: '10.129.150.111:8088'
+      }
 }
 
 export class SystemResource {
