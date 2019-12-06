@@ -124,6 +124,10 @@ export class BsnTableComponent extends CnComponentBase
     public _statusSubscription: Subscription;
     public _cascadeSubscription: Subscription;
 
+    // 自动加载数据和刷新数据
+    public autoLoad = false;
+    public autoLoadDataList;
+
     // 查询标识
     public is_Search = false;
     public search_Row = {};
@@ -282,6 +286,9 @@ export class BsnTableComponent extends CnComponentBase
             }
         } else {
             this.load();
+        }
+        if (this.config.autoLoad) {
+            this.autoLoadData();
         }
         // 初始化级联
         this.caseLoad();
@@ -759,6 +766,23 @@ export class BsnTableComponent extends CnComponentBase
                 this.loading = false;
             });
         })();
+    }
+
+    // 根据配置按照时间间隔load数据
+    /**
+     * autoLoad 是否加载
+     */
+    public autoLoadData() {
+        if (this.autoLoad) {
+            this.autoLoadDataList = setInterval(() => {
+                this.load()
+            }, this.config.autoLoadTime);
+        } else {
+            this.autoLoad = true;
+            this.autoLoadDataList = setInterval(() => {
+                this.load()
+            }, this.config.autoLoadTime);
+        }
     }
 
     // 获取 文本值，当前选中行数据
@@ -1845,7 +1869,7 @@ export class BsnTableComponent extends CnComponentBase
         const footer = [];
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
             const selectedRow = this._selectRow ? this._selectRow : {};
-            this._getCheckItemsId();
+            const checkedIds = {'checkedIds': this._getCheckItemsId() ? this._getCheckItemsId() : ''};
             const tmpValue = this.tempValue ? this.tempValue : {};
             const iniVal = this.initValue ? this.initValue : {};
             tmpValue['moduleName'] = this._router.snapshot.params['name'] ? this._router.snapshot.params['name'] : '';
@@ -1857,7 +1881,7 @@ export class BsnTableComponent extends CnComponentBase
                 nzComponentParams: {
                     permissions: this.permissions,
                     config: data,
-                    initData: { ...iniVal, ...tmpValue, ...selectedRow }
+                    initData: { ...iniVal, ...tmpValue, ...selectedRow, ...checkedIds}
                 },
                 nzFooter: footer
             });
@@ -3400,6 +3424,10 @@ export class BsnTableComponent extends CnComponentBase
         }
         if (this._cascadeSubscription) {
             this._cascadeSubscription.unsubscribe();
+        }
+
+        if (this.autoLoadDataList) {
+            clearInterval(this.autoLoadDataList);
         }
     }
 

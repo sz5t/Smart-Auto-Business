@@ -1213,6 +1213,12 @@ export class CnFormWindowResolverComponent extends CnFormBase
                                         sendData[feild.name] =
                                             data[feild.valueName];
                                     }
+                                } else if ( feild['type'] === 'selectObjectValue' ) {
+                                    if (data.dataItem) { 
+                                        sendData[feild.name] = data.dataItem[feild.valueName];
+                                    } else {
+                                        sendData[feild.name] = null;
+                                    }
                                 } else if (
                                     feild['type'] === 'tempValueObject'
                                 ) {

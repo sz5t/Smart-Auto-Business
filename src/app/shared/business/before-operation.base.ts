@@ -420,6 +420,9 @@ export class BeforeOperation {
                     case 'tempValue':
                         andResult = this.matchCheckedTempValueCondition(item);
                         break;
+                    case 'checkedRow':
+                        andResult = this.matchCheckedRowCondition(item);
+                        break;
                     case 'initValue':
                         andResult = this.matchCheckedInitValueCondition(item);
                         break;
@@ -477,6 +480,26 @@ export class BeforeOperation {
                         row[statusItem['name']] !==
                         this.tempValue[statusItem['valueName']]
                 );
+            } else {
+                const reg = new RegExp(statusItem['value']);
+                result = reg.test(this.tempValue[statusItem['valueName']]);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 匹配勾选的缓存数据
+     * @param statusItem
+     */
+    private matchCheckedRowCondition(statusItem) {
+        let result = false;
+        if (this.operationItemsData) {
+            if (statusItem['valueName']) {
+                        result = this.operationItemsData.some(
+                            row =>
+                                row[statusItem['valueName']].length !== statusItem['value']
+                        );
             } else {
                 const reg = new RegExp(statusItem['value']);
                 result = reg.test(this.tempValue[statusItem['valueName']]);

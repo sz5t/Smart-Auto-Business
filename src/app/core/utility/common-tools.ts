@@ -9,6 +9,7 @@ export interface ParametersResolverModel {
     componentValue?: any;
     initValue?: any;
     cacheValue?: any;
+    cardValue?: any;
     cascadeValue?: any;
     returnValue?: any;
     router?: ActivatedRoute;
@@ -107,7 +108,7 @@ export class CommonTools {
                                         case 'beforeMonth':
                                             if (param['Months']) {
                                                 const beforemonths = getTime(subMonths(Date.now(), param['Months']));
-                                                month = this.timepluszero(getMonth(beforemonths));
+                                                month = this.timepluszero(getMonth(beforemonths) + 1);
                                                 day = this.timepluszero(getDate(beforemonths));
                                                 dValue = `${getISOYear(beforemonths)}-${month}-${day}`;
                                             }
@@ -115,7 +116,7 @@ export class CommonTools {
                                         case 'beforeDay':
                                             if (param['days']) {
                                                 const beforedays = getTime(subDays(Date.now(), param['days']));
-                                                month = this.timepluszero(getMonth(beforedays));
+                                                month = this.timepluszero(getMonth(beforedays) + 1);
                                                 day = this.timepluszero(getDate(beforedays));
                                                 dValue = `${getISOYear(beforedays)}-${month}-${day}`;
                                             }
@@ -123,7 +124,7 @@ export class CommonTools {
                                         case 'afterDay':
                                             if (param['days']) {
                                                 const beforedays = getTime(addDays(Date.now(), param['days']));
-                                                month = this.timepluszero(getMonth(beforedays));
+                                                month = this.timepluszero(getMonth(beforedays) + 1);
                                                 day = this.timepluszero(getDate(beforedays));
                                                 dValue = `${getISOYear(beforedays)}-${month}-${day}`;
                                             }
@@ -131,7 +132,7 @@ export class CommonTools {
                                         case 'beforeHour':
                                             if (param['hours']) {
                                                 const beforedays = getTime(subHours(Date.now(), param['hours']));
-                                                month = this.timepluszero(getMonth(beforedays));
+                                                month = this.timepluszero(getMonth(beforedays) + 1);
                                                 day = this.timepluszero(getDate(beforedays));
                                                 hour = this.timepluszero(getHours(beforedays));
                                                 minute = this.timepluszero(getMinutes(beforedays));
@@ -142,7 +143,7 @@ export class CommonTools {
                                         case 'afterHour':
                                             if (param['hours']) {
                                                 const beforedays = getTime(addHours(Date.now(), param['hours']));
-                                                month = this.timepluszero(getMonth(beforedays));
+                                                month = this.timepluszero(getMonth(beforedays) + 1);
                                                 day = this.timepluszero(getDate(beforedays));
                                                 hour = this.timepluszero(getHours(beforedays));
                                                 minute = this.timepluszero(getMinutes(beforedays));

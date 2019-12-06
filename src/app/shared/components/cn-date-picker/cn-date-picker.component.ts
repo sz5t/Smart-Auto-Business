@@ -96,15 +96,18 @@ export class CnDatePickerComponent implements OnInit {
 
     public valueChange(result?: Date): void {
         // 选择日期
-
         // console.log('日期 onChange: ', result, typeof (result));
         if (result) {
             let sj = result;
             if (typeof (result) === 'string') {
                 sj = this.parserDate(result);
             }
-
-            const bc = this.getDateFormat(sj, 'yyyy-MM-dd hh:mm:ss');
+            let bc;
+            if (this.config.showHours) {
+                bc = this.getDateFormat(sj, 'yyyy-MM-dd hh:mm:ss');
+            } else {
+                bc = this.getDateFormat(sj, 'yyyy-MM-dd');
+            }
             if (this.value !== bc) {
                 this.value = bc;
             }

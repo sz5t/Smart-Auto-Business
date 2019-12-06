@@ -41,6 +41,8 @@ import { TsDataTableComponent } from '@shared/business/ts-data-table/ts-data-tab
 import { WfDashboardComponent } from '@shared/work-flow/wf-dashboard/wf-dashboard.component';
 import { BsnTagComponent } from '@shared/business/bsn-tag/bsn-tag.component';
 import { BsnChartComponent } from '@shared/business/bsn-chart/bsn-chart.component';
+import { BsnNewTreeTableComponent } from '@shared/business/bsn-new-tree-table/bsn-new-tree-table.component';
+import { BsnInlineCardSwipeComponent } from '@shared/business/bsn-inline-card-swipe/bsn-inline-card-swipe.component';
 const components: { [type: string]: Type<any> } = {
     code_edit: CnCodeEditComponent,
     bsnTable: BsnTableComponent,
@@ -67,7 +69,9 @@ const components: { [type: string]: Type<any> } = {
     bsnTag: BsnTagComponent,
     bsnChart: BsnChartComponent,
     bsnGantt: BsnGanttComponent,
-    bsnImportExcel: BsnImportExcelComponent
+    bsnImportExcel: BsnImportExcelComponent,
+    bsnNewTreeTable: BsnNewTreeTableComponent,
+    bsnInlineswipe: BsnInlineCardSwipeComponent
 };
 @Component({
     // tslint:disable-next-line:component-selector

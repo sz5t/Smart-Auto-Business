@@ -370,7 +370,6 @@ export class FormResolverComponent extends CnFormBase
             const url = this.buildUrl(this.config.ajaxConfig.url);
             const params = this.buildParameter(this.config.ajaxConfig.params);
             this.execute(url, this.config.ajaxConfig.ajaxType, params).then(result => {
-
                 let res;
                 if (Array.isArray(result.data)) {
                     res = result.data[0]
@@ -1514,6 +1513,21 @@ export class FormResolverComponent extends CnFormBase
                                                 );
                                             }
                                         }
+                                        if (caseItem['type'] === 'relation') {
+                                            // console.log('消息信息：', caseItem['relation']);
+                                            if (caseItem['relation']) {
+                                                if (data['cardValue'].length > 0) {
+                                                    this.tempValue['cardId'] = data['cardValue']['field0']['Id'];
+                                                    this.tempValue['barcode'] = data['cardValue']['field0']['barcode'];
+                                                    this.tempValue['config'] = data['cardValue']['field0']['config'];
+                                                    this.tempValue['tubeserialno'] = data['cardValue']['field0']['tubeserialno'];
+                                                    this.tempValue['tubetype'] = data['cardValue']['field0']['tubetype'];
+                                                    this.tempValue['workordersinglecodeid'] = data['cardValue']['field0']['workordersinglecodeid'];
+                                                }
+                                                // console.log(this.tempValue);
+                                                this.valueChangeRelation(caseItem['relation'], data['dataItem'] ? data['dataItem'] : {}, data);
+                                            }
+                                        }
                                     }
                                     // endregion  解析结束
                                 });
@@ -1545,7 +1559,7 @@ export class FormResolverComponent extends CnFormBase
         //         }
         //     )
         // );
-
+        // debugger;
         const sendData = this.value;
         sendData[data.name] = data.value;
 
@@ -1564,6 +1578,12 @@ export class FormResolverComponent extends CnFormBase
                                     if (data[feild.valueName]) {
                                         sendData[feild.name] =
                                             data[feild.valueName];
+                                    }
+                                } else if ( feild['type'] === 'selectObjectValue' ) {
+                                    if (data.dataItem) { 
+                                        sendData[feild.name] = data.dataItem[feild.valueName];
+                                    } else {
+                                        sendData[feild.name] = null;
                                     }
                                 } else if (
                                     feild['type'] === 'tempValueObject'
@@ -1591,6 +1611,7 @@ export class FormResolverComponent extends CnFormBase
                             }
                         });
                     }
+                    // console.log('表单发送：', sendData);
                     this.cascade.next(
                         new BsnComponentMessage(
                             BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],
@@ -1801,6 +1822,73 @@ export class FormResolverComponent extends CnFormBase
                         });
                     });
 
+                }
+            });
+        }
+
+
+    }
+
+    private valueChangeRelation(option, componentValue?, data?) {
+
+        // console.log('valueChangeRelation', option, componentValue);
+        const sendData = this.value;
+        sendData[data.name] = data.value;
+        const cascadeRelation = option;
+        if (cascadeRelation) {
+            cascadeRelation.forEach(element => {
+                if (element.name === data.name) {
+                    if (element.cascadeField) {
+                        element.cascadeField.forEach(feild => {
+                            if (!feild['type']) {
+                                if (data[feild.valueName]) {
+                                    sendData[feild.name] =
+                                        data[feild.valueName];
+                                }
+                            } else {
+                                if (feild['type'] === 'selectObject') {
+                                    if (data[feild.valueName]) {
+                                        sendData[feild.name] =
+                                            data[feild.valueName];
+                                    } else if (data.dataItem[feild.valueName]) {
+                                        sendData[feild.name] =
+                                            data.dataItem[feild.valueName];
+                                    }
+                                } else if (
+                                    feild['type'] === 'tempValueObject'
+                                ) {
+                                    sendData[feild.name] = this.tempValue;
+                                } else if (feild['type'] === 'tempValue') {
+                                    if (this.tempValue[feild.valueName]) {
+                                        sendData[feild.name] = this.tempValue[
+                                            feild.valueName
+                                        ];
+                                    }
+                                } else if (
+                                    feild['type'] === 'initValueObject'
+                                ) {
+                                    sendData[feild.name] = this.initValue;
+                                } else if (feild['type'] === 'initValue') {
+                                    if (this.initValue[feild.valueName]) {
+                                        sendData[feild.name] = this.initValue[
+                                            feild.valueName
+                                        ];
+                                    }
+                                } else if (feild['type'] === 'value') {
+                                    sendData[feild.name] = feild.value;
+                                }
+                            }
+                        });
+                    }
+                    this.cascade.next(
+                        new BsnComponentMessage(
+                            BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],
+                            this.config.viewId,
+                            {
+                                data: sendData
+                            }
+                        )
+                    );
                 }
             });
         }

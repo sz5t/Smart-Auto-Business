@@ -133,6 +133,10 @@ import { CnFormSelectAsyncTreeComponent } from './components/cn-form-select-asyn
 import { BsnEntryCardListComponent } from './business/bsn-entry-card-list/bsn-entry-card-list.component';
 import { CnGridTextareaComponent } from './components/cn-grid-textarea/cn-grid-textarea.component';
 import { TsDataTableComponent } from './business/ts-data-table/ts-data-table.component';
+import { BsnNewTreeTableComponent } from './business/bsn-new-tree-table/bsn-new-tree-table.component';
+import { BsnKeyboardComponent } from './business/bsn-keyboard/bsn-keyboard.component';
+import { CnFormInputSensorComponent } from './components/cn-form-input-sensor/cn-form-input-sensor.component';
+import { BsnInlineCardSwipeComponent } from './business/bsn-inline-card-swipe/bsn-inline-card-swipe.component';
 
 
 const THIRDMODULES = [
@@ -257,7 +261,11 @@ const COMPONENTS = [
     BsnMarkdownlabelComponent,
     CnGridMarkdownlabelComponent,
     CnGridTextareaComponent,
-    BsnEntryCardListComponent
+    BsnEntryCardListComponent,
+    BsnNewTreeTableComponent,
+    BsnKeyboardComponent,
+    CnFormInputSensorComponent,
+    BsnInlineCardSwipeComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
@@ -287,7 +295,7 @@ const DIRECTIVES = [
         ...DIRECTIVES,
         BtnTableFieldLimit,
         SafeUrlPipe,
-        BtnTableStatusInfoPipe,
+        BtnTableStatusInfoPipe
     ],
     exports: [
         CommonModule,

@@ -1,18 +1,138 @@
-<nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
-    <nz-list [nzItemLayout]="'vertical'" [nzDataSource]="data" [nzRenderItem]="item" [nzGrid]="{gutter: 8, xs: 24, sm: 12, md: 8, lg: 8, xl: 8 }">
-        <ng-template #item let-item>
-            <nz-list-item
-            [nzContent]="nzContent"
-            (click)="selectItem(item)"
-            [nzActions]="[checkedStatus]"
-            [ngClass]="{selectedItem: item.selected, unselectedItem: !item.selected, listItem: true}">
-                <ng-template #nzContent>
-                        <cn-form-resolver  [config]="formConfig" [formValue]="item" [formTitle]="getFormTitle(item)"></cn-form-resolver>
+<nz-card nzBordered="false">
+    <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
+        <div nz-row class="selectionOperation">
+            <div nz-col [nzSpan]="12" class="text-right">
+
+            </div>
+            <div nz-col [nzSpan]="12" class="text-right" *ngIf="config.selectionSwitch">
+                <span>
+                    <nz-badge nzStatus="processing" nzText="已派工"></nz-badge>
+                </span>
+                <nz-divider nzType="vertical"></nz-divider>
+                <span>
+                    <nz-switch [(ngModel)]="switchAll" (ngModelChange)="switch()" nzCheckedChildren="全部选择"
+                        nzUnCheckedChildren="取消选择"></nz-switch>
+                </span>
+            </div>
+
+
+        </div>
+        <nz-list [nzItemLayout]="config.layout" [nzDataSource]="data" [nzRenderItem]="config.multiple?item1:item2"
+            [nzGrid]="config.grid">
+            <!-- 批量操作 -->
+            <nz-skeleton [nzLoading]="isLoading" [nzActive]="true" [nzAvatar]="false" [nzParagraph]="true">
+                <ng-template #item1 let-item>
+                    <nz-card (click)="selectItems(item)" [nzBodyStyle]="config.bodyStyle" nzHoverable
+                        [ngClass]="{selectedItem: item.selected, unselectedItem: !item.selected, listItem: true}">
+                        <nz-list-item>
+                            <nz-card-meta
+                                [nzDescription]="config.layout==='vertical' ? verticalDescription: horizontalDescription">
+                            </nz-card-meta>
+                            <ng-template #verticalDescription>
+                                <div nz-row nzGutter="8">
+                                    <div nz-col nzSpan="8" style="text-align: center">
+                                        <i nz-icon style="font-size:5em"
+                                            [iconfont]="getItemValue('icon',item)?getItemValue('icon',item):'icon-guolu2'"></i>
+                                    </div>
+                                    <div nz-col nzSpan="16">
+                                        <h2 class="h3">{{getItemValue('name',item)}}</h2>
+                                        <div *ngFor="let field of config.fieldMapping">{{getMappingField(item, field)}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <ng-template #horizontalDescription>
+                                <div nz-row nzGutter="8">
+                                    <div class="text-right h6" style="margin-bottom: 10px; margin-right: 10px">
+                                        {{getItemValue('title', item)}}
+                                    </div>
+                                    <div nz-col nzSpan="24" style="text-align: center">
+                                        <div style="margin-bottom:10px">
+                                            <i nz-icon style="font-size:7em"
+                                                [iconfont]="getItemValue('icon',item)?getItemValue('icon',item):'icon-guolu2'"></i>
+                                        </div>
+                                        <h2 class="h3">{{getItemValue('name', item)}}</h2>
+                                        <span *ngFor="let field of config.fieldMapping"
+                                            [ngClass]="[field.formatter ? setCellFont(data[field.field], field.formatter,data):'']">{{getMappingField(item, field)}}</span>
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <!-- <ng-template #op1><a >操作一</a></ng-template>
+                <ng-template #op2><a >操作二</a></ng-template> -->
+                        </nz-list-item>
+                    </nz-card>
                 </ng-template>
-                <!-- <ng-template #checkedStatus>
-                    <label nz-checkbox [(ngModel)]="item.selected" name="item.Id"></label>
-                </ng-template> -->
-            </nz-list-item>
-        </ng-template>
-    </nz-list>
-</nz-spin>
+
+                <!-- 单独操作 -->
+                <ng-template #item2 let-item>
+                    <nz-card [ngClass]="{selectedItem: item.selected, unselectedItem: !item.selected, listItem: true}"
+                        nzHoverable (click)="selectItem(item)" [nzActions]="[op1]">
+                        <nz-list-item>
+                            <ng-template #op1>
+                                <bsn-toolbar *ngIf="config.toolbar" [config]="config.toolbar" [viewId]="config.viewId">
+                                </bsn-toolbar>
+                            </ng-template>
+                            <nz-list-item-meta *ngIf="item" [nzDescription]="nzDescription1">
+                                <ng-template #nzDescription1>
+                                    <div nz-row nzGutter="8">
+                                        <div nz-col nzSpan="8" style="text-align: center">
+                                            <i nz-icon style="font-size:5em"
+                                                [iconfont]="getItemValue('icon',item)?getItemValue('icon',item):'icon-guolu2'"></i>
+                                        </div>
+                                        <div nz-col nzSpan="16">
+                                            <h2 class="h4">{{getItemValue('name',item)}}</h2>
+                                            <div *ngFor="let field of config.fieldMapping"
+                                                [ngClass]="[field.formatter ? setCellFont(getMappingField(item, field) ? getMappingField(item, field): '', field.formatter):'']">
+                                                <span *ngIf="getMappingField(item, field)">{{field.labelName}}：</span>
+                                                <ng-container *ngIf="field.type && field.type === 'tag'">
+                                                    <span *ngFor="let fmt of field.format">
+                                                        <nz-tag *ngIf="fmt.value === getMappingField(item, field)" [nzColor]="fmt.color">{{getMappingField(item, field)}}
+                                                        </nz-tag>
+                                                    </span>
+                                                </ng-container>
+                                                <ng-container *ngIf="!field.type || field.type !== 'tag'">
+                                                    {{getMappingField(item, field)}}
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </nz-list-item-meta>
+                        </nz-list-item>
+                    </nz-card>
+                </ng-template>
+            </nz-skeleton>
+        </nz-list>
+    </nz-spin>
+</nz-card>
+
+
+
+
+
+<!-- <div>
+        <nz-list [nzDataSource]="itemList" [nzRenderItem]="item" nzItemLayout="vertical" [nzGrid]="{gutter: 16, xs: 24, sm: 12, md: 6, lg: 6, xl: 4 }">
+          <ng-template #item let-item>
+            <nz-card [nzBodyStyle]="{'min-height':'150px'}">
+                <nz-list-item>
+                    <nz-list-item-meta
+                      *ngIf="item" 
+                      [nzDescription]="nzDescription1">
+                      <ng-template #nzDescription1>
+                        <div nz-row nzGutter="8">
+                          <div nz-col nzSpan="8" style="text-align: center">
+                            <i nz-icon style="font-size:8em" [iconfont]="'icon-constructionworker'"></i>
+                          </div>  
+                          <div nz-col nzSpan="16">
+                              <h2 class="h3">{{item.name.title}}</h2>
+                              <div>{{item.email}}</div>
+                              <div>{{item.phone}}</div>    
+                          </div>
+                        </div>
+                      </ng-template>
+                    </nz-list-item-meta>
+                  </nz-list-item>
+            </nz-card>  
+          </ng-template>
+        </nz-list>
+    </div> -->

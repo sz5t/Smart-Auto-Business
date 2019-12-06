@@ -1,0 +1,26 @@
+<nz-tabset [nzAnimated]="true" class="tabs" (nzSelectChange)=changeTab($event)>
+  <nz-tab [nzTitle]="card">
+    <div class="card">
+
+      <i class="card_logo" nz-icon type="idcard" theme="twotone" twoToneColor="#eee"></i>
+      <!-- <div class="login_text">
+                        刷卡登录 <i nz-icon type="login" theme="outline"></i>
+                </div> -->
+      <nz-alert *ngIf="errorApp" [nzType]="'error'" [nzMessage]="errorApp" [nzShowIcon]="true" class="mb-lg"></nz-alert>
+    </div>
+
+    <ng-template #card>
+      <i nz-icon type="idcard"></i> 刷卡确认
+    </ng-template>
+  </nz-tab>
+</nz-tabset>
+
+
+<div class="other">
+  <!-- <a class="register" *ngIf="!isCardLogin" (click)="chooseLogin()">
+        账户登录 <i nz-icon type="login" theme="outline"></i>
+    </a>
+    <a class="register" *ngIf="isCardLogin" (click)="chooseLogin()">
+            刷卡登录 <i nz-icon type="idcard" theme="outline"></i>
+        </a>  -->
+</div>

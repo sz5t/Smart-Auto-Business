@@ -4864,13 +4864,13 @@ export class TsDataTableComponent extends CnComponentBase
             {
                 'title': '序号',
                 'field': '_serilize',
-                'width': '20%',
+                'width': '150px',
                 'hidden': false
             },
             {
                 'title': 'ID',
                 'field': 'Id',
-                'width': '20%',
+                'width': '150px',
                 'hidden': false
             },
         ];
@@ -4887,6 +4887,7 @@ export class TsDataTableComponent extends CnComponentBase
             cf['text'] = f.text ? f.text : null;
             cf['field'] = f.field;
             cf['width'] = f.width;
+            cf['titlewidth'] = f.titlewidth;
             cf['hidden'] = f.hidden;
             cf['titleField'] = f.titleField;
             cf['fieldAlign'] = f.fieldAlign ? f.field.Align : 'text-center'

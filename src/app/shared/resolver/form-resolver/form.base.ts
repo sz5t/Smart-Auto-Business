@@ -513,7 +513,7 @@ export class CnFormBase extends CnComponentBase {
                                                 if (dialog.componentType.toAsyncTree) {
                                                     callback(response);
                                                 } else {
-                                                    callback();
+                                                    callback(response);
                                                 }
                                             } else {
                                                 callback();
@@ -536,7 +536,7 @@ export class CnFormBase extends CnComponentBase {
                                                 if (dialog.componentType.toAsyncTree) {
                                                     callback(response);
                                                 } else {
-                                                    callback();
+                                                    callback(response);
                                                 }
                                             } else {
                                                 callback();
@@ -570,7 +570,7 @@ export class CnFormBase extends CnComponentBase {
                                         if (dialog.componentType.toAsyncTree) {
                                             callback(response);
                                         } else {
-                                            callback();
+                                            callback(response);
                                         }
                                     } else {
                                         callback();
@@ -590,7 +590,7 @@ export class CnFormBase extends CnComponentBase {
                                     if (dialog.componentType.toAsyncTree) {
                                         callback(response);
                                     } else {
-                                        callback();
+                                        callback(response);
                                     }
                                 } else {
                                     callback();

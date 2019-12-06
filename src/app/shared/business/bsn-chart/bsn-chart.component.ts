@@ -7,6 +7,7 @@ import { Observer, Observable, Subscription, config } from 'rxjs';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
 import { getISOYear, getMonth, getDate, getHours, getTime, getMinutes, getSeconds } from 'date-fns';
+import { async } from 'q';
 
 @Component({
   selector: 'bsn-chart',
@@ -81,8 +82,8 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
 
   public async load() {
 
-    await this.load_data();
-    if (this.config.haveGuide) {
+    await this.load_data(1);
+    if (this.config.haveGuide && this.config.showGuide && this.config.guideConfig) {
       await this.load_guide();
       this.writePointStyle();
     }
@@ -104,8 +105,11 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         case 'pie':
           this.CreateChart_Pie()
           break;
-        case 'line':
+        case 'timeline':
           this.CreateChart_Line()
+          break;
+        case 'line':
+          this.CreateChart_Line1()
           break;
         case 'mini_line':
           this.CreateChart_MiniLine()
@@ -267,46 +271,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       height: this.config.height ? this.config.height : 300, // 指定图表高度
       padding: 'auto'
     });
-    this.ds = new DataSet({
-      state: {
-        start: new Date(this.dataList[5]['monitortime']).getTime(),
-        end: new Date(this.dataList[10]['monitortime']).getTime()
-      }
-    });
-    if (this.config.showSlider) {
-      this.originDv = this.ds.createView('origin');
-      this.originDv.source(this.showdata).transform({
-        type: 'fold',
-        fields: [this.config.y.name],
-        retains: [this.config.y.name, this.config.x.name]
-      }).transform({
-        type: 'filter',
-        callback: (obj) => {
-          const time = new Date(obj.monitortime).getTime(); // !注意：时间格式，建议转换为时间戳进行比较
-          return time >= this.ds.state.start && time <= this.ds.state.end;
-        }
-      });
-      this.chart.interact('slider', {
-        container: 'slider',
-        start: this.ds.state.start, // 和状态量对应
-        end: this.ds.state.end,
-        xAxis: this.config.x.name,
-        yAxis: this.config.y.name,
-        data: this.showdata,
-        backgroundChart: {
-          type: 'line',
-          color: 'grey'
-        },
-        onChange: (_ref) => {
-          const startValue = _ref.startValue, endValue = _ref.endValue;
-          this.ds.setState('start', startValue);
-          this.ds.setState('end', endValue);
-        }
-      });
-    } else {
-      this.originDv = this.showdata;
-    }
-    this.chart.source(this.originDv.origin);
+    this.chart.source(this.dataList);
     if (this.config.y.scale) {
       this.chart.scale(this.config.y.name, this.config.y.scale);
     }
@@ -320,6 +285,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       this.chart.axis(this.config.y.name, this.config.y.axis);
     }
 
+
     if (this.config.legend) {
       this.chart.legend(this.config.legend);
     }
@@ -328,13 +294,13 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         type: 'line'
       }
     });
-
     if (this.config.groupName) {
       this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).shape(this.config.shape ? this.config.shape : 'circle');
       this.chart.point().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).size(4).shape('circle').style({
         stroke: '#fff',
         lineWidth: 1
       });
+
     } else {
       this.chart.line().position(this.config.x.name + '*' + this.config.y.name).shape(this.config.shape ? this.config.shape : 'circle');
       this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('circle').style({
@@ -343,19 +309,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       });
     }
 
-
     this.chart.render();
-    if (this.config.autoPlay) {
-      let next = 1;
-      this.autoPlay = setInterval(() => {
-        if (this.dataList[this.dataList.length - 1] !== this.showdata[this.config.showDataLength - 1]) {
-          this.showdata.shift();
-          this.showdata.push(this.dataList[this.config.showDataLength - 1 + next])
-          this.chart.changeData(this.showdata);
-          next = next + 1;
-        }
-      }, this.config.intervalTime)
-    }
   }
 
   private CreateChart_Line() {
@@ -389,6 +343,14 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     if (this.config.x.scale) {
       this.chart.scale(this.config.x.name, this.config.x.scale);
     }
+    if (this.config.y1) {
+      if (this.config.y1.scale) {
+        this.chart.scale(this.config.y1.name, this.config.y1.scale);
+      }
+      if (this.config.y1.axis) {
+        this.chart.axis(this.config.y1.name, this.config.y1.axis);
+      }
+    }
     if (this.config.x.axis) {
       this.chart.axis(this.config.x.name, this.config.x.axis);
     }
@@ -397,7 +359,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     }
     this.dv = this.ds.createView();
 
-    if (this.config.guideConfig.guideType !== 'line') {
+    if (this.config.guideConfig && this.config.showGuide && this.config.guideConfig.guideType !== 'line') {
       if (this.config.guideScale) {
         if (this.config.guideScale.y) {
           let grouptext;
@@ -437,7 +399,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         });
     }
     this.chart.source(this.dv);
-    if (this.config.guideConfig.guideType !== 'line') {
+    if (this.config.guideConfig && this.config.showGuide && this.config.guideConfig.guideType !== 'line') {
       if (this.config.guideScale) {
         if (this.config.guideScale.y) {
           this.config.guideScale.y.forEach(e => {
@@ -454,7 +416,14 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('breathPoint').style({
         stroke: '#fff',
         lineWidth: 1
-      })
+      });
+      if (this.config.y1) {
+        this.chart.line().position(this.config.x.name + '*' + this.config.y1.name).shape(this.config.shape ? this.config.shape : 'circle').color(this.config.y1color ? this.config.y1color : '#FFCC00');
+        this.chart.point().position(this.config.x.name + '*' + this.config.y1.name).size(4).shape('breathPoint').style({
+          stroke: '#fff',
+          lineWidth: 1
+        })
+      }
     };
     if (this.config.groupName) {
       this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).shape(this.config.shape ? this.config.shape : 'circle');
@@ -553,7 +522,9 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
 
     this.chart.render();
     if (this.config.autoPlay) {
-      this.autoPlay = setInterval(() => {
+      const that = this;
+      this.autoPlay = setInterval(async () => {
+        await that.load_data(2);
         this.next = this.next + 1;
         if (this.dataList[this.dataList.length - 1] !== this.showdata[this.config.showDataLength - 1]) {
           this.showdata.shift();
@@ -574,7 +545,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
             this.chart.repaint();
           });
           this.slider.changeData(this.showdata);
-
         }
       }, this.config.intervalTime)
     }
@@ -643,7 +613,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     this.chart.render();
   }
 
-  public async load_data() {
+  public async load_data(temp) {
     const url = this._buildURL(this.config.ajaxConfig.url);
     const params = {
       ...this._buildParameters(this.config.ajaxConfig.params),
@@ -667,16 +637,18 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     } else {
       this.dataList = [];
     }
-    if (this.config.showDataLength && this.config.autoPlay) {
-      if (this.dataList.length > this.config.showDataLength) {
-        for (let i = 0; i < this.config.showDataLength; i++) {
-          this.showdata.push(this.dataList[i]);
+    if (temp === 1) {
+      if (this.config.showDataLength && this.config.autoPlay) {
+        if (this.dataList.length > this.config.showDataLength) {
+          for (let i = 0; i < this.config.showDataLength; i++) {
+            this.showdata.push(this.dataList[i]);
+          }
+        } else {
+          this.showdata = this.dataList;
         }
       } else {
         this.showdata = this.dataList;
       }
-    } else {
-      this.showdata = this.dataList;
     }
   }
 
@@ -885,7 +857,8 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         let minValue = 50000;
         let maxObj = null;
         let minObj = null;
-        const length = this.dataList.length > this.config.showDataLength ? this.config.showDataLength : this.dataList.length
+        // const length = this.dataList.length > this.config.showDataLength ? this.config.showDataLength : this.dataList.length
+        const length = this.dataList.length;
         for (let i = 0; i < length; i++) {
           // 日期转时间戳进行比较
           const d = this.dataList[i];
@@ -1232,7 +1205,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
               }
             }
           });
-        } else if (this.config.guideConfig.guideType === 'circle') {
+        } else if (this.config.guideConfig && this.config.guideConfig.guideType === 'circle') {
           this.chart.point().position(this.config.x.name + '*' + 'value').color('city').shape('breathPoint');
         }
       } else {

@@ -143,6 +143,7 @@ export class BsnStaticTableComponent extends CnComponentBase
         total: 0
     };
     public async ngOnInit() {
+        // console.log("ngOnInit");
 
         // for (let i = 0; i < 46; i++) {
         //     this.loadData.rows.push({
@@ -600,6 +601,7 @@ export class BsnStaticTableComponent extends CnComponentBase
         }
     }
     public load() {
+        // console.log('datalist:', this.dataList);
         if (typeof this.pageIndex !== 'undefined') {
             this.pageIndex = this.pageIndex || 1;
         }
@@ -846,9 +848,11 @@ export class BsnStaticTableComponent extends CnComponentBase
         this.loadData.rows.unshift(rowContentNew);
         this.loadData.total = this.loadData.rows.length;
         this.total = this.loadData.total;
+        // console.log('scanCodeValueChange', this.loadData)
         this.scanCodeValueChange(); // 扫码后将结果返回
         this.pageIndex = 1; // 【目前只新增在最前，日后扩充可前可后】
         this.load(); // 扫码后页数切换【目前未考虑排序】
+      
         return true;
 
     }
@@ -858,6 +862,7 @@ export class BsnStaticTableComponent extends CnComponentBase
     public scanCodeValueChange() {
         // liu 【重点返回信息】
         this.updateValue.emit(this.loadData.rows);
+        // console.log('saomafanhui',this.loadData.rows);
     }
 
     // 获取 文本值，当前选中行数据

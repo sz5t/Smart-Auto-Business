@@ -1,0 +1,46 @@
+<nz-form-label *ngIf="config.label" [nzSpan]="config.labelSize" [nzRequired]="config.isRequired">
+  {{config.label}}
+</nz-form-label>
+<nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+  <nz-input-group
+  [nzAddOnBefore]="addOnBeforeTemplate"
+      [nzCompact]="false"
+      [nzSize]="'default'"
+      [nzSuffix]="suffixTemplate"
+      [nzAddOnAfter]="suffixButton"
+      [nzPrefixIcon]="config.perfix"
+
+      >
+      <input nz-input
+             type="{{config.inputType}}"
+             formControlName="{{config.name}}"
+             (blur)="onblur($event,'end')"
+
+            (keyup)="onKeyPress($event)"
+             placeholder="{{config.placeholder}}"
+             disabled="{{config.disabled}}"
+             [(ngModel)]="model"/>
+
+  </nz-input-group>
+  <nz-form-extra *ngIf="config.explain">{{config.explain}}</nz-form-extra>
+  <nz-form-explain
+      *ngIf="formGroup.get(config.name).dirty && formGroup.get(config.name).errors || formGroup.get(config.name).pending ">
+      <ng-container *ngFor="let valid of config.validations">
+          <span style="margin-top:3px" *ngIf="formGroup.get(config.name).hasError(valid.validator.toLowerCase())">{{valid.errorMessage}}</span>
+      </ng-container>
+  </nz-form-explain>
+</nz-form-control>
+  <ng-template #addOnBeforeTemplate>
+      <nz-select [ngModel]="select" (ngModelChange)="changeEquiment($event)">
+          <ng-container *ngFor="let option of selectoptions">
+              <nz-option [nzLabel]="option.name" [nzValue]="option.value"></nz-option>
+          </ng-container>
+      </nz-select>
+  </ng-template>
+  <ng-template #suffixTemplate>
+      <!-- <i nz-icon type="close-circle" theme="fill"></i> -->
+      <i nz-icon type="edit" theme="outline" (click)="getData()"></i>
+      <!--   <button nz-button nzSearch [nzType]="'default'" (click)="showModal()" style="height: 32px;">
+          <i nz-icon type="edit" theme="outline"></i>
+      </button> -->
+  </ng-template>

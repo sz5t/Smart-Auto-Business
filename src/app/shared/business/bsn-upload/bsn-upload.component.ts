@@ -2,7 +2,7 @@ import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { NzMessageService, UploadFile } from 'ng-zorro-antd';
 import { ApiService } from '@core/utility/api-service';
 import { CommonTools } from '@core/utility/common-tools';
-import { SystemResource } from '@core/utility/system-resource';
+import { SystemResource, SystemResource_1 } from '@core/utility/system-resource';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -61,6 +61,7 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
 
     public ngAfterViewInit() {
        // this.loadUploadList();
+       this.url = this._replaceCurrentURL(this.url);
     }
     
     public getsecurityList() {
@@ -158,7 +159,11 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
             formData.append(`secretLevel_${index}`, this.securityLevel);
             formData.append(`remark_${index}`, this.remark);
         });
-        formData.append('refDataId', this.refObj._id);
+        if (this.refObj._id) {
+            formData.append('refDataId', this.refObj._id);
+        } else {
+            formData.append('refDataId', this.refObj.Id);
+        }
         setTimeout(() => {
             this.uploading = true;
         });
@@ -278,6 +283,36 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
                 }
             );
         }
+    }
+
+    public _replaceCurrentURL(oldUrl: string): string {
+        const reg = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
+        const reg_port = /:\d{1,5}/;
+        const reg_all = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}/
+        const ip = reg_all.exec(oldUrl)[0];
+        
+        const href = window.location.href;
+
+        const port = reg_port.exec(href)[0];
+        const subPort = reg_port.exec(href)[0].substring(1, port.length);
+
+        let match, matchIP;
+        if (href.indexOf('localhost') < 0) {
+            match = reg.exec(window.location.href)[0].replace(/\./g, '_');  
+            
+            matchIP = `url_${match}_${subPort}`;
+        } else {
+            matchIP = `url_localhost_${subPort}`;
+        }
+        let newIP;
+        if (oldUrl.indexOf('api.cfg') > 0) {
+            newIP = SystemResource_1[matchIP].settingSystemServer;
+        } else if (oldUrl.indexOf('ReportServer.ashx') > 0) {
+            newIP = SystemResource_1[matchIP].reportServerUrl;
+        } else {
+            newIP = SystemResource_1[matchIP].localResourceUrl;
+        }
+        return oldUrl.replace(ip, newIP);
     }
 
     public cancel() {

@@ -258,40 +258,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                 }
             }
         });
-
-        // 父类型注册节点点击后触发消息
-        if (
-            this.config.componentType &&
-            this.config.componentType.parent === true
-        ) {
-            this.after(this, 'clickNode', () => {
-                // console.log('send casacde data')
-                this.selectedItem &&
-                    this.cascade.next(
-                        new BsnComponentMessage(
-                            BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
-                            this.config.viewId,
-                            {
-                                data: this.selectedItem
-                            }
-                        )
-                    );
-            });
-
-            this.after(this, 'checkboxChange', () => {
-                this.tempValue['_checkedIds'] &&
-                    this.cascade.next(
-                        new BsnComponentMessage(
-                            BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN,
-                            this.config.viewId,
-                            {
-                                data: this.tempValue['_checkedIds']
-                            }
-                        )
-                    );
-            });
-        }
-
+        
         // 注册多界面切换消息
         if (
             this.config.componentType &&
@@ -326,6 +293,39 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
                                     });
                                     return id;
                                 }
+                            }
+                        )
+                    );
+            });
+        }
+
+        // 父类型注册节点点击后触发消息
+        if (
+            this.config.componentType &&
+            this.config.componentType.parent === true
+        ) {
+            this.after(this, 'clickNode', () => {
+                // console.log('send casacde data')
+                this.selectedItem &&
+                    this.cascade.next(
+                        new BsnComponentMessage(
+                            BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                            this.config.viewId,
+                            {
+                                data: this.selectedItem
+                            }
+                        )
+                    );
+            });
+
+            this.after(this, 'checkboxChange', () => {
+                this.tempValue['_checkedIds'] &&
+                    this.cascade.next(
+                        new BsnComponentMessage(
+                            BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN,
+                            this.config.viewId,
+                            {
+                                data: this.tempValue['_checkedIds']
                             }
                         )
                     );

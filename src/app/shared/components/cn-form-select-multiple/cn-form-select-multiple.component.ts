@@ -204,11 +204,17 @@ export class CnFormSelectMultipleComponent
     }
 
     public valueChange(name?) {
+        let ArrayValue = '';
+        name && name.forEach(element => {
+            ArrayValue = ArrayValue + element.toString() + ',';
+        });
+        const dataItemobj = {value: ArrayValue};
         if (name) {
-            const backValue = { name: this.config.name, value: name };
+           
+            const backValue = { name: this.config.name, value: name, dataItem: dataItemobj };
             this.updateValue.emit(backValue);
         } else {
-            const backValue = { name: this.config.name, value: name };
+            const backValue = { name: this.config.name, value: name, dataItem: dataItemobj  };
             this.updateValue.emit(backValue);
         }
     }

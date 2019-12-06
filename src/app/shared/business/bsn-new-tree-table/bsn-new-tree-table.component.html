@@ -1,0 +1,191 @@
+<bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId" [permissions]="permissions ? permissions : []">
+</bsn-toolbar>
+<nz-table #dataTable [nzData]="dataList" [nzSize]="'small'" [nzFrontPagination]="false" [nzShowSizeChanger]="true"
+  [nzTotal]="total" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzShowTotal]="totals"
+  [nzPageSizeOptions]="config.pageSizeOptions" [nzLoading]="loading" (nzPageIndexChange)="searchData()"
+  (nzPageSizeChange)="searchData(true)" [nzTitle]="config.title ? tableTitle : false"
+  [nzScroll]="config.scroll ? config.scroll :{}" nzBordered>
+  <thead (nzSortChange)="sort($event)" nzSingleSort>
+    <tr>
+      <th nzShowCheckbox nzWidth="50px" [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate"
+        (nzCheckedChange)="checkAll($event)">
+      </th>
+      <ng-template ngFor let-col [ngForOf]="config.columns">
+        <th [nzWidth]="col.width ? col.width : 'auto'" [nzShowSort]="col.showSort" [nzShowFilter]="col.showFilter"
+          *ngIf="!col.hidden" [nzSortKey]="col.field">
+          {{col.title}}
+        </th>
+      </ng-template>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let data of dataTable.data">
+      <ng-container *ngFor="let item of mapOfDataExpanded[data[KEY_ID]]">
+        <tr *ngIf="(item.parent && item.parent.expand) || !item.parent" (click)="setSelectRow(data, $event)"
+          [ngStyle]="item.selected ?  {'background-color': '#fff7ca'}: { } ">
+          <td nzShowCheckbox="true" [(nzChecked)]="item['checked']" (nzCheckedChange)="dataCheckedStatusChange()">
+          </td>
+          <ng-template ngFor let-col [ngForOf]="config.columns">
+            <ng-container *ngIf="!col.hidden">
+              <ng-container *ngIf="col.expand">
+                <ng-container [ngSwitch]="item['state']">
+                  <td *ngSwitchCase="'new'" [nzIndentSize]="item.level * 20 "
+                    [nzShowExpand]="!!item.children && col.expand" [(nzExpand)]="item.expand"
+                    (nzExpandChange)="expandRow(item[KEY_ID], item, $event)">
+                    <ng-container *ngIf="_isArray(col.editor)">
+                      <cn-grid-edit *ngIf="col.editor" [searchConfigType]="'default'" [bsnData]="tempValue"
+                        [initData]="initData" [rowData]="editCache[data.key].data" [dataSet]="null" [config]="col"
+                        [value]="{key:data.key,name:col.field,data:null,dataText:null}"
+                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.field]:''"
+                        (updateValue)="valueChange($event)"></cn-grid-edit>
+                    </ng-container>
+                    <ng-container *ngIf="!_isArray(col.editor)">
+                      <ng-container [bsnData]="tempValue" [initData]="initData"
+                        [rowData]="mapOfDataExpanded[data[KEY_ID]][0].data"
+                        [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                        CnGridEditorDirective
+                        *ngIf="mapOfDataExpanded[data[KEY_ID]].state !== 'text' && col.editor; else text"
+                        [config]="col.editor.options"
+                        [value]="{key:data[KEY_ID],name:col.editor.field,data:mapOfDataExpanded[data[KEY_ID]][0].data[col.editor.field],dataText:mapOfDataExpanded[data[KEY_ID]][0].data[col.field]?mapOfDataExpanded[data[KEY_ID]][0].data[col.field]:null}"
+                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
+                        (updateValue)="valueChange($event)">
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                  <td *ngSwitchCase="'edit'" [nzIndentSize]="item.level * 20 "
+                    [nzShowExpand]="!!item.children && col.expand" [(nzExpand)]="item.expand"
+                    (nzExpandChange)="expandRow(item[KEY_ID], item, $event)">
+                    <ng-container *ngIf="_isArray(col.editor)">
+                      <cn-grid-edit *ngIf="col.editor" [searchConfigType]="'default'" [bsnData]="tempValue"
+                        [initData]="initData" [rowData]="editCache[data.key].data" [dataSet]="null" [config]="col"
+                        [value]="{key:data[KEY_ID],name:col.field,data:null,dataText:null}"
+                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.field]:''"
+                        (updateValue)="valueChange($event)"></cn-grid-edit>
+                    </ng-container>
+                    <ng-container *ngIf="!_isArray(col.editor)">
+                      <ng-container [bsnData]="tempValue" [initData]="initData"
+                        [rowData]="mapOfDataExpanded[data[KEY_ID]][0].data"
+                        [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                        CnGridEditorDirective
+                        *ngIf="mapOfDataExpanded[data[KEY_ID]].state !== 'text' && col.editor; else text"
+                        [config]="col.editor.options"
+                        [value]="{key:data[KEY_ID],name:col.editor.field,data:mapOfDataExpanded[data[KEY_ID]][0].data[col.editor.field],dataText:mapOfDataExpanded[data[KEY_ID]][0].data[col.field]?mapOfDataExpanded[data[KEY_ID]][0].data[col.field]:null}"
+                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
+                        (updateValue)="valueChange($event)">
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                  <!-- <td *ngSwitchCase="'edit'" [nzIndentSize]="item.level * 20 "
+                      [nzShowExpand]="!!item.children && col.expand" [(nzExpand)]="item.expand"
+                      (nzExpandChange)="expandRow(item[item[KEY_ID]], item, $event)">
+                      <ng-container CnGridItemDirective *ngIf="col.editor ; else text" [state]="'edit'"
+                        [config]="col.editor"
+                        [valueConfig]="{'id':rowData[KEY_ID],'value':mapOfDataState[rowData[KEY_ID]]['data'][col.editor.field]}"
+                        (updateValue)="valueChange($event)"
+                        [formCascade]="formCascade[rowData[KEY_ID]]?formCascade[rowData[KEY_ID]][col.editor.field]:null">
+                      </ng-container>
+                    </td> -->
+                  <td *ngSwitchDefault [nzIndentSize]="item.level * 20  " [nzShowExpand]="!!item.children && col.expand"
+                    [(nzExpand)]="item.expand" (nzExpandChange)="expandRow(item, $event)">
+                    <span
+                      [ngClass]="[col.formatter ? setCellFont(mapOfDataExpanded[data[KEY_ID]][0].data[col.field], col.formatter):'']">
+                      {{ item['originData'][col.field] }}</span></td>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="!col.expand">
+                <ng-container [ngSwitch]="item['state']">
+                  <td *ngSwitchCase="'new'" 
+                    [nzShowExpand]="!!item.children && col.expand" [(nzExpand)]="item.expand"
+                    (nzExpandChange)="expandRow(item[KEY_ID], item, $event)">
+                    <ng-container *ngIf="_isArray(col.editor)">
+                      <cn-grid-edit *ngIf="col.editor" [searchConfigType]="'default'" [bsnData]="tempValue"
+                        [initData]="initData" [rowData]="editCache[data.key].data" [dataSet]="null" [config]="col"
+                        [value]="{key:data[KEY_ID],name:col.field,data:null,dataText:null}"
+                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.field]:''"
+                        (updateValue)="valueChange($event)"></cn-grid-edit>
+                    </ng-container>
+                    <ng-container *ngIf="!_isArray(col.editor)">
+                      <ng-container [bsnData]="tempValue" [initData]="initData"
+                        [rowData]="mapOfDataExpanded[data[KEY_ID]][0].data"
+                        [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                        CnGridEditorDirective
+                        *ngIf="mapOfDataExpanded[data[KEY_ID]].state !== 'text' && col.editor; else text"
+                        [config]="col.editor.options"
+                        [value]="{key:data[KEY_ID],name:col.editor.field,data:mapOfDataExpanded[data[KEY_ID]][0].data[col.editor.field],dataText:mapOfDataExpanded[data[KEY_ID]][0].data[col.field]?mapOfDataExpanded[data[KEY_ID]][0].data[col.field]:null}"
+                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
+                        (updateValue)="valueChange($event)">
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                  <td *ngSwitchCase="'edit'" 
+                    [nzShowExpand]="!!item.children && col.expand" [(nzExpand)]="item.expand"
+                    (nzExpandChange)="expandRow(item[KEY_ID], item, $event)">
+                    <ng-container *ngIf="_isArray(col.editor)">
+                      <cn-grid-edit *ngIf="col.editor" [searchConfigType]="'default'" [bsnData]="tempValue"
+                        [initData]="initData" [rowData]="editCache[data.key].data" [dataSet]="null" [config]="col"
+                        [value]="{key:data[KEY_ID],name:col.field,data:null,dataText:null}"
+                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.field]:''"
+                        (updateValue)="valueChange($event)"></cn-grid-edit>
+                    </ng-container>
+                    <ng-container *ngIf="!_isArray(col.editor)">
+                      <ng-container [bsnData]="tempValue" [initData]="initData"
+                        [rowData]="mapOfDataExpanded[data[KEY_ID]][0].data"
+                        [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                        CnGridEditorDirective
+                        *ngIf="mapOfDataExpanded[data[KEY_ID]][0].state !== 'text' && col.editor ; else text"
+                        [config]="col.editor.options"
+                        [value]="{key:data[KEY_ID],name:col.editor.field,data:mapOfDataExpanded[data[KEY_ID]][0].data[col.editor.field],dataText:mapOfDataExpanded[data[KEY_ID]][0].data[col.field]?mapOfDataExpanded[data[KEY_ID]][0].data[col.field]:null}"
+                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
+                        (updateValue)="valueChange($event)">
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                  <!-- <td *ngSwitchCase="'edit'" [nzIndentSize]="item.level * 20 "
+                          [nzShowExpand]="!!item.children && col.expand" [(nzExpand)]="item.expand"
+                          (nzExpandChange)="expandRow(item[item[KEY_ID]], item, $event)">
+                          <ng-container CnGridItemDirective *ngIf="col.editor ; else text" [state]="'edit'"
+                            [config]="col.editor"
+                            [valueConfig]="{'id':rowData[KEY_ID],'value':mapOfDataState[rowData[KEY_ID]]['data'][col.editor.field]}"
+                            (updateValue)="valueChange($event)"
+                            [formCascade]="formCascade[rowData[KEY_ID]]?formCascade[rowData[KEY_ID]][col.editor.field]:null">
+                          </ng-container>
+                        </td> -->
+                  <!-- <td *ngSwitchDefault [nzIndentSize]="item.level * 20  " [nzShowExpand]="!!item.children && col.expand"
+                    [(nzExpand)]="item.expand" (nzExpandChange)="expandRow(item, $event)"> -->
+                  <td *ngSwitchDefault>
+                    <span
+                      [ngClass]="[col.formatter ? setCellFont(mapOfDataExpanded[data[KEY_ID]][0].data[col.field], col.formatter):'']">
+                      <ng-container [bsnData]="tempValue" [initData]="initData"
+                        [rowData]="mapOfDataExpanded[data[KEY_ID]][0].data"
+                        [dataSet]="col.showFormat.options.dataSet?dataSet[col.showFormat.options.dataSet]:null"
+                        CnGridEditorDirective *ngIf="col.showFormat" [config]="col.showFormat.options"
+                        [value]="{key:data.key,name:col.editor.field,data:mapOfDataExpanded[data[KEY_ID]][0].data[col.editor.field],dataText:mapOfDataExpanded[data[KEY_ID]][0].data[col.field]?mapOfDataExpanded[data[KEY_ID]][0].data[col.field]:null}"
+                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.showFormat.field]:''"
+                        (updateValue)="valueChange($event)"> </ng-container>
+                      {{ item['originData'][col.field] }}
+                    </span></td>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </ng-template>
+        </tr>
+      </ng-container>
+    </ng-container>
+  </tbody>
+  <tfoot>
+    <ng-template #totals style="text-align: left">
+      <span>
+        已选中
+        <span class="count" nz-text>
+          <code>{{ checkedNumber }}</code>
+        </span>
+        条记录，
+      </span>
+      共
+      <span class="count" nz-text>
+        <code>{{ total }}</code>
+      </span>
+      条记录
+    </ng-template>
+  </tfoot>
+</nz-table>

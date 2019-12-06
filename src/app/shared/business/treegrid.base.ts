@@ -55,6 +55,15 @@ export class TreeGridBase extends CnComponentBase {
     public set checkedItems(value: any[]) {
         this._checkedItems = value;
     }
+
+    private _checkedId: any[];
+    public get checkedId(): any[] {
+        return this.checkedId;
+    }
+    public set checkedId(value: any[]) {
+        this._checkedId = value;
+    }
+
     private _selectedItem: any;
     public get selectedItem(): any {
         return this._selectedItem;
@@ -348,10 +357,13 @@ export class TreeGridBase extends CnComponentBase {
                                 response,
                                 ajaxConfigs,
                                 () => {
-                                    const focusIds = this.getFocusIds(
+                                    let focusIds = this.getFocusIds(
                                         response.data
                                     );
-                                    // this._callback(focusIds);
+                                    // this._callback(focusIds);i
+                                    if (focusIds === '') {
+                                        focusIds = response;
+                                    }
                                     this._operationCallback(focusIds);
 
                                 }
@@ -359,9 +371,13 @@ export class TreeGridBase extends CnComponentBase {
                         } else {
                             // 没有输出参数，进行默认处理
                             this.showAjaxMessage(response, msg, () => {
-                                const focusIds = this.getFocusIds(
+                                let focusIds = this.getFocusIds(
                                     response.data
                                 );
+                                // this._callback(focusIds);i
+                                if (focusIds === '') {
+                                    focusIds = response;
+                                }
                                 // this._callback(focusIds);
                                 this._operationCallback(focusIds);
 
@@ -381,7 +397,13 @@ export class TreeGridBase extends CnComponentBase {
                         response,
                         ajaxConfigs,
                         () => {
-                            const focusIds = this.getFocusIds(response.data);
+                            let focusIds = this.getFocusIds(
+                                response.data
+                            );
+                            // this._callback(focusIds);i
+                            if (focusIds === '') {
+                                focusIds = response;
+                            }
                             // this._callback(focusIds);
                             this._operationCallback(focusIds);
                             // this.windowCallback();
@@ -401,7 +423,13 @@ export class TreeGridBase extends CnComponentBase {
                 } else {
                     // 没有输出参数，进行默认处理
                     this.showAjaxMessage(response, msg, () => {
-                        const focusIds = this.getFocusIds(response.data);
+                        let focusIds = this.getFocusIds(
+                            response.data
+                        );
+                        // this._callback(focusIds);i
+                        if (focusIds === '') {
+                            focusIds = response;
+                        }
                         this._operationCallback(focusIds);
                     });
                 }
@@ -591,9 +619,18 @@ export class TreeGridBase extends CnComponentBase {
                     m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
                 )
                 ];
+            const tempValue =
+                c.outputParams[
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TEMPVALUE
+                )
+                ];
             const msgObj = response.data[msg.name]
                 ? response.data[msg.name].split(':')
                 : '';
+            const temObj = tempValue
+                ? response.data[tempValue.name]
+                : null;
             // const valueObj = response.data[value.name] ? response.data[value.name] : [];
             // const tableObj = response.data[table.name] ? response.data[table.name] : [];
             if (msgObj && msgObj.length > 1) {
@@ -645,13 +682,30 @@ export class TreeGridBase extends CnComponentBase {
                         };
                         this.baseModal[messageType](options);
                         break;
+                    case 'finish':
+                        options = {
+                            nzTitle: '',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        if (temObj) {
+                            this.baseMessage.success(msgObj[1], temObj);
+                        } else {
+                            this.baseMessage.success(msgObj[1]);
+                        }
+                        callback && callback();
+                        return;
                     case 'success':
                         options = {
                             nzTitle: '',
                             nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
-                        this.baseMessage.success(msgObj[1]);
+                        if (temObj) {
+                            this.baseMessage.success(msgObj[1], temObj);
+                        } else {
+                            this.baseMessage.success(msgObj[1]);
+                        }
                         callback && callback();
                         break;
                 }
@@ -754,7 +808,7 @@ export class TreeGridBase extends CnComponentBase {
         this.apiResource.getLocalData(dialog.layoutName).subscribe(data => {
             const temp = this.tempValue ? this.tempValue : {};
             const iniValue = this.initValue ? this.initValue : {};
-            const showcheckedids = {Ids: this.getCheckItemsId() ? this.getCheckItemsId() : ''}
+            const showcheckedids = { 'checkedIds': this._checkedId ? this._checkedId : '' }
             const modal = this.baseModal.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
@@ -763,7 +817,7 @@ export class TreeGridBase extends CnComponentBase {
                 nzComponentParams: {
                     config: data,
                     permissions: this.permission,
-                    initData: { ...temp, ...this.selectedItem, ...iniValue, ...showcheckedids}
+                    initData: { ...temp, ...this.selectedItem, ...iniValue, ...showcheckedids }
                 },
                 nzFooter: footer
             });
@@ -798,10 +852,10 @@ export class TreeGridBase extends CnComponentBase {
                             })();
                         } else if (btn['name'] === 'close') {
                             modal.close();
-                            this.windowCallback();
+                            this.windowCallback('close', true);
                         } else if (btn['name'] === 'ok') {
                             modal.close();
-                            this.windowCallback();
+                            this.windowCallback('close', true);
                         } else if (btn['name'] === 'close_refresh_parent') {
                             modal.close();
                             this.operationCallback();
@@ -819,15 +873,19 @@ export class TreeGridBase extends CnComponentBase {
      */
     protected showBatchForm(dialog) {
         const footer = [];
-        const checkedItems = [];
+        let checkedItems = [];
         this.dataList.map(item => {
             if (item.checked) {
                 checkedItems.push(item);
             }
         });
+        if (checkedItems.length === 0) {
+            checkedItems = this._checkedItems;
+        }
         if (checkedItems.length > 0) {
             const obj = {
-                checkedRow: checkedItems
+                checkedRow: checkedItems,
+                checkedIds: this._checkedId
             };
             const modal = this.baseModal.create({
                 nzTitle: dialog.title,
@@ -851,10 +909,17 @@ export class TreeGridBase extends CnComponentBase {
                             (async () => {
                                 const result = await componentInstance.buttonAction(
                                     btn,
-                                    () => {
+                                    (response) => {
                                         modal.close();
-                                        this.callback();
-                                    }
+                                        let focusIds = this.getFocusIds(
+                                            response.data
+                                        );
+                                        // this._callback(focusIds);i
+                                        if (focusIds === '') {
+                                            focusIds = response;
+                                        }
+                                        this.windowCallback(focusIds, true);
+                                    }, dialog
                                 );
                             })();
                         } else if (btn['name'] === 'close') {
@@ -929,9 +994,16 @@ export class TreeGridBase extends CnComponentBase {
                         (async () => {
                             const result = await componentInstance.buttonAction(
                                 btn,
-                                () => {
+                                (response) => {
                                     modal.close();
-                                    this.windowCallback(true);
+                                    let focusIds = this.getFocusIds(
+                                        response.data
+                                    );
+                                    // this._callback(focusIds);i
+                                    if (focusIds === '') {
+                                        focusIds = response;
+                                    }
+                                    this.windowCallback(focusIds, true);
                                 }, dialog
                             );
                         })();
@@ -940,9 +1012,16 @@ export class TreeGridBase extends CnComponentBase {
                         (async () => {
                             const result = await componentInstance.buttonAction(
                                 btn,
-                                () => {
+                                (response) => {
                                     modal.close();
-                                    this.windowCallback(true);
+                                    let focusIds = this.getFocusIds(
+                                        response.data
+                                    );
+                                    // this._callback(focusIds);i
+                                    if (focusIds === '') {
+                                        focusIds = response;
+                                    }
+                                    this.windowCallback(focusIds, true);
                                 }, dialog
                             );
                         })();
@@ -950,9 +1029,16 @@ export class TreeGridBase extends CnComponentBase {
                         (async () => {
                             const result = await componentInstance.buttonAction(
                                 btn,
-                                () => {
+                                (response) => {
                                     modal.close();
-                                    this.windowCallback(true);
+                                    let focusIds = this.getFocusIds(
+                                        response.data
+                                    );
+                                    // this._callback(focusIds);i
+                                    if (focusIds === '') {
+                                        focusIds = response;
+                                    }
+                                    this.windowCallback(focusIds, true);
                                 }, dialog
                             );
                         })();
@@ -1144,7 +1230,7 @@ export class TreeGridBase extends CnComponentBase {
     }
 
     protected buildRootSearch() {
-       
+
         if (this.search_Row) {
             let search = {};
             const searchData = JSON.parse(JSON.stringify(this.search_Row));
@@ -1165,7 +1251,7 @@ export class TreeGridBase extends CnComponentBase {
         } else {
             return null;
         }
-      
+
     }
 
     protected buildRecursive() {
@@ -1197,5 +1283,163 @@ export class TreeGridBase extends CnComponentBase {
         }
 
         this.callback();
+    }
+
+    // 新的树表结构的解析方法
+    protected getNewCheckedItems(data?) {
+        const serverData = [];
+        const arr = [];
+        for (const item in data) {
+            if (data[item][0].checked === true) {
+                arr.push(item);
+            }
+        }
+        arr.forEach(e => {
+            serverData.push(this.dataList.find(d => d.Id === e));
+            if (data[e][0]['children']) {
+                serverData[serverData.length - 1]['children'] = data[e][0]['children'];
+            }
+        })
+        this.tempValue['checkedRow'] = serverData;
+        return serverData;
+    }
+
+    public newResolver(option, add, edit, checked, selected, map) {
+        let checkedIds: string;
+        if (checked.length > 0) {
+            checked.forEach(e => {
+                if (checkedIds) {
+                    checkedIds = checkedIds + e.data.Id + ',';
+                } else {
+                    checkedIds = e.data.Id + ',';
+                }
+            });
+            checkedIds = checkedIds.substring(0, checkedIds.length - 1);
+        }
+        if (option.ajaxConfig && option.ajaxConfig.length > 0) {
+            option.ajaxConfig.filter(c => !c.parentName).map(c => {
+                this.getNewAjaxConfig(c, option, add, edit, checked, selected, checkedIds, map);
+            });
+        }
+    }
+
+    protected getNewAjaxConfig(c, option, add, edit, checked, selected, checkedIds, map) {
+        let msg;
+        if (c.action) {
+            let handleData;
+            switch (c.action) {
+                //         case BSN_EXECUTE_ACTION.EXECUTE_CHECKED:
+                //             if (
+                //                 this.dataList.filter(item => item.checked === true)
+                //                     .length <= 0
+                //             ) {
+                //                 this.baseMessage.create('info', '请选择要执行的数据');
+                //                 return;
+                //             }
+                //             // 目前还未解决confirm确认操作后的后续执行问题
+                //             handleData = this.getCheckedItems();
+                //             this.beforeOperation.operationItemsData = handleData;
+                //             if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                //                 return;
+                //             }
+
+                //             msg = '操作完成';
+                //             this.buildConfirm(c, option.ajaxConfig, handleData, msg);
+                //             break;
+                //         case BSN_EXECUTE_ACTION.EXECUTE_SELECTED:
+                //             if (this.selectedItem['row_status'] === 'adding') {
+                //                 this.baseMessage.create(
+                //                     'info',
+                //                     '当前数据未保存无法进行处理'
+                //                 );
+                //                 return;
+                //             }
+                //             handleData = this.getSelectedItem();
+                //             this.beforeOperation.operationItemData = handleData;
+                //             if (this.beforeOperation.beforeItemDataOperation(option)) {
+                //                 return;
+                //             }
+
+                //             msg = '操作完成';
+                //             if (handleData.length > 0) {
+                //                 this.buildConfirm(c, option.ajaxConfig, handleData, msg);
+                //             } else {
+                //                 this.baseMessage.info('未选中任何数据,无法进行操作!');
+                //             }
+
+                //             break;
+                case BSN_EXECUTE_ACTION.EXECUTE_CHECKED_ID:
+                    if (
+                        !checkedIds
+                    ) {
+                        this.baseMessage.create('info', '请勾选要执行操作的数据');
+                        return;
+                    }
+                    handleData = checkedIds;
+                    this.beforeOperation.operationItemsData = this.getNewCheckedItems(map);
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return;
+                    }
+                    msg = '操作完成';
+                    this.buildConfirm(c, option.ajaxConfig, handleData, msg);
+                    break;
+                //         case BSN_EXECUTE_ACTION.EXECUTE_EDIT_ROW:
+                //             handleData = this.getEditedRows();
+                //             this.beforeOperation.operationItemsData = handleData;
+                //             if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                //                 return;
+                //             }
+                //             msg = '编辑数据保存成功';
+                //             if (handleData && handleData.length <= 0) {
+                //                 // this.baseMessage.info('请勾选要执行编辑的数据')
+                //                 return;
+                //             } else {
+                //                 this.buildConfirm(c, option.ajaxConfig, handleData, msg);
+                //             }
+                //             break;
+                // case BSN_EXECUTE_ACTION.EXECUTE_SAVE_ROW:
+                //     // 获取更新状态的数据
+                //     handleData = add;
+                //     this.beforeOperation.operationItemsData = handleData;
+                //     if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                //         return;
+                //     }
+                //     msg = '新增数据保存成功';
+                //     if (handleData && handleData.length <= 0) {
+                //         return;
+                //     }
+                //     this.buildConfirm(c, option.ajaxConfig, handleData, msg);
+                //     break;
+                case BSN_EXECUTE_ACTION.EXECUTE_EDIT_TREE_ROW:
+                    handleData = edit;
+                    this.beforeOperation.operationItemsData = this.getNewCheckedItems();
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return;
+                    }
+                    msg = '编辑数据保存成功';
+                    if (handleData && handleData.length <= 0) {
+                        return;
+                    }
+                    this.buildConfirm(c, option.ajaxConfig, handleData, msg);
+                    break;
+                case BSN_EXECUTE_ACTION.EXECUTE_SAVE_TREE_ROW:
+                    // 获取更新状态的数据
+                    handleData = add;
+                    this.beforeOperation.operationItemsData = handleData;
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return;
+                    }
+                    msg = '新增数据保存成功';
+                    if (handleData && handleData.length <= 0) {
+                        return;
+                    }
+                    this.buildConfirm(c, option.ajaxConfig, handleData, msg);
+                    break;
+                //         case BSN_EXECUTE_ACTION.EXECUTE_MESSAGE:
+                //             handleData = {};
+                //             this.buildConfirm(c, option.ajaxConfig, handleData, msg);
+                //             break;
+            }
+        }
     }
 }

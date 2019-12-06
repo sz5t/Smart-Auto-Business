@@ -97,7 +97,8 @@ export class CnGridUploadListComponent extends CnComponentBase implements OnInit
     const footer = [];
     const obj = {
       _id: this.rowData[dialog.keyId],
-      _parentId: this.tempValue['_parentId']
+      _parentId: this.tempValue['_parentId'],
+      Id: this.rowData['Id']
     };
     const modal = this.baseModal.create({
       nzTitle: dialog.title,

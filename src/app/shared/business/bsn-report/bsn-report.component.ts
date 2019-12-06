@@ -131,7 +131,7 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
                 `${server + this.config.reportName }?cts=${new Date().getMilliseconds()}`
             );
             reportViewer.loadData(data.data, true);
-            reportViewer.start(); //启动报表运行，生成报表
+            reportViewer.start(); // 启动报表运行，生成报表
         }
     }
 
