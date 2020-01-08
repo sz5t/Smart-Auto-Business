@@ -28,9 +28,13 @@ import { TreeGridBase } from '../treegrid.base';
 import { ActivatedRoute } from '@angular/router';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
+import { BsnUploadComponent } from '../bsn-upload/bsn-upload.component';
+import { BsnImportExcelComponent } from '../bsn-import-excel/bsn-import-excel.component';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
-    form: FormResolverComponent
+    form: FormResolverComponent,
+    upload: BsnUploadComponent,
+    importExcel: BsnImportExcelComponent
 };
 @Component({
     // tslint:disable-next-line:component-selector
@@ -143,7 +147,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
             // oldarray;
             // let addchildofparent;
             // let addchildrenIds;
-            if (focusId) {
+            if (!focusId.data) {
                 // this.finishAddTreeNode(focusId);
                 // this.dataList.forEach(d => {
                 //     if (d.row_status && d.row_status === 'adding' && d.parentId) {
@@ -171,29 +175,37 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                 //     this.finishAddChild(addchildrenIds, addchildofparent);
                 // }
                 const editdata = focusId.length > 36 ? focusId.split(',') : focusId;
-                let addNumber = 0;
+                // let addNumber = 0;
                 if (editdata) {
                     if (typeof (editdata) === 'string') {
                         const array = editdata.split('_');
                         if (array[1] === 'edit') {
                             this.editCache[array[0]]['edit'] = false;
-                        } else if (array[1] === 'add') {
-                            this.finishAddTreeNode(array[0]);
+                            // } else if (array[1] === 'add') {
+                            //     this.load();
+                            //     this.finishAddTreeNode(array[0]);
+                        } else {
+                            this.load();
                         }
                     } else {
                         editdata.forEach(e => {
                             const array = e.split('_');
                             if (array[1] === 'edit') {
                                 this.editCache[array[0]]['edit'] = false;
-                            } else if (array[1] === 'add') {
-                                if (addNumber < 1) {
-                                    this.finishAddTreeNode(array[0]);
-                                }
-                                addNumber += 1;
+                                // } else if (array[1] === 'add') {
+                                //     if (addNumber < 1) {
+                                //         this.load();
+                                //         this.finishAddTreeNode(array[0]);
+                                //     }
+                                //     addNumber += 1;
+                            } else {
+                                this.load();
                             }
                         });
                     }
                 }
+            } else {
+                this.load();
             }
         }
 
@@ -429,6 +441,9 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                                 option
                             ) && this.formBatchDialog(option);
                             break;
+                        case BSN_COMPONENT_MODES.IMPORT_EXCEL:
+                            this.importExcelDialog(option);
+                            break;
                         case BSN_COMPONENT_MODES.EXPORT:
                             this.exportExcel(option);
                             break;
@@ -549,9 +564,6 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
             delete params['_root.parentId'];
             delete params['_root.expand'];
         }
-        if (!params['_sort']) {
-            params['_sort'] = 'createDate desc'
-        }
         const loadData = await this.apiResource.get(url, params).toPromise();
         if (loadData && loadData.status === 200) {
             if (loadData.data && loadData.data.rows) {
@@ -605,13 +617,21 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                         }
                     }
                     // this.treeData = this.treeData.filter(t => t.Id !== null);
-                    this.treeData =  JSON.parse(JSON.stringify(this.treeData));
+                    this.treeData = JSON.parse(JSON.stringify(this.treeData));
                 }
                 this.dataList = this.treeData;
                 if (this.is_Search) {
                     this.dataList = [this.search_Row, ...this.dataList];
                 }
-                console.log(this.dataList);
+                // console.log(this.dataList);
+                // if (this.editCache) {
+                //     for (const x in this.editCache) {
+                //         this.editCache[x].data.checked = false;
+                //         this.editCache[x].data.selected = false;
+                //         this.editCache[x].edit = false;
+                //     }
+                //     this.editCache = JSON.parse(JSON.stringify(this.editCache));
+                // }
             }
             // this.dataList = loadData.data.rows;
             // if (this.is_Search) {
@@ -687,7 +707,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
     }
 
     public async expandChange(childrenData, data: any, $event: boolean) {
-        console.log(this.dataList);
+        // console.log(this.dataList);
         // this.loading = true;
         if ($event === true) {
             const response = await this.expandLoad(data);
@@ -3493,8 +3513,10 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                 }
                 // console.log(this.dataList);
                 this.dataList = this.dataList.filter(a => a.Id !== null);
-                this.editCache[returnId]['data'] = loadData.data.find(t => t.Id === returnId);
-                this.editCache[returnId]['edit'] = false;
+                if (this.editCache[returnId]) {
+                    this.editCache[returnId]['data'] = loadData.data.find(t => t.Id === returnId);
+                    this.editCache[returnId]['edit'] = false;
+                }
                 // delete this.editCache[returnId];
                 this.total = loadData.data.total;
                 this.loading = false;
@@ -3645,5 +3667,40 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
                 }
             }
         }
+    }
+
+    /**
+   * 导入数据
+   */
+    public importExcelDialog(option) {
+        if (this.config.importExcel && this.config.importExcel.length > 0) {
+            const index = this.config.importExcel.findIndex(
+                item => item.name === option.actionName
+            );
+            this.openImportExcelDialog(this.config.importExcel[index]);
+        }
+    }
+
+    private openImportExcelDialog(dialog) {
+        const modal = this.baseModal.create({
+            nzTitle: dialog.title,
+            nzWidth: dialog.width,
+            nzContent: component['importExcel'],
+            nzComponentParams: {
+                config: dialog.ajaxConfig,
+                // refObj: obj
+            },
+            nzFooter: [
+                {
+                    label: '关闭',
+                    type: 'default',
+                    show: true,
+                    onClick: () => {
+                        this.load();
+                        modal.close();
+                    }
+                }
+            ]
+        });
     }
 }

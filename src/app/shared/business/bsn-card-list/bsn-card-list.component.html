@@ -104,6 +104,16 @@
             </nz-skeleton>
         </nz-list>
     </nz-spin>
+    <div nz-row *ngIf="config.showPage" nzType="flex" nzJustify="end">
+        <div nz-col>
+            <nz-switch *ngIf="config.autoPlaySwitch" [ngModel]="true" nzCheckedChildren="开始滚动"
+                    nzUnCheckedChildren="暂停滚动" (ngModelChange)="startAutoPlay()"></nz-switch>
+        </div>
+        <div nz-col nzOffset="6">
+            <nz-pagination [(nzPageIndex)]="pageIndex" [nzShowTotal]="totalTemplate" [nzTotal]="total" nzShowSizeChanger [(nzPageSize)]="pageSize" (nzPageIndexChange)="searchData($event)"></nz-pagination>
+            <ng-template #totalTemplate let-total> 共 {{ total }} 条 </ng-template>
+        </div>
+    </div>
 </nz-card>
 
 

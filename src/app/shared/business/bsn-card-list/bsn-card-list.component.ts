@@ -54,6 +54,13 @@ export class BsnCardListComponent extends CnComponentBase
     public switchAll = false;
     public _lastItem;
     public selectedItems;
+    public total = 1;
+    public pageIndex = 1;
+    public pageSize = 5;
+    public pageCount;
+    public loadautotime;
+    public autoPlaySwitch = true;
+    public temple = 0;
     public beforeOperation: BeforeOperation;
 
     @Output() public updateValue = new EventEmitter();
@@ -85,6 +92,7 @@ export class BsnCardListComponent extends CnComponentBase
         // this.formConfig['viewId'] = this.config.viewId;
         // this.formConfig['forms'] = this.config.forms;
         // this.formConfig['editable'] = 'text';
+        this.pageSize = this.config.pageSize ? this.config.pageSize : 5;
         this.initValue = this.initData ? this.initData : {};
         this.load();
         this.resolverRelation();
@@ -110,12 +118,12 @@ export class BsnCardListComponent extends CnComponentBase
                 if (!this.beforeOperation.beforeItemDataOperation(option)) {
                     switch (updateState._mode) {
                         case BSN_COMPONENT_MODES.EXECUTE:
-                        setTimeout(() => {
-                            this.isLoading = true;
-                        });
-                        // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
+                            setTimeout(() => {
+                                this.isLoading = true;
+                            });
+                            // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
                             this._resolveAjaxConfig(option);
-                        break;
+                            break;
                     }
                 }
             }
@@ -140,7 +148,7 @@ export class BsnCardListComponent extends CnComponentBase
                                 // 获取当前设置的级联的模式
                                 const mode =
                                     BSN_COMPONENT_CASCADE_MODES[
-                                        relation.cascadeMode
+                                    relation.cascadeMode
                                     ];
                                 // 获取传递的消息数据
                                 const option = cascadeEvent.option;
@@ -294,7 +302,7 @@ export class BsnCardListComponent extends CnComponentBase
                                         this.config.viewId
                                     )
                                 );
-                                
+
                                 this.load();
                             }
                         );
@@ -315,12 +323,12 @@ export class BsnCardListComponent extends CnComponentBase
         }
     };
 
-     /**
-     * 数据访问返回消息处理
-     * @param result
-     * @param message
-     * @param callback
-     */
+    /**
+    * 数据访问返回消息处理
+    * @param result
+    * @param message
+    * @param callback
+    */
     public showAjaxMessage(result, message?, callback?) {
         const rs: { success: boolean; msg: string[] } = {
             success: true,
@@ -556,7 +564,7 @@ export class BsnCardListComponent extends CnComponentBase
             initValue: this.initValue,
             cacheValue: this.cacheValue
         });
-        this.router.navigate([option.link], {queryParams: params});
+        this.router.navigate([option.link], { queryParams: params });
     }
 
     private linkToCenter(option) {
@@ -567,14 +575,19 @@ export class BsnCardListComponent extends CnComponentBase
             initValue: this.initValue,
             cacheValue: this.cacheValue
         });
-        this.router.navigate(['/ts/entry'], {queryParams: params});
+        this.router.navigate(['/ts/entry'], { queryParams: params });
     }
 
     public ngOnDestroy() {
         this.unsubscribe();
+        if (this.loadautotime) {
+            clearInterval(this.loadautotime);
+        }
     }
 
     public async load() {
+        // this.pageIndex = 1;
+        // this.pageSize = this.config.pageSize ? this.config.pageSize : 6;
         const response = await this.get();
         if (response.isSuccess) {
             // 构建数据源
@@ -582,7 +595,9 @@ export class BsnCardListComponent extends CnComponentBase
             //     item['checked'] = false;
             //     item['selected'] = false;
             // });
-            this.data = response.data;
+            this.data = response.data.rows;
+            this.total = response.data.total;
+            this.pageCount = response.data.pageCount;
             this.getSelectedItems();
             this.isLoading = false;
         } else {
@@ -592,12 +607,15 @@ export class BsnCardListComponent extends CnComponentBase
 
     public async get() {
         const url = this.config.ajaxConfig.url;
-        const params = CommonTools.parametersResolver({
+        let params = CommonTools.parametersResolver({
             params: this.config.ajaxConfig.params,
             tempValue: this.tempValue,
             initValue: this.initValue,
             cacheValue: this.cacheValue
         });
+        if (this.config.pagination) {
+            params = { ...params, ...this.buildPaging(this.config.pagination) };
+        }
         return this._apiService
             .get(url, params).toPromise();
     }
@@ -642,7 +660,10 @@ export class BsnCardListComponent extends CnComponentBase
     }
 
     public ngAfterViewInit() {
-        this.load();
+        if (this.config.autoPlay) {
+            this.loadAutoPlay();
+        }
+        // this.load();
     }
 
     public switch() {
@@ -651,13 +672,15 @@ export class BsnCardListComponent extends CnComponentBase
     }
 
     private getSelectedItems() {
-        this.selectedItems =  this.data.filter(d => d.selected);
-        this.updateValue.emit(this.selectedItems);
+        if (this.config.selectionSwitch) {
+            this.selectedItems = this.data.rows.filter(d => d.selected);
+            this.updateValue.emit(this.selectedItems);
+        }
     }
 
     private getCheckedItemsId() {
         const ids = [];
-        this.selectedItems =  this.data.filter(d => d.selected);
+        this.selectedItems = this.data.rows.filter(d => d.selected);
         if (this.selectedItems.length > 0) {
             this.selectedItems.forEach(item => {
                 ids.push(item['Id']);
@@ -680,7 +703,7 @@ export class BsnCardListComponent extends CnComponentBase
                 //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
                 this.router.navigateByUrl('/passport/ts-login').catch(() => {
                     this.apiResource.post('login_out');
-                });    
+                });
                 // }).catch(() => console.log('Oops errors!'));
             }
         });
@@ -698,5 +721,53 @@ export class BsnCardListComponent extends CnComponentBase
         return fontColor;
     }
 
-    
+    protected buildPaging(isPaging): {} {
+        const params = {};
+        if (isPaging) {
+            params['_page'] = this.pageIndex;
+            params['_rows'] = this.pageSize;
+        }
+        return params;
+    }
+
+    public searchData(page) {
+        this.pageIndex = page;
+        this.load();
+    }
+
+    public startAutoPlay() {
+        this.temple = this.pageIndex;
+        if (this.loadautotime) {
+            clearInterval(this.loadautotime);
+        }
+        if (this.autoPlaySwitch) {
+            this.autoPlaySwitch = false;
+        } else {
+            this.autoPlaySwitch = true;
+        }
+        this.pageIndex = this.temple;
+        this.loadAutoPlay();
+    }
+
+    public loadAutoPlay() {
+        if (!this.autoPlaySwitch) {
+            this.temple = this.pageIndex;
+        }
+        if (this.config.autoPlay && this.autoPlaySwitch) {
+            if (this.config.autosingle) {
+                this.loadautotime = setInterval(() => {
+                    this.load()
+                }, this.config.timeInterval)
+            } else {
+                this.loadautotime = setInterval(() => {
+                    if (this.pageIndex >= this.pageCount) {
+                        this.pageIndex = 1;
+                    } else {
+                        this.pageIndex = this.pageIndex + 1;
+                    }
+                    this.load();
+                }, this.config.timeInterval)
+            }
+        }
+    }
 }

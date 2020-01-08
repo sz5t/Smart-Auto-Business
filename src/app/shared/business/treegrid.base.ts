@@ -833,10 +833,16 @@ export class TreeGridBase extends CnComponentBase {
                             (async () => {
                                 const result = await componentInstance.buttonAction(
                                     btn,
-                                    () => {
+                                    (response) => {
                                         modal.close();
-                                        // todo: 操作完成当前数据后需要定位
-                                        this.windowCallback();
+                                        let focusIds = this.getFocusIds(
+                                            response.data
+                                        );
+                                        // this._callback(focusIds);i
+                                        if (focusIds === '') {
+                                            focusIds = response;
+                                        }
+                                        this.windowCallback(focusIds, true);
                                     }
                                 );
                             })();
@@ -844,9 +850,16 @@ export class TreeGridBase extends CnComponentBase {
                             (async () => {
                                 const result = await componentInstance.buttonAction(
                                     btn,
-                                    () => {
-                                        // todo: 操作完成当前数据后需要定位
-                                        this.windowCallback();
+                                    (response) => {
+                                        modal.close();
+                                        let focusIds = this.getFocusIds(
+                                            response.data
+                                        );
+                                        // this._callback(focusIds);i
+                                        if (focusIds === '') {
+                                            focusIds = response;
+                                        }
+                                        this.windowCallback(focusIds, true);
                                     }
                                 );
                             })();
@@ -1306,6 +1319,7 @@ export class TreeGridBase extends CnComponentBase {
 
     public newResolver(option, add, edit, checked, selected, map) {
         let checkedIds: string;
+        let checkedRow = [];
         if (checked.length > 0) {
             checked.forEach(e => {
                 if (checkedIds) {
@@ -1313,12 +1327,14 @@ export class TreeGridBase extends CnComponentBase {
                 } else {
                     checkedIds = e.data.Id + ',';
                 }
+                const obj = e.data;
+                checkedRow.push(obj);
             });
             checkedIds = checkedIds.substring(0, checkedIds.length - 1);
         }
         if (option.ajaxConfig && option.ajaxConfig.length > 0) {
             option.ajaxConfig.filter(c => !c.parentName).map(c => {
-                this.getNewAjaxConfig(c, option, add, edit, checked, selected, checkedIds, map);
+                this.getNewAjaxConfig(c, option, add, edit, checkedRow, selected, checkedIds, map);
             });
         }
     }
@@ -1328,46 +1344,45 @@ export class TreeGridBase extends CnComponentBase {
         if (c.action) {
             let handleData;
             switch (c.action) {
-                //         case BSN_EXECUTE_ACTION.EXECUTE_CHECKED:
-                //             if (
-                //                 this.dataList.filter(item => item.checked === true)
-                //                     .length <= 0
-                //             ) {
-                //                 this.baseMessage.create('info', '请选择要执行的数据');
-                //                 return;
-                //             }
-                //             // 目前还未解决confirm确认操作后的后续执行问题
-                //             handleData = this.getCheckedItems();
-                //             this.beforeOperation.operationItemsData = handleData;
-                //             if (this.beforeOperation.beforeItemsDataOperation(option)) {
-                //                 return;
-                //             }
+                case BSN_EXECUTE_ACTION.EXECUTE_CHECKED:
+                    if (
+                        checked.length <= 0
+                    ) {
+                        this.baseMessage.create('info', '请选择要执行的数据');
+                        return;
+                    }
+                    // 目前还未解决confirm确认操作后的后续执行问题
+                    handleData = checked;
+                    this.beforeOperation.operationItemsData = handleData;
+                    if (this.beforeOperation.beforeItemsDataOperation(option)) {
+                        return;
+                    }
 
-                //             msg = '操作完成';
-                //             this.buildConfirm(c, option.ajaxConfig, handleData, msg);
-                //             break;
-                //         case BSN_EXECUTE_ACTION.EXECUTE_SELECTED:
-                //             if (this.selectedItem['row_status'] === 'adding') {
-                //                 this.baseMessage.create(
-                //                     'info',
-                //                     '当前数据未保存无法进行处理'
-                //                 );
-                //                 return;
-                //             }
-                //             handleData = this.getSelectedItem();
-                //             this.beforeOperation.operationItemData = handleData;
-                //             if (this.beforeOperation.beforeItemDataOperation(option)) {
-                //                 return;
-                //             }
+                    msg = '操作完成';
+                    this.buildConfirm(c, option.ajaxConfig, handleData, msg);
+                    break;
+                case BSN_EXECUTE_ACTION.EXECUTE_SELECTED:
+                    if (map[selected.Id][0].state === 'new') {
+                        this.baseMessage.create(
+                            'info',
+                            '当前数据未保存无法进行处理'
+                        );
+                        return;
+                    }
+                    handleData = selected;
+                    this.beforeOperation.operationItemData = handleData;
+                    if (this.beforeOperation.beforeItemDataOperation(option)) {
+                        return;
+                    }
 
-                //             msg = '操作完成';
-                //             if (handleData.length > 0) {
-                //                 this.buildConfirm(c, option.ajaxConfig, handleData, msg);
-                //             } else {
-                //                 this.baseMessage.info('未选中任何数据,无法进行操作!');
-                //             }
+                    msg = '操作完成';
+                    if (handleData) {
+                        this.buildConfirm(c, option.ajaxConfig, handleData, msg);
+                    } else {
+                        this.baseMessage.info('未选中任何数据,无法进行操作!');
+                    }
 
-                //             break;
+                    break;
                 case BSN_EXECUTE_ACTION.EXECUTE_CHECKED_ID:
                     if (
                         !checkedIds
@@ -1376,7 +1391,7 @@ export class TreeGridBase extends CnComponentBase {
                         return;
                     }
                     handleData = checkedIds;
-                    this.beforeOperation.operationItemsData = this.getNewCheckedItems(map);
+                    this.beforeOperation.operationItemsData = checked// this.getNewCheckedItems(map);
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
                         return;
                     }
@@ -1412,7 +1427,7 @@ export class TreeGridBase extends CnComponentBase {
                 //     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_TREE_ROW:
                     handleData = edit;
-                    this.beforeOperation.operationItemsData = this.getNewCheckedItems();
+                    this.beforeOperation.operationItemsData = checked // this.getNewCheckedItems();
                     if (this.beforeOperation.beforeItemsDataOperation(option)) {
                         return;
                     }

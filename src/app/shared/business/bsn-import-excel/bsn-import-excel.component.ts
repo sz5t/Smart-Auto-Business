@@ -106,7 +106,7 @@ export class BsnImportExcelComponent implements OnInit, AfterViewInit {
 
         this.fileList.forEach((file: any, index) => {
             const startIndex = file.name.lastIndexOf('.');
-            const endIndex = file.name.length - 1;
+            const endIndex = file.name.length;
             const extName = file.name.substring(startIndex, endIndex);
             if (extName === '.xls' || extName === '.xlsx') {
                 continues = true;

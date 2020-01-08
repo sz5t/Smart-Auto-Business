@@ -75,6 +75,27 @@
                       </ng-container>
                     </ng-container>
                   </td>
+                  <td *ngSwitchCase="'search'"
+                    [nzShowExpand]="!!item.children && col.expand" [(nzExpand)]="item.expand"
+                    (nzExpandChange)="expandRow(item[KEY_ID], item, $event)">
+                    <ng-container *ngIf="col.searcheditor">
+                      <cn-grid-search [bsnData]="tempValue" [initData]="initData"
+                          [rowData]="mapOfDataExpanded[data[KEY_ID]][0].data"
+                          [dataSet]="col.searcheditor.options.dataSet?dataSet[col.searcheditor.options.dataSet]:null"
+                          [searchConfigType]="'searcheditor'" [config]="col.searcheditor.options"
+                          [value]="{key:data.key,name:col.searcheditor.field,data:null,dataText:null}"
+                          [changeConfig]="changeConfig_newSearch.hasOwnProperty(data.key) ? changeConfig_newSearch[data.key][col.searcheditor.field]:''"
+                          (updateValue)="valueChangeSearch($event)"></cn-grid-search>
+                  </ng-container>
+                  <cn-grid-search *ngIf="!col.searcheditor && col.editor" [bsnData]="tempValue"
+                      [initData]="initData" [rowData]="mapOfDataExpanded[data[KEY_ID]][0].data"
+                      [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                      [searchConfigType]="'editor'" [config]="col.editor.options"
+                      [value]="{key:data.key,name:col.editor.field,data:null,dataText:null}"
+                      [changeConfig]="changeConfig_newSearch.hasOwnProperty(data.key) ? changeConfig_newSearch[data.key][col.editor.field]:''"
+                      (updateValue)="valueChangeSearch($event)">
+                  </cn-grid-search>
+                  </td>
                   <!-- <td *ngSwitchCase="'edit'" [nzIndentSize]="item.level * 20 "
                       [nzShowExpand]="!!item.children && col.expand" [(nzExpand)]="item.expand"
                       (nzExpandChange)="expandRow(item[item[KEY_ID]], item, $event)">
@@ -89,7 +110,17 @@
                     [(nzExpand)]="item.expand" (nzExpandChange)="expandRow(item, $event)">
                     <span
                       [ngClass]="[col.formatter ? setCellFont(mapOfDataExpanded[data[KEY_ID]][0].data[col.field], col.formatter):'']">
-                      {{ item['originData'][col.field] }}</span></td>
+                      <ng-container [bsnData]="tempValue" [initData]="initData"
+                        [rowData]="mapOfDataExpanded[data[KEY_ID]][0].data"
+                        [dataSet]="col.showFormat.options.dataSet?dataSet[col.showFormat.options.dataSet]:null"
+                        CnGridEditorDirective *ngIf="col.showFormat" [config]="col.showFormat.options"
+                        [value]="{key:data.key,name:col.editor.field,data:mapOfDataExpanded[data[KEY_ID]][0].data[col.editor.field],dataText:mapOfDataExpanded[data[KEY_ID]][0].data[col.field]?mapOfDataExpanded[data[KEY_ID]][0].data[col.field]:null}"
+                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.showFormat.field]:''"
+                        (updateValue)="valueChange($event)"> </ng-container>
+                        <ng-container *ngIf="!col.showFormat">
+                          {{ item['originData'][col.field] }}
+                        </ng-container>
+                    </span></td>
                 </ng-container>
               </ng-container>
               <ng-container *ngIf="!col.expand">
@@ -140,6 +171,27 @@
                       </ng-container>
                     </ng-container>
                   </td>
+                  <td *ngSwitchCase="'search'"
+                    [nzShowExpand]="!!item.children && col.expand" [(nzExpand)]="item.expand"
+                    (nzExpandChange)="expandRow(item[KEY_ID], item, $event)">
+                    <ng-container *ngIf="col.searcheditor">
+                      <cn-grid-search [bsnData]="tempValue" [initData]="initData"
+                          [rowData]="mapOfDataExpanded[data[KEY_ID]][0].data"
+                          [dataSet]="col.searcheditor.options.dataSet?dataSet[col.searcheditor.options.dataSet]:null"
+                          [searchConfigType]="'searcheditor'" [config]="col.searcheditor.options"
+                          [value]="{key:data.key,name:col.searcheditor.field,data:null,dataText:null}"
+                          [changeConfig]="changeConfig_newSearch.hasOwnProperty(data.key) ? changeConfig_newSearch[data.key][col.searcheditor.field]:''"
+                          (updateValue)="valueChangeSearch($event)"></cn-grid-search>
+                  </ng-container>
+                  <cn-grid-search *ngIf="!col.searcheditor && col.editor" [bsnData]="tempValue"
+                      [initData]="initData" [rowData]="mapOfDataExpanded[data[KEY_ID]][0].data"
+                      [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                      [searchConfigType]="'editor'" [config]="col.editor.options"
+                      [value]="{key:data.key,name:col.editor.field,data:null,dataText:null}"
+                      [changeConfig]="changeConfig_newSearch.hasOwnProperty(data.key) ? changeConfig_newSearch[data.key][col.editor.field]:''"
+                      (updateValue)="valueChangeSearch($event)">
+                  </cn-grid-search>
+                  </td>
                   <!-- <td *ngSwitchCase="'edit'" [nzIndentSize]="item.level * 20 "
                           [nzShowExpand]="!!item.children && col.expand" [(nzExpand)]="item.expand"
                           (nzExpandChange)="expandRow(item[item[KEY_ID]], item, $event)">
@@ -162,7 +214,9 @@
                         [value]="{key:data.key,name:col.editor.field,data:mapOfDataExpanded[data[KEY_ID]][0].data[col.editor.field],dataText:mapOfDataExpanded[data[KEY_ID]][0].data[col.field]?mapOfDataExpanded[data[KEY_ID]][0].data[col.field]:null}"
                         [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.showFormat.field]:''"
                         (updateValue)="valueChange($event)"> </ng-container>
-                      {{ item['originData'][col.field] }}
+                        <ng-container *ngIf="!col.showFormat">
+                          {{ item['originData'][col.field] }}
+                        </ng-container>
                     </span></td>
                 </ng-container>
               </ng-container>

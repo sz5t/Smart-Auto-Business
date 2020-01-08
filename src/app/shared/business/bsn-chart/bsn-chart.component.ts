@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, 
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService, NzDropdownService } from 'ng-zorro-antd';
 import { CacheService } from '@delon/cache';
-import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_OUTPOUT_PARAMETER_TYPE, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT } from '@core/relative-Service/BsnTableStatus';
 import { Observer, Observable, Subscription, config } from 'rxjs';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
@@ -27,11 +27,17 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   public showdata = []; // 展示的数组
   public showguide = []; // 辅助线的数组
   public guidedataList = []; // 辅助线的数据集合
+  public ruledataList = []; // 规则算出的标准值的集合
+  public stageRuleDatalist = []; // 阶段开始的标准
+  public stageCurrentDatalist = []; // 当前阶段的数组
+  public curStage; // 自动播放的阶段变量
   public autoPlay;
   public ds; // 读取的全部数据
   public dv; // 根据要求过滤出的视图
   public datalength; // 真实的数据长度
   public next = 1; // 自动播放的标识变量
+  public curNum = 1; // 默认的设备数据阶段
+  public StageTime; // 启动阶段的时间
   public Shape; // 自定义样式效果
   public test = []; // 辅助线的图例数组
 
@@ -83,8 +89,16 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   public async load() {
 
     await this.load_data(1);
+    if (this.config.ruleConfig) {
+      await this.load_rule_data();
+      if (this.config.curStageConfig) {
+        await this.load_current_stage_data();
+      }
+    }
     if (this.config.haveGuide && this.config.showGuide && this.config.guideConfig) {
       await this.load_guide();
+    }
+    if (this.config.showPointStyle) {
       this.writePointStyle();
     }
 
@@ -106,10 +120,10 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
           this.CreateChart_Pie()
           break;
         case 'timeline':
-          this.CreateChart_Line()
+          this.CreateChart_Time_Line()
           break;
         case 'line':
-          this.CreateChart_Line1()
+          this.CreateChart_Line()
           break;
         case 'mini_line':
           this.CreateChart_MiniLine()
@@ -263,7 +277,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   /**
    * CreateChart_Line  生成折线图
    */
-  public CreateChart_Line1() {
+  public CreateChart_Line() {
     this.chart = new G2.Chart({
       container: this.chartElement.nativeElement, // 指定图表容器 ID
       animate: true, // 动画 默认true
@@ -312,7 +326,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     this.chart.render();
   }
 
-  private CreateChart_Line() {
+  private CreateChart_Time_Line() {
     this.chart = new G2.Chart({
       container: this.chartElement.nativeElement, // 指定图表容器 ID
       animate: true, // 动画 默认true
@@ -352,6 +366,33 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       }
     }
     if (this.config.x.axis) {
+      const format = {
+        label: {
+          formatter: val => {
+            // console.log(this.stageCurrentDatalist);
+            let xformat;
+            this.stageCurrentDatalist.forEach(s => {
+              if (s.starttime) {
+                if (s.endtime) {
+                  if (this.transStringTime(val) >= this.transStringTime(s.starttime) && this.transStringTime(val) < this.transStringTime(s.endtime)) {
+                    xformat = s.stage
+                  }
+                } else {
+                  if (this.transStringTime(val) >= this.transStringTime(s.starttime)) {
+                    xformat = s.stage
+                  }
+                }
+              }
+            })
+            if (!xformat) {
+              // xformat = 1;
+              return val;
+            }
+            return val + '  ' + '第' + xformat + '阶段'; // 格式化坐标轴显示文本
+          },
+        }
+      }
+      this.config.x.axis = { ...this.config.x.axis, ...format }
       this.chart.axis(this.config.x.name, this.config.x.axis);
     }
     if (this.config.y.axis) {
@@ -398,12 +439,34 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
           }
         });
     }
-    this.chart.source(this.dv);
+    const max = this.config.y.max ? this.config.y.max : 300;
+    const min = this.config.y.min ? this.config.y.min : 0;
+    if (this.config.y1) {
+      const y1max = this.config.y1.max ? this.config.y1.max : 300;
+      const y1min = this.config.y1.min ? this.config.y1.min : 0;
+      this.chart.source(this.dv, {
+        [this.config.y1.name]: {
+          min: [y1min],
+          max: [y1max],
+          tickInterval: [this.config.y1.scale.tickInterval],
+          alias: [this.config.y1.scale.alias]
+        }
+      });
+    }
+
+    this.chart.source(this.dv, {
+      [this.config.y.name]: {
+        min: [min],
+        max: [max],
+        tickInterval: [this.config.y.scale.tickInterval],
+        alias: [this.config.y.scale.alias]
+      }
+    });
     if (this.config.guideConfig && this.config.showGuide && this.config.guideConfig.guideType !== 'line') {
       if (this.config.guideScale) {
         if (this.config.guideScale.y) {
           this.config.guideScale.y.forEach(e => {
-            this.chart.line().position(this.config.x.name + '*' + 'value').color('city').shape(this.config.shape ? this.config.shape : 'circle');
+            this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color('city').shape(this.config.shape ? this.config.shape : 'circle');
             // this.chart.point().position(this.config.x.name + '*' + this.config.y.name).color(e.name).size(4).shape('circle').style({
             //   stroke: '#fff',
             //   lineWidth: 1
@@ -413,16 +476,38 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       }
     } else {
       this.chart.line().position(this.config.x.name + '*' + this.config.y.name).shape(this.config.shape ? this.config.shape : 'circle');
-      this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('breathPoint').style({
-        stroke: '#fff',
-        lineWidth: 1
-      });
-      if (this.config.y1) {
-        this.chart.line().position(this.config.x.name + '*' + this.config.y1.name).shape(this.config.shape ? this.config.shape : 'circle').color(this.config.y1color ? this.config.y1color : '#FFCC00');
-        this.chart.point().position(this.config.x.name + '*' + this.config.y1.name).size(4).shape('breathPoint').style({
+      if (this.config.showPointStyle) {
+        if (this.config.guideConfig) {
+          this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('overyGuide').style({
+            stroke: '#fff',
+            lineWidth: 1
+          });
+        }
+        if (this.config.ruleConfig && this.config.ruleConfig.rule) {
+          this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('notEqualPlan').style({
+            stroke: '#fff',
+            lineWidth: 1
+          });
+        }
+      } else {
+        this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('circle').style({
           stroke: '#fff',
           lineWidth: 1
-        })
+        });
+      }
+      if (this.config.y1) {
+        this.chart.line().position(this.config.x.name + '*' + this.config.y1.name).shape(this.config.shape ? this.config.shape : 'circle').color(this.config.y1color ? this.config.y1color : '#FFCC00');
+        if (this.config.ruleConfig && this.config.ruleConfig.y1max) {
+          this.chart.point().position(this.config.x.name + '*' + this.config.y1.name).size(4).shape('overy1Guide').style({
+            stroke: '#fff',
+            lineWidth: 1
+          })
+        } else {
+          this.chart.point().position(this.config.x.name + '*' + this.config.y1.name).color(this.config.y1color ? this.config.y1color : '#FFCC00').size(4).shape('circle').style({
+            stroke: '#fff',
+            lineWidth: 1
+          });
+        }
       }
     };
     if (this.config.groupName) {
@@ -432,10 +517,11 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         lineWidth: 1
       });
     }
-
+    // 有图表标记，最值，辅助线，超标点的样式等
     if (this.config.haveGuide) {
       this.allGuide(this.chart);
     }
+    // 没有自动加载数据的滑块
     if (this.config.showSlider && !this.config.autoPlay) {
       this.slider = new Slider({
         container: document.getElementById('slider'),
@@ -472,7 +558,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
 
       this.slider.render();
     }
-
+    // 有自动加载数据的滑块
     if (this.config.showSlider && this.config.autoPlay) {
       // this.originDv = this.ds.createView('origin');
       // this.originDv.source(this.showdata).transform({
@@ -526,25 +612,73 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       this.autoPlay = setInterval(async () => {
         await that.load_data(2);
         this.next = this.next + 1;
-        if (this.dataList[this.dataList.length - 1] !== this.showdata[this.config.showDataLength - 1]) {
-          this.showdata.shift();
-          this.showdata.push(this.dataList[this.config.showDataLength - 1 + this.next]);
-          this.slider.start = new Date(this.showdata[0][this.config.x.name].replace(/-/g, '/')).getTime();
-          this.slider.end = new Date(this.showdata[this.config.showDataLength - 1][this.config.x.name].replace(/-/g, '/')).getTime();
-          if (this.config.guideConfig.guideType !== 'line') {
-            this.ds.state.from = new Date(this.showdata[0]['monitortime']).getTime();
-            this.ds.state.to = new Date(this.showdata[this.showdata.length - 1]['monitortime']).getTime();
-            this.dv.source(this.showdata);
-            this.chart.changeData(this.dv);
-          } else {
-            this.chart.changeData(this.showdata);
+        if (this.showdata[this.config.showDataLength - 1]) {
+          if (this.dataList[this.dataList.length - 1] !== this.showdata[this.config.showDataLength - 1]) {
+            this.showdata.shift();
+            // if (this.next === 2) {
+            this.showdata.push(this.dataList[this.config.showDataLength - 2 + this.next]);
+            // } else {
+            //   this.showdata.push(this.dataList[this.config.showDataLength - 1 + this.next]);
+            // }
+            if (this.config.stageRuleConfig) {
+              if (!this.curStage) {
+                this.curStage = 1;
+              }
+              const tempStage = this.curStage;
+              if (this.showdata[this.config.showDataLength - 1]) {
+                this.setDataStage('dynamic', this.showdata[this.config.showDataLength - 1], this.curStage);
+              }
+              if (this.config.curStageConfig) {
+                await this.load_current_stage_data();
+              }
+
+              // for (let i = 0; i < this.stageCurrentDatalist.length; i++) {
+              //   if (!this.stageCurrentDatalist[i]['starttime']) {
+              //     this.curStage = this.stageCurrentDatalist[i]['stage'];
+              //     break;
+              //   } else {
+              //     this.curStage = this.stageCurrentDatalist[this.stageCurrentDatalist.length - 1]['stage'];
+              //   }
+              // }
+              // console.log('tempStage', tempStage);
+              // console.log('this.curStage', this.curStage);
+              if (this.curStage !== 1 && tempStage === this.curStage) {
+                this.curNum += 1;
+              } else {
+                this.curNum = 1;
+              }
+              // console.log('this.curNum', this.curNum);
+              // if (this.curStage === 2 ) {
+              this.showdata[this.config.showDataLength - 1]['stage'] = this.curStage - 1;
+              this.showdata[this.config.showDataLength - 1]['number'] = this.curNum;
+              // } else {
+              //   this.showdata[this.config.showDataLength - 1]['stage'] = this.curStage;
+              //   this.showdata[this.config.showDataLength - 1]['number'] = this.curNum;
+              // }
+              // console.log(this.showdata[this.config.showDataLength - 1]);
+            }
+            this.slider.start = new Date(this.showdata[0][this.config.x.name].replace(/-/g, '/')).getTime();
+            this.slider.end = new Date(this.showdata[this.config.showDataLength - 1][this.config.x.name].replace(/-/g, '/')).getTime();
+            if (this.config.guideConfig.guideType !== 'line') {
+              this.ds.state.from = new Date(this.showdata[0][that.config.x.name]).getTime();
+              this.ds.state.to = new Date(this.showdata[this.showdata.length - 1][that.config.x.name]).getTime();
+              this.dv.source(this.showdata);
+              this.chart.changeData(this.dv);
+            } else {
+              this.chart.changeData(this.showdata);
+            }
+            setTimeout(() => {
+              // this.chart.guide().clear();
+              this.allGuide(this.chart, this.slider.start, this.slider.end);
+              this.chart.repaint();
+            });
+            this.slider.changeData(this.showdata);
           }
-          setTimeout(() => {
-            // this.chart.guide().clear();
-            this.allGuide(this.chart, this.slider.start, this.slider.end);
-            this.chart.repaint();
-          });
-          this.slider.changeData(this.showdata);
+        } else {
+          this.operationAjax(this.showdata[this.config.showDataLength - 2][this.config.x.name], 'finish');
+          if (this.autoPlay) {
+            clearInterval(this.autoPlay);
+          }
         }
       }, this.config.intervalTime)
     }
@@ -650,6 +784,17 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         this.showdata = this.dataList;
       }
     }
+    if (this.config.stageRuleConfig) {
+      await this.load_stage_rule_data();
+    }
+    if (this.config.haveStage && temp === 1) {
+      this.curStage = 1;
+      this.setDataStage('static', this.showdata, this.curStage);
+    }
+
+    if (this.config.haveStage && !this.config.autoPlay) {
+      this.setDataStage('static', this.showdata);
+    }
   }
 
   public async load_guide() {
@@ -689,6 +834,83 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     }
   }
 
+  public async load_rule_data() {
+    const url = this._buildURL(this.config.ruleConfig.url);
+    const params = {
+      ...this._buildParameters(this.config.ruleConfig.params),
+      ...this._buildFilter(this.config.ruleConfig.filter)
+    };
+    const method = this.config.ruleConfig.ajaxType;
+    const loadData = await this._load(url, params, this.config.ruleConfig.ajaxType);
+    if (loadData.isSuccess) {
+      let data;
+      if (method === 'proc') {
+        data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
+        this.ruledataList = data;
+      } else {
+        data = loadData.data;  // data 是数组
+        if (data) {
+          this.ruledataList = data;
+        } else {
+          this.ruledataList = [];
+        }
+      }
+    } else {
+      this.ruledataList = [];
+    }
+  }
+
+  public async load_stage_rule_data() {
+    const url = this._buildURL(this.config.stageRuleConfig.url);
+    const params = {
+      ...this._buildParameters(this.config.stageRuleConfig.params),
+      ...this._buildFilter(this.config.stageRuleConfig.filter)
+    };
+    const method = this.config.stageRuleConfig.ajaxType;
+    const loadData = await this._load(url, params, this.config.ruleConfig.ajaxType);
+    if (loadData.isSuccess) {
+      let data;
+      if (method === 'proc') {
+        data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
+        this.stageRuleDatalist = data;
+      } else {
+        data = loadData.data;  // data 是数组
+        if (data) {
+          this.stageRuleDatalist = data;
+        } else {
+          this.stageRuleDatalist = [];
+        }
+      }
+    } else {
+      this.stageRuleDatalist = [];
+    }
+  }
+
+  public async load_current_stage_data() {
+    const url = this._buildURL(this.config.curStageConfig.url);
+    const params = {
+      ...this._buildParameters(this.config.curStageConfig.params),
+      ...this._buildFilter(this.config.curStageConfig.filter)
+    };
+    const method = this.config.curStageConfig.ajaxType;
+    const loadData = await this._load(url, params, this.config.ruleConfig.ajaxType);
+    if (loadData.isSuccess) {
+      let data;
+      if (method === 'proc') {
+        data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
+        this.stageCurrentDatalist = data;
+      } else {
+        data = loadData.data;  // data 是数组
+        if (data) {
+          this.stageCurrentDatalist = data;
+        } else {
+          this.stageCurrentDatalist = [];
+        }
+      }
+    } else {
+      this.stageCurrentDatalist = [];
+    }
+  }
 
   /**
  * 构建URL
@@ -726,7 +948,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       params = CommonTools.parametersResolver({
         params: paramsConfig,
         tempValue: this.tempValue,
-        initValue: this.initValue,
+        initValue: this.initData,
         cacheValue: this.cacheService,
         cascadeValue: this.cascadeValue
       });
@@ -865,7 +1087,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
           let date = this.dataList[i][this.config.x.name];
           date = date.replace(/-/g, '/');
           date = new Date(date).getTime();
-          if (date > start && date < end) {
+          if (date >= start && date <= end) {
             if (d[this.config.y.name] >= maxValue) {
               maxValue = d[this.config.y.name];
               maxObj = d;
@@ -1133,6 +1355,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       const minvalue = this.config.guide.minvalue;
       const starttime = this.config.guide.start;
       const endtime = this.config.guide.end;
+      const type = this.config.guide.type;
       // 辅助线展示的起始
       let lineStartTime;
       let lineEndTime;
@@ -1188,25 +1411,25 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
                 }
               });
               // 对相关曲线进行染色处理
-              if (this.config.guideColor) {
-                const areacolor = this.config.guideColor.color ? this.config.guideColor.color : '#FF4D4F';
-                charts.guide().regionFilter({
-                  top: true,
-                  start: [e[starttime], e[maxvalue]],
-                  end: [lineEndTime, 'max'],
-                  color: areacolor
-                });
-                charts.guide().regionFilter({
-                  top: true,
-                  start: [e[starttime], e[minvalue]],
-                  end: [lineEndTime, 'min'],
-                  color: areacolor
-                });
-              }
+              // if (this.config.guideColor) {
+              //   const areacolor = this.config.guideColor.color ? this.config.guideColor.color : '#FF4D4F';
+              //   charts.guide().regionFilter({
+              //     top: true,
+              //     start: [e[starttime], e[maxvalue]],
+              //     end: [lineEndTime, 'max'],
+              //     color: areacolor
+              //   });
+              //   charts.guide().regionFilter({
+              //     top: true,
+              //     start: [e[starttime], e[minvalue]],
+              //     end: [lineEndTime, 'min'],
+              //     color: areacolor
+              //   });
+              // }
             }
           });
         } else if (this.config.guideConfig && this.config.guideConfig.guideType === 'circle') {
-          this.chart.point().position(this.config.x.name + '*' + 'value').color('city').shape('breathPoint');
+          this.chart.point().position(this.config.x.name + '*' + 'value').color('city').shape('overyGuide');
         }
       } else {
         // 带状区域的辅助线
@@ -1218,75 +1441,77 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
           this.showguide.forEach(e => {
             dataStartTime = new Date(e[starttime].replace(/-/g, '/')).getTime();
             dataEndTime = new Date(e[endtime].replace(/-/g, '/')).getTime();
-            if (dataEndTime > start) {
-              lineStartTime = start > dataStartTime ? start : dataStartTime;
-              lineEndTime = end > dataEndTime ? dataEndTime : end;
-              lineStartTime = this.transTimeString(lineStartTime);
-              lineEndTime = this.transTimeString(lineEndTime);
-              const toptext = this.config.guideConfig.toptext ? this.config.guideConfig.toptext : '预警上限';
-              const floortext = this.config.guideConfig.floortext ? this.config.guideConfig.floortext : '预警下限';
-              const textcolor = this.config.guideConfig.textcolor ? this.config.guideConfig.textcolor : '#F5222D';
-              const guidelinecolor = this.config.guideConfig.guidelinecolor ? this.config.guideConfig.guidelinecolor : '#F5222D';
-              charts.guide().line({
-                top: true,
-                start: [lineStartTime, e[maxvalue]],
-                end: [lineEndTime, e[maxvalue]],
-                lineStyle: {
-                  stroke: guidelinecolor,
-                  lineWidth: 2
-                },
-                text: {
-                  content: [toptext],
-                  position: 'start',
-                  offsetX: 20,
-                  offsetY: -5,
-                  style: {
-                    fontSize: 14,
-                    fill: textcolor,
-                    opacity: 0.5
+            if (dataStartTime <= end) {
+              if (dataEndTime > start) {
+                lineStartTime = start > dataStartTime ? start : dataStartTime;
+                lineEndTime = end > dataEndTime ? dataEndTime : end;
+                lineStartTime = this.transTimeString(lineStartTime);
+                lineEndTime = this.transTimeString(lineEndTime);
+                const toptext = this.config.guideConfig.toptext ? this.config.guideConfig.toptext : '预警上限';
+                const floortext = this.config.guideConfig.floortext ? this.config.guideConfig.floortext : '预警下限';
+                const textcolor = this.config.guideConfig.textcolor ? this.config.guideConfig.textcolor : '#F5222D';
+                const guidelinecolor = this.config.guideConfig.guidelinecolor ? this.config.guideConfig.guidelinecolor : '#F5222D';
+                charts.guide().line({
+                  top: true,
+                  start: [lineStartTime, e[maxvalue]],
+                  end: [lineEndTime, e[maxvalue]],
+                  lineStyle: {
+                    stroke: guidelinecolor,
+                    lineWidth: 2
+                  },
+                  text: {
+                    content: [toptext],
+                    position: 'start',
+                    offsetX: 20,
+                    offsetY: -5,
+                    style: {
+                      fontSize: 14,
+                      fill: textcolor,
+                      opacity: 0.5
+                    }
                   }
-                }
-              });
-              charts.guide().line({
-                top: true,
-                start: [lineStartTime, e[minvalue]],
-                end: [lineEndTime, e[minvalue]],
+                });
+                charts.guide().line({
+                  top: true,
+                  start: [lineStartTime, e[minvalue]],
+                  end: [lineEndTime, e[minvalue]],
 
-                lineStyle: {
-                  stroke: guidelinecolor,
-                  lineWidth: 2
-                },
-                text: {
-                  content: [floortext],
-                  position: 'start',
-                  offsetX: 20,
-                  offsetY: -5,
-                  style: {
-                    fontSize: 14,
-                    fill: textcolor,
-                    opacity: 0.5
+                  lineStyle: {
+                    stroke: guidelinecolor,
+                    lineWidth: 2
+                  },
+                  text: {
+                    content: [floortext],
+                    position: 'start',
+                    offsetX: 20,
+                    offsetY: -5,
+                    style: {
+                      fontSize: 14,
+                      fill: textcolor,
+                      opacity: 0.5
+                    }
                   }
-                }
-              });
-              if (this.config.guideColor) {
-                const areacolor = this.config.guideColor.color ? this.config.guideColor.color : '#FF4D4F';
-                charts.guide().regionFilter({
-                  top: true,
-                  start: [e[starttime], e[maxvalue]],
-                  end: [lineEndTime, 'max'],
-                  color: areacolor
                 });
-                charts.guide().regionFilter({
-                  top: true,
-                  start: [e[starttime], e[minvalue]],
-                  end: [lineEndTime, 'min'],
-                  color: areacolor
-                });
+                // if (this.config.guideColor) {
+                //   const areacolor = this.config.guideColor.color ? this.config.guideColor.color : '#FF4D4F';
+                //   charts.guide().regionFilter({
+                //     top: true,
+                //     start: [e[starttime], e[maxvalue]],
+                //     end: [lineEndTime, 'max'],
+                //     color: areacolor
+                //   });
+                //   charts.guide().regionFilter({
+                //     top: true,
+                //     start: [e[starttime], e[minvalue]],
+                //     end: [lineEndTime, 'min'],
+                //     color: areacolor
+                //   });
+                // }
               }
             }
           });
         } else if (this.config.guideConfig.guideType === 'circle') {
-          // this.chart.point().position(this.config.x.name + '*' + 'value').color('city').shape('breathPoint');
+          // this.chart.point().position(this.config.x.name + '*' + 'value').color('city').shape('overGuide');
         }
       }
     }
@@ -1307,92 +1532,22 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     this.Shape = G2.Shape;
     const that = this;
     const lineguide = this.showguide;
-    this.Shape.registerShape('point', 'breathPoint', {
-      draw(cfg, container) {
-        const data = cfg.origin._origin;
-        // console.log('cfg', cfg);
-        // console.log('data', data);
-        const point = {
-          x: cfg.x,
-          y: cfg.y
-        };
-        if (that.config.guideConfig.guideType !== 'line') {
-          if (data.city === that.config.y.name) {
-            that.showdata.forEach(e => {
-              if (e[that.config.y.name] > e[that.test[1]] || e[that.config.y.name] < e[that.test[0]]) {
-                const search = that.showdata.find(s => s.Id === e.Id);
-                if (data.Id === search.Id) {
-                  const decorator1 = container.addShape('circle', {
-                    attrs: {
-                      x: point.x,
-                      y: point.y,
-                      r: 10,
-                      fill: '#DC143C',
-                      opacity: 0.5
-                    }
-                  });
-                  const decorator2 = container.addShape('circle', {
-                    attrs: {
-                      x: point.x,
-                      y: point.y,
-                      r: 10,
-                      fill: '#DC143C',
-                      opacity: 0.5
-                    }
-                  });
-                  const decorator3 = container.addShape('circle', {
-                    attrs: {
-                      x: point.x,
-                      y: point.y,
-                      r: 10,
-                      fill: '#DC143C',
-                      opacity: 0.5
-                    }
-                  });
-                  decorator1.animate({
-                    r: 20,
-                    opacity: 0,
-                    repeat: true
-                  }, 1500, 'easeLinear');
-                  decorator2.animate({
-                    r: 20,
-                    opacity: 0,
-                    repeat: true
-                  }, 1500, 'easeLinear', function () { }, 600);
-                  decorator3.animate({
-                    r: 20,
-                    opacity: 0,
-                    repeat: true
-                  }, 1500, 'easeLinear', function () { }, 1200);
-                  container.addShape('circle', {
-                    attrs: {
-                      x: point.x,
-                      y: point.y,
-                      r: 6,
-                      fill: '#DC143C',
-                      opacity: 0.7
-                    }
-                  });
-                  container.addShape('circle', {
-                    attrs: {
-                      x: point.x,
-                      y: point.y,
-                      r: 1.5,
-                      fill: '#DC143C'
-                    }
-                  });
-                }
-              }
-            });
-          }
-        } else {
-          that.showdata.forEach(e => {
-            lineguide.forEach(t => {
-              const btime = that.transStringTime(t[that.config.guide.start]);
-              const etime = that.transStringTime(t[that.config.guide.end]);
-              const datatime = that.transStringTime(e[that.config.x.name]);
-              if (datatime > btime && datatime < etime) {
-                if (e[that.config.y.name] > t[that.config.guide.maxvalue] || e[that.config.y.name] < t[that.config.guide.minvalue]) {
+    // y辅助线超过的部分标识点的样式
+    if (this.config.guideConfig) {
+      this.Shape.registerShape('point', 'overyGuide', {
+        draw(cfg, container) {
+          const data = cfg.origin._origin;
+          // console.log('cfg', cfg);
+          // console.log('data', data);
+          const point = {
+            x: cfg.x,
+            y: cfg.y
+          };
+          const guideColor = that.config.guideConfig.pointColor ? that.config.guideConfig.pointColor : '#DC143C'
+          if (that.config.guideConfig.guideType !== 'line') {
+            if (data.city === that.config.y.name) {
+              that.showdata.forEach(e => {
+                if (e[that.config.y.name] > e[that.test[1]] || e[that.config.y.name] < e[that.test[0]]) {
                   const search = that.showdata.find(s => s.Id === e.Id);
                   if (data.Id === search.Id) {
                     const decorator1 = container.addShape('circle', {
@@ -1400,7 +1555,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
                         x: point.x,
                         y: point.y,
                         r: 10,
-                        fill: '#DC143C',
+                        fill: guideColor,
                         opacity: 0.5
                       }
                     });
@@ -1409,7 +1564,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
                         x: point.x,
                         y: point.y,
                         r: 10,
-                        fill: '#DC143C',
+                        fill: guideColor,
                         opacity: 0.5
                       }
                     });
@@ -1418,7 +1573,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
                         x: point.x,
                         y: point.y,
                         r: 10,
-                        fill: '#DC143C',
+                        fill: guideColor,
                         opacity: 0.5
                       }
                     });
@@ -1426,23 +1581,23 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
                       r: 20,
                       opacity: 0,
                       repeat: true
-                    }, 1800, 'easeLinear');
+                    }, 1500, 'easeLinear');
                     decorator2.animate({
                       r: 20,
                       opacity: 0,
                       repeat: true
-                    }, 1800, 'easeLinear', function () { }, 600);
+                    }, 1500, 'easeLinear', function () { }, 600);
                     decorator3.animate({
                       r: 20,
                       opacity: 0,
                       repeat: true
-                    }, 1800, 'easeLinear', function () { }, 1200);
+                    }, 1500, 'easeLinear', function () { }, 1200);
                     container.addShape('circle', {
                       attrs: {
                         x: point.x,
                         y: point.y,
                         r: 6,
-                        fill: '#DC143C',
+                        fill: guideColor,
                         opacity: 0.7
                       }
                     });
@@ -1451,17 +1606,332 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
                         x: point.x,
                         y: point.y,
                         r: 1.5,
-                        fill: '#DC143C'
+                        fill: guideColor
                       }
                     });
                   }
                 }
+              });
+            }
+          } else {
+            that.showdata.forEach(e => {
+              lineguide.forEach(t => {
+                const btime = that.transStringTime(t[that.config.guide.start]);
+                const etime = that.transStringTime(t[that.config.guide.end]);
+                const datatime = that.transStringTime(e[that.config.x.name]);
+                if (datatime >= btime && datatime <= etime) {
+                  if (e[that.config.y.name]) {
+                    if (e[that.config.y.name] > t[that.config.guide.maxvalue] || e[that.config.y.name] < t[that.config.guide.minvalue]) {
+                      const search = that.showdata.find(s => s.Id === e.Id);
+                      if (data.Id === search.Id) {
+                        const decorator1 = container.addShape('circle', {
+                          attrs: {
+                            x: point.x,
+                            y: point.y,
+                            r: 10,
+                            fill: guideColor,
+                            opacity: 0.5
+                          }
+                        });
+                        const decorator2 = container.addShape('circle', {
+                          attrs: {
+                            x: point.x,
+                            y: point.y,
+                            r: 10,
+                            fill: guideColor,
+                            opacity: 0.5
+                          }
+                        });
+                        const decorator3 = container.addShape('circle', {
+                          attrs: {
+                            x: point.x,
+                            y: point.y,
+                            r: 10,
+                            fill: guideColor,
+                            opacity: 0.5
+                          }
+                        });
+                        decorator1.animate({
+                          r: 20,
+                          opacity: 0,
+                          repeat: true
+                        }, 1800, 'easeLinear');
+                        decorator2.animate({
+                          r: 20,
+                          opacity: 0,
+                          repeat: true
+                        }, 1800, 'easeLinear', function () { }, 600);
+                        decorator3.animate({
+                          r: 20,
+                          opacity: 0,
+                          repeat: true
+                        }, 1800, 'easeLinear', function () { }, 1200);
+                        container.addShape('circle', {
+                          attrs: {
+                            x: point.x,
+                            y: point.y,
+                            r: 6,
+                            fill: guideColor,
+                            opacity: 0.7
+                          }
+                        });
+                        container.addShape('circle', {
+                          attrs: {
+                            x: point.x,
+                            y: point.y,
+                            r: 1.5,
+                            fill: guideColor
+                          }
+                        });
+                      }
+                    }
+                  }
+                }
+              })
+            });
+          }
+        }
+      });
+    }
+
+    // y1辅助线超过的部分标识点的样式
+    if (this.config.ruleConfig.y1max) {
+      this.Shape.registerShape('point', 'overy1Guide', {
+        draw(cfg, container) {
+          const data = cfg.origin._origin;
+          // console.log('cfg', cfg);
+          // console.log('data', data);
+          const point = {
+            x: cfg.x,
+            y: cfg.y
+          };
+          let y1max;
+          that.stageRuleDatalist.forEach(r => {
+            if (r.filed === that.config.y1.name) {
+              y1max = r.filedvalue
+            }
+          });
+          const y1Color = that.config.ruleConfig.overy1color ? that.config.ruleConfig.overy1color : '#FF6600'
+          that.showdata.forEach(e => {
+            if (e[that.config.y1.name]) {
+              if (e[that.config.y1.name] > y1max) {
+                const search = that.showdata.find(s => s.Id === e.Id);
+                if (data.Id === search.Id) {
+                  const decorator1 = container.addShape('circle', {
+                    attrs: {
+                      x: point.x,
+                      y: point.y,
+                      r: 10,
+                      fill: y1Color,
+                      opacity: 0.5
+                    }
+                  });
+                  const decorator2 = container.addShape('circle', {
+                    attrs: {
+                      x: point.x,
+                      y: point.y,
+                      r: 10,
+                      fill: y1Color,
+                      opacity: 0.5
+                    }
+                  });
+                  const decorator3 = container.addShape('circle', {
+                    attrs: {
+                      x: point.x,
+                      y: point.y,
+                      r: 10,
+                      fill: y1Color,
+                      opacity: 0.5
+                    }
+                  });
+                  decorator1.animate({
+                    r: 20,
+                    opacity: 0,
+                    repeat: true
+                  }, 1800, 'easeLinear');
+                  decorator2.animate({
+                    r: 20,
+                    opacity: 0,
+                    repeat: true
+                  }, 1800, 'easeLinear', function () { }, 600);
+                  decorator3.animate({
+                    r: 20,
+                    opacity: 0,
+                    repeat: true
+                  }, 1800, 'easeLinear', function () { }, 1200);
+                  container.addShape('circle', {
+                    attrs: {
+                      x: point.x,
+                      y: point.y,
+                      r: 6,
+                      fill: y1Color,
+                      opacity: 0.7
+                    }
+                  });
+                  container.addShape('circle', {
+                    attrs: {
+                      x: point.x,
+                      y: point.y,
+                      r: 1.5,
+                      fill: y1Color
+                    }
+                  });
+                }
               }
-            })
+            }
           });
         }
-      }
-    });
+      });
+    }
+
+    // 不符合规则的点的样式
+    if (this.config.ruleConfig && this.config.ruleConfig.rule) {
+      this.Shape.registerShape('point', 'notEqualPlan', {
+        draw(cfg, container) {
+          const data = cfg.origin._origin;
+          // console.log('cfg', cfg);
+          // console.log('data', data);
+          const point = {
+            x: cfg.x,
+            y: cfg.y
+          };
+          if (that.config.ruleConfig.rule) {
+            const ruleColor = that.config.ruleConfig.pointColor ? that.config.ruleConfig.pointColor : '#008000'
+            for (let i = 0; i < that.ruledataList.length; i++) {
+              if (data['stage'] === that.ruledataList[i]['stage']
+                && data['number'] === that.ruledataList[i]['number']) {
+                if (data[that.config.y.name] !== that.ruledataList[i][that.config.ruleConfig.y]) {
+                  const decorator1 = container.addShape('circle', {
+                    attrs: {
+                      x: point.x,
+                      y: point.y,
+                      r: 10,
+                      fill: ruleColor,
+                      opacity: 0.5
+                    }
+                  });
+                  const decorator2 = container.addShape('circle', {
+                    attrs: {
+                      x: point.x,
+                      y: point.y,
+                      r: 10,
+                      fill: ruleColor,
+                      opacity: 0.5
+                    }
+                  });
+                  const decorator3 = container.addShape('circle', {
+                    attrs: {
+                      x: point.x,
+                      y: point.y,
+                      r: 10,
+                      fill: ruleColor,
+                      opacity: 0.5
+                    }
+                  });
+                  decorator1.animate({
+                    r: 20,
+                    opacity: 0,
+                    repeat: true
+                  }, 1800, 'easeLinear');
+                  decorator2.animate({
+                    r: 20,
+                    opacity: 0,
+                    repeat: true
+                  }, 1800, 'easeLinear', function () { }, 600);
+                  decorator3.animate({
+                    r: 20,
+                    opacity: 0,
+                    repeat: true
+                  }, 1800, 'easeLinear', function () { }, 1200);
+                  container.addShape('circle', {
+                    attrs: {
+                      x: point.x,
+                      y: point.y,
+                      r: 6,
+                      fill: ruleColor,
+                      opacity: 0.7
+                    }
+                  });
+                  container.addShape('circle', {
+                    attrs: {
+                      x: point.x,
+                      y: point.y,
+                      r: 1.5,
+                      fill: ruleColor
+                    }
+                  });
+                }
+              } else if ((data['stage'] === that.ruledataList[i]['stage']
+                && !that.ruledataList.find(r => r['number'] === data['number']))) {
+                if (data[that.config.y.name] !== that.ruledataList[i][that.config.ruleConfig.y]) {
+                  const decorator1 = container.addShape('circle', {
+                    attrs: {
+                      x: point.x,
+                      y: point.y,
+                      r: 10,
+                      fill: ruleColor,
+                      opacity: 0.5
+                    }
+                  });
+                  const decorator2 = container.addShape('circle', {
+                    attrs: {
+                      x: point.x,
+                      y: point.y,
+                      r: 10,
+                      fill: ruleColor,
+                      opacity: 0.5
+                    }
+                  });
+                  const decorator3 = container.addShape('circle', {
+                    attrs: {
+                      x: point.x,
+                      y: point.y,
+                      r: 10,
+                      fill: ruleColor,
+                      opacity: 0.5
+                    }
+                  });
+                  decorator1.animate({
+                    r: 20,
+                    opacity: 0,
+                    repeat: true
+                  }, 1800, 'easeLinear');
+                  decorator2.animate({
+                    r: 20,
+                    opacity: 0,
+                    repeat: true
+                  }, 1800, 'easeLinear', function () { }, 600);
+                  decorator3.animate({
+                    r: 20,
+                    opacity: 0,
+                    repeat: true
+                  }, 1800, 'easeLinear', function () { }, 1200);
+                  container.addShape('circle', {
+                    attrs: {
+                      x: point.x,
+                      y: point.y,
+                      r: 6,
+                      fill: ruleColor,
+                      opacity: 0.7
+                    }
+                  });
+                  container.addShape('circle', {
+                    attrs: {
+                      x: point.x,
+                      y: point.y,
+                      r: 1.5,
+                      fill: ruleColor
+                    }
+                  });
+                }
+                break;
+              }
+            }
+          }
+        }
+      });
+    }
+
 
     const data = [
       { genre: 'Sports', sold: 275 },
@@ -1480,7 +1950,363 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     // });
     // this.chart.source(data);
     // this.chart.line().position('genre*sold').shape('line');
-    // this.chart.point().position('genre*sold').shape('breathPoint');
+    // this.chart.point().position('genre*sold').shape('overGuide');
     // this.chart.render();
+  }
+
+  // 静态数据判断点的阶段，回写阶段时间
+  /**
+   * data 需要判断的数据集
+   */
+  public setDataStage(kind, data, curStage?) {
+    const stage = this.config.stageRuleConfig.stageFiled;
+    const currentStage = [];
+    let stageRule = {};
+    curStage = curStage ? curStage : this.curStage
+    for (let i = 0; i < this.stageRuleDatalist.length; i++) {
+      if (this.stageRuleDatalist[i][stage] === curStage) {
+        currentStage.splice(0, 0, this.stageRuleDatalist[i]);
+      }
+    }
+    currentStage.forEach(s => {
+      const field = s['filed'];
+      const value = s['filedvalue'];
+      const obj = { [field]: value }
+      stageRule = { ...stageRule, ...obj }
+    })
+    // console.log(Object.keys(stageRule));
+    if (kind === 'static') {
+      let num = 0;
+      data.forEach(e => {
+        num += 1;
+        const field = Object.keys(stageRule)[0];
+        const value = stageRule[Object.keys(stageRule)[0]];
+        let field1;
+        let value1;
+        if (Object.keys(stageRule).length > 1) {
+          field1 = Object.keys(stageRule)[1];
+          value1 = stageRule[Object.keys(stageRule)[1]];
+        }
+        if (Object.keys(stageRule).length === 1) {
+          if (e[field] && e[field] === value) {
+            this.operationAjax(e[this.config.x.name]);
+            this.curStage += 1;
+          }
+        } else if (e[field] && e[field] === value && e[field1] && e[field1] === value1) {
+          this.operationAjax(e[this.config.x.name]);
+          this.curStage += 1;
+        }
+        e['stage'] = this.curStage - 1;
+        e['number'] = num;
+      });
+    } else if (kind === 'dynamic') {
+      const field = Object.keys(stageRule)[0];
+      const value = stageRule[Object.keys(stageRule)[0]];
+      let field1;
+      let value1;
+      if (Object.keys(stageRule).length > 1) {
+        field1 = Object.keys(stageRule)[1];
+        value1 = stageRule[Object.keys(stageRule)[1]];
+      }
+      if (Object.keys(stageRule).length === 1) {
+        if (data[field] && data[field] === value) {
+          this.operationAjax(data[this.config.x.name]);
+          this.curStage += 1;
+        }
+      } else if (data[field] && data[field] === value && data[field1] && data[field1] === value1) {
+        this.operationAjax(data[this.config.x.name]);
+        this.curStage += 1;
+      }
+    }
+  }
+
+  /**
+   * 执行相关的SQL操作
+   */
+  public async operationAjax(time, finish?) {
+    let response;
+    if (!finish) {
+      response = await this._executeAjaxConfig(
+        this.config.stageRuleConfig.operateConfig,
+        time
+      );
+    } else {
+      response = await this._executeAjaxConfig(
+        this.config.stageRuleConfig.finishConfig,
+        time
+      );
+    }
+    this.StageTime = time;
+    // 处理输出参数
+    if (this.config.stageRuleConfig.operateConfig.outputParams) {
+      this.outputParametersResolver(
+        this.config.stageRuleConfig.operateConfig,
+        response,
+        this.config.stageRuleConfig.operateConfig,
+        () => {
+          // this.sendCascadeMessage(response.data);
+          // // this.cascade.next(
+          // //     new BsnComponentMessage(
+          // //         BSN_COMPONENT_CASCADE_MODES.REFRESH,
+          // //         this.config.viewId
+          // //     )
+          // // );
+          // this.focusIds = this._getFocusIds(
+          //   response.data
+          // );
+          // this.load();
+        }
+      );
+    } else {
+      // 没有输出参数，进行默认处理
+      this.showAjaxMessage(response, '操作成功', () => {
+        // this.sendCascadeMessage(response.data);
+        // // this.cascade.next(
+        // //     new BsnComponentMessage(
+        // //         BSN_COMPONENT_CASCADE_MODES.REFRESH,
+        // //         this.config.viewId
+        // //     )
+        // // );
+        // this.focusIds = this._getFocusIds(response.data);
+        // this.load();
+      }, this.config.stageRuleConfig.operateConfig);
+
+
+    }
+  }
+
+  public outputParametersResolver(c, response, ajaxConfig, callback = function () { }) {
+    const result = false;
+    if (response.isSuccess && !Array.isArray(response.data)) {
+      const msg =
+        c.outputParams[
+        c.outputParams.findIndex(
+          m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
+        )
+        ];
+      const value =
+        c.outputParams[
+        c.outputParams.findIndex(
+          m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
+        )
+        ];
+      const table =
+        c.outputParams[
+        c.outputParams.findIndex(
+          m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
+        )
+        ];
+      const msgObj = msg
+        ? response.data[msg.name].split(':')
+        : null;
+      const valueObj = response.data ? response.data : null;
+      // const tableObj = response.data[table.name] ? response.data[table.name] : [];
+      if (msgObj && msgObj.length > 1) {
+        const messageType = msgObj[0];
+        let options;
+        switch (messageType) {
+          case 'info':
+            options = {
+              nzTitle: '提示',
+              nzWidth: '350px',
+              nzContent: msgObj[1]
+            };
+            this.baseModal[messageType](options);
+            break;
+          case 'error':
+            options = {
+              nzTitle: '提示',
+              nzWidth: '350px',
+              nzContent: msgObj[1]
+            };
+            this.baseModal[messageType](options);
+            break;
+          case 'confirm':
+            options = {
+              nzTitle: '提示',
+              nzContent: msgObj[1],
+              nzOnOk: () => {
+                // 是否继续后续操作，根据返回状态结果
+                // const childrenConfig = ajaxConfig.filter(
+                //     f => f.parentName && f.parentName === c.name
+                // );
+                // //  目前紧支持一次执行一个分之步骤
+                // this._getAjaxConfig(childrenConfig[0], ajaxConfig);
+                // childrenConfig &&
+                //     childrenConfig.map(currentAjax => {
+                //         this.getAjaxConfig(
+                //             currentAjax,
+                //             ajaxConfig,
+                //             callback
+                //         );
+                //     });
+              },
+              nzOnCancel: () => { }
+            };
+            this.baseModal[messageType](options);
+            break;
+          case 'warning':
+            options = {
+              nzTitle: '提示',
+              nzWidth: '350px',
+              nzContent: msgObj[1]
+            };
+            this.baseModal[messageType](options);
+            break;
+          case 'success':
+            options = {
+              nzTitle: '',
+              nzWidth: '350px',
+              nzContent: msgObj[1]
+            };
+            this.baseMessage.success(msgObj[1]);
+            callback();
+            break;
+        }
+        // if(options) {
+        //     this.modalService[messageType](options);
+        //
+        //     // 如果成功则执行回调
+        //     if(messageType === 'success') {
+        //         callback && callback();
+        //     }
+        // }
+      }
+      // if(options) {
+      //     this.baseMessage[messageType](options);
+      //
+      //     // 如果成功则执行回调
+      //     if(messageType === 'success') {
+      //         callback && callback();
+      //     }
+      // }
+      if (valueObj) {
+        // this.returnValue = valueObj;
+        // const childrenConfig = ajaxConfig.filter(
+        //     f => f.parentName && f.parentName === c.name
+        // );
+        // //  目前紧支持一次执行一个分之步骤
+        // if (childrenConfig && childrenConfig.length > 0) {
+        //     this._getAjaxConfig(childrenConfig[0], ajaxConfig);
+        // }
+
+      }
+
+    } else if (response.isSuccess && Array.isArray(response.data)) {
+      const messages = [];
+      for (let j = 0, jlen = response.data.length; j < jlen; j++) {
+        if (response.data[j].Message && response.data[j].Message.split(':').length > 0) {
+          const msg = response.data[j].Message.split(':');
+          switch (msg[0]) {
+            case 'success':
+              // rowsData[j]['isSuccess'] = true;
+              break;
+            case 'error':
+              messages.push(msg[1]);
+              // rowsData[j]['isSuccess'] = false;
+              break;
+            case 'info':
+              messages.push(msg[1]);
+              // rowsData[j]['isSuccess'] = false;
+              break;
+            case 'warning':
+              messages.push(msg[1]);
+              // rowsData[j]['isSuccess'] = false;
+              break;
+          }
+        }
+      }
+      if (messages.length > 0) {
+        this.baseMessage.create('error', messages.join('<br/>'));
+      }
+      callback();
+    } else {
+      this.baseMessage.error('操作异常:', response.message);
+    }
+  }
+
+  public showAjaxMessage(result, message?, callback?, cfg?) {
+    const rs: { success: boolean; msg: string[] } = {
+      success: true,
+      msg: []
+    };
+    const desc = cfg.description ? cfg.description : '执行操作,';
+    if (result && Array.isArray(result)) {
+      result.forEach(res => {
+        rs['success'] = rs['success'] && res.isSuccess;
+        if (!res.isSuccess) {
+          rs.msg.push(res.message);
+        }
+      });
+      if (rs.success) {
+        this.baseMessage.success(message);
+        if (callback) {
+          callback();
+        }
+
+        this.apiResource.addOperationLog({
+          eventId: BSN_OPERATION_LOG_TYPE.SQL,
+          eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+          funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+          description: `${desc} [执行成功] 数据为: ${JSON.stringify(result['data'])}`
+        }).subscribe(result => { });
+      } else {
+        this.baseMessage.error(rs.msg.join('<br/>'));
+        this.apiResource.addOperationLog({
+          eventId: BSN_OPERATION_LOG_TYPE.SQL,
+          eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
+          funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+          description: `${desc} [操作失败] 数据为: ${rs.msg.join('<br/>')}`
+        }).subscribe(result => { });
+      }
+    } else {
+      if (result.isSuccess) {
+        this.baseMessage.success(message);
+        if (callback) {
+          callback();
+        }
+        this.apiResource.addOperationLog({
+          eventId: BSN_OPERATION_LOG_TYPE.SQL,
+          eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
+          funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+          description: `${desc} [操作成功] 数据: ${JSON.stringify(result['data'])}`
+        }).subscribe(result => { });
+      } else {
+        this.baseMessage.error(result.message);
+        this.apiResource.addOperationLog({
+          eventId: BSN_OPERATION_LOG_TYPE.SQL,
+          eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
+          funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
+          description: `${desc} [操作失败] 数据为: ${result.message}`
+        }).subscribe(result => { });
+      }
+    }
+  }
+
+  private async _executeAjaxConfig(ajaxConfigObj, handleData) {
+    return this._executeAction(ajaxConfigObj, handleData);
+  }
+
+  private async _executeAction(ajaxConfigObj, handleData) {
+    let executeParam = CommonTools.parametersResolver({
+      params: ajaxConfigObj.params,
+      tempValue: this.tempValue,
+      item: handleData,
+      initValue: this.initData,
+      cacheValue: this.cacheService,
+      returnValue: this.returnValue,
+    });
+    const tempCondition = { 'time': handleData, 'stage': this.curStage }
+    executeParam = { ...executeParam, ...tempCondition }
+    // 执行数据操作
+    return this._executeRequest(
+      ajaxConfigObj.url,
+      ajaxConfigObj.ajaxType ? ajaxConfigObj.ajaxType : 'post',
+      executeParam
+    );
+  }
+
+  private async _executeRequest(url, method, body) {
+    return this._http[method](url, body).toPromise();
   }
 }
