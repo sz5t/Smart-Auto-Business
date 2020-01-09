@@ -1618,12 +1618,15 @@ export class BsnNewTreeTableComponent extends TreeGridBase
         if (this.mapOfDataExpanded[opt[this.KEY_ID]]) {
           if (opt.parentId !== null) {
             if (this.mapOfDataExpanded[opt[this.KEY_ID]]) {
-              delete this.mapOfDataExpanded[opt[this.KEY_ID]];
+              this.mapOfDataExpanded[opt[this.KEY_ID]][0]['data'] = opt;
+              this.mapOfDataExpanded[opt[this.KEY_ID]][0]['originData'] = opt;
+              this.mapOfDataExpanded = JSON.parse(JSON.stringify(this.mapOfDataExpanded));
+              // delete this.mapOfDataExpanded[opt[this.KEY_ID]];
             }
-            this.mapOfDataExpanded[opt.parentId][0]['data']['children'] = [opt, ...this.mapOfDataExpanded[opt.parentId][0]['data']['children']];
-            this.mapOfDataExpanded[opt.parentId][0]['originData'] = { ...this.mapOfDataExpanded[opt.parentId][0]['data'] };
-            this.mapOfDataExpanded[opt.parentId][0]['expand'] = true;
-            this.expandRow(this.mapOfDataExpanded[opt.parentId][0]['data'], true);
+            // this.mapOfDataExpanded[opt.parentId][0]['data']['children'] = [opt, ...this.mapOfDataExpanded[opt.parentId][0]['data']['children']];
+            // this.mapOfDataExpanded[opt.parentId][0]['originData'] = { ...this.mapOfDataExpanded[opt.parentId][0]['data'] };
+            // this.mapOfDataExpanded[opt.parentId][0]['expand'] = true;
+            // this.expandRow(this.mapOfDataExpanded[opt.parentId][0]['data'], true);
           }
           // else {
           //   const children = this.mapOfDataExpanded[opt[this.KEY_ID]][0]['data']['children'];
