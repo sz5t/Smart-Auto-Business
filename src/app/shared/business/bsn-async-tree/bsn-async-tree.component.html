@@ -15,7 +15,7 @@
                                             <ng-template #suffixIcon>
                                               <i nz-icon type="search"></i>
                                             </ng-template>
-<nz-tree #treeObj [nzData]="treeData" [nzAsyncData]="config.asyncData" [nzDefaultExpandAll]="config.expandAll"
+<nz-tree #treeObj [nzData]="treeData" [nzAsyncData]="config.asyncData" [nzDefaultExpandAll]="config.expandAll" [nzSearchValue]="searchValue"
   [nzCheckable]="config.checkable" [nzShowLine]="config.showLine" (nzExpandChange)="onMouseAction('expandNode', $event)"
   (nzClick)="onMouseAction('clickNode', $event)">
   <!-- <ng-template #nzTreeTemplate let-node>
