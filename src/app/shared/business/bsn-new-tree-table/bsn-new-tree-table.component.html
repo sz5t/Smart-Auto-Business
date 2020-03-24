@@ -74,6 +74,21 @@
                         (updateValue)="valueChange($event)">
                       </ng-container>
                     </ng-container>
+                    <ng-container *ngIf="!col.editor">
+                      <span
+                      [ngClass]="[col.formatter ? setCellFont(mapOfDataExpanded[data[KEY_ID]][0].data[col.field], col.formatter):'']">
+                      <ng-container [bsnData]="tempValue" [initData]="initData"
+                        [rowData]="mapOfDataExpanded[data[KEY_ID]][0].data"
+                        [dataSet]="col.showFormat.options.dataSet?dataSet[col.showFormat.options.dataSet]:null"
+                        CnGridEditorDirective *ngIf="col.showFormat" [config]="col.showFormat.options"
+                        [value]="{key:data.key,name:col.field,data:mapOfDataExpanded[data[KEY_ID]][0].data[col.field],dataText:mapOfDataExpanded[data[KEY_ID]][0].data[col.field]?mapOfDataExpanded[data[KEY_ID]][0].data[col.field]:null}"
+                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.showFormat.field]:''"
+                        (updateValue)="valueChange($event)"> </ng-container>
+                        <ng-container *ngIf="!col.showFormat">
+                          {{ item['originData'][col.field] }}
+                        </ng-container>
+                      </span>
+                    </ng-container>
                   </td>
                   <td *ngSwitchCase="'search'"
                     [nzShowExpand]="!!item.children && col.expand" [(nzExpand)]="item.expand"
@@ -114,7 +129,7 @@
                         [rowData]="mapOfDataExpanded[data[KEY_ID]][0].data"
                         [dataSet]="col.showFormat.options.dataSet?dataSet[col.showFormat.options.dataSet]:null"
                         CnGridEditorDirective *ngIf="col.showFormat" [config]="col.showFormat.options"
-                        [value]="{key:data.key,name:col.editor.field,data:mapOfDataExpanded[data[KEY_ID]][0].data[col.editor.field],dataText:mapOfDataExpanded[data[KEY_ID]][0].data[col.field]?mapOfDataExpanded[data[KEY_ID]][0].data[col.field]:null}"
+                        [value]="{key:data.key,name:col.field,data:mapOfDataExpanded[data[KEY_ID]][0].data[col.field],dataText:mapOfDataExpanded[data[KEY_ID]][0].data[col.field]?mapOfDataExpanded[data[KEY_ID]][0].data[col.field]:null}"
                         [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.showFormat.field]:''"
                         (updateValue)="valueChange($event)"> </ng-container>
                         <ng-container *ngIf="!col.showFormat">
@@ -169,6 +184,21 @@
                         [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
                         (updateValue)="valueChange($event)">
                       </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="!col.editor">
+                      <span
+                      [ngClass]="[col.formatter ? setCellFont(mapOfDataExpanded[data[KEY_ID]][0].data[col.field], col.formatter):'']">
+                      <ng-container [bsnData]="tempValue" [initData]="initData"
+                        [rowData]="mapOfDataExpanded[data[KEY_ID]][0].data"
+                        [dataSet]="col.showFormat.options.dataSet?dataSet[col.showFormat.options.dataSet]:null"
+                        CnGridEditorDirective *ngIf="col.showFormat" [config]="col.showFormat.options"
+                        [value]="{key:data.key,name:col.field,data:mapOfDataExpanded[data[KEY_ID]][0].data[col.field],dataText:mapOfDataExpanded[data[KEY_ID]][0].data[col.field]?mapOfDataExpanded[data[KEY_ID]][0].data[col.field]:null}"
+                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.showFormat.field]:''"
+                        (updateValue)="valueChange($event)"> </ng-container>
+                        <ng-container *ngIf="!col.showFormat">
+                          {{ item['originData'][col.field] }}
+                        </ng-container>
+                      </span>
                     </ng-container>
                   </td>
                   <td *ngSwitchCase="'search'"

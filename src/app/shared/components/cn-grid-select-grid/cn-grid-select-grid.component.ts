@@ -116,13 +116,13 @@ export class CnGridSelectGridComponent implements OnInit {
         }
     }
 
-    public showModal(): void {
+    public showModal($event): void {
+        // console.log('showModal', $event);
         this.isVisible = true;
         this.table.value = this._value;
     }
 
     public handleOk(): void {
-      
         // 此处简析 多选，单选【个人建议两种组件，返回值不相同，单值（ID值），多值（ID数组）】
         if (this.table._selectRow) {
             this._valuetext = this.table._selectRow[this.config.labelName];

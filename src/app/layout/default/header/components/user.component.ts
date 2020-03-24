@@ -51,6 +51,8 @@ import { SettingsService, MenuService } from '@delon/theme';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { CacheService } from '@delon/cache';
 import { NzModalService } from 'ng-zorro-antd';
+import { CnFormWindowResolverComponent } from '@shared/resolver/form-resolver/form-window-resolver.component';
+import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -63,9 +65,10 @@ import { NzModalService } from 'ng-zorro-antd';
             {{userInfo?.accountName ? userInfo?.accountName: '用户'}}
         </div>
         <div nz-menu class="width-sm">
-            <div nz-menu-item [nzDisabled]="true"><i class="anticon anticon-user mr-sm"></i>个人中心</div>
-            <div nz-menu-item [nzDisabled]="true"><i class="anticon anticon-setting mr-sm"></i>设置</div>
-            <li nz-menu-divider></li>
+            <div nz-menu-item hidden="true" [nzDisabled]="true"><i class="anticon anticon-user mr-sm"></i>个人中心</div>
+            <div nz-menu-item hidden="true" [nzDisabled]="true"><i class="anticon anticon-setting mr-sm"></i>设置</div>
+            <li nz-menu-divider hidden="true"></li>
+            <div nz-menu-item (click)="editPassWord()"><i class="anticon anticon-edit mr-sm"></i>修改密码</div>
             <div nz-menu-item (click)="logout()"><i class="anticon anticon-setting mr-sm"></i>退出登录</div>
         </div>
     </nz-dropdown>
@@ -78,9 +81,11 @@ export class HeaderUserComponent implements OnInit, AfterViewInit {
         public settings: SettingsService,
         private cacheService: CacheService,
         private menuService: MenuService,
+        private modalService: NzModalService,
         private router: Router,
         private modal: NzModalService,
-        @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) { }
+        @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) {
+    }
 
     public ngOnInit(): void {
         // mock
@@ -119,5 +124,199 @@ export class HeaderUserComponent implements OnInit, AfterViewInit {
                 // }).catch(() => console.log('Oops errors!'));
             }
         });
+    }
+
+    public editPassWord() {
+        const dialog = {
+            'keyId': 'Id',
+            'name': 'updateUserPassword',
+            'title': '修改密码：',
+            'editable': 'put',
+            'width': '600',
+            'ajaxConfig': {
+                'url': 'common/SysAccount',
+                'ajaxType': 'getById',
+                'params': [
+                    {
+                        'name': 'Id',
+                        'type': 'cacheValue',
+                        'valueName': 'accountId'
+                    }
+                ]
+            },
+            'componentType': {
+                'parent': false,
+                'child': false,
+                'own': true
+            },
+            'forms': [
+                {
+                    'controls': [
+                        {
+                            'type': 'input',
+                            'labelSize': '6',
+                            'controlSize': '18',
+                            'inputType': 'password',
+                            'name': 'oldPassword',
+                            'label': '原密码',
+                            'isRequired': true,
+                            'disabled': false,
+                            'readonly': false,
+                            'size': 'default',
+                            'layout': 'column',
+                            'span': '24',
+                            'validations': [
+                                {
+                                    'validator': 'required',
+                                    'errorMessage': '请输入原密码'
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    'controls': [
+                        {
+                            'type': 'input',
+                            'labelSize': '6',
+                            'controlSize': '18',
+                            'inputType': 'password',
+                            'name': 'password',
+                            'label': '新密码',
+                            'isRequired': true,
+                            'disabled': false,
+                            'readonly': false,
+                            'size': 'default',
+                            'layout': 'column',
+                            'span': '24',
+                            'validations': [
+                                {
+                                    'validator': 'required',
+                                    'errorMessage': '请输入新密码'
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    'controls': [
+                        {
+                            'type': 'input',
+                            'labelSize': '6',
+                            'controlSize': '18',
+                            'inputType': 'password',
+                            'name': 'confirmPassword',
+                            'isRequired': true,
+                            'label': '确认新密码',
+                            'disabled': false,
+                            'readonly': false,
+                            'size': 'default',
+                            'layout': 'column',
+                            'span': '24',
+                            'validations': [
+                                {
+                                    'validator': 'required',
+                                    'errorMessage': '请输入再次确定密码'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            'buttons': [
+                {
+                    'name': 'save',
+                    'text': '保存',
+                    'type': 'primary',
+                    'ajaxConfig': [
+                        {
+                            'ajaxType': 'put',
+                            'action': 'EXECUTE_SELECTED',
+                            'url': 'common/user/account/pwd/update',
+                            'params': [
+                                {
+                                    'name': 'Id',
+                                    'type': 'tempValue',
+                                    'valueName': '_id'
+                                },
+                                {
+                                    'name': 'oldPassword',
+                                    'type': 'componentValue',
+                                    'valueName': 'oldPassword'
+                                },
+                                {
+                                    'name': 'password',
+                                    'type': 'componentValue',
+                                    'valueName': 'password'
+                                },
+                                {
+                                    'name': 'confirmPassword',
+                                    'type': 'componentValue',
+                                    'valueName': 'confirmPassword'
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    'name': 'close',
+                    'class': 'editable-add-btn',
+                    'text': '关闭'
+                },
+                {
+                    'name': 'reset',
+                    'class': 'editable-add-btn',
+                    'text': '重置'
+                }
+            ]
+        }
+        const footer = [];
+        const modal = this.modalService.create({
+            nzTitle: dialog.title,
+            nzWidth: dialog.width,
+            nzClosable: false,
+            nzContent: CnFormWindowResolverComponent,
+            nzComponentParams: {
+                config: dialog,
+                editable: 'add'
+            },
+            nzFooter: footer
+        });
+
+        if (dialog.buttons) {
+            dialog.buttons.forEach(btn => {
+                const button = {};
+                button['label'] = btn.text;
+                button['type'] = btn.type ? btn.type : 'default';
+                button['onClick'] = componentInstance => {
+                    if (btn['name'] === 'save') {
+                        componentInstance.buttonAction(
+                            btn,
+                            () => {
+                                modal.close();
+                                this.tokenService.clear();
+                                this.cacheService.clear();
+                                this.menuService.clear();
+                                this.router.navigateByUrl(this.tokenService.login_url);
+                            }, dialog
+                        );
+                    } else if (btn['name'] === 'close') {
+                        modal.close();
+                    } else if (btn['name'] === 'reset') {
+                        this._resetForm(componentInstance);
+                    }
+                };
+                footer.push(button);
+            });
+        }
+    }
+
+    /**
+     * 重置表单
+     * @param comp
+     * @private
+     */
+    private _resetForm(comp: FormResolverComponent) {
+        comp.resetForm();
     }
 }

@@ -1,5 +1,6 @@
 
 <nz-card style="width:100%;" [nzTitle] ="config.title" [nzBordered]="false">
+  <div #chartNameContainer style="height: 50px;width: 100%;text-align:center;vertical-align:middle;"><input hidden="true" ></div>
   <div #chartContainer style="width: 100%"></div>
-  <div *ngIf="this.config.showSlider" id="slider"></div>
+  <div #sliderContainer style="width: 100%"></div>
 </nz-card>

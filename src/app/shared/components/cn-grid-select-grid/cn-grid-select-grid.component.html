@@ -16,8 +16,9 @@ disabled="{{configtanchuInput.disabled}}" -->
 
         </nz-input-group>
         <ng-template #suffixIconButton>
-                <button nz-button nzSearch [nzType]="'default'" (click)="showModal()">
+                <!-- <button nz-button nzSearch [nzType]="'default'" (click)="showModal($event)">
                         <i class="anticon anticon-edit"></i>
-                </button>
+                </button> -->
+                <a><i style="width: 30px;" nz-icon type="edit" theme="outline"  (click)="showModal($event)"></i></a>
         </ng-template>
     </div>

@@ -24,6 +24,7 @@ import { AuthGuard } from '@core/utility/auth-guard';
 import { CustomerLoginComponent } from './passport/customer-login/customer-login.component';
 import { ModuleEntryComponent } from './template/module-entry/module-entry.component';
 import { TsLayoutDefaultComponent } from 'app/layout/ts-default/ts-default.component';
+import { EditPasswordComponent } from './passport/edit-password/edit-password/edit-password.component';
 
 const routes: Routes = [
     {

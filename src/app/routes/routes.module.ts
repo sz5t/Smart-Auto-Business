@@ -21,6 +21,7 @@ import { Exception404Component } from './exception/404.component';
 import { Exception500Component } from './exception/500.component';
 import { AuthGuard } from '@core/utility/auth-guard';
 import { BtnTableFieldLimit } from '@core/pipe/btn-table-field-limit.pipe';
+import { EditPasswordComponent } from './passport/edit-password/edit-password/edit-password.component';
 
 @NgModule({
     imports: [SharedModule, RouteRoutingModule],
@@ -35,6 +36,7 @@ import { BtnTableFieldLimit } from '@core/pipe/btn-table-field-limit.pipe';
         UserRegisterComponent,
         UserRegisterResultComponent,
         CustomerLoginComponent,
+        EditPasswordComponent,
         // single pages
         UserLockComponent,
         CallbackComponent,

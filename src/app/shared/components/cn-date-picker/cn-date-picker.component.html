@@ -12,6 +12,7 @@
          [ngModelOptions]="{standalone: true}"
          (ngModelChange)="valueChange($event)"
          [nzStyle]="config.style?config.style:{}"
+         [nzDisabled]="config.disabled"
          ></nz-date-picker>
        
         <nz-form-explain *ngIf="formGroup.get(config.name).dirty && formGroup.get(config.name).errors || formGroup.get(config.name).pending ">

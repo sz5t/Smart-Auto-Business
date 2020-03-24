@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, Inject, AfterViewInit, AfterContentInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, Inject, AfterViewInit, AfterContentInit, OnDestroy, Renderer2 } from '@angular/core';
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService, NzDropdownService } from 'ng-zorro-antd';
 import { CacheService } from '@delon/cache';
@@ -8,11 +8,12 @@ import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
 import { getISOYear, getMonth, getDate, getHours, getTime, getMinutes, getSeconds } from 'date-fns';
 import { async } from 'q';
+import { NONE_TYPE } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'bsn-chart',
   templateUrl: './bsn-chart.component.html',
-  // styleUrls: ['./bsn-chart.component.css']
+  styleUrls: [`./bsn-chart.component.less`]
 })
 export class BsnChartComponent extends CnComponentBase implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
   @Input() public config; // 配置参数
@@ -28,9 +29,11 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   public showguide = []; // 辅助线的数组
   public guidedataList = []; // 辅助线的数据集合
   public ruledataList = []; // 规则算出的标准值的集合
+  public rulenameList = []; // 规则转换的展示值集合
   public stageRuleDatalist = []; // 阶段开始的标准
   public stageCurrentDatalist = []; // 当前阶段的数组
   public curStage; // 自动播放的阶段变量
+  public refreshNumber = 1; // 分组自动刷新的增量
   public autoPlay;
   public ds; // 读取的全部数据
   public dv; // 根据要求过滤出的视图
@@ -40,14 +43,17 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   public StageTime; // 启动阶段的时间
   public Shape; // 自定义样式效果
   public test = []; // 辅助线的图例数组
-
-  public offlineChartData = [
-    { 'x': 1570690460771, 'y1': 31, 'y2': 78 },
-    { 'x': 1570692260771, 'y1': 15, 'y2': 107 }, { 'x': 1570694060771, 'y1': 68, 'y2': 74 }, { 'x': 1570695860771, 'y1': 107, 'y2': 32 }, { 'x': 1570697660771, 'y1': 43, 'y2': 63 }, { 'x': 1570699460771, 'y1': 45, 'y2': 42 }, { 'x': 1570701260771, 'y1': 93, 'y2': 94 }, { 'x': 1570703060771, 'y1': 12, 'y2': 53 }, { 'x': 1570704860771, 'y1': 108, 'y2': 100 }, { 'x': 1570706660771, 'y1': 56, 'y2': 73 }, { 'x': 1570708460771, 'y1': 48, 'y2': 83 }, { 'x': 1570710260771, 'y1': 67, 'y2': 106 }, { 'x': 1570712060771, 'y1': 52, 'y2': 47 }, { 'x': 1570713860771, 'y1': 89, 'y2': 68 }, { 'x': 1570715660771, 'y1': 44, 'y2': 55 }, { 'x': 1570717460771, 'y1': 80, 'y2': 59 }, { 'x': 1570719260771, 'y1': 86, 'y2': 17 }, { 'x': 1570721060771, 'y1': 26, 'y2': 56 }, { 'x': 1570722860771, 'y1': 78, 'y2': 69 }, { 'x': 1570724660771, 'y1': 46, 'y2': 67 }]
+  public groupMax = []; // 分组每组最大值的数组
+  public groupMin = []; // 分组每组最小值的数组
+  public itemName = []; // 分组名称的数组
+  public chartName; // 图表的名称
+  public showDataLength; // 分组的展示数据长度（暂时只有分组折线使用）
 
   // tempValue = {};
   @Output() public updateValue = new EventEmitter();
   @ViewChild('chartContainer') public chartElement: ElementRef;
+  @ViewChild('sliderContainer') public sliderElement: ElementRef;
+  @ViewChild('chartNameContainer') public chartNameElement: ElementRef;
   public chart;
   public slider;
   public cascadeValue: any;
@@ -59,6 +65,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     private modalService: NzModalService,
     private cacheService: CacheService,
     private _dropdownService: NzDropdownService,
+    private renderer: Renderer2,
     @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
@@ -82,12 +89,15 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
 
   }
   public ngAfterContentInit() {
-
-
   }
 
   public async load() {
-
+    if (this.config.itemConfig) {
+      this.itemName = await this.loadGroupName();
+      this.showDataLength = this.itemName.length * this.config.itemLength;
+    } else {
+      this.showDataLength = this.config.showDataLength;
+    }
     await this.load_data(1);
     if (this.config.ruleConfig) {
       await this.load_rule_data();
@@ -95,13 +105,30 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         await this.load_current_stage_data();
       }
     }
+    if (this.config.ruleNameConfig) {
+      await this.load__stage_rule_name();
+    }
     if (this.config.haveGuide && this.config.showGuide && this.config.guideConfig) {
       await this.load_guide();
     }
+
+    if (this.config.itemConfig) {
+      await this.getGroupPeakValue();
+    }
+
     if (this.config.showPointStyle) {
       this.writePointStyle();
     }
 
+    if (this.config.showChartName) {
+      this.chartName = await this.getChartName();
+      this.chartName = this.chartName[0][this.config.chartNameField];
+      let el = this.chartNameElement.nativeElement;
+      let ipt = el.querySelector('input');
+      ipt.hidden = false;
+      ipt.value = this.chartName;
+      ipt.style.textAlign = 'center';
+    }
 
     // setTimeout(() => {
     if (this.config.type) {
@@ -332,11 +359,12 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       animate: true, // 动画 默认true
       forceFit: true,  // 图表的宽度自适应开关，默认为 false，设置为 true 时表示自动取 dom（实例容器）的宽度。
       height: this.config.height ? this.config.height : 300, // 指定图表高度
-      padding: 'auto'
+      padding: [50, 50, 110, 45]
     });
+
     const x = this.config.x.name;
     const data = this.showdata;
-    if (data.length < this.config.showDataLength) {
+    if (data.length < this.showDataLength) {
       this.ds = new DataSet({
         state: {
           from: new Date(this.dataList[0][x]).getTime(),
@@ -347,7 +375,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       this.ds = new DataSet({
         state: {
           from: new Date(this.dataList[0][x]).getTime(),
-          to: new Date(this.dataList[this.config.showDataLength - 1][x]).getTime()
+          to: new Date(this.dataList[this.showDataLength - 1][x]).getTime()
         }
       });
     }
@@ -369,7 +397,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       const format = {
         label: {
           formatter: val => {
-            // console.log(this.stageCurrentDatalist);
             let xformat;
             this.stageCurrentDatalist.forEach(s => {
               if (s.starttime) {
@@ -383,12 +410,25 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
                   }
                 }
               }
-            })
+            });
             if (!xformat) {
               // xformat = 1;
               return val;
+            } else {
+              let stageName;
+              if (this.rulenameList.length > 0) {
+                this.rulenameList.forEach(e => {
+                  if (e.stage === xformat) {
+                    stageName = e.showValue;
+                  }
+                })
+              }
+              if (stageName) {
+                return val + '  ' + stageName + '阶段';
+              } else {
+                return val + '  ' + '第' + xformat + '阶段'; // 格式化坐标轴显示文本
+              }
             }
-            return val + '  ' + '第' + xformat + '阶段'; // 格式化坐标轴显示文本
           },
         }
       }
@@ -439,8 +479,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
           }
         });
     }
-    const max = this.config.y.max ? this.config.y.max : 300;
-    const min = this.config.y.min ? this.config.y.min : 0;
     if (this.config.y1) {
       const y1max = this.config.y1.max ? this.config.y1.max : 300;
       const y1min = this.config.y1.min ? this.config.y1.min : 0;
@@ -453,70 +491,103 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         }
       });
     }
-
-    this.chart.source(this.dv, {
-      [this.config.y.name]: {
-        min: [min],
-        max: [max],
-        tickInterval: [this.config.y.scale.tickInterval],
-        alias: [this.config.y.scale.alias]
-      }
-    });
-    if (this.config.guideConfig && this.config.showGuide && this.config.guideConfig.guideType !== 'line') {
-      if (this.config.guideScale) {
-        if (this.config.guideScale.y) {
-          this.config.guideScale.y.forEach(e => {
-            this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color('city').shape(this.config.shape ? this.config.shape : 'circle');
-            // this.chart.point().position(this.config.x.name + '*' + this.config.y.name).color(e.name).size(4).shape('circle').style({
-            //   stroke: '#fff',
-            //   lineWidth: 1
-            // });
-          });
+    if (this.config.y.max) {
+      const max = this.config.y.max ? this.config.y.max : 300;
+      const min = this.config.y.min ? this.config.y.min : 0;
+      this.chart.source(this.dv, {
+        [this.config.y.name]: {
+          min: [min],
+          max: [max],
+          tickInterval: [this.config.y.scale.tickInterval],
+          alias: [this.config.y.scale.alias]
         }
-      }
+      });
     } else {
-      this.chart.line().position(this.config.x.name + '*' + this.config.y.name).shape(this.config.shape ? this.config.shape : 'circle');
-      if (this.config.showPointStyle) {
-        if (this.config.guideConfig) {
-          this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('overyGuide').style({
-            stroke: '#fff',
-            lineWidth: 1
-          });
-        }
-        if (this.config.ruleConfig && this.config.ruleConfig.rule) {
-          this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('notEqualPlan').style({
-            stroke: '#fff',
-            lineWidth: 1
-          });
+      this.chart.source(this.dv);
+    }
+
+    if (!this.config.groupName) {
+      if (this.config.guideConfig && this.config.showGuide && this.config.guideConfig.guideType !== 'line') {
+        if (this.config.guideScale) {
+          if (this.config.guideScale.y) {
+            this.config.guideScale.y.forEach(e => {
+              this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color('city').shape(this.config.shape ? this.config.shape : 'circle');
+              // this.chart.point().position(this.config.x.name + '*' + this.config.y.name).color(e.name).size(4).shape('circle').style({
+              //   stroke: '#fff',
+              //   lineWidth: 1
+              // });
+            });
+          }
         }
       } else {
-        this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('circle').style({
-          stroke: '#fff',
-          lineWidth: 1
-        });
-      }
-      if (this.config.y1) {
-        this.chart.line().position(this.config.x.name + '*' + this.config.y1.name).shape(this.config.shape ? this.config.shape : 'circle').color(this.config.y1color ? this.config.y1color : '#FFCC00');
-        if (this.config.ruleConfig && this.config.ruleConfig.y1max) {
-          this.chart.point().position(this.config.x.name + '*' + this.config.y1.name).size(4).shape('overy1Guide').style({
-            stroke: '#fff',
-            lineWidth: 1
-          })
+        this.chart.line().position(this.config.x.name + '*' + this.config.y.name).shape(this.config.shape ? this.config.shape : 'circle');
+        if (this.config.showPointStyle) {
+          if (this.config.guideConfig) {
+            this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('overyGuide').style({
+              stroke: '#fff',
+              lineWidth: 1
+            });
+          }
+          if (this.config.ruleConfig && this.config.ruleConfig.rule) {
+            this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('notEqualPlan').style({
+              stroke: '#fff',
+              lineWidth: 1
+            });
+          }
         } else {
-          this.chart.point().position(this.config.x.name + '*' + this.config.y1.name).color(this.config.y1color ? this.config.y1color : '#FFCC00').size(4).shape('circle').style({
+          this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('circle').style({
             stroke: '#fff',
             lineWidth: 1
           });
         }
-      }
-    };
-    if (this.config.groupName) {
+        if (this.config.y1) {
+          this.chart.line().position(this.config.x.name + '*' + this.config.y1.name).shape(this.config.shape ? this.config.shape : 'circle').color(this.config.y1color ? this.config.y1color : '#FFCC00');
+          if (this.config.ruleConfig && this.config.ruleConfig.y1max) {
+            this.chart.point().position(this.config.x.name + '*' + this.config.y1.name).size(4).shape('overy1Guide').style({
+              stroke: '#fff',
+              lineWidth: 1
+            })
+          } else {
+            this.chart.point().position(this.config.x.name + '*' + this.config.y1.name).color(this.config.y1color ? this.config.y1color : '#FFCC00').size(4).shape('circle').style({
+              stroke: '#fff',
+              lineWidth: 1
+            });
+          }
+        }
+      };
+    } else {
+      const y = this.config.y.name;
       this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).shape(this.config.shape ? this.config.shape : 'circle');
-      this.chart.point().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).size(4).shape('circle').style({
-        stroke: '#fff',
-        lineWidth: 1
-      });
+      this.chart.point().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName)
+        .size(4)
+        .shape(y, (y) => {
+          if (this.groupMax && this.groupMax.indexOf(y) >= 0) {
+            return 'square';
+          } else if (this.groupMin && this.groupMin.indexOf(y) >= 0) {
+            return 'triangle';
+          } else {
+            return 'circle';
+          }
+        })
+        .style({
+          stroke: '#fff',
+          lineWidth: 1
+        })
+        .label(this.config.x.name + '*' + this.config.y.name, (x, y) => {
+          if (this.groupMax && this.groupMax.indexOf(y) >= 0) {
+            return this.config.itemMaxText + y;
+          } else if (this.groupMin && this.groupMin.indexOf(y) >= 0) {
+            return this.config.itemMinText + y;
+          } else {
+            return '';
+          }
+        });
     }
+
+    if (this.config.legend) {
+      this.chart.legend(this.config.legend);
+    }
+
     // 有图表标记，最值，辅助线，超标点的样式等
     if (this.config.haveGuide) {
       this.allGuide(this.chart);
@@ -524,7 +595,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     // 没有自动加载数据的滑块
     if (this.config.showSlider && !this.config.autoPlay) {
       this.slider = new Slider({
-        container: document.getElementById('slider'),
+        container: this.sliderElement.nativeElement,
         padding: [0, 100, 0],
         start: this.ds.state.from,
         end: this.ds.state.to,
@@ -573,7 +644,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       //   }
       // });
       this.slider = new Slider({
-        container: 'slider',
+        container: this.sliderElement.nativeElement,
         start: this.ds.state.from, // 和状态量对应
         end: this.ds.state.to,
         xAxis: this.config.x.name,
@@ -612,21 +683,26 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       this.autoPlay = setInterval(async () => {
         await that.load_data(2);
         this.next = this.next + 1;
-        if (this.showdata[this.config.showDataLength - 1]) {
-          if (this.dataList[this.dataList.length - 1] !== this.showdata[this.config.showDataLength - 1]) {
-            this.showdata.shift();
-            // if (this.next === 2) {
-            this.showdata.push(this.dataList[this.config.showDataLength - 2 + this.next]);
-            // } else {
-            //   this.showdata.push(this.dataList[this.config.showDataLength - 1 + this.next]);
-            // }
+        if (this.showdata[this.showDataLength - 1]) {
+          if (this.dataList[this.dataList.length - 1] !== this.showdata[this.showDataLength - 1]) {
+            if (this.refreshNumber === 1) {
+              for (let aa = 0; aa < this.refreshNumber; aa++) {
+                this.showdata.shift();
+                this.showdata.push(this.dataList[this.showDataLength - 2 + this.next + aa]);
+              }
+            } else {
+              for (let aa = 0; aa < this.refreshNumber; aa++) {
+                this.showdata.shift();
+                this.showdata.push(this.dataList[this.showDataLength + (this.next - 2) * this.refreshNumber + aa]);
+              }
+            }
             if (this.config.stageRuleConfig) {
               if (!this.curStage) {
                 this.curStage = 1;
               }
               const tempStage = this.curStage;
-              if (this.showdata[this.config.showDataLength - 1]) {
-                this.setDataStage('dynamic', this.showdata[this.config.showDataLength - 1], this.curStage);
+              if (this.showdata[this.showDataLength - 1]) {
+                this.setDataStage('dynamic', this.showdata[this.showDataLength - 1], this.curStage);
               }
               if (this.config.curStageConfig) {
                 await this.load_current_stage_data();
@@ -640,26 +716,22 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
               //     this.curStage = this.stageCurrentDatalist[this.stageCurrentDatalist.length - 1]['stage'];
               //   }
               // }
-              // console.log('tempStage', tempStage);
-              // console.log('this.curStage', this.curStage);
               if (this.curStage !== 1 && tempStage === this.curStage) {
                 this.curNum += 1;
               } else {
                 this.curNum = 1;
               }
-              // console.log('this.curNum', this.curNum);
               // if (this.curStage === 2 ) {
-              this.showdata[this.config.showDataLength - 1]['stage'] = this.curStage - 1;
-              this.showdata[this.config.showDataLength - 1]['number'] = this.curNum;
+              this.showdata[this.showDataLength - 1]['stage'] = this.curStage - 1;
+              this.showdata[this.showDataLength - 1]['number'] = this.curNum;
               // } else {
-              //   this.showdata[this.config.showDataLength - 1]['stage'] = this.curStage;
-              //   this.showdata[this.config.showDataLength - 1]['number'] = this.curNum;
+              //   this.showdata[this.showDataLength - 1]['stage'] = this.curStage;
+              //   this.showdata[this.showDataLength - 1]['number'] = this.curNum;
               // }
-              // console.log(this.showdata[this.config.showDataLength - 1]);
             }
             this.slider.start = new Date(this.showdata[0][this.config.x.name].replace(/-/g, '/')).getTime();
-            this.slider.end = new Date(this.showdata[this.config.showDataLength - 1][this.config.x.name].replace(/-/g, '/')).getTime();
-            if (this.config.guideConfig.guideType !== 'line') {
+            this.slider.end = new Date(this.showdata[this.showDataLength - 1][this.config.x.name].replace(/-/g, '/')).getTime();
+            if (this.config.guideConfig && this.config.guideConfig.guideType !== 'line') {
               this.ds.state.from = new Date(this.showdata[0][that.config.x.name]).getTime();
               this.ds.state.to = new Date(this.showdata[this.showdata.length - 1][that.config.x.name]).getTime();
               this.dv.source(this.showdata);
@@ -667,15 +739,18 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
             } else {
               this.chart.changeData(this.showdata);
             }
-            setTimeout(() => {
+            setTimeout(async () => {
               // this.chart.guide().clear();
+              if (this.config.groupName && !(this.config.peakValue || this.config.eachPeakValue)) {
+                await this.getGroupPeakValue();
+              }
               this.allGuide(this.chart, this.slider.start, this.slider.end);
               this.chart.repaint();
             });
             this.slider.changeData(this.showdata);
           }
         } else {
-          this.operationAjax(this.showdata[this.config.showDataLength - 2][this.config.x.name], 'finish');
+          this.operationAjax(this.showdata[this.showDataLength - 2][this.config.x.name], 'finish');
           if (this.autoPlay) {
             clearInterval(this.autoPlay);
           }
@@ -772,9 +847,9 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       this.dataList = [];
     }
     if (temp === 1) {
-      if (this.config.showDataLength && this.config.autoPlay) {
-        if (this.dataList.length > this.config.showDataLength) {
-          for (let i = 0; i < this.config.showDataLength; i++) {
+      if (this.showDataLength) {
+        if (this.dataList.length > this.showDataLength) {
+          for (let i = 0; i < this.showDataLength; i++) {
             this.showdata.push(this.dataList[i]);
           }
         } else {
@@ -821,9 +896,9 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     } else {
       this.guidedataList = [];
     }
-    if (this.config.showDataLength) {
-      if (this.guidedataList.length > this.config.showDataLength) {
-        for (let i = 0; i < this.config.showDataLength; i++) {
+    if (this.showDataLength) {
+      if (this.guidedataList.length > this.showDataLength) {
+        for (let i = 0; i < this.showDataLength; i++) {
           this.showguide.push(this.guidedataList[i]);
         }
       } else {
@@ -909,6 +984,76 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       }
     } else {
       this.stageCurrentDatalist = [];
+    }
+  }
+
+  public async load__stage_rule_name() {
+    const url = this._buildURL(this.config.ruleNameConfig.url);
+    const params = {
+      ...this._buildParameters(this.config.ruleNameConfig.params),
+      ...this._buildFilter(this.config.ruleNameConfig.filter)
+    };
+    const method = this.config.ruleNameConfig.ajaxType;
+    const loadData = await this._load(url, params, this.config.ruleNameConfig.ajaxType);
+    if (loadData.isSuccess) {
+      let data;
+      if (method === 'proc') {
+        data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
+        this.rulenameList = data;
+      } else {
+        data = loadData.data;  // data 是数组
+        if (data) {
+          this.rulenameList = data;
+        } else {
+          this.rulenameList = [];
+        }
+      }
+    } else {
+      this.rulenameList = [];
+    }
+  }
+
+  /**
+   * getChartName 获取图表的名称
+   */
+  public async getChartName() {
+    const url = this._buildURL(this.config.ChartNameConfig.url);
+    const params = {
+      ...this._buildParameters(this.config.ChartNameConfig.params),
+      ...this._buildFilter(this.config.ChartNameConfig.filter)
+    };
+    const method = this.config.ChartNameConfig.ajaxType;
+    const loadData = await this._load(url, params, this.config.ChartNameConfig.ajaxType);
+    if (loadData.isSuccess) {
+      if (method === 'proc') {
+        return loadData.data.dataSet1
+      } else {
+        return loadData.data
+      }
+    } else {
+      return;
+    }
+  }
+
+  /**
+   * loadGroupName 读取分组的名称
+   */
+  public async loadGroupName() {
+    const url = this._buildURL(this.config.itemConfig.url);
+    const params = {
+      ...this._buildParameters(this.config.itemConfig.params),
+      ...this._buildFilter(this.config.itemConfig.filter)
+    };
+    const method = this.config.itemConfig.ajaxType;
+    const loadData = await this._load(url, params, this.config.itemConfig.ajaxType);
+    if (loadData.isSuccess) {
+      if (method === 'proc') {
+        return loadData.data.dataSet1
+      } else {
+        return loadData.data
+      }
+    } else {
+      return;
     }
   }
 
@@ -1079,7 +1224,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         let minValue = 50000;
         let maxObj = null;
         let minObj = null;
-        // const length = this.dataList.length > this.config.showDataLength ? this.config.showDataLength : this.dataList.length
+        // const length = this.dataList.length > this.showDataLength ? this.showDataLength : this.dataList.length
         const length = this.dataList.length;
         for (let i = 0; i < length; i++) {
           // 日期转时间戳进行比较
@@ -1107,7 +1252,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         let minValue = 50000;
         let maxObj = null;
         let minObj = null;
-        const length = this.dataList.length > this.config.showDataLength ? this.config.showDataLength : this.dataList.length
+        const length = this.dataList.length > this.showDataLength ? this.showDataLength : this.dataList.length
         for (let i = 0; i < length; i++) {
           const d = this.dataList[i];
           if (d[this.config.groupName] === e) {
@@ -1135,7 +1280,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         let minValue = 50000;
         let maxObj = null;
         let minObj = null;
-        const length = this.dataList.length > this.config.showDataLength ? this.config.showDataLength : this.dataList.length
+        const length = this.dataList.length > this.showDataLength ? this.showDataLength : this.dataList.length
         for (let i = 0; i < length - 1; i++) {
           const d = this.dataList[i];
           if (d[this.config.y.name] >= maxValue) {
@@ -1156,7 +1301,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         let minValue = 50000;
         let maxObj = null;
         let minObj = null;
-        const length = this.dataList.length > this.config.showDataLength ? this.config.showDataLength : this.dataList.length
+        const length = this.dataList.length > this.showDataLength ? this.showDataLength : this.dataList.length
         for (let i = 0; i < length - 1; i++) {
           const d = this.dataList[i];
           if (d[this.config.groupName] === e) {
@@ -1179,30 +1324,56 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   }
 
   // 动态轮播最大值最小值计算
-  public findMax() {
-    let maxValue = 0;
-    let maxObj = null;
-    for (let i = 0; i < this.showdata.length; i++) {
-      let d = this.showdata[i];
-      if (d[this.config.y.name] > maxValue) {
-        maxValue = d[this.config.y.name];
-        maxObj = d;
+  public findMax(element?) {
+    if (element) {
+      let maxValue = 0;
+      let maxObj = null;
+      for (let i = 0; i < this.showdata.length; i++) {
+        let d = this.showdata[i];
+        if (d[this.config.groupName] === element && d[this.config.y.name] >= maxValue) {
+          maxValue = d[this.config.y.name];
+          maxObj = d;
+        }
       }
+      return maxObj;
+    } else {
+      let maxValue = 0;
+      let maxObj = null;
+      for (let i = 0; i < this.showdata.length; i++) {
+        let d = this.showdata[i];
+        if (d[this.config.y.name] >= maxValue) {
+          maxValue = d[this.config.y.name];
+          maxObj = d;
+        }
+      }
+      return maxObj;
     }
-    return maxObj;
   }
 
-  public findMin() {
-    let minValue = 50000;
-    let minObj = null;
-    for (let i = 0; i < this.showdata.length; i++) {
-      let d = this.showdata[i];
-      if (d[this.config.y.name] < minValue) {
-        minValue = d[this.config.y.name];
-        minObj = d;
+  public findMin(element?) {
+    if (element) {
+      let minValue = 50000;
+      let minObj = null;
+      for (let i = 0; i < this.showdata.length; i++) {
+        let d = this.showdata[i];
+        if (d[this.config.groupName] === element && d[this.config.y.name] <= minValue) {
+          minValue = d[this.config.y.name];
+          minObj = d;
+        }
       }
+      return minObj;
+    } else {
+      let minValue = 50000;
+      let minObj = null;
+      for (let i = 0; i < this.showdata.length; i++) {
+        let d = this.showdata[i];
+        if (d[this.config.y.name] <= minValue) {
+          minValue = d[this.config.y.name];
+          minObj = d;
+        }
+      }
+      return minObj;
     }
-    return minObj;
   }
 
   // 辅助标记的总方法
@@ -1300,49 +1471,95 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         }
       }
     } else {
-      // 标记最大值
-      const maxobj = this.findMax();
-      const minobj = this.findMin();
-      charts.guide().dataMarker({
-        top: true,
-        content: '当前峰值:' + maxobj[this.config.y.name],
-        position: () => {
-          if (maxobj) {
-            return [maxobj[this.config.x.name], maxobj[this.config.y.name]];
+      if (this.config.eachPeakValue) {
+        const group = [];
+        group.push(this.showdata[0][this.config.groupName]);
+        for (let i = 0; i < this.showdata.length; i++) {
+          for (let j = 0; j < group.length; j++) {
+            if (!group.includes(this.showdata[i][this.config.groupName])) {
+              // if (this.dataList[i][this.config.groupName] !== group[group.length - 1]) {
+              group.push(this.showdata[i][this.config.groupName]);
+            }
           }
-          return [0, 0];
-        },
-        style: {
-          text: {
-            fontSize: 13
-          },
-          point: {
-            stroke: '#606060'
-          }
-        },
-        lineLength: 50
-      });
+        }
+        group.forEach(element => {
+          const max = this.findMax(element);
+          const min = this.findMin(element);
+          if (max && min) {
+            charts.guide().dataMarker({
+              top: true,
+              content: element + '的峰值：' + max[this.config.y.name],
+              position: [max[this.config.x.name], max[this.config.y.name]],
+              style: {
+                text: {
+                  fontSize: 13,
+                  stroke: 'white',
+                  lineWidth: 2
+                }
+              },
+              lineLength: 30
+            });
+            charts.guide().dataMarker({
+              top: true,
+              content: element + '的谷值：' + min[this.config.y.name],
+              position: [min[this.config.x.name], min[this.config.y.name]],
+              style: {
+                text: {
+                  fontSize: 13,
+                  stroke: 'white',
+                  lineWidth: 2
+                }
+              },
+              lineLength: 50
+            });
 
-      // 标记最小值
-      charts.guide().dataMarker({
-        top: true,
-        content: '当前谷值:' + minobj[this.config.y.name],
-        position: () => {
-          if (minobj) {
-            return [minobj[this.config.x.name], minobj[this.config.y.name]];
           }
-          return [0, 0];
-        },
-        style: {
-          text: {
-            fontSize: 13
+        });
+      } else {
+        // 标记最大值
+        const maxobj = this.findMax();
+        const minobj = this.findMin();
+        charts.guide().dataMarker({
+          top: true,
+          content: '当前峰值:' + maxobj[this.config.y.name],
+          position: () => {
+            if (maxobj) {
+              return [maxobj[this.config.x.name], maxobj[this.config.y.name]];
+            }
+            return [0, 0];
           },
-          point: {
-            stroke: '#606060'
-          }
-        },
-        lineLength: 50
-      });
+          style: {
+            text: {
+              fontSize: 13
+            },
+            point: {
+              stroke: '#606060'
+            }
+          },
+          lineLength: 50
+        });
+
+        // 标记最小值
+        charts.guide().dataMarker({
+          top: true,
+          content: '当前谷值:' + minobj[this.config.y.name],
+          position: () => {
+            if (minobj) {
+              return [minobj[this.config.x.name], minobj[this.config.y.name]];
+            }
+            return [0, 0];
+          },
+          style: {
+            text: {
+              fontSize: 13
+            },
+            point: {
+              stroke: '#606060'
+            }
+          },
+          lineLength: 50
+        });
+      }
     }
   }
 
@@ -1537,8 +1754,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       this.Shape.registerShape('point', 'overyGuide', {
         draw(cfg, container) {
           const data = cfg.origin._origin;
-          // console.log('cfg', cfg);
-          // console.log('data', data);
           const point = {
             x: cfg.x,
             y: cfg.y
@@ -1699,8 +1914,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       this.Shape.registerShape('point', 'overy1Guide', {
         draw(cfg, container) {
           const data = cfg.origin._origin;
-          // console.log('cfg', cfg);
-          // console.log('data', data);
           const point = {
             x: cfg.x,
             y: cfg.y
@@ -1789,8 +2002,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       this.Shape.registerShape('point', 'notEqualPlan', {
         draw(cfg, container) {
           const data = cfg.origin._origin;
-          // console.log('cfg', cfg);
-          // console.log('data', data);
           const point = {
             x: cfg.x,
             y: cfg.y
@@ -1931,27 +2142,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         }
       });
     }
-
-
-    const data = [
-      { genre: 'Sports', sold: 275 },
-      { genre: 'Strategy', sold: 115 },
-      { genre: 'Action', sold: 120 },
-      { genre: 'Shooter', sold: 350 },
-      { genre: 'Other', sold: 150 }
-    ];
-
-    // this.chart = new G2.Chart({
-    //   container: this.chartElement.nativeElement, // 指定图表容器 ID
-    //   animate: true, // 动画 默认true
-    //   forceFit: true,  // 图表的宽度自适应开关，默认为 false，设置为 true 时表示自动取 dom（实例容器）的宽度。
-    //   height: this.config.height ? this.config.height : 300, // 指定图表高度
-    //   padding: 'auto'
-    // });
-    // this.chart.source(data);
-    // this.chart.line().position('genre*sold').shape('line');
-    // this.chart.point().position('genre*sold').shape('overGuide');
-    // this.chart.render();
   }
 
   // 静态数据判断点的阶段，回写阶段时间
@@ -1974,7 +2164,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       const obj = { [field]: value }
       stageRule = { ...stageRule, ...obj }
     })
-    // console.log(Object.keys(stageRule));
     if (kind === 'static') {
       let num = 0;
       data.forEach(e => {
@@ -2308,5 +2497,55 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
 
   private async _executeRequest(url, method, body) {
     return this._http[method](url, body).toPromise();
+  }
+
+  /**
+   * showToolTip 展示分组峰谷值的提示框
+   */
+  public showToolTip() {
+    const that = this
+    this.chart.tooltip({
+      follow: false,
+      crosshairs: 'y',
+      htmlContent: function htmlContent(title, items) {
+        let alias = {};
+        if (that.config.itemName) {
+          for (let i = 0; i < that.config.itemName.length; i++) {
+            alias[that.config.itemName[i]] = that.config.itemName[i];
+          };
+        }
+        let html = '<div class="custom-tooltip">';
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          const color = item.color;
+          const max = that.findMax(item.name);
+          const min = that.findMin(item.name);
+          const name = alias[item.name];
+          const domHead = '<div class="custom-tooltip-item" style="border-left-color:' + color + '">';
+          const domMax = '<div class="custom-tooltip-item-max">' + name + '的峰值' + '</div>';
+          const domMaxValue = '<div class="custom-tooltip-item-maxvalue">' + max[that.config.y.name] + '</div>';
+          const domMin = '<div class="custom-tooltip-item-min">' + name + '的谷值' + '</div>';
+          const domMinValue = '<div class="custom-tooltip-item-minvalue">' + min[that.config.y.name] + '</div>';
+          const domTail = '</div>';
+          html += domHead + domMax + domMaxValue + domMin + domMinValue + domTail;
+        }
+        return html + '</div>';
+      }
+    });
+  }
+
+  /**
+   * getGroupPeakValue 获取分组峰谷值
+   */
+  public async getGroupPeakValue() {
+    this.groupMax = [];
+    this.groupMin = [];
+    if (this.itemName.length !== this.refreshNumber) {
+      this.refreshNumber = this.itemName.length
+    }
+    for (let i = 0; i < this.itemName.length; i++) {
+      this.groupMax.push(this.findMax(this.itemName[i][this.config.groupName])[this.config.y.name]);
+      this.groupMin.push(this.findMin(this.itemName[i][this.config.groupName])[this.config.y.name]);
+    }
   }
 }

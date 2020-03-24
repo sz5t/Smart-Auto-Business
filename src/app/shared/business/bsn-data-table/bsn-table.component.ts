@@ -581,7 +581,6 @@ export class BsnTableComponent extends CnComponentBase
             const loadData = await this._load(url, params, method);
             if (loadData.isSuccess) {
                 let resData;
-
                 if (method === 'proc') {
                     resData = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
                 } else {

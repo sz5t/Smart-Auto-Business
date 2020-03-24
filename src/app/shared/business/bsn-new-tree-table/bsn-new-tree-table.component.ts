@@ -153,7 +153,7 @@ export class BsnNewTreeTableComponent extends TreeGridBase
 
     this.operationCallback = focusId => {
       if (!focusId.data) {
-        const oprationData = focusId.length > 39 ? focusId.split(',') : focusId;
+        const oprationData = focusId.length > 43 ? focusId.split(',') : focusId;
         const editData = [];
         const addData = [];
         const deleteData = [];
@@ -212,8 +212,13 @@ export class BsnNewTreeTableComponent extends TreeGridBase
     };
 
     this.windowCallback = (focusId?, reload?) => {
-      if (!focusId.data && focusId !== 'close') {
-        const oprationData = focusId.length > 39 ? focusId.split(',') : focusId;
+      if ((!focusId.data && focusId !== 'close') || (focusId.data && focusId.data.Ids)) {
+        let oprationData
+        if (focusId.data && focusId.data.Ids) {
+          oprationData = focusId.data.Ids.length > 43 ? focusId.split(',') : focusId.data.Ids;
+        } else {
+          oprationData = focusId.length > 43 ? focusId.split(',') : focusId;
+        }
         const editData = [];
         const addData = [];
         const deleteData = [];
@@ -2459,7 +2464,7 @@ export class BsnNewTreeTableComponent extends TreeGridBase
         index === 0 && (this.ROW_SELECTED = d);
       });
       this.dataList = [this.ROWS_SEARCH, ...response.data.rows];
-      this.mapOfDataExpanded = { ...searchrow, ...this.mapOfDataExpanded};
+      this.mapOfDataExpanded = { ...searchrow, ...this.mapOfDataExpanded };
       this.total = response.data.total;
       // 更新
       // this.dataCheckedStatusChange();
