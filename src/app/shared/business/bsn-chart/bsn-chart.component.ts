@@ -106,7 +106,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       }
     }
     if (this.config.ruleNameConfig) {
-      await this.load__stage_rule_name();
+      await this.load_stage_rule_name();
     }
     if (this.config.haveGuide && this.config.showGuide && this.config.guideConfig) {
       await this.load_guide();
@@ -987,7 +987,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     }
   }
 
-  public async load__stage_rule_name() {
+  public async load_stage_rule_name() {
     const url = this._buildURL(this.config.ruleNameConfig.url);
     const params = {
       ...this._buildParameters(this.config.ruleNameConfig.params),

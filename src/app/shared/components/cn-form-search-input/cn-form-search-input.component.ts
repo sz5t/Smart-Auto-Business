@@ -140,7 +140,7 @@ export class CnFormSearchInputComponent implements OnInit {
 
   }
 
-  public onblur() {
+  public onblur($event) {
     this.createSearch();
 
   }

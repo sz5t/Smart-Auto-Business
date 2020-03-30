@@ -3,7 +3,7 @@
 <nz-table #dataTable [nzData]="dataList" [nzSize]="'small'" [nzFrontPagination]="false" [nzShowSizeChanger]="true"
   [nzTotal]="total" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzShowTotal]="totals"
   [nzPageSizeOptions]="config.pageSizeOptions" [nzLoading]="loading" (nzPageIndexChange)="searchData()"
-  (nzPageSizeChange)="searchData(true)" [nzTitle]="config.title ? tableTitle : false"
+  (nzPageSizeChange)="searchData(true)" [nzTitle]="config.title ? 'tableTitle' : false"
   [nzScroll]="config.scroll ? config.scroll :{}" nzBordered>
   <thead (nzSortChange)="sort($event)" nzSingleSort>
     <tr>

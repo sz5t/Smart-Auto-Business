@@ -3,7 +3,7 @@
         <nz-card [nzBordered]="true" [nzBodyStyle]="config.bodyStyle?config.bodyStyle:{height: '500px'}">
             <nz-table #nzTable [nzBordered]="config.bordered?config.bordered:false" [nzData]="dataList"
                 [nzSize]="config.size" [nzFrontPagination]="false" [nzShowSizeChanger]="true" [nzTotal]="total"
-                [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzShowTotal]="totals"
+                [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzShowTotal]="total"
                 [nzPageSizeOptions]="config.pageSizeOptions ? config.pageSizeOptions :[]" [nzLoading]="loading"
                 (nzPageIndexChange)="searchData()" (nzPageSizeChange)="searchData(true)"
                 [nzTitle]="this.config.title ? title : false" [nzNoResult]="noResult" [nzLoadingDelay]="50"

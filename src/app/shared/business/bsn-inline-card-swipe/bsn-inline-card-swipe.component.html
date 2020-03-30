@@ -1,4 +1,5 @@
-<nz-tabset [nzAnimated]="true" class="tabs" (nzSelectChange)=changeTab($event)>
+<!-- <nz-tabset [nzAnimated]="true" class="tabs" (nzSelectChange)=changeTab($event)> -->
+  <nz-tabset [nzAnimated]="true" class="tabs">
   <nz-tab [nzTitle]="card">
     <div class="card">
 
@@ -6,7 +7,7 @@
       <!-- <div class="login_text">
                         刷卡登录 <i nz-icon type="login" theme="outline"></i>
                 </div> -->
-      <nz-alert *ngIf="errorApp" [nzType]="'error'" [nzMessage]="errorApp" [nzShowIcon]="true" class="mb-lg"></nz-alert>
+      <!-- <nz-alert *ngIf="errorApp" [nzType]="'error'" [nzMessage]="errorApp" [nzShowIcon]="true" class="mb-lg"></nz-alert> -->
     </div>
 
     <ng-template #card>

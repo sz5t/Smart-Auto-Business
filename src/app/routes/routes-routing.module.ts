@@ -25,15 +25,19 @@ import { CustomerLoginComponent } from './passport/customer-login/customer-login
 import { ModuleEntryComponent } from './template/module-entry/module-entry.component';
 import { TsLayoutDefaultComponent } from 'app/layout/ts-default/ts-default.component';
 import { EditPasswordComponent } from './passport/edit-password/edit-password/edit-password.component';
+import { HomeComponent } from './dashboard/home/home.component';
 
 const routes: Routes = [
     {
         path: '',
         component: LayoutDefaultComponent, canActivate: [AuthGuard],
         children: [
-            { path: '', redirectTo: 'dashboard/v1', pathMatch: 'full', canActivate: [AuthGuard] },
-            { path: 'dashboard', redirectTo: 'dashboard/v1', pathMatch: 'full', canActivate: [AuthGuard] },
-            { path: 'dashboard/v1', component: DashboardV1Component, canActivate: [AuthGuard] },
+            { path: '', redirectTo: environment.homePageName, pathMatch: 'full', canActivate: [AuthGuard] },
+            { path: 'dashboard', redirectTo: environment.homePageName, pathMatch: 'full', canActivate: [AuthGuard] },
+            { path: environment.homePageName, component: environment.homePageName === 'dashboard/v1' ? DashboardV1Component : HomeComponent, data: { title: '综合信息页'}, canActivate: [AuthGuard] },
+            // { path: '', redirectTo: 'dashboard/v1', pathMatch: 'full', canActivate: [AuthGuard] },
+            // { path: 'dashboard', redirectTo: 'dashboard/v1', pathMatch: 'full', canActivate: [AuthGuard] },
+            // { path: 'dashboard/v1', component: DashboardV1Component, canActivate: [AuthGuard] },
             // { path: 'dashboard/analysis', component: DashboardAnalysisComponent, data: { title: '工作台'}, canActivate: [AuthGuard]  },
             // { path: 'dashboard/monitor', component: DashboardMonitorComponent, canActivate: [AuthGuard] },
             // { path: 'dashboard/workplace', component: DashboardWorkplaceComponent, data: { title: '工作台'}, canActivate: [AuthGuard] },

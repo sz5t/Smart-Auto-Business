@@ -31,11 +31,11 @@ import { timeout } from 'rxjs/operators';
   providers: [SocialService]
 })
 export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy {
-  private form: FormGroup;
+  public form: FormGroup;
   private error = '';
-  private errorApp = '';
+  public errorApp = '';
   // 登录配置/解析系统的标识：0配置平台，1解析平台
-  private loading = false;
+  public loading = false;
   // 当前选择登录系统的配置项
   private _currentSystem;
   private isCardLogin = false;
@@ -335,7 +335,7 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     return wsString;
   }
 
-  private changeTab($event: NzTabChangeEvent) {
+  public changeTab($event: NzTabChangeEvent) {
     if ($event.index === 2) {
       this.getMedia();
     }
@@ -423,7 +423,7 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
 
   // endregion
 
-  private submit() {
+  public submit() {
     this.error = '';
     this.errorApp = '';
     this.loading = true;

@@ -26,7 +26,7 @@ export class DynamicTemplateComponent implements OnInit, OnDestroy {
             this._http.getLocalData(params.name).subscribe(data => {
                 (async() => {
                     const userInfo = this._cacheService.getNone('userInfo');
-                    if(userInfo) {
+                    if (userInfo) {
                         const userId = userInfo['userId'];
                         const permission = await this._getOperationPermission(params.name, userId, 'button');
                         if (permission.isSuccess) {
