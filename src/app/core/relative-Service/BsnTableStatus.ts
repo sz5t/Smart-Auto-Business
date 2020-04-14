@@ -2,42 +2,42 @@
 import { InjectionToken } from '@angular/core';
 
 export interface ComponentModes {
-    CREATE: string,
-    CREATE_CHILD: string,
-    EDIT: string,
-    DELETE: string,
-    DELETE_SELECTED: string,
-    DIALOG: string,
-    WINDOW: string,
-    SAVE: string,
-    CANCEL: string,
-    CANCEL_SELECTED: string,
-    FORM: string,
-    EXECUTE_SELECTED: string,
-    EXECUTE_CHECKED: string,
-    SEARCH: string,
-    UPLOAD: string,
-    REFRESH: string,
-    ADD_ROW_DATA: string,
-    FORM_BATCH: string,
-    EXPORT: string,
+    CREATE: string;
+    CREATE_CHILD: string;
+    EDIT: string;
+    DELETE: string;
+    DELETE_SELECTED: string;
+    DIALOG: string;
+    WINDOW: string;
+    SAVE: string;
+    CANCEL: string;
+    CANCEL_SELECTED: string;
+    FORM: string;
+    EXECUTE_SELECTED: string;
+    EXECUTE_CHECKED: string;
+    SEARCH: string;
+    UPLOAD: string;
+    REFRESH: string;
+    ADD_ROW_DATA: string;
+    FORM_BATCH: string;
+    EXPORT: string;
     // tree
-    ADD_NODE: string,
-    EDIT_NODE: string,
-    DELETE_NODE: string,
-    SAVE_NODE: string,
-    EXECUTE: string,
+    ADD_NODE: string;
+    EDIT_NODE: string;
+    DELETE_NODE: string;
+    SAVE_NODE: string;
+    EXECUTE: string;
 
     // form
-    FORM_ADD: string,
-    FORM_EDIT: string,
-    FORM_LOAD: string,
-    IMPORT_EXCEL: string,
-    SEND_ORDER: string,
+    FORM_ADD: string;
+    FORM_EDIT: string;
+    FORM_LOAD: string;
+    IMPORT_EXCEL: string;
+    SEND_ORDER: string;
 
     // tstable
-    AUTO_PLAY: 'autoPlay',
-    CALL_INTERFACE: 'callInterface'
+    AUTO_PLAY: string;
+    CALL_INTERFACE: string;
 
 }
 
@@ -207,36 +207,3 @@ export const BSN_OPERATION_LOG_RESULT = {
 export const BSN_DB_INSTANCE = {
     SMART_ONE_CFG: 'SmartOneCfg'
 }
-
-
-
-/*
-// region: table models
-export const BSN_TABLE_STATUS = new InjectionToken<string>('bsnTable_status');
-export class BsnTableStatus {
-    constructor(public _mode: string, public _viewId: string, public option?: any) {}
-}
-// endregion
-
-// region: table cascade
-export const BSN_TABLE_CASCADE = new InjectionToken<string>('bsnTable_cascade');
-export class BsnTableCascade {
-    constructor(public _mode: string, public _viewId: string, public option: any) {}
-}
-// endregion
-
-// region: tree status
-export const BSN_TREE_STATUS = new InjectionToken<string>('bsnTreeStatus');
-export class BsnTreeStatus {
-    constructor(public _mode: string, public _viewId: string, public option: any) {}
-}
-// endregion
-
-// region: tree cascade
-export const BSN_TREE_CASCADE = new InjectionToken<string>('bsnTree_cascade');
-export class BsnTreeCascade {
-    constructor(public _mode: string, public _viewId: string, public option: any) {}
-}
-
-// endregion
-*/

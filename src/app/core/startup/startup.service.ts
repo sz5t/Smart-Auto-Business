@@ -1,22 +1,22 @@
-import { NzIconService } from "ng-zorro-antd";
-import { HttpClient } from "@angular/common/http";
-import { Inject, Injectable, Injector } from "@angular/core";
-import { APIResource } from "@core/utility/api-resource";
-import { ACLService } from "@delon/acl";
-import { DA_SERVICE_TOKEN, ITokenService } from "@delon/auth";
-import { CacheService } from "@delon/cache";
+import { NzIconService } from 'ng-zorro-antd';
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, Injector } from '@angular/core';
+import { APIResource } from '@core/utility/api-resource';
+import { ACLService } from '@delon/acl';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { CacheService } from '@delon/cache';
 import {
     ALAIN_I18N_TOKEN,
     MenuService,
     SettingsService,
     TitleService
-} from "@delon/theme";
-import { environment } from "@env/environment";
-import { TranslateService } from "@ngx-translate/core";
-import { zip } from "rxjs";
-import { catchError } from "rxjs/operators";
-import { I18NService } from "@core/i18n/i18n.service";
-import { SystemResource } from "@core/utility/system-resource";
+} from '@delon/theme';
+import { environment } from '@env/environment';
+import { TranslateService } from '@ngx-translate/core';
+import { zip } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { I18NService } from '@core/i18n/i18n.service';
+import { SystemResource } from '@core/utility/system-resource';
 
 import G6Editor from '@antv/g6-editor';
 import G6 from '@antv/g6';
@@ -44,7 +44,7 @@ export class StartupService {
         G6.track(false);
     }
 
-    load(): Promise<any> {
+    public load(): Promise<any> {
         // only works with promises
         // https://github.com/angular/angular/issues/15088
         return new Promise((resolve, reject) => {
@@ -57,7 +57,7 @@ export class StartupService {
                 this.httpClient.get(
                     // environment.SERVER_URL +
                     SystemResource.localResource.url 
-                    + "/assets/app-data.json"
+                    + '/assets/app-data.json'
                 )
             )
                 .pipe(
@@ -76,15 +76,15 @@ export class StartupService {
                         );
                         this.translate.setDefaultLang(this.i18n.defaultLang);
                         // 语言信息
-                        this.settingService.setLayout("lang", "zh-CN");
+                        this.settingService.setLayout('lang', 'zh-CN');
                         // application data
                         const res: any = appData;
-                        const user: any = this.cacheService.getNone("userInfo");
-                        const menu: any = this.cacheService.getNone("Menus");
+                        const user: any = this.cacheService.getNone('userInfo');
+                        const menu: any = this.cacheService.getNone('Menus');
 
                         // 判断用户是否已经登录过系统
                         const currentSystem: any = this.cacheService.getNone(
-                            "currentConfig"
+                            'currentConfig'
                         );
                         // 1、未进行登录
                         // 读取配置信息，并进行缓存
@@ -93,13 +93,13 @@ export class StartupService {
                             this.tokenService.clear();
                         } else if (
                             currentSystem &&
-                            currentSystem.name === "setting"
+                            currentSystem.name === 'setting'
                         ) {
                             // 用户已经选择了系统并进行过登录
                             this.menuService.add(res.menu);
                         } else if (
                             currentSystem &&
-                            currentSystem.name === "app"
+                            currentSystem.name === 'app'
                         ) {
                             this.menuService.add(menu);
                         }

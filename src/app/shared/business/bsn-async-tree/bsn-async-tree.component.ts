@@ -122,6 +122,7 @@ export class BsnAsyncTreeComponent extends GridBase
     public _cascadeSubscription: Subscription;
     public isLoading = false;
     public originTreeData;
+    public searchValue;
     constructor(
         private _http: ApiService,
         private _cacheService: CacheService,

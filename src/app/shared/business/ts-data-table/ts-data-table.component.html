@@ -9,7 +9,7 @@
                 [nzTitle]="this.config.title ? title : false" [nzNoResult]="noResult" [nzLoadingDelay]="50"
                 [nzScroll]="config.scroll ? config.scroll : {}">
                 <thead (nzSortChange)="sort($event)" nzSingleSort>
-                    <tr (contextmenu)="contextMenu($event,contextTemplate)">
+                    <tr>
                         <th [attr.rowspan]="config.checkedConfig.rowspan?config.checkedConfig.rowspan:1"
                             *ngIf="config.showCheckBox" nzLeft="0px"
                             [nzWidth]="config.checkedConfig.width?config.checkedConfig.width:'10px'"
@@ -277,33 +277,20 @@
                         </ng-container>
                     </ng-template>
                 </tbody>
+                <nz-switch *ngIf="config.autoPlaySwitch" [ngModel]="true" nzCheckedChildren="开始滚动"
+                    nzUnCheckedChildren="暂停滚动" (ngModelChange)="startAutoPlay()"></nz-switch>
                 <ng-template #title>
                     {{config.title ? config.title : ''}}
                     <!-- <span style="float:right">已选择<strong class="text-primary"> {{checkedCount}}</strong> 项</span>&nbsp; -->
                 </ng-template>
-                <!--<ng-template #footer>-->
-                <!--&nbsp;-->
-                <!--</ng-template> -->
-                <nz-switch *ngIf="config.autoPlaySwitch" [ngModel]="true" nzCheckedChildren="开始滚动"
-                    nzUnCheckedChildren="暂停滚动" (ngModelChange)="startAutoPlay()"></nz-switch>
-                <ng-template #totals let-total *ngIf="config.pagination">
+                <ng-template #totals let-total>
                     共 {{total|async}} 条
                 </ng-template>
-                <ng-template #noResult *ngIf="config.pagination">
+                <ng-template #noResult>
                     未查询到任何数据...
                 </ng-template>
             </nz-table>
-            <ng-template #contextTemplate *ngIf="config.pagination">
-                <!-- <cn-bsn-tree-menu [config]="menus" [dropdown]="dropdown"></cn-bsn-tree-menu> -->
-                <ul nz-menu nzInDropDown *ngFor="let group of menus">
-                    <li *ngFor="let btn of group" nz-menu-item (click)="selectMenu(btn, group)">
-                        <span style="padding-left:15px;padding-right:15px;">
-                            <strong>
-                                <i nz-icon type="setting" theme="outline"></i> {{btn.text}}</strong>
-                        </span>
-                    </li>
-                </ul>
-            </ng-template>
+            
         </nz-card>
     </nz-content>
     <nz-footer style="text-align: center; padding: 0px" *ngIf="config.toolbar">
@@ -313,41 +300,3 @@
         </nz-card>
     </nz-footer>
 </nz-layout>
-
-<!-- <nz-modal [(nzVisible)]="isVisible" nzTitle="高级设置" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
-    <nz-card>
-        <div nz-row>
-            <div nz-col nzSpan="12">
-                <label>表格宽度：</label>
-                <input [(ngModel)]="tablewidth" style="width:80px; border:none; border-bottom:1px solid #1890ff;">
-            </div>
-            <div nz-col nzSpan="12">
-                <label>表格高度：</label>
-                <input [(ngModel)]="tableheight" style="width:80px; border:none; border-bottom:1px solid #1890ff;">
-            </div>
-        </div>
-    </nz-card>
-    <nz-table #basicTable [nzData]="c_data" [nzFrontPagination]="false" [nzShowPagination]="false" [nzScroll]="{y:'400px'}" nzSize="middle">
-        <thead>
-            <tr #bt>
-                <th nzWidth="100px">
-                    列名称
-                </th>
-                <th nzWidth="100px">是否隐藏</th>
-                <th nzWidth="100px">宽度</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let data of basicTable.data" [draggable]="is_drag" (dragstart)="f_ondragstart($event,data)" (dragover)="f_ondragover($event,data)"
-                (drop)="f_ondrop($event,data)">
-                <td>{{data.title?data.title:data.field}}</td>
-                <td>
-                    <nz-switch [(ngModel)]="data.hidden" name="bordered"></nz-switch>
-                </td>
-                <td>
-                    <input draggable="false" [(ngModel)]="data.width" (blur)="onblur($event,data)" (focus)="onfocus($event,data)" style="width:80px; border:none; border-bottom:1px solid #1890ff;">
-                </td>
-            </tr>
-        </tbody>
-    </nz-table>
-</nz-modal> -->
