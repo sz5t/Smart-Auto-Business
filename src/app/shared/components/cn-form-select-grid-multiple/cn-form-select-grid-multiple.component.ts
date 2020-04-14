@@ -164,7 +164,7 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
   public getMultipleTags(dlist?) {
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
-    dlist.array.forEach(data => {
+    dlist.forEach(data => {
       const b_lable = data[labelName];
       const b_value = data[valueName]; // 取值时动态读取的
       const newobj = { label: b_lable, value: b_value };
@@ -195,7 +195,7 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
       if (this.tags) {
         const index = this.tags.length;
         if (this.tags) {
-          if (index >= 0) {
+          if (index > 0) {
             this.getMultipleValue();
           } else {
             // 取值

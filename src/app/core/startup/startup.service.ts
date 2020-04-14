@@ -113,7 +113,8 @@ export class StartupService {
                         // }
                         // this.menuService.add(menu);
                         // 设置页面标题的后缀
-                        this.titleService.suffix = res.app.name;
+                        // this.titleService.suffix = res.app.name;
+                        this.titleService.default = res.app.name;
                     },
                     () => {},
                     () => {

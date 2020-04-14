@@ -165,6 +165,8 @@ export const BSN_COMPONENT_CASCADE_MODES = {
     ADD_ASYNC_TREE_NODE: 'addAsyncTreeNode',
     EDIT_ASNYC_TREE_NODE: 'editAsyncTreeNode',
     DELETE_ASYNC_TREE_NODE: 'deleteAsyncTreeNode',
+    MOBILE_ASYNC_TREE_NODE: 'mobileAsyncTreeNode',
+    LIFT_ASYNC_TREE_NODE: 'liftAsyncTreeNode',
 
     // form
     LOAD_FORM: 'loadForm',

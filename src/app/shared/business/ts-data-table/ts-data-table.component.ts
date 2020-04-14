@@ -159,6 +159,7 @@ export class TsDataTableComponent extends CnComponentBase
         if (this.initData) {
             this.initValue = this.initData;
         }
+
         if (this.config.ajaxproc) {
             const url = this._buildURL(this.config.ajaxConfig.url);
             const params = {
@@ -223,11 +224,11 @@ export class TsDataTableComponent extends CnComponentBase
                     }
                 }
             }
-
             // liu 测试动态表格
             if (this.config.columnsAjax) {
-                this.loadDynamicColumns();
+                await this.loadDynamicColumns();
             }
+
             this.resolverRelation();
             if (this.initData) {
                 this.initValue = this.initData;
@@ -676,8 +677,8 @@ export class TsDataTableComponent extends CnComponentBase
                                         // this.load();
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.CREATE_DYNAMIC_TABLE:
-                                            this.loadDynamicColumns();
-                                            this.load();
+                                        this.loadDynamicColumns();
+                                        this.load();
                                         break;
 
                                 }
@@ -2907,7 +2908,7 @@ export class TsDataTableComponent extends CnComponentBase
     private _getNormalCheckedItemsId() {
         const serverData = [];
         this.dataList.forEach(item => {
-           
+
             if (
                 item.checked === true
             ) {
@@ -3613,7 +3614,7 @@ export class TsDataTableComponent extends CnComponentBase
                 nzContentParams: {
                     permissions: this.permissions,
                     config: data,
-                    initData: {...tmpValue, ...selectedRow, ...handle, ...this.initValue }
+                    initData: { ...tmpValue, ...selectedRow, ...handle, ...this.initValue }
                 }
             });
 

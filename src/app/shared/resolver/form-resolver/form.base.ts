@@ -294,7 +294,7 @@ export class CnFormBase extends CnComponentBase {
             const temObj = tempValue
                 ? response.data[tempValue.name]
                 : null;
-            
+
             // const tableObj = response.data[table.name] ? response.data[table.name] : [];
             if (msgObj && msgObj.length > 1) {
                 const messageType = msgObj[0];
@@ -374,7 +374,7 @@ export class CnFormBase extends CnComponentBase {
                         // );
                         // //  目前紧支持一次执行一个分之步骤
                         // this.getAjaxConfig(childrenConfig[0], ajaxConfig, callback);
-                    break;
+                        break;
                 }
                 // if(options) {
                 //     this.modalService[messageType](options);
@@ -518,7 +518,7 @@ export class CnFormBase extends CnComponentBase {
                                             } else {
                                                 callback();
                                             }
-                                        } 
+                                        }
                                         // else {
                                         //     this.sendCascadeMessage(dialog, response.data);
                                         // }
@@ -541,7 +541,7 @@ export class CnFormBase extends CnComponentBase {
                                             } else {
                                                 callback();
                                             }
-                                        } 
+                                        }
                                         // else {
                                         //     this.sendCascadeMessage(dialog, response.data);
                                         // }
@@ -575,7 +575,7 @@ export class CnFormBase extends CnComponentBase {
                                     } else {
                                         callback();
                                     }
-                                } 
+                                }
                                 // else {
                                 //     this.sendCascadeMessage(dialog, response.data);
                                 // }
@@ -595,7 +595,7 @@ export class CnFormBase extends CnComponentBase {
                                 } else {
                                     callback();
                                 }
-                            } 
+                            }
                             // else {
                             //     this.sendCascadeMessage(dialog, response.data);
                             // }
@@ -614,8 +614,17 @@ export class CnFormBase extends CnComponentBase {
             // enterAjaxConfig = ajaxConfig.filter(item => !item.parent && item.ajaxType === formState);
             enterAjaxConfig = ajaxConfig;
         }
-        if (Array.isArray(enterAjaxConfig) && enterAjaxConfig[0] ) {
-            this.getAjaxConfig(enterAjaxConfig[0], ajaxConfig, callback, dialog);
+        if (Array.isArray(enterAjaxConfig)) {
+            for (let i = 0; i < enterAjaxConfig.length; i++) {
+                if (enterAjaxConfig[i]['ajaxType'] === formState) {
+                    this.getAjaxConfig(enterAjaxConfig[i], ajaxConfig, callback, dialog);
+                } else if (enterAjaxConfig[i]['ajaxType'] === 'delete') {
+                    this.getAjaxConfig(enterAjaxConfig[i], ajaxConfig, callback, dialog);
+                }
+            }
+            // }
+            // if (Array.isArray(enterAjaxConfig) && enterAjaxConfig[0] ) {
+            //     this.getAjaxConfig(enterAjaxConfig[0], ajaxConfig, callback, dialog);
         } else {
             let msg = '';
             switch (formState) {
@@ -674,17 +683,17 @@ export class CnFormBase extends CnComponentBase {
                     let paramData: any;
                     switch (r_val.type) {
                         case 'add':
-                        mode = BSN_COMPONENT_CASCADE_MODES.ADD_ASYNC_TREE_NODE;
-                        paramData = {_add_ids: r_val.ids.join(',')};
-                        break;
+                            mode = BSN_COMPONENT_CASCADE_MODES.ADD_ASYNC_TREE_NODE;
+                            paramData = { _add_ids: r_val.ids.join(',') };
+                            break;
                         case 'edit':
-                        mode = BSN_COMPONENT_CASCADE_MODES.EDIT_ASNYC_TREE_NODE;
-                        paramData = {_edit_ids: r_val.ids.join(',')};
-                        break;
+                            mode = BSN_COMPONENT_CASCADE_MODES.EDIT_ASNYC_TREE_NODE;
+                            paramData = { _edit_ids: r_val.ids.join(',') };
+                            break;
                         case 'delete':
-                        mode = BSN_COMPONENT_CASCADE_MODES.DELETE_ASYNC_TREE_NODE;
-                        paramData = {_del_ids: r_val.ids.join(',')};
-                        break;
+                            mode = BSN_COMPONENT_CASCADE_MODES.DELETE_ASYNC_TREE_NODE;
+                            paramData = { _del_ids: r_val.ids.join(',') };
+                            break;
                     }
                     this.cascadeBase.next(
                         new BsnComponentMessage(

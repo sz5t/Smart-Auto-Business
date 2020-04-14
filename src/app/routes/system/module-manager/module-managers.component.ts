@@ -93,11 +93,11 @@ export class ModuleManagersComponent extends CnComponentBase implements OnInit {
                                                     type: 'tempValue',
                                                     valueName: '_projectId'
                                                 },
-                                                {
-                                                    name: 'projectId',
-                                                    type: 'tempValue',
-                                                    valueName: '_projectId'
-                                                },
+                                                // {
+                                                //     name: 'projectId',
+                                                //     type: 'tempValue',
+                                                //     valueName: '_projectId'
+                                                // },
                                                 {
                                                     name: '_sort',
                                                     type: 'value',

@@ -1,31 +1,24 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, Inject, AfterViewInit, AfterContentInit, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, Inject, AfterViewInit, AfterContentInit, OnDestroy } from '@angular/core';
 import { ApiService } from '@core/utility/api-service';
-import { NzMessageService, NzModalService, NzDropdownService } from 'ng-zorro-antd';
+import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { CacheService } from '@delon/cache';
 import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_OUTPOUT_PARAMETER_TYPE, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT } from '@core/relative-Service/BsnTableStatus';
-import { Observer, Observable, Subscription, config } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
 import { getISOYear, getMonth, getDate, getHours, getTime, getMinutes, getSeconds } from 'date-fns';
-import { async } from 'q';
-import { NONE_TYPE } from '@angular/compiler/src/output/output_ast';
 import { isArray } from 'util';
 
 @Component({
-  selector: 'bsn-chart',
-  templateUrl: './bsn-chart.component.html',
-  styleUrls: [`./bsn-chart.component.less`]
+  selector: 'bsn-time-axis-chart',
+  templateUrl: './bsn-time-axis-chart.component.html',
+  styleUrls: ['./bsn-time-axis-chart.component.less']
 })
-export class BsnChartComponent extends CnComponentBase implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
+export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
   @Input() public config; // 配置参数
-  @Input() public permissions = [];
   @Input() public dataList = []; // 表格数据集合
   @Input() public initData;
-  @Input() public casadeData; // 级联配置 liu 20181023
-  @Input() public value;
-  @Input() public bsnData;
-  @Input() public ref;
-  public originDv;
+  // public originDv;
   public showdata = []; // 展示的数组
   public showguide = []; // 辅助线的数组
   public guidedataList = []; // 辅助线的数据集合
@@ -33,23 +26,40 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   public rulenameList = []; // 规则转换的展示值集合
   public stageRuleDatalist = []; // 阶段开始的标准
   public stageCurrentDatalist = []; // 当前阶段的数组
+
+
   public curStage; // 自动播放的阶段变量
   public refreshNumber = 1; // 分组自动刷新的增量
   public autoPlay;
-  public ds; // 读取的全部数据
-  public dv; // 根据要求过滤出的视图
-  public datalength; // 真实的数据长度
   public next = 1; // 自动播放的标识变量
   public curNum = 1; // 默认的设备数据阶段
   public StageTime; // 启动阶段的时间
+
+  public ds; // 读取的全部数据
+  public dv; // 根据要求过滤出的视图
+  public datalength; // 真实的数据长度
   public Shape; // 自定义样式效果
   public test = []; // 辅助线的图例数组
+
+
   public groupMax = []; // 分组每组最大值的数组
   public groupMin = []; // 分组每组最小值的数组
   public itemName = []; // 分组名称的数组
   public chartName; // 图表的名称
   public showDataLength; // 分组的展示数据长度（暂时只有分组折线使用）
   public y1andgroup = false; // 分组+双轴的标识
+
+  // 初始化的属性
+  public x;
+  public y;
+  public color = [];
+  public y1;
+  public minValue;
+  public maxValue;
+  public end;
+  public start;
+  public intervalTime;
+  public groupName;
 
   // tempValue = {};
   @Output() public updateValue = new EventEmitter();
@@ -66,10 +76,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     private _message: NzMessageService,
     private modalService: NzModalService,
     private cacheService: CacheService,
-    private _dropdownService: NzDropdownService,
-    private renderer: Renderer2,
     @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
-    @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
   ) {
     super();
@@ -89,29 +96,63 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       this.load();
     }
 
+    this.x = this.config.x.name
+
+    this.y = this.config.y.name
+
+    if (this.config.y1) {
+      this.y1 = this.config.y1.name
+    }
+
+    if (this.config.guide) {
+      this.maxValue = this.config.guide.max ? this.config.guide.maxvalue : 'maxvalue';
+
+      this.minValue = this.config.guide.min ? this.config.guide.minvalue : 'minvalue';
+
+      this.start = this.config.guide.start ? this.config.guide.start : 'starttime'
+
+      this.end = this.config.guide.end ? this.config.guide.end : 'endtime'
+    }
+
+    if (this.config.autoPlay) {
+      this.intervalTime = this.config.intervalTime ? this.config.intervalTime : 2000;
+    }
+
+    if (this.config.showDataLength) {
+      this.datalength = this.config.showDataLength
+    }
+
+    if (this.config.groupName) {
+      this.groupName = this.config.groupName
+    }
+
   }
   public ngAfterContentInit() {
   }
 
   public async load() {
     if (this.config.itemConfig) {
-      this.itemName = await this.loadGroupName();
-      this.showDataLength = this.itemName.length * this.config.itemLength;
+      this.itemName = await this.loadData(this.config.itemConfig);
+      this.datalength = this.itemName.length * this.config.itemLength;
     } else {
-      this.showDataLength = this.config.showDataLength;
+      this.datalength = this.config.showDataLength;
     }
-    await this.load_data(1);
+    if (this.config.ajaxConfig) {
+      this.dataList = await this.loadData(this.config.ajaxConfig);
+      this.sourceModify(this.datalength);
+    }
+    // await this.load_data(1);
     if (this.config.ruleConfig) {
-      await this.load_rule_data();
+      this.ruledataList = await this.loadData(this.config.ruleConfig);
       if (this.config.curStageConfig) {
-        await this.load_current_stage_data();
+        this.stageCurrentDatalist = await this.loadData(this.config.curStageConfig);
       }
     }
     if (this.config.ruleNameConfig) {
-      await this.load_stage_rule_name();
+      this.rulenameList = await this.loadData(this.config.ruleNameConfig);
     }
     if (this.config.haveGuide && this.config.showGuide && this.config.guideConfig) {
-      await this.load_guide();
+      this.showguide = await this.loadData(this.config.guideConfig);
     }
 
     if (this.config.itemConfig) {
@@ -119,11 +160,11 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     }
 
     if (this.config.showPointStyle) {
-      this.writePointStyle();
+      this.registerPointStyle();
     }
 
     if (this.config.showChartName) {
-      this.chartName = await this.getChartName();
+      this.chartName = await this.loadData(this.config.showChartName);
       this.chartName = this.chartName[0][this.config.chartNameField];
       let el = this.chartNameElement.nativeElement;
       let ipt = el.querySelector('input');
@@ -131,228 +172,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       ipt.value = this.chartName;
       ipt.style.textAlign = 'center';
     }
-
-    // setTimeout(() => {
-    if (this.config.type) {
-      // if (this.chart) {
-      //   this.chart.clear();
-      // }
-      const key = this.config.type;
-      switch (key) {
-        case 'bar':
-          this.CreateChart_Bar()
-          break;
-        case 'mini_bar':
-          this.CreateChart_MiniBar()
-          break;
-        case 'pie':
-          this.CreateChart_Pie()
-          break;
-        case 'timeline':
-          this.CreateChart_Time_Line()
-          break;
-        case 'line':
-          this.CreateChart_Line()
-          break;
-        case 'mini_line':
-          this.CreateChart_MiniLine()
-          break;
-        default:
-          break;
-      }
-    }
-    // }, 3000);
-
-  }
-
-  /**
-   * CreateChart_Bar  生成柱状图
-   */
-  public CreateChart_Bar() {
-    this.chart = new G2.Chart({
-      container: this.chartElement.nativeElement, // 指定图表容器 ID
-      animate: true, // 动画 默认true
-      forceFit: true,  // 图表的宽度自适应开关，默认为 false，设置为 true 时表示自动取 dom（实例容器）的宽度。
-      // width: 600,  // 当 forceFit: true  时宽度配置不生效
-      height: this.config.height ? this.config.height : 300, // 指定图表高度
-      padding: 'auto'
-    });
-    this.chart.source(this.dataList);
-    if (this.config.y.scale) {
-      this.chart.scale(this.config.y.name, this.config.y.scale);
-    }
-    if (this.config.x.scale) {
-      this.chart.scale(this.config.x.name, this.config.x.scale);
-    }
-    if (this.config.x.axis) {
-      this.chart.axis(this.config.x.name, this.config.x.axis);
-    }
-    if (this.config.y.axis) {
-      this.chart.axis(this.config.y.name, this.config.y.axis);
-    }
-
-    if (this.config.legend) {
-      this.chart.legend(this.config.legend);
-    }
-    if (this.config.groupName) {
-      this.chart.interval().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).opacity(1).adjust([{
-        type: 'dodge',
-        marginRatio: 1 / 32
-      }]);  // 创建柱图特殊写法  X*Y  'caseName*caseCount' year*sales
-    } else {
-      this.chart.interval().position(this.config.x.name + '*' + this.config.y.name);  // 创建柱图特殊写法  X*Y  'caseName*caseCount' year*sales
-    }
-
-    this.chart.render();
-  }
-
-  public CreateChart_MiniBar() {
-    this.chart = new G2.Chart({
-      container: this.chartElement.nativeElement, // 指定图表容器 ID
-      animate: true, // 动画 默认true
-      forceFit: true,  // 图表的宽度自适应开关，默认为 false，设置为 true 时表示自动取 dom（实例容器）的宽度。
-      // width: 600,  // 当 forceFit: true  时宽度配置不生效
-      height: this.config.height ? this.config.height : 300, // 指定图表高度
-      padding: 'auto'
-    });
-    this.chart.source(this.dataList);
-    if (this.config.y.scale) {
-      this.chart.scale(this.config.y.name, this.config.y.scale);
-    }
-    if (this.config.x.scale) {
-      this.chart.scale(this.config.x.name, this.config.x.scale);
-    }
-    if (this.config.x.axis) {
-      this.chart.axis(this.config.x.name, this.config.x.axis);
-    }
-    if (this.config.y.axis) {
-      this.chart.axis(this.config.y.name, this.config.y.axis);
-    }
-
-    if (this.config.legend) {
-      this.chart.legend(this.config.legend);
-    }
-    if (this.config.tooltipMini) {
-      this.chart.legend(false);
-      this.chart.axis(false);
-      this.chart.tooltip(
-        this.config.tooltipMini
-      );
-    }
-    if (this.config.groupName) {
-      this.chart.interval().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).opacity(1).adjust([{
-        type: 'dodge',
-        marginRatio: 1 / 32
-      }]);  // 创建柱图特殊写法  X*Y  'caseName*caseCount' year*sales
-    } else {
-      this.chart.interval().position(this.config.x.name + '*' + this.config.y.name);  // 创建柱图特殊写法  X*Y  'caseName*caseCount' year*sales
-    }
-
-    this.chart.render();
-  }
-  /**
-   * CreateChart_Pie  生成饼图
-   */
-  public CreateChart_Pie() {
-    this.chart = new G2.Chart({
-      container: this.chartElement.nativeElement, // 指定图表容器 ID
-      forceFit: true,
-      height: this.config.height ? this.config.height : 300, // 指定图表高度
-      padding: 'auto'
-    });
-    this.chart.source(this.dataList, {
-      percent: {
-        formatter: function formatter(val) {
-          val = val * 100 + '%';
-          return val;
-        }
-      }
-    });
-    this.chart.coord('theta', {
-      radius: 0.75
-    });
-    this.chart.tooltip({
-      showTitle: false,
-      itemTpl: '<li><span style="background-color:{color};" class="g2-tooltip-marker"></span>{name}: {value}</li>'
-    });
-
-    if (this.config.legend) {
-      this.chart.legend(this.config.legend);
-    }
-    if (this.config.tooltipMini) {
-      this.chart.legend(false);
-      this.chart.axis(false);
-      this.chart.tooltip(
-        this.config.tooltipMini
-      );
-    }
-    this.chart.intervalStack().position(this.config.y.name).color(this.config.x.name).label(this.config.y.name, {
-      formatter: (val, item) => {
-        return item.point[this.config.x.name] + ': ' + val;
-      }
-    }).tooltip(this.config.x.name + '*' + this.config.y.name, function (item, percent) {
-      percent = percent * 100 + '%';
-      return {
-        name: item,
-        value: percent
-      };
-    }).style({
-      lineWidth: 1,
-      stroke: '#fff'
-    });
-    this.chart.render();
-  }
-
-  /**
-   * CreateChart_Line  生成折线图
-   */
-  public CreateChart_Line() {
-    this.chart = new G2.Chart({
-      container: this.chartElement.nativeElement, // 指定图表容器 ID
-      animate: true, // 动画 默认true
-      forceFit: true,  // 图表的宽度自适应开关，默认为 false，设置为 true 时表示自动取 dom（实例容器）的宽度。
-      height: this.config.height ? this.config.height : 300, // 指定图表高度
-      padding: 'auto'
-    });
-    this.chart.source(this.dataList);
-    if (this.config.y.scale) {
-      this.chart.scale(this.config.y.name, this.config.y.scale);
-    }
-    if (this.config.x.scale) {
-      this.chart.scale(this.config.x.name, this.config.x.scale);
-    }
-    if (this.config.x.axis) {
-      this.chart.axis(this.config.x.name, this.config.x.axis);
-    }
-    if (this.config.y.axis) {
-      this.chart.axis(this.config.y.name, this.config.y.axis);
-    }
-
-
-    if (this.config.legend) {
-      this.chart.legend(this.config.legend);
-    }
-    this.chart.tooltip({
-      crosshairs: {
-        type: 'line'
-      }
-    });
-    if (this.config.groupName) {
-      this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).shape(this.config.shape ? this.config.shape : 'circle');
-      this.chart.point().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).size(4).shape('circle').style({
-        stroke: '#fff',
-        lineWidth: 1
-      });
-
-    } else {
-      this.chart.line().position(this.config.x.name + '*' + this.config.y.name).shape(this.config.shape ? this.config.shape : 'circle');
-      this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('circle').style({
-        stroke: '#fff',
-        lineWidth: 1
-      });
-    }
-
-    this.chart.render();
+    this.CreateChart_Time_Line();
   }
 
   private CreateChart_Time_Line() {
@@ -364,91 +184,37 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       padding: [50, 50, 110, 45]
     });
 
-    const x = this.config.x.name;
-    const data = this.showdata;
-    if (data.length < this.showDataLength) {
-      this.ds = new DataSet({
-        state: {
-          from: new Date(this.dataList[0][x]).getTime(),
-          to: new Date(this.dataList[data.length - 1][x]).getTime()
-        }
-      });
-    } else {
-      if (this.config.refreshFrequency) {
+    // 创建DS数据源
+    if (this.datalength) {
+      if (this.showdata.length < this.datalength) {
         this.ds = new DataSet({
           state: {
-            from: new Date(this.dataList[0][x]).getTime(),
-            to: new Date(this.dataList[data.length][x]).getTime()
+            from: new Date(this.dataList[0][this.x]).getTime(),
+            to: new Date(this.dataList[this.showdata.length - 1][this.x]).getTime()
           }
         });
       } else {
         this.ds = new DataSet({
           state: {
-            from: new Date(this.dataList[0][x]).getTime(),
-            to: new Date(this.dataList[this.showDataLength - 1][x]).getTime()
+            from: new Date(this.dataList[0][this.x]).getTime(),
+            to: new Date(this.dataList[this.datalength - 1][this.x]).getTime()
+          }
+        });
+      }
+    } else {
+      if (this.config.refreshFrequency) {
+        this.ds = new DataSet({
+          state: {
+            from: new Date(this.dataList[0][this.x]).getTime(),
+            to: new Date(this.dataList[this.showdata.length][this.x]).getTime()
           }
         });
       }
     }
-    if (this.config.y.scale) {
-      this.chart.scale(this.config.y.name, this.config.y.scale);
-    }
-    if (this.config.x.scale) {
-      this.chart.scale(this.config.x.name, this.config.x.scale);
-    }
-    if (this.config.y1) {
-      if (this.config.y1.scale) {
-        this.chart.scale(this.config.y1.name, this.config.y1.scale);
-      }
-      if (this.config.y1.axis) {
-        this.chart.axis(this.config.y1.name, this.config.y1.axis);
-      }
-    }
-    if (this.config.x.axis) {
-      const format = {
-        label: {
-          formatter: val => {
-            let xformat;
-            this.stageCurrentDatalist.forEach(s => {
-              if (s.starttime) {
-                if (s.endtime) {
-                  if (this.transStringTime(val) >= this.transStringTime(s.starttime) && this.transStringTime(val) < this.transStringTime(s.endtime)) {
-                    xformat = s.stage
-                  }
-                } else {
-                  if (this.transStringTime(val) >= this.transStringTime(s.starttime)) {
-                    xformat = s.stage
-                  }
-                }
-              }
-            });
-            if (!xformat) {
-              // xformat = 1;
-              return val;
-            } else {
-              let stageName;
-              if (this.rulenameList.length > 0) {
-                this.rulenameList.forEach(e => {
-                  if (e.stage === xformat) {
-                    stageName = e.showValue;
-                  }
-                })
-              }
-              if (stageName) {
-                return val + '  ' + stageName + '阶段';
-              } else {
-                return val + '  ' + '第' + xformat + '阶段'; // 格式化坐标轴显示文本
-              }
-            }
-          },
-        }
-      }
-      this.config.x.axis = { ...this.config.x.axis, ...format }
-      this.chart.axis(this.config.x.name, this.config.x.axis);
-    }
-    if (this.config.y.axis) {
-      this.chart.axis(this.config.y.name, this.config.y.axis);
-    }
+
+    // 坐标轴的初始化
+    this.axisInit();
+
     this.dv = this.ds.createView();
 
     if (this.config.guideConfig && this.config.showGuide && this.config.guideConfig.guideType !== 'line') {
@@ -464,12 +230,12 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
           }
           grouptext = grouptext.substring(0, grouptext.length - 1);
           this.test = grouptext.split(',');
-          this.dv.source(data)
+          this.dv.source(this.showdata)
             .transform({
               type: 'filter',
               callback: obj => {
-                const a = new Date(obj[x]);
-                return (new Date(obj[x])).getTime() >= this.ds.state.from && (new Date(obj[x])).getTime() <= this.ds.state.to;
+                const a = new Date(obj[this.x]);
+                return (new Date(obj[this.x])).getTime() >= this.ds.state.from && (new Date(obj[this.x])).getTime() <= this.ds.state.to;
               }
             })
             .transform({
@@ -485,36 +251,62 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         .transform({
           type: 'filter',
           callback: obj => {
-            const a = new Date(obj[x]);
-            return (new Date(obj[x])).getTime() >= this.ds.state.from && (new Date(obj[x])).getTime() <= this.ds.state.to;
+            const a = new Date(obj[this.x]);
+            return (new Date(obj[this.x])).getTime() >= this.ds.state.from && (new Date(obj[this.x])).getTime() <= this.ds.state.to;
           }
         });
     }
-    if (this.config.y1) {
-      const y1max = this.config.y1.max ? this.config.y1.max : 300;
-      const y1min = this.config.y1.min ? this.config.y1.min : 0;
-      this.chart.source(this.dv, {
-        [this.config.y1.name]: {
-          min: [y1min],
-          max: [y1max],
-          tickInterval: [this.config.y1.scale.tickInterval],
-          alias: [this.config.y1.scale.alias]
-        }
-      });
-    }
-    if (this.config.y.max) {
-      const max = this.config.y.max ? this.config.y.max : 300;
-      const min = this.config.y.min ? this.config.y.min : 0;
-      this.chart.source(this.dv, {
-        [this.config.y.name]: {
-          min: [min],
-          max: [max],
-          tickInterval: [this.config.y.scale.tickInterval],
-          alias: [this.config.y.scale.alias]
-        }
-      });
+    this.chart.source(this.dv);
+
+    if (!this.config.yGroup && this.config.legend) {
+      this.chart.legend(this.config.legend);
     } else {
-      this.chart.source(this.dv);
+      const items = [];
+      items.push({
+        value: this.config.y.name,
+        marker: {
+          symbol: 'hyphen',
+          stroke: '0066FF',
+          radius: 5,
+          lineWidth: 3
+        }
+      });
+      this.color.push({'name': [this.config.y.name], 'color': '0066FF'});
+      for (let i = 0; i < this.config.yGroup.length; i++) {
+        items.push(
+          {
+            value: this.config.yGroup[i].name,
+            marker: {
+              symbol: 'hyphen',
+              stroke: this.config.yGroup[i].color,
+              radius: 5,
+              lineWidth: 3
+            }
+          })
+        this.color.push({'name': [this.config.yGroup[i].name], 'color': [this.config.yGroup[i].color]});
+      }
+      this.chart.legend({
+        custom: true,
+        allowAllCanceled: true,
+        items: items,
+        position: 'top-center',
+        onClick: (ev) => {
+          const item = ev.item;
+          const value = item.value;
+          const checked = item.checked;
+          const geoms = this.chart.getAllGeoms();
+          for (let i = 0; i < geoms.length; i++) {
+            const geom = geoms[i];
+            if (geom.getYScale().field === value[0]) {
+              if (checked) {
+                geom.show();
+              }
+            } else {
+              geom.hide();
+            }
+          }
+        }
+      });
     }
 
     if (!this.config.groupName) {
@@ -551,6 +343,31 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
             lineWidth: 1
           });
         }
+
+        if (this.config.yGroup) {
+          for (let i = 0; i < this.config.yGroup.length; i++) {
+            if (this.config.showPointStyle) {
+              if (this.config.guideConfig) {
+                this.chart.point().position(this.config.x.name + '*' + this.config.yGroup[i].name).size(4).shape('overyGuide').style({
+                  stroke: '#fff',
+                  lineWidth: 1
+                });
+              }
+              if (this.config.ruleConfig && this.config.ruleConfig.rule) {
+                this.chart.point().position(this.config.x.name + '*' + this.config.yGroup[i].name).size(4).shape('notEqualPlan').style({
+                  stroke: '#fff',
+                  lineWidth: 1
+                });
+              }
+            } else {
+              this.chart.point().position(this.config.x.name + '*' + this.config.yGroup[i].name).size(4).shape('circle').style({
+                stroke: '#fff',
+                lineWidth: 1
+              });
+            }
+          }
+        }
+
         if (this.config.y1) {
           this.chart.line().position(this.config.x.name + '*' + this.config.y1.name).shape(this.config.shape ? this.config.shape : 'circle').color(this.config.y1color ? this.config.y1color : '#FFCC00');
           if (this.config.ruleConfig && this.config.ruleConfig.y1max) {
@@ -598,7 +415,8 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
 
       if (this.config.y1) {
         this.y1andgroup = true;
-        this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).shape(this.config.shape ? this.config.shape : 'circle');
+        this.showdata;
+        this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color(this.color.find(e => e['name'][0] === this.y)['color']).shape(this.config.shape ? this.config.shape : 'circle');
         if (this.config.showPointStyle) {
           if (this.config.guideConfig) {
             this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('overyGuide').style({
@@ -633,10 +451,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       }
     }
 
-    if (this.config.legend) {
-      this.chart.legend(this.config.legend);
-    }
-
     // 有图表标记，最值，辅助线，超标点的样式等
     if (this.config.haveGuide) {
       this.allGuide(this.chart);
@@ -657,7 +471,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         },
         scales:
         {
-          [x]: {
+          [this.x]: {
             formatter: (val) => {
               return `${getISOYear(val)}-${getMonth(val) + 1}-${getDate(val)}${' '}${getHours(getTime(val))}${':'}${getMinutes(getTime(val))}${':'}${getSeconds(getTime(val))}`;
             }
@@ -705,7 +519,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         },
         scales:
         {
-          [x]: {
+          [this.x]: {
             formatter: (val) => {
               return `${getISOYear(val)}-${getMonth(val) + 1}-${getDate(val)}${' '}${getHours(getTime(val))}${':'}${getMinutes(getTime(val))}${':'}${getSeconds(getTime(val))}`;
             }
@@ -730,13 +544,13 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     if (this.config.autoPlay) {
       const that = this;
       this.autoPlay = setInterval(async () => {
-        await this.load_data(2);
+        this.dataList = await this.loadData(this.config.ajaxConfig);
         this.next = this.next + 1;
         if (this.config.refreshFrequency) {
-          this.showDataLength = this.showdata.length
+          this.datalength = this.showdata.length
         }
-        if (this.showdata[this.showDataLength - 1]) {
-          if (this.dataList[this.dataList.length - 1] !== this.showdata[this.showDataLength - 1]) {
+        if (this.showdata[this.datalength - 1]) {
+          if (this.dataList[this.dataList.length - 1] !== this.showdata[this.datalength - 1]) {
             if (this.refreshNumber === 1) {
               if (this.y1andgroup) {
                 let nextStart = this.transStringTime(this.showdata[0][this.config.x.name]);
@@ -749,13 +563,13 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
               } else {
                 for (let aa = 0; aa < this.refreshNumber; aa++) {
                   this.showdata.shift();
-                  this.showdata.push(this.dataList[this.showDataLength - 2 + this.next + aa]);
+                  this.showdata.push(this.dataList[this.datalength - 2 + this.next + aa]);
                 }
               }
             } else {
               for (let aa = 0; aa < this.refreshNumber; aa++) {
                 this.showdata.shift();
-                this.showdata.push(this.dataList[this.showDataLength + (this.next - 2) * this.refreshNumber + aa]);
+                this.showdata.push(this.dataList[this.datalength + (this.next - 2) * this.refreshNumber + aa]);
               }
             }
             if (this.config.stageRuleConfig) {
@@ -766,45 +580,31 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
               if (this.config.refreshFrequency) {
                 this.setDataStage('dynamic', this.showdata, this.curStage);
               } else {
-                if (this.showdata[this.showDataLength - 1]) {
-                  this.setDataStage('dynamic', this.showdata[this.showDataLength - 1], this.curStage);
+                if (this.showdata[this.datalength - 1]) {
+                  this.setDataStage('dynamic', this.showdata[this.datalength - 1], this.curStage);
                 }
               }
               if (this.config.curStageConfig) {
-                await this.load_current_stage_data();
+                this.stageCurrentDatalist = await this.loadData(this.config.curStageConfig);
               }
-
-              // for (let i = 0; i < this.stageCurrentDatalist.length; i++) {
-              //   if (!this.stageCurrentDatalist[i]['starttime']) {
-              //     this.curStage = this.stageCurrentDatalist[i]['stage'];
-              //     break;
-              //   } else {
-              //     this.curStage = this.stageCurrentDatalist[this.stageCurrentDatalist.length - 1]['stage'];
-              //   }
-              // }
               if (this.curStage !== 1 && tempStage === this.curStage) {
                 this.curNum += 1;
               } else {
                 this.curNum = 1;
               }
-              // if (this.curStage === 2 ) {
-                if (this.config.refreshFrequency) {
-                  this.showdata[this.showdata.length - 1]['stage'] = this.curStage - 1;
-                  this.showdata[this.showdata.length - 1]['number'] = this.curNum;
-                } else {
-                  this.showdata[this.showDataLength - 1]['stage'] = this.curStage - 1;
-                  this.showdata[this.showDataLength - 1]['number'] = this.curNum;
-                }
-              // } else {
-              //   this.showdata[this.showDataLength - 1]['stage'] = this.curStage;
-              //   this.showdata[this.showDataLength - 1]['number'] = this.curNum;
-              // }
+              if (this.config.refreshFrequency) {
+                this.showdata[this.showdata.length - 1]['stage'] = this.curStage - 1;
+                this.showdata[this.showdata.length - 1]['number'] = this.curNum;
+              } else {
+                this.showdata[this.datalength - 1]['stage'] = this.curStage - 1;
+                this.showdata[this.datalength - 1]['number'] = this.curNum;
+              }
             }
             this.slider.start = new Date(this.showdata[0][this.config.x.name].replace(/-/g, '/')).getTime();
             if (this.config.refreshFrequency) {
               this.slider.end = new Date(this.showdata[this.showdata.length - 1][this.config.x.name].replace(/-/g, '/')).getTime();
             } else {
-              this.slider.end = new Date(this.showdata[this.showDataLength - 1][this.config.x.name].replace(/-/g, '/')).getTime();
+              this.slider.end = new Date(this.showdata[this.datalength - 1][this.config.x.name].replace(/-/g, '/')).getTime();
             }
             if (this.config.guideConfig && this.config.guideConfig.guideType !== 'line') {
               this.ds.state.from = new Date(this.showdata[0][that.config.x.name]).getTime();
@@ -815,7 +615,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
               this.chart.changeData(this.showdata);
             }
             setTimeout(async () => {
-              // this.chart.guide().clear();
               if (this.config.groupName && !(this.config.peakValue || this.config.eachPeakValue)) {
                 await this.getGroupPeakValue();
               }
@@ -825,318 +624,12 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
             this.slider.changeData(this.showdata);
           }
         } else {
-          this.operationAjax(this.showdata[this.showDataLength - 2][this.config.x.name], 'finish');
+          this.operationAjax(this.showdata[this.datalength - 2][this.config.x.name], 'finish');
           if (this.autoPlay) {
             clearInterval(this.autoPlay);
           }
         }
       }, this.config.intervalTime)
-    }
-  }
-
-  public CreateChart_MiniLine() {
-
-    this.chart = new G2.Chart({
-      container: this.chartElement.nativeElement, // 指定图表容器 ID
-      animate: true, // 动画 默认true
-      forceFit: true,  // 图表的宽度自适应开关，默认为 false，设置为 true 时表示自动取 dom（实例容器）的宽度。
-      height: this.config.height ? this.config.height : 300, // 指定图表高度
-      padding: 'auto'
-    });
-    this.chart.source(this.dataList);
-    if (this.config.y.scale) {
-      this.chart.scale(this.config.y.name, this.config.y.scale);
-    }
-    if (this.config.x.scale) {
-      this.chart.scale(this.config.x.name, this.config.x.scale);
-    }
-    if (this.config.x.axis) {
-      this.chart.axis(this.config.x.name, this.config.x.axis);
-    }
-    if (this.config.y.axis) {
-      this.chart.axis(this.config.y.name, this.config.y.axis);
-    }
-
-
-    if (this.config.legend) {
-      this.chart.legend(this.config.legend);
-    }
-    this.chart.tooltip({
-      crosshairs: {
-        type: 'line'
-      }
-    });
-    if (this.config.tooltipMini) {
-      this.chart.legend(false);
-      this.chart.axis(false);
-      this.chart.tooltip(
-        this.config.tooltipMini
-      );
-      this.chart.guide().html({
-        position: ['120%', '0%'],
-        html: '<div class="g2-guide-html"><p class="title">总计</p><p class="value">' + '' + '</p></div>'
-      });
-    }
-
-
-    if (this.config.groupName) {
-      this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).shape(this.config.shape ? this.config.shape : 'circle');
-      this.chart.point().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).size(4).shape('circle').style({
-        stroke: '#fff',
-        lineWidth: 1
-      });
-
-    } else {
-      this.chart.line().position(this.config.x.name + '*' + this.config.y.name).shape(this.config.shape ? this.config.shape : 'circle');
-      this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('circle').style({
-        stroke: '#fff',
-        lineWidth: 1
-      });
-    }
-
-    this.chart.render();
-  }
-
-  public async load_data(temp) {
-    const url = this._buildURL(this.config.ajaxConfig.url);
-    const params = {
-      ...this._buildParameters(this.config.ajaxConfig.params),
-      ...this._buildFilter(this.config.ajaxConfig.filter)
-    };
-    const method = this.config.ajaxConfig.ajaxType;
-    const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
-    if (loadData.isSuccess) {
-      let data;
-      if (method === 'proc') {
-        data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
-        this.dataList = data;
-      } else {
-        data = loadData.data;  // data 是数组
-        if (data) {
-          this.dataList = data;
-        } else {
-          this.dataList = [];
-        }
-      }
-    } else {
-      this.dataList = [];
-    }
-    if (temp === 1) {
-      if (this.config.refreshTime) {
-        // this.showdata = this.dataList;
-        const startTime = this.transStringTime(this.dataList[0][this.config.x.name]);
-        const endTime = startTime + this.config.refreshTime;
-        this.showdata = this.dataList.filter(e => this.transStringTime(e[this.config.x.name]) >= startTime && this.transStringTime(e[this.config.x.name]) <= endTime);
-        this.showdata = JSON.parse(JSON.stringify(this.showdata));
-      } else {
-        if (this.showDataLength) {
-          if (this.dataList.length > this.showDataLength) {
-            for (let i = 0; i < this.showDataLength; i++) {
-              this.showdata.push(this.dataList[i]);
-            }
-          } else {
-            this.showdata = this.dataList;
-          }
-        } else {
-          this.showdata = this.dataList;
-        }
-      }
-    }
-    if (this.config.stageRuleConfig) {
-      await this.load_stage_rule_data();
-    }
-    if (this.config.haveStage && temp === 1) {
-      this.curStage = 1;
-      this.setDataStage('static', this.showdata, this.curStage);
-    }
-
-    if (this.config.haveStage && !this.config.autoPlay) {
-      this.setDataStage('static', this.showdata);
-    }
-  }
-
-  public async load_guide() {
-    const url = this._buildURL(this.config.guideConfig.url);
-    const params = {
-      ...this._buildParameters(this.config.guideConfig.params),
-      ...this._buildFilter(this.config.guideConfig.filter)
-    };
-    const method = this.config.guideConfig.ajaxType;
-    const loadData = await this._load(url, params, this.config.guideConfig.ajaxType);
-    if (loadData.isSuccess) {
-      let data;
-      if (method === 'proc') {
-        data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
-        this.guidedataList = data;
-      } else {
-        data = loadData.data;  // data 是数组
-        if (data) {
-          this.guidedataList = data;
-        } else {
-          this.guidedataList = [];
-        }
-      }
-    } else {
-      this.guidedataList = [];
-    }
-    if (this.showDataLength) {
-      if (this.guidedataList.length > this.showDataLength) {
-        for (let i = 0; i < this.showDataLength; i++) {
-          this.showguide.push(this.guidedataList[i]);
-        }
-      } else {
-        this.showguide = this.guidedataList;
-      }
-    } else {
-      this.showguide = this.guidedataList;
-    }
-  }
-
-  public async load_rule_data() {
-    const url = this._buildURL(this.config.ruleConfig.url);
-    const params = {
-      ...this._buildParameters(this.config.ruleConfig.params),
-      ...this._buildFilter(this.config.ruleConfig.filter)
-    };
-    const method = this.config.ruleConfig.ajaxType;
-    const loadData = await this._load(url, params, this.config.ruleConfig.ajaxType);
-    if (loadData.isSuccess) {
-      let data;
-      if (method === 'proc') {
-        data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
-        this.ruledataList = data;
-      } else {
-        data = loadData.data;  // data 是数组
-        if (data) {
-          this.ruledataList = data;
-        } else {
-          this.ruledataList = [];
-        }
-      }
-    } else {
-      this.ruledataList = [];
-    }
-  }
-
-  public async load_stage_rule_data() {
-    const url = this._buildURL(this.config.stageRuleConfig.url);
-    const params = {
-      ...this._buildParameters(this.config.stageRuleConfig.params),
-      ...this._buildFilter(this.config.stageRuleConfig.filter)
-    };
-    const method = this.config.stageRuleConfig.ajaxType;
-    const loadData = await this._load(url, params, this.config.ruleConfig.ajaxType);
-    if (loadData.isSuccess) {
-      let data;
-      if (method === 'proc') {
-        data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
-        this.stageRuleDatalist = data;
-      } else {
-        data = loadData.data;  // data 是数组
-        if (data) {
-          this.stageRuleDatalist = data;
-        } else {
-          this.stageRuleDatalist = [];
-        }
-      }
-    } else {
-      this.stageRuleDatalist = [];
-    }
-  }
-
-  public async load_current_stage_data() {
-    const url = this._buildURL(this.config.curStageConfig.url);
-    const params = {
-      ...this._buildParameters(this.config.curStageConfig.params),
-      ...this._buildFilter(this.config.curStageConfig.filter)
-    };
-    const method = this.config.curStageConfig.ajaxType;
-    const loadData = await this._load(url, params, this.config.ruleConfig.ajaxType);
-    if (loadData.isSuccess) {
-      let data;
-      if (method === 'proc') {
-        data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
-        this.stageCurrentDatalist = data;
-      } else {
-        data = loadData.data;  // data 是数组
-        if (data) {
-          this.stageCurrentDatalist = data;
-        } else {
-          this.stageCurrentDatalist = [];
-        }
-      }
-    } else {
-      this.stageCurrentDatalist = [];
-    }
-  }
-
-  public async load_stage_rule_name() {
-    const url = this._buildURL(this.config.ruleNameConfig.url);
-    const params = {
-      ...this._buildParameters(this.config.ruleNameConfig.params),
-      ...this._buildFilter(this.config.ruleNameConfig.filter)
-    };
-    const method = this.config.ruleNameConfig.ajaxType;
-    const loadData = await this._load(url, params, this.config.ruleNameConfig.ajaxType);
-    if (loadData.isSuccess) {
-      let data;
-      if (method === 'proc') {
-        data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
-        this.rulenameList = data;
-      } else {
-        data = loadData.data;  // data 是数组
-        if (data) {
-          this.rulenameList = data;
-        } else {
-          this.rulenameList = [];
-        }
-      }
-    } else {
-      this.rulenameList = [];
-    }
-  }
-
-  /**
-   * getChartName 获取图表的名称
-   */
-  public async getChartName() {
-    const url = this._buildURL(this.config.ChartNameConfig.url);
-    const params = {
-      ...this._buildParameters(this.config.ChartNameConfig.params),
-      ...this._buildFilter(this.config.ChartNameConfig.filter)
-    };
-    const method = this.config.ChartNameConfig.ajaxType;
-    const loadData = await this._load(url, params, this.config.ChartNameConfig.ajaxType);
-    if (loadData.isSuccess) {
-      if (method === 'proc') {
-        return loadData.data.dataSet1
-      } else {
-        return loadData.data
-      }
-    } else {
-      return;
-    }
-  }
-
-  /**
-   * loadGroupName 读取分组的名称
-   */
-  public async loadGroupName() {
-    const url = this._buildURL(this.config.itemConfig.url);
-    const params = {
-      ...this._buildParameters(this.config.itemConfig.params),
-      ...this._buildFilter(this.config.itemConfig.filter)
-    };
-    const method = this.config.itemConfig.ajaxType;
-    const loadData = await this._load(url, params, this.config.itemConfig.ajaxType);
-    if (loadData.isSuccess) {
-      if (method === 'proc') {
-        return loadData.data.dataSet1
-      } else {
-        return loadData.data
-      }
-    } else {
-      return;
     }
   }
 
@@ -1307,7 +800,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         let minValue = 50000;
         let maxObj = null;
         let minObj = null;
-        // const length = this.dataList.length > this.showDataLength ? this.showDataLength : this.dataList.length
         const length = this.dataList.length;
         for (let i = 0; i < length; i++) {
           // 日期转时间戳进行比较
@@ -1335,7 +827,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         let minValue = 50000;
         let maxObj = null;
         let minObj = null;
-        const length = this.dataList.length > this.showDataLength ? this.showDataLength : this.dataList.length
+        const length = this.dataList.length > this.datalength ? this.datalength : this.dataList.length
         for (let i = 0; i < length; i++) {
           const d = this.dataList[i];
           if (d[this.config.groupName] === e) {
@@ -1363,7 +855,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         let minValue = 50000;
         let maxObj = null;
         let minObj = null;
-        const length = this.dataList.length > this.showDataLength ? this.showDataLength : this.dataList.length
+        const length = this.dataList.length > this.datalength ? this.datalength : this.dataList.length
         for (let i = 0; i < length - 1; i++) {
           const d = this.dataList[i];
           if (d[this.config.y.name] >= maxValue) {
@@ -1384,7 +876,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         let minValue = 50000;
         let maxObj = null;
         let minObj = null;
-        const length = this.dataList.length > this.showDataLength ? this.showDataLength : this.dataList.length
+        const length = this.dataList.length > this.datalength ? this.datalength : this.dataList.length
         for (let i = 0; i < length - 1; i++) {
           const d = this.dataList[i];
           if (d[this.config.groupName] === e) {
@@ -1512,7 +1004,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
           for (let i = 0; i < this.dataList.length; i++) {
             for (let j = 0; j < group.length; j++) {
               if (!group.includes(this.dataList[i][this.config.groupName])) {
-                // if (this.dataList[i][this.config.groupName] !== group[group.length - 1]) {
                 group.push(this.dataList[i][this.config.groupName]);
               }
             }
@@ -1651,10 +1142,10 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     // 动态的辅助线
     if (this.config.guideConfig) {
       // 解析相关字段
-      const maxvalue = this.config.guide.maxvalue;
-      const minvalue = this.config.guide.minvalue;
-      const starttime = this.config.guide.start;
-      const endtime = this.config.guide.end;
+      const maxvalue = this.maxValue;
+      const minvalue = this.minValue;
+      const starttime = this.start;
+      const endtime = this.end;
       const type = this.config.guide.type;
       // 辅助线展示的起始
       let lineStartTime;
@@ -1811,7 +1302,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
             }
           });
         } else if (this.config.guideConfig.guideType === 'circle') {
-          // this.chart.point().position(this.config.x.name + '*' + 'value').color('city').shape('overGuide');
         }
       }
     }
@@ -1828,7 +1318,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   }
 
   // 对点，线的样式进行自定义
-  public writePointStyle() {
+  public registerPointStyle() {
     this.Shape = G2.Shape;
     const that = this;
     const lineguide = this.showguide;
@@ -1841,6 +1331,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
             x: cfg.x,
             y: cfg.y
           };
+          let condition = 0; // 判断规则值数组和数据源的条件关系
           const guideColor = that.config.guideConfig.pointColor ? that.config.guideConfig.pointColor : '#DC143C'
           if (that.config.guideConfig.guideType !== 'line') {
             if (data.city === that.config.y.name) {
@@ -1848,65 +1339,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
                 if (e[that.config.y.name] > e[that.test[1]] || e[that.config.y.name] < e[that.test[0]]) {
                   const search = that.showdata.find(s => s.Id === e.Id);
                   if (data.Id === search.Id) {
-                    const decorator1 = container.addShape('circle', {
-                      attrs: {
-                        x: point.x,
-                        y: point.y,
-                        r: 10,
-                        fill: guideColor,
-                        opacity: 0.5
-                      }
-                    });
-                    const decorator2 = container.addShape('circle', {
-                      attrs: {
-                        x: point.x,
-                        y: point.y,
-                        r: 10,
-                        fill: guideColor,
-                        opacity: 0.5
-                      }
-                    });
-                    const decorator3 = container.addShape('circle', {
-                      attrs: {
-                        x: point.x,
-                        y: point.y,
-                        r: 10,
-                        fill: guideColor,
-                        opacity: 0.5
-                      }
-                    });
-                    decorator1.animate({
-                      r: 20,
-                      opacity: 0,
-                      repeat: true
-                    }, 1500, 'easeLinear');
-                    decorator2.animate({
-                      r: 20,
-                      opacity: 0,
-                      repeat: true
-                    }, 1500, 'easeLinear', function () { }, 600);
-                    decorator3.animate({
-                      r: 20,
-                      opacity: 0,
-                      repeat: true
-                    }, 1500, 'easeLinear', function () { }, 1200);
-                    container.addShape('circle', {
-                      attrs: {
-                        x: point.x,
-                        y: point.y,
-                        r: 6,
-                        fill: guideColor,
-                        opacity: 0.7
-                      }
-                    });
-                    container.addShape('circle', {
-                      attrs: {
-                        x: point.x,
-                        y: point.y,
-                        r: 1.5,
-                        fill: guideColor
-                      }
-                    });
+                    condition = 1;
                   }
                 }
               });
@@ -1922,71 +1355,16 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
                     if (e[that.config.y.name] > t[that.config.guide.maxvalue] || e[that.config.y.name] < t[that.config.guide.minvalue]) {
                       const search = that.showdata.find(s => s.Id === e.Id);
                       if (data.Id === search.Id) {
-                        const decorator1 = container.addShape('circle', {
-                          attrs: {
-                            x: point.x,
-                            y: point.y,
-                            r: 10,
-                            fill: guideColor,
-                            opacity: 0.5
-                          }
-                        });
-                        const decorator2 = container.addShape('circle', {
-                          attrs: {
-                            x: point.x,
-                            y: point.y,
-                            r: 10,
-                            fill: guideColor,
-                            opacity: 0.5
-                          }
-                        });
-                        const decorator3 = container.addShape('circle', {
-                          attrs: {
-                            x: point.x,
-                            y: point.y,
-                            r: 10,
-                            fill: guideColor,
-                            opacity: 0.5
-                          }
-                        });
-                        decorator1.animate({
-                          r: 20,
-                          opacity: 0,
-                          repeat: true
-                        }, 1800, 'easeLinear');
-                        decorator2.animate({
-                          r: 20,
-                          opacity: 0,
-                          repeat: true
-                        }, 1800, 'easeLinear', function () { }, 600);
-                        decorator3.animate({
-                          r: 20,
-                          opacity: 0,
-                          repeat: true
-                        }, 1800, 'easeLinear', function () { }, 1200);
-                        container.addShape('circle', {
-                          attrs: {
-                            x: point.x,
-                            y: point.y,
-                            r: 6,
-                            fill: guideColor,
-                            opacity: 0.7
-                          }
-                        });
-                        container.addShape('circle', {
-                          attrs: {
-                            x: point.x,
-                            y: point.y,
-                            r: 1.5,
-                            fill: guideColor
-                          }
-                        });
+                        condition = 1;
                       }
                     }
                   }
                 }
               })
             });
+          }
+          if (condition === 1) {
+            that.writePointStyle(container, point, guideColor);
           }
         }
       });
@@ -2002,6 +1380,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
               x: cfg.x,
               y: cfg.y
             };
+            let condition = 0; // 判断规则值数组和数据源的条件关系
             let y1max;
             that.stageRuleDatalist.forEach(r => {
               if (r.filed === that.config.y1.name) {
@@ -2014,69 +1393,14 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
                 if (e[that.config.y1.name] > y1max) {
                   const search = that.showdata.find(s => s.Id === e.Id);
                   if (data.Id === search.Id) {
-                    const decorator1 = container.addShape('circle', {
-                      attrs: {
-                        x: point.x,
-                        y: point.y,
-                        r: 10,
-                        fill: y1Color,
-                        opacity: 0.5
-                      }
-                    });
-                    const decorator2 = container.addShape('circle', {
-                      attrs: {
-                        x: point.x,
-                        y: point.y,
-                        r: 10,
-                        fill: y1Color,
-                        opacity: 0.5
-                      }
-                    });
-                    const decorator3 = container.addShape('circle', {
-                      attrs: {
-                        x: point.x,
-                        y: point.y,
-                        r: 10,
-                        fill: y1Color,
-                        opacity: 0.5
-                      }
-                    });
-                    decorator1.animate({
-                      r: 20,
-                      opacity: 0,
-                      repeat: true
-                    }, 1800, 'easeLinear');
-                    decorator2.animate({
-                      r: 20,
-                      opacity: 0,
-                      repeat: true
-                    }, 1800, 'easeLinear', function () { }, 600);
-                    decorator3.animate({
-                      r: 20,
-                      opacity: 0,
-                      repeat: true
-                    }, 1800, 'easeLinear', function () { }, 1200);
-                    container.addShape('circle', {
-                      attrs: {
-                        x: point.x,
-                        y: point.y,
-                        r: 6,
-                        fill: y1Color,
-                        opacity: 0.7
-                      }
-                    });
-                    container.addShape('circle', {
-                      attrs: {
-                        x: point.x,
-                        y: point.y,
-                        r: 1.5,
-                        fill: y1Color
-                      }
-                    });
+                    condition = 1
                   }
                 }
               }
             });
+            if (condition === 1) {
+              that.writePointStyle(container, point, y1Color);
+            }
           }
         });
       }
@@ -2091,142 +1415,93 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
             x: cfg.x,
             y: cfg.y
           };
+          let condition = 0; // 判断规则值数组和数据源的条件关系
           if (that.config.ruleConfig.rule) {
             const ruleColor = that.config.ruleConfig.pointColor ? that.config.ruleConfig.pointColor : '#008000'
             for (let i = 0; i < that.ruledataList.length; i++) {
               if (data['stage'] === that.ruledataList[i]['stage']
                 && data['number'] === that.ruledataList[i]['number']) {
                 if (data[that.config.y.name] !== that.ruledataList[i][that.config.ruleConfig.y]) {
-                  const decorator1 = container.addShape('circle', {
-                    attrs: {
-                      x: point.x,
-                      y: point.y,
-                      r: 10,
-                      fill: ruleColor,
-                      opacity: 0.5
-                    }
-                  });
-                  const decorator2 = container.addShape('circle', {
-                    attrs: {
-                      x: point.x,
-                      y: point.y,
-                      r: 10,
-                      fill: ruleColor,
-                      opacity: 0.5
-                    }
-                  });
-                  const decorator3 = container.addShape('circle', {
-                    attrs: {
-                      x: point.x,
-                      y: point.y,
-                      r: 10,
-                      fill: ruleColor,
-                      opacity: 0.5
-                    }
-                  });
-                  decorator1.animate({
-                    r: 20,
-                    opacity: 0,
-                    repeat: true
-                  }, 1800, 'easeLinear');
-                  decorator2.animate({
-                    r: 20,
-                    opacity: 0,
-                    repeat: true
-                  }, 1800, 'easeLinear', function () { }, 600);
-                  decorator3.animate({
-                    r: 20,
-                    opacity: 0,
-                    repeat: true
-                  }, 1800, 'easeLinear', function () { }, 1200);
-                  container.addShape('circle', {
-                    attrs: {
-                      x: point.x,
-                      y: point.y,
-                      r: 6,
-                      fill: ruleColor,
-                      opacity: 0.7
-                    }
-                  });
-                  container.addShape('circle', {
-                    attrs: {
-                      x: point.x,
-                      y: point.y,
-                      r: 1.5,
-                      fill: ruleColor
-                    }
-                  });
+                  condition = 1;
                 }
               } else if ((data['stage'] === that.ruledataList[i]['stage']
                 && !that.ruledataList.find(r => r['number'] === data['number'])) || !data['stage']) {
                 if (data[that.config.y.name] !== that.ruledataList[i][that.config.ruleConfig.y]) {
-                  const decorator1 = container.addShape('circle', {
-                    attrs: {
-                      x: point.x,
-                      y: point.y,
-                      r: 10,
-                      fill: ruleColor,
-                      opacity: 0.5
-                    }
-                  });
-                  const decorator2 = container.addShape('circle', {
-                    attrs: {
-                      x: point.x,
-                      y: point.y,
-                      r: 10,
-                      fill: ruleColor,
-                      opacity: 0.5
-                    }
-                  });
-                  const decorator3 = container.addShape('circle', {
-                    attrs: {
-                      x: point.x,
-                      y: point.y,
-                      r: 10,
-                      fill: ruleColor,
-                      opacity: 0.5
-                    }
-                  });
-                  decorator1.animate({
-                    r: 20,
-                    opacity: 0,
-                    repeat: true
-                  }, 1800, 'easeLinear');
-                  decorator2.animate({
-                    r: 20,
-                    opacity: 0,
-                    repeat: true
-                  }, 1800, 'easeLinear', function () { }, 600);
-                  decorator3.animate({
-                    r: 20,
-                    opacity: 0,
-                    repeat: true
-                  }, 1800, 'easeLinear', function () { }, 1200);
-                  container.addShape('circle', {
-                    attrs: {
-                      x: point.x,
-                      y: point.y,
-                      r: 6,
-                      fill: ruleColor,
-                      opacity: 0.7
-                    }
-                  });
-                  container.addShape('circle', {
-                    attrs: {
-                      x: point.x,
-                      y: point.y,
-                      r: 1.5,
-                      fill: ruleColor
-                    }
-                  });
+                  condition = 1;
                 }
                 break;
               }
+            }
+            if (condition === 1) {
+              that.writePointStyle(container, point, ruleColor);
             }
           }
         }
       });
     }
+  }
+
+  // 标记点的方法
+  public writePointStyle(container, point, color) {
+    const decorator1 = container.addShape('circle', {
+      attrs: {
+        x: point.x,
+        y: point.y,
+        r: 10,
+        fill: color,
+        opacity: 0.5
+      }
+    });
+    const decorator2 = container.addShape('circle', {
+      attrs: {
+        x: point.x,
+        y: point.y,
+        r: 10,
+        fill: color,
+        opacity: 0.5
+      }
+    });
+    const decorator3 = container.addShape('circle', {
+      attrs: {
+        x: point.x,
+        y: point.y,
+        r: 10,
+        fill: color,
+        opacity: 0.5
+      }
+    });
+    decorator1.animate({
+      r: 20,
+      opacity: 0,
+      repeat: true
+    }, 1800, 'easeLinear');
+    decorator2.animate({
+      r: 20,
+      opacity: 0,
+      repeat: true
+    }, 1800, 'easeLinear', () => { }, 600);
+    decorator3.animate({
+      r: 20,
+      opacity: 0,
+      repeat: true
+    }, 1800, 'easeLinear', () => { }, 1200);
+    container.addShape('circle', {
+      attrs: {
+        x: point.x,
+        y: point.y,
+        r: 6,
+        fill: color,
+        opacity: 0.7
+      }
+    });
+    container.addShape('circle', {
+      attrs: {
+        x: point.x,
+        y: point.y,
+        r: 1.5,
+        fill: color
+      }
+    });
   }
 
   // 静态数据判断点的阶段，回写阶段时间
@@ -2338,31 +1613,11 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         response,
         this.config.stageRuleConfig.operateConfig,
         () => {
-          // this.sendCascadeMessage(response.data);
-          // // this.cascade.next(
-          // //     new BsnComponentMessage(
-          // //         BSN_COMPONENT_CASCADE_MODES.REFRESH,
-          // //         this.config.viewId
-          // //     )
-          // // );
-          // this.focusIds = this._getFocusIds(
-          //   response.data
-          // );
-          // this.load();
         }
       );
     } else {
       // 没有输出参数，进行默认处理
       this.showAjaxMessage(response, '操作成功', () => {
-        // this.sendCascadeMessage(response.data);
-        // // this.cascade.next(
-        // //     new BsnComponentMessage(
-        // //         BSN_COMPONENT_CASCADE_MODES.REFRESH,
-        // //         this.config.viewId
-        // //     )
-        // // );
-        // this.focusIds = this._getFocusIds(response.data);
-        // this.load();
       }, this.config.stageRuleConfig.operateConfig);
 
 
@@ -2394,7 +1649,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         ? response.data[msg.name].split(':')
         : null;
       const valueObj = response.data ? response.data : null;
-      // const tableObj = response.data[table.name] ? response.data[table.name] : [];
       if (msgObj && msgObj.length > 1) {
         const messageType = msgObj[0];
         let options;
@@ -2420,20 +1674,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
               nzTitle: '提示',
               nzContent: msgObj[1],
               nzOnOk: () => {
-                // 是否继续后续操作，根据返回状态结果
-                // const childrenConfig = ajaxConfig.filter(
-                //     f => f.parentName && f.parentName === c.name
-                // );
-                // //  目前紧支持一次执行一个分之步骤
-                // this._getAjaxConfig(childrenConfig[0], ajaxConfig);
-                // childrenConfig &&
-                //     childrenConfig.map(currentAjax => {
-                //         this.getAjaxConfig(
-                //             currentAjax,
-                //             ajaxConfig,
-                //             callback
-                //         );
-                //     });
               },
               nzOnCancel: () => { }
             };
@@ -2457,33 +1697,8 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
             callback();
             break;
         }
-        // if(options) {
-        //     this.modalService[messageType](options);
-        //
-        //     // 如果成功则执行回调
-        //     if(messageType === 'success') {
-        //         callback && callback();
-        //     }
-        // }
       }
-      // if(options) {
-      //     this.baseMessage[messageType](options);
-      //
-      //     // 如果成功则执行回调
-      //     if(messageType === 'success') {
-      //         callback && callback();
-      //     }
-      // }
       if (valueObj) {
-        // this.returnValue = valueObj;
-        // const childrenConfig = ajaxConfig.filter(
-        //     f => f.parentName && f.parentName === c.name
-        // );
-        // //  目前紧支持一次执行一个分之步骤
-        // if (childrenConfig && childrenConfig.length > 0) {
-        //     this._getAjaxConfig(childrenConfig[0], ajaxConfig);
-        // }
-
       }
 
     } else if (response.isSuccess && Array.isArray(response.data)) {
@@ -2605,41 +1820,6 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   }
 
   /**
-   * showToolTip 展示分组峰谷值的提示框
-   */
-  public showToolTip() {
-    const that = this
-    this.chart.tooltip({
-      follow: false,
-      crosshairs: 'y',
-      htmlContent: function htmlContent(title, items) {
-        let alias = {};
-        if (that.config.itemName) {
-          for (let i = 0; i < that.config.itemName.length; i++) {
-            alias[that.config.itemName[i]] = that.config.itemName[i];
-          };
-        }
-        let html = '<div class="custom-tooltip">';
-        for (let i = 0; i < items.length; i++) {
-          const item = items[i];
-          const color = item.color;
-          const max = that.findMax(item.name);
-          const min = that.findMin(item.name);
-          const name = alias[item.name];
-          const domHead = '<div class="custom-tooltip-item" style="border-left-color:' + color + '">';
-          const domMax = '<div class="custom-tooltip-item-max">' + name + '的峰值' + '</div>';
-          const domMaxValue = '<div class="custom-tooltip-item-maxvalue">' + max[that.config.y.name] + '</div>';
-          const domMin = '<div class="custom-tooltip-item-min">' + name + '的谷值' + '</div>';
-          const domMinValue = '<div class="custom-tooltip-item-minvalue">' + min[that.config.y.name] + '</div>';
-          const domTail = '</div>';
-          html += domHead + domMax + domMaxValue + domMin + domMinValue + domTail;
-        }
-        return html + '</div>';
-      }
-    });
-  }
-
-  /**
    * getGroupPeakValue 获取分组峰谷值
    */
   public async getGroupPeakValue() {
@@ -2652,5 +1832,136 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       this.groupMax.push(this.findMax(this.itemName[i][this.config.groupName])[this.config.y.name]);
       this.groupMin.push(this.findMin(this.itemName[i][this.config.groupName])[this.config.y.name]);
     }
+  }
+
+  /**
+   * loadData
+   */
+  public async loadData(config) {
+    const url = this._buildURL(config.url);
+    const params = {
+      ...this._buildParameters(config.params),
+      ...this._buildFilter(config.filter)
+    };
+    const method = config.ajaxType;
+    const loadData = await this._load(url, params, method);
+    if (loadData.isSuccess) {
+      let data;
+      if (method === 'proc') {
+        data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
+      } else {
+        data = loadData.data ? loadData.data : [];
+      }
+      return data;
+    } else {
+      return;
+    }
+  }
+
+  /**
+   * sourceModify 数据源根据配置展示一部分
+   */
+  public sourceModify(length) {
+    if (this.datalength) {
+      if (this.dataList.length > length) {
+        for (let i = 0; i < length; i++) {
+          this.showdata.push(this.dataList[i]);
+        }
+      } else {
+        this.showdata = this.dataList;
+      }
+    } else {
+      if (this.config.refreshTime) {
+        const startTime = this.transStringTime(this.dataList[0][this.config.x.name]);
+        const endTime = startTime + this.config.refreshTime;
+        this.showdata = this.dataList.filter(e => this.transStringTime(e[this.config.x.name]) >= startTime && this.transStringTime(e[this.config.x.name]) <= endTime);
+        this.showdata = JSON.parse(JSON.stringify(this.showdata));
+      }
+    }
+  }
+
+  /**
+   * axisInit 坐标轴初始化
+   */
+  public axisInit() {
+    if (this.config.x.scale) {
+      this.chart.scale(this.x, this.config.x.scale);
+    }
+    if (this.config.x.axis) {
+      this.chart.axis(this.x, this.config.x.axis);
+      // if (this.config.formatConfig && this.config.formatConfig.x) {
+      this.axisFormatter(this.x, this.config.x.axis);
+      // }
+    }
+    if (this.config.y.scale) {
+      this.chart.scale(this.y, this.config.y.scale);
+    }
+    if (this.config.y.axis) {
+      this.chart.axis(this.y, this.config.y.axis);
+      // if (this.config.formatConfig && this.config.formatConfig.y) {
+      //   this.axisFormatter(this.y, this.config.y.axis);
+      // }
+    }
+    if (this.y1) {
+      if (this.config.y1.scale) {
+        this.chart.scale(this.y1, this.config.y1.scale);
+      }
+      if (this.config.y1.axis) {
+        this.chart.axis(this.y1, this.config.y1.axis);
+        // if (this.config.formatConfig && this.config.formatConfig.y1) {
+        //   this.axisFormatter(this.y1, this.config.y1.axis);
+        // }
+      }
+    }
+  }
+
+  /**
+   * axisFormatter 坐标轴自定义初始化
+   */
+  public axisFormatter(axis, axisConfig) {
+    const that = this;
+    let format;
+    if (axis === this.x) {
+      format = {
+        label: {
+          formatter: val => {
+            let xformat;
+            this.stageCurrentDatalist.forEach(s => {
+              if (s[that.start]) {
+                if (s[that.end]) {
+                  if (this.transStringTime(val) >= this.transStringTime(s[that.start]) && this.transStringTime(val) < this.transStringTime(s[that.end])) {
+                    xformat = s['STAGE']
+                  }
+                } else {
+                  if (this.transStringTime(val) >= this.transStringTime(s[that.start])) {
+                    xformat = s['STAGE']
+                  }
+                }
+              }
+            });
+            if (!xformat) {
+              // xformat = 1;
+              return val;
+            } else {
+              let stageName;
+              if (this.rulenameList.length > 0) {
+                this.rulenameList.forEach(e => {
+                  if (e['STAGE'] === xformat) {
+                    stageName = e['SHOW_NAME'];
+                  }
+                })
+              }
+              if (stageName) {
+                return val + '  ' + stageName + '阶段';
+              } else {
+                return val + '  ' + '第' + xformat + '阶段'; // 格式化坐标轴显示文本
+              }
+            }
+          },
+        }
+      }
+    }
+    axisConfig = { ...axisConfig, ...format }
+    this.chart.axis(axis, axisConfig);
   }
 }

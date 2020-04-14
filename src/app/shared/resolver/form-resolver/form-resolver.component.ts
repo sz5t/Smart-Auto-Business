@@ -197,7 +197,7 @@ export class FormResolverComponent extends CnFormBase
 
     // region: 解析消息
     private resolverRelation() {
-        this.config;
+        // this.config;
         // 注册按钮状态触发接收器
         this.statusSubscriptions = this.stateEvents.subscribe(updateState => {
             if (updateState._viewId === this.config.viewId) {
@@ -634,7 +634,7 @@ export class FormResolverComponent extends CnFormBase
         })
     }
 
-    public sendCascadeMessage(returnValue?: any) {
+    public sendCascadeMessage(dialog?, returnValue?: any) {
         // 发送消息 刷新其他界面
         if (
             this.config.componentType &&
@@ -685,6 +685,14 @@ export class FormResolverComponent extends CnFormBase
                         case 'delete':
                             mode = BSN_COMPONENT_CASCADE_MODES.DELETE_ASYNC_TREE_NODE;
                             paramData = { _del_ids: r_val.ids.join(',') };
+                            break;
+                        case 'simple':
+                            mode = BSN_COMPONENT_CASCADE_MODES.DELETE_ASYNC_TREE_NODE;
+                            if (!r_val.ids.length) {
+                                paramData = r_val.ids['curId'];
+                            } else {
+                                paramData = { _del_ids: r_val.ids.join(',') };
+                            }
                             break;
                     }
                     this.cascade.next(

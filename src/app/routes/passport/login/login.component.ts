@@ -70,8 +70,8 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         this.tokenService.clear();
         this.cacheService.clear();
         this.menuService.clear();
-        this.titleService.setTitle('SmartOne');
-        this.cacheService.set('AppName', 'SmartOne');
+        this.titleService.setTitle('SmartOne22222222');
+        // this.cacheService.set('AppName', 'SmartOne');
     }
     // region: fields
 
@@ -90,15 +90,15 @@ export class UserLoginComponent implements OnInit, OnDestroy {
 
     // endregion
 
-    public switchLogin(ret: any) {
-        this.type = ret.index;
-        if (ret.index === 0) {
-            this.titleService.setTitle('SmartOne配置平台');
-        } else {
-            this.titleService.setTitle('质量数据包管理系统');
-            this.cacheService.set('AppName', 'SmartOne');
-        }
-    }
+    // public switchLogin(ret: any) {
+    //     this.type = ret.index;
+    //     if (ret.index === 0) {
+    //         this.titleService.setTitle('SmartOne配置平台');
+    //     } else {
+    //         this.titleService.setTitle('质量数据包管理系统');
+    //         this.cacheService.set('AppName', 'SmartOne');
+    //     }
+    // }
 
     public submit() {
         this.error = '';

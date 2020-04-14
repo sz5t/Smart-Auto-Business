@@ -43,6 +43,7 @@ import { BsnTagComponent } from '@shared/business/bsn-tag/bsn-tag.component';
 import { BsnChartComponent } from '@shared/business/bsn-chart/bsn-chart.component';
 import { BsnNewTreeTableComponent } from '@shared/business/bsn-new-tree-table/bsn-new-tree-table.component';
 import { BsnInlineCardSwipeComponent } from '@shared/business/bsn-inline-card-swipe/bsn-inline-card-swipe.component';
+import { BsnTimeAxisChartComponent } from '@shared/business/bsn-time-axis-chart/bsn-time-axis-chart.component';
 const components: { [type: string]: Type<any> } = {
     code_edit: CnCodeEditComponent,
     bsnTable: BsnTableComponent,
@@ -68,6 +69,7 @@ const components: { [type: string]: Type<any> } = {
     tsTable: TsDataTableComponent,
     bsnTag: BsnTagComponent,
     bsnChart: BsnChartComponent,
+    bsnTimeChart: BsnTimeAxisChartComponent,
     bsnGantt: BsnGanttComponent,
     bsnImportExcel: BsnImportExcelComponent,
     bsnNewTreeTable: BsnNewTreeTableComponent,

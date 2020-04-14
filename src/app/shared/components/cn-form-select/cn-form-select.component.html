@@ -3,7 +3,7 @@
 </nz-form-label>
 <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
     <nz-select formControlName="{{config.name}}" (ngModelChange)="valueChange($event)" [nzSize]="config.size" [(ngModel)]="value"
-        [nzMode]="config.multiple" [nzPlaceHolder]="config.placeholder" [nzAllowClear] = "_clear">
+        [nzMode]="config.multiple" [nzPlaceHolder]="config.placeholder" [nzShowSearch]='config.showSearch' [nzAllowClear] = "_clear">
         <nz-option *ngFor="let option of _options" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
     </nz-select>
 </nz-form-control>

@@ -165,145 +165,308 @@ export class BsnTableComponent extends CnComponentBase
         this.cacheValue = this.cacheService;
         this.cascadeBase = this.cascade;
     }
+    public loadData = {
+        rows: [],
+        total: 0
+    };
 
     public ngOnInit() {
-        this.tempValue['moduleName'] = this._router.snapshot.params['name'] ? this._router.snapshot.params['name'] : '';
-        if (this.config.checkedConfig) {
-            if (this.config.checkedConfig.width) {
-                this.checkedWidth = this.config.checkedConfig.width;
-            }
-        }
-        if (this.config.select) {
-            this.config.select.forEach(selectItem => {
-                this.config.columns.forEach(columnItem => {
-                    if (columnItem.editor) {
-                        if (columnItem.editor.field === selectItem.name) {
-                            // if (selectItem.type === 'selectGrid') {
-                            columnItem.editor.options['select'] =
-                                selectItem.config;
-                            // }
-                        }
-                    }
-                });
-            });
-        }
+        this.showprocdata();
+    }
 
-        if (this.casadeData) {
-            for (const key in this.casadeData) {
-                // 临时变量的整理
-                if (key === 'cascadeValue') {
-                    for (const casekey in this.casadeData['cascadeValue']) {
-                        if (
-                            this.casadeData['cascadeValue'].hasOwnProperty(
-                                casekey
-                            )
-                        ) {
-                            this.cascadeValue[casekey] = this.casadeData[
-                                'cascadeValue'
-                            ][casekey];
-                        }
-                    }
-                }
-            }
-        }
-        // 当前作为子组件出现 临时变量值
-        if (this.bsnData) {
-            for (const key in this.bsnData) {
-                if (this.bsnData.hasOwnProperty(key)) {
-                    this.tempValue[key] = this.bsnData[key];
-                }
-            }
-        }
-
-        this.resolverRelation();
+    public async showprocdata() {
         if (this.initData) {
             this.initValue = this.initData;
         }
-        if (this.ref) {
-            for (const p in this.ref) {
-                this.tempValue[p] = this.ref[p];
-            }
-        }
-        if (this.config.dataSet) {
-            (async () => {
-                for (
-                    let i = 0, len = this.config.dataSet.length;
-                    i < len;
-                    i++
-                ) {
-                    const url = this._buildURL(
-                        this.config.dataSet[i].ajaxConfig.url
-                    );
-                    const params = this._buildParameters(
-                        this.config.dataSet[i].ajaxConfig.params
-                    );
-                    const data = await this.get(url, params);
-                    if (data.isSuccess) {
-                        if (this.config.dataSet[i].fields) {
-                            const dataSetObjs = [];
-                            data.data.map(d => {
-                                const setObj = {};
-                                this.config.dataSet[i].fields.forEach(
-                                    (fieldItem, index) => {
-                                        if (d[fieldItem.field]) {
-                                            setObj[fieldItem.name] =
-                                                d[fieldItem.field];
-                                        }
-                                    }
-                                );
-                                dataSetObjs.push(setObj);
-                            });
-                            this.dataSet[
-                                this.config.dataSet[i].name
-                            ] = dataSetObjs;
-                        } else {
-                            this.dataSet[this.config.dataSet[i].name] =
-                                data.data;
+
+        if (this.config.ajaxproc) {
+            const url = this._buildURL(this.config.ajaxConfig.url);
+            const params = {
+                ...this._buildParameters(this.config.ajaxConfig.params),
+                // ...this._buildPaging(),
+                ...this._buildFilter(this.config.ajaxConfig.filter),
+                ...this._buildSort(),
+                ...this._buildColumnFilter(),
+                ...this._buildFocusId(),
+                ...this._buildSearch()
+            };
+
+            const aloadData = await this._load(url, params, 'proc');
+            if (aloadData && aloadData.status === 200 && aloadData.isSuccess) {
+                this.loadData.rows = aloadData.data.dataSet1;
+                const keyIdCode = this.config.keyId ? this.config.keyId : 'Id';
+                const length = aloadData.data.dataSet1.length
+                for (let i = 0; i < length; i++) {
+                    this.loadData.rows[i]['_serilize'] = i + 1;
+                    aloadData.data.dataSet1[i]['key'] = aloadData.data.dataSet1[i][keyIdCode]
+                }
+                this.loadData.total = this.loadData.rows.length;
+                this.total = this.loadData.total;
+                // console.log('this.loadData:', this.loadData);
+                if (this.config.select) {
+                    this.config.select.forEach(selectItem => {
+                        this.config.columns.forEach(columnItem => {
+                            if (columnItem.editor) {
+                                if (columnItem.editor.field === selectItem.name) {
+                                    // if (selectItem.type === 'selectGrid') {
+                                    columnItem.editor.options['select'] =
+                                        selectItem.config;
+                                    // }
+                                }
+                            }
+                        });
+                    });
+                }
+
+                if (this.casadeData) {
+                    for (const key in this.casadeData) {
+                        // 临时变量的整理
+                        if (key === 'cascadeValue') {
+                            for (const casekey in this.casadeData['cascadeValue']) {
+                                if (
+                                    this.casadeData['cascadeValue'].hasOwnProperty(
+                                        casekey
+                                    )
+                                ) {
+                                    this.cascadeValue[casekey] = this.casadeData[
+                                        'cascadeValue'
+                                    ][casekey];
+                                }
+                            }
                         }
                     }
                 }
-            })();
-        }
-        // liu 20181022 特殊处理行定位
-        if (this.config.isSelectGrid) {
-            this.is_Selectgrid = false;
-        }
-        if (this.config.selectGridValueName) {
-            this.selectGridValueName = this.config.selectGridValueName;
-        }
+                // 当前作为子组件出现 临时变量值
+                if (this.bsnData) {
+                    for (const key in this.bsnData) {
+                        if (this.bsnData.hasOwnProperty(key)) {
+                            this.tempValue[key] = this.bsnData[key];
+                        }
+                    }
+                }
+                // liu 测试动态表格
+                if (this.config.columnsAjax) {
+                    // await this.loadDynamicColumns();
+                }
 
-        this.pageSize = this.config.pageSize
-            ? this.config.pageSize
-            : this.pageSize;
+                this.resolverRelation();
+                if (this.initData) {
+                    this.initValue = this.initData;
+                }
+                if (this.ref) {
+                    for (const p in this.ref) {
+                        this.tempValue[p] = this.ref[p];
+                    }
+                }
+                if (this.cacheService) {
+                    this.cacheValue = this.cacheService;
+                }
+                if (this.config.dataSet) {
+                    (async () => {
+                        for (
+                            let i = 0, len = this.config.dataSet.length;
+                            i < len;
+                            i++
+                        ) {
+                            const urlset = this._buildURL(
+                                this.config.dataSet[i].ajaxConfig.url
+                            );
+                            const paramsset = this._buildParameters(
+                                this.config.dataSet[i].ajaxConfig.params
+                            );
+                            const data = await this.get(urlset, paramsset);
+                            if (data.isSuccess) {
+                                if (this.config.dataSet[i].fields) {
+                                    const dataSetObjs = [];
+                                    data.data.map(d => {
+                                        const setObj = {};
+                                        this.config.dataSet[i].fields.forEach(
+                                            (fieldItem, index) => {
+                                                if (d[fieldItem.field]) {
+                                                    setObj[fieldItem.name] =
+                                                        d[fieldItem.field];
+                                                }
+                                            }
+                                        );
+                                        dataSetObjs.push(setObj);
+                                    });
+                                    this.dataSet[
+                                        this.config.dataSet[i].name
+                                    ] = dataSetObjs;
+                                } else {
+                                    this.dataSet[this.config.dataSet[i].name] =
+                                        data.data;
+                                }
+                            }
+                        }
+                    })();
+                }
+                // liu 20181022 特殊处理行定位
+                if (this.config.isSelectGrid) {
+                    this.is_Selectgrid = false;
+                }
+                if (this.config.selectGridValueName) {
+                    this.selectGridValueName = this.config.selectGridValueName;
+                }
+
+                this.pageSize = this.config.pageSize
+                    ? this.config.pageSize
+                    : this.pageSize;
+                if (this.config.componentType) {
+                    if (!this.config.componentType.child) {
+                        this.loadbypage();
+                    } else if (this.config.componentType.own === true) {
+                        this.loadbypage();
+                    }
+                } else {
+                    this.loadbypage();
+                }
+
+                // 初始化级联
+                this.caseLoad();
+            }
+        } else {
+            this.tempValue['moduleName'] = this._router.snapshot.params['name'] ? this._router.snapshot.params['name'] : '';
+            if (this.config.checkedConfig) {
+                if (this.config.checkedConfig.width) {
+                    this.checkedWidth = this.config.checkedConfig.width;
+                }
+            }
+            if (this.config.select) {
+                this.config.select.forEach(selectItem => {
+                    this.config.columns.forEach(columnItem => {
+                        if (columnItem.editor) {
+                            if (columnItem.editor.field === selectItem.name) {
+                                // if (selectItem.type === 'selectGrid') {
+                                columnItem.editor.options['select'] =
+                                    selectItem.config;
+                                // }
+                            }
+                        }
+                    });
+                });
+            }
+
+            if (this.casadeData) {
+                for (const key in this.casadeData) {
+                    // 临时变量的整理
+                    if (key === 'cascadeValue') {
+                        for (const casekey in this.casadeData['cascadeValue']) {
+                            if (
+                                this.casadeData['cascadeValue'].hasOwnProperty(
+                                    casekey
+                                )
+                            ) {
+                                this.cascadeValue[casekey] = this.casadeData[
+                                    'cascadeValue'
+                                ][casekey];
+                            }
+                        }
+                    }
+                }
+            }
+            // 当前作为子组件出现 临时变量值
+            if (this.bsnData) {
+                for (const key in this.bsnData) {
+                    if (this.bsnData.hasOwnProperty(key)) {
+                        this.tempValue[key] = this.bsnData[key];
+                    }
+                }
+            }
+
+            this.resolverRelation();
+            if (this.initData) {
+                this.initValue = this.initData;
+            }
+            if (this.ref) {
+                for (const p in this.ref) {
+                    this.tempValue[p] = this.ref[p];
+                }
+            }
+            if (this.config.dataSet) {
+                (async () => {
+                    for (
+                        let i = 0, len = this.config.dataSet.length;
+                        i < len;
+                        i++
+                    ) {
+                        const url = this._buildURL(
+                            this.config.dataSet[i].ajaxConfig.url
+                        );
+                        const params = this._buildParameters(
+                            this.config.dataSet[i].ajaxConfig.params
+                        );
+                        const data = await this.get(url, params);
+                        if (data.isSuccess) {
+                            if (this.config.dataSet[i].fields) {
+                                const dataSetObjs = [];
+                                data.data.map(d => {
+                                    const setObj = {};
+                                    this.config.dataSet[i].fields.forEach(
+                                        (fieldItem, index) => {
+                                            if (d[fieldItem.field]) {
+                                                setObj[fieldItem.name] =
+                                                    d[fieldItem.field];
+                                            }
+                                        }
+                                    );
+                                    dataSetObjs.push(setObj);
+                                });
+                                this.dataSet[
+                                    this.config.dataSet[i].name
+                                ] = dataSetObjs;
+                            } else {
+                                this.dataSet[this.config.dataSet[i].name] =
+                                    data.data;
+                            }
+                        }
+                    }
+                })();
+            }
+            // liu 20181022 特殊处理行定位
+            if (this.config.isSelectGrid) {
+                this.is_Selectgrid = false;
+            }
+            if (this.config.selectGridValueName) {
+                this.selectGridValueName = this.config.selectGridValueName;
+            }
+
+            this.pageSize = this.config.pageSize
+                ? this.config.pageSize
+                : this.pageSize;
+
+        }
     }
 
     public ngAfterViewInit() {
-        if (this.config.componentType) {
-            if (!this.config.componentType.child) {
-                this.load();
-            } else if (this.config.componentType.own === true) {
+        if (!this.config.ajaxproc) {
+            if (this.config.componentType) {
+                if (!this.config.componentType.child) {
+                    this.load();
+                } else if (this.config.componentType.own === true) {
+                    this.load();
+                }
+            } else {
                 this.load();
             }
-        } else {
-            this.load();
+            if (this.config.autoLoad) {
+                this.autoLoadData();
+            }
+            // 初始化级联
+            this.caseLoad();
+            // 初始化前置条件验证对象
+            this.beforeOperation = new BeforeOperation({
+                config: this.config,
+                message: this.baseMessage,
+                modal: this.baseModal,
+                tempValue: this.tempValue,
+                initValue: this.initValue,
+                cacheValue: this.cacheValue.getNone('userInfo')
+                    ? this.cacheValue.getNone('userInfo')
+                    : {},
+                apiResource: this.apiResource
+            });
         }
-        if (this.config.autoLoad) {
-            this.autoLoadData();
-        }
-        // 初始化级联
-        this.caseLoad();
-        // 初始化前置条件验证对象
-        this.beforeOperation = new BeforeOperation({
-            config: this.config,
-            message: this.baseMessage,
-            modal: this.baseModal,
-            tempValue: this.tempValue,
-            initValue: this.initValue,
-            cacheValue: this.cacheValue.getNone('userInfo')
-                ? this.cacheValue.getNone('userInfo')
-                : {},
-            apiResource: this.apiResource
-        });
     }
     private resolverRelation() {
         // 注册按钮状态触发接收器
@@ -557,6 +720,44 @@ export class BsnTableComponent extends CnComponentBase
             )
         );
     }
+
+    public pageIndexPlan() {
+        if (this.pageIndex > 1) {
+            const p_pindex = ((this.pageIndex - 1) * this.pageSize);
+            if (this.loadData.total <= p_pindex) {
+                this.pageIndex = this.pageIndex - 1;
+                this.loadbypage();
+            } else {
+                this.loadbypage();
+            }
+        }
+    }
+
+    public loadbypage() {
+        if (typeof this.pageIndex !== 'undefined') {
+            this.pageIndex = this.pageIndex || 1;
+        }
+        // 当前页无数据则退回到上一页
+        if (this.pageIndex > 1) {
+            const p_pindex = ((this.pageIndex - 1) * this.pageSize);
+            if (this.loadData.total <= p_pindex) {
+                this.pageIndex = this.pageIndex - 1;
+                this.pageIndexPlan();
+            }
+        }
+
+        const pagedata = [];
+        let j = 0;
+        for (let i = 0; i < this.pageSize; i++) {
+            j = ((this.pageIndex - 1) * this.pageSize) + i;
+            if (j < this.loadData.total) {
+                pagedata.push(this.loadData.rows[j]);
+            }
+        }
+        this._updateEditCacheByLoad(pagedata);
+        this.dataList = pagedata;
+    }
+
     public load(sd?: boolean) {
         this.changeConfig_new = {};
         // this._selectRow = {};
@@ -1868,7 +2069,7 @@ export class BsnTableComponent extends CnComponentBase
         const footer = [];
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
             const selectedRow = this._selectRow ? this._selectRow : {};
-            const checkedIds = {'checkedIds': this._getCheckItemsId() ? this._getCheckItemsId() : ''};
+            const checkedIds = { 'checkedIds': this._getCheckItemsId() ? this._getCheckItemsId() : '' };
             const tmpValue = this.tempValue ? this.tempValue : {};
             const iniVal = this.initValue ? this.initValue : {};
             tmpValue['moduleName'] = this._router.snapshot.params['name'] ? this._router.snapshot.params['name'] : '';
@@ -1880,7 +2081,7 @@ export class BsnTableComponent extends CnComponentBase
                 nzComponentParams: {
                     permissions: this.permissions,
                     config: data,
-                    initData: { ...iniVal, ...tmpValue, ...selectedRow, ...checkedIds}
+                    initData: { ...iniVal, ...tmpValue, ...selectedRow, ...checkedIds }
                 },
                 nzFooter: footer
             });
@@ -2709,10 +2910,19 @@ export class BsnTableComponent extends CnComponentBase
     }
 
     public searchData(reset: boolean = false) {
-        if (reset) {
+        if (this.config.ajaxproc) {
+            if (reset) {
+                this.pageIndex = 1
+                this.loadbypage();
+            } else {
+                this.loadbypage();
+            }
+        } else if (reset) {
             this.pageIndex = 1;
+            this.load();
+        } else {
+            this.load();
         }
-        this.load(true);
     }
 
     public sort(sort: { key: string; value: string }) {
