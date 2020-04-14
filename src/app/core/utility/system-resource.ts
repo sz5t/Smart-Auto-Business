@@ -103,6 +103,33 @@ export const SystemResource_1 = {
         appSystemServer: '192.168.1.111:8072',
         /**报表  */
         reportServerUrl: '192.168.1.111:8088'
+      },
+      'url_39_101_168_200_8011': {
+        localResourceUrl: '39.101.168.200:8011',
+        /** 后台服务 */
+        settingSystemServer: '39.101.168.200:8010',
+        /** 后台服务 */
+        appSystemServer: '39.101.168.200:8010',
+        /**报表  */
+        reportServerUrl: '39.101.168.200:8012'
+      },
+      'url_39_101_168_200_8021': {
+        localResourceUrl: '39.101.168.200:8021',
+        /** 后台服务 */
+        settingSystemServer: '39.101.168.200:8020',
+        /** 后台服务 */
+        appSystemServer: '39.101.168.200:8020',
+        /**报表  */
+        reportServerUrl: '39.101.168.200:8022'
+      },
+      'url_39_101_168_200_8031': {
+        localResourceUrl: '39.101.168.200:8031',
+        /** 后台服务 */
+        settingSystemServer: '39.101.168.200:8030',
+        /** 后台服务 */
+        appSystemServer: '39.101.168.200:8030',
+        /**报表  */
+        reportServerUrl: '39.101.168.200:8032'
       }
 }
 
