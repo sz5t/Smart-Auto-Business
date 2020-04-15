@@ -70,7 +70,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         this.tokenService.clear();
         this.cacheService.clear();
         this.menuService.clear();
-        this.titleService.setTitle('SmartOne22222222');
+        this.titleService.setTitle(this.titleService.default);
         // this.cacheService.set('AppName', 'SmartOne');
     }
     // region: fields
