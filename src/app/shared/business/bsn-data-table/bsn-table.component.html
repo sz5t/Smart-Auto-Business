@@ -13,20 +13,44 @@
                 [nzIndeterminate]="indeterminate" (nzCheckedChange)="checkAll($event)">
             </th>
             <ng-template ngFor let-col [ngForOf]="config.columns">
-                <th [nzShowSort]="col.showSort" [nzShowFilter]="col.showFilter" *ngIf="!col.hidden"
-                    [nzSortKey]="col.field" [nzWidth]="col.width" [ngClass]="[col.titleAlign ? col.titleAlign : '']">
+                <th [nzShowSort]="col.showSort" [nzShowFilter]="col.showFilter" *ngIf="!col.hidden && !col.left"
+                    [nzSortKey]="col.field" [nzWidth]="col.width?col.width:''"
+                    [ngClass]="[col.titleAlign ? col.titleAlign : '']">
+                    <!--  [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" (nzFilterChange)="columnFilter(col.editor.field, $event)" -->
+                    {{col.title}}
+                </th>
+                <th [nzShowSort]="col.showSort" [nzShowFilter]="col.showFilter" *ngIf="!col.hidden && col.left"
+                    [nzSortKey]="col.field" [nzWidth]="col.width?col.width:''"
+                    [ngClass]="[col.titleAlign ? col.titleAlign : '']" [nzLeft] = 'col.left'>
                     <!--  [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" (nzFilterChange)="columnFilter(col.editor.field, $event)" -->
                     {{col.title}}
                 </th>
             </ng-template>
+            <!-- <th></th> -->
         </tr>
     </thead>
     <tbody>
+        <!-- <tr *ngIf="config.suspension">
+            <th *ngIf="config.showCheckBox"  [ngStyle]="{'width': col.width}">
+            </th>
+            <ng-template ngFor let-col [ngForOf]="config.columns">
+                <th *ngIf="!col.hidden && col.left" [ngStyle]="{'width': col.width, 'padding':'8px', 'border-right': '1px solid #e8e8e8', 'z-index':2}"
+                    [ngClass]="[col.titleAlign ? col.titleAlign : '']" nzLeft="col.left"> -->
+                    <!--  [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" (nzFilterChange)="columnFilter(col.editor.field, $event)" -->
+                    <!-- {{col.title}}
+                </th>
+                <th *ngIf="!col.hidden && !col.left" [ngStyle]="{'width': col.width, 'padding':'8px', 'border-right': '1px solid #e8e8e8'}"
+                    [ngClass]="[col.titleAlign ? col.titleAlign : '']"> -->
+                    <!--  [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" (nzFilterChange)="columnFilter(col.editor.field, $event)" -->
+                    <!-- {{col.title}}
+                </th>
+            </ng-template>
+        </tr> -->
         <ng-template ngFor let-data [ngForOf]="nzTable.data">
             <ng-container *ngIf="data.row_status === 'search'">
                 <tr>
                     <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked"
-                        (nzCheckedChange)="refChecked()">
+                        nzWidth="50px" (nzCheckedChange)="refChecked()">
                     </td>
                     <ng-template ngFor let-col [ngForOf]="config.columns">
                         <td *ngIf="!col.hidden" [ngStyle]="{'width': col.width}">
@@ -59,7 +83,6 @@
                                 </ng-container>
                             </ng-container>
                             <ng-container *ngIf="!col.editor">
-
                                 <ng-container *ngIf="!col.type && col.field !=='_serilize' ">
                                     <cn-grid-search *ngIf="!col.searcheditor && !col.editor"
                                         [searchConfigType]="'default'" [bsnData]="tempValue" [initData]="initData"
@@ -87,7 +110,8 @@
                         (nzCheckedChange)="refChecked($event)">
                     </td>
                     <ng-template ngFor let-col [ngForOf]="config.columns">
-                        <td *ngIf="!col.hidden">
+                        <!-- [ngStyle]="{'width': col.width}" -->
+                        <td *ngIf="!col.hidden && !col.left">
                             <ng-container *ngIf="col.editor">
                                 <span *ngIf="!editCache[data.key]['edit']"
                                     [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter,data):'',col.fieldAlign ? col.fieldAlign : '']">
@@ -131,7 +155,6 @@
                                         </ng-container>
                                     </ng-container>
                                 </ng-container>
-
                             </ng-container>
                             <ng-container *ngIf="!col.editor">
                                 <span *ngIf="!col.showFormat"
@@ -144,9 +167,66 @@
                                     [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.showFormat.field]:''"
                                     (updateValue)="valueChange($event)"> </ng-container>
                             </ng-container>
+                        </td>
+                        <td *ngIf="!col.hidden && col.left" [nzLeft]="col.left">
+                            <ng-container *ngIf="col.editor">
+                                <span *ngIf="!editCache[data.key]['edit']"
+                                    [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter,data):'',col.fieldAlign ? col.fieldAlign : '']">
+                                    <span
+                                        *ngIf="!col.showFormat">{{!col.dataType?data[col.field]:data[col.field] | date}}</span>
+                                    <ng-container [bsnData]="tempValue" [initData]="initData"
+                                        [rowData]="editCache[data.key].data"
+                                        [dataSet]="col.showFormat.options.dataSet?dataSet[col.showFormat.options.dataSet]:null"
+                                        CnGridEditorDirective *ngIf="col.showFormat" [config]="col.showFormat.options"
+                                        [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.showFormat.field],dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
+                                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.showFormat.field]:''"
+                                        (updateValue)="valueChange($event)">
+                                    </ng-container>
+                                </span>
+                                <!-- <ng-container [bsnData]="tempValue" [initData]="initData" [rowData]="editCache[data.key].data" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                                    CnGridEditorDirective *ngIf="editCache[data.key].edit" [config]="col.editor.options" [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field],dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
+                                    [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
+                                    (updateValue)="valueChange($event)">
+                                </ng-container> -->
+                                <ng-container *ngIf="editCache[data.key].edit">
+                                    <ng-container *ngIf="_isArray(col.editor)">
+                                        <!-- <p>调用新的简析方法,将配置简析</p> -->
 
+                                        <cn-grid-edit *ngIf="col.editor" [searchConfigType]="'default'"
+                                            [bsnData]="tempValue" [initData]="initData"
+                                            [rowData]="editCache[data.key].data" [dataSet]="null" [config]="col"
+                                            [value]="{key:data.key,name:col.field,data:null,dataText:null}"
+                                            [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.field]:''"
+                                            (updateValue)="valueChange($event)"></cn-grid-edit>
+
+                                    </ng-container>
+                                    <ng-container *ngIf="!_isArray(col.editor)">
+                                        <ng-container [bsnData]="tempValue" [initData]="initData"
+                                            [rowData]="editCache[data.key].data"
+                                            [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                                            CnGridEditorDirective *ngIf="editCache[data.key].edit"
+                                            [config]="col.editor.options"
+                                            [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field],dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
+                                            [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
+                                            (updateValue)="valueChange($event)">
+                                        </ng-container>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="!col.editor">
+                                <span *ngIf="!col.showFormat"
+                                    [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter,data):'']">{{data[col.field]}}</span>
+                                <ng-container [bsnData]="tempValue" [initData]="initData"
+                                    [rowData]="editCache[data.key].data"
+                                    [dataSet]="col.showFormat.options.dataSet?dataSet[col.showFormat.options.dataSet]:null"
+                                    CnGridEditorDirective *ngIf="col.showFormat" [config]="col.showFormat.options"
+                                    [value]="{key:data.key,name:col.showFormat.field,data:editCache[data.key].data[col.showFormat.field],dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
+                                    [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.showFormat.field]:''"
+                                    (updateValue)="valueChange($event)"> </ng-container>
+                            </ng-container>
                         </td>
                     </ng-template>
+                    <!-- <td></td> -->
                 </tr>
             </ng-container>
         </ng-template>

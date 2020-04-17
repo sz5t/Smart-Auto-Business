@@ -170,6 +170,8 @@ export class BsnTableComponent extends CnComponentBase
         total: 0
     };
 
+    // public width = '50px';
+
     public ngOnInit() {
         this.showprocdata();
     }

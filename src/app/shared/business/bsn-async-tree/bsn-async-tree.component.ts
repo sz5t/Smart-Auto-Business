@@ -171,11 +171,11 @@ export class BsnAsyncTreeComponent extends GridBase
                                 mode = BSN_COMPONENT_CASCADE_MODES.MOBILE_ASYNC_TREE_NODE;
                                 this.mobileNode(returndata.data, this.originTreeData);
                             } else if (returndata.data.OperateType === 'Upgrade') {
-                                mode = BSN_COMPONENT_CASCADE_MODES.LIFT_ASYNC_TREE_NODE;
-                                this.liftNode(returndata.data, this.originTreeData);
+                                mode = BSN_COMPONENT_CASCADE_MODES.UP_ASYNC_TREE_NODE;
+                                this.upNode(returndata.data, this.originTreeData);
                             } else if (returndata.data.OperateType === 'Downgrade') {
-                                mode = BSN_COMPONENT_CASCADE_MODES.LIFT_ASYNC_TREE_NODE;
-                                this.liftNode(returndata.data, this.originTreeData);
+                                mode = BSN_COMPONENT_CASCADE_MODES.DOWN_ASYNC_TREE_NODE;
+                                this.downNode(returndata.data, this.originTreeData);
                             }
                             break;
                     }
@@ -413,14 +413,24 @@ export class BsnAsyncTreeComponent extends GridBase
     }
 
     // 节点的升降级
-    public liftNode(keys, data) {
+    public upNode(keys, data) {
         const selectedNodeId = keys['OperateID'];
         const beforeOperateParent = keys['beforeOperateParent'];
         const afterOperateParent = keys['afterOperateParent'];
         const type = keys['OperateType'];
         const OperateNode = data.find(e => e.Id === selectedNodeId)
         OperateNode['parentId'] = afterOperateParent;
-        this.mobileStructure(data, OperateNode, selectedNodeId, beforeOperateParent, afterOperateParent, type);
+        this.mobileStructure(data, OperateNode, selectedNodeId, beforeOperateParent, afterOperateParent, 'Upgrade');
+    }
+
+    public downNode(keys, data) {
+        const selectedNodeId = keys['OperateID'];
+        const beforeOperateParent = keys['beforeOperateParent'];
+        const afterOperateParent = keys['afterOperateParent'];
+        const type = keys['OperateType'];
+        const OperateNode = data.find(e => e.Id === selectedNodeId)
+        OperateNode['parentId'] = afterOperateParent;
+        this.mobileStructure(data, OperateNode, selectedNodeId, beforeOperateParent, afterOperateParent, 'Downgrade');
     }
 
     // 重新绑定上移下移数据
@@ -465,11 +475,11 @@ export class BsnAsyncTreeComponent extends GridBase
         } else {
             if (type === 'Upgrade') {
                 result[0].children.push(
-                    ...this.listToAsyncTreeDataByUpgrade(array, parent, OperateParent, selectedNode, beforeOperateParent, afterOperateParent)
+                    ...this.listToAsyncTreeDataByUpgrade(array, parent, beforeOperateParent, selectedNode)
                 );
             } else if (type === 'Downgrade') {
                 result[0].children.push(
-                    ...this.listToAsyncTreeDataByDowngrade(array, parent, OperateParent, selectedNode, beforeOperateParent, afterOperateParent)
+                    ...this.listToAsyncTreeDataByDowngrade(array, parent, beforeOperateParent, selectedNode)
                 );
             }
         }
@@ -608,16 +618,16 @@ export class BsnAsyncTreeComponent extends GridBase
 
         that.tempValue['_selectedNode'] = that.selectedItem;
         // that.after(that, 'clickNode', () => {
-            that.selectedItem &&
-                that.cascade.next(
-                    new BsnComponentMessage(
-                        BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
-                        that.config.viewId,
-                        {
-                            data: that.selectedItem
-                        }
-                    )
-                );
+        that.selectedItem &&
+            that.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                    that.config.viewId,
+                    {
+                        data: that.selectedItem
+                    }
+                )
+            );
         // });
     }
 
@@ -792,15 +802,9 @@ export class BsnAsyncTreeComponent extends GridBase
             if (data[i].parentId === parentid) {
                 temp = this.listToAsyncTreeData(data, data[i].key);
                 if (temp.length > 0) {
-                    if (expandNode) {
-                        for (let j = 0; j < temp.length; j++) {
-                            if (temp[j]['Id'] === expandNode) {
-                                temp[j]['expanded'] = true;
-                            }
-                        }
-                    }
                     data[i]['children'] = temp;
                     data[i]['isLeaf'] = false;
+                    data[i]['expanded'] = true;
                 } else {
                     if (selectedNode) {
                         for (let j = 0; j < data.length; j++) {
@@ -818,26 +822,16 @@ export class BsnAsyncTreeComponent extends GridBase
         return result;
     }
 
-    public listToAsyncTreeDataByUpgrade(data, parentid, expandNode, selectedNode, beforeOperateParent, afterOperateParent) {
-        console.log('807', data, parentid, expandNode, selectedNode, beforeOperateParent, afterOperateParent);
+    public listToAsyncTreeDataByUpgrade(data, parentid, beforeOperateParent?, selectedNode?) {
         const result: any[] = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
             if (data[i].parentId === parentid) {
-                temp = this.listToAsyncTreeData(data, data[i].key);
+                temp = this.listToAsyncTreeDataByUpgrade(data, data[i].key, beforeOperateParent, selectedNode);
                 if (temp.length > 0) {
-                    if (expandNode) {
-                        for (let j = 0; j < temp.length; j++) {
-                            if (temp[j]['Id'] === beforeOperateParent) {
-                                temp[j]['expanded'] = true;
-                            }
-                            if (temp[j]['Id'] === afterOperateParent) {
-                                temp[j]['expanded'] = true;
-                            }
-                        }
-                    }
                     data[i]['children'] = temp;
                     data[i]['isLeaf'] = false;
+                    data[i]['expanded'] = true;
                 } else {
                     if (selectedNode) {
                         for (let j = 0; j < data.length; j++) {
@@ -850,31 +844,26 @@ export class BsnAsyncTreeComponent extends GridBase
                 }
                 data[i].level = '';
                 result.push(data[i]);
+                for (let j = 0; j < result.length; j++) {
+                    if (result[j]['children'] && result[j]['children'].length === 1 && result[j]['children'][0]['Id'] === selectedNode) {
+                        result[j]['expanded'] = false
+                    }
+                }
             }
         }
         return result;
     }
 
-    public listToAsyncTreeDataByDowngrade(data, parentid, expandNode, selectedNode, beforeOperateParent, afterOperateParent) {
-        console.log('843', data, parentid, expandNode, selectedNode, beforeOperateParent, afterOperateParent);
+    public listToAsyncTreeDataByDowngrade(data, parentid, beforeOperateParent?, selectedNode?) {
         const result: any[] = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
             if (data[i].parentId === parentid) {
                 temp = this.listToAsyncTreeData(data, data[i].key);
                 if (temp.length > 0) {
-                    if (expandNode) {
-                        for (let j = 0; j < temp.length; j++) {
-                            if (temp[j]['Id'] === beforeOperateParent) {
-                                temp[j]['expanded'] = true;
-                            }
-                            if (temp[j]['Id'] === afterOperateParent) {
-                                temp[j]['expanded'] = true;
-                            }
-                        }
-                    }
                     data[i]['children'] = temp;
                     data[i]['isLeaf'] = false;
+                    data[i]['expanded'] = true;
                 } else {
                     if (selectedNode) {
                         for (let j = 0; j < data.length; j++) {
