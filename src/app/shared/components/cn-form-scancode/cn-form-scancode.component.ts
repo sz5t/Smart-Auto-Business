@@ -32,6 +32,8 @@ export class CnFormScancodeComponent implements OnInit {
     public rowData;
     @Input()
     public dataSet;
+    @Input() 
+    public initValue;
     public formGroup: FormGroup;
     // @Output() updateValue = new EventEmitter();
     @Output()
@@ -131,6 +133,8 @@ export class CnFormScancodeComponent implements OnInit {
                     params[param.name] = this._value;
                 } else if (param.type === 'cascadeValue') {
                     params[param.name] = this.cascadeValue[param.valueName];
+                } else if (param.type === 'initValue') {
+                    params[param.name] = this.initValue[param.valueName];
                 }
             });
             if (this.isString(p.url)) {
@@ -146,14 +150,16 @@ export class CnFormScancodeComponent implements OnInit {
                         pc = this.bsnData[param.valueName];
                     } else if (param.type === 'scanCodeValue') {
                         pc = this._value;
+                    } else if (param.type === 'initValue') {
+                        pc = this.initValue[param.valueName];
                     }
                 });
 
                 url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
             }
         }
-        if (p.ajaxType === 'get' && tag) {
-            return this.apiService.get(url, params).toPromise();
+        if (p.ajaxType && tag) {
+            return this.apiService[p.ajaxType](url, params).toPromise();
         }
     }
 
