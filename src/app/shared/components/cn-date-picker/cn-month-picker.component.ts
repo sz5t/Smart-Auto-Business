@@ -29,7 +29,7 @@ export class CnMonthPickerComponent implements OnInit, AfterViewInit {
     public monthChange(date: Date) {
         let backValue;
         if (this.config.sep) {
-            backValue = { name: this.config.name, value: `${getISOYear(date)}${this.config.sep}${getMonth(date) + 1 }` };
+            backValue = { name: this.config.name, value: `${getISOYear(date)}${this.config.sep}${this.getNewMonth(getMonth(date) + 1) }` };
         } else {
             backValue = { name: this.config.name, value: `${getISOYear(date)}${this.getNewMonth(getMonth(date) + 1) }` };
         }

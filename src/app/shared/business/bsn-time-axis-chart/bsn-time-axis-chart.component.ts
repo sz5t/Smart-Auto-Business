@@ -8,6 +8,7 @@ import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
 import { getISOYear, getMonth, getDate, getHours, getTime, getMinutes, getSeconds } from 'date-fns';
 import { isArray } from 'util';
+import { Formatter } from 'tslint/lib/formatters/jsonFormatter';
 
 @Component({
   selector: 'bsn-time-axis-chart',
@@ -40,7 +41,8 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
   public datalength; // 真实的数据长度
   public Shape; // 自定义样式效果
   public test = []; // 辅助线的图例数组
-
+  public filedName = []; // 图表Y轴的字段数组
+  public filedShowName = []; // 图表展示的字段数组
 
   public groupMax = []; // 分组每组最大值的数组
   public groupMin = []; // 分组每组最小值的数组
@@ -48,10 +50,13 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
   public chartName; // 图表的名称
   public showDataLength; // 分组的展示数据长度（暂时只有分组折线使用）
   public y1andgroup = false; // 分组+双轴的标识
+  public yDataArray = []; // 需要画图的y轴字段数组
+  public yField = []; // y轴字段的数据
 
   // 初始化的属性
-  public x;
-  public y;
+  public x; // 横轴的字段
+  public y; // y左轴的字段
+  public yType;
   public color = [];
   public y1;
   public minValue;
@@ -90,18 +95,106 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
     this.resolverRelation();
   }
 
+  public createChartTest() {
+    const data = [
+      { time: '10:10', call: 4, waiting: 2, people: 2 },
+      { time: '10:15', call: 2, waiting: 6, people: 3 },
+      { time: '10:20', call: 13, waiting: 2, people: 5 },
+      { time: '10:25', call: 9, waiting: 9, people: 1 },
+      { time: '10:30', call: 5, waiting: 2, people: 3 },
+      { time: '10:35', call: 8, waiting: 2, people: 1 },
+      { time: '10:40', call: 13, waiting: 1, people: 2 }
+    ];
+
+    this.chart = new G2.Chart({
+      container: this.chartElement.nativeElement, // 指定图表容器 ID
+      animate: true, // 动画 默认true
+      forceFit: true,  // 图表的宽度自适应开关，默认为 false，设置为 true 时表示自动取 dom（实例容器）的宽度。
+      height: this.config.height ? this.config.height : 300, // 指定图表高度
+      padding: [50, 50, 110, 45]
+    });
+
+    this.chart.source(data, {
+      call: {
+        min: 0
+      },
+      people: {
+        min: 0
+      },
+      waiting: {
+        min: 0
+      }
+    });
+    this.chart.legend('waiting', {
+      custom: true,
+      allowAllCanceled: true,
+      items: [{
+        value: 'waiting',
+        marker: {
+          symbol: 'square',
+          fill: '#66FF00',
+          radius: 5
+        }
+      }, {
+        value: 'people',
+        marker: {
+          symbol: 'hyphen',
+          stroke: '#fdae6b',
+          radius: 5,
+          lineWidth: 3
+        }
+      }],
+      onClick: (ev) => {
+        const item = ev.item;
+        const value = item.value;
+        const checked = item.checked;
+        const geoms = this.chart.getAllGeoms();
+        for (let i = 0; i < geoms.length; i++) {
+          // const geom = geoms[i];
+          if (geoms[i].getYScale().field === value) {
+            if (checked) {
+              geoms[i].show();
+            } else {
+              this.chart.axis(geoms[i].getYScale().field, false);
+              geoms[i].hide();
+            }
+          } else {
+            geoms[i].hide();
+          }
+        }
+      }
+    });
+    this.chart.axis('people', {
+      grid: null,
+      label: {
+        textStyle: {
+          fill: '#fdae6b'
+        }
+      }
+    });
+    this.chart.interval().position('time*waiting').color('#3182bd');
+    this.chart.line().position('time*people').color('#fdae6b').size(3).shape('smooth');
+    this.chart.point().position('time*people').color('#fdae6b').size(3).shape('circle');
+    this.chart.render();
+  }
+
   public ngAfterViewInit() {
     if (this.config.componentType &&
       this.config.componentType.own === true) {
       this.load();
+      // this.createChartTest();
     }
 
-    this.x = this.config.x.name
+    this.x = this.config.x.name;
 
-    this.y = this.config.y.name
+    this.y = this.config.yDataArray[0].name;
 
-    if (this.config.y1) {
-      this.y1 = this.config.y1.name
+    // yDataArray控制画图数据，生成Y轴
+    this.yDataArray = this.config.yDataArray;
+    if (this.yDataArray) {
+      for (let i = 0; i < this.yDataArray.length; i++) {
+        this.yField.push(this.yDataArray[i].name)
+      }
     }
 
     if (this.config.guide) {
@@ -156,11 +249,15 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
     }
 
     if (this.config.itemConfig) {
-      await this.getGroupPeakValue();
+      // await this.getGroupPeakValue();
     }
 
     if (this.config.showPointStyle) {
       this.registerPointStyle();
+    }
+
+    if (this.config.stageRuleConfig) {
+      this.stageRuleDatalist = await this.loadData(this.config.stageRuleConfig);
     }
 
     if (this.config.showChartName) {
@@ -181,7 +278,7 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
       animate: true, // 动画 默认true
       forceFit: true,  // 图表的宽度自适应开关，默认为 false，设置为 true 时表示自动取 dom（实例容器）的宽度。
       height: this.config.height ? this.config.height : 300, // 指定图表高度
-      padding: [50, 50, 110, 45]
+      padding: [60, 160, 60, 90]
     });
 
     // 创建DS数据源
@@ -217,254 +314,29 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
 
     this.dv = this.ds.createView();
 
-    if (this.config.guideConfig && this.config.showGuide && this.config.guideConfig.guideType !== 'line') {
-      if (this.config.guideScale) {
-        if (this.config.guideScale.y) {
-          let grouptext;
-          for (let i = 0; i < this.config.guideScale.y.length; i++) {
-            if (grouptext) {
-              grouptext += this.config.guideScale.y[i]['name'] + ','
-            } else {
-              grouptext = this.config.guideScale.y[i]['name'] + ','
-            }
-          }
-          grouptext = grouptext.substring(0, grouptext.length - 1);
-          this.test = grouptext.split(',');
-          this.dv.source(this.showdata)
-            .transform({
-              type: 'filter',
-              callback: obj => {
-                const a = new Date(obj[this.x]);
-                return (new Date(obj[this.x])).getTime() >= this.ds.state.from && (new Date(obj[this.x])).getTime() <= this.ds.state.to;
-              }
-            })
-            .transform({
-              type: 'fold',
-              fields: [this.config.y.name, this.test[0], this.test[1]], // 展开字段集
-              key: 'city', // key字段
-              value: 'value' // value字段
-            });
-        }
-      }
-    } else {
-      this.dv.source(this.dataList)
-        .transform({
-          type: 'filter',
-          callback: obj => {
-            const a = new Date(obj[this.x]);
-            return (new Date(obj[this.x])).getTime() >= this.ds.state.from && (new Date(obj[this.x])).getTime() <= this.ds.state.to;
-          }
-        });
-    }
+    // dv数据源赋值
+    this.setDvData();
+    // console.log(this.dv);
     this.chart.source(this.dv);
 
-    if (!this.config.yGroup && this.config.legend) {
-      this.chart.legend(this.config.legend);
-    } else {
-      const items = [];
-      items.push({
-        value: this.config.y.name,
-        marker: {
-          symbol: 'hyphen',
-          stroke: '0066FF',
-          radius: 5,
-          lineWidth: 3
-        }
-      });
-      this.color.push({'name': [this.config.y.name], 'color': '0066FF'});
-      for (let i = 0; i < this.config.yGroup.length; i++) {
-        items.push(
-          {
-            value: this.config.yGroup[i].name,
-            marker: {
-              symbol: 'hyphen',
-              stroke: this.config.yGroup[i].color,
-              radius: 5,
-              lineWidth: 3
-            }
-          })
-        this.color.push({'name': [this.config.yGroup[i].name], 'color': [this.config.yGroup[i].color]});
-      }
-      this.chart.legend({
-        custom: true,
-        allowAllCanceled: true,
-        items: items,
-        position: 'top-center',
-        onClick: (ev) => {
-          const item = ev.item;
-          const value = item.value;
-          const checked = item.checked;
-          const geoms = this.chart.getAllGeoms();
-          for (let i = 0; i < geoms.length; i++) {
-            const geom = geoms[i];
-            if (geom.getYScale().field === value[0]) {
-              if (checked) {
-                geom.show();
-              }
-            } else {
-              geom.hide();
-            }
-          }
-        }
-      });
-    }
+    this.createLegend();
 
-    if (!this.config.groupName) {
-      if (this.config.guideConfig && this.config.showGuide && this.config.guideConfig.guideType !== 'line') {
-        if (this.config.guideScale) {
-          if (this.config.guideScale.y) {
-            this.config.guideScale.y.forEach(e => {
-              this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color('city').shape(this.config.shape ? this.config.shape : 'circle');
-              // this.chart.point().position(this.config.x.name + '*' + this.config.y.name).color(e.name).size(4).shape('circle').style({
-              //   stroke: '#fff',
-              //   lineWidth: 1
-              // });
-            });
-          }
-        }
-      } else {
-        this.chart.line().position(this.config.x.name + '*' + this.config.y.name).shape(this.config.shape ? this.config.shape : 'circle');
-        if (this.config.showPointStyle) {
-          if (this.config.guideConfig) {
-            this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('overyGuide').style({
-              stroke: '#fff',
-              lineWidth: 1
-            });
-          }
-          if (this.config.ruleConfig && this.config.ruleConfig.rule) {
-            this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('notEqualPlan').style({
-              stroke: '#fff',
-              lineWidth: 1
-            });
-          }
-        } else {
-          this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('circle').style({
-            stroke: '#fff',
-            lineWidth: 1
-          });
-        }
-
-        if (this.config.yGroup) {
-          for (let i = 0; i < this.config.yGroup.length; i++) {
-            if (this.config.showPointStyle) {
-              if (this.config.guideConfig) {
-                this.chart.point().position(this.config.x.name + '*' + this.config.yGroup[i].name).size(4).shape('overyGuide').style({
-                  stroke: '#fff',
-                  lineWidth: 1
-                });
-              }
-              if (this.config.ruleConfig && this.config.ruleConfig.rule) {
-                this.chart.point().position(this.config.x.name + '*' + this.config.yGroup[i].name).size(4).shape('notEqualPlan').style({
-                  stroke: '#fff',
-                  lineWidth: 1
-                });
-              }
-            } else {
-              this.chart.point().position(this.config.x.name + '*' + this.config.yGroup[i].name).size(4).shape('circle').style({
-                stroke: '#fff',
-                lineWidth: 1
-              });
-            }
-          }
-        }
-
-        if (this.config.y1) {
-          this.chart.line().position(this.config.x.name + '*' + this.config.y1.name).shape(this.config.shape ? this.config.shape : 'circle').color(this.config.y1color ? this.config.y1color : '#FFCC00');
-          if (this.config.ruleConfig && this.config.ruleConfig.y1max) {
-            this.chart.point().position(this.config.x.name + '*' + this.config.y1.name).size(4).shape('overy1Guide').style({
-              stroke: '#fff',
-              lineWidth: 1
-            })
-          } else {
-            this.chart.point().position(this.config.x.name + '*' + this.config.y1.name).color(this.config.y1color ? this.config.y1color : '#FFCC00').size(4).shape('circle').style({
-              stroke: '#fff',
-              lineWidth: 1
-            });
-          }
-        }
-      };
-    } else {
-      if (!this.config.y1) {
-        const y = this.config.y.name;
-        this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).shape(this.config.shape ? this.config.shape : 'circle');
-        this.chart.point().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName)
-          .size(4)
-          .shape(y, (y) => {
-            if (this.groupMax && this.groupMax.indexOf(y) >= 0) {
-              return 'square';
-            } else if (this.groupMin && this.groupMin.indexOf(y) >= 0) {
-              return 'triangle';
-            } else {
-              return 'circle';
-            }
-          })
-          .style({
-            stroke: '#fff',
-            lineWidth: 1
-          })
-          .label(this.config.x.name + '*' + this.config.y.name, (x, y) => {
-            if (this.groupMax && this.groupMax.indexOf(y) >= 0) {
-              return this.config.itemMaxText + y;
-            } else if (this.groupMin && this.groupMin.indexOf(y) >= 0) {
-              return this.config.itemMinText + y;
-            } else {
-              return '';
-            }
-          });
-      }
-
-      if (this.config.y1) {
-        this.y1andgroup = true;
-        this.showdata;
-        this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color(this.color.find(e => e['name'][0] === this.y)['color']).shape(this.config.shape ? this.config.shape : 'circle');
-        if (this.config.showPointStyle) {
-          if (this.config.guideConfig) {
-            this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('overyGuide').style({
-              stroke: '#fff',
-              lineWidth: 1
-            });
-          }
-          if (this.config.ruleConfig && this.config.ruleConfig.rule) {
-            this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('notEqualPlan').style({
-              stroke: '#fff',
-              lineWidth: 1
-            });
-          }
-        } else {
-          this.chart.point().position(this.config.x.name + '*' + this.config.y.name).size(4).shape('circle').style({
-            stroke: '#fff',
-            lineWidth: 1
-          });
-        }
-        this.chart.line().position(this.config.x.name + '*' + this.config.y1.name).shape(this.config.shape ? this.config.shape : 'circle').color(this.config.y1color ? this.config.y1color : '#FFCC00');
-        if (this.config.ruleConfig && this.config.ruleConfig.y1max) {
-          this.chart.point().position(this.config.x.name + '*' + this.config.y1.name).size(4).shape('overy1Guide').style({
-            stroke: '#fff',
-            lineWidth: 1
-          })
-        } else {
-          this.chart.point().position(this.config.x.name + '*' + this.config.y1.name).color(this.config.y1color ? this.config.y1color : '#FFCC00').size(4).shape('circle').style({
-            stroke: '#fff',
-            lineWidth: 1
-          });
-        }
-      }
-    }
+    this.createLineAndPoint();
 
     // 有图表标记，最值，辅助线，超标点的样式等
     if (this.config.haveGuide) {
       this.allGuide(this.chart);
     }
-    // 没有自动加载数据的滑块
+    // 没有自动加载数据的滑块，数据源是datalist
     if (this.config.showSlider && !this.config.autoPlay) {
       this.slider = new Slider({
         container: this.sliderElement.nativeElement,
-        padding: [0, 100, 0],
+        padding: [60, 160, 60, 90],
         start: this.ds.state.from,
         end: this.ds.state.to,
         data: this.dataList,
         xAxis: this.config.x.name,
-        yAxis: this.config.y.name,
+        yAxis: this.y,
         backgroundChart: {
           type: 'line',
           color: 'grey'
@@ -481,10 +353,11 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
           const startValue = _ref.startValue, endValue = _ref.endValue;
           this.ds.setState('from', startValue);
           this.ds.setState('to', endValue);
+          this.showdata = this.dataList.filter(e => this.transStringTime(e[this.x]) >= startValue && this.transStringTime(e[this.x]) <= endValue);
           setTimeout(() => {
             // this.chart.guide().clear();
             this.allGuide(this.chart, startValue, endValue);
-            // this.chart.render();
+            this.chart.repaint();
           });
 
         }
@@ -492,7 +365,7 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
 
       this.slider.render();
     }
-    // 有自动加载数据的滑块
+    // 有自动加载数据的滑块，数据源是截取过后的showdata
     if (this.config.showSlider && this.config.autoPlay) {
       // this.originDv = this.ds.createView('origin');
       // this.originDv.source(this.showdata).transform({
@@ -511,8 +384,9 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
         start: this.ds.state.from, // 和状态量对应
         end: this.ds.state.to,
         xAxis: this.config.x.name,
-        yAxis: this.config.y.name,
+        yAxis: this.y,
         data: this.showdata,
+        padding: [60, 160, 60, 90],
         backgroundChart: {
           type: 'line',
           color: 'grey'
@@ -615,9 +489,9 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
               this.chart.changeData(this.showdata);
             }
             setTimeout(async () => {
-              if (this.config.groupName && !(this.config.peakValue || this.config.eachPeakValue)) {
-                await this.getGroupPeakValue();
-              }
+              // if (this.config.groupName && !(this.config.peakValue || this.config.eachPeakValue)) {
+              // await this.getGroupPeakValue();
+              // }
               this.allGuide(this.chart, this.slider.start, this.slider.end);
               this.chart.repaint();
             });
@@ -795,99 +669,46 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
   // 静态图表计算峰值
   public findMaxMin(start?, end?, e?) {
     if (start && end) {
-      if (!e) {
-        let maxValue = 0;
-        let minValue = 50000;
-        let maxObj = null;
-        let minObj = null;
-        const length = this.dataList.length;
-        for (let i = 0; i < length; i++) {
-          // 日期转时间戳进行比较
-          const d = this.dataList[i];
-          let date = this.dataList[i][this.config.x.name];
-          date = date.replace(/-/g, '/');
-          date = new Date(date).getTime();
-          if (date >= start && date <= end) {
-            if (d[this.config.y.name] >= maxValue) {
-              maxValue = d[this.config.y.name];
-              maxObj = d;
-            }
-            if (d[this.config.y.name] < minValue) {
-              minValue = d[this.config.y.name];
-              minObj = d;
-            }
-          }
+      let maxValue = 0;
+      let minValue = 50000;
+      let maxObj = null;
+      let minObj = null;
+      // const length = this.dataList.length > this.datalength ? this.datalength : this.dataList.length
+      const data = this.dataList.filter(e => this.transStringTime(e[this.x]) >= start && this.transStringTime(e[this.x]) <= end);
+      for (let i = 0; i < data.length; i++) {
+        const d = data[i];
+        if (d[e] && d[e] >= maxValue) {
+          maxValue = d[e];
+          maxObj = d;
         }
-        return {
-          max: maxObj,
-          min: minObj
-        };
-      } else {
-        let maxValue = 0;
-        let minValue = 50000;
-        let maxObj = null;
-        let minObj = null;
-        const length = this.dataList.length > this.datalength ? this.datalength : this.dataList.length
-        for (let i = 0; i < length; i++) {
-          const d = this.dataList[i];
-          if (d[this.config.groupName] === e) {
-            if (d[this.config.y.name] >= maxValue) {
-              maxValue = d[this.config.y.name];
-              maxObj = d;
-            }
-            if (d[this.config.y.name] < minValue) {
-              minValue = d[this.config.y.name];
-              minObj = d;
-            }
-          }
+        if (d[e] && d[e] < minValue) {
+          minValue = d[e];
+          minObj = d;
         }
-        return {
-          max: maxObj,
-          min: minObj
-        };
       }
+      return {
+        max: maxObj,
+        min: minObj
+      };
     } else {
       if (start) {
         e = start
-      }
-      if (!e) {
-        let maxValue = 0;
-        let minValue = 50000;
-        let maxObj = null;
-        let minObj = null;
-        const length = this.dataList.length > this.datalength ? this.datalength : this.dataList.length
-        for (let i = 0; i < length - 1; i++) {
-          const d = this.dataList[i];
-          if (d[this.config.y.name] >= maxValue) {
-            maxValue = d[this.config.y.name];
-            maxObj = d;
-          }
-          if (d[this.config.y.name] < minValue) {
-            minValue = d[this.config.y.name];
-            minObj = d;
-          }
-        }
-        return {
-          max: maxObj,
-          min: minObj
-        };
       } else {
         let maxValue = 0;
         let minValue = 50000;
         let maxObj = null;
         let minObj = null;
         const length = this.dataList.length > this.datalength ? this.datalength : this.dataList.length
-        for (let i = 0; i < length - 1; i++) {
+        // const data = this.dataList.filter(e => this.transStringTime(e[this.x]) >= start && this.transStringTime(e[this.x]) <= end);
+        for (let i = 0; i < length; i++) {
           const d = this.dataList[i];
-          if (d[this.config.groupName] === e) {
-            if (d[this.config.y.name] >= maxValue) {
-              maxValue = d[this.config.y.name];
-              maxObj = d;
-            }
-            if (d[this.config.y.name] < minValue) {
-              minValue = d[this.config.y.name];
-              minObj = d;
-            }
+          if (d[e] >= maxValue) {
+            maxValue = d[e];
+            maxObj = d;
+          }
+          if (d[e] < minValue) {
+            minValue = d[e];
+            minObj = d;
           }
         }
         return {
@@ -899,25 +720,14 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
   }
 
   // 动态轮播最大值最小值计算
-  public findMax(element?) {
+  public findMax(element) {
     if (element) {
       let maxValue = 0;
       let maxObj = null;
       for (let i = 0; i < this.showdata.length; i++) {
         let d = this.showdata[i];
-        if (d[this.config.groupName] === element && d[this.config.y.name] >= maxValue) {
-          maxValue = d[this.config.y.name];
-          maxObj = d;
-        }
-      }
-      return maxObj;
-    } else {
-      let maxValue = 0;
-      let maxObj = null;
-      for (let i = 0; i < this.showdata.length; i++) {
-        let d = this.showdata[i];
-        if (d[this.config.y.name] >= maxValue) {
-          maxValue = d[this.config.y.name];
+        if (d[element] >= maxValue) {
+          maxValue = d[element];
           maxObj = d;
         }
       }
@@ -925,25 +735,14 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
     }
   }
 
-  public findMin(element?) {
+  public findMin(element) {
     if (element) {
       let minValue = 50000;
       let minObj = null;
       for (let i = 0; i < this.showdata.length; i++) {
         let d = this.showdata[i];
-        if (d[this.config.groupName] === element && d[this.config.y.name] <= minValue) {
-          minValue = d[this.config.y.name];
-          minObj = d;
-        }
-      }
-      return minObj;
-    } else {
-      let minValue = 50000;
-      let minObj = null;
-      for (let i = 0; i < this.showdata.length; i++) {
-        let d = this.showdata[i];
-        if (d[this.config.y.name] <= minValue) {
-          minValue = d[this.config.y.name];
+        if (d[element] && d[element] <= minValue) {
+          minValue = d[element];
           minObj = d;
         }
       }
@@ -957,7 +756,7 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
     if (this.config.showGuide) {
       this.writeguide(charts, start, end);
     }
-    if (this.config.peakValue || this.config.eachPeakValue) {
+    if (this.config.eachPeakValue) {
       this.writepoint(charts, start, end);
     }
   }
@@ -965,105 +764,17 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
   // 绘制最值标记点
   public writepoint(charts?, start?, end?) {
     if (!this.config.autoPlay) {
-      if (this.config.peakValue) {
-        if (!this.config.eachPeakValue) {
-          const max_min = this.findMaxMin(start, end);
-          const max = max_min.max;
-          const min = max_min.min;
-          if (max_min) {
-            charts.guide().dataMarker({
-              top: true,
-              content: '峰值：' + max[this.config.y.name],
-              position: [max[this.config.x.name], max[this.config.y.name]],
-              style: {
-                text: {
-                  fontSize: 13,
-                  stroke: 'white',
-                  lineWidth: 2
-                }
-              },
-              lineLength: 40
-            });
-            charts.guide().dataMarker({
-              top: true,
-              content: '谷值：' + min[this.config.y.name],
-              position: [min[this.config.x.name], min[this.config.y.name]],
-              style: {
-                text: {
-                  fontSize: 13,
-                  stroke: 'white',
-                  lineWidth: 2
-                }
-              },
-              lineLength: 50
-            });
-          }
-        } else {
-          const group = [];
-          group.push(this.dataList[0][this.config.groupName]);
-          for (let i = 0; i < this.dataList.length; i++) {
-            for (let j = 0; j < group.length; j++) {
-              if (!group.includes(this.dataList[i][this.config.groupName])) {
-                group.push(this.dataList[i][this.config.groupName]);
-              }
-            }
-          }
-          group.forEach(element => {
-            const max_min = this.findMaxMin(start, end, element);
-            const max = max_min.max;
-            const min = max_min.min;
-            if (max_min) {
-              charts.guide().dataMarker({
-                top: true,
-                content: element + '的峰值：' + max[this.config.y.name],
-                position: [max[this.config.x.name], max[this.config.y.name]],
-                style: {
-                  text: {
-                    fontSize: 13,
-                    stroke: 'white',
-                    lineWidth: 2
-                  }
-                },
-                lineLength: 30
-              });
-              charts.guide().dataMarker({
-                top: true,
-                content: element + '的谷值：' + min[this.config.y.name],
-                position: [min[this.config.x.name], min[this.config.y.name]],
-                style: {
-                  text: {
-                    fontSize: 13,
-                    stroke: 'white',
-                    lineWidth: 2
-                  }
-                },
-                lineLength: 50
-              });
-
-            }
-          });
-        }
-      }
-    } else {
-      if (this.config.eachPeakValue) {
-        const group = [];
-        group.push(this.showdata[0][this.config.groupName]);
-        for (let i = 0; i < this.showdata.length; i++) {
-          for (let j = 0; j < group.length; j++) {
-            if (!group.includes(this.showdata[i][this.config.groupName])) {
-              // if (this.dataList[i][this.config.groupName] !== group[group.length - 1]) {
-              group.push(this.showdata[i][this.config.groupName]);
-            }
-          }
-        }
-        group.forEach(element => {
-          const max = this.findMax(element);
-          const min = this.findMin(element);
+      const group = this.yField;
+      group.forEach(element => {
+        const max_min = this.findMaxMin(start, end, element);
+        const max = max_min.max;
+        const min = max_min.min;
+        if (max_min) {
           if (max && min) {
             charts.guide().dataMarker({
               top: true,
-              content: element + '的峰值：' + max[this.config.y.name],
-              position: [max[this.config.x.name], max[this.config.y.name]],
+              content: max[element],
+              position: { [this.x]: max[this.x], [element]: max[element] },
               style: {
                 text: {
                   fontSize: 13,
@@ -1075,8 +786,44 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
             });
             charts.guide().dataMarker({
               top: true,
-              content: element + '的谷值：' + min[this.config.y.name],
-              position: [min[this.config.x.name], min[this.config.y.name]],
+              content: min[element],
+              position: { [this.x]: min[this.x], [element]: min[element] },
+              style: {
+                text: {
+                  fontSize: 13,
+                  stroke: 'white',
+                  lineWidth: 2
+                }
+              },
+              lineLength: 50
+            });
+          }
+        }
+      });
+    } else {
+      if (this.config.eachPeakValue) {
+        const group = this.yField;
+        group.forEach(element => {
+          const max = this.findMax(element);
+          const min = this.findMin(element);
+          if (max && min) {
+            charts.guide().dataMarker({
+              top: true,
+              content: max[element],
+              position: { [this.x]: max[this.x], [element]: max[element] }, // [max[this.x], max[element]],
+              style: {
+                text: {
+                  fontSize: 13,
+                  stroke: 'white',
+                  lineWidth: 2
+                }
+              },
+              lineLength: 30
+            });
+            charts.guide().dataMarker({
+              top: true,
+              content: min[element],
+              position: { [this.x]: min[this.x], [element]: min[element] }, // [min[this.x], min[element]],
               style: {
                 text: {
                   fontSize: 13,
@@ -1088,50 +835,6 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
             });
 
           }
-        });
-      } else {
-        // 标记最大值
-        const maxobj = this.findMax();
-        const minobj = this.findMin();
-        charts.guide().dataMarker({
-          top: true,
-          content: '当前峰值:' + maxobj[this.config.y.name],
-          position: () => {
-            if (maxobj) {
-              return [maxobj[this.config.x.name], maxobj[this.config.y.name]];
-            }
-            return [0, 0];
-          },
-          style: {
-            text: {
-              fontSize: 13
-            },
-            point: {
-              stroke: '#606060'
-            }
-          },
-          lineLength: 50
-        });
-
-        // 标记最小值
-        charts.guide().dataMarker({
-          top: true,
-          content: '当前谷值:' + minobj[this.config.y.name],
-          position: () => {
-            if (minobj) {
-              return [minobj[this.config.x.name], minobj[this.config.y.name]];
-            }
-            return [0, 0];
-          },
-          style: {
-            text: {
-              fontSize: 13
-            },
-            point: {
-              stroke: '#606060'
-            }
-          },
-          lineLength: 50
         });
       }
     }
@@ -1163,8 +866,8 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
               const guidelinecolor = this.config.guideConfig.guidelinecolor ? this.config.guideConfig.guidelinecolor : '#F5222D';
               charts.guide().line({
                 top: true,
-                start: [e[starttime], e[maxvalue]],
-                end: [lineEndTime, e[maxvalue]],
+                start: { [this.x]: e[starttime], [e['type']]: e[maxvalue] }, // [e[starttime], e[maxvalue]],
+                end: { [this.x]: lineEndTime, [e['type']]: e[maxvalue] }, // [lineEndTime, e[maxvalue]],
                 lineStyle: {
                   stroke: guidelinecolor,
                   lineWidth: 2
@@ -1183,8 +886,10 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
               });
               charts.guide().line({
                 top: true,
-                start: [e[starttime], e[minvalue]],
-                end: [lineEndTime, e[minvalue]],
+                start: { [this.x]: e[starttime], [e['type']]: e[minvalue] },
+                end: { [this.x]: lineEndTime, [e['type']]: e[minvalue] },
+                // start: [e[starttime], e[minvalue]],
+                // end: [lineEndTime, e[minvalue]],
                 lineStyle: {
                   stroke: guidelinecolor,
                   lineWidth: 2
@@ -1238,51 +943,59 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
                 lineEndTime = end > dataEndTime ? dataEndTime : end;
                 lineStartTime = this.transTimeString(lineStartTime);
                 lineEndTime = this.transTimeString(lineEndTime);
-                const toptext = this.config.guideConfig.toptext ? this.config.guideConfig.toptext : '预警上限';
-                const floortext = this.config.guideConfig.floortext ? this.config.guideConfig.floortext : '预警下限';
-                const textcolor = this.config.guideConfig.textcolor ? this.config.guideConfig.textcolor : '#F5222D';
-                const guidelinecolor = this.config.guideConfig.guidelinecolor ? this.config.guideConfig.guidelinecolor : '#F5222D';
-                charts.guide().line({
-                  top: true,
-                  start: [lineStartTime, e[maxvalue]],
-                  end: [lineEndTime, e[maxvalue]],
-                  lineStyle: {
-                    stroke: guidelinecolor,
-                    lineWidth: 2
-                  },
-                  text: {
-                    content: [toptext],
-                    position: 'start',
-                    offsetX: 20,
-                    offsetY: -5,
-                    style: {
-                      fontSize: 14,
-                      fill: textcolor,
-                      opacity: 0.5
+                const guideContent = this.config.guideContent.find(g => g.name === e.type);
+                const toptext = guideContent.toptext ? guideContent.toptext : '预警上限';
+                const floortext = guideContent.floortext ? guideContent.floortext : '预警下限';
+                const textcolor = guideContent.textcolor ? guideContent.textcolor : '#F5222D';
+                const guidelinecolor = guideContent.guidelinecolor ? guideContent.guidelinecolor : '#F5222D';
+                if (e[maxvalue]) {
+                  charts.guide().line({
+                    top: true,
+                    // start: [lineStartTime, e[maxvalue]],
+                    // end: [lineEndTime, e[maxvalue]],
+                    start: { [this.x]: lineStartTime, [e['type']]: e[maxvalue] },
+                    end: { [this.x]: lineEndTime, [e['type']]: e[maxvalue] },
+                    lineStyle: {
+                      stroke: guidelinecolor,
+                      lineWidth: 2
+                    },
+                    text: {
+                      content: [toptext],
+                      position: 'start',
+                      offsetX: 20,
+                      offsetY: -5,
+                      style: {
+                        fontSize: 14,
+                        fill: textcolor,
+                        opacity: 0.5
+                      }
                     }
-                  }
-                });
-                charts.guide().line({
-                  top: true,
-                  start: [lineStartTime, e[minvalue]],
-                  end: [lineEndTime, e[minvalue]],
-
-                  lineStyle: {
-                    stroke: guidelinecolor,
-                    lineWidth: 2
-                  },
-                  text: {
-                    content: [floortext],
-                    position: 'start',
-                    offsetX: 20,
-                    offsetY: -5,
-                    style: {
-                      fontSize: 14,
-                      fill: textcolor,
-                      opacity: 0.5
+                  });
+                }
+                if (e[minvalue]) {
+                  charts.guide().line({
+                    top: true,
+                    // start: [lineStartTime, e[minvalue]],
+                    // end: [lineEndTime, e[minvalue]],
+                    start: { [this.x]: lineStartTime, [e['type']]: e[minvalue] },
+                    end: { [this.x]: lineEndTime, [e['type']]: e[minvalue] },
+                    lineStyle: {
+                      stroke: guidelinecolor,
+                      lineWidth: 2
+                    },
+                    text: {
+                      content: [floortext],
+                      position: 'start',
+                      offsetX: 20,
+                      offsetY: -5,
+                      style: {
+                        fontSize: 14,
+                        fill: textcolor,
+                        opacity: 0.5
+                      }
                     }
-                  }
-                });
+                  });
+                }
                 // if (this.config.guideColor) {
                 //   const areacolor = this.config.guideColor.color ? this.config.guideColor.color : '#FF4D4F';
                 //   charts.guide().regionFilter({
@@ -1322,6 +1035,7 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
     this.Shape = G2.Shape;
     const that = this;
     const lineguide = this.showguide;
+    const yArray = this.yDataArray;
     // y辅助线超过的部分标识点的样式
     if (this.config.guideConfig) {
       this.Shape.registerShape('point', 'overyGuide', {
@@ -1331,6 +1045,8 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
             x: cfg.x,
             y: cfg.y
           };
+          const field = cfg.style.field;
+          const type = cfg.style.type;
           let condition = 0; // 判断规则值数组和数据源的条件关系
           const guideColor = that.config.guideConfig.pointColor ? that.config.guideConfig.pointColor : '#DC143C'
           if (that.config.guideConfig.guideType !== 'line') {
@@ -1347,12 +1063,12 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
           } else {
             that.showdata.forEach(e => {
               lineguide.forEach(t => {
-                const btime = that.transStringTime(t[that.config.guide.start]);
-                const etime = that.transStringTime(t[that.config.guide.end]);
+                const btime = that.transStringTime(t[that.start]);
+                const etime = that.transStringTime(t[that.end]);
                 const datatime = that.transStringTime(e[that.config.x.name]);
                 if (datatime >= btime && datatime <= etime) {
-                  if (e[that.config.y.name]) {
-                    if (e[that.config.y.name] > t[that.config.guide.maxvalue] || e[that.config.y.name] < t[that.config.guide.minvalue]) {
+                  if (e[field] && type === t.type) {
+                    if ((t[that.maxValue] && e[field] > t[that.maxValue]) || (t[that.minValue] && e[field] < t[that.minValue])) {
                       const search = that.showdata.find(s => s.Id === e.Id);
                       if (data.Id === search.Id) {
                         condition = 1;
@@ -1371,40 +1087,42 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
     }
 
     // y1辅助线超过的部分标识点的样式
-    if (this.config.ruleConfig) {
-      if (this.config.ruleConfig.y1max) {
-        this.Shape.registerShape('point', 'overy1Guide', {
-          draw(cfg, container) {
-            const data = cfg.origin._origin;
-            const point = {
-              x: cfg.x,
-              y: cfg.y
-            };
-            let condition = 0; // 判断规则值数组和数据源的条件关系
-            let y1max;
-            that.stageRuleDatalist.forEach(r => {
-              if (r.filed === that.config.y1.name) {
-                y1max = r.filedvalue
-              }
-            });
-            const y1Color = that.config.ruleConfig.overy1color ? that.config.ruleConfig.overy1color : '#FF6600'
-            that.showdata.forEach(e => {
-              if (e[that.config.y1.name]) {
-                if (e[that.config.y1.name] > y1max) {
-                  const search = that.showdata.find(s => s.Id === e.Id);
-                  if (data.Id === search.Id) {
-                    condition = 1
-                  }
-                }
-              }
-            });
-            if (condition === 1) {
-              that.writePointStyle(container, point, y1Color);
-            }
-          }
-        });
-      }
-    }
+    // if (this.config.ruleConfig) {
+    //   if (this.config.ruleConfig.y1max) {
+    //     this.Shape.registerShape('point', 'overy1Guide', {
+    //       draw(cfg, container) {
+    //         const data = cfg.origin._origin;
+    //         const point = {
+    //           x: cfg.x,
+    //           y: cfg.y
+    //         };
+    //         let condition = 0; // 判断规则值数组和数据源的条件关系
+    //         let y1max;
+    //         that.stageRuleDatalist.forEach(r => {
+    //           if (r.filed === that.config.y1.name) {
+    //             y1max = r.filedvalue
+    //           }
+    //         });
+    //         const y1Color = that.config.ruleConfig.overy1color ? that.config.ruleConfig.overy1color : '#FF6600'
+    //         that.showdata.forEach(e => {
+    //           for (let i = 0; i < yArray.length; i++) {
+    //             if (e[that.config.y1.name]) {
+    //               if (e[that.config.y1.name] > y1max) {
+    //                 const search = that.showdata.find(s => s.Id === e.Id);
+    //                 if (data.Id === search.Id) {
+    //                   condition = 1
+    //                 }
+    //               }
+    //             }
+    //           }
+    //         });
+    //         if (condition === 1) {
+    //           that.writePointStyle(container, point, y1Color);
+    //         }
+    //       }
+    //     });
+    //   }
+    // }
 
     // 不符合规则的点的样式
     if (this.config.ruleConfig && this.config.ruleConfig.rule) {
@@ -1415,18 +1133,19 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
             x: cfg.x,
             y: cfg.y
           };
+          const field = cfg.style.type;
           let condition = 0; // 判断规则值数组和数据源的条件关系
           if (that.config.ruleConfig.rule) {
             const ruleColor = that.config.ruleConfig.pointColor ? that.config.ruleConfig.pointColor : '#008000'
             for (let i = 0; i < that.ruledataList.length; i++) {
               if (data['stage'] === that.ruledataList[i]['stage']
                 && data['number'] === that.ruledataList[i]['number']) {
-                if (data[that.config.y.name] !== that.ruledataList[i][that.config.ruleConfig.y]) {
+                if (field === 'value' && data[field] !== that.ruledataList[i][that.config.ruleConfig.y]) {
                   condition = 1;
                 }
               } else if ((data['stage'] === that.ruledataList[i]['stage']
                 && !that.ruledataList.find(r => r['number'] === data['number'])) || !data['stage']) {
-                if (data[that.config.y.name] !== that.ruledataList[i][that.config.ruleConfig.y]) {
+                if (field === 'value' && data[field] !== that.ruledataList[i][that.config.ruleConfig.y]) {
                   condition = 1;
                 }
                 break;
@@ -1820,21 +1539,6 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
   }
 
   /**
-   * getGroupPeakValue 获取分组峰谷值
-   */
-  public async getGroupPeakValue() {
-    this.groupMax = [];
-    this.groupMin = [];
-    if (this.itemName.length !== this.refreshNumber) {
-      this.refreshNumber = this.itemName.length
-    }
-    for (let i = 0; i < this.itemName.length; i++) {
-      this.groupMax.push(this.findMax(this.itemName[i][this.config.groupName])[this.config.y.name]);
-      this.groupMin.push(this.findMin(this.itemName[i][this.config.groupName])[this.config.y.name]);
-    }
-  }
-
-  /**
    * loadData
    */
   public async loadData(config) {
@@ -1893,23 +1597,12 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
       this.axisFormatter(this.x, this.config.x.axis);
       // }
     }
-    if (this.config.y.scale) {
-      this.chart.scale(this.y, this.config.y.scale);
-    }
-    if (this.config.y.axis) {
-      this.chart.axis(this.y, this.config.y.axis);
-      // if (this.config.formatConfig && this.config.formatConfig.y) {
-      //   this.axisFormatter(this.y, this.config.y.axis);
-      // }
-    }
-    if (this.y1) {
-      if (this.config.y1.scale) {
-        this.chart.scale(this.y1, this.config.y1.scale);
-      }
-      if (this.config.y1.axis) {
-        this.chart.axis(this.y1, this.config.y1.axis);
-        // if (this.config.formatConfig && this.config.formatConfig.y1) {
-        //   this.axisFormatter(this.y1, this.config.y1.axis);
+    if (this.yDataArray) {
+      for (let i = 0; i < this.yDataArray.length; i++) {
+        this.chart.axis(this.yDataArray[i].name, this.yDataArray[i].axis);
+        this.chart.scale(this.yDataArray[i].name, this.yDataArray[i].scale);
+        // if (this.yDataArray[i].formatter) {
+        this.axisFormatter(this.yDataArray[i].name, this.yDataArray[i].axis, this.yDataArray[i].color, i, this.yDataArray[i].formatter);
         // }
       }
     }
@@ -1918,7 +1611,7 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
   /**
    * axisFormatter 坐标轴自定义初始化
    */
-  public axisFormatter(axis, axisConfig) {
+  public axisFormatter(axis, axisConfig, color?, temp?, formatter?) {
     const that = this;
     let format;
     if (axis === this.x) {
@@ -1960,8 +1653,184 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
           },
         }
       }
+    } else {
+      if (formatter) {
+        format = {
+          label: {
+            formatter: val => {
+              return val + formatter; // 格式化坐标轴显示
+            },
+            textStyle: {
+              fill: color
+            }
+          },
+        }
+      } else {
+        format = {
+          label: {
+            textStyle: {
+              fill: color
+            }
+          }
+        }
+      }
+      if (temp > 1) {
+        const value = 80 * (temp - 1);
+        format.label = { ...format.label, ...{ 'offset': value } };
+      }
     }
     axisConfig = { ...axisConfig, ...format }
     this.chart.axis(axis, axisConfig);
+  }
+
+  /**
+   * setDvData 给数据源dv赋值
+   **/
+  public setDvData() {
+    if (this.config.guideConfig && this.config.showGuide && this.config.guideConfig.guideType !== 'line') {
+      if (this.config.guideScale) {
+        if (this.config.guideScale.y) {
+          let grouptext;
+          for (let i = 0; i < this.config.guideScale.y.length; i++) {
+            if (grouptext) {
+              grouptext += this.config.guideScale.y[i]['name'] + ','
+            } else {
+              grouptext = this.config.guideScale.y[i]['name'] + ','
+            }
+          }
+          grouptext = grouptext.substring(0, grouptext.length - 1);
+          this.test = grouptext.split(',');
+          this.dv.source(this.showdata)
+            .transform({
+              type: 'filter',
+              callback: obj => {
+                const a = new Date(obj[this.x]);
+                return (new Date(obj[this.x])).getTime() >= this.ds.state.from && (new Date(obj[this.x])).getTime() <= this.ds.state.to;
+              }
+            })
+            .transform({
+              type: 'fold',
+              fields: [this.config.y.name, this.test[0], this.test[1]], // 展开字段集
+              key: 'city', // key字段
+              value: 'value' // value字段
+            });
+        }
+      }
+    } else {
+      if (this.config.yLegendGroup) {
+        let filedName;
+        let filedShowName;
+        for (let i = 0; i < this.config.yLegendGroup.length; i++) {
+          if (filedName && filedShowName) {
+            filedName += this.config.yLegendGroup[i]['name'] + ','
+            filedShowName += this.config.yLegendGroup[i]['alias'] + ','
+          } else {
+            filedName = this.config.yLegendGroup[i]['name'] + ','
+            filedShowName = this.config.yLegendGroup[i]['alias'] + ','
+          }
+        }
+        filedName = filedName.substring(0, filedName.length - 1);
+        filedShowName = filedShowName.substring(0, filedShowName.length - 1);
+        this.filedName = filedName.split(',');
+        this.filedShowName = filedShowName.split(',');
+        this.dv.source(this.showdata)
+          .transform({
+            type: 'filter',
+            callback: obj => {
+              const a = new Date(obj[this.x]);
+              return (new Date(obj[this.x])).getTime() >= this.ds.state.from && (new Date(obj[this.x])).getTime() <= this.ds.state.to;
+            }
+          })
+          .transform({
+            type: 'rename',
+            map: {
+              [this.filedName[0]]: this.filedShowName[0], // row.xxx 会被替换成 row.yyy
+              [this.filedName[1]]: this.filedShowName[1],
+              [this.filedName[2]]: this.filedShowName[2]
+            }
+          })
+          .transform({
+            type: 'fold',
+            fields: [this.filedShowName[0], this.filedShowName[1], this.filedShowName[2]], // 展开字段集
+            key: 'detectionValue', // key字段
+            value: 'value' // value字段
+          });
+      } else {
+        this.dv.source(this.dataList)
+          .transform({
+            type: 'filter',
+            callback: obj => {
+              const a = new Date(obj[this.x]);
+              return (new Date(obj[this.x])).getTime() >= this.ds.state.from && (new Date(obj[this.x])).getTime() <= this.ds.state.to;
+            }
+          });
+      }
+    }
+  }
+
+  /**
+   * createLegend 构建图例
+   */
+  public createLegend() {
+    if (this.config.legend) {
+      this.chart.legend(this.config.legend);
+    }
+  }
+
+  /**
+   * createLineAndPoint 创建线和点
+   */
+  public createLineAndPoint() {
+    if (this.config.guideConfig && this.config.showGuide && this.config.guideConfig.guideType !== 'line') {
+      if (this.config.guideScale) {
+        if (this.config.guideScale.y) {
+          this.config.guideScale.y.forEach(e => {
+            this.chart.line().position(this.config.x.name + '*' + this.config.y.name).color('city').shape(this.config.shape ? this.config.shape : 'circle');
+            // this.chart.point().position(this.config.x.name + '*' + this.config.y.name).color(e.name).size(4).shape('circle').style({
+            //   stroke: '#fff',
+            //   lineWidth: 1
+            // });
+          });
+        }
+      }
+    } else {
+      // this.chart.line().position(this.config.x.name + '*' + 'value').color('#0066FF').shape(this.config.shape ? this.config.shape : 'circle');
+      // this.chart.line().position(this.config.x.name + '*' + 'value1').color('#66CC00').shape(this.config.shape ? this.config.shape : 'circle');
+      // // this.chart.point().position(this.config.x.name + '*' + 'value').size(4).shape('overyGuide').style({
+      // //   stroke: '#fff',
+      // //   lineWidth: 1
+      // // });
+      // this.chart.point().position(this.config.x.name + '*' + 'value').size(4).shape('notEqualPlan').style({
+      //   stroke: '#fff',
+      //   lineWidth: 1,
+      //   type: 'value'
+      // });
+      // this.chart.point().position(this.config.x.name + '*' + 'value1').size(4).shape('notEqualPlan').style({
+      //   stroke: '#fff',
+      //   lineWidth: 1,
+      //   type: 'value1'
+      // });
+      for (let i = 0; i < this.yDataArray.length; i++) {
+        this.chart.line().position(this.config.x.name + '*' + this.yDataArray[i].name).color(this.yDataArray[i].color).shape(this.config.shape ? this.config.shape : 'circle');
+        if (this.config.showPointStyle) {
+          if (this.config.guideConfig) {
+            this.chart.point().position(this.config.x.name + '*' + this.yDataArray[i].name).size(4).shape('overyGuide').style({
+              stroke: '#fff',
+              lineWidth: 1,
+              field: this.yDataArray[i].name,
+              type: this.yDataArray[i].type
+            });
+          }
+          if (this.config.ruleConfig && this.config.ruleConfig.rule) {
+            this.chart.point().position(this.config.x.name + '*' + this.yDataArray[i].name).size(4).shape('notEqualPlan').style({
+              stroke: '#fff',
+              lineWidth: 1,
+              type: this.yDataArray[i].type
+            });
+          }
+        } else {
+        }
+      }
+    }
   }
 }

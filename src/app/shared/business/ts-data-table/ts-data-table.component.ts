@@ -176,9 +176,14 @@ export class TsDataTableComponent extends CnComponentBase
             if (aloadData && aloadData.status === 200 && aloadData.isSuccess) {
                 this.loadData.rows = aloadData.data.dataSet1;
                 const keyIdCode = this.config.keyId ? this.config.keyId : 'Id';
-                aloadData.data.dataSet1.forEach(element => {
-                    element['key'] = element[keyIdCode];
-                });
+                // aloadData.data.dataSet1.forEach(element => {
+                //     element['key'] = element[keyIdCode];
+                // });
+                const length = aloadData.data.dataSet1.length
+                for (let i = 0; i < length; i++) {
+                    this.loadData.rows[i]['_serilize'] = i + 1;
+                    aloadData.data.dataSet1[i]['key'] = aloadData.data.dataSet1[i][keyIdCode]
+                }
             }
             this.loadData.total = this.loadData.rows.length;
             this.total = this.loadData.total;
