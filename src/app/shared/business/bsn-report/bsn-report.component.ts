@@ -78,6 +78,7 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
         const d_params = this.buildParameter(this.config.ajaxConfig.params);
         const inline = this.config.inline;
         const report = this.config.reportName;
+        const type = this.config.type ? this.config.type : 'pdf';
         const token = d_params['token'];
 
         for (const d in d_params ) {
