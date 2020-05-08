@@ -4,6 +4,7 @@
     </ng-template>
     <div nz-row [nzGutter]="8">
         <div nz-col nzSpan="24">
+            <nz-spin [nzSpinning]="uploading" [nzDelay]="500" nzTip="上传中...">
             <nz-upload nzType="drag" [nzMultiple]="true" [nzBeforeUpload]="beforeUpload" [(nzFileList)]="fileList"
                 (nzChange)="handleChange($event)">
                 <p class="ant-upload-drag-icon">
@@ -12,6 +13,7 @@
                 <p class="ant-upload-text">请将文件【拖拽】至此或【单击】此区域添加文件</p>
                 <p class="ant-upload-hint">此处支持批量文件上传</p>
             </nz-upload>
+            </nz-spin>
         </div>
     </div>
     <nz-divider nzDashed [nzText]="text">
@@ -37,7 +39,7 @@
         <div nz-col nzSpan="16"><textarea nz-input [(ngModel)]="remark" rows="2"></textarea></div>
         <div nz-col nzSpan="4">
             <button style="float:right" [nzLoading]="uploading" (click)="handleUpload()" [disabled]="fileList.length == 0"
-                nz-button [nzType]="'primary'" value="上传">
+                nz-button [nzType]="'primary'" value="上传" >
                 {{ uploading ? '上传中...' : '开始上传' }}
             </button>
         </div>

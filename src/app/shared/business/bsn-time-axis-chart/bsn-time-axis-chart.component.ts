@@ -278,7 +278,7 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
       animate: true, // 动画 默认true
       forceFit: true,  // 图表的宽度自适应开关，默认为 false，设置为 true 时表示自动取 dom（实例容器）的宽度。
       height: this.config.height ? this.config.height : 300, // 指定图表高度
-      padding: [60, 160, 60, 90]
+      padding: [60, 90, 60, 160]
     });
 
     // 创建DS数据源
@@ -331,7 +331,7 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
     if (this.config.showSlider && !this.config.autoPlay) {
       this.slider = new Slider({
         container: this.sliderElement.nativeElement,
-        padding: [60, 160, 60, 90],
+        padding: [60, 90, 60, 160],
         start: this.ds.state.from,
         end: this.ds.state.to,
         data: this.dataList,
@@ -386,7 +386,7 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
         xAxis: this.config.x.name,
         yAxis: this.y,
         data: this.showdata,
-        padding: [60, 160, 60, 90],
+        padding: [60, 90, 60, 160],
         backgroundChart: {
           type: 'line',
           color: 'grey'
@@ -1600,7 +1600,9 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
     if (this.yDataArray) {
       for (let i = 0; i < this.yDataArray.length; i++) {
         this.chart.axis(this.yDataArray[i].name, this.yDataArray[i].axis);
-        this.chart.scale(this.yDataArray[i].name, this.yDataArray[i].scale);
+        if (this.yDataArray[i].scale) {
+          this.chart.scale(this.yDataArray[i].name, this.yDataArray[i].scale);
+        }
         // if (this.yDataArray[i].formatter) {
         this.axisFormatter(this.yDataArray[i].name, this.yDataArray[i].axis, this.yDataArray[i].color, i, this.yDataArray[i].formatter);
         // }
@@ -1659,25 +1661,26 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
           label: {
             formatter: val => {
               return val + formatter; // 格式化坐标轴显示
-            },
-            textStyle: {
-              fill: color
             }
-          },
-        }
-      } else {
-        format = {
-          label: {
-            textStyle: {
-              fill: color
-            }
+            // ,
+            // textStyle: {
+            //   fill: color
+            // }
           }
         }
+      // } else {
+      //   format = {
+      //     label: {
+      //       textStyle: {
+      //         fill: color
+      //       }
+      //     }
+      //   }
       }
-      if (temp > 1) {
-        const value = 80 * (temp - 1);
-        format.label = { ...format.label, ...{ 'offset': value } };
-      }
+      // if (temp > 1) {
+      //   const value = 80 * (temp - 1);
+      //   format.label = { ...format.label, ...{ 'offset': value } };
+      // }
     }
     axisConfig = { ...axisConfig, ...format }
     this.chart.axis(axis, axisConfig);
