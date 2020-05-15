@@ -88,8 +88,8 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
         }
 
         const resource = `${this.config.ajaxConfig.url}&${url.join('&')}`;
-        this.reportURL = `${this._replaceCurrentURL(SystemResource.reportServer.url)}?inline=${inline}&report=${report}&type=pdf&resource=${resource}`;
-        console.log(this._replaceCurrentURL(this.reportURL));
+        this.reportURL = `${this._replaceCurrentURL(SystemResource.reportServer.url)}?inline=${inline}&report=${report}&type=${type}&resource=${resource}`;
+        // console.log(this._replaceCurrentURL(this.reportURL));
     }
     private _replaceCurrentURL(oldUrl: string): string {
         const reg = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;

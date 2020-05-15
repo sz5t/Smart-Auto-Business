@@ -5,6 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SettingsService, MenuService } from '@delon/theme';
 import { NzModalService } from 'ng-zorro-antd';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { CnFormWindowResolverComponent } from '@shared/resolver/form-resolver/form-window-resolver.component';
+import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
 
 @Component({
     selector: 'module-entry.component',
@@ -21,6 +23,7 @@ export class ModuleEntryComponent implements OnInit, OnDestroy {
     public isLoadLayout = false;
 
     public isCollapsed =  true;
+    public userInfo: any;
     public triggerTemplate: TemplateRef<void> | null = null;
     @ViewChild('trigger') public customTrigger: TemplateRef<void>;
   
@@ -37,12 +40,12 @@ export class ModuleEntryComponent implements OnInit, OnDestroy {
     ) { }
 
     public ngOnInit() {
+        this.userInfo = this.cacheService.getNone('userInfo');
         this._route.params.subscribe(params => {
             this._http.getLocalData(params.templateName).subscribe(data => {
                 this.config = data;
                 (async() => {
-                    const userInfo = this.cacheService.getNone('userInfo');
-                    const userId = userInfo['userId'];    
+                    const userId = this.userInfo['userId'];    
                     const permission = await this._getOperationPermission(params.name, userId, 'button');
                     if (permission.isSuccess) {
                         this.permissions = permission.data;
@@ -59,6 +62,11 @@ export class ModuleEntryComponent implements OnInit, OnDestroy {
         });
 
     }
+
+    public ngAfterViewInit () {
+        this.userInfo = this.cacheService.getNone('userInfo');
+    }
+
     /** custom trigger can be TemplateRef **/
     public changeTrigger(): void {
         // this.triggerTemplate = this.customTrigger;
@@ -90,6 +98,202 @@ export class ModuleEntryComponent implements OnInit, OnDestroy {
 
     public async _getOperationPermission(moduleCode, roleId, type) {
         return this._http.get('common/GetButtonData', {type: type, moduleCode: moduleCode, roleId: roleId}).toPromise();
+    }
+
+    public editPassWord() {
+        const dialog = {
+            'keyId': 'Id',
+            'name': 'updateUserPassword',
+            'title': '修改密码：',
+            'editable': 'put',
+            'width': '600',
+            'ajaxConfig': {
+                'url': 'common/SysAccount',
+                'ajaxType': 'getById',
+                'params': [
+                    {
+                        'name': 'Id',
+                        'type': 'cacheValue',
+                        'valueName': 'accountId'
+                    }
+                ]
+            },
+            'componentType': {
+                'parent': false,
+                'child': false,
+                'own': true
+            },
+            'forms': [
+                {
+                    'controls': [
+                        {
+                            'type': 'input',
+                            'labelSize': '6',
+                            'controlSize': '18',
+                            'inputType': 'password',
+                            'name': 'oldPassword',
+                            'label': '原密码',
+                            'isRequired': true,
+                            'disabled': false,
+                            'readonly': false,
+                            'size': 'default',
+                            'layout': 'column',
+                            'span': '24',
+                            'validations': [
+                                {
+                                    'validator': 'required',
+                                    'errorMessage': '请输入原密码'
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    'controls': [
+                        {
+                            'type': 'input',
+                            'labelSize': '6',
+                            'controlSize': '18',
+                            'inputType': 'password',
+                            'name': 'password',
+                            'label': '新密码',
+                            'isRequired': true,
+                            'disabled': false,
+                            'readonly': false,
+                            'size': 'default',
+                            'layout': 'column',
+                            'span': '24',
+                            'validations': [
+                                {
+                                    'validator': 'required',
+                                    'errorMessage': '请输入新密码'
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    'controls': [
+                        {
+                            'type': 'input',
+                            'labelSize': '6',
+                            'controlSize': '18',
+                            'inputType': 'password',
+                            'name': 'confirmPassword',
+                            'isRequired': true,
+                            'label': '确认新密码',
+                            'disabled': false,
+                            'readonly': false,
+                            'size': 'default',
+                            'layout': 'column',
+                            'span': '24',
+                            'validations': [
+                                {
+                                    'validator': 'required',
+                                    'errorMessage': '请输入再次确定密码'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            'buttons': [
+                {
+                    'name': 'save',
+                    'text': '保存',
+                    'type': 'primary',
+                    'ajaxConfig': [
+                        {
+                            'ajaxType': 'put',
+                            'action': 'EXECUTE_SELECTED',
+                            'url': 'common/user/account/pwd/update',
+                            'params': [
+                                {
+                                    'name': 'Id',
+                                    'type': 'tempValue',
+                                    'valueName': '_id'
+                                },
+                                {
+                                    'name': 'oldPassword',
+                                    'type': 'componentValue',
+                                    'valueName': 'oldPassword'
+                                },
+                                {
+                                    'name': 'password',
+                                    'type': 'componentValue',
+                                    'valueName': 'password'
+                                },
+                                {
+                                    'name': 'confirmPassword',
+                                    'type': 'componentValue',
+                                    'valueName': 'confirmPassword'
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    'name': 'close',
+                    'class': 'editable-add-btn',
+                    'text': '关闭'
+                },
+                {
+                    'name': 'reset',
+                    'class': 'editable-add-btn',
+                    'text': '重置'
+                }
+            ]
+        }
+        const footer = [];
+        const modal = this.modal.create({
+            nzTitle: dialog.title,
+            nzWidth: dialog.width,
+            nzClosable: false,
+            nzContent: CnFormWindowResolverComponent,
+            nzComponentParams: {
+                config: dialog,
+                editable: 'add'
+            },
+            nzFooter: footer
+        });
+
+        if (dialog.buttons) {
+            dialog.buttons.forEach(btn => {
+                const button = {};
+                button['label'] = btn.text;
+                button['type'] = btn.type ? btn.type : 'default';
+                button['onClick'] = componentInstance => {
+                    if (btn['name'] === 'save') {
+                        componentInstance.buttonAction(
+                            btn,
+                            () => {
+                                modal.close();
+                                this.tokenService.clear();
+                                this.cacheService.clear();
+                                this.menuService.clear();
+                                this.router.navigateByUrl('/passport/app').catch(() => {
+                                    this.apiService.post('login_out');
+                                });
+                            }, dialog
+                        );
+                    } else if (btn['name'] === 'close') {
+                        modal.close();
+                    } else if (btn['name'] === 'reset') {
+                        this._resetForm(componentInstance);
+                    }
+                };
+                footer.push(button);
+            });
+        }
+    }
+
+    /**
+     * 重置表单
+     * @param comp
+     * @private
+     */
+    private _resetForm(comp: FormResolverComponent) {
+        comp.resetForm();
     }
 
 }
