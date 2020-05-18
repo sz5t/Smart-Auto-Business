@@ -41,6 +41,10 @@ export class SearchResolverComponent extends CnComponentBase
     public permissions;
     @Input()
     public dataList;
+    @Input() 
+    public initValue;
+    @Input() 
+    public initData;
     @Input()
     public ref;
     public form: FormGroup;
@@ -78,6 +82,7 @@ export class SearchResolverComponent extends CnComponentBase
 
     // region: 组件生命周期事件
     public ngOnInit() {
+        this.initValue = this.initValue ? this.initValue : this.initData;
         // 做参数简析
         if (this.config.select) {
             this.config.select.forEach(selectItem => {
@@ -259,6 +264,8 @@ export class SearchResolverComponent extends CnComponentBase
                         params[param.name] = fieldIdentity;
                     } else if (param.type === 'componentValue') {
                         params[param.name] = componentValue[param.valueName];
+                    }  else if (param.type === 'initValue') {
+                        params[param.name] = this.initValue[param.valueName];
                     }
                 });
             }
@@ -277,6 +284,8 @@ export class SearchResolverComponent extends CnComponentBase
                         pc = componentValue[param.valueName];
                     } else if (param.type === 'tempValue') {
                         pc = this._tempParameters[param.valueName];
+                    } else if (param.type === 'initValue') {
+                        pc = this.initValue[param.valueName];
                     }
                 });
 
