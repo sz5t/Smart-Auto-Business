@@ -30,6 +30,8 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
     public dataSet;
     @Input()
     public casadeData;
+    @Input() 
+    public initData;
     @Output()
     private updateValue = new EventEmitter();
     public _options = [];
@@ -168,6 +170,8 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
                     } else {
                         params[param.name] = cache[param['valueName']];
                     }
+                }  else if (param.type === 'initValue') {
+                    params[param.name] = this.initData[param.valueName];
                 }
             });
 
@@ -184,6 +188,8 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
                         pc = this.bsnData[param.valueName];
                     } else if (param.type === 'cascadeValue') {
                         pc = this.cascadeValue[param.valueName];
+                    }  else if (param.type === 'initValue') {
+                        pc = this.initData[param.valueName];
                     }
                 });
 
