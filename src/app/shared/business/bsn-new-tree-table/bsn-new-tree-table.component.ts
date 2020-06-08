@@ -597,7 +597,8 @@ export class BsnNewTreeTableComponent extends TreeGridBase
         state: 'text',
         data: _root,
         originData: { ..._root },
-        children: [],
+        // children: [],
+        children: (_root['children'] && _root['children'].length > 0) ? [] : null,
         isNewRow: false
       });
 
@@ -743,7 +744,7 @@ export class BsnNewTreeTableComponent extends TreeGridBase
             appendedChildrenData.push(data);
             this.total = this.total + 1;
           })
-          item['children'] = appendedChildrenData;
+          item['children'] = appendedChildrenData.length > 0 ? appendedChildrenData : null;
           this._appendChildrenToList(item.data, appendedChildrenData);
         }
       })();
@@ -859,6 +860,9 @@ export class BsnNewTreeTableComponent extends TreeGridBase
 
     if (!this.changeConfig_new[newData[this.KEY_ID]]) {
       this.changeConfig_new[newData[this.KEY_ID]] = {};
+    }
+    if (!this.mapOfDataExpanded[parentId][0].children) {
+      this.mapOfDataExpanded[parentId][0].children = [];
     }
     this.mapOfDataExpanded[parentId][0].children.push(newData);
     this.mapOfDataExpanded[parentId][0].expand = true;
@@ -1455,6 +1459,7 @@ export class BsnNewTreeTableComponent extends TreeGridBase
             // 选中父节点
             // parentMapOfData.selected = true;
             this.setSelectRow(parentData);
+            parentMapOfData.children = null;
           }
         }
       } else {
@@ -1747,10 +1752,22 @@ export class BsnNewTreeTableComponent extends TreeGridBase
       if (paramArray[1] === 'delete') {
         const deleteId = paramArray[0].split(',');
         deleteId.forEach(d => {
+          const parentId = this.mapOfDataExpanded[d][0].data.parentId;
           delete this.mapOfDataExpanded[d];
-          const index = this.dataList.findIndex(da => da.Id === d);
+          const index = this.dataList.findIndex(da => da[this.KEY_ID] === d);
+          const parentIndex = this.dataList.findIndex(da => da[this.KEY_ID] === parentId);
+          this.mapOfDataExpanded[parentId][0].data.children.splice(this.mapOfDataExpanded[parentId][0].data.children.findIndex(da => da[this.KEY_ID] === d), 1);
+          this.mapOfDataExpanded[parentId][0].children.splice(this.mapOfDataExpanded[parentId][0].children.findIndex(da => da[this.KEY_ID] === d), 1);
+          if (this.mapOfDataExpanded[parentId][0].children.length === 0) {
+            this.mapOfDataExpanded[parentId][0].children = null;
+          }
+          this.dataList[parentIndex].children.splice(this.dataList[parentIndex].children.findIndex(da => da[this.KEY_ID] === d), 1);
+          this.dataList[parentIndex].children = this.dataList[parentIndex].children.filter(da => da[this.KEY_ID] !== null);
+          if (this.dataList[parentIndex].children.length === 0) {
+            this.dataList[parentIndex].children = null;
+          }
           this.dataList.splice(index, 1);
-          this.dataList = this.dataList.filter(da => da.Id !== null);
+          this.dataList = this.dataList.filter(da => da[this.KEY_ID] !== null);
         });
       }
       this.dataCheckedStatusChange();

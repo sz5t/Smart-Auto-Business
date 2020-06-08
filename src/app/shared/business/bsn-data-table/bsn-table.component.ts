@@ -492,6 +492,13 @@ export class BsnTableComponent extends CnComponentBase
                             this.cancelSelectRow();
                             break;
                         case BSN_COMPONENT_MODES.EDIT:
+                            if (
+                                this.dataList.filter(item => item.checked === true)
+                                    .length <= 0
+                            ) {
+                                this.baseMessage.create('info', '请选择要执行的数据');
+                                return;
+                            }
                             this.beforeOperation.operationItemsData = this._getCheckedItems();
                             !this.beforeOperation.beforeItemsDataOperation(
                                 option
@@ -544,6 +551,13 @@ export class BsnTableComponent extends CnComponentBase
                                 this.uploadDialog(option);
                             break;
                         case BSN_COMPONENT_MODES.FORM_BATCH:
+                            if (
+                                this.dataList.filter(item => item.checked === true)
+                                    .length <= 0
+                            ) {
+                                this.baseMessage.create('info', '请选择要执行的数据');
+                                return;
+                            }
                             this.beforeOperation.operationItemsData = this._getCheckedItems();
                             if (!this.beforeOperation.beforeItemsDataOperation(
                                 option
@@ -992,7 +1006,8 @@ export class BsnTableComponent extends CnComponentBase
         ajaxConfig,
         componentValue?,
         selecttempValue?,
-        cascadeValue?
+        cascadeValue?,
+        initData?
     ) {
         const url = this._buildURL(ajaxConfig.url);
         const method = ajaxConfig.ajaxType;
@@ -1001,7 +1016,8 @@ export class BsnTableComponent extends CnComponentBase
                 ajaxConfig.params,
                 componentValue,
                 selecttempValue,
-                cascadeValue
+                cascadeValue,
+                initData
             )
         };
         let selectrowdata = {};
@@ -1048,7 +1064,8 @@ export class BsnTableComponent extends CnComponentBase
         paramsConfig,
         componentValue?,
         selecttempValue?,
-        cascadeValue?
+        cascadeValue?,
+        initData?
     ) {
         let params = {};
         if (paramsConfig) {
@@ -1056,7 +1073,7 @@ export class BsnTableComponent extends CnComponentBase
                 params: paramsConfig,
                 tempValue: selecttempValue,
                 componentValue: componentValue,
-                initValue: this.initValue,
+                initValue: {...this.initValue, ...initData},
                 cacheValue: this.cacheService,
                 cascadeValue: cascadeValue,
                 router: this._router
@@ -1503,9 +1520,6 @@ export class BsnTableComponent extends CnComponentBase
                 checkedCount++;
             }
         });
-        if (checkedCount === 0) {
-            this.baseMessage.info('请勾选数据记录后进行编辑');
-        }
     }
 
     public valueChange(data) {
@@ -1682,6 +1696,7 @@ export class BsnTableComponent extends CnComponentBase
                                     }
                                 }
                             }
+                            this.editCache[data.key].data[ key] = this.changeConfig_new[rowCasade][key ]['setValue'];
 
                             // endregion  解析结束
                         }
@@ -1801,69 +1816,34 @@ export class BsnTableComponent extends CnComponentBase
                                         caseItem['setValue']['type'] === 'value'
                                     ) {
                                         // 静态数据
-                                        this.changeConfig_new[rowCasade][key][
-                                            'setValue'
-                                        ] = caseItem['setValue']['value'];
+                                        this.changeConfig_new[rowCasade][key]['setValue'] = caseItem['setValue']['value'];
                                     }
                                     if (
-                                        caseItem['setValue']['type'] ===
-                                        'selectValue'
-                                    ) {
+                                        caseItem['setValue']['type'] ==='selectValue' ) {
                                         // 选中行数据[这个是单值]
-                                        this.changeConfig_new[rowCasade][key][
-                                            'setValue'
-                                        ] =
-                                            data[
-                                            caseItem['setValue'][
-                                            'valueName'
-                                            ]
-                                            ];
+                                        this.changeConfig_new[rowCasade][key]['setValue'] =data[caseItem['setValue']['valueName']];
                                     }
-                                    if (
-                                        caseItem['setValue']['type'] ===
-                                        'selectObjectValue'
-                                    ) {
+                                    if ( caseItem['setValue']['type'] ==='selectObjectValue') {
                                         // 选中行对象数据
                                         if (data.dataItem) {
-                                            this.changeConfig_new[rowCasade][
-                                                key
-                                            ]['setValue'] =
-                                                data.dataItem[
-                                                caseItem['setValue'][
-                                                'valueName'
-                                                ]
-                                                ];
+                                            this.changeConfig_new[rowCasade][key]['setValue'] =data.dataItem[caseItem['setValue']['valueName' ]];
                                         }
                                     }
                                     if (data.data === null) {
-                                        this.changeConfig_new[rowCasade][key][
-                                            'setValue'
-                                        ] = null;
+                                        this.changeConfig_new[rowCasade][key]['setValue'] = null;
                                     }
-                                    if (
-                                        caseItem['setValue']['type'] ===
-                                        'notsetValue'
-                                    ) {
+                                    if (caseItem['setValue']['type'] === 'notsetValue') {
                                         // 选中行对象数据
-                                        if (
-                                            this.changeConfig_new[rowCasade][
-                                                key
-                                            ].hasOwnProperty('setValue')
-                                        ) {
-                                            delete this.changeConfig_new[
-                                                rowCasade
-                                            ][key]['setValue'];
+                                        if ( this.changeConfig_new[rowCasade][ key].hasOwnProperty('setValue')) {
+                                            delete this.changeConfig_new[ rowCasade ][key]['setValue'];
                                         }
                                     }
+                                  
                                 } else {
                                     if (
-                                        this.changeConfig_new[rowCasade][
-                                            key
-                                        ].hasOwnProperty('setValue')
+                                        this.changeConfig_new[rowCasade][key].hasOwnProperty('setValue')
                                     ) {
-                                        delete this.changeConfig_new[rowCasade][
-                                            key
-                                        ]['setValue'];
+                                        delete this.changeConfig_new[rowCasade][key ]['setValue'];
                                     }
                                 }
                             }
@@ -1873,14 +1853,11 @@ export class BsnTableComponent extends CnComponentBase
                                 if (this.changeConfig_new[rowCasade][key]) {
                                     //
                                     if (this.isEdit(key)) {
-                                        this.editCache[data.key].data[
-                                            key
-                                        ] = this.changeConfig_new[rowCasade][
-                                        key
-                                        ]['setValue'];
+                                        this.editCache[data.key].data[ key] = this.changeConfig_new[rowCasade][key ]['setValue'];
                                     }
                                 }
                             }
+                            this.editCache[data.key].data[ key] = this.changeConfig_new[rowCasade][key ]['setValue'];
                         }
                     );
                 }

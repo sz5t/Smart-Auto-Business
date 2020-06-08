@@ -136,7 +136,7 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
         } else if (param.type === 'cascadeValue') {
           params[param.name] = this.cascadeValue[param.valueName];
         } else if (param.type === 'initValue') {
-          params[param.name] = this.initValue[param.valueName];
+          params[param.name] = this.initData[param.valueName];
         }
       });
       if (this.isString(p.url)) {
@@ -197,7 +197,7 @@ export class CnGridSelectCustomComponent extends CnComponentBase implements OnIn
         nzComponentParams: {
           permissions: this.permissions,
           config: data,
-          initData: { ...this.bsnData, ...this.rowData, ...this.initValue} // ...tmpValue, ...selectedRow
+          initData: { ...this.bsnData, ...this.rowData, ...this.initData} // ...tmpValue, ...selectedRow
         },
         nzFooter: footer
       });

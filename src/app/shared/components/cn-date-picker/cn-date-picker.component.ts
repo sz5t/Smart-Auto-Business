@@ -81,7 +81,7 @@ export class CnDatePickerComponent implements OnInit {
 
     public changeControlValue1(val) {
         this.controlValue = val;
-        console.log(this.config, this.controlValue);
+        // console.log(this.config, this.controlValue);
         this.valueChange(this.controlValue);
     }
 
@@ -96,7 +96,7 @@ export class CnDatePickerComponent implements OnInit {
 
     public valueChange(result?: Date): void {
         // 选择日期
-        // console.log('日期 onChange: ', result, typeof (result));
+        //  console.log('日期 onChange: ', result, typeof (result));
         if (result) {
             let sj = result;
             if (typeof (result) === 'string') {
@@ -140,10 +140,11 @@ export class CnDatePickerComponent implements OnInit {
         // console.log('多选值变化model=>data', v, this.controlValue, item);
         const backValue = { name: this.config.name, value: v, dataItem: item };
         setTimeout(s => {
-            this.value = backValue.value;
+           // this.value = backValue.value;
            
         }, 0)
         this.updateValue.emit(backValue);
+        //    console.log('多选值变化model=>data', v, this.controlValue, item);
     }
 
 

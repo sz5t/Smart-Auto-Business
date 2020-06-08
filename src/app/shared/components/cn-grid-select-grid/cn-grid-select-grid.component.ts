@@ -246,7 +246,8 @@ export class CnGridSelectGridComponent implements OnInit {
                                 this.config.ajaxConfig,
                                 componentvalue,
                                 this.bsnData,
-                                this.casadeData
+                                this.casadeData,
+                                this.initData
                             );
                             if (backselectdata.hasOwnProperty(labelName)) {
                                 this._valuetext = backselectdata[labelName];
@@ -267,7 +268,8 @@ export class CnGridSelectGridComponent implements OnInit {
                         this.config.ajaxConfig,
                         componentvalue,
                         this.bsnData,
-                        this.casadeData
+                        this.casadeData,
+                        this.initData
                     );
                     if (backselectdata.hasOwnProperty(labelName)) {
                         this._valuetext = backselectdata[labelName];

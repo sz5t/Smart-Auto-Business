@@ -1802,6 +1802,7 @@ export class TsDataTableComponent extends CnComponentBase
                                     }
                                 }
                             }
+                            this.editCache[data.key].data[key] =  this.changeConfig_new[rowCasade][key]['setValue'];
 
                             // endregion  解析结束
                         }
@@ -2004,6 +2005,7 @@ export class TsDataTableComponent extends CnComponentBase
                                     }
                                 }
                             }
+                            this.editCache[data.key].data[key] =  this.changeConfig_new[rowCasade][key]['setValue'];
                         }
                     );
                 }
