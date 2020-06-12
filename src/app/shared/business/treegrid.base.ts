@@ -846,6 +846,23 @@ export class TreeGridBase extends CnComponentBase {
                                     }
                                 );
                             })();
+                        } else if (btn['name'] === 'savenorefresh') {
+                            (async () => {
+                                const result = await componentInstance.buttonAction(
+                                    btn,
+                                    (response) => {
+                                        modal.close();
+                                        let focusIds = this.getFocusIds(
+                                            response.data
+                                        );
+                                        // this._callback(focusIds);i
+                                        if (focusIds === '') {
+                                            focusIds = response;
+                                        }
+                                        // this.windowCallback(focusIds, true);
+                                    }
+                                );
+                            })();
                         } else if (btn['name'] === 'saveAndKeep') {
                             (async () => {
                                 const result = await componentInstance.buttonAction(
@@ -866,6 +883,9 @@ export class TreeGridBase extends CnComponentBase {
                         } else if (btn['name'] === 'close') {
                             modal.close();
                             this.windowCallback('close', true);
+                        } else if (btn['name'] === 'closenorefresh') {
+                            modal.close();
+                            // this.windowCallback('close', true);
                         } else if (btn['name'] === 'ok') {
                             modal.close();
                             this.windowCallback('close', true);
