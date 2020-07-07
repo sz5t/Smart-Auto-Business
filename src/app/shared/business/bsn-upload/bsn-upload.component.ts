@@ -34,6 +34,9 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
     public refObj;
     public uploading = false;
     public fileList: UploadFile[] = [];
+    public fileType: string;
+    public promptText: string;
+    public promptTextStyle: object;
     public securityList = [];
     public uploadList = [];
     public loading = false;
@@ -51,6 +54,28 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
         if (this.config.showList) {
             this.isUpload = false;
         }
+        if (this.config.fileType) {
+            this.fileType = this.config.fileType
+        } else if (this.config.ajaxConfig.fileType) {
+            this.fileType = this.config.ajaxConfig.fileType
+        }
+
+        if (this.config.promptText) {
+            this.promptText = this.config.promptText
+        } else if (this.config.ajaxConfig.promptText) {
+            this.promptText = this.config.ajaxConfig.promptText
+        } else {
+            this.promptText = '请确认文件格式！'
+        }
+
+        if (this.config.promptTextStyle) {
+            this.promptTextStyle = this.config.promptTextStyle
+        } else if (this.config.ajaxConfig.promptTextStyle) {
+            this.promptTextStyle = this.config.ajaxConfig.promptTextStyle
+        } else {
+            this.promptTextStyle = {'font-size': '14px', 'color': '	#FF0000'}
+        }
+        
         if (this.config.securityConfig) {
             this.getsecurityList();
             this.loadUploadList();

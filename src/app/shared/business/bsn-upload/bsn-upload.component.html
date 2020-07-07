@@ -5,13 +5,14 @@
     <div nz-row [nzGutter]="8">
         <div nz-col nzSpan="24">
             <nz-spin [nzSpinning]="uploading" [nzDelay]="500" nzTip="上传中...">
-            <nz-upload nzType="drag" [nzMultiple]="true" [nzBeforeUpload]="beforeUpload" [(nzFileList)]="fileList"
+            <nz-upload nzType="drag" [nzMultiple]="true" [nzBeforeUpload]="beforeUpload" [(nzFileList)]="fileList" [nzFileType]="fileType"
                 (nzChange)="handleChange($event)">
                 <p class="ant-upload-drag-icon">
                     <i class="anticon anticon-inbox"></i>
                 </p>
                 <p class="ant-upload-text">请将文件【拖拽】至此或【单击】此区域添加文件</p>
                 <p class="ant-upload-hint">此处支持批量文件上传</p>
+                <p [ngStyle]="promptTextStyle">{{promptText}}</p>
             </nz-upload>
             </nz-spin>
         </div>

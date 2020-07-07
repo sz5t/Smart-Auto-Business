@@ -31,6 +31,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GridBase } from '../grid.base';
 import { SystemResource } from '@core/utility/system-resource';
 import { BeforeOperation } from '../before-operation.base';
+import { split } from 'core-js/fn/symbol';
 
 @Component({
     selector: 'cn-bsn-async-tree',
@@ -153,15 +154,15 @@ export class BsnAsyncTreeComponent extends GridBase
                     switch (r_val.type) {
                         case 'add':
                             mode = BSN_COMPONENT_CASCADE_MODES.ADD_ASYNC_TREE_NODE;
-                            this.addChildrenNode(returndata.data.curId);
+                            this.addChildrenNode(returndata.data[this.config.baseProp.addNodeField]);
                             break;
                         case 'edit':
                             mode = BSN_COMPONENT_CASCADE_MODES.EDIT_ASNYC_TREE_NODE;
-                            this.updateNode(returndata.data.curId);
+                            this.updateNode(returndata.data[this.config.baseProp.editNodeField]);
                             break;
                         case 'delete':
                             mode = BSN_COMPONENT_CASCADE_MODES.DELETE_ASYNC_TREE_NODE;
-                            this.deleteNodes(returndata.data.curId);
+                            this.deleteNodes(returndata.data[this.config.baseProp.deleteNodeField]);
                             break;
                         case 'simple':
                             if (returndata.data.curId) {
@@ -493,7 +494,14 @@ export class BsnAsyncTreeComponent extends GridBase
         const keysArray = keys.split(',');
         if (keysArray && keysArray.length > 0) {
             for (const k of keysArray) {
+                const parentNode = this.treeObj.getTreeNodeByKey(k).getParentNode();
                 this.treeObj.getTreeNodeByKey(k).remove();
+                // const a = parentNode.getChildren();
+                if (parentNode.getChildren().length === 0) {
+                    parentNode.clearChildren();
+                    parentNode.isLeaf = true;
+                    // console.log(parentNode);
+                }
             }
         }
         this.treeData = this.treeObj.getTreeNodes();
@@ -529,7 +537,9 @@ export class BsnAsyncTreeComponent extends GridBase
     public addChildrenNode(keys: string) {
         if (keys && keys.length > 0) {
             (async () => {
-                this._execute(this.config.ajaxConfig.url, 'get', { 'Id': `in(${keys})` }).then(
+                const url = this.config.ajaxConfig.url.split('/');
+                const ajaxUrl = url[0] + '/' + url[1]
+                this._execute(ajaxUrl, 'get', {'Id': `in(${keys})` }).then(
                     result => {
                         if (result.isSuccess) {
                             const currentSelectedNode = this.treeObj.getTreeNodeByKey(this.selectedItem.key);
@@ -543,17 +553,21 @@ export class BsnAsyncTreeComponent extends GridBase
                                 node['key'] = d[this.config.columns[key_index]['valueName']] ? d[this.config.columns[key_index]['valueName']] : '';
                                 node['parentId'] = d[this.config.columns[parent_index]['valueName']] ? d[this.config.columns[parent_index]['valueName']] : '';
                                 node['origin'] = d ? d : {};
+                                node['Id'] = node['key'];
                                 node['selected'] = false;
+                                node['isLeaf'] = true;
                                 addNodes.push(node);
                             }
                             this.treeData = this.treeObj.getTreeNodes();
                             // 打开节点, 重新异步加载数据
                             if (currentSelectedNode && !currentSelectedNode.isExpanded) {
+                                currentSelectedNode.origin.isLeaf = false;
                                 currentSelectedNode.setExpanded(true);
                                 this.expandNode({ node: currentSelectedNode }, this.setChildrenSelectedNode, this);
                             } else { // 节点已经打开,直接在节点下添加子节点
                                 currentSelectedNode.addChildren(addNodes, 0);
                                 this.setChildrenSelectedNode(this);
+                                this.treeData = this.treeObj.getTreeNodes();
                             }
                             // if (addNodes.length > 0) {
 
@@ -615,6 +629,9 @@ export class BsnAsyncTreeComponent extends GridBase
 
         that.activedNode = sNode[0];
         that.selectedItem = that.activedNode.origin;
+        if (that.selectedItem.origin) {
+            that.selectedItem = that.selectedItem.origin
+        }
 
         that.tempValue['_selectedNode'] = that.selectedItem;
         // that.after(that, 'clickNode', () => {
@@ -696,7 +713,8 @@ export class BsnAsyncTreeComponent extends GridBase
                     }
                 ];
                 result[0].children.push(
-                    ...this.listToAsyncTreeData(this._toTreeBefore, parent)
+                    ...this.listToAsyncTreeDataNew(this._toTreeBefore, parent)
+                    // ...this.listToAsyncTreeData(this._toTreeBefore, parent)
                 );
 
                 // const result = [
@@ -813,7 +831,39 @@ export class BsnAsyncTreeComponent extends GridBase
                             }
                         }
                     }
+                    if (data[i]['children'].length > 0) {
+                        data[i]['isLeaf'] = false;
+                    } else {
+                        data[i]['isLeaf'] = true;
+                    }
+                    // console.log(data[i], data[i]['isLeaf'], temp.length);
+                }
+                data[i].level = '';
+                result.push(data[i]);
+            }
+        }
+        return result;
+    }
+
+    public listToAsyncTreeDataNew(data, parentid, expandNode?, selectedNode?) {
+        const result: any[] = [];
+        let temp;
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].parentId === parentid) {
+                // temp = this.listToAsyncTreeData(data, data[i].key);
+                if (data[i].children.length > 0) {
+                    data[i]['children'] = [];
                     data[i]['isLeaf'] = false;
+                    data[i]['expanded'] = false;
+                } else {
+                    if (selectedNode) {
+                        for (let j = 0; j < data.length; j++) {
+                            if (data[j]['Id'] === selectedNode) {
+                                data[j]['selected'] = true;
+                            }
+                        }
+                    }
+                    data[i]['isLeaf'] = true;
                 }
                 data[i].level = '';
                 result.push(data[i]);
@@ -840,13 +890,20 @@ export class BsnAsyncTreeComponent extends GridBase
                             }
                         }
                     }
-                    data[i]['isLeaf'] = false;
+                    if (data[i]['children'].length > 0) {
+                        data[i]['isLeaf'] = false;
+                    } else {
+                        data[i]['children'] = [];
+                        data[i]['isLeaf'] = true;
+                    }
                 }
                 data[i].level = '';
                 result.push(data[i]);
                 for (let j = 0; j < result.length; j++) {
                     if (result[j]['children'] && result[j]['children'].length === 1 && result[j]['children'][0]['Id'] === selectedNode) {
-                        result[j]['expanded'] = false
+                        result[j]['expanded'] = false;
+                        result[j]['children'] = [];
+                        result[j]['isLeaf'] = true;
                     }
                 }
             }
@@ -872,7 +929,11 @@ export class BsnAsyncTreeComponent extends GridBase
                             }
                         }
                     }
-                    data[i]['isLeaf'] = false;
+                    if (data[i]['children'].length > 0) {
+                        data[i]['isLeaf'] = false;
+                    } else {
+                        data[i]['isLeaf'] = true;
+                    }
                 }
                 data[i].level = '';
                 result.push(data[i]);
@@ -911,8 +972,12 @@ export class BsnAsyncTreeComponent extends GridBase
                                 this.originTreeData = this._toTreeBefore.filter(e => e.key !== null);
                                 // this._toTreeBefore = [...this._toTreeBefore, ...data.data];
                                 data.data.forEach(item => {
-                                    item['isLeaf'] = false;
-                                    item['children'] = [];
+                                    if (item.children.length > 0) {
+                                        item['isLeaf'] = false;
+                                        item['children'] = [];
+                                    } else {
+                                        item['isLeaf'] = true;
+                                    }
                                     if (this.config.columns) {
                                         this.config.columns.forEach(col => {
                                             item[col['field']] =

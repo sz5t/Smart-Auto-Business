@@ -866,6 +866,9 @@ export class TreeGridBase extends CnComponentBase {
                         } else if (btn['name'] === 'close') {
                             modal.close();
                             this.windowCallback('close', true);
+                        } else if (btn['name'] === 'closeandselect') {
+                            modal.close();
+                            this.windowCallback(this.selectedItem, true);
                         } else if (btn['name'] === 'closenorefresh') {
                             modal.close();
                             // this.windowCallback('close', true);

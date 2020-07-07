@@ -804,6 +804,9 @@ export class FormResolverComponent extends CnFormBase
      */
     private showForm(dialog) {
         let obj;
+        if (!dialog.viewId) {
+            dialog.viewId = this.config.viewId;
+        }
         if (dialog.type === 'add') {
         } else if (dialog.type === 'edit') {
             if (!this.value) {
@@ -840,10 +843,10 @@ export class FormResolverComponent extends CnFormBase
                     if (btn['name'] === 'save') {
                         componentInstance.buttonAction(
                             btn,
-                            () => {
+                            (returnValue) => {
                                 modal.close();
                                 this.load();
-                                this.sendCascadeMessage();
+                                // this.sendCascadeMessage(dialog, returnValue);
                             },
                             dialog
                         );
@@ -851,10 +854,10 @@ export class FormResolverComponent extends CnFormBase
                     } else if (btn['name'] === 'saveAndKeep') {
                         componentInstance.buttonAction(
                             btn,
-                            () => {
+                            (returnValue) => {
                                 this.resetForm();
                                 this.load();
-                                this.sendCascadeMessage();
+                                // this.sendCascadeMessage(dialog, returnValue);
                             },
                             dialog
                         );

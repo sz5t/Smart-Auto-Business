@@ -46,8 +46,12 @@ export class CnDatePickerComponent implements OnInit {
             if (this.formGroup.value[this.config.name]) {
                 this.value = this.formGroup.value[this.config.name];
             } else {
-                const newdate =  new Date();
-                this.value  = this.getDateFormat(newdate, 'yyyy-MM-dd hh:mm:ss');
+                if (this.config.nodefaultTime) {
+                    this.value = null;
+                } else {
+                    const newdate =  new Date();
+                    this.value  = this.getDateFormat(newdate, 'yyyy-MM-dd hh:mm:ss');
+                }
             }
         } 
    
@@ -111,6 +115,8 @@ export class CnDatePickerComponent implements OnInit {
             if (this.value !== bc) {
                 this.value = bc;
             }
+        } else {
+            this.value = null;
         }
 
     }

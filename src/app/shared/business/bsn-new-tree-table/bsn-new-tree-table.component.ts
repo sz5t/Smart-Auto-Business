@@ -86,6 +86,8 @@ export class BsnNewTreeTableComponent extends TreeGridBase
   // editCache;
   public treeData = [];
   public treeDataOrigin = [];
+  // 选中带上勾选属性
+  public selectedAndChecked;
   // 成树需要的属性
   public KEY_ID: string;
   public PARENT_ID: string;
@@ -233,6 +235,11 @@ export class BsnNewTreeTableComponent extends TreeGridBase
               deleteData.push({ Id: array[0] });
               this.deleteCheckedRows(deleteData);
             }
+          } else if ((typeof oprationData === 'object') 
+          && (oprationData !== null)
+          && (Object.prototype.toString.call(oprationData)) !== '[object Array]') {
+            this.editRowFromForm(oprationData[this.KEY_ID]);
+            this.setSelectRow(oprationData);
           } else {
             oprationData.forEach(e => {
               const array = e.split('_');
@@ -273,6 +280,7 @@ export class BsnNewTreeTableComponent extends TreeGridBase
     this.cfg = this.config;
     this.KEY_ID = this.config.keyId ? this.config.keyId : 'id';
     this.PARENT_ID = 'parentId';
+    this.selectedAndChecked = this.config.selectedAndChecked ? this.config.selectedAndChecked : false;
     // 解析及联配置
     this.resolverRelation();
     if (this.config.componentType) {
@@ -326,7 +334,7 @@ export class BsnNewTreeTableComponent extends TreeGridBase
                 this.addRootRow();
               break;
             case BSN_COMPONENT_MODES.CREATE_CHILD:
-              this.beforeOperation.operationItemData = this.selectedItem;
+              this.beforeOperation.operationItemData = this.ROW_SELECTED;
               !this.beforeOperation.beforeItemDataOperation(option) &&
                 this.addChildRow();
               break;
@@ -376,7 +384,7 @@ export class BsnNewTreeTableComponent extends TreeGridBase
             //     ) && this.executeCheckedRow(option);
             //     break;
             case BSN_COMPONENT_MODES.WINDOW:
-              this.beforeOperation.operationItemData = this.selectedItem;
+              this.beforeOperation.operationItemData = this.ROW_SELECTED;
               !this.beforeOperation.beforeItemDataOperation(option) &&
                 this.windowDialog(option, this.ROW_SELECTED, this.ROWS_CHECKED);
               break;
@@ -680,9 +688,11 @@ export class BsnNewTreeTableComponent extends TreeGridBase
     // this.mapOfDataExpanded[rowData[this.KEY_ID]]['selected'] = true;
 
     // 勾选/取消当前行勾选状态
-    this.mapOfDataExpanded[rowData[this.KEY_ID]]['checked'] = !this.mapOfDataExpanded[rowData[this.KEY_ID]]['checked'];
-    this.dataCheckedStatusChange();
-    return true;
+    if (this.selectedAndChecked) {
+      this.mapOfDataExpanded[rowData[this.KEY_ID]][0]['checked'] = !this.mapOfDataExpanded[rowData[this.KEY_ID]][0]['checked'];
+      this.dataCheckedStatusChange();
+      return true;
+    }
   }
 
   public dataCheckedStatusChange() {
