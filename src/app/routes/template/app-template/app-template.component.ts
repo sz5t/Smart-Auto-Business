@@ -21,6 +21,7 @@ export class AppTemplateComponent implements OnInit, OnDestroy {
     public isLoadLayout = false;
 
     public isCollapsed =  true;
+    public position: any;
     public triggerTemplate: TemplateRef<void> | null = null;
     @ViewChild('trigger') public customTrigger: TemplateRef<void>;
   
@@ -37,6 +38,7 @@ export class AppTemplateComponent implements OnInit, OnDestroy {
 
     public ngOnInit() {
         this._route.params.subscribe(params => {
+            this.position = params.pos;
             this._http.getLocalData(params.name).subscribe(data => {
                 this.config = data;
                 (async() => {
@@ -49,6 +51,7 @@ export class AppTemplateComponent implements OnInit, OnDestroy {
                             this.initData = p;
                             this.isLoadLayout = true;
                         });
+                        
                     } else {
                         console.log('出现异常:未能获取权限信息');
                     }
@@ -72,7 +75,7 @@ export class AppTemplateComponent implements OnInit, OnDestroy {
     }
 
     public returnMain() {
-        this.router.navigateByUrl('/app/entry');
+        this.router.navigate([`/app/entry`, {pos: this.position}]);
     }
 
     public loginOut() {

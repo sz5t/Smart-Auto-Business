@@ -1,0 +1,21 @@
+<form nz-form [formGroup]="form" (ngSubmit)="submit()" role="form">
+  <nz-alert *ngIf="error" [nzType]="'error'" [nzMessage]="error" [nzShowIcon]="true" class="mb-lg"></nz-alert>
+  <nz-form-item>
+      <nz-form-control>
+          <nz-input-group nzSize="large" [nzPrefix]="prefixUser">
+              <input nz-input type="hidden" formControlName="cert">
+          </nz-input-group>
+      </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+      <button nz-button type="submit" nzType="primary" nzSize="large" [nzLoading]="loading" class="ant-btn__block">CA登录</button>
+  </nz-form-item>
+</form>
+
+1、编写服务，开启服务前检测是否存在USB设备、如果不存在设备则进行提示、并推出系统。如果存在USB设备则，启动服务、监听客户端请求
+2、打开登录页面，检测连接服务，服务连接成功直接获取USB设备数据，如果服务未检测到任何USB 设备，进行提示
+3、服务与USB设备都连接完成、直接获取USB设备数据、提交API进行登录
+
+
+
+1、组件初始化直接获取服务数据、未能获取KEY则提示

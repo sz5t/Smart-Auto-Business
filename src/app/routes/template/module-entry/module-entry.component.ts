@@ -25,6 +25,7 @@ export class ModuleEntryComponent implements OnInit, OnDestroy {
     public isCollapsed =  true;
     public userInfo: any;
     public triggerTemplate: TemplateRef<void> | null = null;
+    public position: any;
     @ViewChild('trigger') public customTrigger: TemplateRef<void>;
   
     constructor(
@@ -53,12 +54,15 @@ export class ModuleEntryComponent implements OnInit, OnDestroy {
                             this.initData = p;
                             this.isLoadLayout = true;
                         });
+                      
                     } else {
                         console.log('出现异常:未能获取权限信息');
                     }
                 })();
-                
             });
+            if (params.pos) {
+                this.position = params.pos;
+            }
         });
 
     }
