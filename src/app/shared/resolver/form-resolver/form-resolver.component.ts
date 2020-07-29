@@ -113,6 +113,7 @@ export class FormResolverComponent extends CnFormBase
     }
 
     public ngAfterViewInit() {
+        debugger;
         if (this.config.ajaxConfig) {
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {

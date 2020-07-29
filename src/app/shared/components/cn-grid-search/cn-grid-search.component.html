@@ -65,7 +65,7 @@
 </div> -->
 
 <nz-input-group nzCompact>
-        <nz-dropdown>
+        <nz-dropdown *ngIf="op.length>1">
                 <a nz-dropdown>
                         条件
                         <i class="anticon anticon-down"></i>
@@ -80,7 +80,7 @@
 
                 </ul>
         </nz-dropdown>
-        <div style="width:70%;">
+        <div  [ngStyle]="op.length>1 ?  {'width':'70%'}: { } ">
                 <!-- <input *ngIf="searchType === 'input'" type="text" nz-input [(ngModel)]="inputValue" (blur)="onblur($event)" (keyup)="onKeyPress($event)"> -->
                 <ng-container [bsnData]="bsnData" [initData]="initData" [rowData]="rowData" [dataSet]="dataSet?dataSet:null" CnGridEditorDirective
                         *ngIf="searchType === 'input'" [config]="config" [value]="value" [changeConfig]="changeConfig" (updateValue)="valueChange($event)">

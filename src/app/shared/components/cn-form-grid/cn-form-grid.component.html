@@ -1,6 +1,6 @@
 <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize"  > <!-- style="display:none"  type="hidden" -->
     <input nz-input (ngModelChange)="valueChange($event)"  formControlName="{{config.name}}"   type="hidden"    placeholder="{{config.placeholder}}"
-        [(ngModel)]="_value">
+        >
 </nz-form-control>
  <ng-container *ngIf="config !== undefined">
     <cn-bsn-static-table #table [config]="config.select.datagrid"  [bsnData]="bsnData"  [initData]="initValue"   [casadeData]="casadeData"   (updateValue)="valueChangeTable($event)" ></cn-bsn-static-table>

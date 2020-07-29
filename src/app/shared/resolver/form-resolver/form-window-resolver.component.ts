@@ -90,6 +90,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
     }
 
     public ngOnInit() {
+        debugger;
         // init form state, default: post
         this.formState = this.initFormState();
         // init controls
@@ -160,7 +161,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
     }
 
     // 加载编辑数据
-    public load() {
+    public load_old() {
         if (this.config.ajaxConfig && this.formState === BSN_FORM_STATUS.EDIT) {
             const url = this.buildUrl(this.config.ajaxConfig.url);
             const params = this.buildParameter(this.config.ajaxConfig.params);
@@ -191,6 +192,51 @@ export class CnFormWindowResolverComponent extends CnFormBase
             this.setFormValue(this.formValue);
         }
     }
+
+    public load() {
+        console.log('加载数据');
+        if (this.config.ajaxConfig) {
+            setTimeout(() => {
+                this.isSpinning = true;
+            })
+            const url = this.buildUrl(this.config.ajaxConfig.url);
+            const params = this.buildParameter(this.config.ajaxConfig.params);
+            this.execute(url, this.config.ajaxConfig.ajaxType, params).then(result => {
+                let res;
+                if (Array.isArray(result.data)) {
+                    res = result.data[0]
+                } else {
+                    
+                   if (Array.isArray(result.data[Object.keys(result.data)[0]])){
+                    res = result.data[Object.keys(result.data)[0]][0];
+                   }else{
+                    res = result.data;
+                   }
+                }
+
+                if (res) {
+                    this.setFormValue(res);
+                    // 给主键赋值
+                    if (this.config.keyId) {
+                        this.tempValue['_id'] =
+                            res[this.config.keyId];
+                    } else {
+                        if (res['Id']) {
+                            this.tempValue['_id'] = res['Id'];
+                        }
+                    }
+                } else {
+                    this.tempValue['_id'] && delete this.tempValue['_id'];
+                    this.form.reset();
+                }
+            });
+        }
+        setTimeout(() => {
+            this.isSpinning = false;
+        });
+
+    }
+
 
     // region: 解析消息
     private resolverRelation() {

@@ -244,18 +244,23 @@ export class BsnStaticTableComponent extends CnComponentBase
         if (this.config.selectGridValueName) {
             this.selectGridValueName = this.config.selectGridValueName;
         }
-        const url = this._buildURL(this.config.ajaxConfig.url);
-        const params = {
-            ...this._buildParameters(this.config.ajaxConfig.params),
-            // ...this._buildPaging(),
-            ...this._buildFilter(this.config.ajaxConfig.filter),
-            ...this._buildSort(),
-            ...this._buildColumnFilter(),
-            ...this._buildFocusId(),
-            ...this._buildSearch()
-        };
 
-        const aloadData = await this._load(url, params);
+        let aloadData; 
+        if(this.config.ajaxConfig){
+            const url = this._buildURL(this.config.ajaxConfig.url);
+            const params = {
+                ...this._buildParameters(this.config.ajaxConfig.params),
+                // ...this._buildPaging(),
+                ...this._buildFilter(this.config.ajaxConfig.filter),
+                ...this._buildSort(),
+                ...this._buildColumnFilter(),
+                ...this._buildFocusId(),
+                ...this._buildSearch()
+            };
+    
+             aloadData = await this._load(url, params);
+        }
+
         if (aloadData && aloadData.status === 200 && aloadData.isSuccess) {
             this.loadData.rows = aloadData.data;
             const keyIdCode = this.config.keyId ? this.config.keyId : 'Id';
@@ -630,7 +635,28 @@ export class BsnStaticTableComponent extends CnComponentBase
     // load 分组
     // 原始数据【olddata】 数据缓存【update】
     // 注意 撤销、删除 对数据的影响
-    public loadStatic() {
+
+    staticdeleteROw=[];
+    public loadStatic(Staticdata?) {
+        this.staticdeleteROw = this.loadData.rows.filter(item => item['row_status'] === 'deleting');
+
+        if (Staticdata.length > 0) {
+            this.loadData.rows = Staticdata;
+            this.loadData.total = this.loadData.rows.length;
+            this.total = this.loadData.total;
+        } else {
+            this.loadData.rows = [];
+            this.loadData.total = this.loadData.rows.length;
+            this.total = this.loadData.total;
+        }
+        this.loadData.rows.forEach(item=>{
+
+            if(!item['row_status']){
+                item['row_status'] = 'updating';
+            }
+        });
+
+        this.load();
 
     }
 
@@ -861,7 +887,7 @@ export class BsnStaticTableComponent extends CnComponentBase
     // 行内所有的操作，均将数据反馈回form 表单
     public scanCodeValueChange() {
         // liu 【重点返回信息】
-        this.updateValue.emit(this.loadData.rows);
+        this.updateValue.emit([...this.loadData.rows,...this.staticdeleteROw]);
         // console.log('saomafanhui',this.loadData.rows);
     }
 
@@ -1819,10 +1845,15 @@ export class BsnStaticTableComponent extends CnComponentBase
                             });
                             if (newData.length > 0) {
                                 newData.forEach(d => {
+                                    if(d['row_status'] && d['row_status'] !== 'adding') {
+                                        d['row_status'] === 'deleting';
+                                        this.staticdeleteROw.push(d);
+                                    }
                                     this.dataList.splice(
                                         this.dataList.indexOf(d),
                                         1
                                     );
+                             
                                 });
                             }
                             if (serverData.length > 0) {
@@ -1845,6 +1876,12 @@ export class BsnStaticTableComponent extends CnComponentBase
         const params = {
             _ids: ids.join(',')
         };
+        if(!deleteConfig || !deleteConfig.url){
+            this._message.create('success', '删除成功');
+            isSuccess = true;
+            return isSuccess;
+        }
+
         const response = await this['delete'](deleteConfig.url, params);
         if (response && response.status === 200 && response.isSuccess) {
             this._message.create('success', '删除成功');
@@ -3315,6 +3352,10 @@ export class BsnStaticTableComponent extends CnComponentBase
         const index = this.loadData.rows.findIndex(item => item['key'] === key);
         if (index !== -1) {
             const rowValue = this.loadData.rows[index];
+           if(rowValue['row_status'] && rowValue['row_status'] !== 'adding') {
+            rowValue['row_status'] === 'deleting';
+            this.staticdeleteROw.push(rowValue);
+           }
             this.loadData.rows.splice(this.loadData.rows.indexOf(rowValue), 1);
             this.loadData.total = this.loadData.rows.length;
             this.total = this.loadData.total;

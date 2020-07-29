@@ -55,6 +55,7 @@ export class CnFormGridComponent implements OnInit {
   }
 
   public valueChange(name?) {
+ console.log('表单赋值',name);
     if (name) {
       const backValue = { name: this.config.name, value: name };
       this.updateValue.emit(backValue);
@@ -62,6 +63,16 @@ export class CnFormGridComponent implements OnInit {
       const backValue = { name: this.config.name, value: name };
       this.updateValue.emit(backValue);
     }
+    // _value
+    setTimeout(()=>{
+      if(this._value.toString()!==name.toString()){
+        this.table.loadStatic(name);
+      }
+      this._value = name;
+    });
+   
+    
+
     // if (name) {
     //     const backValue = { name: this.config.name, value: name };
     //     if (this.resultData) {

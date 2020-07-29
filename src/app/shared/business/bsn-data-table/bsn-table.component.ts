@@ -772,6 +772,9 @@ export class BsnTableComponent extends CnComponentBase
         }
         this._updateEditCacheByLoad(pagedata);
         this.dataList = pagedata;
+          // liu 20200728 行列合并
+          if(this.config.mergeconfig)
+          this._createMapd_new(this.config.mergeconfig,this.dataList);
     }
 
     public load(sd?: boolean) {
@@ -977,6 +980,15 @@ export class BsnTableComponent extends CnComponentBase
             if (!this.is_Selectgrid) {
                 this.setSelectRow();
             }
+
+            // liu 20200728 行列合并
+            if(this.config.mergeconfig){
+                this._createMapd_new(this.config.mergeconfig,this.dataList);
+            } 
+            else {
+                console.log('查看当前结构',this.editCache);
+            }
+
 
             setTimeout(() => {
                 this.loading = false;
@@ -2776,7 +2788,8 @@ export class BsnTableComponent extends CnComponentBase
             if (!this.editCache[item.key]) {
                 this.editCache[item.key] = {
                     edit: false,
-                    data: JSON.parse(JSON.stringify(item))
+                    data: JSON.parse(JSON.stringify(item)),
+                    mergeData:{}
                 };
             }
         });
@@ -4426,5 +4439,118 @@ export class BsnTableComponent extends CnComponentBase
         FileSaver.saveAs(data, fileName + '_' + new Date().getTime() + '.xlsx');
         // 如果写成.xlsx,可能不能打开下载的文件，这可能与Excel版本有关
     }
+
+
+    
+    public _createMapd_new(mergeconfig?,listOfData?) {
+
+        // 生成group字段
+
+        const mergeData={};
+  
+
+        listOfData.forEach(
+            row => {
+                this.editCache[row['key']]['mergeData'] = {};
+            }
+        );
+
+
+        // 按照 group 分组顺序进行  merge
+
+
+        mergeconfig.rowConfig && mergeconfig.rowConfig.length>0  && mergeconfig.rowConfig.forEach(r_c => {
+
+
+            listOfData.forEach(row => {
+
+                if (!this.editCache[row['key']]['mergeData'][r_c.colName]) {
+                    this.editCache[row['key']]['mergeData'][r_c.colName] = {};
+                }
+                let new_data=[...listOfData];
+                r_c.groupCols.forEach(group_col=>{
+
+                    new_data = new_data.filter(d => d[group_col.groupColName] === row[group_col.groupColName]);
+                });
+
+                new_data = new_data.filter(d => d[r_c.groupName] === row[r_c.groupName]);
+                let group_num = new_data.length;
+                let group_index = new_data.findIndex(d => d['key'] === row['key']);
+                this.editCache[row['key']]['mergeData'][r_c.colName]['groupNum'] = group_num;
+                this.editCache[row['key']]['mergeData'][r_c.colName]['groupIndex'] = group_index + 1;
+                this.editCache[row['key']]['mergeData'][r_c.colName]['colgroupIndex'] = 1;
+                this.editCache[row['key']]['mergeData'][r_c.colName]['colgroupNum'] = 1;
+
+
+            });
+
+        }
+        );
+
+
+
+        mergeconfig.colConfig && mergeconfig.colConfig.length>0 && listOfData.forEach(
+            row => {
+                // this.mapd[row.id]={}; // 初始化
+
+                mergeconfig.colConfig.forEach(col_c => {
+
+                    col_c.mergeItems.forEach(item => {
+                        
+
+                        let regularflag = true;
+                        if (item.caseValue && item.type === "condition") {
+                            const reg1 = new RegExp(item.caseValue.regular);
+                            let regularData;
+                            if (item.caseValue.type) {
+                                if (item.caseValue.type === 'value') {
+                                    regularData = item.caseValue['value'];
+                                }
+                                if (item.caseValue['type'] === 'rowValue') {
+                                    // 选中行对象数据
+                                    if (row) {
+                                        regularData = row[item.caseValue['valueName']];
+                                    }
+                                }
+        
+                            } else {
+                                regularData = null;
+                            }
+                            regularflag = reg1.test(regularData);
+                        }
+                        if (regularflag) {
+
+                            let group_num = item.mergeCols.length;
+                            item.mergeCols.forEach(merge_col=>{
+                                if (!this.editCache[row['key']]['mergeData'][merge_col['mergeColName']]) {
+                                    this.editCache[row['key']]['mergeData'][merge_col['mergeColName']] = {};
+                                }
+                                let group_index = item.mergeCols.findIndex(d => d['mergeColName'] === merge_col['mergeColName']);
+                                this.editCache[row['key']]['mergeData'][merge_col['mergeColName']]['colgroupIndex'] = group_index+1;
+                                this.editCache[row['key']]['mergeData'][merge_col['mergeColName']]['colgroupNum'] = group_num;
+                            });
+
+                           
+                            
+                            
+
+                        }
+
+
+                    });
+
+
+                });
+
+       
+
+            }
+        );
+
+
+        console.log('new生成分组信息', this.editCache);
+
+    }
+
 
 }

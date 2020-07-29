@@ -130,22 +130,62 @@ export class CnGridSearchComponent implements OnInit {
   constructor() { }
 
   public ngOnInit() {
+
+    console.log("查询",this.config);
+
     if (this.searchConfigType) {
       if (this.searchConfigType === 'default') {
+
+        let queryTerm;
+        let defaultQueryTerm;
+          if (this.config.queryTerm){
+            queryTerm = this.config.queryTerm;
+          }
+          if (this.config.defaultQueryTerm){
+            defaultQueryTerm =this.config.defaultQueryTerm;
+          }
         this.config = {
           type: 'input',
           labelSize: '6',
           controlSize: '18',
           inputType: 'text'
         }
+        if(queryTerm){
+          this.config['queryTerm'] = queryTerm;
+        }
+        if(defaultQueryTerm){
+          this.config['defaultQueryTerm'] = defaultQueryTerm;
+        }
       }
     }
-    this.setOP();  // 简析条件参数
-    if (this.config.type === 'input') {
-      this.AfterValue = 'ctn';
-    } else {
-      this.AfterValue = 'eq'
+    if (this.config.queryTerm){
+      let newop:any =[];
+
+      this.config.queryTerm.forEach(element => {
+         let obj = this.op.find(d=>d.value===element);
+         newop.push(obj)
+      });
+      this.op = newop;
+    }else {
+      this.setOP();  // 简析条件参数
+      if (this.config.type === 'input') {
+        this.AfterValue = 'ctn';
+      } else {
+        this.AfterValue = 'eq'
+      }
     }
+    if (this.config.defaultQueryTerm){
+      this.AfterValue = this.config.defaultQueryTerm;
+    }
+
+    let index = this.op.findIndex(d=>d.value ===this.AfterValue );
+    if(index && index>0){
+      this.op[index]['select'] = true;
+    }
+
+    console.log("查询",this.op);
+
+
     
   }
 
