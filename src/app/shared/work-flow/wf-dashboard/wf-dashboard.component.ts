@@ -343,8 +343,9 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
             nodeData = JSON.parse(JSON.stringify(n));
           }
         });
-        sendData['dataType'] = 'node';
-        nodeData['dataType'] = 'node';
+        
+        // sendData['dataType'] = 'node';
+        // nodeData['dataType'] = 'node';
         // sendData['dataItem'] = d;
         // ******注释调这块
         // this.cascade.next(
@@ -371,7 +372,7 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
 
         if (this.config.cascadeRelation) {
           this.config.cascadeRelation.forEach(element => {
-            if (element.name === 'node') {
+            if (element.type === 'node') {
               if (element.cascadeField) {
                 element.cascadeField.forEach(feild => {
                   if (!feild['type']) {
@@ -407,16 +408,28 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
 
                 });
               }
-
-              this.cascade.next(
-                new BsnComponentMessage(
-                  BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],
-                  this.config.viewId,
-                  {
-                    data: sendData
-                  }
-                )
-              );
+              console.log(sendData);
+              if (sendData['nodetype'] === 'BeginNode') {
+                this.cascade.next(
+                  new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],
+                    this.config.viewId,
+                    {
+                      data: sendData
+                    }
+                  )
+                );
+              } else {
+                this.cascade.next(
+                  new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],
+                    this.config.viewId,
+                    {
+                      data: sendData
+                    }
+                  )
+                );
+              }
             }
           });
         }
@@ -497,7 +510,7 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
 
       if (this.config.cascadeRelation) {
         this.config.cascadeRelation.forEach(element => {
-          if (element.name === 'edge') {
+          if (element.type === 'edge') {
             if (element.cascadeField) {
               element.cascadeField.forEach(feild => {
                 if (!feild['type']) {

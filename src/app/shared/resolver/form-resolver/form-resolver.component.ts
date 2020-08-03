@@ -40,7 +40,15 @@ import { ActivatedRoute } from '@angular/router';
     // tslint:disable-next-line:component-selector
     selector: 'cn-form-resolver,[cn-form-resolver]',
     templateUrl: './form-resolver.component.html',
-    styles: [``]
+    styles: [`
+    :host {
+        ::ng-deep{
+            .ant-card.ng-star-inserted {
+                margin-bottom: 0px;
+            }
+        }
+    }
+    `]
 })
 export class FormResolverComponent extends CnFormBase
     implements OnInit, OnChanges, OnDestroy, AfterViewInit {
@@ -113,7 +121,6 @@ export class FormResolverComponent extends CnFormBase
     }
 
     public ngAfterViewInit() {
-        debugger;
         if (this.config.ajaxConfig) {
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
@@ -274,6 +281,28 @@ export class FormResolverComponent extends CnFormBase
                                 this.sendElectricOrder(option.ajaxConfig);
                             }
                             break;
+                        case BSN_COMPONENT_MODES.PROCESS_SUBMIT:
+                            // console.log(this.initData);
+                            if (option.ajaxConfig) {
+                                // 根据表单状态进行具体配置操作
+                                this.resolveAjaxConfig(
+                                    option.ajaxConfig,
+                                    this.formState,
+                                    (returnValue, processoption) => {
+                                        // this.load();
+                                        // this.sendCascadeMessage();
+                                        if (returnValue.data && returnValue.data.formId) {
+                                            this.InitiateProcess(returnValue.data, processoption);
+                                        }
+                                    },
+                                    option
+                                );
+                                this.load();
+                                if (this.config.finishText) {
+                                    this.formState = BSN_FORM_STATUS.TEXT;
+                                }
+                            }
+                            break;
                     }
                 }
             }
@@ -362,43 +391,102 @@ export class FormResolverComponent extends CnFormBase
 
     // region: 数据处理
 
-    public load() {
-        if (this.config.ajaxConfig &&
-            (this.formState === BSN_FORM_STATUS.EDIT || this.formState === BSN_FORM_STATUS.TEXT)) {
-            setTimeout(() => {
-                this.isSpinning = true;
-            })
-            const url = this.buildUrl(this.config.ajaxConfig.url);
-            const params = this.buildParameter(this.config.ajaxConfig.params);
-            this.execute(url, this.config.ajaxConfig.ajaxType, params).then(result => {
-                let res;
-                if (Array.isArray(result.data)) {
-                    res = result.data[0]
-                } else {
-                    res = result.data;
-                }
-
-                if (res) {
-                    this.setFormValue(res);
-                    // 给主键赋值
-                    if (this.config.keyId) {
-                        this.tempValue['_id'] =
-                            res[this.config.keyId];
+    public async load() {
+        if (!this.config.dynamicParams) {
+            if (this.config.ajaxConfig &&
+                (this.formState === BSN_FORM_STATUS.EDIT || this.formState === BSN_FORM_STATUS.TEXT)) {
+                setTimeout(() => {
+                    this.isSpinning = true;
+                })
+                const url = this.buildUrl(this.config.ajaxConfig.url);
+                const params = this.buildParameter(this.config.ajaxConfig.params);
+                this.execute(url, this.config.ajaxConfig.ajaxType, params).then(result => {
+                    let res;
+                    if (Array.isArray(result.data)) {
+                        res = result.data[0]
                     } else {
-                        if (res['Id']) {
-                            this.tempValue['_id'] = res['Id'];
+                        res = result.data;
+                    }
+
+                    if (res) {
+                        this.setFormValue(res);
+                        // 给主键赋值
+                        if (this.config.keyId) {
+                            this.tempValue['_id'] =
+                                res[this.config.keyId];
+                        } else {
+                            if (res['Id']) {
+                                this.tempValue['_id'] = res['Id'];
+                            }
+                        }
+                    } else {
+                        this.tempValue['_id'] && delete this.tempValue['_id'];
+                        this.form.reset();
+                    }
+                });
+            }
+        } else {
+            if (this.config.dynamicParams && this.formState === BSN_FORM_STATUS.TEXT) {
+                setTimeout(() => {
+                    this.isSpinning = true;
+                })
+                let dynamicParamsObject = {}
+                for (const getConfig of this.config.dynamicParams) {
+                    if (getConfig['getConfig']) {
+                        const url = this.buildUrl(getConfig['getConfig'].url);
+                        const params = this.buildParameter(getConfig['getConfig'].params);
+                        await this.execute(url, getConfig['getConfig'].ajaxType, params).then(result => {
+                            for (const key in result.data) {
+                                if (key !== 'Id') {
+                                    dynamicParamsObject = { ...dynamicParamsObject, ...{ [getConfig['name']]: result.data[key] } }
+                                }
+                            }
+                        });
+                    }
+                }
+                const ajaxParams = this.config.ajaxConfig.params;
+                for (const param of ajaxParams) {
+                    if (param['value'] && param['value'].indexOf('{') !== -1) {
+                        for (const key in dynamicParamsObject) {
+                            if (key === param['value']) {
+                                param['value'] = dynamicParamsObject[key]
+                            }
                         }
                     }
-                } else {
-                    this.tempValue['_id'] && delete this.tempValue['_id'];
-                    this.form.reset();
                 }
-            });
+                const url = this.buildUrl(this.config.ajaxConfig.url);
+                const params = this.buildParameter(ajaxParams);
+                await this.execute(url, this.config.ajaxConfig.ajaxType, params).then(result => {
+                    let res;
+                    if (Array.isArray(result.data)) {
+                        res = result.data[0]
+                    } else {
+                        res = result.data;
+                    }
+
+                    if (res) {
+                        this.setFormValue(res);
+                        // 给主键赋值
+                        if (this.config.keyId) {
+                            this.tempValue['_id'] =
+                                res[this.config.keyId];
+                        } else {
+                            if (res['Id']) {
+                                this.tempValue['_id'] = res['Id'];
+                            }
+                        }
+                    } else {
+                        this.tempValue['_id'] && delete this.tempValue['_id'];
+                        this.form.reset();
+                    }
+                });
+            }
+
         }
+
         setTimeout(() => {
             this.isSpinning = false;
         });
-
     }
 
 
@@ -564,7 +652,6 @@ export class FormResolverComponent extends CnFormBase
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                     description: putConfig.description ? putConfig.description : ' [执行成功] ' + ` 数据为: ${JSON.stringify(params)}`
                 }).subscribe(result => {
-
                 })
             } else {
                 this.message.create('error', res.message);
@@ -1591,8 +1678,8 @@ export class FormResolverComponent extends CnFormBase
                                         sendData[feild.name] =
                                             data[feild.valueName];
                                     }
-                                } else if ( feild['type'] === 'selectObjectValue' ) {
-                                    if (data.dataItem) { 
+                                } else if (feild['type'] === 'selectObjectValue') {
+                                    if (data.dataItem) {
                                         sendData[feild.name] = data.dataItem[feild.valueName];
                                     } else {
                                         sendData[feild.name] = null;
@@ -1954,4 +2041,22 @@ export class FormResolverComponent extends CnFormBase
      *  特别复杂的处理，不同值-》对应不同应答。 需要一种规则语言。
      *  将添加类别 cascadeValue  创建这个临时变量，动态从中取值，拼接数据
      */
+
+    /**
+     * InitiateProcess 提交表单后发起流程实例
+     */
+    public InitiateProcess(item, option) {
+        if (option.processAjaxConfig) {
+            this.resolveAjaxConfig(
+                option.processAjaxConfig,
+                this.formState,
+                (returnValue) => {
+                    this.load();
+                    // this.sendCascadeMessage();
+                },
+                option,
+                item
+            );
+        }
+    }
 }

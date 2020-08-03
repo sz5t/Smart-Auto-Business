@@ -144,7 +144,8 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
                     type: btn.actionType ? btn.actionType : null,
                     name: btn.name ? btn.name : '',
                     actionName: btn.actionName ? btn.actionName : null,
-                    ajaxConfig: btn.ajaxConfig ? btn.ajaxConfig : null
+                    ajaxConfig: btn.ajaxConfig ? btn.ajaxConfig : null,
+                    processAjaxConfig: btn.processAjaxConfig ? btn.processAjaxConfig : null
                 })
             );
             if (this.toolbarsisLoading.length > 1) {

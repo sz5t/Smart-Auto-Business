@@ -63,9 +63,10 @@ export class CommonTools {
                                 }
                             } else {
                                 if (
-                                    param['value'] === null ||
-                                    param['value'] === '' ||
-                                    param['value'] === 0
+                                    // param['value'] === null ||
+                                    // param['value'] === '' ||
+                                    // param['value'] === 0
+                                    param['value'] !== undefined
                                 ) {
                                     // result[param['name']] = param.value;
                                     if (param['datatype']) {

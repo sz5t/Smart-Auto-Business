@@ -90,7 +90,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
     }
 
     public ngOnInit() {
-        debugger;
         // init form state, default: post
         this.formState = this.initFormState();
         // init controls

@@ -489,10 +489,13 @@ export class CnFormBase extends CnComponentBase {
         return this.apiResource[method](url, body).toPromise();
     }
 
-    public getAjaxConfig(c, ajaxConfigs, callback?, dialog?) {
+    public getAjaxConfig(c, ajaxConfigs, callback?, dialog?, lastParam?) {
         if (c) {
             const url = this.buildUrl(c.url);
-            const params = this.buildParameter(c.params);
+            let params = this.buildParameter(c.params);
+            if (lastParam) {
+                params = {...params, ...lastParam}
+            }
             if (c.message) {
                 this.baseModal.confirm({
                     nzTitle: c.title ? c.title : '提示',
@@ -573,7 +576,7 @@ export class CnFormBase extends CnComponentBase {
                                             callback(response);
                                         }
                                     } else {
-                                        callback();
+                                        callback(response, dialog);
                                     }
                                 }
                                 // else {
@@ -593,7 +596,7 @@ export class CnFormBase extends CnComponentBase {
                                         callback(response);
                                     }
                                 } else {
-                                    callback();
+                                    callback(response);
                                 }
                             }
                             // else {
@@ -606,7 +609,7 @@ export class CnFormBase extends CnComponentBase {
         }
     }
 
-    public resolveAjaxConfig(ajaxConfig, formState, callback?, dialog?) {
+    public resolveAjaxConfig(ajaxConfig, formState, callback?, dialog?, lastParam?) {
         let enterAjaxConfig;
         if (formState === BSN_FORM_STATUS.TEXT) {
             enterAjaxConfig = ajaxConfig.filter(item => !item.parent && item.ajaxType === 'delete');
@@ -617,9 +620,9 @@ export class CnFormBase extends CnComponentBase {
         if (Array.isArray(enterAjaxConfig)) {
             for (let i = 0; i < enterAjaxConfig.length; i++) {
                 if (enterAjaxConfig[i]['ajaxType'] === formState) {
-                    this.getAjaxConfig(enterAjaxConfig[i], ajaxConfig, callback, dialog);
+                    this.getAjaxConfig(enterAjaxConfig[i], ajaxConfig, callback, dialog, lastParam);
                 } else if (enterAjaxConfig[i]['ajaxType'] === 'delete') {
-                    this.getAjaxConfig(enterAjaxConfig[i], ajaxConfig, callback, dialog);
+                    this.getAjaxConfig(enterAjaxConfig[i], ajaxConfig, callback, dialog, lastParam);
                 }
             }
             // }

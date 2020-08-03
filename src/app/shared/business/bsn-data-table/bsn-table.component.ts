@@ -468,6 +468,7 @@ export class BsnTableComponent extends CnComponentBase
                     : {},
                 apiResource: this.apiResource
             });
+            this.GetToolbarEvents();
         }
     }
     private resolverRelation() {
@@ -4549,6 +4550,222 @@ export class BsnTableComponent extends CnComponentBase
 
 
         console.log('new生成分组信息', this.editCache);
+
+    }
+
+    public showbutton(value, format) {
+        let result = true;
+        if (format) {
+            format.map(e => {
+                if (e.value === value) {
+                    result = false;
+                }
+            });
+        }
+        return result;
+    }
+
+    public execFun(name?, key?) {
+        switch (name) {
+            case 'deleteRow':
+                // this.config.actions['deleteRow'] ? this.config.actions['deleteRow'] : null
+                this.deleteRowOnSelected(key);
+                break;
+            case 'executeRow':
+                // this.config.actions['deleteRow'] ? this.config.actions['deleteRow'] : null
+                this.executeRowOnSelected(key);
+                break;
+            default:
+                break;
+        }
+    }
+
+    // 行内删除
+    public deleteRowOnSelected(key) {
+        const row = this.dataList.filter(item => item.key === key)[0];
+        // console.log('删除行', row, this.config.events);
+        if (this.config.events) {
+            const index = this.config.events.findIndex(item => item['onTrigger'] === 'deleteRow');
+            let c_eventConfig = {};
+            if (index > -1) {
+                c_eventConfig = this.config.events[index];
+            } else {
+                return true;
+            }
+            const isField = true; // 列变化触发
+            // 首先适配类别、字段，不满足的时候 看是否存在default 若存在 取default
+            if (isField) {
+                c_eventConfig['onEvent'].forEach(eventConfig => {
+                    // 无配置 的默认项
+                    if (eventConfig.type === 'default') {
+                        this.ExecRowEvent(eventConfig.action, row);
+                    }
+                });
+            }
+        }
+        // console.log('行内删除', key);
+        // 注意，末页删除需要将数据页数上移
+
+
+    }
+
+    // 行内操作
+    public executeRowOnSelected(key) {
+        const row = this.dataList.filter(item => item.key === key)[0];
+        // console.log('删除行', row, this.config.events);
+        if (this.config.events) {
+            const index = this.config.events.findIndex(item => item['onTrigger'] === 'executeRow');
+            let c_eventConfig = {};
+            if (index > -1) {
+                c_eventConfig = this.config.events[index];
+            } else {
+                return true;
+            }
+            const isField = true; // 列变化触发
+            // 首先适配类别、字段，不满足的时候 看是否存在default 若存在 取default
+            if (isField) {
+                c_eventConfig['onEvent'].forEach(eventConfig => {
+                    // 无配置 的默认项
+                    if (eventConfig.type === 'default') {
+                        this.ExecRowEvent(eventConfig.action, row);
+                    }
+                });
+            }
+        }
+        // console.log('行内删除', key);
+        // 注意，末页删除需要将数据页数上移
+
+
+    }
+
+    //  执行行内事件【】,不展示的按钮事件，日后扩充
+    public ExecRowEvent(eventname?, row?) {
+        //  name
+        // const option = updateState.option;
+        let option = {};
+        let model = '';
+        const index = this.toolbarConfig.findIndex(
+            item => item['name'] === eventname
+        );
+        if (index > -1) {
+            option = this.toolbarConfig[index];
+        }
+        if (!option['action']) {
+            model = BSN_COMPONENT_MODES['EXECUTE'];
+        } else {
+            model = BSN_COMPONENT_MODES[option['action']] ? BSN_COMPONENT_MODES[option['action']] : option['action'];
+        }
+        // option 操作的详细配置
+        // 根据当前行绑定操作名称-》找到对应的操作配置
+        // const model_c = '';
+        switch (model) {
+            case BSN_COMPONENT_MODES.REFRESH:
+                this.load();
+                break;
+            case BSN_COMPONENT_MODES.CREATE:
+                !this.beforeOperation.beforeItemDataOperation(option) &&
+                    this.addRow();
+                break;
+            // case BSN_COMPONENT_MODES.ADD_ROW_DATA:
+            //     !this.beforeOperation.beforeItemDataOperation(option) &&
+            //     this._resolveAjaxConfig(option);
+            //     break;
+            case BSN_COMPONENT_MODES.CANCEL_SELECTED:
+                this.cancelSelectRow();
+                break;
+            case BSN_COMPONENT_MODES.EDIT:
+                this.beforeOperation.operationItemsData = this._getCheckedItems();
+                !this.beforeOperation.beforeItemsDataOperation(
+                    option
+                ) && this.updateRow();
+                break;
+            case BSN_COMPONENT_MODES.CANCEL:
+                this.cancelRow();
+                break;
+            case BSN_COMPONENT_MODES.SAVE:
+                this.beforeOperation.operationItemsData = [
+                    ...this._getCheckedItems(),
+                    ...this._getAddedRows()
+                ];
+                !this.beforeOperation.beforeItemsDataOperation(
+                    option
+                ) && this.saveRow(option);
+                break;
+            case BSN_COMPONENT_MODES.DELETE:
+                this.beforeOperation.operationItemsData = this._getCheckedItems();
+                !this.beforeOperation.beforeItemsDataOperation(
+                    option
+                ) && this.deleteRow(option);
+                break;
+            case BSN_COMPONENT_MODES.DIALOG:
+                this.beforeOperation.operationItemData = this._selectRow;
+                !this.beforeOperation.beforeItemDataOperation(option) &&
+                    this.dialog(option);
+                break;
+            case BSN_COMPONENT_MODES.EXECUTE:
+                // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
+                // console.log('执行列3665：', option);
+                this._resolveAjaxConfig(option);
+                break;
+            case BSN_COMPONENT_MODES.WINDOW:
+                this.beforeOperation.operationItemData = this._selectRow;
+                !this.beforeOperation.beforeItemDataOperation(option) &&
+                    this.windowDialog(option);
+                break;
+            case BSN_COMPONENT_MODES.FORM:
+                this.beforeOperation.operationItemData = this._selectRow;
+                !this.beforeOperation.beforeItemDataOperation(option) &&
+                    this.formDialog(option);
+                break;
+            case BSN_COMPONENT_MODES.SEARCH:
+                !this.beforeOperation.beforeItemDataOperation(option) &&
+                    this.SearchRow(option);
+                break;
+            case BSN_COMPONENT_MODES.UPLOAD:
+                this.beforeOperation.operationItemData = this._selectRow;
+                !this.beforeOperation.beforeItemDataOperation(option) &&
+                    this.uploadDialog(option);
+                break;
+            case BSN_COMPONENT_MODES.FORM_BATCH:
+                this.beforeOperation.operationItemsData = this._getCheckedItems();
+                !this.beforeOperation.beforeItemsDataOperation(
+                    option
+                ) && this.formBatchDialog(option);
+                break;
+        }
+
+    }
+
+    // tslint:disable-next-line:member-ordering
+    public toolbarConfig = [];
+    //  获取event 事件的配置
+    public GetToolbarEvents() {
+        if (this.config.toolbarEvent && Array.isArray(this.config.toolbarEvent)) {
+            this.config.toolbarEvent.forEach(item => {
+                if (item.group) {
+                    item.group.forEach(g => {
+                        this.toolbarConfig.push(g);
+                    });
+
+
+                } else if (item.dropdown) {
+                    const dropdown = [];
+                    item.dropdown.forEach(b => {
+                        const down = {};
+                        const { name, text, icon } = b;
+                        down['name'] = name;
+                        down['text'] = text;
+                        down['icon'] = icon;
+                        down['buttons'] = [];
+                        b.buttons.forEach(btn => {
+                            this.toolbarConfig.push(btn);
+                        });
+                    });
+
+                }
+            });
+        }
+
 
     }
 

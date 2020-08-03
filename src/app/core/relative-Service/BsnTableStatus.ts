@@ -34,6 +34,7 @@ export interface ComponentModes {
     FORM_LOAD: string;
     IMPORT_EXCEL: string;
     SEND_ORDER: string;
+    PROCESS_SUBMIT: string;
 
     // tstable
     AUTO_PLAY: string;
@@ -75,6 +76,7 @@ export const BSN_COMPONENT_MODES: ComponentModes = {
     FORM_LOAD: 'formLoad',
     IMPORT_EXCEL: 'importExcel',
     SEND_ORDER: 'sendOrder',
+    PROCESS_SUBMIT: 'processSubmit',
 
     // tstable
     AUTO_PLAY: 'autoPlay',
