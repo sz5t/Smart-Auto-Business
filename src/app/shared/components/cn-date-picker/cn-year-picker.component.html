@@ -2,9 +2,10 @@
     {{config.label}}
 </nz-form-label>
     <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+        <input nz-input  [formControlName]="config.name"  hidden="hidden" [(ngModel)]="value" (ngModelChange)="valueChange($event)" />
         <nz-year-picker
          [(ngModel)]="year"
-         formControlName="{{config.name}}"
+         [ngModelOptions]="{standalone: true}"
          (ngModelChange)="changeYear($event)"
          ></nz-year-picker>
         <nz-form-explain *ngIf="formGroup.get(config.name).dirty && formGroup.get(config.name).errors || formGroup.get(config.name).pending ">

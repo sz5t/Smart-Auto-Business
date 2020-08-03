@@ -44,6 +44,7 @@ import { BsnChartComponent } from '@shared/business/bsn-chart/bsn-chart.componen
 import { BsnNewTreeTableComponent } from '@shared/business/bsn-new-tree-table/bsn-new-tree-table.component';
 import { BsnInlineCardSwipeComponent } from '@shared/business/bsn-inline-card-swipe/bsn-inline-card-swipe.component';
 import { BsnTimeAxisChartComponent } from '@shared/business/bsn-time-axis-chart/bsn-time-axis-chart.component';
+import { BsnDynamicLoadComponent } from '@shared/business/bsn-dynamic-load/bsn-dynamic-load.component';
 const components: { [type: string]: Type<any> } = {
     code_edit: CnCodeEditComponent,
     bsnTable: BsnTableComponent,
@@ -73,7 +74,8 @@ const components: { [type: string]: Type<any> } = {
     bsnGantt: BsnGanttComponent,
     bsnImportExcel: BsnImportExcelComponent,
     bsnNewTreeTable: BsnNewTreeTableComponent,
-    bsnInlineswipe: BsnInlineCardSwipeComponent
+    bsnInlineswipe: BsnInlineCardSwipeComponent,
+    BsnDynamicLoad: BsnDynamicLoadComponent
 };
 @Component({
     // tslint:disable-next-line:component-selector

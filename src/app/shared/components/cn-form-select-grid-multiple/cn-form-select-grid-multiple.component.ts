@@ -149,13 +149,13 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
       labels = labels + element.label + ',';
       values = values + element.value + ',';
     });
-    if (labels.length > 0) {
-      this._valuetext = this._valuetext.substring(0, labels.length - 1);
-    } else {
-      this._valuetext = null;
+    this._valuetext = labels;
+    this._value = values;
+    if (this._valuetext.length > 0) {
+      this._valuetext = this._valuetext.substring(0, this._valuetext.length - 1);
     }
-    if (values.length > 0) {
-      this._value = this._value.substring(0, values.length - 1);
+    if (this._value.length > 0) {
+      this._value = this._value.substring(0, this._value.length - 1);
     } else {
       this._value = null;
     }

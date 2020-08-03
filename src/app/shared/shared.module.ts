@@ -138,6 +138,7 @@ import { BsnKeyboardComponent } from './business/bsn-keyboard/bsn-keyboard.compo
 import { CnFormInputSensorComponent } from './components/cn-form-input-sensor/cn-form-input-sensor.component';
 import { BsnInlineCardSwipeComponent } from './business/bsn-inline-card-swipe/bsn-inline-card-swipe.component';
 import { BsnTimeAxisChartComponent } from './business/bsn-time-axis-chart/bsn-time-axis-chart.component';
+import { BsnDynamicLoadComponent } from './business/bsn-dynamic-load/bsn-dynamic-load.component';
 
 
 const THIRDMODULES = [
@@ -267,7 +268,8 @@ const COMPONENTS = [
     BsnKeyboardComponent,
     CnFormInputSensorComponent,
     BsnInlineCardSwipeComponent,
-    BsnTimeAxisChartComponent
+    BsnTimeAxisChartComponent,
+    BsnDynamicLoadComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

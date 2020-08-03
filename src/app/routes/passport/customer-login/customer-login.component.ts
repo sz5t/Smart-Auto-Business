@@ -23,6 +23,7 @@ import { HttpClient } from '@angular/common/http';
 import { SystemResource } from '@core/utility/system-resource';
 import { CommonTools } from '@core/utility/common-tools';
 import { timeout } from 'rxjs/operators';
+import {Buffer} from 'buffer';
 
 @Component({
   selector: 'customer-login',
@@ -440,6 +441,7 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   public async login(userLogin) {
+    // userLogin.loginPwd = new Buffer(userLogin.loginPwd).toString('base64');
     const user = await this._userLogin(userLogin);
     if (user.isSuccess) {
       console.log(user.data);

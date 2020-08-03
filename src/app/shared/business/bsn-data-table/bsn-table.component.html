@@ -95,11 +95,6 @@
                                         [changeConfig]="changeConfig_newSearch.hasOwnProperty(data.key) ? changeConfig_newSearch[data.key][col.field]:''"
                                         (updateValue)="valueChangeSearch($event)"></cn-grid-search>
                                 </ng-container>
-                                <ng-container *ngIf="col.type">
-                                    <span class="editable-row-operations">
-                                        <a href="#">删除</a>
-                                    </span>
-                                </ng-container>
 
                             </ng-container>
 
@@ -177,6 +172,13 @@
                                         [value]="{key:data.key,name:col.showFormat.field,data:editCache[data.key].data[col.showFormat.field],dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
                                         [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.showFormat.field]:''"
                                         (updateValue)="valueChange($event)"> </ng-container>
+                                        <ng-container
+                                            *ngIf="col.type && col.name && col.conditionField && col.hidden === showbutton(data[col.conditionField], col.condition)">
+                                            <div class="editable-row-operations">
+                                                <button nz-button nzType="primary" nzBlock
+                                                    (click)="execFun(col.actionName,data.key)">{{col.name}}</button>
+                                            </div>
+                                        </ng-container>
                                 </ng-container>
                             </td>
                         </ng-container>
@@ -241,6 +243,13 @@
                                         [value]="{key:data.key,name:col.showFormat.field,data:editCache[data.key].data[col.showFormat.field],dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
                                         [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.showFormat.field]:''"
                                         (updateValue)="valueChange($event)"> </ng-container>
+                                        <ng-container
+                                            *ngIf="col.type && col.name && col.conditionField && col.hidden === showbutton(data[col.conditionField], col.condition)">
+                                            <div class="editable-row-operations">
+                                                <button nz-button nzType="primary" nzBlock
+                                                    (click)="execFun(col.actionName,data.key)">{{col.name}}</button>
+                                            </div>
+                                        </ng-container>
                                 </ng-container>
                             </td>
                         </ng-container>
