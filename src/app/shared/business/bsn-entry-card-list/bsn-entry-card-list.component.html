@@ -1,68 +1,26 @@
-<!-- 
-<nz-card nzBordered="false" [nzBodyStyle]="{'min-height':'800px'}">    
-        <nz-list [nzDataSource]="data" [nzRenderItem]="item" [nzGrid]="{gutter:32, xs: 12, sm: 12, md: 8, lg: 8, xl: 6}">
-            <ng-template #item let-item>
-                <nz-card [ngClass]="{selectedItem: item.selected, unselectedItem: !item.selected, listItem: true}" 
-                    nzHoverable
-                    (click)="selectItem(item)">  
-                <nz-list-item>    
-                    <nz-list-item-meta
-                          *ngIf="item"
-                          [nzDescription]="nzDescription1">
-                          <ng-template #nzDescription1>
-                                <div nz-row nzGutter="32">
-                                        <div nz-col nzSpan="24" style="text-align: center;margin-top:10px">
-                                            <i nz-icon style="font-size:5em" [iconfont]="'icon-constructionworker'"></i>
-                                        </div>  
-                                        <div nz-col nzSpan="24" style="text-align: center;margin-top:20px">
-                                            <h2 class="h3">{{item.text}}</h2>
-                                        </div>
-                                    </div>
-                            </ng-template>     
-                        </nz-list-item-meta>        
-                </nz-list-item>
-            </nz-card>
-            </ng-template>
-        </nz-list>
-</nz-card> -->
-
-
-<!-- <ng-template ngFor let-module [ngForOf]="data">
-    <nz-card [nzTitle] ="title" [nzBodyStyle]="bodyStyle">
-        <ng-template ngFor let-fun [ngForOf]="module.children">
-                <div nz-card-grid (click)="selectItem(fun)"  [ngStyle]="gridStyle">
-                    <i nz-icon style="font-size: 24px" [type]="fun.icon ? fun.icon : 'unordered-list'" nzTheme="outline"></i><br/> 
-                    <a style="color:#666">{{fun.text}}</a>
-                </div>    
-        </ng-template>
+<ng-template ngFor let-module [ngForOf]="data">
+    <div class="module" id="{{module.text}}" #moduleList>
+        <nz-card [nzTitle] ="title" [nzBodyStyle]="bodyStyle">
+            <nz-list [nzDataSource]="module.children" [nzRenderItem]="item" [nzGrid]="{ gutter: 16, span: 6 }">
+                    <ng-template #item let-fun>
+                      <nz-list-item [nzContent]="nzContent" (click)="selectItem(fun,module.text)">
+                        <ng-template #nzContent>
+                          <nz-card  [ngClass]="{'bg-grey-lighter': true, 'card_hover': true}">
+                                <a class="d-block text-center">
+                                        <i nz-icon [nzType]="fun.icon" nzTheme="outline" class="text-blue-5 display-1 mb-md"></i>
+                                        <!-- <i class="anticon anticon-user display-1 mb-md"></i> -->
+                                    <h2>{{fun.text}}</h2>
+                                </a>
+                          </nz-card>
+                        </ng-template>
+                      </nz-list-item>
+                    </ng-template>
+                  </nz-list>
+            
     </nz-card>
     <ng-template #title>
-           <h1><span style="color:#333;font-weight: 500;"><i nz-icon  [type]="module.icon" nzTheme="outline"></i> {{module.text}}</span></h1> 
-    </ng-template>
-</ng-template> -->
-
-
-
-<ng-template ngFor let-module [ngForOf]="data">
-        <nz-card [nzTitle] ="title" [nzBodyStyle]="bodyStyle">
-                <nz-list [nzDataSource]="module.children" [nzRenderItem]="item" [nzGrid]="{ gutter: 16, span: 6 }">
-                        <ng-template #item let-fun>
-                          <nz-list-item [nzContent]="nzContent" (click)="selectItem(fun)">
-                            <ng-template #nzContent>
-                              <nz-card  [ngClass]="{'bg-grey-lighter': true, 'card_hover': true}">
-                                    <a class="d-block text-center">
-                                            <i nz-icon [nzType]="fun.icon" nzTheme="outline" class="text-blue-5 display-1 mb-md"></i>
-                                            <!-- <i class="anticon anticon-user display-1 mb-md"></i> -->
-                                        <h2>{{fun.text}}</h2>
-                                    </a>
-                              </nz-card>
-                            </ng-template>
-                          </nz-list-item>
-                        </ng-template>
-                      </nz-list>
-                
-        </nz-card>
-        <ng-template #title>
-                <h1><span style="color:#333;font-weight: 500;"> {{module.text}}</span></h1> 
-         </ng-template>
+            <h1><span style="color:#333;font-weight: 500;"> {{module.text}}</span></h1> 
+     </ng-template>
+    </div>
+        
 </ng-template>

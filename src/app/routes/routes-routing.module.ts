@@ -26,6 +26,7 @@ import { ModuleEntryComponent } from './template/module-entry/module-entry.compo
 import { TsLayoutDefaultComponent } from 'app/layout/ts-default/ts-default.component';
 import { EditPasswordComponent } from './passport/edit-password/edit-password/edit-password.component';
 import { HomeComponent } from './dashboard/home/home.component';
+import { CALoginComponent } from './passport/calogin/calogin.component';
 
 const routes: Routes = [
     {
@@ -90,7 +91,8 @@ const routes: Routes = [
             { path: 'admin', component: UserLoginComponent},
             { path: 'app', component: CustomerLoginComponent, data: {path: '/app/entry'}},
             { path: 'register', component: UserRegisterComponent },
-            { path: 'register-result', component: UserRegisterResultComponent }
+            { path: 'register-result', component: UserRegisterResultComponent },
+            { path: 'calogin/:Id', component: CALoginComponent}
         ],
         data: {title: '西安航天动力测控技术研究所', sub: '质量数据包管理系统'} 
     },

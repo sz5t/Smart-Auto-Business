@@ -51,7 +51,6 @@ export class BsnCardListItemComponent extends CnComponentBase
     public ngOnInit() {}
 
     public ngAfterViewInit() {
-        // debugger;
         if (this.value) {
             this.form.setValue(this.value);
         }

@@ -23,6 +23,7 @@ import { AuthGuard } from '@core/utility/auth-guard';
 import { BtnTableFieldLimit } from '@core/pipe/btn-table-field-limit.pipe';
 import { EditPasswordComponent } from './passport/edit-password/edit-password/edit-password.component';
 import { HomeComponent } from './dashboard/home/home.component';
+import { CALoginComponent } from './passport/calogin/calogin.component';
 
 @NgModule({
     imports: [SharedModule, RouteRoutingModule],
@@ -44,7 +45,8 @@ import { HomeComponent } from './dashboard/home/home.component';
         CallbackComponent,
         Exception403Component,
         Exception404Component,
-        Exception500Component
+        Exception500Component,
+        CALoginComponent
     ],
     providers: [
         AuthGuard

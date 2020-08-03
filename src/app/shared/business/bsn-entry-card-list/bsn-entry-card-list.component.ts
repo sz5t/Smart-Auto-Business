@@ -1,4 +1,4 @@
-import { EventEmitter } from '@angular/core';
+import { EventEmitter, ViewChildren, TemplateRef, QueryList, ViewChild, ElementRef } from '@angular/core';
 import {
     Component,
     OnInit,
@@ -38,6 +38,7 @@ export class BsnEntryCardListComponent extends CnComponentBase
     public config;
     @Input()
     public viewId;
+    @Input() public moduleName: any;
     @Input()
     public initData;
     public count = 0;
@@ -61,6 +62,7 @@ export class BsnEntryCardListComponent extends CnComponentBase
        
     }
     @Output() public updateValue = new EventEmitter();
+    @ViewChildren('moduleList') public templateList: QueryList<ElementRef<any>>;
     constructor(
         private _apiService: ApiService,
         private _cacheService: CacheService,
@@ -94,31 +96,19 @@ export class BsnEntryCardListComponent extends CnComponentBase
      * 根据表单组件routeParams属性配置参数,执行页面跳转
      * @param option 按钮操作配置参数
      */
-    private linkToPage(option) {
-        // const params = CommonTools.parametersResolver({
-        //     params: this.config.routeParams,
-        //     componentValue: option.data ? option.data : {},
-        //     tempValue: this.tempValue,
-        //     initValue: this.initValue,
-        //     cacheValue: this.cacheValue
-        // });
-        this._router.navigate([option.appUrl], {queryParams: {}});
+    private linkToPage(option, pos) {
+        this._router.navigate([`${option.appUrl}/${pos}`]);
     }
 
     public ngOnDestroy() {
         this.unsubscribe();
     }
 
-    public async load() {
+    public load() {
         const user = this.cacheValue.getNone('userInfo');
         this.data = user.modules;
         // const response = await this.get();
         // if (response.isSuccess) {
-        //     // 构建数据源
-        //     // response.data.forEach(item => {
-        //     //     item['checked'] = false;
-        //     //     item['selected'] = false;
-        //     // });
         //     this.data = response.data;
         //     this.getSelectedItems();
         //     this.isLoading = false;
@@ -159,7 +149,7 @@ export class BsnEntryCardListComponent extends CnComponentBase
         return result;
     }
 
-    public selectItem(item) {
+    public selectItem(item, pos) {
         if (item.selected) {
             // item.selected = !item.selected;
         } else {
@@ -173,7 +163,7 @@ export class BsnEntryCardListComponent extends CnComponentBase
         }
         this.getSelectedItems();
 
-        this.linkToPage(item);
+        this.linkToPage(item, pos);
     }
 
     public selectItems(item) {
@@ -183,6 +173,17 @@ export class BsnEntryCardListComponent extends CnComponentBase
 
     public ngAfterViewInit() {
         this.load();
+        if (this.templateList !== null && this.templateList.length > 0) {
+            this.templateList.forEach(eleRef => { 
+               
+                if(eleRef.nativeElement.id === this.moduleName) {
+                    console.log(eleRef.nativeElement.id, this.moduleName);
+                    //eleRef.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+                    eleRef.nativeElement.scrollIntoView(true);
+                }
+                
+            });
+        }
     }
 
     public switch() {

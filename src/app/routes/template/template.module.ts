@@ -88,7 +88,7 @@ const routes: Routes = [
         canActivate: [AuthGuard]
     },
     {
-        path: 'appTemplate/:name',
+        path: 'appTemplate/:name/:pos',
         component: AppTemplateComponent,
         canActivate: [AuthGuard]
     }
