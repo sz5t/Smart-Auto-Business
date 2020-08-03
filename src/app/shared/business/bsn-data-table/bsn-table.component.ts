@@ -3076,7 +3076,7 @@ export class BsnTableComponent extends CnComponentBase
                 this.editCache[item.key] = {
                     edit: false,
                     data: item,
-                    mergeData:{}
+                    mergeData: {}
                 };
             }
         });
