@@ -26,7 +26,7 @@
                     <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked()">
                     </td>
                     <ng-template ngFor let-col [ngForOf]="config.columns">
-                        <td *ngIf="!col.hidden">
+                        <td *ngIf="!col.hidden"  [nzAlign]="col.align?col.align:'left'" >
                             <ng-container *ngIf="col.editor || col.searcheditor">
                                 <div *ngIf="!editCache[data.key]['edit']" [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'',col.fieldAlign ? col.fieldAlign : '']">
                                     <span>{{!col.dataType?data[col.field]:data[col.field] | date}}
@@ -73,7 +73,7 @@
                     <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked()">
                     </td>
                     <ng-template ngFor let-col [ngForOf]="config.columns">
-                        <td *ngIf="!col.hidden">
+                        <td *ngIf="!col.hidden"  [nzAlign]="col.align?col.align:'left'" >
                             <ng-container *ngIf="col.editor">
                                 <div *ngIf="!editCache[data.key]['edit']" [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'',col.fieldAlign ? col.fieldAlign : '']">
                                     <span>{{!col.dataType?data[col.field]:data[col.field] | date}}

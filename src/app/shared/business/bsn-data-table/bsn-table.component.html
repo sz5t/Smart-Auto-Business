@@ -57,7 +57,7 @@
                         nzWidth="50px" (nzCheckedChange)="refChecked()">
                     </td>
                     <ng-template ngFor let-col [ngForOf]="config.columns">
-                        <td *ngIf="!col.hidden" [ngStyle]="{'width': col.width}">
+                        <td *ngIf="!col.hidden" [ngStyle]="{'width': col.width}" [nzAlign]="col.align?col.align:'left'">
                             <ng-container *ngIf="col.editor || col.searcheditor">
                                 <span *ngIf="!editCache[data.key]['edit']"
                                     [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter,data):'',col.fieldAlign ? col.fieldAlign : '']">
@@ -111,7 +111,7 @@
                     <ng-template ngFor let-col [ngForOf]="config.columns">
                         <!-- [ngStyle]="{'width': col.width}" -->
                         <ng-container *ngIf="!col.hidden && !col.left">
-                            <td [attr.rowspan]="editCache[data['key']]['mergeData'][col.field]?(editCache[data['key']]['mergeData'][col.field].groupIndex===1 ? editCache[data['key']]['mergeData'][col.field]['groupNum'] : 1):1"
+                            <td  [nzAlign]="col.align?col.align:'left'" [attr.rowspan]="editCache[data['key']]['mergeData'][col.field]?(editCache[data['key']]['mergeData'][col.field].groupIndex===1 ? editCache[data['key']]['mergeData'][col.field]['groupNum'] : 1):1"
                             [attr.colspan]="editCache[data['key']]['mergeData'][col.field]?(editCache[data['key']]['mergeData'][col.field]['colgroupIndex']===1 ? editCache[data['key']]['mergeData'][col.field]['colgroupNum'] : 1):1"
                             *ngIf="!editCache[data['key']]['mergeData'][col.field] || ( editCache[data['key']]['mergeData'][col.field]['groupIndex'] === 1 && editCache[data['key']]['mergeData'][col.field]['colgroupIndex'] === 1 )">
                           <!--   [attr.rowspan]="editCache[data['key']]['mergeData'][col.field]?(editCache[data['key']]['mergeData'][col.field].groupIndex===1 ? editCache[data['key']]['mergeData'][col.field]['groupNum'] : 1):1"
@@ -184,7 +184,7 @@
                         </ng-container>
                
                         <ng-container *ngIf="!col.hidden && col.left">
-                            <td  [nzLeft]="col.left"
+                            <td [nzAlign]="col.align?col.align:'left'" [nzLeft]="col.left"
                             [attr.rowspan]="editCache[data['key']]['mergeData'][col.field]?(editCache[data['key']]['mergeData'][col.field].groupIndex===1 ? editCache[data['key']]['mergeData'][col.field]['groupNum'] : 1):1"
                             [attr.colspan]="editCache[data['key']]['mergeData'][col.field]?(editCache[data['key']]['mergeData'][col.field]['colgroupIndex']===1 ? editCache[data['key']]['mergeData'][col.field]['colgroupNum'] : 1):1"
                             *ngIf="!editCache[data['key']]['mergeData'][col.field] || ( editCache[data['key']]['mergeData'][col.field]['groupIndex'] === 1 && editCache[data['key']]['mergeData'][col.field]['colgroupIndex'] === 1 )">
