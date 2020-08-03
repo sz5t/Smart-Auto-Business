@@ -163,7 +163,7 @@
                                 </ng-container>
                                 <ng-template ngFor let-col [ngForOf]="config.columns">
                                     <ng-container *ngIf="!col.hidden && (col.subtitle !=='台份' || !col.subtitle)">
-                                        <td [ngClass]="[col.formatter ? setCellFont(data[col.field],col.formatter,data):'',col.fieldAlign ? col.fieldAlign : '']">
+                                        <td  [nzAlign]="col.align?col.align:'left'" [ngClass]="[col.formatter ? setCellFont(data[col.field],col.formatter,data):'',col.fieldAlign ? col.fieldAlign : '']">
                                         <ng-container *ngIf="col.editor">
                                             <ng-container *ngIf="!col.type">
                                                 <div *ngIf="!editCache[data.key]['edit']">
@@ -222,6 +222,7 @@
 
                                     <ng-container *ngIf="!col.hidden && col.subtitle === '台份'" >
                                         <td nzLeft="91px"
+                                        [nzAlign]="col.align?col.align:'left'" 
                                         [ngClass]="[col.formatter ? setCellFont(data[col.field],col.formatter,data):'',col.fieldAlign ? col.fieldAlign : '']">
                                         <ng-container *ngIf="col.editor">
                                             <ng-container *ngIf="!col.type">
