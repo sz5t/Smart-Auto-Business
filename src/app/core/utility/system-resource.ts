@@ -157,6 +157,15 @@ export const SystemResource_1 = {
         appSystemServer: '10.129.198.30:8081',
         /**报表  */
         reportServerUrl: '10.129.198.30:8082'
+      },
+      'url_172_46_182_108_8083': {
+        localResourceUrl: '172.46.182.108:8083',
+        /** 后台服务 */
+        settingSystemServer: '172.46.182.108:8081',
+        /** 后台服务 */
+        appSystemServer: '172.46.182.108:8081',
+        /**报表  */
+        reportServerUrl: '172.46.182.108:8088'
       }
 }
 
