@@ -3204,7 +3204,8 @@ export class TsDataTableComponent extends CnComponentBase
             if (!this.editCache[item.key]) {
                 this.editCache[item.key] = {
                     edit: false,
-                    data: item
+                    data: item,
+                    mergeData: {}
                 };
             }
         });
