@@ -80,7 +80,9 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
             this.selectedByLoaded();
         } else if (this.config.ajaxConfig) {
             // 异步加载options
-            this.load();
+            setTimeout(() => {
+                this.load();
+            });
         } else {
             // 加载固定数据
             this._options = this.config.options;
@@ -94,6 +96,10 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
             } else {
                 if (this.config.hasOwnProperty('defaultValue')) {
                     this.value = this.config.defaultValue;
+                } else {
+                    if (this._options.length > 0 ) {
+                        this.value = this._options[0].value;
+                    }
                 }
             }
         }
@@ -120,12 +126,15 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                 });
             });
         } else {
-            result.data.forEach(d => {
-                this._options.push({
-                    label: d[this.config.labelName],
-                    value: d[this.config.valueName]
+            if (result.data && result.data.length > 0) {
+                result.data.forEach(d => {
+                    this._options.push({
+                        label: d[this.config.labelName],
+                        value: d[this.config.valueName]
+                    });
                 });
-            });
+            }
+            
         }
 
         this.selectedByLoaded();
@@ -252,6 +261,10 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
             } else {
                 if (this.config.hasOwnProperty('defaultValue')) {
                     this.value = this.config.defaultValue;
+                } else {
+                    if (this._options.length > 0 ) {
+                        this.value = this._options[0].value;
+                    }
                 }
             }
         }
@@ -262,11 +275,16 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                 }
             });
         } else {
-            this._options.forEach(element => {
-                if (element.value === this.config.defaultValue) {
-                    selected = element;
-                }
-            });
+            if (this.config.defaultValue) {
+                this._options.forEach(element => {
+                    if (element.value === this.config.defaultValue) {
+                        selected = element;
+                    }
+                });
+            } else {
+                selected = this._options[0];
+            }
+            
         }
 
         this._selectedOption = selected;

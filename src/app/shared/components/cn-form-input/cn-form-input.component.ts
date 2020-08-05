@@ -43,6 +43,16 @@ export class CnFormInputComponent implements OnInit {
     if (this.config.readonly) {
       this.inputReadonly = true;
     }
+          // 未知是否有错误
+          if (!this.model) {
+            if (this.formGroup.value[this.config.name]) {
+                this.model = this.formGroup.value[this.config.name];
+            } else {
+                if (this.config.hasOwnProperty('defaultValue')) {
+                    this.model = this.config.defaultValue;
+                } 
+            }
+        }
   }
 
   public valueChange(name?) {

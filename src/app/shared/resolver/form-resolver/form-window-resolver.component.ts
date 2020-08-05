@@ -1007,6 +1007,22 @@ export class CnFormWindowResolverComponent extends CnFormBase
                                                     ];
                                             }
                                         }
+
+                                        if (
+                                            caseItem['setValue']['type'] ===
+                                            'formValue'
+                                        ) {
+                                            // 选中行对象数据
+                                            if (data.dataItem) {
+                                                setValuedata['data'] =
+                                                    this.form.value[
+                                                    caseItem['setValue'][
+                                                    'valueName'
+                                                    ]
+                                                    ];
+                                            }
+                                        }
+
                                         // 手动给表单赋值，将值
                                         if (
                                             setValuedata.hasOwnProperty('data')
@@ -1195,6 +1211,22 @@ export class CnFormWindowResolverComponent extends CnFormBase
                                                         ];
                                                 }
                                             }
+
+                                            if (
+                                                caseItem['setValue']['type'] ===
+                                                'formValue'
+                                            ) {
+                                                // 选中行对象数据
+                                                if (data.dataItem) {
+                                                    setValuedata['data'] =
+                                                        this.form.value[
+                                                        caseItem['setValue'][
+                                                        'valueName'
+                                                        ]
+                                                        ];
+                                                }
+                                            }
+
                                             // 手动给表单赋值，将值
                                             if (
                                                 setValuedata.hasOwnProperty(
@@ -1303,7 +1335,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
             });
         }
 
-     //   console.log('当前表单值', this.value);
+        // console.log('当前表单值', this.value, this.form.value);
     }
 
     // 级联变化，情况大致分为三种

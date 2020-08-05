@@ -230,11 +230,16 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
                 }
             });
         } else {
-            this._options.forEach(element => {
-                if (element.value === this.config.defaultValue) {
-                    selected = element;
-                }
-            });
+            if (this.config.defaultValue) {
+                this._options.forEach(element => {
+                    if (element.value === this.config.defaultValue) {
+                        selected = element;
+                    }
+                });
+            } else {
+                selected = this._options[0];
+            }
+            
         }
         this._selectedOption = selected;
         if (this._selectedOption) {
