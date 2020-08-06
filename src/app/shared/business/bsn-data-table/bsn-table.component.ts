@@ -773,9 +773,9 @@ export class BsnTableComponent extends CnComponentBase
         }
         this._updateEditCacheByLoad(pagedata);
         this.dataList = pagedata;
-          // liu 20200728 行列合并
-          if(this.config.mergeconfig)
-          this._createMapd_new(this.config.mergeconfig,this.dataList);
+        // liu 20200728 行列合并
+        if (this.config.mergeconfig)
+            this._createMapd_new(this.config.mergeconfig, this.dataList);
     }
 
     public load(sd?: boolean) {
@@ -983,11 +983,11 @@ export class BsnTableComponent extends CnComponentBase
             }
 
             // liu 20200728 行列合并
-            if(this.config.mergeconfig){
-                this._createMapd_new(this.config.mergeconfig,this.dataList);
-            } 
+            if (this.config.mergeconfig) {
+                this._createMapd_new(this.config.mergeconfig, this.dataList);
+            }
             else {
-                console.log('查看当前结构',this.editCache);
+                console.log('查看当前结构', this.editCache);
             }
 
 
@@ -1086,7 +1086,7 @@ export class BsnTableComponent extends CnComponentBase
                 params: paramsConfig,
                 tempValue: selecttempValue,
                 componentValue: componentValue,
-                initValue: {...this.initValue, ...initData},
+                initValue: { ...this.initValue, ...initData },
                 cacheValue: this.cacheService,
                 cascadeValue: cascadeValue,
                 router: this._router
@@ -1709,7 +1709,7 @@ export class BsnTableComponent extends CnComponentBase
                                     }
                                 }
                             }
-                            this.editCache[data.key].data[ key] = this.changeConfig_new[rowCasade][key ]['setValue'];
+                            this.editCache[data.key].data[key] = this.changeConfig_new[rowCasade][key]['setValue'];
 
                             // endregion  解析结束
                         }
@@ -1832,14 +1832,14 @@ export class BsnTableComponent extends CnComponentBase
                                         this.changeConfig_new[rowCasade][key]['setValue'] = caseItem['setValue']['value'];
                                     }
                                     if (
-                                        caseItem['setValue']['type'] ==='selectValue' ) {
+                                        caseItem['setValue']['type'] === 'selectValue') {
                                         // 选中行数据[这个是单值]
-                                        this.changeConfig_new[rowCasade][key]['setValue'] =data[caseItem['setValue']['valueName']];
+                                        this.changeConfig_new[rowCasade][key]['setValue'] = data[caseItem['setValue']['valueName']];
                                     }
-                                    if ( caseItem['setValue']['type'] ==='selectObjectValue') {
+                                    if (caseItem['setValue']['type'] === 'selectObjectValue') {
                                         // 选中行对象数据
                                         if (data.dataItem) {
-                                            this.changeConfig_new[rowCasade][key]['setValue'] =data.dataItem[caseItem['setValue']['valueName' ]];
+                                            this.changeConfig_new[rowCasade][key]['setValue'] = data.dataItem[caseItem['setValue']['valueName']];
                                         }
                                     }
                                     if (data.data === null) {
@@ -1847,16 +1847,16 @@ export class BsnTableComponent extends CnComponentBase
                                     }
                                     if (caseItem['setValue']['type'] === 'notsetValue') {
                                         // 选中行对象数据
-                                        if ( this.changeConfig_new[rowCasade][ key].hasOwnProperty('setValue')) {
-                                            delete this.changeConfig_new[ rowCasade ][key]['setValue'];
+                                        if (this.changeConfig_new[rowCasade][key].hasOwnProperty('setValue')) {
+                                            delete this.changeConfig_new[rowCasade][key]['setValue'];
                                         }
                                     }
-                                  
+
                                 } else {
                                     if (
                                         this.changeConfig_new[rowCasade][key].hasOwnProperty('setValue')
                                     ) {
-                                        delete this.changeConfig_new[rowCasade][key ]['setValue'];
+                                        delete this.changeConfig_new[rowCasade][key]['setValue'];
                                     }
                                 }
                             }
@@ -1866,11 +1866,11 @@ export class BsnTableComponent extends CnComponentBase
                                 if (this.changeConfig_new[rowCasade][key]) {
                                     //
                                     if (this.isEdit(key)) {
-                                        this.editCache[data.key].data[ key] = this.changeConfig_new[rowCasade][key ]['setValue'];
+                                        this.editCache[data.key].data[key] = this.changeConfig_new[rowCasade][key]['setValue'];
                                     }
                                 }
                             }
-                            this.editCache[data.key].data[ key] = this.changeConfig_new[rowCasade][key ]['setValue'];
+                            this.editCache[data.key].data[key] = this.changeConfig_new[rowCasade][key]['setValue'];
                         }
                     );
                 }
@@ -2790,7 +2790,7 @@ export class BsnTableComponent extends CnComponentBase
                 this.editCache[item.key] = {
                     edit: false,
                     data: JSON.parse(JSON.stringify(item)),
-                    mergeData:{}
+                    mergeData: {}
                 };
             }
         });
@@ -3018,6 +3018,10 @@ export class BsnTableComponent extends CnComponentBase
      */
     private _startEdit(key: string): void {
         this.editCache[key].edit = true;
+        // liu 20200728 行列合并
+        if (this.config.mergeconfig) {
+            this._createMapd_new(this.config.mergeconfig, this.dataList);
+        }
     }
     /**
      * 退出编辑状态
@@ -3032,6 +3036,10 @@ export class BsnTableComponent extends CnComponentBase
         this.editCache[key].data = JSON.parse(
             JSON.stringify(this.dataList[index])
         );
+        // liu 20200728 行列合并
+        if (this.config.mergeconfig) {
+            this._createMapd_new(this.config.mergeconfig, this.dataList);
+        }
     }
     /**
      * 保存编辑状态的数据
@@ -3229,7 +3237,8 @@ export class BsnTableComponent extends CnComponentBase
             delete searchData['checked'];
             delete searchData['row_status'];
             delete searchData['selected'];
-
+            delete searchData['__state__'];
+        
             search = searchData;
         }
         return search;
@@ -4443,13 +4452,13 @@ export class BsnTableComponent extends CnComponentBase
     }
 
 
-    
-    public _createMapd_new(mergeconfig?,listOfData?) {
+
+    public _createMapd_new(mergeconfig?, listOfData?) {
 
         // 生成group字段
 
-        const mergeData={};
-  
+        const mergeData = {};
+
 
         listOfData.forEach(
             row => {
@@ -4461,7 +4470,7 @@ export class BsnTableComponent extends CnComponentBase
         // 按照 group 分组顺序进行  merge
 
 
-        mergeconfig.rowConfig && mergeconfig.rowConfig.length>0  && mergeconfig.rowConfig.forEach(r_c => {
+        mergeconfig.rowConfig && mergeconfig.rowConfig.length > 0 && mergeconfig.rowConfig.forEach(r_c => {
 
 
             listOfData.forEach(row => {
@@ -4469,10 +4478,15 @@ export class BsnTableComponent extends CnComponentBase
                 if (!this.editCache[row['key']]['mergeData'][r_c.colName]) {
                     this.editCache[row['key']]['mergeData'][r_c.colName] = {};
                 }
-                let new_data=[...listOfData];
-                r_c.groupCols.forEach(group_col=>{
+                let new_data = [...listOfData];
+                r_c.groupCols.forEach(group_col => {
 
-                    new_data = new_data.filter(d => d[group_col.groupColName] === row[group_col.groupColName]);
+                    // new_data = new_data.filter(d => d[group_col.groupColName] === row[group_col.groupColName]);
+                    let _SingleEdit =true;
+                    if(group_col.hasOwnProperty('singleEdit')) {
+                        _SingleEdit=group_col['singleEdit'];
+                    }  
+                    new_data = [...this._createMapd_array(new_data, group_col.groupColName, row, _SingleEdit)];
                 });
 
                 new_data = new_data.filter(d => d[r_c.groupName] === row[r_c.groupName]);
@@ -4491,14 +4505,14 @@ export class BsnTableComponent extends CnComponentBase
 
 
 
-        mergeconfig.colConfig && mergeconfig.colConfig.length>0 && listOfData.forEach(
+        mergeconfig.colConfig && mergeconfig.colConfig.length > 0 && listOfData.forEach(
             row => {
                 // this.mapd[row.id]={}; // 初始化
 
                 mergeconfig.colConfig.forEach(col_c => {
 
                     col_c.mergeItems.forEach(item => {
-                        
+
 
                         let regularflag = true;
                         if (item.caseValue && item.type === "condition") {
@@ -4514,7 +4528,7 @@ export class BsnTableComponent extends CnComponentBase
                                         regularData = row[item.caseValue['valueName']];
                                     }
                                 }
-        
+
                             } else {
                                 regularData = null;
                             }
@@ -4523,18 +4537,18 @@ export class BsnTableComponent extends CnComponentBase
                         if (regularflag) {
 
                             let group_num = item.mergeCols.length;
-                            item.mergeCols.forEach(merge_col=>{
+                            item.mergeCols.forEach(merge_col => {
                                 if (!this.editCache[row['key']]['mergeData'][merge_col['mergeColName']]) {
                                     this.editCache[row['key']]['mergeData'][merge_col['mergeColName']] = {};
                                 }
                                 let group_index = item.mergeCols.findIndex(d => d['mergeColName'] === merge_col['mergeColName']);
-                                this.editCache[row['key']]['mergeData'][merge_col['mergeColName']]['colgroupIndex'] = group_index+1;
+                                this.editCache[row['key']]['mergeData'][merge_col['mergeColName']]['colgroupIndex'] = group_index + 1;
                                 this.editCache[row['key']]['mergeData'][merge_col['mergeColName']]['colgroupNum'] = group_num;
                             });
 
-                           
-                            
-                            
+
+
+
 
                         }
 
@@ -4544,13 +4558,115 @@ export class BsnTableComponent extends CnComponentBase
 
                 });
 
-       
+
 
             }
         );
 
 
         console.log('new生成分组信息', this.editCache);
+
+    }
+
+    /**
+ * 
+ * @param new_data  范围数组
+ * @param feildName 分组字段
+ * @param row       当前行
+ * @param isSingleEdit 分组字段是否启用单独编辑
+ */
+    public _createMapd_array(new_data?, feildName?, row?, isSingleEdit?) {
+
+        // 总方法，将数据集合 拷贝 可补充解析字段在当前结构下是否计算
+        // 数组构建 
+        // 将原数据对比编辑状态数据，计算出当前数据的状态
+        // 1.判断是否启用独立编辑
+        // 1.1 启用独立编辑 计算出当前行所在位置
+        // 按当前行开始，向下找，满足分组标识一致，并且行不能是edit 若有一个不满足循环结束
+        // 当前行向上找, 满足分组条件，并且不能是edit（逆序查找，查找结束后，反转）
+        // 将上下两部分数据加上本身行合并，生成满足条件的新数据 
+        // 返回当前数组
+        // 2.当前列未启用编辑，则按照原始处理
+
+        //1 将当前数组集合的edit状态写入
+        // state: 'new' 'edit',
+       // console.log('xxxxxxxxx====>', feildName, new_data);
+        new_data.forEach(row => {
+            row['__state__'] = this.editCache[row['key']]['edit'];
+        });
+
+        //2 数组分割
+        //2.1 计算出当前行所在
+        let row_index = new_data.findIndex(d => d['key'] === row['key']);
+        //2.2 计算出前数组
+        let BeforeArr = new_data.slice(0, row_index).reverse();
+        let OwnArr = new_data.slice(row_index, row_index + 1);
+        let AftertArr = new_data.slice(row_index + 1);
+
+       // console.log('xxxxxxxxx分割====>', row_index, BeforeArr, OwnArr, AftertArr);
+        //2.2 计算出后数组
+        // reverse() 反转
+
+        let new_BeforeArr = [];
+        let Before_index = 0;
+        for (let i = 0; i < BeforeArr.length; i++) {
+            // 序号不能断，状态不能断 
+            if (Before_index === i && BeforeArr[i][feildName] === row[feildName]) {
+                if (isSingleEdit) {
+                    if (BeforeArr[i]['__state__']) {
+                        Before_index = -1;
+                    } else {
+                        new_BeforeArr.push(BeforeArr[i]);
+                        Before_index++;
+                    }
+
+                } else {
+                    new_BeforeArr.push(BeforeArr[i]);
+                    Before_index++;
+                }
+            } else {
+                break;
+            }
+
+        }
+
+        let new_AftertArr = [];
+        let Aftert_index = 0;
+        for (let i = 0; i < AftertArr.length; i++) {
+            // 序号不能断，状态不能断 
+            if (Aftert_index === i && AftertArr[i][feildName] === row[feildName]) {
+                if (isSingleEdit) {
+                    if (AftertArr[i]['__state__']) {
+                        Aftert_index = -1;
+                    } else {
+                        new_AftertArr.push(AftertArr[i]);
+                        Aftert_index++;
+                    }
+
+                } else {
+                    new_AftertArr.push(AftertArr[i]);
+                    Aftert_index++;
+                }
+            } else {
+                break;
+            }
+
+        }
+
+        if (isSingleEdit) {
+            if (OwnArr[0]['__state__']) {
+                new_BeforeArr = [];
+                new_AftertArr = [];
+            }
+
+        }
+
+        //3 合并数组，返回
+
+        let back_data = [];
+        back_data = [...new_BeforeArr.reverse(), ...OwnArr, ...new_AftertArr];
+
+        return back_data;
 
     }
 

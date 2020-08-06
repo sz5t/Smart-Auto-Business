@@ -1,0 +1,19 @@
+<!-- <input nz-input
+[ngStyle]="{'width':config.width}"
+type="{{config.inputType}}"
+[nzSize]="config.size"
+placeholder="{{config.placeholder}}"
+readonly="{{config.readonly}}"
+disabled="{{config.disabled}}"
+[(ngModel)]="_value"
+(blur)="onblur($event,'end')" (keyup)="onKeyPress($event,'end')"
+> -->
+
+
+<!-- (ngModelChange)="valueChange($event)" -->
+<div>
+
+    <nz-tag *ngFor="let tag of tags; let i = index;" [nzColor]="tagColor" [attr.title]="tag">
+        {{ sliceTagName(tag) }}
+    </nz-tag>
+  </div>
