@@ -1422,7 +1422,16 @@ export class BsnTableComponent extends CnComponentBase
         if (this.is_Search) {
             this.dataList.splice(1, 0, rowContentNew);
         } else {
-            this.dataList = [rowContentNew, ...this.dataList];
+            const CopyDataList = [...this.dataList]
+            const count = CopyDataList.reverse().findIndex(e => e['row_status'] === 'adding');
+            if (count === -1) {
+                this.dataList.splice(0, 0, rowContentNew);
+            } else {
+                const index = this.dataList.length - count;
+                this.dataList.splice(index, 0, rowContentNew);
+            }
+            this.dataList = this.dataList.filter(e => e['key'] !== null);
+            // this.dataList = [rowContentNew, ...this.dataList];
         }
         if (!this.changeConfig_new[fieldIdentity]) {
             this.changeConfig_new[fieldIdentity] = {};
