@@ -44,6 +44,7 @@ import { CnFormSearchInputComponent } from '@shared/components/cn-form-search-in
 import { CnFormMarkdownComponent } from '@shared/components/cn-form-markdown/cn-form-markdown.component';
 import { CnFormSelectAsyncTreeComponent } from '@shared/components/cn-form-select-async-tree/cn-form-select-async-tree.component';
 import { CnFormInputSensorComponent } from '@shared/components/cn-form-input-sensor/cn-form-input-sensor.component';
+import { CnFormTagComponent } from '@shared/components/cn-form-tag/cn-form-tag.component';
 
 const components: { [type: string]: Type<any> } = {
     input: CnFormInputComponent,
@@ -78,7 +79,8 @@ const components: { [type: string]: Type<any> } = {
     searchNumber: CnFormSearchInputComponent,
     searchDatePicker: CnFormSearchDatePickerComponent,
     inputSensor: CnFormInputSensorComponent,
-    markdown: CnFormMarkdownComponent
+    markdown: CnFormMarkdownComponent,
+    tag:CnFormTagComponent
 };
 @Directive({
     selector: '[cnFormResolverDirective]'

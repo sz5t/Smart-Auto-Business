@@ -1,0 +1,11 @@
+<nz-form-label *ngIf="config.label" [nzSpan]="config.labelSize">
+  {{config.label}}
+</nz-form-label>
+<nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+  <input nz-input formControlName="{{config.name}}" type="hidden" placeholder="{{config.placeholder}}" [(ngModel)]="value">
+  <div>
+    <nz-tag *ngFor="let tag of tags; let i = index;" [nzColor]="tagColor" [attr.title]="tag">
+        {{ sliceTagName(tag) }}
+    </nz-tag>
+  </div>
+</nz-form-control>
