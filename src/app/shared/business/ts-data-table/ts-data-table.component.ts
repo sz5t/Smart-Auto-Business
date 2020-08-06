@@ -5493,7 +5493,7 @@ export class TsDataTableComponent extends CnComponentBase
         );
 
 
-        console.log('new生成分组信息', this.editCache);
+        // console.log('new生成分组信息', this.editCache);
 
     }
 

@@ -18,10 +18,10 @@ export class CnGridTagComponent implements OnInit {
     public Visible = false;
     public message = '当前值不合理';
 
-    tags=[];
-    _tags=[];
+    tags = [];
+    _tags = [];
 
-    tagColor ='cyan';
+    tagColor = 'cyan';
 
     constructor(
         private http: _HttpClient
@@ -59,18 +59,26 @@ export class CnGridTagComponent implements OnInit {
     }
 
 
-    public createTags(){
+    public createTags() {
 
-        let splitstr=',';
-        if(this.config.hasOwnProperty('tagSplit')){
-            splitstr =this.config['tagSplit']; 
+        let splitstr = ',';
+        if (this.config.hasOwnProperty('tagSplit')) {
+            splitstr = this.config['tagSplit'];
         }
-       let newTags = this._value.split(splitstr);
-       this._tags = newTags;
-       this.tags=[...newTags];
-       
+        let newTags = [];
+        if (this._value)
+            newTags = this._value.split(splitstr);
+        newTags = newTags.filter((s) => {
+            if (s && s.trim() !== '') {
+                return s;
+            }
+
+        });
+        this._tags = newTags;
+        this.tags = [...newTags];
+
     }
-   
+
 
     public setValue(value) {
         this.value = value;
@@ -95,43 +103,43 @@ export class CnGridTagComponent implements OnInit {
 
     // formatConfig
 
-      sliceTagName(tag: string): string {
+    sliceTagName(tag: string): string {
 
-        let length =20;
-        if(this.config.hasOwnProperty('tagContent')){
-            if(this.config['tagContent']['ContentSubstr'] && this.config['tagContent']['ContentSubstr']){
+        let length = 20;
+        if (this.config.hasOwnProperty('tagContent')) {
+            if (this.config['tagContent']['ContentSubstr'] && this.config['tagContent']['ContentSubstr']) {
                 length = this.config['tagContent']['ContentSubstrlength'];
-            }else{
+            } else {
                 return tag;
             }
-        }else{
+        } else {
             return tag;
         }
         const isLongTag = tag.length > length;
         return isLongTag ? `${tag.slice(0, length)}...` : tag;
-      }
+    }
 
-     mb={
-        "showFormat":{
+    mb = {
+        "showFormat": {
             "type": "tag",
             "field": "remark",
             "options": {
-              "type": "tag",
-              "tagColor": "cyan", // magenta,red,volcano,orange,gold,lime,green,cyan,blue,geekblue,purple
-              "tagSplit":",", // 分割字符，默认是英文逗号，也可自定义
-              "tagContent":{
-                "ContentSubstr":true, // 是否截取tag内容
-                "ContentSubstrlength":20  // 内容长度
-              },
-              "tagsContent":{
-                "ContentSubstr":true, // 显示个数
-                "ContentSubstrlength":20
-              }
-              
-             
+                "type": "tag",
+                "tagColor": "cyan", // magenta,red,volcano,orange,gold,lime,green,cyan,blue,geekblue,purple
+                "tagSplit": ",", // 分割字符，默认是英文逗号，也可自定义
+                "tagContent": {
+                    "ContentSubstr": true, // 是否截取tag内容
+                    "ContentSubstrlength": 20  // 内容长度
+                },
+                "tagsContent": {
+                    "ContentSubstr": true, // 显示个数
+                    "ContentSubstrlength": 20
+                }
+
+
 
             }
-          }
-     } 
+        }
+    }
 
 }

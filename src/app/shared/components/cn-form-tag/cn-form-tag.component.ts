@@ -53,7 +53,17 @@ export class CnFormTagComponent implements OnInit {
     if(this.config.hasOwnProperty('tagSplit')){
         splitstr =this.config['tagSplit']; 
     }
-   let newTags = v.split(splitstr);
+
+    let newTags = [];
+    if (this._value)
+        newTags = this._value.split(splitstr);
+    newTags = newTags.filter((s) => {
+        if (s && s.trim() !== '') {
+            return s;
+        }
+
+    });
+
    this._tags = newTags;
    this.tags=[...newTags];
    
