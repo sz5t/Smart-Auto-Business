@@ -105,7 +105,7 @@ export class CnFormSelectMultipleComponent
             this.selectedByLoaded();
         }
         // 未知是否有错误
-        if (!this.value) {
+        if (!this.value && this.value !== 0) {
             if (this.formGroup.value[this.config.name]) {
                 this.value = this.formGroup.value[this.config.name];
             } else {
