@@ -113,6 +113,13 @@ export class ApiService {
             headers: this.setLoginHeaders()
         }); 
     }
+    public updatePwd(resource, body?, params?) {
+        return this.httpClient.request('PUT', resource, {
+            body: body,
+            params: params,
+            headers: this.setLoginHeaders()
+        }); 
+    }
 
     public setLoginHeaders() {
         const token = this.tokenService.get().token;

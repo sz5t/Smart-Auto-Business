@@ -4,7 +4,7 @@ import { SettingsService, TitleService, MenuService } from '@delon/theme';
 import { Component, OnDestroy, Inject, Optional, OnInit, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NzMessageService, NzModalService, NzTabChangeEvent } from 'ng-zorro-antd';
+import { NzMessageService, NzModalService, NzTabChangeEvent, NzNotificationService } from 'ng-zorro-antd';
 import {
   SocialService,
   TokenService,
@@ -22,8 +22,9 @@ import { ApiService } from '@core/utility/api-service';
 import { HttpClient } from '@angular/common/http';
 import { SystemResource } from '@core/utility/system-resource';
 import { CommonTools } from '@core/utility/common-tools';
-import { timeout } from 'rxjs/operators';
+import { timeout, take } from 'rxjs/operators';
 import {Buffer} from 'buffer';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'customer-login',
@@ -95,6 +96,7 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     private titleService: TitleService,
     private menuService: MenuService,
     private _router: ActivatedRoute,
+    private notification: NzNotificationService,
     @Optional()
     @Inject(ReuseTabService)
     private reuseTabService: ReuseTabService,
@@ -444,11 +446,10 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     // userLogin.loginPwd = new Buffer(userLogin.loginPwd).toString('base64');
     const user = await this._userLogin(userLogin);
     if (user.isSuccess) {
-      console.log(user.data);
+      // console.log(user.data);
       this.cacheService.set('userInfo', user.data);
       const token: ITokenModel = { token: user.data.token };
       this.tokenService.set(token); // 后续projectId需要进行动态获取
-
       let menus;
       let url;
       // 解析平台
@@ -471,10 +472,32 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
 
       this.router.navigate([`${this.entry_url}`]);
     } else {
-      this.showError(user.message);
+      if(user.message==='PwdExpired'){
+        
+        const numbers = interval(1000);
+        const takeFourNumbers = numbers.pipe(take(3));
+        takeFourNumbers.subscribe(
+          x => {
+        
+            this.showError("您的密码已过期"+(3-x)+"秒后跳转至修改密码页面");
+          },
+          error => {},
+          () => {
+            let newurl = '/passport/edit-password';
+            this.router.navigate([`${newurl}`]);
+         });        
+             
+        // console.log('PwdExpired',userLogin,user.data);
+        return true;
+      } else{
+        this.showError(user.message);
+      }
     }
     this.loading = false;
   }
+
+  
+
 
   public async _loadProjectModule() {
     return this.apiService

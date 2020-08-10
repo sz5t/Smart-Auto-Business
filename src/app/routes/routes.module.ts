@@ -21,7 +21,7 @@ import { Exception404Component } from './exception/404.component';
 import { Exception500Component } from './exception/500.component';
 import { AuthGuard } from '@core/utility/auth-guard';
 import { BtnTableFieldLimit } from '@core/pipe/btn-table-field-limit.pipe';
-import { EditPasswordComponent } from './passport/edit-password/edit-password/edit-password.component';
+import { EditPasswordComponent } from './passport/edit-password/edit-password.component';
 import { HomeComponent } from './dashboard/home/home.component';
 import { CALoginComponent } from './passport/calogin/calogin.component';
 
