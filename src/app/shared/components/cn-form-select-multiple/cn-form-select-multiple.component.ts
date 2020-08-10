@@ -104,6 +104,20 @@ export class CnFormSelectMultipleComponent
             this._options = this.config.options;
             this.selectedByLoaded();
         }
+        // 未知是否有错误
+        if (!this.value && this.value !== 0) {
+            if (this.formGroup.value[this.config.name]) {
+                this.value = this.formGroup.value[this.config.name];
+            } else {
+                if (this.config.hasOwnProperty('defaultValue')) {
+                    this.value = this.config.defaultValue;
+                } else {
+                    if (this._options.length > 0 ) {
+                        this.value = this._options[0].value;
+                    }
+                }
+            }
+        }
         if (this.config.removalable) {
             this._clear = false;
         }

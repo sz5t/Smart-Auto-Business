@@ -75,7 +75,7 @@ export class CnGridInputComponent implements OnInit {
 
     // 组装值
     public assemblyValue() {
-        this._value = this._value.trim();
+        this._value = this._value ? this._value.trim() : this._value;
         this.valueChange(this._value);
     }
 
