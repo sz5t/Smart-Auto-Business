@@ -51,6 +51,10 @@ export class BsnDynamicLoadComponent extends CnComponentBase
     if (this.config.componentType && this.config.componentType.own === true) {
       this.loadPage();
     }
+
+    if (this.config.toolbar) {
+      this.cacheValue.set('ApprovalToolBar', this.config.toolbar);
+    }
   }
 
   public ngOnDestroy(): void {

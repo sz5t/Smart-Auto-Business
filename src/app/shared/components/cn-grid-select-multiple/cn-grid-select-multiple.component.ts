@@ -113,11 +113,27 @@ export class CnGridSelectMultipleComponent implements OnInit, AfterViewInit, OnC
         //     this.selectedByLoaded();
         // }
 
-        if (this.value) {
+        if (this.value.data) {
             if (this.value.data !== undefined) {
                 this._selectedOption = this.getSetComponentValue(this.value.data);
             }
         }
+
+        // 未知是否有错误
+        // if (!this.value.data && this.value.data !== 0) {
+        //     if (this.bsnData[this.config.name]) {
+        //         this.value.data = this.bsnData[this.config.name];
+        //     } else {
+        //         if (this.config.hasOwnProperty('defaultValue')) {
+        //             this.value.data = this.config.defaultValue;
+        //         } else {
+        //             if (this._options.length > 0 ) {
+        //                 this.value.data = this._options[0].value;
+        //             }
+        //         }
+        //     }
+        // }
+
         if (this.config.removalable) {
             this._clear = false;
         }

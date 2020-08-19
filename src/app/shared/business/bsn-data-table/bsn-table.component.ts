@@ -1,4 +1,5 @@
 import { BsnImportExcelComponent } from './../bsn-import-excel/bsn-import-excel.component';
+import { getISOYear, getMonth,  getDate} from 'date-fns';
 import { BSN_OPERATION_LOG_TYPE, BSN_DB_INSTANCE, BSN_OPERATION_LOG_RESULT } from './../../../core/relative-Service/BsnTableStatus';
 import { CacheService } from '@delon/cache';
 import { Observable } from 'rxjs';
@@ -173,6 +174,15 @@ export class BsnTableComponent extends CnComponentBase
     // public width = '50px';
 
     public ngOnInit() {
+        let toolBarParams;
+        if (this.cacheValue.getNone('ApprovalToolBar') && this.config.Approval) {
+            toolBarParams = this.cacheValue.getNone('ApprovalToolBar');
+        }
+
+        if (toolBarParams) {
+            this.config.toolbar = [...this.config.toolbar, ...toolBarParams]
+        }
+
         this.showprocdata();
     }
 
@@ -573,6 +583,25 @@ export class BsnTableComponent extends CnComponentBase
                         case BSN_COMPONENT_MODES.EXPORT:
                             this.exportExcel(option);
                             break;
+                            case BSN_COMPONENT_MODES.PROCESS_SUBMIT:
+                                // console.log(this.initData);
+                                if (option.ajaxConfig) {
+                                    // 根据表单状态进行具体配置操作
+                                    this._resolveAjaxConfig(
+                                        // option.ajaxConfig,
+                                        // this.formState,
+                                        // (returnValue, processoption) => {
+                                        //     // this.load();
+                                        //     // this.sendCascadeMessage();
+                                        //     if (returnValue.data && returnValue.data.formId) {
+                                        //         this.InitiateProcess(returnValue.data, processoption);
+                                        //     }
+                                        // },
+                                        option
+                                    );
+                                    this.load();
+                                }
+                                break;
                     }
                 }
             });
@@ -1673,6 +1702,14 @@ export class BsnTableComponent extends CnComponentBase
                                             ];
                                     }
                                 }
+                                
+                                if (caseItem['setValue']['type'] === 'rowValue') {
+                                    // 选中行对象数据
+                                    if (data.dataItem) {
+                                        this.changeConfig_new[rowCasade][key]['setValue'] =  this.editCache[data.key].data[caseItem['setValue']['valueName']];
+                                    }
+                                }
+
                                 if (data.data === null) {
                                     this.changeConfig_new[rowCasade][key][
                                         'setValue'
@@ -1851,6 +1888,14 @@ export class BsnTableComponent extends CnComponentBase
                                             this.changeConfig_new[rowCasade][key]['setValue'] = data.dataItem[caseItem['setValue']['valueName']];
                                         }
                                     }
+
+                                    if (caseItem['setValue']['type'] === 'rowValue') {
+                                        // 选中行对象数据
+                                        if (data.dataItem) {
+                                            this.changeConfig_new[rowCasade][key]['setValue'] =  this.editCache[data.key].data[caseItem['setValue']['valueName']];
+                                        }
+                                    }
+
                                     if (data.data === null) {
                                         this.changeConfig_new[rowCasade][key]['setValue'] = null;
                                     }
@@ -4386,8 +4431,9 @@ export class BsnTableComponent extends CnComponentBase
         const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
         const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
         const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        const name = this.config.excelName ? this.config.excelName : `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
         // 这里类型如果不正确，下载出来的可能是类似xml文件的东西或者是类似二进制的东西等
-        this.saveAsExcelFile(excelBuffer, 'nameList');
+        this.saveAsExcelFile(excelBuffer, name);
 
         // this.xlsx.export({
         //     sheets: [

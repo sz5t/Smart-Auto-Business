@@ -193,8 +193,8 @@ export class CnFormWindowResolverComponent extends CnFormBase
     }
 
     public load() {
-        console.log('加载数据');
-        if (this.config.ajaxConfig) {
+        // console.log('加载数据');
+        if (this.config.ajaxConfig && this.config.ajaxConfig.url) {
             setTimeout(() => {
                 this.isSpinning = true;
             })
@@ -206,9 +206,9 @@ export class CnFormWindowResolverComponent extends CnFormBase
                     res = result.data[0]
                 } else {
                     
-                   if (Array.isArray(result.data[Object.keys(result.data)[0]])){
+                   if (Array.isArray(result.data[Object.keys(result.data)[0]])) {
                     res = result.data[Object.keys(result.data)[0]][0];
-                   }else{
+                   } else {
                     res = result.data;
                    }
                 }

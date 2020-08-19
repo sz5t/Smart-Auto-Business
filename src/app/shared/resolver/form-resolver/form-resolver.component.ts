@@ -40,15 +40,7 @@ import { ActivatedRoute } from '@angular/router';
     // tslint:disable-next-line:component-selector
     selector: 'cn-form-resolver,[cn-form-resolver]',
     templateUrl: './form-resolver.component.html',
-    styles: [`
-    :host {
-        ::ng-deep{
-            .ant-card.ng-star-inserted {
-                margin-bottom: 0px;
-            }
-        }
-    }
-    `]
+    styleUrls:['./form-resolver.component.less']
 })
 export class FormResolverComponent extends CnFormBase
     implements OnInit, OnChanges, OnDestroy, AfterViewInit {
@@ -1387,6 +1379,22 @@ export class FormResolverComponent extends CnFormBase
                                                     ];
                                             }
                                         }
+                                        
+                                        if (
+                                            caseItem['setValue']['type'] ===
+                                            'formValue'
+                                        ) {
+                                            // 选中行对象数据
+                                            if (data.dataItem) {
+                                                setValuedata['data'] =
+                                                    this.form.value[
+                                                    caseItem['setValue'][
+                                                    'valueName'
+                                                    ]
+                                                    ];
+                                            }
+                                        }
+
                                         // 手动给表单赋值，将值
                                         if (
                                             setValuedata.hasOwnProperty('data')
@@ -1600,6 +1608,22 @@ export class FormResolverComponent extends CnFormBase
                                                         ];
                                                 }
                                             }
+
+                                            if (
+                                                caseItem['setValue']['type'] ===
+                                                'formValue'
+                                            ) {
+                                                // 选中行对象数据
+                                                if (data.dataItem) {
+                                                    setValuedata['data'] =
+                                                        this.form.value[
+                                                        caseItem['setValue'][
+                                                        'valueName'
+                                                        ]
+                                                        ];
+                                                }
+                                            }
+
                                             // 手动给表单赋值，将值
                                             if (
                                                 setValuedata.hasOwnProperty(

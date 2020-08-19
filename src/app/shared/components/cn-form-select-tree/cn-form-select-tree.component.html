@@ -3,9 +3,9 @@
 </nz-form-label>
 
 <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+  <input type="hidden"  formControlName="{{config.name}}"  [(ngModel)]="value"   (ngModelChange)="valueChange1($event)" >
   <ng-container *ngIf="config.Checkable">
     <nz-tree-select 
-      formControlName="{{config.name}}"
       nzCheckable [nzNodes]="treeData" 
       nzPlaceHolder="{{config.placeholder}}"
       [(ngModel)]="_selectedValue" 
