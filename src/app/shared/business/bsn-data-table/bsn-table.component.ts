@@ -175,12 +175,30 @@ export class BsnTableComponent extends CnComponentBase
 
     public ngOnInit() {
         let toolBarParams;
-        if (this.cacheValue.getNone('ApprovalToolBar') && this.config.Approval) {
-            toolBarParams = this.cacheValue.getNone('ApprovalToolBar');
+        let formDialogParams;
+        let ajaxParams;
+        if (this.config.Approval) {
+            if (this.cacheValue.getNone('ApprovalToolBar')) {
+                toolBarParams = this.cacheValue.getNone('ApprovalToolBar');
+            }
+            if (this.cacheValue.getNone('ApprovalFormDialog')) {
+                formDialogParams = this.cacheValue.getNone('ApprovalFormDialog');
+            }
+            if (this.cacheValue.getNone('ApprovalAjaxParams')) {
+                ajaxParams = this.cacheValue.getNone('ApprovalAjaxParams');
+            }
         }
 
         if (toolBarParams) {
             this.config.toolbar = [...this.config.toolbar, ...toolBarParams]
+        }
+
+        if (formDialogParams) {
+            this.config.formDialog = [...this.config.formDialog, ...formDialogParams]
+        }
+
+        if (ajaxParams) {
+            this.config.ajaxConfig.params = [...this.config.ajaxConfig.params, ...ajaxParams]
         }
 
         this.showprocdata();
@@ -4716,7 +4734,7 @@ export class BsnTableComponent extends CnComponentBase
 
         }
 
-        //3 合并数组，返回
+        // 3 合并数组，返回
 
         let back_data = [];
         back_data = [...new_BeforeArr.reverse(), ...OwnArr, ...new_AftertArr];
@@ -4725,7 +4743,7 @@ export class BsnTableComponent extends CnComponentBase
 
     }
 
-    public showbutton(value, format) {
+    public showbutton(value, format, alwaysShow?) {
         let result = true;
         if (format) {
             format.map(e => {
@@ -4733,6 +4751,10 @@ export class BsnTableComponent extends CnComponentBase
                     result = false;
                 }
             });
+        }
+
+        if (alwaysShow) {
+            result = false;
         }
         return result;
     }

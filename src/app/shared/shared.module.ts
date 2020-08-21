@@ -141,6 +141,7 @@ import { BsnTimeAxisChartComponent } from './business/bsn-time-axis-chart/bsn-ti
 import { BsnDynamicLoadComponent } from './business/bsn-dynamic-load/bsn-dynamic-load.component';
 import { CnGridTagComponent } from './components/cn-grid-tag/cn-grid-tag.component';
 import { CnFormTagComponent } from './components/cn-form-tag/cn-form-tag.component';
+import { BsnTimeLineComponent } from './business/bsn-time-line/bsn-time-line.component';
 
 
 const THIRDMODULES = [
@@ -273,7 +274,8 @@ const COMPONENTS = [
     BsnTimeAxisChartComponent,
     BsnDynamicLoadComponent,
     CnGridTagComponent,
-    CnFormTagComponent
+    CnFormTagComponent,
+    BsnTimeLineComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
