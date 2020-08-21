@@ -39,8 +39,7 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'cn-form-resolver,[cn-form-resolver]',
-    templateUrl: './form-resolver.component.html',
-    styleUrls:['./form-resolver.component.less']
+    templateUrl: './form-resolver.component.html'
 })
 export class FormResolverComponent extends CnFormBase
     implements OnInit, OnChanges, OnDestroy, AfterViewInit {

@@ -42,6 +42,8 @@ import { CnGridSapnComponent } from '@shared/components/cn-grid-sapn/cn-grid-sap
 import { CnGridMarkdownlabelComponent } from '@shared/components/cn-grid-markdownlabel/cn-grid-markdownlabel.component';
 import { CnGridTextareaComponent } from '@shared/components/cn-grid-textarea/cn-grid-textarea.component';
 import { CnGridTagComponent } from '@shared/components/cn-grid-tag/cn-grid-tag.component';
+import { CnVideoPlayComponent } from '@shared/business/cn-video-play/cn-video-play.component';
+import { CnGridVideoComponent } from '@shared/components/cn-grid-video/cn-grid-video.component';
 const components: { [type: string]: Type<any> } = {
     input: CnGridInputComponent,
     select: CnGridSelectComponent,
@@ -67,7 +69,8 @@ const components: { [type: string]: Type<any> } = {
     span: CnGridSapnComponent,
     markdownlabel: CnGridMarkdownlabelComponent,
     textArea: CnGridTextareaComponent,
-    tag:CnGridTagComponent
+    tag: CnGridTagComponent,
+    video: CnGridVideoComponent
 };
 
 // export const EXE_COUNTER_VALUE_ACCESSOR: any = {

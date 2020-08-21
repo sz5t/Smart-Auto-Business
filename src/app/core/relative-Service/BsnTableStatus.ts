@@ -39,6 +39,7 @@ export interface ComponentModes {
     // tstable
     AUTO_PLAY: string;
     CALL_INTERFACE: string;
+    SHOW_VIDEO: string;
 
 }
 
@@ -80,7 +81,8 @@ export const BSN_COMPONENT_MODES: ComponentModes = {
 
     // tstable
     AUTO_PLAY: 'autoPlay',
-    CALL_INTERFACE: 'callInterface'
+    CALL_INTERFACE: 'callInterface',
+    SHOW_VIDEO: 'showVideo'
 };
 
 export const BSN_FORM_STATUS = {

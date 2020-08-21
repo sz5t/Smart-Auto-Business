@@ -35,7 +35,7 @@ const routes: Routes = [
         children: [
             { path: '', redirectTo: environment.homePageName, pathMatch: 'full', canActivate: [AuthGuard] },
             { path: 'dashboard', redirectTo: environment.homePageName, pathMatch: 'full', canActivate: [AuthGuard] },
-            { path: environment.homePageName, component: environment.homePageName === 'dashboard/v1' ? DashboardV1Component : HomeComponent, data: { title: '综合信息页'}, canActivate: [AuthGuard] },
+           // { path: environment.homePageName, component: environment.homePageName === 'app/entry' ? DashboardV1Component : HomeComponent, data: { title: '综合信息页'}, canActivate: [AuthGuard] },
             // { path: '', redirectTo: 'dashboard/v1', pathMatch: 'full', canActivate: [AuthGuard] },
             // { path: 'dashboard', redirectTo: 'dashboard/v1', pathMatch: 'full', canActivate: [AuthGuard] },
             // { path: 'dashboard/v1', component: DashboardV1Component, canActivate: [AuthGuard] },

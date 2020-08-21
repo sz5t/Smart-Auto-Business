@@ -89,14 +89,14 @@ export class StartupService {
                         // 1、未进行登录
                         // 读取配置信息，并进行缓存
                         if (!currentSystem && user) {
-                            this.cacheService.clearNotify();
-                            this.tokenService.clear();
+                            //this.cacheService.clearNotify();
+                            //this.tokenService.clear();
                         } else if (
                             currentSystem &&
                             currentSystem.name === 'setting'
                         ) {
                             // 用户已经选择了系统并进行过登录
-                            this.menuService.add(res.menu);
+                           //  this.menuService.add(res.menu);
                         } else if (
                             currentSystem &&
                             currentSystem.name === 'app'

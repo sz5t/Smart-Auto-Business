@@ -465,14 +465,14 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
       ];
       // menus[0].children = this.arrayToTree(projModule.data, null);
       menus[0].children = user.data.modules;
-      url = '/dashboard/v1';
+      url = '/app/entry';
 
       this.cacheService.set('Menus', menus);
       this.menuService.add(menus);
 
       this.router.navigate([`${this.entry_url}`]);
     } else {
-      if(user.message==='PwdExpired'){
+      if (user.message === 'PwdExpired') {
         
         const numbers = interval(1000);
         const takeFourNumbers = numbers.pipe(take(3));

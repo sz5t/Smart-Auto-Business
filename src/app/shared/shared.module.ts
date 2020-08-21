@@ -141,6 +141,8 @@ import { BsnTimeAxisChartComponent } from './business/bsn-time-axis-chart/bsn-ti
 import { BsnDynamicLoadComponent } from './business/bsn-dynamic-load/bsn-dynamic-load.component';
 import { CnGridTagComponent } from './components/cn-grid-tag/cn-grid-tag.component';
 import { CnFormTagComponent } from './components/cn-form-tag/cn-form-tag.component';
+import { CnVideoPlayComponent } from './business/cn-video-play/cn-video-play.component';
+import { CnGridVideoComponent } from './components/cn-grid-video/cn-grid-video.component';
 
 
 const THIRDMODULES = [
@@ -273,7 +275,9 @@ const COMPONENTS = [
     BsnTimeAxisChartComponent,
     BsnDynamicLoadComponent,
     CnGridTagComponent,
-    CnFormTagComponent
+    CnFormTagComponent,
+    CnVideoPlayComponent,
+    CnGridVideoComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
@@ -303,7 +307,8 @@ const DIRECTIVES = [
         ...DIRECTIVES,
         BtnTableFieldLimit,
         SafeUrlPipe,
-        BtnTableStatusInfoPipe
+        BtnTableStatusInfoPipe,
+        
     ],
     exports: [
         CommonModule,

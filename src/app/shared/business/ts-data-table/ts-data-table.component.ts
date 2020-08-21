@@ -42,10 +42,12 @@ import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
 import { create } from 'domain';
 import { timeout } from 'q';
 import { setTimeout } from 'core-js';
+import { CnVideoPlayComponent } from '../cn-video-play/cn-video-play.component';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: CnFormWindowResolverComponent,
-    upload: BsnUploadComponent
+    upload: BsnUploadComponent,
+    video: CnVideoPlayComponent
 };
 
 @Component({
@@ -847,7 +849,7 @@ export class TsDataTableComponent extends CnComponentBase
         this._updateEditCacheByLoad(pagedata);
         this.dataList = pagedata;
              // liu 20200728 行列合并
-             if(this.config.mergeconfig){
+             if(this.config.mergeconfig) {
                 this._createMapd_new(this.config.mergeconfig,this.dataList);
             } 
     }
@@ -1064,7 +1066,7 @@ export class TsDataTableComponent extends CnComponentBase
             this.loading = false;
         });
              // liu 20200728 行列合并
-             if(this.config.mergeconfig){
+             if(this.config.mergeconfig) {
                 this._createMapd_new(this.config.mergeconfig,this.dataList);
             } 
         //   })();
@@ -3145,7 +3147,7 @@ export class TsDataTableComponent extends CnComponentBase
      */
     private _startEdit(key: string): void {
         this.editCache[key].edit = true;
-        if(this.config.mergeconfig){
+        if(this.config.mergeconfig) {
             this._createMapd_new(this.config.mergeconfig,this.dataList);
         } 
     }
@@ -3163,7 +3165,7 @@ export class TsDataTableComponent extends CnComponentBase
             JSON.stringify(this.dataList[index])
         );
         // console.log('取消行数据', this.editCache[key].data);
-        if(this.config.mergeconfig){
+        if(this.config.mergeconfig) {
             this._createMapd_new(this.config.mergeconfig,this.dataList);
         } 
     }
@@ -3672,6 +3674,59 @@ export class TsDataTableComponent extends CnComponentBase
             this.openUploadDialog(this.config.uploadDialog[index]);
         }
     }
+
+    /**
+     * 弹出表单
+     * @param option
+     */
+    public showVideo(option) {
+        if (this.config.formDialog && this.config.formDialog.length > 0) {
+            const index = this.config.formDialog.findIndex(
+                item => item.name === option.actionName
+            );
+            this.openVideo(this.config.formDialog[index]);
+        }
+    }
+
+    private openVideo(dialog) {
+        let obj;
+            obj = {
+                ...this.tempValue,
+                ...this._selectRow,
+                _id: this._selectRow[dialog.keyId]
+                    ? this._selectRow[dialog.keyId]
+                    : ''
+            };
+    
+            const footer = [];
+            const modal = this.baseModal.create({
+                nzTitle: dialog.title,
+                nzWidth: dialog.width,
+                nzContent: component['video'],
+                nzComponentParams: {
+                    config: dialog,
+                    tempValue: obj
+                },
+                nzFooter: footer
+            });
+    
+            if (dialog.buttons) {
+                dialog.buttons.forEach(btn => {
+                    const button = {};
+                    button['label'] = btn.text;
+                    button['type'] = btn.type ? btn.type : 'default';
+                    button['onClick'] = componentInstance => {
+                        if (btn['name'] === 'close') {
+                            this.load();
+                            modal.close();
+                        }
+                    };
+                    footer.push(button);
+                });
+            }
+    }
+
+
     /**
      * 弹出表单
      * @param option
@@ -4585,12 +4640,13 @@ export class TsDataTableComponent extends CnComponentBase
                 !this.beforeOperation.beforeItemDataOperation(option) &&
                     this.uploadDialog(option);
                 break;
-            case BSN_COMPONENT_MODES.FORM_BATCH:
+            case BSN_COMPONENT_MODES.SHOW_VIDEO:
                 this.beforeOperation.operationItemsData = this._getCheckedItems();
                 !this.beforeOperation.beforeItemsDataOperation(
                     option
                 ) && this.formBatchDialog(option);
                 break;
+            
         }
 
     }
