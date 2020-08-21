@@ -173,7 +173,8 @@
                                         [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.showFormat.field]:''"
                                         (updateValue)="valueChange($event)"> </ng-container>
                                         <ng-container
-                                            *ngIf="col.type && col.name && col.conditionField && col.hidden === showbutton(data[col.conditionField], col.condition)">
+                                            *ngIf="col.type && col.name && col.conditionField && col.hidden === showbutton(data[col.conditionField], col.condition, col.alwaysShow)||
+                                            col.type && col.name && col.alwaysShow && col.hidden === showbutton(data[col.conditionField], col.condition, col.alwaysShow)">
                                             <div class="editable-row-operations">
                                                 <button nz-button nzType="primary" nzBlock
                                                     (click)="execFun(col.actionName,data.key)">{{col.name}}</button>

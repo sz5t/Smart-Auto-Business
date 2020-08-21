@@ -55,6 +55,18 @@ export class BsnDynamicLoadComponent extends CnComponentBase
     if (this.config.toolbar) {
       this.cacheValue.set('ApprovalToolBar', this.config.toolbar);
     }
+
+    if (this.config.formDialog) {
+      this.cacheValue.set('ApprovalFormDialog', this.config.formDialog);
+    }
+
+    if (this.config.ajaxParams) {
+      this.cacheValue.set('ApprovalAjaxParams', this.config.ajaxParams);
+    }
+
+    if (this.config.paramsConfig) {
+      this.loadAjaxParams();
+    }
   }
 
   public ngOnDestroy(): void {
@@ -131,9 +143,22 @@ export class BsnDynamicLoadComponent extends CnComponentBase
    */
   public async loadPage() {
     let jsonName = await this.loadJsonName();
-    if (jsonName && this.config.suffixJson) {
-      jsonName += this.config.suffixJson
+    let isBusiness;
+    let suffixJson;
+    if (this.config.carrierConfig) {
+      const filedName = this.config.carrierConfig.name
+      const conditionArray = this.config.carrierConfig.condition
+      const index = conditionArray.findIndex(e => e['value'] === this.initData[filedName])
+      isBusiness = conditionArray[index]['isBusiness']
+      suffixJson = conditionArray[index]['suffixJson']
     }
+    if (isBusiness) {
+      
+    } else {
+      if (jsonName && suffixJson) {
+        jsonName += suffixJson
+      }
+    } 
     if (jsonName) {
       this._api.getLocalData(jsonName).subscribe(data => {
         this.isLoadLayout = true;
@@ -143,7 +168,7 @@ export class BsnDynamicLoadComponent extends CnComponentBase
   }
 
   /**
-   * loadAPIName 读取库中对应的json名称
+   * loadJsonName 读取库中对应的json名称
    */
   public async loadJsonName() {
     if (this.config.getAsncData) {
@@ -159,7 +184,7 @@ export class BsnDynamicLoadComponent extends CnComponentBase
     }
   }
 
-  private async _getAsyncData() {
+  public async _getAsyncData() {
     const params = CommonTools.parametersResolver({
       params: this.config.ajaxConfig.params,
       tempValue: this.tempValue,
@@ -170,6 +195,34 @@ export class BsnDynamicLoadComponent extends CnComponentBase
     const ajaxData = await this.apiResource
       .get(
         this.config.ajaxConfig.url,
+        // 'get',
+        params
+      ).toPromise();
+    return ajaxData;
+  }
+
+  /**
+   * loadAjaxParams 向切换之后的组件进行传值
+   */
+  public async loadAjaxParams() {
+    const ajaxParams = await this.getAjaxParams(this.config.paramsConfig)
+    delete ajaxParams.data[0].Id;
+    this.tempValue = {...this.tempValue , ...ajaxParams.data[0]}
+  }
+
+  
+
+  public async getAjaxParams(config) {
+    const params = CommonTools.parametersResolver({
+      params: this.config.paramsConfig.params,
+      tempValue: this.tempValue,
+      initValue: this.initData,
+      cacheValue: this.cacheValue
+    });
+
+    const ajaxData = await this.apiResource
+      .get(
+        this.config.paramsConfig.url,
         // 'get',
         params
       ).toPromise();

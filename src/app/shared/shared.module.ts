@@ -143,6 +143,7 @@ import { CnGridTagComponent } from './components/cn-grid-tag/cn-grid-tag.compone
 import { CnFormTagComponent } from './components/cn-form-tag/cn-form-tag.component';
 import { CnVideoPlayComponent } from './business/cn-video-play/cn-video-play.component';
 import { CnGridVideoComponent } from './components/cn-grid-video/cn-grid-video.component';
+import { BsnTimeLineComponent } from './business/bsn-time-line/bsn-time-line.component';
 
 
 const THIRDMODULES = [
@@ -277,7 +278,8 @@ const COMPONENTS = [
     CnGridTagComponent,
     CnFormTagComponent,
     CnVideoPlayComponent,
-    CnGridVideoComponent
+    CnGridVideoComponent,
+    BsnTimeLineComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
