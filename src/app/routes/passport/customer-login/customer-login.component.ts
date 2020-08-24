@@ -538,19 +538,14 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
       // Md5.hashStr(this.password.value).toString().toUpperCase();
       // environment.SERVER_URL = APIResource.SettingUrl;
       // environment.COMMONCODE = APIResource.SettingCommonCode;
-
-      this.cacheService.set(
-        'currentConfig',
-        SystemResource.settingSystem
-      );
     } else {
       onlineUser.loginName = this.uName.value;
       onlineUser.loginPwd = this.uPassword.value;
       // Md5.hashStr(this.uPassword.value).toString().toUpperCase();
       // environment.SERVER_URL = APIResource.LoginUrl;
       // environment.COMMONCODE = APIResource.LoginCommonCode;
-      this.cacheService.set('currentConfig', SystemResource.appSystem);
     }
+    this.cacheService.set('currentConfig', SystemResource.appSystem);
   }
 
   public _remarkLoginForm() {

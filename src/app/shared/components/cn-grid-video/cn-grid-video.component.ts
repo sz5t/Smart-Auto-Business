@@ -78,7 +78,7 @@ export class CnGridVideoComponent extends CnComponentBase implements OnInit {
     const urlObj = {
       token: '6170--33',
       stream: 'sub',
-      session: 'c1782caf-b670-42d8-ba90-2244d0b0ee83',
+      session: 'c1782caf-b670-42d8-ba90-2244d0b0ee80',
       playType: this.playType,
       url: this.config.video.url
     };

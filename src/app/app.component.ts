@@ -48,9 +48,9 @@ export class AppComponent implements OnInit {
         const that = this;
         window.onbeforeunload = function (e) {
             // window.event.returnValue =  true;
-            that.tokenService.clear();
-            that.cacheService.clear();
-            that.menuService.clear();
+            //that.tokenService.clear();
+            //that.cacheService.clear();
+            //that.menuService.clear();
 
         }
         this.router.events

@@ -38,13 +38,20 @@ export class CnVideoPlayComponent extends CnComponentBase implements OnInit, Aft
     if (this.config) {
       if (this.config.playType === 'play') {
         url = this.config.url + 'now.html?autoplay=true';
-        params = `&token=${token}&session=${sessionId}`;
+        params = `&token=${token}&session=${sessionId}&newid=${new Date().getMilliseconds()}`;
         
       } else if (this.config.playType === 'playback') {
-        url = this.config.url + 'playback2.html?'
-        const beginTime = this.initValue['beginTime'] ? this.initValue['beginTime'] : '2020-08-18T17:12:14+08:00';
-        const endTime =  this.initValue['endTime'] ? this.initValue['endTime'] : '2020-08-18T17:27:14+08:00';
-        params = `&token=${token}&session=${sessionId}&beginTime=${beginTime}$endTime=${endTime}`;
+        url = this.config.url + 'playback2.html?autoplay=true'
+        let beginTime, endTime;
+        if (this.initValue['beginTime']) {
+          beginTime = this.initValue['beginTime'].split(' ', 'T');
+        }
+        if (this.initValue['endTime']) {
+          endTime = this.initValue['beginTime'].split(' ', 'T');
+        }
+        // const beginTime = this.initValue['beginTime'] ? this.initValue['beginTime'] : '2020-08-18T17:12:14+08:00';
+        // const endTime =  this.initValue['endTime'] ? this.initValue['endTime'] : '2020-08-18T17:27:14+08:00';
+        params = `&token=${token}&session=${sessionId}&beginTime=${beginTime}&endTime=${endTime}&newid=${new Date().getMilliseconds()}`;
 
       }
     }

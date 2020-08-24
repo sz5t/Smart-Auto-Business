@@ -126,27 +126,31 @@ export class UserLoginComponent implements OnInit, OnDestroy {
 
             let menus;
             let url;
-            if (this.type === 0) {
-                // 配置平台
-                const localAppDataResult = await this._getLocalAppData();
-                menus = localAppDataResult.menu;
-                url = '/dashboard/v1';
-            } else {
-                // 解析平台
-                // const projModule = await this._loadProjectModule();
-                menus = [
-                    {
-                        text: '功能导航',
-                        i18n: '',
-                        group: true,
-                        hideInBreadcrumb: true,
-                        children: []
-                    }
-                ];
-                // menus[0].children = this.arrayToTree(projModule.data, null);
-                menus[0].children = user.data.modules;
-                url = '/dashboard/v1';
-            }
+            const localAppDataResult = await this._getLocalAppData();
+            menus = localAppDataResult.menu;
+            url = environment.admin_url;
+            debugger;
+            // if (this.type === 0) {
+            //     // 配置平台
+            //     const localAppDataResult = await this._getLocalAppData();
+            //     menus = localAppDataResult.menu;
+            //     url = environment.admin_url;
+            // } else {
+            //     // 解析平台
+            //     // const projModule = await this._loadProjectModule();
+            //     menus = [
+            //         {
+            //             text: '功能导航',
+            //             i18n: '',
+            //             group: true,
+            //             hideInBreadcrumb: true,
+            //             children: []
+            //         }
+            //     ];
+            //     // menus[0].children = this.arrayToTree(projModule.data, null);
+            //     menus[0].children = user.data.modules;
+            //     url = '/dashboard/v1';
+            // }
 
             this.cacheService.set('Menus', menus);
             this.menuService.add(menus);

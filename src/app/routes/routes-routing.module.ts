@@ -34,11 +34,11 @@ const routes: Routes = [
         component: LayoutDefaultComponent, canActivate: [AuthGuard],
         children: [
             { path: '', redirectTo: environment.homePageName, pathMatch: 'full', canActivate: [AuthGuard] },
-            { path: 'dashboard', redirectTo: environment.homePageName, pathMatch: 'full', canActivate: [AuthGuard] },
+            //{ path: 'dashboard', redirectTo: environment.homePageName, pathMatch: 'full', canActivate: [AuthGuard] },
            // { path: environment.homePageName, component: environment.homePageName === 'app/entry' ? DashboardV1Component : HomeComponent, data: { title: '综合信息页'}, canActivate: [AuthGuard] },
             // { path: '', redirectTo: 'dashboard/v1', pathMatch: 'full', canActivate: [AuthGuard] },
             // { path: 'dashboard', redirectTo: 'dashboard/v1', pathMatch: 'full', canActivate: [AuthGuard] },
-            // { path: 'dashboard/v1', component: DashboardV1Component, canActivate: [AuthGuard] },
+            { path: 'dashboard/v1', component: DashboardV1Component, canActivate: [AuthGuard] },
             // { path: 'dashboard/analysis', component: DashboardAnalysisComponent, data: { title: '工作台'}, canActivate: [AuthGuard]  },
             // { path: 'dashboard/monitor', component: DashboardMonitorComponent, canActivate: [AuthGuard] },
             // { path: 'dashboard/workplace', component: DashboardWorkplaceComponent, data: { title: '工作台'}, canActivate: [AuthGuard] },
@@ -90,9 +90,9 @@ const routes: Routes = [
             { path: 'login', component: CustomerLoginComponent, data: {path: '/dashboard/v1'}},
             { path: 'admin', component: UserLoginComponent},
             { path: 'app', component: CustomerLoginComponent, data: {path: '/app/entry'}},
-            { path: 'register', component: UserRegisterComponent },
-            { path: 'register-result', component: UserRegisterResultComponent },
-            { path: 'calogin/:Id', component: CALoginComponent},
+            //{ path: 'register', component: UserRegisterComponent },
+            // { path: 'register-result', component: UserRegisterResultComponent },
+            { path: 'calogin', component: CALoginComponent},
             { path: 'edit-password', component: EditPasswordComponent}
         ],
         data: {title: '西安航天动力测控技术研究所', sub: '质量数据包管理系统'} 
