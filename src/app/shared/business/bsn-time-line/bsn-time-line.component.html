@@ -1,7 +1,7 @@
 <nz-timeline>
-  <ng-template ngFor let-node [ngForOf]="datalist">
-    <nz-timeline-item nzColor = "datalist.color">
-      {{datalist.content}}
+  <ng-template ngFor let-item [ngForOf]="dataList">
+    <nz-timeline-item [nzColor] = "item.color ? item.color : blue" >
+      <a (click)="showDetails(item)">{{item.content}}</a>
     </nz-timeline-item>
   </ng-template>
 </nz-timeline>
