@@ -199,6 +199,7 @@ export class FormResolverComponent extends CnFormBase
         // this.config;
         // 注册按钮状态触发接收器
         this.statusSubscriptions = this.stateEvents.subscribe(updateState => {
+            // debugger;
             if (updateState._viewId === this.config.viewId) {
                 const option = updateState.option;
                 this.beforeOperation.operationItemData = this.value;

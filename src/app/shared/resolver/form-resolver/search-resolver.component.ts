@@ -156,6 +156,55 @@ export class SearchResolverComponent extends CnComponentBase
                 );
             });
         }
+        if (
+            this.config.componentType &&
+            this.config.componentType.child === true
+        ) {
+            this.cascadeSubscriptions = this.cascadeEvents.subscribe(
+                cascadeEvent => {
+                    // 解析子表消息配置
+                    if (
+                        this.config.relations &&
+                        this.config.relations.length > 0
+                    ) {
+                        this.config.relations.forEach(relation => {
+                            if (
+                                relation.relationViewId === cascadeEvent._viewId
+                            ) {
+                                // 获取当前设置的级联的模式
+                                const mode =
+                                    BSN_COMPONENT_CASCADE_MODES[
+                                    relation.cascadeMode
+                                    ];
+                                // 获取传递的消息数据
+                                const option = cascadeEvent.option;
+                                // 解析参数
+                                if (
+                                    relation.params &&
+                                    relation.params.length > 0
+                                ) {
+                                    relation.params.forEach(param => {
+                                        if (!this.tempValue) {
+                                            this.tempValue = {};
+                                        }
+                                        this.tempValue[param['cid']] =
+                                            option.data[param['pid']];
+                                            console.log('searchView===', this.tempValue);
+                                    });
+                                }
+                                // 匹配及联模式
+                                switch (mode) {
+                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH_VALUE_CHANGE:
+                                        this.valueChange(this.tempValue);
+                                        break;
+                                  
+                                }
+                            }
+                        });
+                    }
+                }
+            );
+        }
     }
 
     // region: 表单功能实现

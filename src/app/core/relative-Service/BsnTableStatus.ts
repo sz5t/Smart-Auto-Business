@@ -175,10 +175,12 @@ export const BSN_COMPONENT_CASCADE_MODES = {
 
     // form
     LOAD_FORM: 'loadForm',
+    REFRESH_VALUE_CHANGE: 'refreshValueChange',
 
     // tstable
     START_AUTO_PLAY: 'startAutoPlay',
     CREATE_DYNAMIC_TABLE: 'createDynamicTable'
+    
 };
 
 export const BSN_COMPONENT_CASCADE = new InjectionToken<string>(

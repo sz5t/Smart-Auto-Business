@@ -194,7 +194,12 @@ export class BsnTableComponent extends CnComponentBase
         }
 
         if (formDialogParams) {
-            this.config.formDialog = [...this.config.formDialog, ...formDialogParams]
+            if (this.config.formDialog) {
+                this.config.formDialog = [...this.config.formDialog, ...formDialogParams]
+            } else {
+                this.config.formDialog = formDialogParams
+            }
+            
         }
 
         if (ajaxParams) {
@@ -4770,6 +4775,7 @@ export class BsnTableComponent extends CnComponentBase
                 this.executeRowOnSelected(key);
                 break;
             default:
+                this.executeRowOnSelected(key, name);
                 break;
         }
     }
@@ -4804,28 +4810,51 @@ export class BsnTableComponent extends CnComponentBase
     }
 
     // 行内操作
-    public executeRowOnSelected(key) {
+    public executeRowOnSelected(key, name?) {
         const row = this.dataList.filter(item => item.key === key)[0];
         // console.log('删除行', row, this.config.events);
-        if (this.config.events) {
-            const index = this.config.events.findIndex(item => item['onTrigger'] === 'executeRow');
-            let c_eventConfig = {};
-            if (index > -1) {
-                c_eventConfig = this.config.events[index];
-            } else {
-                return true;
+        if (name) {
+            if (this.config.events) {
+                const index = this.config.events.findIndex(item => item['onTrigger'] === name);
+                let c_eventConfig = {};
+                if (index > -1) {
+                    c_eventConfig = this.config.events[index];
+                } else {
+                    return true;
+                }
+                const isField = true; // 列变化触发
+                // 首先适配类别、字段，不满足的时候 看是否存在default 若存在 取default
+                if (isField) {
+                    c_eventConfig['onEvent'].forEach(eventConfig => {
+                        // 无配置 的默认项
+                        if (eventConfig.type === 'default') {
+                            this.ExecRowEvent(eventConfig.action, row);
+                        }
+                    });
+                }
             }
-            const isField = true; // 列变化触发
-            // 首先适配类别、字段，不满足的时候 看是否存在default 若存在 取default
-            if (isField) {
-                c_eventConfig['onEvent'].forEach(eventConfig => {
-                    // 无配置 的默认项
-                    if (eventConfig.type === 'default') {
-                        this.ExecRowEvent(eventConfig.action, row);
-                    }
-                });
+        } else {
+            if (this.config.events) {
+                const index = this.config.events.findIndex(item => item['onTrigger'] === 'executeRow');
+                let c_eventConfig = {};
+                if (index > -1) {
+                    c_eventConfig = this.config.events[index];
+                } else {
+                    return true;
+                }
+                const isField = true; // 列变化触发
+                // 首先适配类别、字段，不满足的时候 看是否存在default 若存在 取default
+                if (isField) {
+                    c_eventConfig['onEvent'].forEach(eventConfig => {
+                        // 无配置 的默认项
+                        if (eventConfig.type === 'default') {
+                            this.ExecRowEvent(eventConfig.action, row);
+                        }
+                    });
+                }
             }
         }
+        
         // console.log('行内删除', key);
         // 注意，末页删除需要将数据页数上移
 

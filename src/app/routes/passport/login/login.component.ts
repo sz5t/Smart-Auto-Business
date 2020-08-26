@@ -129,7 +129,6 @@ export class UserLoginComponent implements OnInit, OnDestroy {
             const localAppDataResult = await this._getLocalAppData();
             menus = localAppDataResult.menu;
             url = environment.admin_url;
-            debugger;
             // if (this.type === 0) {
             //     // 配置平台
             //     const localAppDataResult = await this._getLocalAppData();

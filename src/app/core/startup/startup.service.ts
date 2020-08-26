@@ -86,7 +86,6 @@ export class StartupService {
                         const currentSystem: any = this.cacheService.getNone(
                             'currentConfig'
                         );
-                        debugger;
                         // 1、未进行登录
                         // 读取配置信息，并进行缓存
                         if (!currentSystem && user) {

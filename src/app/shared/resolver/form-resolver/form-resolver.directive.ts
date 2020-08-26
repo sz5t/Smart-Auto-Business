@@ -131,6 +131,8 @@ export class FormResolverDirective extends CnComponentBase
                 this.component.instance.bsnData = this.tempValue;
                 this.component.instance.initValue = this.initValue;
                 this.component.instance.value = this.value;
+
+                console.log('form resolver bsnData ====', this.component.instance.bsnData);
                 // }
                 if (
                     this.config.type !== 'submit' ||
