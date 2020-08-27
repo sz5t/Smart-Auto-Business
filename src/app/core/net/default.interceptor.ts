@@ -90,16 +90,20 @@ export class DefaultInterceptor implements HttpInterceptor {
     > {
         // 统一加上服务端前缀
         let url = req.url;
-
+        let newReq;
         if (!url.startsWith("https://") && !url.startsWith("http://")) {
             url = this._buildURL() + url;
-            
-        }
-        url = this._replaceCurrentURL(url)
+            url = this._replaceCurrentURL(url)
 
-        const newReq = req.clone({
-            url: url
-        });
+            newReq = req.clone({
+                url: url
+            });     
+        } else {
+            newReq = req.clone({
+                url: url
+            });
+        }
+       
         return next.handle(newReq).pipe(
             mergeMap((event: any) => {
                 // 允许统一对请求错误处理，这是因为一个请求若是业务上错误的情况下其HTTP请求的状态是200的情况下需要
@@ -112,7 +116,7 @@ export class DefaultInterceptor implements HttpInterceptor {
         );
     }
 
-    _buildURL() {
+    private _buildURL() {
         let url;
         const currentConfig: any = this.cacheService.getNone("currentConfig");
         if (!currentConfig) {
