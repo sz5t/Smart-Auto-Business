@@ -74,6 +74,10 @@ export class BsnTimeLineComponent extends CnComponentBase
           data['color'] = 'green'
         } else if (data['mark'] === 2) {
           data['color'] = 'red'
+        } else if (data['mark'] === 4) {
+          data['color'] = 'orange'
+        } else {
+          data['color'] = 'blue'
         }
       }
     });

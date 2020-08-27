@@ -143,22 +143,33 @@ export class BsnDynamicLoadComponent extends CnComponentBase
    */
   public async loadPage() {
     let jsonName = await this.loadJsonName();
-    let isBusiness;
-    let suffixJson;
+    let jsonConfig;
     if (this.config.carrierConfig) {
       const filedName = this.config.carrierConfig.name
       const conditionArray = this.config.carrierConfig.condition
       const index = conditionArray.findIndex(e => e['value'] === this.initData[filedName])
-      isBusiness = conditionArray[index]['isBusiness']
-      suffixJson = conditionArray[index]['suffixJson']
+      jsonConfig = conditionArray[index];
     }
-    if (isBusiness) {
-      
-    } else {
-      if (jsonName && suffixJson) {
-        jsonName += suffixJson
+    if (jsonConfig) {
+      if (jsonConfig.replaceJson) {
+        if (jsonConfig.ajaxJsonName) {
+          const changeJsonName = await this.changeJsonName();
+          jsonName = changeJsonName;
+        } else {
+          jsonName = jsonConfig.replaceJsonName
+        }
+      } else {
+        if (jsonConfig.excessJsonAdd) {
+          if (jsonConfig.prefixName) {
+            jsonName = jsonConfig.prefixName + jsonName;
+          }
+          if (jsonConfig.suffixName) {
+            jsonName += jsonConfig.suffixName
+          }
+        }
       }
-    } 
+
+    }
     if (jsonName) {
       this._api.getLocalData(jsonName).subscribe(data => {
         this.isLoadLayout = true;
@@ -202,15 +213,48 @@ export class BsnDynamicLoadComponent extends CnComponentBase
   }
 
   /**
+   * changeJsonName 读取替换json的名称
+   */
+  public async changeJsonName() {
+    const response = await this._getAsyncChangeData();
+    if (response && response.data.length > 0) {
+      const jsonName = response.data[0]['tyseResouceJson']
+      return jsonName;
+    } else {
+      return this.config.defaultJson;
+    }
+  }
+
+  /**
+   * _getAsyncChangeData
+   */
+  public async _getAsyncChangeData() {
+    const params = CommonTools.parametersResolver({
+      params: this.config.changeJsonNameConfig.params,
+      tempValue: this.tempValue,
+      initValue: this.initData,
+      cacheValue: this.cacheValue
+    });
+
+    const ajaxData = await this.apiResource
+      .get(
+        this.config.changeJsonNameConfig.url,
+        // 'get',
+        params
+      ).toPromise();
+    return ajaxData;
+  }
+
+  /**
    * loadAjaxParams 向切换之后的组件进行传值
    */
   public async loadAjaxParams() {
     const ajaxParams = await this.getAjaxParams(this.config.paramsConfig)
     delete ajaxParams.data[0].Id;
-    this.tempValue = {...this.tempValue , ...ajaxParams.data[0]}
+    this.tempValue = { ...this.tempValue, ...ajaxParams.data[0] }
   }
 
-  
+
 
   public async getAjaxParams(config) {
     const params = CommonTools.parametersResolver({
