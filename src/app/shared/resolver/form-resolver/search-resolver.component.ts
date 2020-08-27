@@ -189,13 +189,16 @@ export class SearchResolverComponent extends CnComponentBase
                                         }
                                         this.tempValue[param['cid']] =
                                             option.data[param['pid']];
-                                            console.log('searchView===', this.tempValue);
                                     });
                                 }
                                 // 匹配及联模式
                                 switch (mode) {
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH_VALUE_CHANGE:
-                                        this.valueChange(this.tempValue);
+                                        if (this.config.outterCascade) {
+                                            const oc = this.config.outterCascade;
+                                            const backValue = { name: oc.cascadeControlName, value: this.tempValue[oc.valueName]};
+                                            this.valueChange(backValue);
+                                        }
                                         break;
                                   
                                 }
