@@ -19,6 +19,9 @@ import { _HttpClient } from "@delon/theme";
 import { environment } from "@env/environment";
 import { APIResource } from "@core/utility/api-resource";
 import { SystemResource, SystemResource_1 } from "@core/utility/system-resource";
+import { deepCopy } from "@delon/util";
+import { Utils } from "tslint";
+import { CommonTools } from "@core/utility/common-tools";
 
 /**
  * 默认HTTP拦截器，其注册细节见 `app.module.ts`
@@ -91,14 +94,22 @@ export class DefaultInterceptor implements HttpInterceptor {
         // 统一加上服务端前缀
         let url = req.url;
         let newReq;
-        if (!url.startsWith("https://") && !url.startsWith("http://")) {
+        
+        if (url.startsWith("http://192.168.1.200")) {
+            // url = this._buildURL() + url;
+            url = this._replaceCurrentURL(url)
+
+            newReq = req.clone({
+                url: url
+            });  
+        } else if (!url.startsWith("https://") && !url.startsWith("http://")) {
             url = this._buildURL() + url;
             url = this._replaceCurrentURL(url)
 
             newReq = req.clone({
                 url: url
             });     
-        } else {
+        }  else {
             newReq = req.clone({
                 url: url
             });

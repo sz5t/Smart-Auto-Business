@@ -1039,7 +1039,7 @@ export class BsnTableComponent extends CnComponentBase
                 this._createMapd_new(this.config.mergeconfig, this.dataList);
             }
             else {
-                console.log('查看当前结构', this.editCache);
+                // console.log('查看当前结构', this.editCache);
             }
 
 

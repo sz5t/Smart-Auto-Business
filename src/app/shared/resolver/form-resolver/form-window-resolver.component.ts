@@ -1270,7 +1270,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
         //         }
         //     )
         // );
-
         const sendData = this.value;
         sendData[data.name] = data.value;
 

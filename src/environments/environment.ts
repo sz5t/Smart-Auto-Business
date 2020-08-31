@@ -8,8 +8,8 @@ export const environment = {
     SERVER_URL: 'http://localhost:4200',
     production: false,
     hmr: false,
-    login_url: '/passport/app', // calogin CA登陆 ，login 普通登陆
+    login_url: '/passport/login', // calogin CA登陆 ，login 普通登陆
     useHash: true,
     admin_url: '/dashboard/v1',
-    homePageName: '/app/entry' // dashboard/v1 系统默认，dashboard/home 自定义的首页页面 HOME_DISPLAY(json名称)
+    homePageName: '/dashboard/v1' // dashboard/v1 系统默认，dashboard/home 自定义的首页页面 HOME_DISPLAY(json名称)
 };

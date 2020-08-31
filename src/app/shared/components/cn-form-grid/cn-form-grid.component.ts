@@ -55,7 +55,7 @@ export class CnFormGridComponent implements OnInit {
   }
 
   public valueChange(name?) {
- console.log('表单赋值',name);
+//  console.log('表单赋值',name);
     if (name) {
       const backValue = { name: this.config.name, value: name };
       this.updateValue.emit(backValue);

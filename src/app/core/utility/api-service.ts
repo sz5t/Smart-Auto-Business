@@ -36,6 +36,7 @@ export class ApiService {
 
     // region 操作配置平台的相关资源
     public post(resource, body?, params?) {
+        // console.log('resource =========', resource);
         return this.httpClient.request('POST', resource, {
             body: body,
             params: params,

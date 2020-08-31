@@ -17,11 +17,11 @@ export const SystemResource_1 = {
     'url_localhost_4200': {
         localResourceUrl: 'localhost:4200',
         /** 后台服务 */
-        // settingSystemServer: '10.129.150.111:8081',
-        // appSystemServer: '10.129.150.111:8081'
         settingSystemServer: '192.168.1.111:8081',
         /** 后台服务 */
         appSystemServer: '192.168.1.111:8081',
+        //  settingSystemServer: '10.129.150.111:8081',
+        //  appSystemServer: '10.129.150.111:8081',
         /**报表  */
         reportServerUrl: '192.168.1.111:8088'
       },

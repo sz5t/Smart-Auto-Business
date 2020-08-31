@@ -21,6 +21,7 @@ import { ApiService } from '@core/utility/api-service';
 // import { Md5 } from 'ts-md5/dist/md5';
 import { HttpClient } from '@angular/common/http';
 import { SystemResource } from '@core/utility/system-resource';
+import { CommonTools } from '@core/utility/common-tools';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -38,6 +39,29 @@ export class CALoginComponent implements OnInit, OnDestroy {
     public loading = false;
     // 当前选择登录系统的配置项
     public _currentSystem;
+    public ws: WebSocket;
+
+    private ipConfig = {
+        url: 'open/getEquipment',
+        ajaxType: 'get',
+        params: [
+            {
+               'name': 'typeCode',
+               'type': 'value',
+               'value': 'CA_LOGIN'
+            },
+            {
+                'name': 'clientIp',
+                'type': 'value',
+                'value': ''   
+            }
+        ]
+    }
+    private clientConfig = {
+        url: 'utils/getClientIp',
+        ajaxType: 'get',
+        params: []
+    } 
 
     constructor(
         fb: FormBuilder,
@@ -71,14 +95,111 @@ export class CALoginComponent implements OnInit, OnDestroy {
         this.cacheService.clear(); 
         this.menuService.clear();
         this.titleService.setTitle(this.titleService.default);
-
-        this._route.params.subscribe(params => {
-            this.caLogin(params.Id);
-        });
+        // this._route.params.subscribe(params => {
+        //     this.caLogin(params.Id);
+        // });
+        this.cacheService.set('currentConfig', SystemResource.settingSystem)
+        this.getCaLoginInfo();
 
         
         // this.cacheService.set('AppName', 'SmartOne');
     }
+
+    /**
+     * getCaLoginInfo CA登陆
+     */
+    public async getCaLoginInfo() {
+        const that = this;
+        const clientIp = await this.loadClientIP();
+        this.ipConfig.params[1]['value'] = clientIp;
+        const wsString = await this.loadWsConfig();
+        that.ws = new WebSocket(wsString);
+        that.ws.onopen = function () {
+            // web socket已经连接上，使用send方法发数据
+            // 连接服务端的socket
+            that.ws.send('客户端已上线');
+            console.log('数据发送中……')
+        };
+        that.ws.onmessage = function (evt) {
+            const received_msg = evt.data;
+            console.log('数据已接收……', received_msg);
+            that.apiService.login('common/loginByCert', {cert: received_msg})
+            .toPromise()
+            .then(user => {
+                if (user.isSuccess) {
+                    that.cacheService.set('userInfo', user.data);
+                    const token: ITokenModel = {token: user.data.token};
+                    that.tokenService.set(token);
+                    const menus = [
+                        {
+                            text: '功能导航',
+                            i18n: '',
+                            group: true,
+                            hideInBreadcrumb: true,
+                            children: []
+                        }
+                    ]
+                    menus[0].children = user.data.modules;
+
+                    that.cacheService.set('Menus', menus);
+                    that.menuService.add(menus);
+
+                    const url = '/app/entry';
+                    that.ws.close();
+                    that.ws = null;
+                    that.router.navigate([`${url}`]);
+                } else {
+                    that.showError(user.message);
+                    that.ws.send('reload')
+                }
+            })
+        };
+        that.ws.onclose = function () {
+            console.log('连接已关闭');
+        }
+    }
+
+    /**
+     * loadWsConfig
+     */
+    public async loadWsConfig() {
+        let wsString;
+        const url = this.ipConfig.url;
+        const params = {...this._buildParameters(this.ipConfig.params)};
+        const loadData = await this._load(url, params);
+        if (loadData && loadData.status === 200 && loadData.isSuccess) {
+            if (loadData.data.length > 0) {
+                loadData.data.forEach(element => {
+                    
+                    try {
+                        wsString = 'ws://' + element['webSocketIp'] + ':' + element['webSocketPort'] + '/' + element['connEntry'];
+                        throw new Error();
+                    } catch {
+                        
+                    };
+                });
+            }
+        }
+        return wsString;
+    }
+
+    private async _load(url, params) {
+        return this.apiService.get(url, params).toPromise();
+    }
+
+    /**
+     * loadClientIP
+     */
+    public async loadClientIP() {
+        let ip;
+        const url = this.clientConfig.url;
+        const loadData = await this._load(url, {});
+        if (loadData.isSuccess) {
+            ip = loadData.data.clientIp;
+        }
+        return ip;
+    }
+
     // region: fields
     get cert() {
         return this.form.controls.cert;
@@ -309,5 +430,16 @@ export class CALoginComponent implements OnInit, OnDestroy {
             }
         }
         return result;
+    }
+
+    private _buildParameters(paramsConfig) {
+        let params = {};
+        if (paramsConfig) {
+            params = CommonTools.parametersResolver({
+                params : paramsConfig,
+                cacheValue: this.cacheService
+            });
+            return params;
+        }
     }
 }

@@ -467,7 +467,7 @@ export class CommonTools {
         if (!inputValue) {
             strQ = null;
         }
-        console.log('liu查询参数：', strQ);
+        // console.log('liu查询参数：', strQ);
         return strQ;
     }
 

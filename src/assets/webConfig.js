@@ -1,10 +1,10 @@
 module.exports = {
   // 公司服务
-   localResourceUrl: "http://192.168.1.200:8081",
+   localResourceUrl: "http://192.168.1.200:8083",
     /** 后台服务 */
-   settingSystemServer: 'http://192.168.1.200:8072/api.cfg/',
+   settingSystemServer: 'http://192.168.1.200:8888/api.cfg/',
    /** 后台服务 */
-   appSystemServer: 'http://192.168.1.200:8072/api.cfg/',
+   appSystemServer: 'http://192.168.1.200:8888/api.cfg/',
    /**报表  */
    reportServerUrl: 'http://192.168.1.200:8088/ReportServer.ashx'
 

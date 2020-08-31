@@ -408,7 +408,7 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
 
                 });
               }
-              console.log(sendData);
+              // console.log(sendData);
               if (sendData['nodetype'] === 'BeginNode') {
                 this.cascade.next(
                   new BsnComponentMessage(

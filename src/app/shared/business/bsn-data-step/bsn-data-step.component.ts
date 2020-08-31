@@ -76,6 +76,7 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
     }
 
     public ngOnInit() {
+        this.sNodeClickColor = this.config.selectedColor ? this.config.selectedColor : '#9BCD9C'
         this.initValue = this.initData ? this.initData : {};
         this.resolverRelation();
     }
@@ -104,7 +105,9 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                     } else {
                         this.graph.read({ nodes: crNodes });
                     }
-                    this._lastNode = this.graph._cfg._itemMap[crNodes[0].Id];
+                    if (!this._lastNode) {
+                        this._lastNode = this.graph._cfg._itemMap[crNodes[0].Id];
+                    }
                     this.isLoading = false;
                 }
             });
@@ -133,38 +136,125 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                     if (element['value'] === nodeData[this.config.processNode['field']]) {
                         nodeData['color'] = element['color'];
                         this.formatNode.push({ Id: nodeData['Id'], color: element['color'] })
-                        if (nodeData[this.config.processNode['field']] === this.config.processNode['selected']) {
-                            // nodeData['style'] = { stroke: '#000' };
-                            this.tempValue['_selectedNode'] = nodeData;
+                        if (this.tempValue['_selectedNode']) {
                             if (this.config.componentType && this.config.componentType.parent === true) {
                                 this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
                                     data: this.tempValue['_selectedNode']
                                 }));
                             }
+                            if (this.config.componentType && this.config.componentType.sub === true) {
+                                this.tempValue['_selectedNode'] && this.cascade.next(
+                                    new BsnComponentMessage(
+                                        BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
+                                        this.config.viewId,
+                                        {
+                                            data: this.tempValue['_selectedNode'],
+                                            tempValue: this.tempValue,
+                                            subViewId: () => {
+                                                let id = '';
+                                                if (Array.isArray(this.config.subMapping) &&
+                                                    this.config.subMapping.length > 0
+                                                ) {
+                                                    this.config.subMapping.forEach(sub => {
+                                                        const mappingVal = this.tempValue['_selectedNode'][sub['field']];
+                                                        if (sub.mapping) {
+                                                            sub.mapping.forEach(m => {
+                                                                if (m.value === mappingVal) {
+                                                                    id = m.subViewId;
+                                                                }
+                                                            }
+                                                            );
+                                                        }
+                                                    }
+                                                    );
+                                                }
+                                                return id;
+                                            }
+                                        }
+                                    )
+                                );
+                            }
+                        }
+                    }
+                    if (this._lastNode) {
+                        this.tempValue['_selectedNode'] = this._lastNode.model;
+                        if (nodeData['Id'] === this._lastNode['id']) {
+                            nodeData['color'] = this.sNodeClickColor;
+                            nodeData['style'] = { stroke: '#000' };
+                        }
+                    } else {
+                        const selectField = this.config.processNode['selectField'] ? this.config.processNode['selectField'] : this.config.processNode['field']
+                        if (nodeData[selectField] === this.config.processNode['selected']) {
+                            nodeData['color'] = this.sNodeClickColor;
+                            // nodeData['style'] = { stroke: '#000' };
+                            this.tempValue['_selectedNode'] = nodeData;
                         }
                     }
                 });
-            } else {
-                if (i === 0) {
-                    nodeData['color'] = this.sNodeClickColor;
-                    nodeData['style'] = { 'stroke': '#000' };
-                    this.tempValue['_selectedNode'] = nodeData;
-                    if (
-                        this.config.componentType &&
-                        this.config.componentType.parent === true
-                    ) {
-                        this.cascade.next(
-                            new BsnComponentMessage(
-                                BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
-                                this.config.viewId,
-                                {
-                                    data: this.tempValue['_selectedNode']
+            }
+            if (!this.tempValue['_selectedNode']) {
+                this.tempValue['_selectedNode'] = resultNodes[0];
+                resultNodes[0]['color'] = this.sNodeClickColor;
+                resultNodes[0]['style'] = { stroke: '#000' };
+                if (this.config.componentType && this.config.componentType.parent === true) {
+                    this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
+                        data: this.tempValue['_selectedNode']
+                    }));
+                }
+                if (this.config.componentType && this.config.componentType.sub === true) {
+                    this.tempValue['_selectedNode'] && this.cascade.next(
+                        new BsnComponentMessage(
+                            BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
+                            this.config.viewId,
+                            {
+                                data: this.tempValue['_selectedNode'],
+                                tempValue: this.tempValue,
+                                subViewId: () => {
+                                    let id = '';
+                                    if (Array.isArray(this.config.subMapping) &&
+                                        this.config.subMapping.length > 0
+                                    ) {
+                                        this.config.subMapping.forEach(sub => {
+                                            const mappingVal = this.tempValue['_selectedNode'][sub['field']];
+                                            if (sub.mapping) {
+                                                sub.mapping.forEach(m => {
+                                                    if (m.value === mappingVal) {
+                                                        id = m.subViewId;
+                                                    }
+                                                }
+                                                );
+                                            }
+                                        }
+                                        );
+                                    }
+                                    return id;
                                 }
-                            )
-                        );
-                    }
+                            }
+                        )
+                    );
                 }
             }
+            // else {
+            // if (i === 0) {
+            //     nodeData['color'] = this.sNodeClickColor;
+            //     nodeData['style'] = { 'stroke': '#000' };
+            //     this.tempValue['_selectedNode'] = nodeData;
+            //     if (
+            //         this.config.componentType &&
+            //         this.config.componentType.parent === true
+            //     ) {
+            //         this.cascade.next(
+            //             new BsnComponentMessage(
+            //                 BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+            //                 this.config.viewId,
+            //                 {
+            //                     data: this.tempValue['_selectedNode']
+            //                 }
+            //             )
+            //         );
+            //     }
+            // }
+            // }
             if (this.config.direction === 'horizontal') {
                 nodeData['x'] =
                     this.config.startX * i === 0
@@ -380,7 +470,6 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                                             option.data[param['pid']];
                                     });
                                 }
-                                if (cascadeEvent._mode === mode) {
                                 // 匹配及联模式
                                 switch (mode) {
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH:
@@ -390,7 +479,7 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                                         this.load();
                                         break;
                                 }
-                            }}
+                            }
                         });
                     }
                 }
@@ -408,6 +497,32 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                         y: -13,
                         fill: '#333',
                         text: item.model.label
+                    }
+                });
+                return group.addShape('rect', {
+                    attrs: {
+                        x: 0,
+                        y: -12,
+                        width: 25,
+                        height: 25,
+                        stroke: '#333',
+                        fill: '#eee',
+                        label: item.model.label
+                    }
+                });
+            }
+        });
+
+        G6.registerNode('customNode', {
+            draw: (item) => {
+                const group = item.getGraphicGroup();
+                group.addShape('text', {
+                    attrs: {
+                        x: 0,
+                        y: -13,
+                        fill: '#333',
+                        text: item.model.label,
+                        fontSize: '100px'
                     }
                 });
                 return group.addShape('rect', {
@@ -446,6 +561,7 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
         });
 
         G6.registerBehaviour('onclick', graph => {
+
             graph.on('node:click', ev => {
                 if (!this._lastNode) {
                     graph.update(ev.item, {
@@ -460,6 +576,9 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                             this.lastNodeColor = e.color
                         }
                     })
+                    if (!this.lastNodeColor) {
+                        this.lastNodeColor = '#ccc'
+                    }
                     graph.update(ev.item, {
                         color: this.sNodeClickColor,
                         style: { stroke: '#000' }
@@ -474,51 +593,72 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                     this._lastNode = ev.item
                 }
 
-                this.tempValue['_selectedNode'] = ev.item.model
-                if (this.config.componentType && this.config.componentType.parent === true) {
+                this.tempValue['_selectedNode'] = ev.item.model;
+                if (
+                    this.config.componentType &&
+                    this.config.componentType.parent === true
+                ) {
                     this.cascade.next(
-                        new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
-                            data: this.tempValue['_selectedNode']
-                        })
-                    )
+                        new BsnComponentMessage(
+                            BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                            this.config.viewId,
+                            {
+                                data: this.tempValue['_selectedNode']
+                            }
+                        )
+                    );
                 }
                 // 注册多界面切换消息
-                if (this.config.componentType && this.config.componentType.sub === true) {
+                if (
+                    this.config.componentType &&
+                    this.config.componentType.sub === true
+                ) {
                     this.tempValue['_selectedNode'] &&
                         this.cascade.next(
-                            new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD, this.config.viewId, {
-                                data: this.tempValue['_selectedNode'],
-                                tempValue: this.tempValue,
-                                subViewId: () => {
-                                    let id = ''
-                                    if (Array.isArray(this.config.subMapping) && this.config.subMapping.length > 0) {
-                                        this.config.subMapping.forEach(sub => {
-                                            const mappingVal = this.tempValue['_selectedNode'][sub['field']]
-                                            if (sub.mapping) {
-                                                sub.mapping.forEach(m => {
-                                                    if (m.value === mappingVal) {
-                                                        id = m.subViewId
+                            new BsnComponentMessage(
+                                BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
+                                this.config.viewId,
+                                {
+                                    data: this.tempValue['_selectedNode'],
+                                    tempValue: this.tempValue,
+                                    subViewId: () => {
+                                        let id = '';
+                                        if (
+                                            Array.isArray(
+                                                this.config.subMapping
+                                            ) &&
+                                            this.config.subMapping.length > 0
+                                        ) {
+                                            this.config.subMapping.forEach(
+                                                sub => {
+                                                    const mappingVal = this
+                                                        .tempValue[
+                                                        '_selectedNode'
+                                                    ][sub['field']];
+                                                    if (sub.mapping) {
+                                                        sub.mapping.forEach(
+                                                            m => {
+                                                                if (
+                                                                    m.value ===
+                                                                    mappingVal
+                                                                ) {
+                                                                    id =
+                                                                        m.subViewId;
+                                                                }
+                                                            }
+                                                        );
                                                     }
-                                                })
-                                            }
-                                        })
+                                                }
+                                            );
+                                        }
+                                        return id;
                                     }
-                                    return id
                                 }
-                            })
-                        )
+                            )
+                        );
                 }
-
-                // 注册重新构建新的动态二维表
-                if (this.config.componentType && this.config.componentType.create === true) {
-                    this.cascade.next(
-                        new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.CREATE_DYNAMIC_TABLE, this.config.viewId, {
-                            data: this.tempValue['_selectedNode']
-                        })
-                    )
-                }
-            })
-        })
+            });
+        });
 
         this.graph = new G6.Graph({
             container: this.dataSteps.nativeElement,
@@ -529,17 +669,20 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                 red: ['mouseEnterColor', 'mouseLeaveColor', 'onclick']
             },
             mode: 'red'
-        })
+        });
 
-        this.load()
+        if (this.config.componentType &&
+            this.config.componentType.own === true) {
+            this.load();
+        }
     }
 
     public ngOnDestroy() {
         if (this._statusSubscription) {
-            this._statusSubscription.unsubscribe()
+            this._statusSubscription.unsubscribe();
         }
         if (this._cascadeSubscription) {
-            this._cascadeSubscription.unsubscribe()
+            this._cascadeSubscription.unsubscribe();
         }
     }
 }
