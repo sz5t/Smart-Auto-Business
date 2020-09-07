@@ -85,6 +85,10 @@ export class ModuleEntryComponent implements OnInit, OnDestroy {
             nzTitle: '确认要关闭本系统吗？',
             nzContent: '关闭后将清空相关操作数据！',
             nzOnOk: () => {
+                const pageList = this.cacheService.getMeta();
+                pageList.forEach(item => {
+                  this.cacheService.remove(item);
+                });
                 this.tokenService.clear();
                 this.cacheService.clear();
                 this.menuService.clear();

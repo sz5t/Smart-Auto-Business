@@ -516,7 +516,9 @@ export class BsnAsyncTreeComponent extends GridBase
     public updateNode(keys: string) {
         if (keys && keys.length > 0) {
             (async () => {
-                this._execute(this.config.ajaxConfig.url, 'get', { 'Id': `in(${keys})` }).then(
+                const array = this.config.ajaxConfig.url.split('/');
+                const url = array[0] + '/' + array[1]; 
+                this._execute(url, 'get', { 'Id': `in(${keys})` }).then(
                     result => {
                         if (result.isSuccess) {
                             for (const d of result.data) {
@@ -524,8 +526,8 @@ export class BsnAsyncTreeComponent extends GridBase
                                 const index = this.config.columns.findIndex(c => c.field === 'title');
                                 currentNode['title'] = d[this.config.columns[index]['valueName']] ? d[this.config.columns[index]['valueName']] : '';
                                 currentNode['origin'] = d ? d : {};
+                                this.clickNode(currentNode);
                             }
-                            this.treeData = this.treeObj.getTreeNodes();
                         }
                     }
                 )
@@ -957,6 +959,9 @@ export class BsnAsyncTreeComponent extends GridBase
     }
 
     public expandNode = (e, callback?, that?) => {
+        if (!e.node) {
+            e.node = e
+        }
         if (e.node.isExpanded) {
             (async () => {
                 const s = await Promise.all(
@@ -1010,6 +1015,9 @@ export class BsnAsyncTreeComponent extends GridBase
             this.activedNode['selected'] && (this.activedNode['selected'] = false);
             this.activedNode = null;
         }
+        if (!e.node) {
+            e.node = e
+        }
         e.node.isSelected = true;
         this.activedNode = e.node;
         // 从节点的列表中查找选中的数据对象
@@ -1017,9 +1025,11 @@ export class BsnAsyncTreeComponent extends GridBase
             ...this.initValue,
             ...e.node.origin
         };
+        
         this.selectedItem = this.tempValue['_selectedNode'];
 
         // 选中节点,判断时候展开并加载下层节点数据
+
         if (!e.node.isExpanded) {
             e.node.isExpanded = true;
             this.expandNode(e);

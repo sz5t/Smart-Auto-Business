@@ -131,18 +131,18 @@ export class CnGridSearchComponent implements OnInit {
 
   public ngOnInit() {
 
-    console.log("查询",this.config);
+    // console.log("查询",this.config);
 
     if (this.searchConfigType) {
       if (this.searchConfigType === 'default') {
 
         let queryTerm;
         let defaultQueryTerm;
-          if (this.config.queryTerm){
+          if (this.config.queryTerm) {
             queryTerm = this.config.queryTerm;
           }
-          if (this.config.defaultQueryTerm){
-            defaultQueryTerm =this.config.defaultQueryTerm;
+          if (this.config.defaultQueryTerm) {
+            defaultQueryTerm = this.config.defaultQueryTerm;
           }
         this.config = {
           type: 'input',
@@ -150,23 +150,23 @@ export class CnGridSearchComponent implements OnInit {
           controlSize: '18',
           inputType: 'text'
         }
-        if(queryTerm){
+        if (queryTerm){
           this.config['queryTerm'] = queryTerm;
         }
-        if(defaultQueryTerm){
+        if (defaultQueryTerm) {
           this.config['defaultQueryTerm'] = defaultQueryTerm;
         }
       }
     }
     if (this.config.queryTerm){
-      let newop:any =[];
+      let newop: any = [];
 
       this.config.queryTerm.forEach(element => {
-         let obj = this.op.find(d=>d.value===element);
+         let obj = this.op.find(d => d.value === element);
          newop.push(obj)
       });
       this.op = newop;
-    }else {
+    } else {
       this.setOP();  // 简析条件参数
       if (this.config.type === 'input') {
         this.AfterValue = 'ctn';
@@ -174,16 +174,16 @@ export class CnGridSearchComponent implements OnInit {
         this.AfterValue = 'eq'
       }
     }
-    if (this.config.defaultQueryTerm){
+    if (this.config.defaultQueryTerm) {
       this.AfterValue = this.config.defaultQueryTerm;
     }
 
-    let index = this.op.findIndex(d=>d.value ===this.AfterValue );
-    if(index && index>0){
+    let index = this.op.findIndex(d => d.value === this.AfterValue );
+    if (index && index > 0) {
       this.op[index]['select'] = true;
     }
 
-    console.log("查询",this.op);
+    // console.log("查询",this.op);
 
 
     
@@ -254,6 +254,9 @@ export class CnGridSearchComponent implements OnInit {
     if (!this.inputValue) {
       return strQ;
     }
+    let inputData = this.inputValue;
+    inputData = this.replaceSpecialChar(inputData);
+    this.inputValue = inputData;
     switch (this.AfterValue) {
       case 'eq': // =
         strQ = strQ + 'eq (' + this.inputValue + ')';
@@ -289,6 +292,9 @@ export class CnGridSearchComponent implements OnInit {
     if (!inputValue) {
       // return strQ;
     }
+    let inputData = inputValue;
+    inputData = this.replaceSpecialChar(inputData);
+    inputValue = inputData;
     switch (this.AfterValue) {
       case 'eq': // =
         strQ = strQ + 'eq(' + inputValue + ')';
@@ -381,6 +387,18 @@ export class CnGridSearchComponent implements OnInit {
     }
     this.CreateSearch();
     this.op = JSON.parse(JSON.stringify(this.op));
+  }
+
+  /**
+   * replaceSpecialChar 替换特殊字符
+   */
+  public replaceSpecialChar(char) {
+    if (char.indexOf("%") >= 0) {
+      char = char.replace(/%/g, '[%]')
+      return char
+    } else {
+      return char;
+    }
   }
 
 }

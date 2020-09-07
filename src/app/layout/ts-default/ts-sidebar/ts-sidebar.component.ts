@@ -34,6 +34,10 @@ export class TsSidebarComponent {
             nzTitle: '确认要关闭本系统吗？',
             nzContent: '关闭后将清空相关操作数据！',
             nzOnOk: () => {
+                const pageList = this.cacheService.getMeta();
+                pageList.forEach(item => {
+                  this.cacheService.remove(item);
+                });
                 new Promise((resolve, reject) => {
                     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
                     this.tokenService.clear();

@@ -97,8 +97,11 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                 if (this.config.hasOwnProperty('defaultValue')) {
                     this.value = this.config.defaultValue;
                 } else {
-                    if (this._options.length > 0 ) {
-                        this.value = this._options[0].value;
+                    if (this.config.noDefaultValue) {
+                    } else {
+                        if (this._options.length > 0 ) {
+                            this.value = this._options[0].value;
+                        }
                     }
                 }
             }
@@ -262,8 +265,11 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                 if (this.config.hasOwnProperty('defaultValue')) {
                     this.value = this.config.defaultValue;
                 } else {
-                    if (this._options.length > 0 ) {
-                        this.value = this._options[0].value;
+                    if (this.config.noDefaultValue) {
+                    } else {
+                        if (this._options.length > 0 ) {
+                            this.value = this._options[0].value;
+                        }
                     }
                 }
             }
@@ -282,7 +288,10 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                     }
                 });
             } else {
+                if (this.config.noDefaultValue) {
+                } else {
                 selected = this._options[0];
+                }
             }
             
         }

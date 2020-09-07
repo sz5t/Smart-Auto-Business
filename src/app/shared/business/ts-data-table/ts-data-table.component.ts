@@ -5340,6 +5340,10 @@ export class TsDataTableComponent extends CnComponentBase
             nzTitle: '确认要关闭本系统吗？',
             nzContent: '关闭后将清空相关操作数据！',
             nzOnOk: () => {
+                const pageList = this.cacheValue.getMeta();
+                pageList.forEach(item => {
+                  this.cacheValue.remove(item);
+                });
                 this.tokenService.clear();
                 this.cacheValue.clear();
                 this.menuService.clear();

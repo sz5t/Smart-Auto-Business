@@ -1,6 +1,6 @@
-import { CacheService } from "@delon/cache";
-import { Injectable, Injector } from "@angular/core";
-import { Router } from "@angular/router";
+import { CacheService } from '@delon/cache';
+import { Injectable, Injector } from '@angular/core';
+import { Router } from '@angular/router';
 import {
     HttpInterceptor,
     HttpRequest,
@@ -11,17 +11,17 @@ import {
     HttpProgressEvent,
     HttpResponse,
     HttpUserEvent
-} from "@angular/common/http";
-import { Observable, of } from "rxjs";
-import { mergeMap, catchError } from "rxjs/operators";
-import { NzMessageService } from "ng-zorro-antd";
-import { _HttpClient } from "@delon/theme";
-import { environment } from "@env/environment";
-import { APIResource } from "@core/utility/api-resource";
-import { SystemResource, SystemResource_1 } from "@core/utility/system-resource";
-import { deepCopy } from "@delon/util";
-import { Utils } from "tslint";
-import { CommonTools } from "@core/utility/common-tools";
+} from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { mergeMap, catchError } from 'rxjs/operators';
+import { NzMessageService } from 'ng-zorro-antd';
+import { _HttpClient } from '@delon/theme';
+import { environment } from '@env/environment';
+import { APIResource } from '@core/utility/api-resource';
+import { SystemResource, SystemResource_1 } from '@core/utility/system-resource';
+import { deepCopy } from '@delon/util';
+import { Utils } from 'tslint';
+import { CommonTools } from '@core/utility/common-tools';
 
 /**
  * 默认HTTP拦截器，其注册细节见 `app.module.ts`
@@ -61,17 +61,17 @@ export class DefaultInterceptor implements HttpInterceptor {
                 // }
                 break;
             case 401: // 未登录状态码
-                this.goTo("/passport/login");
+                this.goTo('/passport/login');
                 break;
             case 403:
             case 404:
             case 500:
                 const EvMsg: any = event;
                 if (
-                    EvMsg.message === "请先登录或重新登录" ||
-                    EvMsg.message === "闲置时间过长，请重新登录"
+                    EvMsg.message === '请先登录或重新登录' ||
+                    EvMsg.message === '闲置时间过长，请重新登录'
                 ) {
-                    this.goTo("/passport/login");
+                    this.goTo('/passport/login');
                 } else {
                     // this.msg.error(`${EvMsg.message}`);
                 }
@@ -81,7 +81,7 @@ export class DefaultInterceptor implements HttpInterceptor {
         return of(event);
     }
 
-    intercept(
+    public intercept(
         req: HttpRequest<any>,
         next: HttpHandler
     ): Observable<
@@ -95,14 +95,22 @@ export class DefaultInterceptor implements HttpInterceptor {
         let url = req.url;
         let newReq;
         
-        if (url.startsWith("http://192.168.1.200")) {
+        if (url.startsWith('http://192.168.1.200')) {
             // url = this._buildURL() + url;
             url = this._replaceCurrentURL(url)
 
             newReq = req.clone({
                 url: url
             });  
-        } else if (!url.startsWith("https://") && !url.startsWith("http://")) {
+        } else if (url.startsWith('api.push.message')) {
+            url = this._buildURL() + url;
+            url = this._replaceCurrentURL(url)
+            url = url.replace('api.cfg/', '');
+
+            newReq = req.clone({
+                url: url
+            });
+        } else if (!url.startsWith('https://') && !url.startsWith('http://')) {
             url = this._buildURL() + url;
             url = this._replaceCurrentURL(url)
 
@@ -129,7 +137,7 @@ export class DefaultInterceptor implements HttpInterceptor {
 
     private _buildURL() {
         let url;
-        const currentConfig: any = this.cacheService.getNone("currentConfig");
+        const currentConfig: any = this.cacheService.getNone('currentConfig');
         if (!currentConfig) {
             url = SystemResource.localResource.url;
             // url = environment.SERVER_URL;

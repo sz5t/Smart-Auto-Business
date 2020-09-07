@@ -5,6 +5,7 @@ import { CnFormWindowResolverComponent } from '@shared/resolver/form-resolver/fo
 import { BsnUploadComponent } from '@shared/business/bsn-upload/bsn-upload.component';
 import { BSN_COMPONENT_MODES, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT } from '@core/relative-Service/BsnTableStatus';
 import { CacheService } from '@delon/cache';
+import { environment } from '@env/environment';
 import { CommonTools } from './../../../core/utility/common-tools';
 import {
     Component,
@@ -72,6 +73,39 @@ export class FormResolverComponent extends CnFormBase
         ajaxType: 'get',
         params: []
     };
+    public MessageArray = [];
+    public nextNoticeConfig = {
+        url: 'common/getNoticeData',
+        ajaxType: 'get',
+        params: [
+            {
+                'name': 'pusherId',
+                'type': 'cacheValue',
+                'valueName': 'userId'
+            },
+            {
+                'name': 'taskType',
+                'type': 'value',
+                'value': 1
+            }
+        ]
+    }
+    public ownNoticeConfig = {
+        url: 'common/getNoticeData',
+        ajaxType: 'get',
+        params: [
+            {
+                'name': 'receiverId',
+                'type': 'cacheValue',
+                'valueName': 'userId'
+            },
+            {
+                'name': 'taskType',
+                'type': 'value',
+                'value': 1
+            }
+        ]
+    }
     private ajax = {
         url: 'open/getEquipment',
         ajaxType: 'get',
@@ -285,6 +319,10 @@ export class FormResolverComponent extends CnFormBase
                                         // this.sendCascadeMessage();
                                         if (returnValue.data && returnValue.data.formId) {
                                             this.InitiateProcess(returnValue.data, processoption);
+                                        }
+
+                                        if (returnValue.data && returnValue.data.messagePush) {
+                                            this.loadNoticeArray()
                                         }
                                     },
                                     option
@@ -1379,7 +1417,7 @@ export class FormResolverComponent extends CnFormBase
                                                     ];
                                             }
                                         }
-                                        
+
                                         if (
                                             caseItem['setValue']['type'] ===
                                             'formValue'
@@ -2071,16 +2109,113 @@ export class FormResolverComponent extends CnFormBase
      */
     public InitiateProcess(item, option) {
         if (option.processAjaxConfig) {
-            this.resolveAjaxConfig(
-                option.processAjaxConfig,
-                this.formState,
-                (returnValue) => {
-                    this.load();
-                    // this.sendCascadeMessage();
-                },
-                option,
-                item
-            );
+            if (option.processAjaxConfig[0].isDynamicUrl) {
+                this.getAndExecuteDynamicUrl(option)
+            } else {
+                this.resolveAjaxConfig(
+                    option.processAjaxConfig,
+                    this.formState,
+                    (returnValue) => {
+                        this.load();
+                        // this.sendCascadeMessage();
+                    },
+                    option,
+                    item
+                );
+            }
         }
     }
+
+    /**
+     * getDynamicUrl
+     */
+    public async getAndExecuteDynamicUrl(option) {
+        let dynamicUrlObject;
+        if (option && option.dynamicAjaxConfig) {
+            for (const dynamicAjax of option.dynamicAjaxConfig) {
+                const url = this.buildUrl(dynamicAjax.url);
+                const params = this.buildParameter(dynamicAjax.params);
+                await this.execute(url, dynamicAjax.ajaxType, params).then(result => {
+                    for (const key in result.data[0]) {
+                        if (key === dynamicAjax['resultField'] && result.data[0][key] !== null) {
+                            dynamicUrlObject = { ...dynamicUrlObject, ...{ [dynamicAjax['name']]: result.data[0][key] } }
+                        }
+                    }
+                });
+            }
+
+            option.processAjaxConfig.forEach(e => {
+                if (e.hasOwnProperty('url') && e['url'].indexOf('{') !== -1) {
+                    for (const key in dynamicUrlObject) {
+                        if (key === e['url']) {
+                            e['url'] = 'common/' + dynamicUrlObject[key]
+                        }
+                    }
+                }
+            });
+            if (dynamicUrlObject) {
+                this.resolveAjaxConfig(
+                    option.processAjaxConfig,
+                    this.formState,
+                    (returnValue) => {
+                        this.load();
+                        // this.sendCascadeMessage();
+                    },
+                    option
+                );
+            }
+        }
+    }
+
+    public async loadNoticeArray() {
+        this.getNotcieData(this.nextNoticeConfig).then(data => {
+            if (data.isSuccess) {
+                if (data.data) {
+                    // console.log(data.data);
+                    data.data.forEach(e => {
+                        this.MessageArray.push({ toUserId: e['receiverId'], message: e['descs'], type: 1})
+                    });
+                    this.startMessagePush(this.MessageArray);
+                }
+            }
+        })
+        this.getNotcieData(this.ownNoticeConfig).then(data => {
+            if (data.isSuccess) {
+                const cache = this.cacheValue.getNone('userInfo')
+                if (data.data.length === 0) {
+                    this.MessageArray.push({ toUserId: cache['userId'], message: data.data.length, type: 2 })
+                } else if (data.data.length > 0) {
+                    this.MessageArray.push({ toUserId: cache['userId'], message: data.data.length, type: 2 })
+                }
+                this.startMessagePush(this.MessageArray);
+            }
+        })
+    }
+    
+    /**
+   * _getAsyncChangeData
+   */
+  public async getNotcieData(config) {
+    const params = CommonTools.parametersResolver({
+      params: config.params,
+      cacheValue: this.cacheService
+    });
+
+    const ajaxData = await this.apiService
+      .get(
+        config.url,
+        // 'get',
+        params
+      ).toPromise();
+    return ajaxData;
+  }
+
+  /**
+   * startMessagePush 消息初始化的时候，调用推送消息接口
+   */
+  public startMessagePush(MsgArray) {
+    // console.log(userId, MsgArray);
+    const url = 'api.push.message/common/message/batch_individuality/push'
+    this.apiService.post(url, MsgArray).toPromise();
+  }
 }

@@ -469,7 +469,6 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
 
       this.cacheService.set('Menus', menus);
       this.menuService.add(menus);
-
       this.router.navigate([`${this.entry_url}`]);
     } else {
       if (user.message === 'PwdExpired') {
