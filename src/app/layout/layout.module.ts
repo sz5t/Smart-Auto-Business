@@ -76,7 +76,8 @@ const PASSPORT = [
     ],
     exports: [
         ...COMPONENTS,
-        ...PASSPORT
+        ...PASSPORT,
+        ...HEADERCOMPONENTS
     ]
 })
 export class LayoutModule { }

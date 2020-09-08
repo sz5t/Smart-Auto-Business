@@ -235,7 +235,7 @@ export class HeaderNotifyComponent {
   }
 
   public select(res: any) {
-    this.msg.success(`点击了 ${res.title} 的 ${res.item.title}`);
+    // this.msg.success(`点击了 ${res.title} 的 ${res.item.title}`);
     this.router.navigate(['/template/dynamicTemplate/Todotasks']);
   }
 

@@ -24,9 +24,11 @@ import { BtnTableFieldLimit } from '@core/pipe/btn-table-field-limit.pipe';
 import { EditPasswordComponent } from './passport/edit-password/edit-password.component';
 import { HomeComponent } from './dashboard/home/home.component';
 import { CALoginComponent } from './passport/calogin/calogin.component';
+import { HeaderNotifyComponent } from 'app/layout/default/header/components/notify.component';
+import { LayoutModule } from 'app/layout/layout.module';
 
 @NgModule({
-    imports: [SharedModule, RouteRoutingModule],
+    imports: [SharedModule, RouteRoutingModule, LayoutModule],
     declarations: [
         DashboardV1Component,
         DashboardAnalysisComponent,
@@ -46,7 +48,8 @@ import { CALoginComponent } from './passport/calogin/calogin.component';
         Exception403Component,
         Exception404Component,
         Exception500Component,
-        CALoginComponent
+        CALoginComponent,
+        // HeaderNotifyComponent
     ],
     providers: [
         AuthGuard

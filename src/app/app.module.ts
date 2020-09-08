@@ -42,6 +42,7 @@ import {
 import { Subject } from 'rxjs';
 import { RouteReuseStrategy } from '@angular/router';
 import {DataService} from './model/app-data.service';
+import { HeaderNotifyComponent } from './layout/default/header/components/notify.component';
 // JSON-Schema form
 // import { JsonSchemaModule } from '@shared/json-schema/json-schema.module';
 

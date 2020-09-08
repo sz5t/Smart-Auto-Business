@@ -29,23 +29,31 @@
 
         <nz-page-header class="templateHeader" [nzBackIcon]="backIcon">
                 <nz-page-header-title>工作中心</nz-page-header-title>
-                <!-- <nz-page-header-subtitle></nz-page-header-subtitle> -->
+                <nz-page-header-subtitle>
+                       
+                </nz-page-header-subtitle>         
                 <nz-page-header-extra>
-                        <!-- <button nz-button nzType="primary" (click)="logout()"><i class="anticon anticon-logout"></i>退出登录</button> -->
-                        <nz-dropdown nzPlacement="bottomRight">
-                                <div class="item d-flex align-items-center px-sm" nz-dropdown>
-                                    <nz-avatar [nzSrc]="'../assets/img/user.svg'" nzSize="small" class="mr-sm"></nz-avatar>
-                                    <!--<pre>{{userInfo | json}}</pre>-->
-                                    {{userInfo?.accountName ? userInfo?.accountName: '用户'}}
+                        
+                        <span style="font-weight: 500; font-size: 16px;">
+                                <header-notify></header-notify> 系统通知 
+                                <nz-dropdown style="float:right;margin-left:15px" nzPlacement="bottomRight">
+                                <div nz-dropdown>
+                                        <nz-avatar [nzSrc]="'../assets/img/user.svg'" nzSize="small" class="mr-sm"></nz-avatar>
+                                        <!--<pre>{{userInfo | json}}</pre>-->
+                                        {{userInfo?.accountName ? userInfo?.accountName: '用户'}}
                                 </div>
                                 <div nz-menu class="width-sm">
-                                    <!-- <div nz-menu-item hidden="true" [nzDisabled]="true"><i class="anticon anticon-user mr-sm"></i>个人中心</div>
-                                    <div nz-menu-item hidden="true" [nzDisabled]="true"><i class="anticon anticon-setting mr-sm"></i>设置</div> -->
-                                    <li nz-menu-divider hidden="true"></li>
-                                    <div nz-menu-item (click)="editPassWord()"><i class="anticon anticon-edit mr-sm"></i>修改密码</div>
-                                    <div nz-menu-item (click)="logout()"><i class="anticon anticon-setting mr-sm"></i>退出登录</div>
+                                        <!-- <div nz-menu-item hidden="true" [nzDisabled]="true"><i class="anticon anticon-user mr-sm"></i>个人中心</div>
+                                        <div nz-menu-item hidden="true" [nzDisabled]="true"><i class="anticon anticon-setting mr-sm"></i>设置</div> -->
+                                        <li nz-menu-divider hidden="true"></li>
+                                        <div nz-menu-item (click)="editPassWord()"><i class="anticon anticon-edit mr-sm"></i>修改密码</div>
+                                        <div nz-menu-item (click)="logout()"><i class="anticon anticon-setting mr-sm"></i>退出登录</div>
                                 </div>
-                            </nz-dropdown>
+                        </nz-dropdown>
+
+                         
+                        </span>
+                        
                 </nz-page-header-extra>
         </nz-page-header>
         <ng-template #backIcon>
