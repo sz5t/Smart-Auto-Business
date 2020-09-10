@@ -37,7 +37,7 @@ export class CnGridSelectGridMultipleComponent extends CnComponentBase implement
   public inputVisible = false;
   private inputValue1 = '';
 
-  constructor() { 
+  constructor() {
     super();
   }
   public nzWidth = 1024;
@@ -99,21 +99,22 @@ export class CnGridSelectGridMultipleComponent extends CnComponentBase implement
     } else {
       // this.selectedByLoaded();
     }
-   
+
     if (this.value) {
-      if( this.value.data!=undefined){
+      if (this.value.data !== undefined) {
         this._value = this.value.data;
         this.valueChange(this._value);
       }
     }
-
-
   }
 
   public showModal(): void {
     this.isVisible = true;
     this.tags_mode = this.tags;
     // this.table.value = this._value;
+    if (!this.table.is_Search) {
+      this.table.addSearchRow();
+    }
   }
 
   public handleOk(): void {
@@ -134,7 +135,7 @@ export class CnGridSelectGridMultipleComponent extends CnComponentBase implement
     if (values.length > 0) {
       values = values.substring(0, values.length - 1);
     }
-    this._value =    values;
+    this._value = values;
     this.valueChange(this._value);
   }
 
@@ -187,7 +188,7 @@ export class CnGridSelectGridMultipleComponent extends CnComponentBase implement
     const labelName = this.config.labelName ? this.config.labelName : 'name';
     const valueName = this.config['valueName'] ? this.config['valueName'] : 'Id';
     if (name) {
-     //  const backValue = { name: this.config.name, value: name };
+      //  const backValue = { name: this.config.name, value: name };
       this.value.data = name;
       // 将当前下拉列表查询的所有数据传递到bsnTable组件，bsnTable处理如何及联
       if (this.tags) {
@@ -221,7 +222,7 @@ export class CnGridSelectGridMultipleComponent extends CnComponentBase implement
       this.updateValue.emit(this.value);
     } else {
       this.value.data = null;
-      this.updateValue.emit( this.value);
+      this.updateValue.emit(this.value);
     }
   }
 

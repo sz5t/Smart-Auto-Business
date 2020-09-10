@@ -113,11 +113,16 @@ export class CnFormSelectGridMultipleComponent implements OnInit {
     } else {
       // this.selectedByLoaded();
     }
+
+    // this.table.createSearchRow();
   }
 
   public showModal(): void {
     this.isVisible = true;
     this.tags_mode = this.tags;
+    if (!this.table.is_Search) {
+      this.table.addSearchRow();
+    }    
     // this.table.value = this._value;
   }
 
