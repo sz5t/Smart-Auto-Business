@@ -51,7 +51,8 @@
             </ng-template>
         </tr> -->
         <ng-template ngFor let-data [ngForOf]="nzTable.data">
-            <ng-container *ngIf="data.row_status === 'search'">
+            {{data.row_status}}
+            <ng-container *ngIf="data.row_status === 'search'; else normalRow">
                 <tr>
                     <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked"
                         nzWidth="50px" (nzCheckedChange)="refChecked()">
@@ -102,7 +103,8 @@
                     </ng-template>
                 </tr>
             </ng-container>
-            <ng-container *ngIf="data.row_status != 'search'">
+            <ng-template #normalRow>
+                是否普通行
                 <tr (click)="selectRow(data, $event)"
                     [ngStyle]="data.selected ?  {'background-color': '#fff7ca'}: { } ">
                     <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked"
@@ -258,7 +260,7 @@
                     </ng-template>
                     <!-- <td></td> -->
                 </tr>
-            </ng-container>
+            </ng-template>
         </ng-template>
         <ng-template #title>
             {{config.title ? config.title : ''}}

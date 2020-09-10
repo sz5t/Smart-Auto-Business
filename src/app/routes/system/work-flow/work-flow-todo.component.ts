@@ -2495,7 +2495,7 @@ export class WorkFlowTodoComponent extends CnComponentBase implements OnInit {
                                                         isSelectGrid: true, // 【弹出表格时用】弹出表格值为true
                                                         selectGridValueName:
                                                             'Id', // 【弹出表格时用】指定绑定的value值
-                                                        '': [
+                                                        'pageSizeOptions': [
                                                             5,
                                                             10,
                                                             20,

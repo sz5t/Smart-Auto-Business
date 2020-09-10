@@ -69,7 +69,9 @@ export class CnGridInputComponent implements OnInit {
     }
     public onKeyPress(e?, type?) {
         if (e.code === 'Enter') {
-            this.assemblyValue();
+            // this.assemblyValue();
+            console.log(e.srcElement);
+            e.srcElement.blur();
         }
     }
 
