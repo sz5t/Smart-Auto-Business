@@ -116,6 +116,12 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
     this.tokenService.clear();
     this.cacheService.clear();
     this.menuService.clear();
+    const cacheList = this.cacheService.getMeta();
+    if (cacheList) {
+        cacheList.forEach(item => {
+            this.cacheService.remove(item);
+        });
+    }
     this.titleService.setTitle(this.titleService.default);
     // this.cacheService.set('AppName', 'SmartOne');
 

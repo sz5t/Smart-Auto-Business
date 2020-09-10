@@ -177,8 +177,6 @@ export class BsnEntryCardListComponent extends CnComponentBase
             this.templateList.forEach(eleRef => { 
                
                 if(eleRef.nativeElement.id === this.moduleName) {
-                    console.log(eleRef.nativeElement.id, this.moduleName);
-                    //eleRef.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
                     eleRef.nativeElement.scrollIntoView(true);
                 }
                 

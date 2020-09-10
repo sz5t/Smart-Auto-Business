@@ -43,23 +43,26 @@ export class ModuleEntryComponent implements OnInit, OnDestroy {
     public ngOnInit() {
         this.userInfo = this.cacheService.getNone('userInfo');
         this._route.params.subscribe(params => {
-            this._http.getLocalData(params.templateName).subscribe(data => {
-                this.config = data;
-                (async() => {
-                    const userId = this.userInfo['userId'];    
-                    const permission = await this._getOperationPermission(params.name, userId, 'button');
-                    if (permission.isSuccess) {
-                        this.permissions = permission.data;
-                        this._route.queryParams.subscribe(p => {
-                            this.initData = p;
-                            this.isLoadLayout = true;
-                        });
-                      
-                    } else {
-                        console.log('出现异常:未能获取权限信息');
-                    }
-                })();
-            });
+            if(params.templateName) {
+                this._http.getLocalData(params.templateName).subscribe(data => {
+                    this.config = data;
+                    (async() => {
+                        const userId = this.userInfo['userId'];    
+                        const permission = await this._getOperationPermission(params.name, userId, 'button');
+                        if (permission.isSuccess) {
+                            this.permissions = permission.data;
+                            this._route.queryParams.subscribe(p => {
+                                this.initData = p;
+                                this.isLoadLayout = true;
+                            });
+                          
+                        } else {
+                            console.log('出现异常:未能获取权限信息');
+                        }
+                    })();
+                });
+                
+            }
             if (params.pos) {
                 this.position = params.pos;
             }
