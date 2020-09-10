@@ -17,7 +17,7 @@ export class CnGridSelectGridComponent implements OnInit {
     @Input()
     public config;
     @Input()
-    value;
+    public value;
     @Input()
     public bsnData;
     @Input()
@@ -120,6 +120,9 @@ export class CnGridSelectGridComponent implements OnInit {
         // console.log('showModal', $event);
         this.isVisible = true;
         this.table.value = this._value;
+        if (!this.table.is_Search) {
+            this.table.addSearchRow();
+        }
     }
 
     public handleOk(): void {
@@ -127,13 +130,13 @@ export class CnGridSelectGridComponent implements OnInit {
         if (this.table._selectRow) {
             this._valuetext = this.table._selectRow[this.config.labelName];
             this._value = this.table._selectRow[this.config.valueName];
-        
+
         } else {
             this._valuetext = null;
             this._value = null;
-        
+
         }
-         this.valueChange(this._value);
+        this.valueChange(this._value);
         // this.valueChangeModel(value_new);
 
         this.isVisible = false;
@@ -231,7 +234,7 @@ export class CnGridSelectGridComponent implements OnInit {
                 const index = this.resultData.findIndex(
                     item => item[valueName] === name
                 );
-                if (this.resultData ) {
+                if (this.resultData) {
                     if (index >= 0) {
                         if (this.resultData[index][labelName]) {
                             this._valuetext = this.resultData[index][labelName];
