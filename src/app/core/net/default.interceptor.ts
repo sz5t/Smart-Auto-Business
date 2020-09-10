@@ -61,7 +61,7 @@ export class DefaultInterceptor implements HttpInterceptor {
                 // }
                 break;
             case 401: // 未登录状态码
-                this.goTo('/passport/login');
+                this.goTo(environment.login_url);
                 break;
             case 403:
             case 404:
@@ -71,7 +71,7 @@ export class DefaultInterceptor implements HttpInterceptor {
                     EvMsg.message === '请先登录或重新登录' ||
                     EvMsg.message === '闲置时间过长，请重新登录'
                 ) {
-                    this.goTo('/passport/login');
+                    this.goTo(environment.login_url);
                 } else {
                     // this.msg.error(`${EvMsg.message}`);
                 }

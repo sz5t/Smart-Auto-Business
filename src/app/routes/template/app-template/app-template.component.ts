@@ -39,25 +39,27 @@ export class AppTemplateComponent implements OnInit, OnDestroy {
     public ngOnInit() {
         this._route.params.subscribe(params => {
             this.position = params.pos;
-            this._http.getLocalData(params.name).subscribe(data => {
-                this.config = data;
-                (async() => {
-                    const userInfo = this._cacheService.getNone('userInfo');
-                    const userId = userInfo['userId'];    
-                    const permission = await this._getOperationPermission(params.name, userId, 'button');
-                    if (permission.isSuccess) {
-                        this.permissions = permission.data;
-                        this._route.queryParams.subscribe(p => {
-                            this.initData = p;
-                            this.isLoadLayout = true;
-                        });
-                        
-                    } else {
-                        console.log('出现异常:未能获取权限信息');
-                    }
-                })();
-                
-            });
+            if(params.name) {
+                this._http.getLocalData(params.name).subscribe(data => {
+                    this.config = data;
+                    (async() => {
+                        const userInfo = this._cacheService.getNone('userInfo');
+                        const userId = userInfo['userId'];    
+                        const permission = await this._getOperationPermission(params.name, userId, 'button');
+                        if (permission.isSuccess) {
+                            this.permissions = permission.data;
+                            this._route.queryParams.subscribe(p => {
+                                this.initData = p;
+                                this.isLoadLayout = true;
+                            });
+                            
+                        } else {
+                            console.log('出现异常:未能获取权限信息');
+                        }
+                    })();
+                    
+                });
+            }
         });
 
     }
