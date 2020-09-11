@@ -28,9 +28,9 @@ export const SystemResource_1 = {
       'url_192_168_1_111_8083': {
         localResourceUrl: '192.168.1.111:8083',
         /** 后台服务 */
-        settingSystemServer: '192.168.1.111:8081',
+        settingSystemServer: '192.168.1.111:8082',
         /** 后台服务 */
-        appSystemServer: '192.168.1.111:8081',
+        appSystemServer: '192.168.1.111:8082',
         /**报表  */
         reportServerUrl: '192.168.1.111:8088'
       },

@@ -1,4 +1,3 @@
-import { TreeNodeInterface } from 'app/routes/cn-test/list/list.component';
 import { ApiService } from './../../../core/utility/api-service';
 import {
   Component,
@@ -14,8 +13,7 @@ import {
   BSN_COMPONENT_CASCADE,
   BSN_COMPONENT_CASCADE_MODES,
   BSN_COMPONENT_MODES,
-  BSN_OPERATION_LOG_TYPE,
-  BSN_OPERATION_LOG_RESULT
+  BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 import { CommonTools } from '@core/utility/common-tools';
 import { CacheService } from '@delon/cache';
@@ -137,14 +135,12 @@ export class BsnNewTreeTableComponent extends TreeGridBase
     private _msg: NzMessageService,
     private _modal: NzModalService,
     private _cacheService: CacheService,
-    @Inject(BSN_COMPONENT_MODES)
+    @Inject(BSN_COMPONENT_MODE)
     private stateEvents: Observable<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE)
     private cascade: Observer<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE)
-    private cascadeEvents: Observable<BsnComponentMessage>,
-    private _router: ActivatedRoute
-  ) {
+    private cascadeEvents: Observable<BsnComponentMessage>  ) {
     super();
     this.baseMessage = this._msg;
     this.baseModal = this._modal;
@@ -209,7 +205,7 @@ export class BsnNewTreeTableComponent extends TreeGridBase
       }
     }
 
-    this.callback = focusId => {
+    this.callback = () => {
       // this._cancelSavedRow();
     };
 
@@ -1801,69 +1797,6 @@ export class BsnNewTreeTableComponent extends TreeGridBase
     }
   }
 
-  private showNewLayout(dialog, checkedIds) {
-    const footer = [];
-    this.apiResource.getLocalData(dialog.layoutName).subscribe(data => {
-      const temp = this.tempValue ? this.tempValue : {};
-      const iniValue = this.initValue ? this.initValue : {};
-      const showcheckedids = { 'checkedIds': checkedIds ? checkedIds : '' }
-      const modal = this.baseModal.create({
-        nzTitle: dialog.title,
-        nzWidth: dialog.width,
-        nzContent: LayoutResolverComponent,
-        nzClosable: dialog.closable ? dialog.closable : false,
-        nzComponentParams: {
-          config: data,
-          permissions: this.permission,
-          initData: { ...temp, ...this.selectedItem, ...iniValue, ...showcheckedids }
-        },
-        nzFooter: footer
-      });
-      // console.log('modal', modal.nzComponentParams);
-      if (dialog.buttons) {
-        dialog.buttons.forEach(btn => {
-          const button = {};
-          button['label'] = btn.text;
-          button['type'] = btn.type ? btn.type : 'default';
-          button['show'] = true;
-          button['onClick'] = componentInstance => {
-            if (btn['name'] === 'save') {
-              (async () => {
-                const result = await componentInstance.buttonAction(
-                  btn,
-                  () => {
-                    modal.close();
-                    // todo: 操作完成当前数据后需要定位
-                    this.windowCallback();
-                  }
-                );
-              })();
-            } else if (btn['name'] === 'saveAndKeep') {
-              (async () => {
-                const result = await componentInstance.buttonAction(
-                  btn,
-                  () => {
-                    // todo: 操作完成当前数据后需要定位
-                    this.windowCallback();
-                  }
-                );
-              })();
-            } else if (btn['name'] === 'close') {
-              modal.close();
-              this.windowCallback(true);
-            } else if (btn['name'] === 'ok') {
-              modal.close();
-              this.windowCallback();
-            } else if (btn['name'] === 'close_refresh_parent') {
-              modal.close();
-              this.operationCallback();
-            }
-          };
-          footer.push(button);
-        });
-      }
-    });
-  }
 
   /**
    * 导入数据
@@ -2461,7 +2394,7 @@ export class BsnNewTreeTableComponent extends TreeGridBase
    */
   public async searchLoad() {
     this.loading = true;
-    const response = await this._getSearchData(this.config.ajaxConfig);
+    const response = await this._getSearchData();
     let searchrow;
     for (const prop in this.mapOfDataExpanded) {
       if (this.mapOfDataExpanded[prop][0]['state'] === 'search') {
@@ -2525,7 +2458,7 @@ export class BsnNewTreeTableComponent extends TreeGridBase
   /**
    * name
    */
-  private async _getSearchData(ajaxConfig = null, nodeValue = null, isPaging = true) {
+  private async _getSearchData(isPaging = true) {
     let params = CommonTools.parametersResolver({
       params: null,
       tempValue: this.tempValue,

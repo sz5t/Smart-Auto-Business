@@ -6,7 +6,8 @@ import {Observer} from 'rxjs';
 import {Subscription} from 'rxjs';
 import {
     BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODES,
-    BsnComponentMessage
+    BsnComponentMessage,
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 import {CommonTools} from '@core/utility/common-tools';
 import {CnComponentBase} from '@shared/components/cn-component-base';
@@ -16,21 +17,21 @@ import {CnComponentBase} from '@shared/components/cn-component-base';
     templateUrl: './bsn-transfer.component.html'
 })
 export class BsnTransferComponent extends CnComponentBase implements OnInit, OnDestroy {
-    @Input() config;
-    @Input() initData;
-    dataList: any[] = [];
-    _statusSubscription: Subscription;
-    _cascadeSubscription: Subscription;
+    @Input() public config;
+    @Input() public initData;
+    public dataList: any[] = [];
+    public _statusSubscription: Subscription;
+    public _cascadeSubscription: Subscription;
     constructor(private _apiService: ApiService,
                 private _message: NzMessageService,
                 private modalService: NzModalService,
-                @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
+                @Inject(BSN_COMPONENT_MODE) private stateEvents: Observable<BsnComponentMessage>,
                 @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
                 @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>) {
         super();
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         if (this.initData) {
             this.initValue = this.initData;
         }
@@ -38,7 +39,7 @@ export class BsnTransferComponent extends CnComponentBase implements OnInit, OnD
         this.load();
     }
 
-    async load() {
+    public async load() {
         const url = this.config.ajaxConfig.url;
         const params = {
             ...this._buildParameters(this.config.ajaxConfig.params)
@@ -164,23 +165,23 @@ export class BsnTransferComponent extends CnComponentBase implements OnInit, OnD
         return newParam;
     }
 
-    filterOption(inputValue: string, item: any): boolean {
+    public filterOption(inputValue: string, item: any): boolean {
         return item.title.indexOf(inputValue) > -1;
     }
 
-    search(ret: {}) {
+    public search(ret: {}) {
 
     }
 
-    select(ret) {
+    public select(ret) {
 
     }
 
-    change(ret) {
+    public change(ret) {
         this[ret.from](ret.list);
     }
 
-    async right(list) {
+    public async right(list) {
         const result = [];
         const ajaxConfig = this.config.rightToLeft.ajaxConfig;
         if (ajaxConfig) {
@@ -213,7 +214,7 @@ export class BsnTransferComponent extends CnComponentBase implements OnInit, OnD
         }
     }
 
-    async left(list) {
+    public async left(list) {
         const result = [];
         const ajaxConfig = this.config.leftToRight.ajaxConfig;
         if (ajaxConfig) {
@@ -249,7 +250,7 @@ export class BsnTransferComponent extends CnComponentBase implements OnInit, OnD
         return this._apiService.put(url, params).toPromise();
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         if (this._statusSubscription) {
             this._statusSubscription.unsubscribe();
         }

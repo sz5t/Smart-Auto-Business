@@ -3,7 +3,7 @@ import { BeforeOperation } from './../../business/before-operation.base';
 import { LayoutResolverComponent } from './../layout-resolver/layout-resolver.component';
 import { CnFormWindowResolverComponent } from '@shared/resolver/form-resolver/form-window-resolver.component';
 import { BsnUploadComponent } from '@shared/business/bsn-upload/bsn-upload.component';
-import { BSN_COMPONENT_MODES, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
 import { CacheService } from '@delon/cache';
 import { environment } from '@env/environment';
 import { CommonTools } from './../../../core/utility/common-tools';
@@ -131,7 +131,7 @@ export class FormResolverComponent extends CnFormBase
         private modalService: NzModalService,
         private _messageService: RelativeService,
         private _router: ActivatedRoute,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,
@@ -638,7 +638,7 @@ export class FormResolverComponent extends CnFormBase
                 eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                 funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                 description: postConfig.description ? postConfig.description : ' [执行成功] ' + ` 数据为: ${JSON.stringify(params)}`
-            }).subscribe(result => {
+            }).subscribe(_result => {
 
             })
         } else {
@@ -649,7 +649,7 @@ export class FormResolverComponent extends CnFormBase
                 eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                 funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                 description: postConfig.description ? postConfig.description : ' [执行失败] ' + ` 数据为: ${JSON.stringify(params)}` + ' 错误消息：' + res.message
-            }).subscribe(result => {
+            }).subscribe(_result => {
 
             })
         }

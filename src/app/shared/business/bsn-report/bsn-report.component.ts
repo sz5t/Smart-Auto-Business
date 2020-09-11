@@ -1,21 +1,15 @@
-import { SystemModule } from './../../../routes/system/system.module';
 import { SystemResource, SystemResource_1 } from '@core/utility/system-resource';
-import { getService } from './../../../../testing/common.spec';
 import { ApiService } from './../../../core/utility/api-service';
-import { APIResource } from '@core/utility/api-resource';
-import { ElementRef, AfterViewInit, OnDestroy, Inject } from '@angular/core';
+import { AfterViewInit, OnDestroy, Inject } from '@angular/core';
 import {
     Component,
     OnInit,
-    Input,
-    ViewChild
-} from '@angular/core';
-import { DataService } from 'app/model/app-data.service';
+    Input} from '@angular/core';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
 import { Subscription, Observable, Observer } from 'rxjs';
 import { CacheService } from '@delon/cache';
-import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
+import { BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
 
 declare var rubylong: any;
 
@@ -34,24 +28,14 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
 
     public reportURL;
 
-    // @ViewChild('report')
-    // private reportView: ElementRef;
-    private reportObject;
 
-    private _lines = ['Computers', 'Washers', 'Stoves'];
-    private _colors = ['Red', 'Green', 'Blue', 'White'];
-    private _ratings = ['Terrible', 'Bad', 'Average', 'Good', 'Great', 'Epic'];
 
     private _statusSubscription: Subscription;
     private _cascadeSubscription: Subscription;
 
     constructor(
-        private _api: ApiService,
+        _api: ApiService,
         private _cacheService: CacheService,
-        @Inject(BSN_COMPONENT_MODES)
-        private stateEvents: Observable<BsnComponentMessage>,
-        @Inject(BSN_COMPONENT_CASCADE)
-        private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascadeEvents: Observable<BsnComponentMessage>
     ) {
@@ -79,7 +63,6 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
         const inline = this.config.inline;
         const report = this.config.reportName;
         const type = this.config.type ? this.config.type : 'pdf';
-        const token = d_params['token'];
 
         for (const d in d_params ) {
             if (d_params.hasOwnProperty(d)) {
@@ -195,14 +178,6 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
         }
     }
 
-    private async getReportTemplate() {
-        if (this.config.reportName && this.config.reportName.length > 0) {
-            return this.apiResource.getLocalReportTemplate(this.config.reportName).toPromise();
-        } else {
-            console.log('未配置报表模版!');
-        }
-
-    }
 
 
     private async getReportData() {
@@ -243,8 +218,5 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
     }
 
 
-    private async buildTableReport() {
-
-    }
 
 }

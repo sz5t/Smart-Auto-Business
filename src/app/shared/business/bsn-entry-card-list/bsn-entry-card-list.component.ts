@@ -18,7 +18,8 @@ import {
     BSN_COMPONENT_CASCADE_MODES,
     BSN_FORM_STATUS,
     BSN_EXECUTE_ACTION,
-    BSN_OUTPOUT_PARAMETER_TYPE
+    BSN_OUTPOUT_PARAMETER_TYPE,
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 import { Observable, Observer } from 'rxjs';
 import { CnComponentBase } from '@shared/components/cn-component-base';
@@ -68,7 +69,7 @@ export class BsnEntryCardListComponent extends CnComponentBase
         private _cacheService: CacheService,
         private _message: NzMessageService,
         private _modal: NzModalService,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,

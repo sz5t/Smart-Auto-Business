@@ -163,7 +163,7 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
             const token: ITokenModel = { token: user.data.token };
             that.tokenService.set(token); // 后续projectId需要进行动态获取
             // let url = user.data.modules[0].link;
-            let url = '/ts/entry';
+            const url = '/ts/entry';
             that.ws.close();
             that.ws = null;
             that.router.navigate([`${url}`]);
@@ -288,9 +288,9 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
 
   public takePhoto() {
     // 获得Canvas对象
-    let video = <HTMLVideoElement>document.getElementById('video');
-    let canvas = <HTMLCanvasElement>document.getElementById('canvas');
-    let ctx = canvas.getContext('2d');
+    const video = <HTMLVideoElement>document.getElementById('video');
+    const canvas = <HTMLCanvasElement>document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
     ctx.drawImage(video, 0, 0, 500, 500);
     const dataUrl = canvas.toDataURL('image/jpeg', 0.6)
     // console.log(dataUrl);
@@ -484,17 +484,17 @@ export class CustomerLoginComponent implements OnInit, AfterViewInit, OnDestroy 
         takeFourNumbers.subscribe(
           x => {
         
-            this.showError("您的密码已过期"+(3-x)+"秒后跳转至修改密码页面");
+            this.showError('您的密码已过期' + (3 - x) + '秒后跳转至修改密码页面');
           },
           error => {},
           () => {
-            let newurl = '/passport/edit-password';
+            const newurl = '/passport/edit-password';
             this.router.navigate([`${newurl}`]);
          });        
              
         // console.log('PwdExpired',userLogin,user.data);
         return true;
-      } else{
+      } else {
         this.showError(user.message);
       }
     }

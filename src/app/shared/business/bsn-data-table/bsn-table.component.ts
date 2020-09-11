@@ -1,14 +1,13 @@
 import { BsnImportExcelComponent } from './../bsn-import-excel/bsn-import-excel.component';
 import { getISOYear, getMonth,  getDate} from 'date-fns';
-import { BSN_OPERATION_LOG_TYPE, BSN_DB_INSTANCE, BSN_OPERATION_LOG_RESULT } from './../../../core/relative-Service/BsnTableStatus';
+import { BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT, BSN_COMPONENT_MODE } from './../../../core/relative-Service/BsnTableStatus';
 import { CacheService } from '@delon/cache';
 import { Observable } from 'rxjs';
+import {BSN_COMPONENT_MODES} from '@core/relative-Service/BsnTableStatus';
 import {
-    BSN_COMPONENT_MODES,
     BSN_COMPONENT_CASCADE_MODES,
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
-    BSN_PARAMETER_TYPE,
     BSN_EXECUTE_ACTION,
     BSN_OUTPOUT_PARAMETER_TYPE
 } from '@core/relative-Service/BsnTableStatus';
@@ -36,7 +35,6 @@ import { Subscription } from 'rxjs';
 import { BsnUploadComponent } from '@shared/business/bsn-upload/bsn-upload.component';
 import { CnFormWindowResolverComponent } from '@shared/resolver/form-resolver/form-window-resolver.component';
 import { BeforeOperation } from '../before-operation.base';
-import { createEmitAndSemanticDiagnosticsBuilderProgram } from 'typescript';
 import { ActivatedRoute } from '@angular/router';
 import { XlsxService } from '@delon/abc';
 import * as FileSaver from 'file-saver';
@@ -143,22 +141,22 @@ export class BsnTableComponent extends CnComponentBase
     public checkedWidth = '10px';
     // 前置条件集合
     public beforeOperation;
-    private _currentModuleName;
+    public tableColumns = [];
+
+    public staticTableSummary = {};
     constructor(
         private _http: ApiService,
         private _message: NzMessageService,
         private modalService: NzModalService,
         private cacheService: CacheService,
         private _dropdownService: NzDropdownService,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascadeEvents: Observable<BsnComponentMessage>,
-        private _router: ActivatedRoute,
-        private xlsx: XlsxService
-    ) {
+        private _router: ActivatedRoute    ) {
         super();
         this.apiResource = this._http;
         this.baseMessage = this._message;
@@ -316,7 +314,7 @@ export class BsnTableComponent extends CnComponentBase
                                     data.data.map(d => {
                                         const setObj = {};
                                         this.config.dataSet[i].fields.forEach(
-                                            (fieldItem, index) => {
+                                            (fieldItem) => {
                                                 if (d[fieldItem.field]) {
                                                     setObj[fieldItem.name] =
                                                         d[fieldItem.field];
@@ -438,7 +436,7 @@ export class BsnTableComponent extends CnComponentBase
                                 data.data.map(d => {
                                     const setObj = {};
                                     this.config.dataSet[i].fields.forEach(
-                                        (fieldItem, index) => {
+                                        (fieldItem) => {
                                             if (d[fieldItem.field]) {
                                                 setObj[fieldItem.name] =
                                                     d[fieldItem.field];
@@ -471,6 +469,25 @@ export class BsnTableComponent extends CnComponentBase
                 : this.pageSize;
 
         }
+
+        this._buildColumns(this.config.columns);
+    }
+
+    private _buildColumns(columns) {
+        if (Array.isArray(columns) && columns.length > 0) {
+            const colObjs = columns.filter(item => item.type === 'field');
+            if (colObjs && colObjs.length > 0) {
+                this.tableColumns.push(...colObjs);
+            }
+        }
+        // if (colIndex && colIndex.length > 0) {
+        //     this.tableColumns.push(...colIndex);
+        // }
+
+        
+        // if (actionCfgs && actionCfgs.length > 0) {
+        //     this.tableColumns.push(...actionCfgs);
+        // }
     }
 
     public ngAfterViewInit() {
@@ -548,7 +565,7 @@ export class BsnTableComponent extends CnComponentBase
                             ];
                             !this.beforeOperation.beforeItemsDataOperation(
                                 option
-                            ) && this.saveRow(option);
+                            ) && this.saveRow();
                             break;
                         case BSN_COMPONENT_MODES.DELETE:
                             this.beforeOperation.operationItemsData = this._getCheckedItems();
@@ -915,6 +932,15 @@ export class BsnTableComponent extends CnComponentBase
                                     }
                                 });
                             }
+
+                            // 汇总列数据
+                            for (const v in row) {
+                                if (row.hasOwnProperty(v)) {
+                                    const rItem = { id: row[this.config.keyId], name: v, value: row[v] };
+                                    this.columnSummary(rItem);
+                                }
+            
+                            }
                         });
                     } else {
                         this.dataList = [];
@@ -938,88 +964,6 @@ export class BsnTableComponent extends CnComponentBase
                     this.emptyLoad();
                 }
 
-
-
-                // if (method === 'proc') {
-
-
-                // } else {
-                //     if (loadData.data && loadData.data.rows) {
-                //         // 设置聚焦ID
-                //         // 默认第一行选中，如果操作后有focusId则聚焦ID为FocusId
-                //         let focusId;
-                //         if (loadData.data.focusedId) {
-                //             focusId = loadData.data.focusedId[0];
-                //         } else {
-                //             const slcId = this._selectRow['key'];
-                //             if (slcId) {
-                //                 if (loadData.data.rows.length > 0 &&
-                //                     loadData.data.rows.filter(s => s[this.config.keyId] === slcId).length > 0
-                //                 ) {
-                //                     focusId = slcId;
-                //                 } else {
-                //                     loadData.data.rows.length > 0 &&
-                //                         (focusId = loadData.data.rows[0].Id);
-                //                 }
-                //             } else {
-                //                 loadData.data.rows.length > 0 &&
-                //                     (focusId = loadData.data.rows[0].Id);
-                //             }
-
-                //         }
-                //         if (loadData.data.rows.length > 0) {
-                //             this.dataList = loadData.data.rows;
-                //             loadData.data.rows.forEach((row, index) => {
-                //                 row['key'] = row[this.config.keyId]
-                //                     ? row[this.config.keyId]
-                //                     : 'Id';
-                //                 if (this.is_Selectgrid) {
-                //                     if (row.Id === focusId) {
-                //                         this.selectRow(row);
-                //                     }
-                //                 }
-                //                 if (loadData.data.page === 1) {
-                //                     row['_serilize'] = index + 1;
-                //                 } else {
-                //                     row['_serilize'] =
-                //                         (loadData.data.page - 1) *
-                //                         loadData.data.pageSize +
-                //                         index +
-                //                         1;
-                //                 }
-
-                //                 if (this.config.checkedMapping) {
-                //                     this.config.checkedMapping.forEach(m => {
-                //                         if (
-                //                             row[m.name] &&
-                //                             row[m.name] === m.value
-                //                         ) {
-                //                             row['checked'] = true;
-                //                         }
-                //                     });
-                //                 }
-                //             });
-                //         } else {
-                //             this.dataList = [];
-                //             this._selectRow = {};
-                //         }
-
-                //         this._updateEditCacheByLoad(loadData.data.rows);
-                //         // this.dataList = loadData.data.rows;
-                //         this.total = loadData.data.total;
-                //         if (this.is_Search) {
-                //             this.createSearchRow();
-                //         }
-                //     } else {
-                //         this._updateEditCacheByLoad([]);
-                //         this.dataList = loadData.data;
-                //         this.total = 0;
-                //         if (this.is_Search) {
-                //             this.createSearchRow();
-                //         }
-                //     }
-                // }
-
             } else {
                 this._updateEditCacheByLoad([]);
                 this.dataList = [];
@@ -1037,16 +981,138 @@ export class BsnTableComponent extends CnComponentBase
             // liu 20200728 行列合并
             if (this.config.mergeconfig) {
                 this._createMapd_new(this.config.mergeconfig, this.dataList);
-            }
-            else {
+            } else {
                 // console.log('查看当前结构', this.editCache);
             }
 
-
+            this.L_columnSummary();
             setTimeout(() => {
                 this.loading = false;
             });
         })();
+    }
+
+
+    public L_columnSummary() {
+        this.tableColumns.forEach(col => {
+            if (col.field && col.summary) {
+                switch (col.summary.type) {
+                    case 'sum':
+                        this.tempValue[col.summary.name] = this.colSum(col.field);
+                        this.staticTableSummary[col.summary.name] = this.tempValue[col.summary.name];
+                        break;
+                    case 'avg':
+                        this.tempValue[col.summary.name] = this.colAvg(col.field).toFixed(col.summary.fixed ? col.summary.fixed : 2);
+                        this.staticTableSummary[col.summary.name] = this.tempValue[col.summary.name];
+                        break;
+                    case 'max':
+                        this.tempValue[col.summary.name] = this.colMax(col.field);
+                        this.staticTableSummary[col.summary.name] = this.tempValue[col.summary.name];
+                        break;
+                    case 'min':
+                        this.tempValue[col.summary.name] = this.colMin(col.field);
+                        this.staticTableSummary[col.summary.name] = this.tempValue[col.summary.name];
+                        break;
+                }
+            }
+        });
+    }
+
+    public columnSummary(value) {
+        this.tableColumns.forEach(col => {
+            if (value.name === col.field && col.summary) {
+                switch (col.summary.type) {
+                    case 'sum':
+                        this.tempValue[col.summary.name] = this.colSum(value.name);
+                        this.staticTableSummary[col.summary.name] = this.tempValue[col.summary.name];
+                        break;
+                    case 'join':
+                        this.tempValue[col.summary.name] = this.colJoin(value.name);
+                        this.staticTableSummary[col.summary.name] = this.tempValue[col.summary.name];
+                        break;
+                    case 'avg':
+                        this.tempValue[col.summary.name] = this.colAvg(value.name).toFixed(col.summary.fixed ? col.summary.fixed : 2);
+                        this.staticTableSummary[col.summary.name] = this.tempValue[col.summary.name];
+                        break;
+                    case 'max':
+                        this.tempValue[col.summary.name] = this.colMax(value.name);
+                        this.staticTableSummary[col.summary.name] = this.tempValue[col.summary.name];
+                        break;
+                    case 'min':
+                        this.tempValue[col.summary.name] = this.colMin(value.name);
+                        this.staticTableSummary[col.summary.name] = this.tempValue[col.summary.name];
+                        break;
+                }
+            }
+        });
+    }
+
+    /**
+     * 计算列总和
+     * @param colName 
+     */
+    private colSum(colName) {
+        let sum = 0;
+        this.dataList.forEach(d => {
+            if (d['$state$'] !== 'delete')
+                if (d[colName]) {
+                    const val = d[colName];
+                    //  sum = sum + Number(val);
+                    sum = parseFloat((sum + Number(val)).toFixed(10));
+                }
+        })
+        return sum;
+    }
+
+    /**
+     * 拼接列数据
+     * @param colName 
+     */
+    private colJoin(colName) {
+        let sum = '';
+        let n = 0;
+        // tslint:disable-next-line:prefer-for-of
+        for (let i = 0; i < this.dataList.length; i++) {
+            if (this.dataList[i]['$state$'] !== 'delete')
+                if (this.dataList[i][colName]) {
+                    const val = this.dataList[i][colName];
+                    //  sum = sum + Number(val);
+                    sum = sum + val + ',';
+                    n++;
+                }
+        }
+        if (n > 0 && sum.length > 0) {
+            sum = sum.substring(0, sum.length - 1);
+        }
+        return sum;
+    }
+
+    /**
+     * 计算列平均值
+     * @param colName 
+     */
+    private colAvg(colName) {
+        let sum = 0;
+        if (this.dataList.length > 0) {
+            this.dataList.forEach(d => {
+                if (d[colName]) {
+                    const val = d[colName];
+                    sum = parseFloat((sum + Number(val)).toFixed(10));
+                }
+            });
+            return Number(parseFloat((sum / this.dataList.length).toFixed(10)));
+        } else {
+            sum = 0;
+            return sum;
+        }
+    }
+
+    private colMax(colName) {
+
+    }
+
+    private colMin(colName) {
+
     }
 
     // 根据配置按照时间间隔load数据
@@ -1148,7 +1214,7 @@ export class BsnTableComponent extends CnComponentBase
     }
 
     // 获取当前选中的值 liu 扩展部分，目前不实现，原因是会多请求数据（主要是对级联赋值的扩充）
-    public selectload(selectparams?: any[], selectvalue?) {
+    public selectload() {
         const url = this._buildURL(this.config.ajaxConfig.url);
         const params = {
             ...this._buildParameters(this.config.ajaxConfig.params)
@@ -1173,7 +1239,7 @@ export class BsnTableComponent extends CnComponentBase
         })();
     }
 
-    public async saveRow(option) {
+    public async saveRow() {
         const addRows = [];
         const updateRows = [];
         let isSuccess = false;
@@ -1263,7 +1329,7 @@ export class BsnTableComponent extends CnComponentBase
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                         description: `${desc} [执行成功] 数据为: ${JSON.stringify(rowsData)}`
-                    }).subscribe(result => { })
+                    }).subscribe(() => { })
                 } else {
                     this.baseMessage.create('error', response.message);
                     // 日志记录
@@ -1272,7 +1338,7 @@ export class BsnTableComponent extends CnComponentBase
                         eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                         funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                         description: `${desc} [执行失败] 数据为, ${response.message}`
-                    }).subscribe(result => { })
+                    }).subscribe(() => { })
                 }
             }
             if (isSuccess) {
@@ -1455,14 +1521,6 @@ export class BsnTableComponent extends CnComponentBase
         return isSuccess;
     }
 
-    // 获取行内编辑是行填充数据
-    private _getContent() {
-        this.rowContent['key'] = null;
-        this.config.columns.forEach(element => {
-            const colsname = element.field.toString();
-            this.rowContent[colsname] = '';
-        });
-    }
 
     public addRow() {
         const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
@@ -1491,6 +1549,7 @@ export class BsnTableComponent extends CnComponentBase
         // this.dataList.push(this.rowContent);
         this._updateEditCache();
         this._startEdit(fieldIdentity.toString());
+        this.editCache[fieldIdentity.toString()]['data'] = rowContentNew;
         return true;
     }
 
@@ -1598,7 +1657,7 @@ export class BsnTableComponent extends CnComponentBase
 
     public valueChange(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
-        this.editCache[data.key].data[data.name] = data.data;
+        this.editCache[data.key]['data'][data.name] = data.data;
         this.editCache[data.key].data[data.name] = JSON.parse(
             JSON.stringify(this.editCache[data.key].data[data.name])
         );
@@ -2012,7 +2071,6 @@ export class BsnTableComponent extends CnComponentBase
             nzTitle: '是否将选中的数据执行当前操作？',
             nzContent: '',
             nzOnOk: () => {
-                const newData = [];
                 const serverData = [];
                 this.dataList.forEach(item => {
                     // if (item.checked === true && item['row_status'] === 'adding') {
@@ -2111,7 +2169,7 @@ export class BsnTableComponent extends CnComponentBase
                 eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                 funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                 description: `${desc} [执行成功] ID为: ${ids.join(',')}`
-            }).subscribe(result => {
+            }).subscribe(() => {
 
             })
         } else {
@@ -2122,7 +2180,7 @@ export class BsnTableComponent extends CnComponentBase
                 eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                 funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                 description: `${desc} [执行失败] ID为: ${ids.join(',')}`
-            }).subscribe(result => {
+            }).subscribe(() => {
 
             });
         }
@@ -2163,15 +2221,6 @@ export class BsnTableComponent extends CnComponentBase
                     button['onClick'] = componentInstance => {
                         if (btn['name'] === 'save') {
                             (async () => {
-                                const result = await componentInstance.buttonAction(
-                                    btn,
-                                    () => {
-                                        modal.close();
-                                        // todo: 操作完成当前数据后需要定位
-                                        this.load();
-                                        this.sendCascadeMessage();
-                                    }
-                                );
                             })();
                         } else if (btn['name'] === 'saveAndKeep') {
                             (async () => {
@@ -2523,24 +2572,11 @@ export class BsnTableComponent extends CnComponentBase
     * 3、表类型的返回结果可以设置多个
     */
     public outputParametersResolver(c, response, ajaxConfig, callback = function () { }) {
-        const result = false;
         if (response.isSuccess && !Array.isArray(response.data)) {
             const msg =
                 c.outputParams[
                 c.outputParams.findIndex(
                     m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
-                )
-                ];
-            const value =
-                c.outputParams[
-                c.outputParams.findIndex(
-                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
-                )
-                ];
-            const table =
-                c.outputParams[
-                c.outputParams.findIndex(
-                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
                 )
                 ];
             const msgObj = msg
@@ -3028,10 +3064,10 @@ export class BsnTableComponent extends CnComponentBase
                 data.checked = value;
             }
         });
-        this.refChecked(value);
+        this.refChecked();
     }
 
-    public refChecked($event?) {
+    public refChecked() {
 
         this.checkedCount = this.dataList.filter(w => w.checked).length;
         this.allChecked = this.checkedCount === this.dataList.length;
@@ -3099,6 +3135,8 @@ export class BsnTableComponent extends CnComponentBase
         if (this.config.mergeconfig) {
             this._createMapd_new(this.config.mergeconfig, this.dataList);
         }
+
+        
     }
     /**
      * 退出编辑状态
@@ -3143,13 +3181,6 @@ export class BsnTableComponent extends CnComponentBase
 
 
         this.editCache[key].edit = false;
-    }
-    /**
-     * 删除编辑
-     */
-    private _deleteEdit(i: string): void {
-        const dataSet = this.dataList.filter(d => d.key !== i);
-        this.dataList = dataSet;
     }
     /**
      * 更新编辑状态的缓存数据
@@ -3360,14 +3391,6 @@ export class BsnTableComponent extends CnComponentBase
                     button['onClick'] = componentInstance => {
                         if (btn['name'] === 'batchSave') {
                             (async () => {
-                                const result = await componentInstance.buttonAction(
-                                    btn,
-                                    () => {
-                                        modal.close();
-                                        this.load();
-                                    },
-                                    dialog
-                                );
 
                             })();
                         } else if (btn['name'] === 'close') {
@@ -3413,7 +3436,7 @@ export class BsnTableComponent extends CnComponentBase
                     eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                     description: `${desc} [执行成功] 数据为: ${JSON.stringify(result['data'])}`
-                }).subscribe(result => { });
+                }).subscribe(() => { });
             } else {
                 this.baseMessage.error(rs.msg.join('<br/>'));
                 this.apiResource.addOperationLog({
@@ -3421,7 +3444,7 @@ export class BsnTableComponent extends CnComponentBase
                     eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                     description: `${desc} [操作失败] 数据为: ${rs.msg.join('<br/>')}`
-                }).subscribe(result => { });
+                }).subscribe(() => { });
             }
         } else {
             if (result.isSuccess) {
@@ -3434,7 +3457,7 @@ export class BsnTableComponent extends CnComponentBase
                     eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                     description: `${desc} [操作成功] 数据: ${JSON.stringify(result['data'])}`
-                }).subscribe(result => { });
+                }).subscribe(() => { });
             } else {
                 this.baseMessage.error(result.message);
                 this.apiResource.addOperationLog({
@@ -3442,7 +3465,7 @@ export class BsnTableComponent extends CnComponentBase
                     eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
                     funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
                     description: `${desc} [操作失败] 数据为: ${result.message}`
-                }).subscribe(result => { });
+                }).subscribe(() => { });
             }
         }
     }
@@ -3539,16 +3562,6 @@ export class BsnTableComponent extends CnComponentBase
             _id: this._selectRow[dialog.keyId],
             _parentId: this.tempValue['_parentId']
         };
-        const modal = this.baseModal.create({
-            nzTitle: dialog.title,
-            nzWidth: dialog.width,
-            nzContent: component['upload'],
-            nzComponentParams: {
-                config: dialog.ajaxConfig,
-                refObj: obj
-            },
-            nzFooter: footer
-        });
     }
     /**
      * 弹出对话框
@@ -3691,13 +3704,7 @@ export class BsnTableComponent extends CnComponentBase
         return this._http[mtd](url, params).toPromise();
     }
 
-    private async post(url, body) {
-        return this._http.post(url, body).toPromise();
-    }
 
-    private async put(url, body) {
-        return this._http.put(url, body).toPromise();
-    }
 
     private async delete(url, params) {
         return this._http.delete(url, params).toPromise();
@@ -3720,15 +3727,6 @@ export class BsnTableComponent extends CnComponentBase
         }
     }
 
-    private _hasProperty(obj, propertyName) {
-        let result = false;
-        for (const p in obj) {
-            if (obj.hasOwnProperty(p) && p === propertyName) {
-                result = true;
-            }
-        }
-        return result;
-    }
 
     /**
      *
@@ -4299,7 +4297,7 @@ export class BsnTableComponent extends CnComponentBase
         this.dropdown = this._dropdownService.create($event, template);
     }
 
-    public selectMenu(btn?, group?) {
+    public selectMenu() {
         this.showModal();
         this.dropdown.close();
     }
@@ -4338,7 +4336,7 @@ export class BsnTableComponent extends CnComponentBase
 
     // 拖动行
 
-    public f_ondragstart(e?, d?) {
+    public f_ondragstart(d?) {
         this.d_row = d;
     }
 
@@ -4373,7 +4371,7 @@ export class BsnTableComponent extends CnComponentBase
 
 
 
-    public f_ondragover(e?, d?) {
+    public f_ondragover(e?) {
         // 进入，就设置可以拖放进来（设置不执行默认：【默认的是不可以拖动进来】）
         if (this.is_drag)
             e.preventDefault();
@@ -4382,14 +4380,14 @@ export class BsnTableComponent extends CnComponentBase
     }
 
     // ondrag 事件在元素或者选取的文本被拖动时触发。
-    public f_drag(e?) {
+    public f_drag() {
 
     }
 
-    public onblur(e?, d?) {
+    public onblur() {
         this.is_drag = true;
     }
-    public onfocus(e?, d?) {
+    public onfocus() {
         this.is_drag = false;
     }
 
@@ -4484,16 +4482,6 @@ export class BsnTableComponent extends CnComponentBase
         });
         const data = [col.map(i => { if (i.hidden) { } else return i.title; })];
 
-        const url = this._buildURL(this.config.ajaxConfig.url);
-        const method = this.config.ajaxConfig.ajaxType;
-        const params = {
-            ...this._buildParameters(this.config.ajaxConfig.params),
-            ...this._buildFilter(this.config.ajaxConfig.filter),
-            ...this._buildSort(),
-            ...this._buildColumnFilter(),
-            ...this._buildFocusId(),
-            ...this._buildSearch()
-        };
 
 
         this.dataList.forEach(i =>
@@ -4535,7 +4523,6 @@ export class BsnTableComponent extends CnComponentBase
 
         // 生成group字段
 
-        const mergeData = {};
 
 
         listOfData.forEach(
@@ -4593,7 +4580,7 @@ export class BsnTableComponent extends CnComponentBase
 
 
                         let regularflag = true;
-                        if (item.caseValue && item.type === "condition") {
+                        if (item.caseValue && item.type === 'condition') {
                             const reg1 = new RegExp(item.caseValue.regular);
                             let regularData;
                             if (item.caseValue.type) {
@@ -4798,7 +4785,7 @@ export class BsnTableComponent extends CnComponentBase
                 c_eventConfig['onEvent'].forEach(eventConfig => {
                     // 无配置 的默认项
                     if (eventConfig.type === 'default') {
-                        this.ExecRowEvent(eventConfig.action, row);
+                        this.ExecRowEvent(eventConfig.action);
                     }
                 });
             }
@@ -4828,7 +4815,7 @@ export class BsnTableComponent extends CnComponentBase
                     c_eventConfig['onEvent'].forEach(eventConfig => {
                         // 无配置 的默认项
                         if (eventConfig.type === 'default') {
-                            this.ExecRowEvent(eventConfig.action, row);
+                            this.ExecRowEvent(eventConfig.action);
                         }
                     });
                 }
@@ -4848,7 +4835,7 @@ export class BsnTableComponent extends CnComponentBase
                     c_eventConfig['onEvent'].forEach(eventConfig => {
                         // 无配置 的默认项
                         if (eventConfig.type === 'default') {
-                            this.ExecRowEvent(eventConfig.action, row);
+                            this.ExecRowEvent(eventConfig.action);
                         }
                     });
                 }
@@ -4862,7 +4849,7 @@ export class BsnTableComponent extends CnComponentBase
     }
 
     //  执行行内事件【】,不展示的按钮事件，日后扩充
-    public ExecRowEvent(eventname?, row?) {
+    public ExecRowEvent(eventname?) {
         //  name
         // const option = updateState.option;
         let option = {};
@@ -4912,7 +4899,7 @@ export class BsnTableComponent extends CnComponentBase
                 ];
                 !this.beforeOperation.beforeItemsDataOperation(
                     option
-                ) && this.saveRow(option);
+                ) && this.saveRow();
                 break;
             case BSN_COMPONENT_MODES.DELETE:
                 this.beforeOperation.operationItemsData = this._getCheckedItems();
@@ -4972,7 +4959,6 @@ export class BsnTableComponent extends CnComponentBase
 
 
                 } else if (item.dropdown) {
-                    const dropdown = [];
                     item.dropdown.forEach(b => {
                         const down = {};
                         const { name, text, icon } = b;

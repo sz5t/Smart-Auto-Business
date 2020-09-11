@@ -1,6 +1,7 @@
 import {
     BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE,
-    BSN_EXECUTE_ACTION
+    BSN_EXECUTE_ACTION,
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 import {Component, OnInit, Input, OnDestroy, Inject, TemplateRef} from '@angular/core';
 import { _HttpClient } from '@delon/theme';
@@ -35,7 +36,7 @@ export class CnBsnTreeMenuComponent extends CnComponentBase implements OnInit, O
         private _message: NzMessageService,
         private _modalService: NzModalService,
         private _dropdownService: NzDropdownService,
-        @Inject(BSN_COMPONENT_MODES) private state: Observer<BsnComponentMessage>
+        @Inject(BSN_COMPONENT_MODE) private state: Observer<BsnComponentMessage>
     ) {
         super();
     }
@@ -67,6 +68,4 @@ export class CnBsnTreeMenuComponent extends CnComponentBase implements OnInit, O
         );
         this.dropdown.close();
     }
-
-
 }

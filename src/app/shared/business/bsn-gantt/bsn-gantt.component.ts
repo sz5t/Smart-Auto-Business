@@ -17,7 +17,7 @@ import 'anychart';
 import '../../../../assets/vender/anychart/zh-cn';
 import { Subscription, Observable, Observer } from 'rxjs';
 import { CacheService } from '@delon/cache';
-import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
 import { CommonTools } from '@core/utility/common-tools';
 declare var anychart: any;
 @Component({
@@ -44,7 +44,7 @@ export class BsnGanttComponent extends CnComponentBase implements OnInit, AfterV
     constructor(
         private _api: ApiService,
         private _cacheService: CacheService,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,

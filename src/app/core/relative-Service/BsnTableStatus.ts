@@ -1,45 +1,45 @@
 
 import { InjectionToken } from '@angular/core';
 
-export interface ComponentModes {
-    CREATE: string;
-    CREATE_CHILD: string;
-    EDIT: string;
-    DELETE: string;
-    DELETE_SELECTED: string;
-    DIALOG: string;
-    WINDOW: string;
-    SAVE: string;
-    CANCEL: string;
-    CANCEL_SELECTED: string;
-    FORM: string;
-    EXECUTE_SELECTED: string;
-    EXECUTE_CHECKED: string;
-    SEARCH: string;
-    UPLOAD: string;
-    REFRESH: string;
-    ADD_ROW_DATA: string;
-    FORM_BATCH: string;
-    EXPORT: string;
+export abstract class ComponentModes {
+    public CREATE: string;
+    public CREATE_CHILD: string;
+    public EDIT: string;
+    public DELETE: string;
+    public DELETE_SELECTED: string;
+    public DIALOG: string;
+    public WINDOW: string;
+    public SAVE: string;
+    public CANCEL: string;
+    public CANCEL_SELECTED: string;
+    public FORM: string;
+    public EXECUTE_SELECTED: string;
+    public EXECUTE_CHECKED: string;
+    public SEARCH: string;
+    public UPLOAD: string;
+    public REFRESH: string;
+    public ADD_ROW_DATA: string;
+    public FORM_BATCH: string;
+    public EXPORT: string;
     // tree
-    ADD_NODE: string;
-    EDIT_NODE: string;
-    DELETE_NODE: string;
-    SAVE_NODE: string;
-    EXECUTE: string;
+    public ADD_NODE: string;
+    public EDIT_NODE: string;
+    public DELETE_NODE: string;
+    public SAVE_NODE: string;
+    public EXECUTE: string;
 
     // form
-    FORM_ADD: string;
-    FORM_EDIT: string;
-    FORM_LOAD: string;
-    IMPORT_EXCEL: string;
-    SEND_ORDER: string;
-    PROCESS_SUBMIT: string;
+    public FORM_ADD: string;
+    public FORM_EDIT: string;
+    public FORM_LOAD: string;
+    public IMPORT_EXCEL: string;
+    public SEND_ORDER: string;
+    public PROCESS_SUBMIT: string;
 
     // tstable
-    AUTO_PLAY: string;
-    CALL_INTERFACE: string;
-    SHOW_VIDEO: string;
+    public AUTO_PLAY: string;
+    public CALL_INTERFACE: string;
+    public SHOW_VIDEO: string;
 
 }
 
@@ -183,14 +183,18 @@ export const BSN_COMPONENT_CASCADE_MODES = {
     
 };
 
+export const BSN_COMPONENT_MODE = new InjectionToken<string>(
+    'bsnComponentModes'
+);
+
 export const BSN_COMPONENT_CASCADE = new InjectionToken<string>(
     'bsnComponentCascade'
 );
 
 export class BsnComponentMessage {
     constructor(
-        public _mode: string,
-        public _viewId: string,
+        public _mode?: string,
+        public _viewId?: string,
         public option?: any
     ) { }
 }

@@ -25,7 +25,8 @@ import {
     BSN_COMPONENT_CASCADE,
     BSN_COMPONENT_CASCADE_MODES,
     BSN_COMPONENT_MODES,
-    BsnComponentMessage
+    BsnComponentMessage,
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 
 @Component({
@@ -65,12 +66,13 @@ export class SearchResolverComponent extends CnComponentBase
     public _statusSubscription: Subscription;
     public _cascadeSubscription: Subscription;
     public loading = false;
+    public cascadeList = {};
     constructor(
         private formBuilder: FormBuilder,
         private apiService: ApiService,
         private message: NzMessageService,
         private modalService: NzModalService,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,
@@ -593,8 +595,6 @@ export class SearchResolverComponent extends CnComponentBase
     }
 
     // endregion
-    public cascadeList = {};
-
     public caseLoad() {
         this.cascadeList = {};
         // region: 解析开始

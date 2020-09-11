@@ -39,19 +39,18 @@
             </th>
             <ng-template ngFor let-col [ngForOf]="config.columns">
                 <th *ngIf="!col.hidden && col.left" [ngStyle]="{'width': col.width, 'padding':'8px', 'border-right': '1px solid #e8e8e8', 'z-index':2}"
-                    [ngClass]="[col.titleAlign ? col.titleAlign : '']" nzLeft="col.left"> -->
-                    <!--  [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" (nzFilterChange)="columnFilter(col.editor.field, $event)" -->
-                    <!-- {{col.title}}
+                    [ngClass]="[col.titleAlign ? col.titleAlign : '']" nzLeft="col.left">
+                    [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" (nzFilterChange)="columnFilter(col.editor.field, $event)"
+                    {{col.title}}
                 </th>
                 <th *ngIf="!col.hidden && !col.left" [ngStyle]="{'width': col.width, 'padding':'8px', 'border-right': '1px solid #e8e8e8'}"
-                    [ngClass]="[col.titleAlign ? col.titleAlign : '']"> -->
-                    <!--  [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" (nzFilterChange)="columnFilter(col.editor.field, $event)" -->
-                    <!-- {{col.title}}
+                    [ngClass]="[col.titleAlign ? col.titleAlign : '']">
+                      [nzFilters]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null" (nzFilterChange)="columnFilter(col.editor.field, $event)"
+                     {{col.title}}
                 </th>
             </ng-template>
         </tr> -->
         <ng-template ngFor let-data [ngForOf]="nzTable.data">
-            {{data.row_status}}
             <ng-container *ngIf="data.row_status === 'search'; else normalRow">
                 <tr>
                     <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked"
@@ -104,7 +103,6 @@
                 </tr>
             </ng-container>
             <ng-template #normalRow>
-                是否普通行
                 <tr (click)="selectRow(data, $event)"
                     [ngStyle]="data.selected ?  {'background-color': '#fff7ca'}: { } ">
                     <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked"
@@ -262,13 +260,18 @@
                 </tr>
             </ng-template>
         </ng-template>
+        <tr *ngIf="config.enableColSummary">
+            <td></td>
+            <ng-template ngFor let-col [ngForOf]="config.columns">
+              <td *ngIf="col.type === 'field' && !col.hidden" nzAlign="right">
+                <span *ngIf="col.summary">{{col.summary.label}}
+                  {{tempValue[col.summary.name] ? tempValue[col.summary.name] : 0}}</span>
+              </td>
+            </ng-template>
+          </tr>
         <ng-template #title>
             {{config.title ? config.title : ''}}
-            <!-- <span style="float:right">已选择<strong class="text-primary"> {{checkedCount}}</strong> 项</span>&nbsp; -->
         </ng-template>
-        <!--<ng-template #footer>-->
-        <!--&nbsp;-->
-        <!--</ng-template> -->
         <ng-template #totals let-total>
             共 {{total}} 条
         </ng-template>

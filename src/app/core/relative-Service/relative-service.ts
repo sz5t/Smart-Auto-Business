@@ -8,15 +8,15 @@ import { RelationComponent } from '../../routes/data-v/relation/relation.compone
 export class RelativeService {
   private subject = new Subject<any>();
 
-  sendMessage(messageType: any, messageData: any) {
+  public sendMessage(messageType: any, messageData: any) {
     this.subject.next({ type: messageType, data: messageData });
   }
 
-  clearMessage() {
+  public clearMessage() {
     this.subject.unsubscribe();
   }
 
-  getMessage(): Observable<any> {
+  public getMessage(): Observable<any> {
     return this.subject.asObservable();
   }
 }
@@ -76,7 +76,7 @@ export class RelativeResolver {
    * 关系配置解析
    * 1、
    */
-  resolverRelation() {
+  public resolverRelation() {
     this._relations && this._relations.forEach(relation => {
       relation.relationSendContent && relation.relationSendContent.forEach(sendContent => {
         this.setMessage(sendContent);
@@ -122,7 +122,7 @@ export class RelativeResolver {
 
   }
 
-  setMessage(data) {
+  public setMessage(data) {
     if (data) {
       if (this._reference.selfEvent[data.name]) {
         this._reference.selfEvent[data.name].push(
@@ -136,7 +136,7 @@ export class RelativeResolver {
     }
   }
 
-  receiveMessage(data) {
+  public receiveMessage(data) {
     if (data) {
       switch (data.name) {
         case 'refreshAsChild':
@@ -179,7 +179,7 @@ export class RelativeResolver {
     // call event
   }
 
-  unsubscribe() {
+  public unsubscribe() {
     if (this._subscribeArr.length > 0) {
       this._subscribeArr.forEach(sub => {
         sub.unsubscribe();
@@ -195,7 +195,7 @@ export class RelativeResolver {
 @Injectable() 
 export class BsnTableRelativeMessageService {
   private subject = new Subject<BsnToolbarRelativeMessage> ();
-  sendMessage(msg: BsnToolbarRelativeMessage) {
+  public sendMessage(msg: BsnToolbarRelativeMessage) {
     this.subject.next(msg);
   }
   get messages(): Observable<BsnToolbarRelativeMessage> {
@@ -204,9 +204,9 @@ export class BsnTableRelativeMessageService {
 } 
 
 export class BsnToolbarRelativeMessage {
-  senderViewId: string;
-  action: string;
-  messageData: any[];
+  public senderViewId: string;
+  public action: string;
+  public messageData: any[];
 }
 
 // endregion

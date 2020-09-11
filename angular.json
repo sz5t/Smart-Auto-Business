@@ -64,11 +64,11 @@
                     "configurations": {
                         "production": {
                             "optimization": true,
-                            "outputHashing": "all",
+                            "outputHashing": "none",
                             "sourceMap": false,
-                            "extractCss": true,
+                            "extractCss": false,
                             "namedChunks": false,
-                            "aot": false,
+                            "aot": true,
                             "extractLicenses": true,
                             "vendorChunk": false,
                             "buildOptimizer": false,

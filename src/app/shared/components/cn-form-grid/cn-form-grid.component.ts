@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, Inject } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, Inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE } from '@core/relative-Service/BsnTableStatus';
 import { Observable, Observer } from 'rxjs';
 import { ApiService } from '@core/utility/api-service';
 import { BsnStaticTableComponent } from '@shared/business/bsn-data-table/bsn-static-table.component';
@@ -33,13 +33,7 @@ export class CnFormGridComponent implements OnInit {
   public _value = [];
   @ViewChild("table")
   public table: BsnStaticTableComponent;
-  constructor(@Inject(BSN_COMPONENT_MODES)
-  private stateEvents: Observable<BsnComponentMessage>,
-    @Inject(BSN_COMPONENT_CASCADE)
-    private cascade: Observer<BsnComponentMessage>,
-    @Inject(BSN_COMPONENT_CASCADE)
-    private cascadeEvents: Observable<BsnComponentMessage>,
-    private apiService: ApiService) { }
+  constructor() { }
 
   public ngOnInit() {
     // 1.看配置，以及参数的接受

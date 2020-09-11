@@ -69,7 +69,7 @@ export class BsnCardListComponent extends CnComponentBase
         private _cacheService: CacheService,
         private _message: NzMessageService,
         private _modal: NzModalService,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject('BSN_COMPONENT_MODES')
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,

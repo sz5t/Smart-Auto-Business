@@ -6,7 +6,8 @@ import {
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
     BSN_EXECUTE_ACTION,
-    BSN_OUTPOUT_PARAMETER_TYPE
+    BSN_OUTPOUT_PARAMETER_TYPE,
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 import {
     Component,
@@ -156,7 +157,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
         private _modal: NzModalService,
         private _dropdownService: NzDropdownService,
         private _router: ActivatedRoute,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private eventStatus: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,

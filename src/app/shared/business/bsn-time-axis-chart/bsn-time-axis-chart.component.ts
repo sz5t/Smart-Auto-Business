@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, 
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { CacheService } from '@delon/cache';
-import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_OUTPOUT_PARAMETER_TYPE, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_OUTPOUT_PARAMETER_TYPE, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
 import { Observable, Subscription } from 'rxjs';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
@@ -81,7 +81,7 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
     private _message: NzMessageService,
     private modalService: NzModalService,
     private cacheService: CacheService,
-    @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
+    @Inject(BSN_COMPONENT_MODE) private stateEvents: Observable<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
   ) {
     super();
@@ -180,8 +180,8 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
     if (this.config.showChartName) {
       this.chartName = await this.loadData(this.config.showChartName);
       this.chartName = this.chartName[0][this.config.chartNameField];
-      let el = this.chartNameElement.nativeElement;
-      let ipt = el.querySelector('input');
+      const el = this.chartNameElement.nativeElement;
+      const ipt = el.querySelector('input');
       ipt.hidden = false;
       ipt.value = this.chartName;
       ipt.style.textAlign = 'center';
@@ -591,7 +591,7 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
       let maxObj = null;
       let minObj = null;
       // const length = this.dataList.length > this.datalength ? this.datalength : this.dataList.length
-      const data = this.dataList.filter(e => this.transStringTime(e[this.x]) >= start && this.transStringTime(e[this.x]) <= end);
+      const data = this.dataList.filter(_e => this.transStringTime(_e[this.x]) >= start && this.transStringTime(_e[this.x]) <= end);
       for (let i = 0; i < data.length; i++) {
         const d = data[i];
         if (d[e] && d[e] >= maxValue) {
@@ -642,7 +642,7 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
       let maxValue = 0;
       let maxObj = null;
       for (let i = 0; i < this.showdata.length; i++) {
-        let d = this.showdata[i];
+        const d = this.showdata[i];
         if (d[element] >= maxValue) {
           maxValue = d[element];
           maxObj = d;
@@ -657,7 +657,7 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
       let minValue = 50000;
       let minObj = null;
       for (let i = 0; i < this.showdata.length; i++) {
-        let d = this.showdata[i];
+        const d = this.showdata[i];
         if (d[element] && d[element] <= minValue) {
           minValue = d[element];
           minObj = d;
@@ -1394,7 +1394,7 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
           eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
           funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
           description: `${desc} [执行成功] 数据为: ${JSON.stringify(result['data'])}`
-        }).subscribe(result => { });
+        }).subscribe(_result => { });
       } else {
         this.baseMessage.error(rs.msg.join('<br/>'));
         this.apiResource.addOperationLog({
@@ -1402,7 +1402,7 @@ export class BsnTimeAxisChartComponent extends CnComponentBase implements OnInit
           eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
           funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
           description: `${desc} [操作失败] 数据为: ${rs.msg.join('<br/>')}`
-        }).subscribe(result => { });
+        }).subscribe(_result => { });
       }
     } else {
       if (result.isSuccess) {

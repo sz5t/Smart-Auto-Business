@@ -4,13 +4,11 @@ import {
     OnInit,
     Input,
     OnDestroy,
-    Type,
     Inject
 } from '@angular/core';
-import { instantiateDefaultStyleNormalizer } from '@angular/platform-browser/animations/src/providers';
-import { Subscription, Observable, Observer } from 'rxjs';
-import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_CASCADE } from '@core/relative-Service/BsnTableStatus';
-import { NzTabComponent, NzTabChangeEvent } from 'ng-zorro-antd';
+import { Observable, Observer } from 'rxjs';
+import { BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_CASCADE, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
+import { NzTabChangeEvent } from 'ng-zorro-antd';
 import { CommonTools } from '@core/utility/common-tools';
 @Component({
     // tslint:disable-next-line:component-selector
@@ -31,10 +29,6 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
     public _currentIndex;
     public handleIndexs;
     constructor(
-        @Inject(BSN_COMPONENT_MODES)
-        private stateEvents: Observable<BsnComponentMessage>,
-        @Inject(BSN_COMPONENT_CASCADE)
-        private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascadeEvents: Observable<BsnComponentMessage>
     ) {
@@ -71,7 +65,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
 
     }
 
-    public tabActive(tab) {
+    public tabActive() {
         // setTimeout(() => {
         //     tab['active'] = true;
         // });

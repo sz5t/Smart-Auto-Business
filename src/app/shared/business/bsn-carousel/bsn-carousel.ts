@@ -4,25 +4,19 @@ import {
     Component,
     OnInit,
     ViewChild,
-    ElementRef,
     AfterViewInit,
     Input,
     Inject,
     OnDestroy
 } from '@angular/core';
-import G6 from '@antv/g6';
 import { ApiService } from '@core/utility/api-service';
 import { CacheService } from '@delon/cache';
 import {
-    BSN_COMPONENT_MODES,
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
-    BSN_COMPONENT_CASCADE_MODES
-} from '@core/relative-Service/BsnTableStatus';
-import { Observable, Observer } from 'rxjs';
+    BSN_COMPONENT_CASCADE_MODES} from '@core/relative-Service/BsnTableStatus';
+import { Observable } from 'rxjs';
 import { CommonTools } from '@core/utility/common-tools';
-import { initDomAdapter } from '@angular/platform-browser/src/browser';
-import { AdNumberToChineseModule } from '@delon/abc';
 import { NzCarouselComponent } from 'ng-zorro-antd';
 @Component({
     // tslint:disable-next-line:component-selector
@@ -61,10 +55,6 @@ export class BsnCarouselComponent extends CnComponentBase
     constructor(
         private _apiService: ApiService,
         private _cacheService: CacheService,
-        @Inject(BSN_COMPONENT_MODES)
-        private stateEvents: Observable<BsnComponentMessage>,
-        @Inject(BSN_COMPONENT_CASCADE)
-        private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascadeEvents: Observable<BsnComponentMessage>
     ) {

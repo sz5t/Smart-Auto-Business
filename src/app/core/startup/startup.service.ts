@@ -101,7 +101,12 @@ export class StartupService {
                             currentSystem &&
                             currentSystem.name === 'app'
                         ) {
-                            this.menuService.add(menu);
+                            if (menu) {
+                                this.menuService.add(menu);
+                            } else {
+                                
+                            }
+                            
                         }
 
                         // 应用信息：包括站点名、描述、年份

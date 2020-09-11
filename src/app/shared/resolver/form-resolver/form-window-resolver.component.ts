@@ -1,5 +1,4 @@
 import { CnFormBase } from './form.base';
-import { GridBase } from './../../business/grid.base';
 import { CacheService } from '@delon/cache';
 import {
     Component,
@@ -12,22 +11,17 @@ import {
     OnDestroy,
     AfterViewInit
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import {
-    RelativeService,
-    RelativeResolver
-} from '@core/relative-Service/relative-service';
-import { CnComponentBase } from '@shared/components/cn-component-base';
-import { CommonTools } from '@core/utility/common-tools';
+    RelativeService} from '@core/relative-Service/relative-service';
 import {
-    BSN_COMPONENT_MODES,
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
     BSN_COMPONENT_CASCADE_MODES,
     BSN_FORM_STATUS,
-    BSN_OUTPOUT_PARAMETER_TYPE
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 import { Observable } from 'rxjs';
 import { Observer } from 'rxjs';
@@ -73,14 +67,8 @@ export class CnFormWindowResolverComponent extends CnFormBase
         private cacheService: CacheService,
         private message: NzMessageService,
         private modalService: NzModalService,
-        private _messageService: RelativeService,
-        @Inject(BSN_COMPONENT_MODES)
-        private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
-        private cascade: Observer<BsnComponentMessage>,
-        @Inject(BSN_COMPONENT_CASCADE)
-        private cascadeEvents: Observable<BsnComponentMessage>
-    ) {
+        private cascade: Observer<BsnComponentMessage>    ) {
         super();
         this.formBuilder = this.builder;
         this.baseMessage = this.message;
@@ -315,15 +303,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
         this.load();
     }
 
-    /**
-     * 重置表单
-     * @param comp
-     * @private
-     */
-    private _resetForm(comp: FormResolverComponent) {
-        this.formState = BSN_FORM_STATUS.CREATE;
-        comp.resetForm();
-    }
 
     // endregion
 
@@ -463,7 +442,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
         const sendCasade = data.name;
-        const receiveCasade = ' ';
 
         // 第二步，根据配置，和返回值，来构建应答数据集合
         // 第三步，
@@ -871,7 +849,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
         // { name: this.config.name, value: name }
 
         const sendCasade = data.name;
-        const receiveCasade = ' ';
         // 第二步，根据配置，和返回值，来构建应答数据集合
         // 第三步，
         if (this.cascadeList[sendCasade]) {

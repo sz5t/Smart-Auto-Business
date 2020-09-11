@@ -18,7 +18,8 @@ import {
     BSN_COMPONENT_CASCADE,
     BSN_COMPONENT_CASCADE_MODES,
     BSN_COMPONENT_MODES,
-    BsnComponentMessage
+    BsnComponentMessage,
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 import { IBlockExclusionDescriptor } from 'tslint/lib/rules/completed-docs/blockExclusion';
 import {CommonTools} from '@core/utility/common-tools';
@@ -45,7 +46,7 @@ export class LayoutResolverDirective implements OnInit, OnChanges, OnDestroy {
     constructor(
         private resolver: ComponentFactoryResolver,
         private container: ViewContainerRef,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,

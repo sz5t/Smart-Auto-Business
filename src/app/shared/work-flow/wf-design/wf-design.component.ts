@@ -3,11 +3,10 @@ import { ApiService } from '@core/utility/api-service';
 import { _HttpClient } from '@delon/theme';
 import Editor from '@antv/g6-editor';
 import { Subscription, Observable, Observer } from 'rxjs';
-import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
 import { CommonTools } from '@core/utility/common-tools';
 import { CacheService } from '@delon/cache';
 import { CnComponentBase } from '@shared/components/cn-component-base';
-import { ElementDef } from '@angular/core/src/view';
 import { NzMessageService } from 'ng-zorro-antd';
 @Component({
   selector: 'wf-design,[wf-design]',
@@ -156,11 +155,10 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
 
 
   // 构造函数
-  constructor(private http: _HttpClient,
-    private apiService: ApiService,
+  constructor(private apiService: ApiService,
     private _message: NzMessageService,
     private cacheService: CacheService,
-    @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
+    @Inject(BSN_COMPONENT_MODE) private stateEvents: Observable<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
   ) {
@@ -279,7 +277,7 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     graph.edge({
       shape: 'flow-polyline-round'
     });
-    graph.on('click', ev => {
+    graph.on('click', () => {
 
     });          // 任意点击事件
     graph.on('node:click', ev => {
@@ -523,10 +521,10 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
       // *******************************
 
     });     // 边点击事件
-    graph.on('group:click', ev => {
+    graph.on('group:click', () => {
 
     });    // 组点击事件
-    graph.on('anchor:click', ev => {
+    graph.on('anchor:click', () => {
    
     });   // 锚点点击事件
 
@@ -838,7 +836,6 @@ export class WfDesignComponent extends CnComponentBase implements OnInit {
     // 注册按钮状态触发接收器
     this._statusSubscription = this.stateEvents.subscribe(updateState => {
       if (updateState._viewId === this.config.viewId) {
-        const option = updateState.option;
         switch (updateState._mode) {
           case BSN_COMPONENT_MODES.REFRESH:
             this.load();

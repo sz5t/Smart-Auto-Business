@@ -24,7 +24,8 @@ import {
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
     BSN_COMPONENT_CASCADE_MODES,
-    BSN_EXECUTE_ACTION
+    BSN_EXECUTE_ACTION,
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 import { CacheService } from '@delon/cache';
 import { ActivatedRoute } from '@angular/router';
@@ -131,7 +132,7 @@ export class BsnAsyncTreeComponent extends GridBase
         private _modal: NzModalService,
         private _dropdownService: NzDropdownService,
         private _router: ActivatedRoute,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private eventStatus: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,
@@ -550,7 +551,7 @@ export class BsnAsyncTreeComponent extends GridBase
                                 const title_index = this.config.columns.findIndex(c => c.field === 'title');
                                 const key_index = this.config.columns.findIndex(c => c.field === 'key');
                                 const parent_index = this.config.columns.findIndex(c => c.field === 'parentId');
-                                let node = {};
+                                const node = {};
                                 node['title'] = d[this.config.columns[title_index]['valueName']] ? d[this.config.columns[title_index]['valueName']] : '';
                                 node['key'] = d[this.config.columns[key_index]['valueName']] ? d[this.config.columns[key_index]['valueName']] : '';
                                 node['parentId'] = d[this.config.columns[parent_index]['valueName']] ? d[this.config.columns[parent_index]['valueName']] : '';
@@ -590,7 +591,7 @@ export class BsnAsyncTreeComponent extends GridBase
                                 const title_index = this.config.columns.findIndex(c => c.field === 'title');
                                 const key_index = this.config.columns.findIndex(c => c.field === 'key');
                                 const parent_index = this.config.columns.findIndex(c => c.field === 'parentId');
-                                let node = {};
+                                const node = {};
                                 node['title'] = d[this.config.columns[title_index]['valueName']] ? d[this.config.columns[title_index]['valueName']] : '';
                                 node['key'] = d[this.config.columns[key_index]['valueName']] ? d[this.config.columns[key_index]['valueName']] : '';
                                 node['parentId'] = d[this.config.columns[parent_index]['valueName']] ? d[this.config.columns[parent_index]['valueName']] : '';

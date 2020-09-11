@@ -5,9 +5,9 @@ import {
     BSN_COMPONENT_CASCADE_MODES,
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
-    BSN_PARAMETER_TYPE,
     BSN_EXECUTE_ACTION,
-    BSN_OUTPOUT_PARAMETER_TYPE
+    BSN_OUTPOUT_PARAMETER_TYPE,
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 
 import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
@@ -65,6 +65,20 @@ const component: { [type: string]: Type<any> } = {
 })
 export class BsnStaticTableComponent extends CnComponentBase
     implements OnInit, OnDestroy {
+    constructor(
+        private _http: ApiService,
+        private _message: NzMessageService,
+        private modalService: NzModalService,
+        private cacheService: CacheService,
+        @Inject(BSN_COMPONENT_MODE)
+        private stateEvents: Observable<BsnComponentMessage>,
+        @Inject(BSN_COMPONENT_CASCADE)
+        private cascade: Observer<BsnComponentMessage>,
+        @Inject(BSN_COMPONENT_CASCADE)
+        private cascadeEvents: Observable<BsnComponentMessage>
+    ) {
+        super();
+    }
     @Input()
     public config; // dataTables 的配置参数
     @Input()
@@ -123,25 +137,17 @@ export class BsnStaticTableComponent extends CnComponentBase
     public changeConfig_new = {};
     // 级联
     public cascadeList = {};
-    constructor(
-        private _http: ApiService,
-        private _message: NzMessageService,
-        private modalService: NzModalService,
-        private cacheService: CacheService,
-        @Inject(BSN_COMPONENT_MODES)
-        private stateEvents: Observable<BsnComponentMessage>,
-        @Inject(BSN_COMPONENT_CASCADE)
-        private cascade: Observer<BsnComponentMessage>,
-        @Inject(BSN_COMPONENT_CASCADE)
-        private cascadeEvents: Observable<BsnComponentMessage>
-    ) {
-        super();
-    }
 
     public loadData = {
         rows: [],
         total: 0
     };
+
+    // load 分组
+    // 原始数据【olddata】 数据缓存【update】
+    // 注意 撤销、删除 对数据的影响
+
+    public staticdeleteROw = [];
     public async ngOnInit() {
         // console.log("ngOnInit");
 
@@ -217,7 +223,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                             data.data.map(d => {
                                 const setObj = {};
                                 this.config.dataSet[i].fields.forEach(
-                                    (fieldItem, index) => {
+                                    (fieldItem) => {
                                         if (d[fieldItem.field]) {
                                             setObj[fieldItem.name] =
                                                 d[fieldItem.field];
@@ -246,7 +252,7 @@ export class BsnStaticTableComponent extends CnComponentBase
         }
 
         let aloadData; 
-        if(this.config.ajaxConfig){
+        if (this.config.ajaxConfig) {
             const url = this._buildURL(this.config.ajaxConfig.url);
             const params = {
                 ...this._buildParameters(this.config.ajaxConfig.params),
@@ -332,7 +338,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                         this.cancelRow();
                         break;
                     case BSN_COMPONENT_MODES.SAVE:
-                        this.saveRow(option);
+                        this.saveRow();
                         break;
                     case BSN_COMPONENT_MODES.DELETE:
                         this.deleteRow(option);
@@ -398,10 +404,6 @@ export class BsnStaticTableComponent extends CnComponentBase
                                 relation.relationViewId === cascadeEvent._viewId
                             ) {
                                 // 获取当前设置的级联的模式
-                                const modeold =
-                                    BSN_COMPONENT_CASCADE_MODES[
-                                    relation.cascadeMode
-                                    ];
                                 const mode = cascadeEvent._mode;
 
                                 // 获取传递的消息数据
@@ -631,12 +633,6 @@ export class BsnStaticTableComponent extends CnComponentBase
         this._updateEditCacheByLoad(pagedata);
         this.dataList = pagedata;
     }
-
-    // load 分组
-    // 原始数据【olddata】 数据缓存【update】
-    // 注意 撤销、删除 对数据的影响
-
-    staticdeleteROw=[];
     public loadStatic(Staticdata?) {
         this.staticdeleteROw = this.loadData.rows.filter(item => item['row_status'] === 'deleting');
 
@@ -649,9 +645,9 @@ export class BsnStaticTableComponent extends CnComponentBase
             this.loadData.total = this.loadData.rows.length;
             this.total = this.loadData.total;
         }
-        this.loadData.rows.forEach(item=>{
+        this.loadData.rows.forEach(item => {
 
-            if(!item['row_status']){
+            if (!item['row_status']) {
                 item['row_status'] = 'updating';
             }
         });
@@ -887,7 +883,7 @@ export class BsnStaticTableComponent extends CnComponentBase
     // 行内所有的操作，均将数据反馈回form 表单
     public scanCodeValueChange() {
         // liu 【重点返回信息】
-        this.updateValue.emit([...this.loadData.rows,...this.staticdeleteROw]);
+        this.updateValue.emit([...this.loadData.rows, ...this.staticdeleteROw]);
         // console.log('saomafanhui',this.loadData.rows);
     }
 
@@ -949,7 +945,7 @@ export class BsnStaticTableComponent extends CnComponentBase
         });
     }
     // 获取当前选中的值 liu 扩展部分，目前不实现，原因是会多请求数据（主要是对级联赋值的扩充）
-    public selectload(selectparams?: any[], selectvalue?) {
+    public selectload() {
         const url = this._buildURL(this.config.ajaxConfig.url);
         const params = {
             ...this._buildParameters(this.config.ajaxConfig.params)
@@ -974,7 +970,7 @@ export class BsnStaticTableComponent extends CnComponentBase
         })();
     }
 
-    public async saveRow(option) {
+    public async saveRow() {
         const addRows = [];
         const updateRows = [];
         let isSuccess = false;
@@ -1204,14 +1200,6 @@ export class BsnStaticTableComponent extends CnComponentBase
         return isSuccess;
     }
 
-    // 获取行内编辑是行填充数据
-    private _getContent() {
-        this.rowContent['key'] = null;
-        this.config.columns.forEach(element => {
-            const colsname = element.field.toString();
-            this.rowContent[colsname] = '';
-        });
-    }
 
     public addRow() {
         const rowContentNew = JSON.parse(JSON.stringify(this.rowContent));
@@ -1785,7 +1773,6 @@ export class BsnStaticTableComponent extends CnComponentBase
             nzTitle: '是否将选中的数据执行当前操作？',
             nzContent: '',
             nzOnOk: () => {
-                const newData = [];
                 const serverData = [];
                 this.dataList.forEach(item => {
                     // if (item.checked === true && item['row_status'] === 'adding') {
@@ -1845,7 +1832,7 @@ export class BsnStaticTableComponent extends CnComponentBase
                             });
                             if (newData.length > 0) {
                                 newData.forEach(d => {
-                                    if(d['row_status'] && d['row_status'] !== 'adding') {
+                                    if (d['row_status'] && d['row_status'] !== 'adding') {
                                         d['row_status'] === 'deleting';
                                         this.staticdeleteROw.push(d);
                                     }
@@ -1876,7 +1863,7 @@ export class BsnStaticTableComponent extends CnComponentBase
         const params = {
             _ids: ids.join(',')
         };
-        if(!deleteConfig || !deleteConfig.url){
+        if (!deleteConfig || !deleteConfig.url) {
             this._message.create('success', '删除成功');
             isSuccess = true;
             return isSuccess;
@@ -2131,24 +2118,11 @@ export class BsnStaticTableComponent extends CnComponentBase
      * 3、表类型的返回结果可以设置多个
      */
     private _outputParametersResolver(c, response, ajaxConfig, callback) {
-        const result = false;
         if (response.isSuccess) {
             const msg =
                 c.outputParams[
                 c.outputParams.findIndex(
                     m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
-                )
-                ];
-            const value =
-                c.outputParams[
-                c.outputParams.findIndex(
-                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
-                )
-                ];
-            const table =
-                c.outputParams[
-                c.outputParams.findIndex(
-                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
                 )
                 ];
             const msgObj = response.data[msg.name]
@@ -2649,13 +2623,6 @@ export class BsnStaticTableComponent extends CnComponentBase
         this.editCache[key].edit = false;
     }
     /**
-     * 删除编辑
-     */
-    private _deleteEdit(i: string): void {
-        const dataSet = this.dataList.filter(d => d.key !== i);
-        this.dataList = dataSet;
-    }
-    /**
      * 更新编辑状态的缓存数据
      * @private
      */
@@ -3008,16 +2975,6 @@ export class BsnStaticTableComponent extends CnComponentBase
             _id: this._selectRow[dialog.keyId],
             _parentId: this.tempValue['_parentId']
         };
-        const modal = this.modalService.create({
-            nzTitle: dialog.title,
-            nzWidth: dialog.width,
-            nzContent: component['upload'],
-            nzComponentParams: {
-                config: dialog.ajaxConfig,
-                refObj: obj
-            },
-            nzFooter: footer
-        });
     }
     /**
      * 弹出对话框
@@ -3102,13 +3059,7 @@ export class BsnStaticTableComponent extends CnComponentBase
         return this._http.get(url, params).toPromise();
     }
 
-    private async post(url, body) {
-        return this._http.post(url, body).toPromise();
-    }
 
-    private async put(url, body) {
-        return this._http.put(url, body).toPromise();
-    }
 
     private async delete(url, params) {
         return this._http.delete(url, params).toPromise();
@@ -3127,15 +3078,6 @@ export class BsnStaticTableComponent extends CnComponentBase
         }
     }
 
-    private _hasProperty(obj, propertyName) {
-        let result = false;
-        for (const p in obj) {
-            if (obj.hasOwnProperty(p) && p === propertyName) {
-                result = true;
-            }
-        }
-        return result;
-    }
 
     /**
      *
@@ -3352,7 +3294,7 @@ export class BsnStaticTableComponent extends CnComponentBase
         const index = this.loadData.rows.findIndex(item => item['key'] === key);
         if (index !== -1) {
             const rowValue = this.loadData.rows[index];
-           if(rowValue['row_status'] && rowValue['row_status'] !== 'adding') {
+           if (rowValue['row_status'] && rowValue['row_status'] !== 'adding') {
             rowValue['row_status'] === 'deleting';
             this.staticdeleteROw.push(rowValue);
            }

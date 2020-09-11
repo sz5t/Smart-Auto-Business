@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Input, Inject,
 import G6 from '@antv/g6'
 import { ApiService } from '@core/utility/api-service'
 import { CacheService } from '@delon/cache'
-import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus'
+import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus'
 import { Observable, Observer } from 'rxjs'
 import { CommonTools } from '@core/utility/common-tools'
 import { NzDropdownService, NzDropdownContextComponent, NzMenuItemDirective } from 'ng-zorro-antd'
@@ -58,7 +58,7 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
         private _apiService: ApiService,
         private _cacheService: CacheService,
         private nzDropdownService: NzDropdownService,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,

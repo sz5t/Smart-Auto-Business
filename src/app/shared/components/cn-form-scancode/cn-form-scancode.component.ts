@@ -1,18 +1,10 @@
 import {
     Component,
     OnInit,
-    Inject,
     Input,
     Output,
     EventEmitter
 } from '@angular/core';
-import {
-    BSN_COMPONENT_MODES,
-    BsnComponentMessage,
-    BSN_COMPONENT_CASCADE,
-    BSN_COMPONENT_CASCADE_MODES
-} from '@core/relative-Service/BsnTableStatus';
-import { Observable, Observer } from 'rxjs';
 import { ApiService } from '@core/utility/api-service';
 import { FormGroup } from '@angular/forms';
 
@@ -42,19 +34,14 @@ export class CnFormScancodeComponent implements OnInit {
     public cascadeValue = {};
     public resultData;
     public _value;
+    public isScan = true;
+    public oldvalue = null;
     constructor(
-        @Inject(BSN_COMPONENT_MODES)
-        private stateEvents: Observable<BsnComponentMessage>,
-        @Inject(BSN_COMPONENT_CASCADE)
-        private cascade: Observer<BsnComponentMessage>,
-        @Inject(BSN_COMPONENT_CASCADE)
-        private cascadeEvents: Observable<BsnComponentMessage>,
         private apiService: ApiService
     ) { }
 
     public ngOnInit() { }
-    isScan = true;
-    oldvalue = null;
+    
     public async onKeyPress(e) {
         if (e.code === 'Enter') {
             this.isScan = false;

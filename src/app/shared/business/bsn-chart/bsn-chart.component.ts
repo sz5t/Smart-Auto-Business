@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, 
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService, NzDropdownService } from 'ng-zorro-antd';
 import { CacheService } from '@delon/cache';
-import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_OUTPOUT_PARAMETER_TYPE, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_OUTPOUT_PARAMETER_TYPE, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
 import { Observer, Observable, Subscription, config } from 'rxjs';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
@@ -68,7 +68,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     private cacheService: CacheService,
     private _dropdownService: NzDropdownService,
     private renderer: Renderer2,
-    @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
+    @Inject(BSN_COMPONENT_MODE) private stateEvents: Observable<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
   ) {
@@ -125,8 +125,8 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     if (this.config.showChartName) {
       this.chartName = await this.getChartName();
       this.chartName = this.chartName[0][this.config.chartNameField];
-      let el = this.chartNameElement.nativeElement;
-      let ipt = el.querySelector('input');
+      const el = this.chartNameElement.nativeElement;
+      const ipt = el.querySelector('input');
       ipt.hidden = false;
       ipt.value = this.chartName;
       ipt.style.textAlign = 'center';
@@ -1412,7 +1412,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       let maxValue = 0;
       let maxObj = null;
       for (let i = 0; i < this.showdata.length; i++) {
-        let d = this.showdata[i];
+        const d = this.showdata[i];
         if (d[this.config.groupName] === element && d[this.config.y.name] >= maxValue) {
           maxValue = d[this.config.y.name];
           maxObj = d;
@@ -1423,7 +1423,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       let maxValue = 0;
       let maxObj = null;
       for (let i = 0; i < this.showdata.length; i++) {
-        let d = this.showdata[i];
+        const d = this.showdata[i];
         if (d[this.config.y.name] >= maxValue) {
           maxValue = d[this.config.y.name];
           maxObj = d;
@@ -1438,7 +1438,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       let minValue = 50000;
       let minObj = null;
       for (let i = 0; i < this.showdata.length; i++) {
-        let d = this.showdata[i];
+        const d = this.showdata[i];
         if (d[this.config.groupName] === element && d[this.config.y.name] <= minValue) {
           minValue = d[this.config.y.name];
           minObj = d;
@@ -1449,7 +1449,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       let minValue = 50000;
       let minObj = null;
       for (let i = 0; i < this.showdata.length; i++) {
-        let d = this.showdata[i];
+        const d = this.showdata[i];
         if (d[this.config.y.name] <= minValue) {
           minValue = d[this.config.y.name];
           minObj = d;
@@ -2564,7 +2564,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
           eventResult: BSN_OPERATION_LOG_RESULT.SUCCESS,
           funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
           description: `${desc} [操作成功] 数据: ${JSON.stringify(result['data'])}`
-        }).subscribe(result => { });
+        }).subscribe(_result => { });
       } else {
         this.baseMessage.error(result.message);
         this.apiResource.addOperationLog({
@@ -2572,7 +2572,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
           eventResult: BSN_OPERATION_LOG_RESULT.ERROR,
           funcId: this.tempValue['moduleName'] ? this.tempValue['moduleName'] : '',
           description: `${desc} [操作失败] 数据为: ${result.message}`
-        }).subscribe(result => { });
+        }).subscribe(_result => { });
       }
     }
   }
@@ -2613,7 +2613,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       follow: false,
       crosshairs: 'y',
       htmlContent: function htmlContent(title, items) {
-        let alias = {};
+        const alias = {};
         if (that.config.itemName) {
           for (let i = 0; i < that.config.itemName.length; i++) {
             alias[that.config.itemName[i]] = that.config.itemName[i];

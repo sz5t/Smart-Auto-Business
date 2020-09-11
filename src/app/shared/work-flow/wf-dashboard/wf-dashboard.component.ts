@@ -3,7 +3,7 @@ import { ApiService } from '@core/utility/api-service';
 import { _HttpClient } from '@delon/theme';
 import Editor from '@antv/g6-editor';
 import { Subscription, Observable, Observer } from 'rxjs';
-import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
 import { CommonTools } from '@core/utility/common-tools';
 import { CacheService } from '@delon/cache';
 import { CnComponentBase } from '@shared/components/cn-component-base';
@@ -161,7 +161,7 @@ export class WfDashboardComponent extends CnComponentBase implements OnInit {
     private apiService: ApiService,
     private _message: NzMessageService,
     private cacheService: CacheService,
-    @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
+    @Inject(BSN_COMPONENT_MODE) private stateEvents: Observable<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
   ) {

@@ -1,9 +1,8 @@
 import { CacheService } from '@delon/cache';
 import { ApiService } from '@core/utility/api-service';
 import { Component, OnInit, OnDestroy, Input, Inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
-import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
+import { BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
 import { Observable, Observer, Subscription } from 'rxjs';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
@@ -30,14 +29,10 @@ export class BsnDynamicLoadComponent extends CnComponentBase
     private _msg: NzMessageService,
     private _modal: NzModalService,
     private _cacheService: CacheService,
-    @Inject(BSN_COMPONENT_MODES)
-    private stateEvents: Observable<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE)
     private cascade: Observer<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE)
-    private cascadeEvents: Observable<BsnComponentMessage>,
-    private _route: ActivatedRoute
-  ) {
+    private cascadeEvents: Observable<BsnComponentMessage>  ) {
     super();
     this.baseMessage = this._msg;
     this.baseModal = this._modal;
@@ -249,14 +244,14 @@ export class BsnDynamicLoadComponent extends CnComponentBase
    * loadAjaxParams 向切换之后的组件进行传值
    */
   public async loadAjaxParams() {
-    const ajaxParams = await this.getAjaxParams(this.config.paramsConfig)
+    const ajaxParams = await this.getAjaxParams()
     delete ajaxParams.data[0].Id;
     this.tempValue = { ...this.tempValue, ...ajaxParams.data[0] }
   }
 
 
 
-  public async getAjaxParams(config) {
+  public async getAjaxParams() {
     const params = CommonTools.parametersResolver({
       params: this.config.paramsConfig.params,
       tempValue: this.tempValue,

@@ -37,7 +37,8 @@ import {
 import {
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
-    BSN_COMPONENT_MODES
+    ComponentModes,
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 import { Subject } from 'rxjs';
 import { RouteReuseStrategy } from '@angular/router';
@@ -115,7 +116,7 @@ export function StartupServiceFactory(
             multi: true
         },
         {
-            provide: BSN_COMPONENT_MODES,
+            provide: BSN_COMPONENT_MODE,
             useValue: new Subject<BsnComponentMessage>()
         },
         {

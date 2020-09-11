@@ -15,7 +15,8 @@ import {
     BSN_COMPONENT_CASCADE_MODES,
     BSN_COMPONENT_MODES,
     BSN_OPERATION_LOG_TYPE,
-    BSN_OPERATION_LOG_RESULT
+    BSN_OPERATION_LOG_RESULT,
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 import { CommonTools } from '@core/utility/common-tools';
 import { CacheService } from '@delon/cache';
@@ -125,7 +126,7 @@ export class BsnAsyncTreeTableComponent extends TreeGridBase
         private modalService: NzModalService,
         private _dropdownService: NzDropdownService,
         private _cacheService: CacheService,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,
