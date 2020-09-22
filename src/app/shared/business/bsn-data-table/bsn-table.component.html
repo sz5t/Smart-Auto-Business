@@ -263,7 +263,7 @@
         <tr *ngIf="config.enableColSummary">
             <td></td>
             <ng-template ngFor let-col [ngForOf]="config.columns">
-              <td *ngIf="col.type === 'field' && !col.hidden" nzAlign="right">
+              <td *ngIf="col.type !== 'action' && !col.hidden" nzAlign="right">
                 <span *ngIf="col.summary">{{col.summary.label}}
                   {{tempValue[col.summary.name] ? tempValue[col.summary.name] : 0}}</span>
               </td>
