@@ -59,7 +59,7 @@ export class FormResolverComponent extends CnFormBase
     @Input()
     public editable;
     @Output()
-    public submit: EventEmitter<any> = new EventEmitter<any>();
+    // public submit: EventEmitter<any> = new EventEmitter<any>();
     @Output() public returnItemValue = new EventEmitter();
     public _relativeResolver;
     public isSpinning = false;

@@ -3391,7 +3391,13 @@ export class BsnTableComponent extends CnComponentBase
                     button['onClick'] = componentInstance => {
                         if (btn['name'] === 'batchSave') {
                             (async () => {
-
+                                componentInstance.buttonAction(
+                                    btn,
+                                    () => {
+                                        modal.close();
+                                        this.load();
+                                    }, dialog
+                                );
                             })();
                         } else if (btn['name'] === 'close') {
                             modal.close();

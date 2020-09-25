@@ -118,8 +118,8 @@ export class BsnAsyncTreeComponent extends GridBase
     public selectedKeys = [];
     public _toTreeBefore = [];
     public activedNode: NzTreeNode;
-    public selectedItem: any;
-    public beforeOperation;
+    // public selectedItem: any;
+   // public beforeOperation;
     public _statusSubscription: Subscription;
     public _cascadeSubscription: Subscription;
     public isLoading = false;

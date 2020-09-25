@@ -34,7 +34,7 @@ const routes: Routes = [
         component: LayoutDefaultComponent, canActivate: [AuthGuard],
         children: [
             { path: '', redirectTo: environment.homePageName, pathMatch: 'full', canActivate: [AuthGuard] },
-            //{ path: 'dashboard', redirectTo: environment.homePageName, pathMatch: 'full', canActivate: [AuthGuard] },
+            // { path: 'dashboard', redirectTo: environment.homePageName, pathMatch: 'full', canActivate: [AuthGuard] },
            // { path: environment.homePageName, component: environment.homePageName === 'app/entry' ? DashboardV1Component : HomeComponent, data: { title: '综合信息页'}, canActivate: [AuthGuard] },
             // { path: '', redirectTo: 'dashboard/v1', pathMatch: 'full', canActivate: [AuthGuard] },
             // { path: 'dashboard', redirectTo: 'dashboard/v1', pathMatch: 'full', canActivate: [AuthGuard] },
@@ -90,7 +90,7 @@ const routes: Routes = [
             { path: 'login', component: CustomerLoginComponent, data: {path: '/dashboard/v1'}},
             { path: 'admin', component: UserLoginComponent},
             { path: 'app', component: CustomerLoginComponent, data: {path: '/app/entry'}},
-            //{ path: 'register', component: UserRegisterComponent },
+            // { path: 'register', component: UserRegisterComponent },
             // { path: 'register-result', component: UserRegisterResultComponent },
             { path: 'calogin', component: CALoginComponent},
             { path: 'edit-password', component: EditPasswordComponent}

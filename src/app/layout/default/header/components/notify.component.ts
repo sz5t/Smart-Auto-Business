@@ -20,16 +20,17 @@ import { parseJsonText } from 'typescript';
         [count]="count"
         [loading]="loading"
         (select)="select($event)"
-        (clear)="clear($event)"
+        
         (popoverVisibleChange)="loadData()"></notice-icon>
     `
+    // (clear)="clear($event)"
 })
 export class HeaderNotifyComponent {
 
   public data: NoticeItem[] = [
     // { title: '通知', list: [], emptyText: '你已查看所有通知', emptyImage: 'https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg', clearText: '清空通知' },
     // { title: '消息', list: [], emptyText: '您已读完所有消息', emptyImage: 'https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg', clearText: '清空消息' },
-    { title: '待办', list: [], emptyText: '你已完成所有待办', emptyImage: 'https://gw.alipayobjects.com/zos/rmsportal/HsIsxMZiWKrNUavQUXqx.svg', clearText: '清空待办' }
+    { title: '待办', list: [], emptyText: '你已完成所有待办', emptyImage: 'https://gw.alipayobjects.com/zos/rmsportal/HsIsxMZiWKrNUavQUXqx.svg' } // clearText: '清空待办'
   ];
   public count;
   public loading = false;
@@ -236,7 +237,7 @@ export class HeaderNotifyComponent {
 
   public select(res: any) {
     // this.msg.success(`点击了 ${res.title} 的 ${res.item.title}`);
-    this.router.navigate(['/template/dynamicTemplate/Todotasks']);
+    this.router.navigate(['/app/template/appTemplate/Todotasks/我的流程']);
   }
 
   /**

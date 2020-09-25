@@ -55,7 +55,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
     private cascadeList = {};
     // form: FormGroup;
     @Output()
-    public submit: EventEmitter<any> = new EventEmitter<any>();
+    // public submit: EventEmitter<any> = new EventEmitter<any>();
     public _relativeResolver;
     public isSpinning = false;
     public changeConfig = [];

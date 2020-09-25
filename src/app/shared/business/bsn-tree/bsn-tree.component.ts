@@ -148,7 +148,7 @@ export class CnBsnTreeComponent extends GridBase implements OnInit, OnDestroy {
     public is_Selectgrid = true;
     public isLoading = false;
     public searchValue;
-    public beforeOperation;
+    // public beforeOperation;
     @Output() public updateValue = new EventEmitter();
     constructor(
         private _http: ApiService,
