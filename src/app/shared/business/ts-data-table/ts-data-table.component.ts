@@ -155,7 +155,13 @@ export class TsDataTableComponent extends CnComponentBase
     };
 
     public async ngOnInit() {
-        this.showprocdata();
+        if(this.config.hasOwnProperty('loadingOnInit'))  {
+            if (this.config['loadingOnInit']){
+                this.showprocdata();
+            }
+        }else{
+            this.showprocdata();
+        }
     }
 
     public async showprocdata() {
@@ -427,10 +433,23 @@ export class TsDataTableComponent extends CnComponentBase
                     await this.load();
                     this.loadAutoPlay();
                 } else if (this.config.componentType.own === true) {
-                    this.load();
+                    if(this.config.hasOwnProperty('loadingOnInit'))  {
+                        if (this.config['loadingOnInit']){
+                            this.load();
+                        }
+                    }else{
+                        this.load();
+                    }
                 }
             } else {
-                this.load();
+                if(this.config.hasOwnProperty('loadingOnInit'))  {
+                    if (this.config['loadingOnInit']){
+                        this.load();
+                    }
+                }else{
+                    this.load();
+                }
+                
             }
             // 初始化级联
             this.caseLoad();

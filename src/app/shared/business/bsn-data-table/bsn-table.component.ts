@@ -204,7 +204,18 @@ export class BsnTableComponent extends CnComponentBase
             this.config.ajaxConfig.params = [...this.config.ajaxConfig.params, ...ajaxParams]
         }
 
-        this.showprocdata();
+        if (this.config.hasOwnProperty('showSearch')) {
+            if (this.config['showSearch']){
+               this.addSearchRow();
+            }
+        }
+        if(this.config.hasOwnProperty('loadingOnInit'))  {
+            if (this.config['loadingOnInit']){
+              this.showprocdata();
+            }
+        }else{
+            this.showprocdata();
+        }
     }
 
     public async showprocdata() {
@@ -494,12 +505,31 @@ export class BsnTableComponent extends CnComponentBase
         if (!this.config.ajaxproc) {
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
-                    this.load();
+                    if(this.config.hasOwnProperty('loadingOnInit'))  {
+                        if (this.config['loadingOnInit']){
+                            this.load();
+                        }
+                    }else{
+                        this.load();
+                    }
+
                 } else if (this.config.componentType.own === true) {
-                    this.load();
+                    if(this.config.hasOwnProperty('loadingOnInit'))  {
+                        if (this.config['loadingOnInit']){
+                            this.load();
+                        }
+                    }else{
+                        this.load();
+                    }
                 }
             } else {
-                this.load();
+                if(this.config.hasOwnProperty('loadingOnInit'))  {
+                    if (this.config['loadingOnInit']){
+                        this.load();
+                    }
+                }else{
+                    this.load();
+                }
             }
             if (this.config.autoLoad) {
                 this.autoLoadData();
