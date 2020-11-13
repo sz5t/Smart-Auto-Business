@@ -234,6 +234,50 @@ export class BsnDataStepComponent extends CnComponentBase implements OnInit, Aft
                     );
                 }
             }
+
+            if (this.tempValue['_selectedNode']) {
+                if (nodeData['Id'] === this.tempValue['_selectedNode']['Id']) {
+                    nodeData['color'] = this.tempValue['_selectedNode']['color']
+                    nodeData['style'] = this.tempValue['_selectedNode']['style']
+                    if (this.config.componentType && this.config.componentType.parent === true) {
+                        this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
+                            data: this.tempValue['_selectedNode']
+                        }));
+                    }
+                    if (this.config.componentType && this.config.componentType.sub === true) {
+                        this.tempValue['_selectedNode'] && this.cascade.next(
+                            new BsnComponentMessage(
+                                BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
+                                this.config.viewId,
+                                {
+                                    data: this.tempValue['_selectedNode'],
+                                    tempValue: this.tempValue,
+                                    subViewId: () => {
+                                        let id = '';
+                                        if (Array.isArray(this.config.subMapping) &&
+                                            this.config.subMapping.length > 0
+                                        ) {
+                                            this.config.subMapping.forEach(sub => {
+                                                const mappingVal = this.tempValue['_selectedNode'][sub['field']];
+                                                if (sub.mapping) {
+                                                    sub.mapping.forEach(m => {
+                                                        if (m.value === mappingVal) {
+                                                            id = m.subViewId;
+                                                        }
+                                                    }
+                                                    );
+                                                }
+                                            }
+                                            );
+                                        }
+                                        return id;
+                                    }
+                                }
+                            )
+                        );
+                    }
+                }
+            }
             // else {
             // if (i === 0) {
             //     nodeData['color'] = this.sNodeClickColor;

@@ -111,7 +111,7 @@ export class HeaderUserComponent implements OnInit, AfterViewInit {
     public logout() {
         this.modal.confirm({
             nzTitle: '确认要关闭本系统吗？',
-            nzContent: '关闭后将清空相关操作数据！',
+            nzContent: '', // '关闭后将清空相关操作数据！',
             nzOnOk: () => {
                 const pageList = this.cacheService.getMeta();
                 pageList.forEach(item => {

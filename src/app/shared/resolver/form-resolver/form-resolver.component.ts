@@ -2157,7 +2157,7 @@ export class FormResolverComponent extends CnFormBase
                 this.resolveAjaxConfig(
                     option.processAjaxConfig,
                     this.formState,
-                    (returnValue) => {
+                    (returnValue, dialog?) => {
                         this.load();
                         // this.sendCascadeMessage();
                     },
