@@ -1,17 +1,19 @@
-import { Component, HostBinding, OnInit, Inject } from '@angular/core';
+import { Component, HostBinding, OnInit, Inject, HostListener } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { SettingsService, TitleService, MenuService } from '@delon/theme';
-import { filter } from 'rxjs/operators';
+import { filter, windowWhen } from 'rxjs/operators';
 import { ApartmentOutline } from '@ant-design/icons-angular/icons';
 import { NzIconService } from 'ng-zorro-antd';
 import { CacheService } from '@delon/cache';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { environment } from '@env/environment';
 
 @Component({
     selector: 'app-root',
     template: `<router-outlet></router-outlet>`
 })
 export class AppComponent implements OnInit {
+    private dispose = false;
     @HostBinding('class.layout-fixed')
     get isFixed() {
         return this.settings.layout.fixed;
@@ -23,6 +25,35 @@ export class AppComponent implements OnInit {
     @HostBinding('class.aside-collapsed')
     get isCollapsed() {
         return this.settings.layout.collapsed;
+    }
+
+    /**
+     * 开发时请注释掉该方法
+     * @param $event 
+     */
+    @HostListener('window:beforeunload', ['$event'])
+    public onbeforeunload ($event) {
+        if (environment.unload_clear) {
+            $event.returnValue = '确定要离开么？';
+        }
+        
+        return $event.returnValue;
+    }
+
+    /**
+     * 开发时请注释掉该方法
+     * @param $event 
+     */
+    @HostListener('window:unload', ['$event'])
+    public onunload($event) {
+        if(environment.unload_clear) {
+            const pageList = this.cacheService.getMeta();
+            pageList.forEach(item => {
+                this.cacheService.remove(item);
+            });
+            this.tokenService.clear();
+        }
+        
     }
 
     constructor(

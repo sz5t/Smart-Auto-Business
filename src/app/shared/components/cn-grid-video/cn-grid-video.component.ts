@@ -2,6 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, Type } from '@angular/c
 import { NzModalService } from 'ng-zorro-antd';
 import { CnComponentBase } from '../cn-component-base';
 import { CnVideoPlayComponent } from '@shared/business/cn-video-play/cn-video-play.component';
+import { CommonTools } from '@core/utility/common-tools';
+import { ApiService } from '@core/utility/api-service';
 
 const component: { [type: string]: Type<any> } = {
   video: CnVideoPlayComponent
@@ -29,17 +31,47 @@ export class CnGridVideoComponent extends CnComponentBase implements OnInit {
   @Input()
   public initData;
 
+  public equipments: any[];
+  public btnTitle: string = '实时视频';
+
   @Output()
   public updateValue = new EventEmitter();
   public isUpload = true;
-  public btnTitle = '查看';
   private dialog: any;
-  private playType: string;
-  constructor(private modalService: NzModalService) {
+  private playType: string = 'play';
+
+  constructor(private modalService: NzModalService, private _http: ApiService) {
     super();
     this.baseModal = this.modalService;
   }
-  public ngOnInit() {
+
+  public async loadEquipments()
+  {
+    const params = CommonTools.parametersResolver({
+      params: this.config.ajaxConfig.params,
+      tempValue: this.tempValue,
+      initValue: this.initValue,
+      cacheValue: this.cacheValue
+    });
+    return this._http.get(this.config.ajaxConfig.url, params).toPromise();
+  }
+
+  private initComponent() {
+    if(!this.tempValue) {
+      this.tempValue = {};
+    }
+    if(this.initData) {
+      this.initValue = this.initData;
+    } else {
+      this.initValue = {};
+    }
+    if(this.rowData) {
+      this.initValue = {...this.initValue, ...this.rowData}
+    }
+  }
+
+  public async ngOnInit() {
+    this.initComponent();
     if (this.config.video) {
       this.dialog = this.config.video;
       if (this.dialog.videoMapping.mapping && this.dialog.videoMapping.mapping.length > 0) {
@@ -48,19 +80,30 @@ export class CnGridVideoComponent extends CnComponentBase implements OnInit {
           const matchValue = element.value;
           if (value === matchValue) {
              try {
-              this.btnTitle = element.title;
-              this.playType = element.type;
+              this.btnTitle = '回看';
+              this.playType = 'playback';
               throw new Error();
              } catch {
 
              }
+          } else {
+            try{
+              throw new Error();
+            } catch {}
           }
         });
+      }
+
+      const data = await this.loadEquipments();
+      if(data) {
+        if(data.data && data.status === 200 && data.isSuccess) {
+          this.equipments = data.data;
+        }
       }
     }
   }
 
-  public openVideoDialog() {
+  public openVideoDialog(eqmt: any) {
     if (!this.dialog) {
       return false;
     }
@@ -76,9 +119,9 @@ export class CnGridVideoComponent extends CnComponentBase implements OnInit {
     };
 
     const urlObj = {
-      token: '6170--33',
-      stream: 'sub',
-      session: 'c1782caf-b670-42d8-ba90-2244d0b0ee80',
+      token: eqmt.token,
+      stream: 'main',
+      session: eqmt.sessionid,
       playType: this.playType,
       url: this.config.video.url
     };

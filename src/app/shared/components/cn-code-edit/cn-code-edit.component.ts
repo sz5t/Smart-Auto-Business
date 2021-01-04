@@ -8,22 +8,24 @@ declare let CodeMirror: any;
   styleUrls: ['./cn-code-edit.component.css']
 })
 export class CnCodeEditComponent implements OnInit , AfterViewInit {
-    @ViewChild('CodeMirror') codeEditor: ElementRef;
-    @Input() config;
+    @ViewChild('CodeMirror') 
+    public codeEditor: ElementRef;
+    @Input() 
+    public config;
 
-    editor;
+    public editor;
     constructor(
         private http: _HttpClient
     ) { }
 
-    ngOnInit() {
+    public ngOnInit() {
       
     }
     /**
      * text/x-sql
      * text/x-markdown
      */
-    ngAfterViewInit () {
+    public ngAfterViewInit () {
         this.editor = CodeMirror.fromTextArea(this.codeEditor.nativeElement, {
           mode: this.config.type,
           highlightFormatting: true,
@@ -41,11 +43,11 @@ export class CnCodeEditComponent implements OnInit , AfterViewInit {
           }
         });
       }
-      getValue() {
+    public getValue() {
         return this.editor.getValue();
       }
 
-      setValue(data?) {
+    public setValue(data?) {
         this.editor.setValue(data);
       }
 

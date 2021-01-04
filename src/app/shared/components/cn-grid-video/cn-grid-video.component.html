@@ -1,4 +1,14 @@
-
-    <button  nz-button nzType="primary" (click)="openVideoDialog()">
-      <i nz-icon type="upload" theme="outline"></i>{{btnTitle}}
+<nz-dropdown>
+  <button nz-button nz-dropdown>
+    <strong>
+      <i nz-icon type="down" theme="outline"></i>{{btnTitle}}
+    </strong>
   </button>
+  <ul nz-menu>
+    <li nz-menu-item (click)="openVideoDialog(eqmt)" *ngFor="let eqmt of equipments">
+      <strong>
+        {{eqmt.name}}
+      </strong>
+    </li>
+  </ul>
+</nz-dropdown>
