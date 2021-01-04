@@ -3,7 +3,7 @@
 </ng-container>
   <ng-container *ngIf="!isShow">
      <ng-container *ngIf="!showAll">
-        <span nzTitle="showTitle"> {{showShortLable}}  </span><a (click)='openSapn()'>...</a>
+        <span nz-tooltip [nzTitle]="showTitle"> {{showShortLable}}  </span><a (click)='openSapn()'>...</a>
      </ng-container>
       <ng-container *ngIf="showAll">
         <span nzTitle="showTitle"> {{showLable}}  </span> <a (click)='closeSapn()'>收起</a>

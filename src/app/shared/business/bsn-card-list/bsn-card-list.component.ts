@@ -11,12 +11,11 @@ import {
 } from '@angular/core';
 import { ApiService } from '@core/utility/api-service';
 import { CacheService } from '@delon/cache';
+import {BSN_COMPONENT_MODE, BSN_COMPONENT_MODES} from '@core/relative-Service/BsnTableStatus';
 import {
-    BSN_COMPONENT_MODES,
+    BSN_COMPONENT_CASCADE_MODES,
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
-    BSN_COMPONENT_CASCADE_MODES,
-    BSN_FORM_STATUS,
     BSN_EXECUTE_ACTION,
     BSN_OUTPOUT_PARAMETER_TYPE
 } from '@core/relative-Service/BsnTableStatus';
@@ -69,7 +68,7 @@ export class BsnCardListComponent extends CnComponentBase
         private _cacheService: CacheService,
         private _message: NzMessageService,
         private _modal: NzModalService,
-        @Inject('BSN_COMPONENT_MODES')
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,

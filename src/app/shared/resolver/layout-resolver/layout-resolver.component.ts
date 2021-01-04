@@ -59,6 +59,9 @@ export class LayoutResolverComponent extends CnComponentBase implements OnInit {
 
     public ngOnInit() {
         // console.log('layout-resolver', this.initData);
+        if(this.config.hasOwnProperty('isCollapsed')){
+            this.isCollapsed = this.config['isCollapsed'];
+        }
         this.resolverRelation();
     }
 
