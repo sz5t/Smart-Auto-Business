@@ -1,15 +1,15 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, Inject, AfterViewInit, AfterContentInit, OnDestroy, Renderer2 } from '@angular/core';
-import { ApiService } from '@core/utility/api-service';
-import { NzMessageService, NzModalService, NzDropdownService } from 'ng-zorro-antd';
-import { CacheService } from '@delon/cache';
-import { BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_OUTPOUT_PARAMETER_TYPE, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT, BSN_COMPONENT_MODE, BSN_COMPONENT_MODES } from '@core/relative-Service/BsnTableStatus';
-import { Observer, Observable, Subscription, config } from 'rxjs';
-import { CnComponentBase } from '@shared/components/cn-component-base';
-import { CommonTools } from '@core/utility/common-tools';
-import { getISOYear, getMonth, getDate, getHours, getTime, getMinutes, getSeconds } from 'date-fns';
-import { async } from 'q';
-import { NONE_TYPE } from '@angular/compiler/src/output/output_ast';
-import { isArray } from 'util';
+import { Component, OnInit, AfterViewInit, AfterContentInit, OnDestroy, Input, Output, ViewChild, ElementRef, Renderer2, Inject } from "@angular/core";
+import { BSN_COMPONENT_MODE, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE_MODES, BSN_OUTPOUT_PARAMETER_TYPE, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT } from "@core/relative-Service/BsnTableStatus";
+import { ApiService } from "@core/utility/api-service";
+import { CommonTools } from "@core/utility/common-tools";
+import { CacheService } from "@delon/cache";
+import { CnComponentBase } from "@shared/components/cn-component-base";
+import { getISOYear, getMonth, getDate, getHours, getTime, getMinutes, getSeconds } from "date-fns";
+import { EventEmitter } from "events";
+import { NzMessageService, NzModalService, NzDropdownService } from "ng-zorro-antd";
+import { Subscription, Observable, Observer } from "rxjs";
+import { isArray } from "util";
+
 
 @Component({
   selector: 'bsn-chart',
@@ -52,6 +52,8 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   public y1andgroup = false; // 分组+双轴的标识
   public yTextMap: any = {}; // 柱状图文本映射
   public percent:any; // 饼状图展示百分比字段
+  public showField:any; // 饼状图默认拼接的字段
+  public textStyle:any = {} // 文本展示的配置
 
   // tempValue = {};
   @Output() public updateValue = new EventEmitter();
@@ -85,6 +87,8 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     this.resolverRelation();
     this.yTextMap = this.config.yTextMap ? this.config.yTextMap : {};
     this.percent = this.config.percentField ? this.config.percentField : 'percent'
+    this.showField = this.config.showField ? this.config.showField : ''
+    this.textStyle = this.config.textStyle ? this.config.textStyle : {}
   }
 
   public ngAfterViewInit() {
@@ -333,20 +337,38 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
         this.config.tooltipMini
       );
     }
-    this.chart.intervalStack().position(this.config.y.name).color(this.config.x.name).label(this.config.y.name, {
-      formatter: (val, item) => {
-        return item.point[this.config.x.name] + ': ' + val;
-      }
-    }).tooltip(this.config.x.name + '*' + this.config.y.name, function (item, percent) {
-      percent = percent * 100 + '%';
-      return {
-        name: item,
-        value: percent
-      };
-    }).style({
-      lineWidth: 1,
-      stroke: '#fff'
-    });
+    if (this.showField !== '') {
+      this.chart.intervalStack().position(this.config.y.name).color(this.config.x.name).label(this.config.y.name, {
+        textStyle:this.textStyle,
+        formatter: (val, item) => {
+          return item.point[this.config.x.name] + ':' + item.point[this.showField];
+        }
+      }).tooltip(this.config.x.name + '*' + this.config.y.name, function (item, percent) {
+        percent = percent * 100 + '%';
+        return {
+          name: item,
+          value: percent
+        };
+      }).style({
+        lineWidth: 1,
+        stroke: '#fff'
+      });
+    } else {
+      this.chart.intervalStack().position(this.config.y.name).color(this.config.x.name).label(this.config.y.name, {
+        formatter: (val, item) => {
+          return item.point[this.config.x.name] + ': ' + val;
+        }
+      }).tooltip(this.config.x.name + '*' + this.config.y.name, function (item, percent) {
+        percent = percent * 100 + '%';
+        return {
+          name: item,
+          value: percent
+        };
+      }).style({
+        lineWidth: 1,
+        stroke: '#fff'
+      });
+    }
     this.chart.render();
   }
 
