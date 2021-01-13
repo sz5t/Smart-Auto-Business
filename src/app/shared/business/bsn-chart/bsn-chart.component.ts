@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, 
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService, NzDropdownService } from 'ng-zorro-antd';
 import { CacheService } from '@delon/cache';
-import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_OUTPOUT_PARAMETER_TYPE, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_OUTPOUT_PARAMETER_TYPE, BSN_OPERATION_LOG_TYPE, BSN_OPERATION_LOG_RESULT, BSN_COMPONENT_MODE, BSN_COMPONENT_MODES } from '@core/relative-Service/BsnTableStatus';
 import { Observer, Observable, Subscription, config } from 'rxjs';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
@@ -50,6 +50,8 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
   public chartName; // 图表的名称
   public showDataLength; // 分组的展示数据长度（暂时只有分组折线使用）
   public y1andgroup = false; // 分组+双轴的标识
+  public yTextMap: any = {}; // 柱状图文本映射
+  public percent:any; // 饼状图展示百分比字段
 
   // tempValue = {};
   @Output() public updateValue = new EventEmitter();
@@ -81,6 +83,8 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
 
   public ngOnInit() {
     this.resolverRelation();
+    this.yTextMap = this.config.yTextMap ? this.config.yTextMap : {};
+    this.percent = this.config.percentField ? this.config.percentField : 'percent'
   }
 
   public ngAfterViewInit() {
@@ -178,9 +182,30 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       padding: 'auto'
     });
     this.chart.source(this.dataList);
+    if (this.yTextMap !== {}) {
+      this.config.y.scale = {
+        ...this.config.y.scale, ...{
+          formatter: val => {
+            return this.yTextMap[val];
+          }
+        }
+      }
+    }
     if (this.config.y.scale) {
       this.chart.scale(this.config.y.name, this.config.y.scale);
     }
+    // if (this.yTextMap === {}) {
+    //   if (this.config.y.scale) {
+    //     this.chart.scale(this.config.y.name, this.config.y.scale);
+    //   }
+    // } else {
+    //   this.chart.scale(this.config.y.name, {
+    //     formatter: val => {
+    //       return this.yTextMap[val];
+    //     }
+    //   });
+    // }
+
     if (this.config.x.scale) {
       this.chart.scale(this.config.x.name, this.config.x.scale);
     }
@@ -195,15 +220,37 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       this.chart.legend(this.config.legend);
     }
     if (this.config.groupName) {
-      this.chart.interval().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).opacity(1).adjust([{
-        type: 'dodge',
-        marginRatio: 1 / 32
-      }]);  // 创建柱图特殊写法  X*Y  'caseName*caseCount' year*sales
+      if (this.yTextMap === {}) {
+        this.chart.interval().position(this.config.x.name + '*' + this.config.y.name).color(this.config.groupName).opacity(1).adjust([{
+          type: 'dodge',
+          marginRatio: 1 / 32
+        }]); 
+      } else {
+        this.chart
+        .interval()
+        .position(this.config.x.name + '*' + this.config.y.name)
+        .color(this.config.groupName)
+        .tooltip(this.config.x.name + '*' + this.config.y.name, (x, y) => {
+          return {
+            name: x,
+            value: this.yTextMap[y]
+          }})
+        .opacity(1)
+        .adjust([{
+          type: 'dodge',
+          marginRatio: 1 / 32
+        }]); 
+      }
     } else {
       this.chart.interval().position(this.config.x.name + '*' + this.config.y.name);  // 创建柱图特殊写法  X*Y  'caseName*caseCount' year*sales
     }
-
     this.chart.render();
+    if (this.config.autoPlay) {
+      this.autoPlay = setInterval(async() => {
+        await this.load_data(2)
+        this.chart.changeData(this.dataList)
+      }, this.config.intervalTime)
+    }
   }
 
   public CreateChart_MiniBar() {
@@ -261,8 +308,8 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
       padding: 'auto'
     });
     this.chart.source(this.dataList, {
-      percent: {
-        formatter: function formatter(val) {
+      [this.percent]: {
+        formatter: (val) => {
           val = val * 100 + '%';
           return val;
         }
@@ -788,13 +835,13 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
                 this.curNum = 1;
               }
               // if (this.curStage === 2 ) {
-                if (this.config.refreshFrequency) {
-                  this.showdata[this.showdata.length - 1]['stage'] = this.curStage - 1;
-                  this.showdata[this.showdata.length - 1]['number'] = this.curNum;
-                } else {
-                  this.showdata[this.showDataLength - 1]['stage'] = this.curStage - 1;
-                  this.showdata[this.showDataLength - 1]['number'] = this.curNum;
-                }
+              if (this.config.refreshFrequency) {
+                this.showdata[this.showdata.length - 1]['stage'] = this.curStage - 1;
+                this.showdata[this.showdata.length - 1]['number'] = this.curNum;
+              } else {
+                this.showdata[this.showDataLength - 1]['stage'] = this.curStage - 1;
+                this.showdata[this.showDataLength - 1]['number'] = this.curNum;
+              }
               // } else {
               //   this.showdata[this.showDataLength - 1]['stage'] = this.curStage;
               //   this.showdata[this.showDataLength - 1]['number'] = this.curNum;
